@@ -271,13 +271,14 @@ const CustomerFormDrawer: React.FC<CustomerFormDrawerProps> = ({
             </form>
           </Form>
         </div>
-        <DrawerFooter className="flex-col px-4 pt-4 border-t bg-background"> {/* Sticky footer */}
-           <Button type="submit" form="customer-form">
-              {initialValues ? 'Update Customer' : 'Create Customer'}
-            </Button>
+        <DrawerFooter className="flex-row gap-2 px-4 pt-4 border-t bg-background"> {/* Sticky footer */}
+          
           <DrawerClose asChild>
-            <Button variant="outline">Cancel</Button>
+            <Button variant="outline" className="flex-1">Cancel</Button>
           </DrawerClose>
+          <Button type="submit" form="customer-form" className="flex-1">
+            {initialValues ? 'Update Customer' : 'Create Customer'}
+          </Button>
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
