@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAppContext } from '@/context/AppContext';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -16,6 +17,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 enum FilterType {
   ALL = 'all',
@@ -24,6 +26,9 @@ enum FilterType {
 }
 
 const Items = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const isMobile = useIsMobile();
   const { 
     items, 
     isLoadingItems, 
@@ -33,7 +38,7 @@ const Items = () => {
     itemCategories,
     createItemCategory
   } = useAppContext();
-  const { toast } = useToast();
+
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
@@ -54,14 +59,22 @@ const Items = () => {
       return item.categoryId === categoryFilter;
     });
 
-  const handleOpenDrawer = () => {
-    setSelectedItem(null);
-    setIsDrawerOpen(true);
+  const handleOpenItemForm = () => {
+    if (isMobile) {
+      setSelectedItem(null);
+      setIsDrawerOpen(true);
+    } else {
+      navigate('/items/new');
+    }
   };
 
   const handleEditItem = (item: Item) => {
-    setSelectedItem(item);
-    setIsDrawerOpen(true);
+    if (isMobile) {
+      setSelectedItem(item);
+      setIsDrawerOpen(true);
+    } else {
+      navigate(`/items/${item.id}/edit`);
+    }
   };
 
   const handleCloseDrawer = () => {
@@ -133,8 +146,8 @@ const Items = () => {
     }
   };
 
-  const handleCreateCategory = async (name: string) => {
-    return await createItemCategory({ name });
+  const handleCreateCategory = async (category: Omit<ItemCategory, "id" | "createdAt" | "updatedAt">) => {
+    return await createItemCategory(category);
   };
 
   if (isLoadingItems) {
@@ -157,7 +170,7 @@ const Items = () => {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold">Items</h1>
         <Button 
-          onClick={handleOpenDrawer}
+          onClick={handleOpenItemForm}
           className="bg-invoice-teal hover:bg-invoice-teal/90"
         >
           <Plus className="w-4 h-4 mr-2" />
@@ -218,15 +231,17 @@ const Items = () => {
         onDelete={handleDeleteItem}
       />
 
-      <ItemDrawer
-        open={isDrawerOpen}
-        onOpenChange={setIsDrawerOpen}
-        item={selectedItem}
-        onSave={handleSubmitItem}
-        categories={itemCategories}
-        isLoading={isLoadingItems}
-        onCreateCategory={handleCreateCategory}
-      />
+      {isMobile && (
+        <ItemDrawer
+          open={isDrawerOpen}
+          onOpenChange={setIsDrawerOpen}
+          item={selectedItem}
+          onSave={handleSubmitItem}
+          categories={itemCategories}
+          isLoading={isLoadingItems}
+          onCreateCategory={handleCreateCategory}
+        />
+      )}
     </div>
   );
 };

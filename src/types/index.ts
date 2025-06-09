@@ -37,6 +37,7 @@ export interface BusinessProfile {
   updatedAt?: string;
   invoiceNumberFormat?: string | null;
   invoiceNumberSequence?: number | null;
+  currency?: string;
 }
 
 export interface LineItem {

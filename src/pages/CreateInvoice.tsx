@@ -8,6 +8,9 @@ import { Customer } from '@/types';
 import CustomerFormDrawer, { CustomerFormValues } from '@/components/customer/CustomerFormDrawer';
 import { invoiceService } from '@/services/supabaseService';
 import { useForm } from 'react-hook-form';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useBusinessProfile } from '@/hooks/useBusinessProfile';
+import { useCustomers } from '@/hooks/useCustomers';
 
 const CreateInvoice = () => {
   const { 
@@ -21,6 +24,9 @@ const CreateInvoice = () => {
   } = useAppContext();
   const navigate = useNavigate();
   const { toast } = useToast();
+  const isMobile = useIsMobile();
+  const { isLoading: isLoadingProfile } = useBusinessProfile();
+  const { fetchCustomers } = useCustomers();
   const [newlyAddedCustomer, setNewlyAddedCustomer] = useState<Customer | null>(null);
   const [isCustomerDrawerOpen, setIsCustomerDrawerOpen] = useState(false);
 
@@ -68,6 +74,10 @@ const CreateInvoice = () => {
       form.setValue('customerId', newlyAddedCustomer.id);
     }
   }, [newlyAddedCustomer, form]);
+
+  useEffect(() => {
+    fetchCustomers();
+  }, [fetchCustomers]);
 
   const handleSubmit = async (
     values: any,
@@ -161,8 +171,38 @@ const CreateInvoice = () => {
     }
   };
 
+  const handleOpenCustomerForm = () => {
+    if (isMobile) {
+      setIsCustomerDrawerOpen(true);
+    } else {
+      navigate('/customers/new');
+    }
+  };
+
+  const handleCustomerSubmit = async (customer: Customer) => {
+    try {
+      await fetchCustomers();
+      setIsCustomerDrawerOpen(false);
+      toast({
+        title: 'Success',
+        description: 'Customer created successfully',
+      });
+    } catch (error) {
+      toast({
+        title: 'Error',
+        description: 'Failed to create customer',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  if (isLoadingProfile || isLoadingCustomers) {
+    return <div>Loading...</div>;
+  }
+
   return (
-    <>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-6">Create Invoice</h1>
       <InvoiceForm
         mode="create"
         customers={customers}
@@ -170,7 +210,7 @@ const CreateInvoice = () => {
         isLoadingCustomers={isLoadingCustomers}
         onSubmit={handleSubmit}
         onCancel={() => navigate('/invoices')}
-        onAddCustomer={() => setIsCustomerDrawerOpen(true)}
+        onAddCustomer={handleOpenCustomerForm}
         newlyAddedCustomer={newlyAddedCustomer}
         availableItems={items}
         isLoadingItems={isLoadingItems}
@@ -178,13 +218,15 @@ const CreateInvoice = () => {
         isLoadingInvoiceNumber={isLoadingInvoiceNumber}
       />
 
-      <CustomerFormDrawer
-        open={isCustomerDrawerOpen}
-        onOpenChange={setIsCustomerDrawerOpen}
-        initialValues={null}
-        onSubmit={handleAddCustomer}
-      />
-    </>
+      {isMobile && (
+        <CustomerFormDrawer
+          open={isCustomerDrawerOpen}
+          onOpenChange={setIsCustomerDrawerOpen}
+          initialValues={null}
+          onSubmit={handleCustomerSubmit}
+        />
+      )}
+    </div>
   );
 };
 

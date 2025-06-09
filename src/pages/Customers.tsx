@@ -30,6 +30,7 @@ import * as z from 'zod';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import CustomerFormDrawer from '@/components/customer/CustomerFormDrawer';
+import { useNavigate } from 'react-router-dom';
 
 const customerFormSchema = z.object({
   name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
@@ -47,6 +48,7 @@ type CustomerFormValues = z.infer<typeof customerFormSchema>;
 
 const Customers = () => {
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteCustomerId, setDeleteCustomerId] = useState<string | null>(null);
@@ -76,79 +78,6 @@ const Customers = () => {
     }
   };
 
-  const handleCreateCustomer = async (values: CustomerFormValues) => {
-    try {
-      console.log("Attempting to create customer with values:", values);
-      const newCustomer = {
-        name: values.name,
-        email: values.email || null,
-        phone: values.phone || null,
-        address: values.address || null,
-        city: values.city || null,
-        state: values.state || null,
-        zip: values.zip || null,
-        country: values.country || 'New Zealand',
-        isVip: values.is_vip
-      };
-
-      console.log("Transformed customer data:", newCustomer);
-      await customerService.createCustomer(newCustomer);
-      console.log("Customer created successfully");
-
-      toast({
-        title: 'Success',
-        description: 'Customer created successfully',
-      });
-
-      setIsCustomerDrawerOpen(false);
-      setCustomerToEdit(null);
-      fetchCustomers();
-    } catch (error) {
-      console.error('Error creating customer:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create customer',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleUpdateCustomer = async (values: CustomerFormValues) => {
-    if (!customerToEdit) return;
-
-    try {
-      const updatedCustomer = {
-        name: values.name,
-        email: values.email || null,
-        phone: values.phone || null,
-        address: values.address || null,
-        city: values.city || null,
-        state: values.state || null,
-        zip: values.zip || null,
-        country: values.country || 'New Zealand',
-        isVip: values.is_vip
-      };
-
-      await customerService.updateCustomer(customerToEdit.id, updatedCustomer);
-
-      toast({
-        title: 'Success',
-        description: 'Customer updated successfully',
-      });
-
-      setIsCustomerDrawerOpen(false);
-      setCustomerToEdit(null);
-      fetchCustomers();
-    } catch (error) {
-      console.error('Error updating customer:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to update customer',
-        variant: 'destructive',
-      });
-    }
-  };
-
   const handleDeleteCustomer = async () => {
     if (!deleteCustomerId) return;
 
@@ -174,21 +103,21 @@ const Customers = () => {
     }
   };
 
-  const handleOpenCreateCustomerDrawer = () => {
-    setCustomerToEdit(null);
-    setIsCustomerDrawerOpen(true);
-  };
-
-  const handleOpenEditCustomerDrawer = (customer: Customer) => {
-    setCustomerToEdit(customer);
-    setIsCustomerDrawerOpen(true);
-  };
-
-  const handleFormSubmit = (values: CustomerFormValues) => {
-    if (customerToEdit) {
-      handleUpdateCustomer(values);
+  const handleOpenCreateCustomer = () => {
+    if (isMobile) {
+      setCustomerToEdit(null);
+      setIsCustomerDrawerOpen(true);
     } else {
-      handleCreateCustomer(values);
+      navigate('/customers/new');
+    }
+  };
+
+  const handleOpenEditCustomer = (customer: Customer) => {
+    if (isMobile) {
+      setCustomerToEdit(customer);
+      setIsCustomerDrawerOpen(true);
+    } else {
+      navigate(`/customers/${customer.id}/edit`);
     }
   };
 
@@ -206,7 +135,7 @@ const Customers = () => {
         <h1 className="text-3xl font-bold">Customers</h1>
         <Button
           className="flex items-center gap-2 bg-invoice-teal hover:bg-invoice-teal/90"
-          onClick={handleOpenCreateCustomerDrawer}
+          onClick={handleOpenCreateCustomer}
         >
           <Plus size={18} />
           <span>New Customer</span>
@@ -237,7 +166,7 @@ const Customers = () => {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8"
-                        onClick={() => handleOpenEditCustomerDrawer(customer)}
+                        onClick={() => handleOpenEditCustomer(customer)}
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
@@ -252,7 +181,7 @@ const Customers = () => {
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="pt-2 pb-2">
+                <CardContent>
                   <div className="space-y-1">
                     <div className="flex items-center text-sm">
                       <Mail className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -271,22 +200,7 @@ const Customers = () => {
                       </div>
                     )}
                   </div>
-                  {customer.tags && customer.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-1 mt-3">
-                      {customer.tags.map((tag) => (
-                        <span key={tag} className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  )}
                 </CardContent>
-                <CardFooter className="flex justify-end pt-2">
-                  <Button variant="ghost" className="h-8 px-3 text-xs flex items-center">
-                    View Details
-                    <ChevronRight className="ml-1 w-4 h-4" />
-                  </Button>
-                </CardFooter>
               </Card>
             ))
           )}
@@ -301,14 +215,13 @@ const Customers = () => {
                   <TableHead>Email</TableHead>
                   <TableHead>Phone</TableHead>
                   <TableHead>Location</TableHead>
-                  <TableHead>Tags</TableHead>
                   <TableHead className="text-right">Actions</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {customers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
+                    <TableCell colSpan={5} className="text-center text-muted-foreground">
                       No customers found. Create your first customer to get started.
                     </TableCell>
                   </TableRow>
@@ -330,24 +243,11 @@ const Customers = () => {
                         {customer.city && customer.state ? `${customer.city}, ${customer.state}` : 'N/A'}
                       </TableCell>
                       <TableCell>
-                        {customer.tags && customer.tags.length > 0 ? (
-                          <div className="flex flex-wrap gap-1">
-                            {customer.tags.map((tag) => (
-                              <span key={tag} className="px-2 py-0.5 bg-blue-100 text-blue-800 text-xs rounded">
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground text-sm">No tags</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
                           <Button
                             variant="ghost"
                             size="icon"
-                            onClick={() => handleOpenEditCustomerDrawer(customer)}
+                            onClick={() => handleOpenEditCustomer(customer)}
                           >
                             <Pencil className="h-4 w-4" />
                           </Button>
@@ -370,14 +270,53 @@ const Customers = () => {
         </Card>
       )}
       
-      <CustomerFormDrawer
-        open={isCustomerDrawerOpen}
-        onOpenChange={setIsCustomerDrawerOpen}
-        initialValues={customerToEdit}
-        onSubmit={handleFormSubmit}
-      />
+      {isMobile && (
+        <CustomerFormDrawer
+          open={isCustomerDrawerOpen}
+          onOpenChange={setIsCustomerDrawerOpen}
+          initialValues={customerToEdit}
+          onSubmit={async (values) => {
+            if (customerToEdit) {
+              await customerService.updateCustomer(customerToEdit.id, {
+                name: values.name,
+                email: values.email || null,
+                phone: values.phone || null,
+                address: values.address || null,
+                city: values.city || null,
+                state: values.state || null,
+                zip: values.zip || null,
+                country: values.country || 'New Zealand',
+                isVip: values.is_vip
+              });
+              toast({
+                title: 'Success',
+                description: 'Customer updated successfully',
+              });
+            } else {
+              await customerService.createCustomer({
+                name: values.name,
+                email: values.email || null,
+                phone: values.phone || null,
+                address: values.address || null,
+                city: values.city || null,
+                state: values.state || null,
+                zip: values.zip || null,
+                country: values.country || 'New Zealand',
+                isVip: values.is_vip
+              });
+              toast({
+                title: 'Success',
+                description: 'Customer created successfully',
+              });
+            }
+            setIsCustomerDrawerOpen(false);
+            setCustomerToEdit(null);
+            fetchCustomers();
+          }}
+        />
+      )}
       
-      <Dialog 
+      <Dialog
         open={!!deleteCustomerId} 
         onOpenChange={(open) => {
           if (!open) setDeleteCustomerId(null);

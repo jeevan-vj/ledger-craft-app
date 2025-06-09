@@ -22,6 +22,8 @@ import InvoiceViewPage from "./pages/InvoiceViewPage";
 import Accounts from "./pages/Accounts";
 import PublicInvoice from "./pages/PublicInvoice";
 import Categories from "./pages/Categories";
+import CustomerManagement from "./pages/CustomerManagement";
+import ItemManagement from "./pages/ItemManagement";
 
 const queryClient = new QueryClient();
 
@@ -68,9 +70,29 @@ const App = () => (
                     <AppLayout><Customers /></AppLayout>
                   </ProtectedRoute>
                 } />
+                <Route path="/customers/new" element={
+                  <ProtectedRoute>
+                    <AppLayout><CustomerManagement /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/customers/:id/edit" element={
+                  <ProtectedRoute>
+                    <AppLayout><CustomerManagement /></AppLayout>
+                  </ProtectedRoute>
+                } />
                 <Route path="/items" element={
                   <ProtectedRoute>
                     <AppLayout><Items /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/items/new" element={
+                  <ProtectedRoute>
+                    <AppLayout><ItemManagement /></AppLayout>
+                  </ProtectedRoute>
+                } />
+                <Route path="/items/:id/edit" element={
+                  <ProtectedRoute>
+                    <AppLayout><ItemManagement /></AppLayout>
                   </ProtectedRoute>
                 } />
                 <Route path="/categories" element={
