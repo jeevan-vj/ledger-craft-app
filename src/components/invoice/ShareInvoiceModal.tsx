@@ -71,6 +71,13 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
   const urlInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
+    setSelectedTemplate((invoice.templateName as InvoiceTemplateName) || 'classic');
+    setShowTemplateSelection(!invoice.templateName);
+    setShareUrl('');
+    setCopied(false);
+  }, [invoice.id, invoice.templateName, open]);
+
+  useEffect(() => {
     if (!open) {
       return;
     }
@@ -289,7 +296,7 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
             Share Invoice {invoice.invoiceNumber}
           </DialogTitle>
           <DialogDescription>
-            Create a secure link to share this invoice. Recipients can view the invoice without needing an account.
+            Create a secure link to share this invoice. Anyone with the link can view the invoice and download its PDF without an account.
           </DialogDescription>
         </DialogHeader>
 
@@ -422,6 +429,7 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
                   <Button
                     variant="outline"
                     size="icon"
+                    aria-label="Copy share link"
                     onClick={handleCopyLink}
                     className="shrink-0"
                   >
@@ -435,6 +443,9 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
               </div>
 
               <div className="space-y-2">
+                <Button asChild variant="outline" className="w-full">
+                  <a href={shareUrl} target="_blank" rel="noopener noreferrer">Open invoice</a>
+                </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"

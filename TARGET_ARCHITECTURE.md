@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Invoice sharing (local, 2026-09-15):** Invoices → Share generates a token link
+with copy/open actions. Logged-out recipients use `/shared/invoice/:shareToken`;
+PDF download captures the rendered invoice with the selected template, actual
+tax rate and separate bank detail rows. Share links contain an invoice/profile
+snapshot; create a new link after changing the invoice. API expiry and tenant
+isolation checks pass. Local Chrome sender/recipient, reload, PDF download,
+mobile viewport and invalid/expired-link checks pass; the PDF is visually
+verified. 45 contract, 75 API and 21 focused web tests plus build pass. The
+standalone web type check is blocked by the existing syntax error in
+`src/services/__tests__/aiService.test.ts:21`. This change is not deployed. Evidence:
+`/tmp/ledgercraft-verify-sharing/`, `tests/e2e/invoice-sharing-local.spec.ts`.
+
+
 **Invoice bank details (deployed, 2026-09-14):** Settings → Preferences stores
 separate account name and account number fields through Hono/SQLite migration
 `0002_business_bank_details.sql`. All six web invoice templates and PDFs show

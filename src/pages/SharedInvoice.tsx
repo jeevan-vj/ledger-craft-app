@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,13 +8,8 @@ import { Invoice, BusinessProfile } from '@/types';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import { useToast } from '@/hooks/use-toast';
 
-// Import template components
-import ClassicTemplate from '@/components/invoice/preview/templates/ClassicTemplate';
-import ModernTemplate from '@/components/invoice/preview/templates/ModernTemplate';
-import MinimalTemplate from '@/components/invoice/preview/templates/MinimalTemplate';
-import ExecutiveTemplate from '@/components/invoice/preview/templates/ExecutiveTemplate';
-import CorporateTemplate from '@/components/invoice/preview/templates/CorporateTemplate';
-import ModernInvoiceTemplate from '@/components/invoice/preview/templates/ModernInvoiceTemplate';
+import { createTemplateData, renderTemplateComponent } from '@/services/invoiceTemplateRenderer';
+import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
 
 const SharedInvoice: React.FC = () => {
   const { shareToken } = useParams<{ shareToken: string }>();
@@ -27,8 +22,14 @@ const SharedInvoice: React.FC = () => {
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [templateName, setTemplateName] = useState<string>('classic');
   const [isDownloading, setIsDownloading] = useState(false);
+  const templateRef = useRef<HTMLDivElement>(null);
+  const selectedTemplate = templateName.toLowerCase() as InvoiceTemplateId;
 
   useEffect(() => {
+    let cancelled = false;
+    setLoading(true);
+    setError(null);
+    setInvoiceData(null);
     const fetchSharedInvoice = async () => {
       if (!shareToken) {
         setError('Invalid share link');
@@ -38,6 +39,7 @@ const SharedInvoice: React.FC = () => {
 
       try {
         const result = await invoicesApi.getShared(shareToken);
+        if (cancelled) return;
         
         if (!result) {
           setError('Invoice not found or link has expired');
@@ -51,6 +53,7 @@ const SharedInvoice: React.FC = () => {
         setTemplateName(result.templateData.templateName || 'classic');
         setLoading(false);
       } catch (err) {
+        if (cancelled) return;
         console.error('Error fetching shared invoice:', err);
         setError('Failed to load invoice');
         setLoading(false);
@@ -58,14 +61,15 @@ const SharedInvoice: React.FC = () => {
     };
 
     fetchSharedInvoice();
+    return () => { cancelled = true; };
   }, [shareToken]);
 
   const handleDownloadPdf = async () => {
-    if (!invoiceData || !businessProfile) return;
+    if (!invoiceData || !businessProfile || !templateRef.current || isDownloading) return;
 
     setIsDownloading(true);
     try {
-      await generateInvoicePdf(invoiceData, businessProfile, templateName as any);
+      await generateInvoicePdf(invoiceData, templateRef.current, selectedTemplate, businessProfile.logoUrl);
       toast({
         title: 'PDF downloaded',
         description: 'Invoice PDF has been downloaded successfully.',
@@ -85,56 +89,7 @@ const SharedInvoice: React.FC = () => {
   const renderTemplate = () => {
     if (!invoiceData || !businessProfile) return null;
 
-    // Create template data in the same format as InvoicePreview
-    const templateData = {
-      invoice: invoiceData,
-      companyName: businessProfile?.name || 'Business Name',
-      companyAddress: [
-        businessProfile?.address,
-        businessProfile?.city,
-        businessProfile?.state,
-        businessProfile?.zip,
-        businessProfile?.country
-      ].filter(Boolean).join(', ') || '',
-      companyPhone: businessProfile?.phone || '',
-      clientName: invoiceData.customer?.name || 'Client Name',
-      clientAddress: [
-        invoiceData.customer?.address,
-        invoiceData.customer?.city,
-        invoiceData.customer?.state,
-        invoiceData.customer?.zip,
-        invoiceData.customer?.country
-      ].filter(Boolean).join(', ') || '',
-      taxRate: '0%', // You might want to calculate this from invoice data
-      tax: invoiceData.taxAmount || 0,
-      businessLogo: businessProfile?.logoUrl,
-      theme: businessProfile?.theme || {
-        primary: '#3B82F6',
-        secondary: '#06B6D4',
-        accent: '#10B981',
-        text: '#111827',
-        textLight: '#6B7280',
-        background: '#F9FAFB',
-        surface: '#FFFFFF'
-      }
-    };
-
-
-    switch (templateName.toLowerCase()) {
-      case 'modern':
-        return <ModernTemplate {...templateData} />;
-      case 'minimal':
-        return <MinimalTemplate {...templateData} />;
-      case 'executive':
-        return <ExecutiveTemplate {...templateData} />;
-      case 'corporate':
-        return <CorporateTemplate {...templateData} />;
-      case 'modernpro':
-        return <ModernInvoiceTemplate {...templateData} />;
-      case 'classic':
-      default:
-        return <ClassicTemplate {...templateData} />;
-    }
+    return renderTemplateComponent(selectedTemplate, createTemplateData(invoiceData, businessProfile));
   };
 
   if (loading) {
@@ -180,7 +135,7 @@ const SharedInvoice: React.FC = () => {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
+          <div className="flex flex-wrap items-center justify-between gap-3 py-3">
             <div className="flex items-center space-x-3">
               <div className="bg-blue-100 rounded-lg p-2">
                 <FileText className="h-5 w-5 text-blue-600" />
@@ -217,7 +172,7 @@ const SharedInvoice: React.FC = () => {
       {/* Invoice Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div className="p-6 md:p-8">
+          <div ref={templateRef} className="p-3 sm:p-6 md:p-8">
             {renderTemplate()}
           </div>
         </div>
