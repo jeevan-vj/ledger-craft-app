@@ -16,7 +16,28 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
-**Release status (2026-09-14): deployed and verified.**
+**Latest release (2026-09-14): invoice bank details deployed and verified.**
+
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://75c4989e.ledger-craft-app.pages.dev
+- Frontend: `c6c95ec1a8fe`, version 0.0.8.
+- Worker: `71f96f39-7989-4f34-a9a3-a093034b19df`.
+- Migration: `0002_business_bank_details.sql`; readiness reports it applied.
+  The migration adds two nullable text columns. Existing migrations remain
+  checksum-tracked; inactive tenant objects migrate on their next startup.
+- `pnpm deploy:cloudflare` exited zero. All 45 contract and 75 API tests,
+  SQLite validation, API/contracts/Worker typechecks, build and dry run passed.
+- Live smoke checks passed authentication, tenant isolation, invoice totals,
+  named charges, concurrency, rollback, idempotency, attachments, sharing and
+  persistence.
+- Chrome on the production custom domain verified bank settings save/reload,
+  invoice reload, visible build `c6c95e`, and downloaded PDF with both separate
+  account rows. Verification used a synthetic account and signed out afterward.
+  Evidence: `/tmp/ledgercraft-bank-prod/`. Customer records were not modified
+  by the verification flow.
+- Source commits: `527b963` and `ecec12a`; release metadata is recorded afterward.
+
+**Earlier release (2026-09-14): deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
 - Pages deployment: https://3324259f.ledger-craft-app.pages.dev

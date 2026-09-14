@@ -1,11 +1,12 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
-**Invoice bank details (local, 2026-09-14):** Settings → Preferences stores
+**Invoice bank details (deployed, 2026-09-14):** Settings → Preferences stores
 separate account name and account number fields through Hono/SQLite migration
-`0002_business_bank_details.sql`. All six web invoice templates and PDF previews
-show separate labelled payment rows; empty values are hidden. Local API,
-contract, component, browser persistence and downloaded PDF checks pass.
-This feature is not deployed.
+`0002_business_bank_details.sql`. All six web invoice templates and PDFs show
+separate labelled payment rows; empty values are hidden. Production build
+`c6c95ec1a8fe`, Worker `71f96f39-7989-4f34-a9a3-a093034b19df` are published.
+Release smoke checks and Chrome settings save/reload, invoice reload and PDF
+verification pass. See `deploy/cloudflare.md`.
 
 **Additional-charge release (2026-09-14):** named invoice charges persist through
 the API/web mapper. Build `1b3eef9860bf` and Worker
