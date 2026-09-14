@@ -16,7 +16,32 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
-**Latest release (2026-09-14): invoice bank details deployed and verified.**
+**Latest release (2026-09-15): invoice sharing deployed and verified.**
+
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://6674884d.ledger-craft-app.pages.dev
+- Frontend: `934e59362a4f`, version 0.0.8.
+- Worker: `26e32c83-ab9f-4eb7-a264-65ecb0d61595`.
+- No new SQL migration; readiness remains `0002_business_bank_details.sql`.
+- Source commit: `df5508e`; generated version and release evidence are recorded
+  in the following metadata commit.
+- `pnpm deploy:cloudflare` exited zero: 45 contract and 75 API tests, SQLite
+  validation, API/contracts/Worker typechecks, production build and dry run pass.
+  The existing standalone web typecheck blocker in
+  `src/services/__tests__/aiService.test.ts:21` remains outside this release.
+- Live smoke checks pass readiness, authentication, tenant isolation, invoice
+  totals/charges, concurrency, rollback, idempotency, attachments, public sharing
+  and persistence. The signing secret is preserved.
+- Production Chrome verification uses a separate synthetic account: generates
+  a link in the invoice list, opens it in a logged-out recipient context, reloads,
+  downloads a valid 142,244-byte PDF, checks a 390px mobile viewport, and rejects
+  expired/invalid links. The PDF is visually checked against the preview,
+  including tax, delivery, bank details, notes and terms. The synthetic owner
+  signs out afterward. Customer records are not changed.
+- Evidence: `/tmp/ledgercraft-sharing-prod/` and
+  `/tmp/ledgercraft-sharing-production-release.log`.
+
+**Earlier release (2026-09-14): invoice bank details deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
 - Pages deployment: https://75c4989e.ledger-craft-app.pages.dev
