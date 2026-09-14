@@ -110,6 +110,8 @@ export interface BusinessProfile {
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   bankInfo?: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   theme?: BusinessTheme | null;  // Business theme colors
   userId?: string;
   createdAt?: string;

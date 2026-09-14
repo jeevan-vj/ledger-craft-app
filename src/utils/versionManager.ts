@@ -12,9 +12,9 @@ export interface AppVersion {
 // Generate version info at build time
 export const getCurrentVersion = (): AppVersion => {
   return {
-    version: import.meta.env.VITE_APP_VERSION || '1.0.0',
-    buildTime: Date.now(),
-    hash: import.meta.env.VITE_BUILD_HASH || Math.random().toString(36).substr(2, 9)
+    version: import.meta.env.VITE_APP_VERSION || 'development',
+    buildTime: Number(import.meta.env.VITE_BUILD_TIME || 0),
+    hash: import.meta.env.VITE_BUILD_HASH || 'development'
   };
 };
 

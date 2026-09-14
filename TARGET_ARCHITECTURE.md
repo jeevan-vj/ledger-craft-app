@@ -1,14 +1,83 @@
 # LedgerCraft target architecture
 
-**Status:** proposed end state. The migration phases and approval gates in this document are part of the architecture, not optional implementation detail.
+**Invoice bank details (local, 2026-09-14):** Settings → Preferences stores
+separate account name and account number fields through Hono/SQLite migration
+`0002_business_bank_details.sql`. All six web invoice templates and PDF previews
+show separate labelled payment rows; empty values are hidden. Local API,
+contract, component, browser persistence and downloaded PDF checks pass.
+This feature is not deployed.
+
+**Additional-charge release (2026-09-14):** named invoice charges persist through
+the API/web mapper. Build `1b3eef9860bf` and Worker
+`1b20615b-343e-4a6f-99e9-38fa157005d3` are published; local checks and live
+read-only checks pass. Customer invoice updates and live mutation verification
+remain pending access/approval. See `deploy/cloudflare.md`.
+
+**Status (2026-09-14):** the user approved the Cloudflare-only free SQLite
+architecture below. It supersedes this document's older PostgreSQL, S3, Resend
+and container decisions. The earlier reconstruction phases remain historical
+context; their API/DTO boundaries, exact-money rules, transaction guarantees and
+tenant-isolation gates still apply. The SQLite API is deployed and live API
+checks passed; the frontend is published at https://easybiz.iamjeevan.com
+and live website plus Chrome login/navigation checks passed (build `6849a8db7473`).
+
+Schema changes use `pnpm db:generate --name change`, followed by SQL review and
+`pnpm deploy:cloudflare`. Production migrations apply on each object’s next
+startup before requests are served; inactive organisations are not eagerly woken.
+
+## Current free Cloudflare architecture
+
+Pages `ledger-craft-app` serves React/Vite. Hono runs in Worker `ledgercraft-api`.
+A single Identity SQLite Durable Object owns Better Auth users, unique emails
+and sessions. The authenticated gateway routes organisation data to a separate
+Ledger SQLite Durable Object per organisation. SQLite-backed Durable Objects
+provide interactive accounting transactions and the CPU budget needed for
+secure password hashing. D1 is not used.
+
+The request path is **client → Hono → use case → repository → Drizzle → SQLite**.
+The gateway derives tenant ownership from authenticated membership. Organisation
+predicates and composite tenant foreign keys support the per-object isolation
+boundary. Monetary storage uses decimal TEXT and authoritative calculations use
+exact server decimal helpers, never floating-point ledger arithmetic.
+Attachments are stored in SQLite with a 1 MB limit. Client-side PDF generation
+and downloads remain available. External email delivery and AI are unavailable
+in this free deployment and must return an honest unavailable result.
+
+There are no paid Containers, R2, PostgreSQL, Supabase or third-party hosted
+services in this target. Free Cloudflare quotas bound availability; the release
+workflow does not subscribe to paid services. Reviewed application migrations
+live in `api/sqlite-migrations/*.sql`; bundled checksums detect changes to applied
+SQL. Durable Objects record pre-migration recovery bookmarks in
+`_migration_recovery`, then apply pending migrations in `storage.transactionSync`
+on startup before serving requests. This approved SQLite lifecycle supersedes the older prohibition
+on application-startup migrations in the PostgreSQL design below.
+
+Run `pnpm deploy:check` for local release validation and `pnpm deploy:cloudflare`
+for repeatable deployment and live smoke checks. Use Node 24+ (tested with Node
+26) and pinned pnpm. The signing secret in ignored `deploy/secrets.local.json`
+is reused; retain a secure backup. If it is missing locally, deployment inspects
+remote secret names and preserves an existing remote signing secret. A new key
+is generated only for an initial absent secret; failed remote inspection stops
+deployment. Never rotate signing keys implicitly during routine deployment. See `deploy/cloudflare.md` for local SQLite development,
+Wrangler commands, migration behavior and verification evidence.
+
+## Historical reconstruction context
 
 **Reconstruction (2026-09-03):** the hosted project still exists (`viqckjmborlqaemavrzu`) but `public` has zero tables, `auth.users` is empty, storage is empty, and no app migrations are applied. Production rows and identities are unrecoverable unless a platform backup is found. Reconstruction is greenfield toward this document, not a forensic clone. Do not replay checked-in SQL in order. Derive compatibility columns from application TypeScript contracts (`src/types`, service mappers). Skip preserving old `auth.users` UUIDs.
 
-**W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: Pages + Node container; `deploy/cloudflare.md`.
+**W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 
-Current production uses Supabase Auth, PostgREST, Storage, Edge Functions, Vite, and Expo. Web and mobile clients call `supabase-js` directly. This document defines the final architecture and the safe path from that system.
+The `mobile-app` source uses Hono and Better Auth with the SQLite deployment
+implementation described above. The earlier Pages upload from `main` is a
+separate legacy frontend release and does not deploy or verify this backend.
+The backend is deployed at
+`https://ledgercraft-api.jeevan90wijerathna.workers.dev`, Worker version
+`bcbef6d7-8c90-404a-9103-d38d1eca4f55`. Live checks passed signup, sessions,
+tenant isolation, invoice totals, concurrent creation, rollback, idempotency,
+attachments, public sharing, sign-out/sign-in and persistence. The new Pages
+frontend publication and website verification remain pending.
 
 Web UI stays Revolut-inspired. Mobile UI is Wise-inspired (lime `#9FE870`, forest `#163300`, sparse whitespace) on native iOS 26 chrome (Liquid Glass tab bar, large titles). Do not copy the Wise wordmark or flag. The web router and repository layout may change after the API boundary is established; the product is not being rewritten in Next.js or TanStack Start.
 

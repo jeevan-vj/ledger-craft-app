@@ -1,7 +1,7 @@
 import { errorEnvelopeSchema, meResponseSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
-import { createDb } from '../../db/client';
+import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
 import { createAuth } from './auth';
@@ -76,6 +76,6 @@ describe('session routes', () => {
   });
 
   it('does not point Vitest at the app database', () => {
-    expect(new URL(getDatabaseUrl()).pathname).toBe('/ledgercraft_test');
+    expect(new URL(getDatabaseUrl()).pathname).toMatch(/ledgercraft-sqlite-test-[^/]+\/ledgercraft_test\.sqlite$/);
   });
 });

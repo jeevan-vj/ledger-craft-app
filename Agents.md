@@ -1,22 +1,70 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Invoice bank details (local, 2026-09-14):** Settings → Preferences stores
+separate account name and account number fields through Hono/SQLite migration
+`0002_business_bank_details.sql`. All six web invoice templates and PDF previews
+show separate labelled payment rows; empty values are hidden. Local API,
+contract, component, browser persistence and downloaded PDF checks pass.
+This feature is not deployed.
+
+**Additional-charge release (2026-09-14):** named invoice charges persist through
+the API/web mapper. Build `1b3eef9860bf` and Worker
+`1b20615b-343e-4a6f-99e9-38fa157005d3` are published; local checks and live
+read-only checks pass. Customer invoice updates and live mutation verification
+remain pending access/approval. See `deploy/cloudflare.md`.
+
 This document provides comprehensive guidance for AI agents (LLMs) working on the LedgerCraft codebase. Use this as a reference for understanding project structure, conventions, and development patterns.
 
 ## Read this first
 
 **Start:** `.cursor/skills/ledgercraft-bootstrap/SKILL.md` then `TARGET_ARCHITECTURE.md`.
 
+**Current deployment decision (2026-09-14):** the user approved Cloudflare-only
+free infrastructure with SQLite. This section and `deploy/cloudflare.md`
+supersede older PostgreSQL, RLS, Supabase, S3/R2, Containers and external-provider
+instructions below and in reconstruction skills. Those storage/deployment
+sections describe historical reconstruction stages; do not follow them for the
+current release. Preserve the API/DTO, authentication, exact-money, transaction
+and tenant-isolation requirements while using the SQLite implementation.
+
+Pages (`ledger-craft-app`) serves the web client. The Hono Worker
+(`ledgercraft-api`) uses an Identity SQLite Durable Object for Better Auth users,
+unique emails and sessions, and one Ledger SQLite Durable Object per organisation.
+Use no D1, paid Containers, R2, PostgreSQL, Supabase or external email/AI service.
+Uploads are SQLite attachments capped at 1 MB. Monetary values remain exact
+TEXT decimals. Reviewed `api/sqlite-migrations/*.sql` are checksum-tracked and
+applied transactionally on object startup before serving requests. The SQLite backend is deployed (Worker
+`ab83b548-acf0-4c8b-a05b-d8dcdd33dd92`) and live API checks passed authentication,
+tenant isolation, invoice transactions/concurrency/idempotency, attachments,
+sharing and persistence. The frontend is published and verified at
+https://easybiz.iamjeevan.com (build `6849a8db7473`); Chrome login, invoice
+navigation and authenticated refresh passed. Migration recovery bookmarks are saved in `_migration_recovery` before
+schema execution inside `storage.transactionSync`. Generate new SQLite SQL with `pnpm db:generate --name change`;
+review it, then use `pnpm deploy:cloudflare` to deploy code and bundled migrations.
+`pnpm deploy:help` lists commands; `pnpm db:migrate` is local-only.
+
 | | |
 | --- | --- |
 | Spec | `TARGET_ARCHITECTURE.md` — end state and gates. Not optional. |
 | Live DB | Hosted `public` is empty (2026-09-03). Greenfield. Do not replay Git SQL. No UUID import. |
 | Now | W1–W13 **verified** (2026-09-11). Journals, account writes, reminders, and chat completions are Hono. `@supabase/supabase-js` is gone. Next: TanStack Router / `apps/`. |
-| Blocked | None. |
+| Release gate | SQLite API is deployed and verified; new Pages publication and website verification remain pending. |
 | Clients | Web and mobile email auth are Better Auth. Live web auth routes do not call `supabase.auth`. Product CRUD (customers, invoices, expenses, payments, accounts, journals, bank, recon, tax, objects, receipts, receipt-scan, conversations, chat) → Hono. Invoice send and payment reminders use the Hono mailer. Web lists use TanStack Query when flags are on. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
-| Ports | Postgres **55432**, API **3001**, Vite **8080** (`/api` proxy). |
+| Ports | Local API **3001**, Vite **8080** (`/api` proxy); SQLite needs no database port. |
 | Package manager | **pnpm** workspace (`api`, `packages/contracts`). `mobile/` is not in the workspace yet. |
 
 **Skills (read the matching one):**
+
+Deployment: `pnpm run deploy:check` validates SQLite/API/frontend/Worker locally;
+`pnpm run deploy:cloudflare` deploys the Worker and Pages, then runs live checks.
+Use Node 24+ (tested with Node 26) and pinned pnpm. The ignored
+`deploy/secrets.local.json` signing secret is reused and should be backed up
+securely. If the local file is absent, the script inspects remote secret names
+and preserves an existing signing secret; it generates only an initial absent
+secret and stops if remote inspection fails. Never rotate it implicitly. Local
+`pnpm db:migrate` uses a SQLite `DATABASE_URL`; `pnpm dev:api` starts the Node API.
+Wrangler local development exercises the actual production Durable Object model.
+See `deploy/cloudflare.md` for commands and rollout/verification details.
 
 | Skill | Use |
 | --- | --- |
@@ -1207,4 +1255,3 @@ Journals CRUD is Hono (`GET/POST /api/journal-entries`, `GET/PATCH/DELETE /api/j
 
 **Last Updated**: 2026-09-11
 **Version**: 1.10.0
-

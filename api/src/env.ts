@@ -1,9 +1,3 @@
-import { config } from 'dotenv';
-import { resolve } from 'node:path';
-
-config({ path: resolve(process.cwd(), '.env') });
-config({ path: resolve(process.cwd(), '../.env') });
-
 export function requiredEnv(name: string): string {
   const value = process.env[name];
   if (!value) {
@@ -13,7 +7,7 @@ export function requiredEnv(name: string): string {
 }
 
 export function getDatabaseUrl(): string {
-  return requiredEnv('DATABASE_URL');
+  return process.env.DATABASE_URL ?? '.data/ledgercraft.sqlite';
 }
 
 export function getMigrateDatabaseUrl(): string {

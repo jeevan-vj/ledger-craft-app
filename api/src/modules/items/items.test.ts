@@ -1,7 +1,7 @@
 import { errorEnvelopeSchema, itemListResponseSchema, itemSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
-import { createDb } from '../../db/client';
+import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
@@ -58,6 +58,23 @@ describe('item routes', () => {
         expect(created.status).toBe(201);
         const item = itemSchema.parse(await created.json());
         expect(item.name).toBe('Brand identity');
+
+        const categoryResponse = await app.request('/api/item-categories', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerB.cookie },
+          body: JSON.stringify({ name: 'Private category' }),
+        });
+        expect(categoryResponse.status).toBe(201);
+        const category = await categoryResponse.json() as { id: string };
+        const foreignCreate = await app.request('/api/items', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ name: 'Invalid category link', type: 'service', categoryId: category.id }),
+        });
+        expect(foreignCreate.status).toBe(400);
+        const foreignUpdate = await app.request(`/api/items/${item.id}`, {
+          method: 'PATCH', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ categoryId: category.id }),
+        });
+        expect(foreignUpdate.status).toBe(400);
 
         const listA = itemListResponseSchema.parse(
           await (await app.request('/api/items', { headers: { Cookie: ownerA.cookie } })).json(),

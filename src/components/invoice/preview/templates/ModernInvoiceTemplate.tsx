@@ -1,3 +1,4 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { Invoice, LineItem, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
@@ -9,6 +10,8 @@ interface ModernInvoiceTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const ModernInvoiceTemplate = ({
   companyName,
   companyAddress,
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName,
   clientAddress,
   taxRate,
@@ -203,6 +208,7 @@ const ModernInvoiceTemplate = ({
           </div>
         </div>
 
+        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
         {/* Notes & Terms */}
         {(invoice.notes || invoice.terms) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-8 pb-8" style={{ backgroundColor: theme.surface }}>

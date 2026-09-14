@@ -39,3 +39,13 @@ api/vendor
 *.env.production.local
 
 test-results/*
+
+.wrangler/
+deploy/*.local.json
+deploy/*.local.env
+
+.dev.vars
+.dev.vars.*
+.data/
+
+.pnpm-store/

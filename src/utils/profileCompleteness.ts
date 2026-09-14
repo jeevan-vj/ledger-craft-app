@@ -3,6 +3,8 @@ export interface ProfileCompletenessInput {
   address?: string | null;
   city?: string | null;
   bankInfo?: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
 }
 
 export type MissingProfileField = 'logo' | 'address' | 'bank';
@@ -24,7 +26,7 @@ export function getMissingProfileFields(
     missing.push('address');
   }
 
-  if (!profile.bankInfo?.trim()) {
+  if (!profile.bankInfo?.trim() && !(profile.bankAccountName?.trim() && profile.bankAccountNumber?.trim())) {
     missing.push('bank');
   }
 

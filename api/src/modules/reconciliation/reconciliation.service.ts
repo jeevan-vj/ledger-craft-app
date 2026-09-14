@@ -13,7 +13,7 @@ import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as bankRepo from '../bank/bank.repository';
-import { moneyToCents, parseMoney, roundMoney } from '../invoices/money';
+import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as expensesRepo from '../expenses/expenses.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import * as paymentsRepo from '../payments/payments.repository';
@@ -177,21 +177,21 @@ export async function completeSessionForUser(
     const adjustments = await repo.listAdjustments(tx, ctx.organisationId, sessionId);
     const deposits = adjustments
       .filter((row) => row.adjustmentType === 'deposit_in_transit')
-      .reduce((sum, row) => sum + parseMoney(row.amount), 0);
+      .reduce((sum, row) => sum.add(row.amount), decimal(0));
     const checks = adjustments
       .filter((row) => row.adjustmentType === 'outstanding_check')
-      .reduce((sum, row) => sum + parseMoney(row.amount), 0);
+      .reduce((sum, row) => sum.add(row.amount), decimal(0));
     const other = adjustments
       .filter((row) => row.adjustmentType !== 'deposit_in_transit' && row.adjustmentType !== 'outstanding_check')
       .reduce((sum, row) => {
-        if (row.affectsBank) return sum + parseMoney(row.amount);
-        if (row.affectsBook) return sum - parseMoney(row.amount);
+        if (row.affectsBank) return sum.add(row.amount);
+        if (row.affectsBook) return sum.sub(row.amount);
         return sum;
-      }, 0);
-    const adjustedBank = parseMoney(session.statementClosingBalance) + deposits - checks;
-    const adjustedBook = parseMoney(session.bookClosingBalance ?? '0') + other;
-    const difference = roundMoney(adjustedBank - adjustedBook);
-    if (moneyToCents(difference) !== 0 && Math.abs(parseMoney(difference)) >= 0.01) {
+      }, decimal(0));
+    const adjustedBank = decimal(session.statementClosingBalance).add(deposits).sub(checks);
+    const adjustedBook = decimal(session.bookClosingBalance ?? '0').add(other);
+    const difference = roundMoney(adjustedBank.sub(adjustedBook));
+    if (moneyToCents(difference) !== 0n) {
       throw apiError(400, 'RECONCILIATION_UNBALANCED', 'Reconciliation still has a difference');
     }
     const completed = await repo.completeSession(tx, ctx.organisationId, sessionId, {

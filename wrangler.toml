@@ -1,8 +1,6 @@
-name = "ledgercraft-web"
+name = "ledger-craft-app"
 compatibility_date = "2026-09-08"
 pages_build_output_dir = "dist"
 
-# Set API_ORIGIN in the Pages dashboard to the Hono container origin,
-# e.g. https://ledgercraft-api.example.com (no trailing slash).
-# [vars]
-# API_ORIGIN = "https://ledgercraft-api.example.com"
+[vars]
+API_ORIGIN = "https://ledgercraft-api.jeevan90wijerathna.workers.dev"

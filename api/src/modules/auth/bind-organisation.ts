@@ -1,4 +1,4 @@
-import { eq, sql } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { organisationMemberships } from '../../db/schema/identity';
@@ -15,7 +15,6 @@ export async function withOrganisationTx<T>(
   run: (tx: Database, ctx: OrganisationContext) => Promise<T>,
 ): Promise<T> {
   return db.transaction(async (tx) => {
-    await tx.execute(sql`SELECT set_config('app.user_id', ${userId}, true)`);
 
     const memberships = await tx
       .select()
@@ -26,7 +25,6 @@ export async function withOrganisationTx<T>(
       throw new HTTPException(403, { message: 'No organisation membership' });
     }
 
-    await tx.execute(sql`SELECT set_config('app.organisation_id', ${membership.organisationId}, true)`);
     return run(tx as unknown as Database, {
       userId,
       organisationId: membership.organisationId,

@@ -3,7 +3,7 @@ import type { CreateJournalEntryRequest, JournalEntryDto, UpdateJournalEntryRequ
 import { journalEntrySchema } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
-import { roundMoney } from '../invoices/money';
+import { decimal, roundMoney } from '../invoices/money';
 
 type OrgCtx = { organisationId: string; userId: string };
 
@@ -11,15 +11,15 @@ async function mapEntry(tx: Database, entry: typeof journalEntries.$inferSelect)
   const lines = await tx
     .select()
     .from(journalEntryLines)
-    .where(eq(journalEntryLines.journalEntryId, entry.id))
+    .where(and(eq(journalEntryLines.journalEntryId, entry.id), eq(journalEntryLines.organisationId, entry.organisationId)))
     .orderBy(journalEntryLines.lineOrder);
-  const debitLine = lines.find((line) => Number(line.debitAmount) > 0) ?? lines[0];
-  const creditLine = lines.find((line) => Number(line.creditAmount) > 0) ?? lines[1] ?? lines[0];
+  const debitLine = lines.find((line) => decimal(line.debitAmount).compare(0) > 0) ?? lines[0];
+  const creditLine = lines.find((line) => decimal(line.creditAmount).compare(0) > 0) ?? lines[1] ?? lines[0];
   const [debitAccount] = debitLine
-    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(eq(accounts.id, debitLine.accountId))
+    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(and(eq(accounts.id, debitLine.accountId), eq(accounts.organisationId, entry.organisationId)))
     : [];
   const [creditAccount] = creditLine
-    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(eq(accounts.id, creditLine.accountId))
+    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(and(eq(accounts.id, creditLine.accountId), eq(accounts.organisationId, entry.organisationId)))
     : [];
   return journalEntrySchema.parse({
     id: entry.id,
@@ -29,10 +29,10 @@ async function mapEntry(tx: Database, entry: typeof journalEntries.$inferSelect)
     referenceNumber: entry.referenceType === 'manual' ? (entry.referenceId ?? null) : null,
     debitAccountId: debitLine?.accountId ?? debitAccount?.id,
     debitAccountName: debitAccount?.name ?? 'Unknown Account',
-    debitAmount: roundMoney(Number(debitLine?.debitAmount ?? 0)),
+    debitAmount: roundMoney(debitLine?.debitAmount ?? 0),
     creditAccountId: creditLine?.accountId ?? creditAccount?.id ?? debitLine?.accountId,
     creditAccountName: creditAccount?.name ?? 'Unknown Account',
-    creditAmount: roundMoney(Number(creditLine?.creditAmount ?? 0)),
+    creditAmount: roundMoney(creditLine?.creditAmount ?? 0),
     status: entry.status,
     notes: debitLine?.description ?? creditLine?.description ?? null,
     createdAt: entry.createdAt.toISOString(),
@@ -82,7 +82,7 @@ export async function insertJournalEntry(
       description: input.description,
       referenceType: 'manual',
       referenceId: null,
-      totalAmount: roundMoney(Number(input.amount)),
+      totalAmount: roundMoney(input.amount),
       status: 'draft',
     })
     .returning();
@@ -94,7 +94,7 @@ export async function insertJournalEntry(
       journalEntryId: entry.id,
       accountId: input.debitAccountId,
       description: input.notes || input.description,
-      debitAmount: roundMoney(Number(input.amount)),
+      debitAmount: roundMoney(input.amount),
       creditAmount: '0.00',
       lineOrder: 1,
     },
@@ -104,7 +104,7 @@ export async function insertJournalEntry(
       accountId: input.creditAccountId,
       description: input.notes || input.description,
       debitAmount: '0.00',
-      creditAmount: roundMoney(Number(input.amount)),
+      creditAmount: roundMoney(input.amount),
       lineOrder: 2,
     },
   ]);

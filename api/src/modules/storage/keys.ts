@@ -4,8 +4,8 @@ import { apiError } from '../../http-error';
 
 const RECEIPT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const LOGO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
-const RECEIPT_MAX_BYTES = 8 * 1024 * 1024;
-const LOGO_MAX_BYTES = 2 * 1024 * 1024;
+const RECEIPT_MAX_BYTES = 1024 * 1024;
+const LOGO_MAX_BYTES = 1024 * 1024;
 
 const EXT_BY_TYPE: Record<string, string> = {
   'image/jpeg': 'jpg',
@@ -48,6 +48,9 @@ export function assertKeyOwned(key: string, organisationId: string): void {
 export function decodeBase64Payload(contentBase64: string): Uint8Array {
   const comma = contentBase64.indexOf(',');
   const raw = contentBase64.startsWith('data:') && comma >= 0 ? contentBase64.slice(comma + 1) : contentBase64;
+  if (raw.length > Math.ceil(RECEIPT_MAX_BYTES / 3) * 4) {
+    throw apiError(413, 'FILE_TOO_LARGE', 'Files must be 1 MB or smaller');
+  }
   try {
     return new Uint8Array(Buffer.from(raw, 'base64'));
   } catch {

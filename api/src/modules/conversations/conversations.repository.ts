@@ -41,7 +41,7 @@ export async function listConversations(tx: Database, organisationId: string): P
     const messages = await tx
       .select()
       .from(conversationMessages)
-      .where(eq(conversationMessages.conversationId, row.id))
+      .where(and(eq(conversationMessages.conversationId, row.id), eq(conversationMessages.organisationId, organisationId)))
       .orderBy(conversationMessages.createdAt);
     result.push(toDto(row, messages));
   }
@@ -61,7 +61,7 @@ export async function getConversation(
   const messages = await tx
     .select()
     .from(conversationMessages)
-    .where(eq(conversationMessages.conversationId, row.id))
+    .where(and(eq(conversationMessages.conversationId, row.id), eq(conversationMessages.organisationId, organisationId)))
     .orderBy(conversationMessages.createdAt);
   return toDto(row, messages);
 }

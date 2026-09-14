@@ -27,7 +27,12 @@ export async function createItemForUser(
   userId: string,
   input: CreateItemRequest,
 ): Promise<ItemDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => repo.insertItem(tx, ctx, input));
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (input.categoryId && !await repo.getCategory(tx, ctx.organisationId, input.categoryId)) {
+      throw new HTTPException(400, { message: 'Item category not found' });
+    }
+    return repo.insertItem(tx, ctx, input);
+  });
 }
 
 export async function updateItemForUser(
@@ -37,6 +42,9 @@ export async function updateItemForUser(
   input: UpdateItemRequest,
 ): Promise<ItemDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (input.categoryId && !await repo.getCategory(tx, ctx.organisationId, input.categoryId)) {
+      throw new HTTPException(400, { message: 'Item category not found' });
+    }
     const item = await repo.updateItem(tx, ctx.organisationId, id, input);
     if (!item) throw new HTTPException(404, { message: 'Item not found' });
     return item;

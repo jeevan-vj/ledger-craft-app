@@ -1,15 +1,23 @@
-import { boolean, date, integer, numeric, pgTable, text, timestamp, uuid } from 'drizzle-orm/pg-core';
+import { journalEntries } from './accounts';
+import { bankAccounts, bankTransactions } from './bank';
+import { expenses } from './expenses';
+import { organisations, users } from './identity';
+import { invoices } from './invoices';
+import { payments } from './payments';
+import { sql } from 'drizzle-orm';
+import { check, foreignKey, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-const timestamptz = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
-const money = (name: string) => numeric(name, { precision: 19, scale: 4, mode: 'string' });
+const timestamptz = (name: string) => integer(name, { mode: 'timestamp_ms' });
+// Decimal values remain exact strings; arithmetic belongs to the server decimal helpers.
+const money = (name: string) => text(name);
 
-export const reconciliationSessions = pgTable('reconciliation_sessions', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  organisationId: uuid('organisation_id').notNull(),
-  userId: uuid('user_id').notNull(),
-  bankAccountId: uuid('bank_account_id').notNull(),
-  statementStartDate: date('statement_start_date', { mode: 'string' }).notNull(),
-  statementEndDate: date('statement_end_date', { mode: 'string' }).notNull(),
+export const reconciliationSessions = sqliteTable('reconciliation_sessions', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  bankAccountId: text('bank_account_id').notNull(),
+  statementStartDate: text('statement_start_date').notNull(),
+  statementEndDate: text('statement_end_date').notNull(),
   statementOpeningBalance: money('statement_opening_balance').notNull(),
   statementClosingBalance: money('statement_closing_balance').notNull(),
   bookOpeningBalance: money('book_opening_balance').notNull(),
@@ -24,47 +32,68 @@ export const reconciliationSessions = pgTable('reconciliation_sessions', {
   adjustmentCount: integer('adjustment_count').notNull().default(0),
   difference: money('difference').notNull().default('0'),
   notes: text('notes'),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
-});
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('reconciliation_sessions_status_check', sql`status IN ('in_progress', 'completed', 'locked')`),
+  uniqueIndex('reconciliation_sessions_org_id_uidx').on(table.organisationId, table.id),
+  index('reconciliation_sessions_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.bankAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('cascade'),
+]);
 
-export const reconciliationMatches = pgTable('reconciliation_matches', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  organisationId: uuid('organisation_id').notNull(),
-  reconciliationId: uuid('reconciliation_id').notNull(),
-  bankTransactionId: uuid('bank_transaction_id'),
-  invoiceId: uuid('invoice_id'),
-  paymentId: uuid('payment_id'),
-  expenseId: uuid('expense_id'),
-  journalEntryId: uuid('journal_entry_id'),
+export const reconciliationMatches = sqliteTable('reconciliation_matches', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  reconciliationId: text('reconciliation_id').notNull(),
+  bankTransactionId: text('bank_transaction_id'),
+  invoiceId: text('invoice_id'),
+  paymentId: text('payment_id'),
+  expenseId: text('expense_id'),
+  journalEntryId: text('journal_entry_id'),
   matchType: text('match_type').notNull(),
-  confidenceScore: numeric('confidence_score', { precision: 5, scale: 4, mode: 'string' }).notNull().default('0'),
+  confidenceScore: text('confidence_score').notNull().default('0'),
   bankAmount: money('bank_amount'),
   bookAmount: money('book_amount'),
   difference: money('difference').notNull().default('0'),
   status: text('status').notNull().default('pending'),
   notes: text('notes'),
-  matchedBy: uuid('matched_by'),
-  matchedAt: timestamptz('matched_at').defaultNow().notNull(),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-});
+  matchedBy: text('matched_by'),
+  matchedAt: timestamptz('matched_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('reconciliation_matches_status_check', sql`status IN ('pending', 'confirmed', 'rejected', 'adjusted')`),
+  uniqueIndex('reconciliation_matches_org_id_uidx').on(table.organisationId, table.id),
+  index('reconciliation_matches_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.reconciliationId], foreignColumns: [reconciliationSessions.organisationId, reconciliationSessions.id] }).onDelete('cascade'),
+  foreignKey({ columns: [table.organisationId, table.bankTransactionId], foreignColumns: [bankTransactions.organisationId, bankTransactions.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.invoiceId], foreignColumns: [invoices.organisationId, invoices.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.paymentId], foreignColumns: [payments.organisationId, payments.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.expenseId], foreignColumns: [expenses.organisationId, expenses.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.journalEntryId], foreignColumns: [journalEntries.organisationId, journalEntries.id] }).onDelete('restrict'),
+]);
 
-export const reconciliationAdjustments = pgTable('reconciliation_adjustments', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  organisationId: uuid('organisation_id').notNull(),
-  userId: uuid('user_id').notNull(),
-  reconciliationId: uuid('reconciliation_id').notNull(),
+export const reconciliationAdjustments = sqliteTable('reconciliation_adjustments', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  reconciliationId: text('reconciliation_id').notNull(),
   adjustmentType: text('adjustment_type').notNull(),
   description: text('description').notNull(),
   amount: money('amount').notNull(),
-  affectsBank: boolean('affects_bank').notNull().default(false),
-  affectsBook: boolean('affects_book').notNull().default(false),
+  affectsBank: integer('affects_bank', { mode: 'boolean' }).notNull().default(false),
+  affectsBook: integer('affects_book', { mode: 'boolean' }).notNull().default(false),
   referenceType: text('reference_type'),
-  referenceId: uuid('reference_id'),
+  referenceId: text('reference_id'),
   referenceNumber: text('reference_number'),
-  journalEntryId: uuid('journal_entry_id'),
+  journalEntryId: text('journal_entry_id'),
   status: text('status').notNull().default('pending'),
   appliedAt: timestamptz('applied_at'),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
-});
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('reconciliation_adjustments_status_check', sql`status IN ('pending', 'applied', 'reversed')`),
+  uniqueIndex('reconciliation_adjustments_org_id_uidx').on(table.organisationId, table.id),
+  index('reconciliation_adjustments_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.reconciliationId], foreignColumns: [reconciliationSessions.organisationId, reconciliationSessions.id] }).onDelete('cascade'),
+  foreignKey({ columns: [table.organisationId, table.journalEntryId], foreignColumns: [journalEntries.organisationId, journalEntries.id] }).onDelete('restrict'),
+]);

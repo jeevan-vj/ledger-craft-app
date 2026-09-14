@@ -22,7 +22,6 @@ import {
 import { postInvoiceJournal } from './invoices.journal';
 import * as invoicesRepo from './invoices.repository';
 import type { InvoiceMailer } from './mailer';
-import { parseMoney } from './money';
 import { computeInvoiceTotals } from './totals';
 
 function formatInvoiceNumber(format: string, sequence: number, date: Date): string {
@@ -103,7 +102,7 @@ export async function createInvoiceForUser(
     const paymentTermDays = input.paymentTermDays ?? profile.paymentTermDays ?? 30;
     // Client dueDate is authoritative. A mismatch against date + paymentTermDays is an override, not rewritten.
 
-    const defaultTaxRate = parseMoney(profile.defaultTaxRate ?? '0');
+    const defaultTaxRate = profile.defaultTaxRate ?? '0';
     const totals = computeInvoiceTotals(input, defaultTaxRate);
     const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
     const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
@@ -157,12 +156,13 @@ export async function updateInvoiceForUser(
       input.discount !== undefined ||
       input.taxInclusive !== undefined ||
       input.taxRate !== undefined ||
-      input.additionalCharges !== undefined;
+      input.additionalCharges !== undefined ||
+      input.additionalChargesList !== undefined;
 
     let totals = undefined;
     if (shouldRecalc) {
       const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
-      const defaultTaxRate = parseMoney(profile?.defaultTaxRate ?? '0');
+      const defaultTaxRate = profile?.defaultTaxRate ?? '0';
       const items = input.items ?? existing.items.map((item) => ({
         description: item.description,
         quantity: item.quantity,
@@ -178,7 +178,10 @@ export async function updateInvoiceForUser(
           discountType: input.discountType ?? existing.discountType,
           discountPercent: input.discountPercent ?? existing.discountPercent,
           discount: input.discount ?? existing.discount,
-          additionalCharges: input.additionalCharges ?? existing.additionalCharges,
+          additionalCharges: input.additionalCharges !== undefined ? input.additionalCharges : existing.additionalCharges,
+          additionalChargesList: input.additionalChargesList !== undefined
+            ? input.additionalChargesList
+            : input.additionalCharges !== undefined ? undefined : existing.additionalChargesList,
         },
         defaultTaxRate,
       );
@@ -233,7 +236,8 @@ export async function sendInvoiceForUser(
       invoiceNumber: prepared.invoice.invoiceNumber,
       to: prepared.recipients,
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof HTTPException && error.status === 503) throw error;
     if (prepared.invoice.status !== 'sent') {
       throw apiError(502, 'email_failed', 'Failed to send invoice email');
     }
@@ -281,7 +285,8 @@ export async function remindInvoiceForUser(
       subject: input.subject,
       html: input.html,
     });
-  } catch {
+  } catch (error) {
+    if (error instanceof HTTPException && error.status === 503) throw error;
     throw apiError(502, 'email_failed', 'Failed to send payment reminder');
   }
 

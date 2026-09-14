@@ -1,7 +1,7 @@
-import { drizzle, type PostgresJsDatabase } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import { getDatabaseUrl, getMigrateDatabaseUrl } from '../env';
-import { accounts, journalEntries, journalEntryLines } from './schema/accounts';
+import { drizzle, type SqliteRemoteDatabase } from 'drizzle-orm/sqlite-proxy';
+import { SQLiteAsyncDialect } from 'drizzle-orm/sqlite-core';
+import type { SQL } from 'drizzle-orm';
+import { accountTemplates, accounts, accountContacts, journalEntries, journalEntryLines } from './schema/accounts';
 import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
@@ -20,7 +20,7 @@ import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
 import { receipts } from './schema/receipts';
 import { conversationMessages, conversations } from './schema/conversations';
-import { taxConfigurations, taxReturns } from './schema/tax';
+import { taxConfigurations, taxReturns, taxAdjustments } from './schema/tax';
 import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
@@ -40,6 +40,8 @@ export const schema = {
   invoices,
   lineItems,
   accounts,
+  accountContacts,
+  accountTemplates,
   journalEntries,
   journalEntryLines,
   expenseCategories,
@@ -56,25 +58,30 @@ export const schema = {
   reconciliationAdjustments,
   taxConfigurations,
   taxReturns,
+  taxAdjustments,
   idempotencyKeys,
   sharedInvoices,
 };
 
-export type Database = PostgresJsDatabase<typeof schema>;
 
-export function createSql(url: string) {
-  return postgres(url, { max: 5, idle_timeout: 10, connect_timeout: 10 });
+export interface SQLiteAdapter {
+  query(sql: string, params: unknown[], method: 'run' | 'all' | 'values' | 'get'): Promise<{ rows: any[] }>;
+  execute<T>(sql: string, params: unknown[]): Promise<T[]>;
+  transaction<T>(callback: () => Promise<T>): Promise<T>;
 }
+export type Database = Omit<SqliteRemoteDatabase<typeof schema>, 'transaction'> & {
+  transaction<T>(callback: (tx: Database) => Promise<T>): Promise<T>;
+  execute<T = Record<string, unknown>>(query: SQL): Promise<T[]>;
+};
 
-export function createDb(url: string): { db: Database; sql: postgres.Sql } {
-  const sql = createSql(url);
-  return { db: drizzle(sql, { schema }), sql };
-}
-
-export function createAppDb() {
-  return createDb(getDatabaseUrl());
-}
-
-export function createMigratorDb() {
-  return createDb(getMigrateDatabaseUrl());
+/** Keep transaction ownership in the storage engine; DO SQL forbids BEGIN/SAVEPOINT. */
+export function createDatabase(adapter: SQLiteAdapter): Database {
+  const dialect = new SQLiteAsyncDialect();
+  const db = drizzle(adapter.query.bind(adapter), { schema }) as unknown as Database;
+  db.transaction = (callback) => adapter.transaction(() => callback(db));
+  db.execute = <T>(query: SQL) => {
+    const compiled = dialect.sqlToQuery(query);
+    return adapter.execute<T>(compiled.sql, compiled.params);
+  };
+  return db;
 }

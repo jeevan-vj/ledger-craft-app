@@ -35,7 +35,7 @@ export async function createJournalEntryForUser(
     const debit = await repo.getOrgAccount(tx, ctx.organisationId, input.debitAccountId);
     const credit = await repo.getOrgAccount(tx, ctx.organisationId, input.creditAccountId);
     if (!debit || !credit) throw new HTTPException(404, { message: 'Account not found' });
-    const amount = Number(input.amount);
+    const amount = input.amount;
     const year = input.entryDate.slice(0, 4);
     const count = await repo.countJournalEntries(tx, ctx.organisationId);
     const entryNumber = `JE-${year}-${String(count + 1).padStart(3, '0')}`;

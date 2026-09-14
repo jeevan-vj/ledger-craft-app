@@ -1,0 +1,22 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "ledgercraft-api",
+  "account_id": "c611a72b3bacd0c105ab864d7006fca7",
+  "main": "worker.ts",
+  "compatibility_date": "2026-09-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "workers_dev": true,
+  "durable_objects": { "bindings": [
+    { "name": "IDENTITY", "class_name": "Identity" },
+    { "name": "LEDGERS", "class_name": "Ledger" }
+  ]},
+  "migrations": [{ "tag": "sqlite-v1", "new_sqlite_classes": ["Identity", "Ledger"] }],
+  "vars": {
+    "NODE_ENV": "production",
+    "BETTER_AUTH_URL": "https://easybiz.iamjeevan.com",
+    "BETTER_AUTH_TRUSTED_ORIGINS": "https://easybiz.iamjeevan.com,https://ledger-craft-app.pages.dev,easybizinvoice://"
+  },
+  "secrets": { "required": ["BETTER_AUTH_SECRET"] },
+  "observability": { "enabled": true },
+  "rules": [{ "type": "Text", "globs": ["**/*.sql"], "fallthrough": true }]
+}

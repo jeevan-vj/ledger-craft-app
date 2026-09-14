@@ -1,7 +1,7 @@
 import { errorEnvelopeSchema, invoiceSchema } from '@ledgercraft/contracts';
 import { describe, expect, it, vi } from 'vitest';
 import { createApp } from '../../app';
-import { createDb } from '../../db/client';
+import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
@@ -54,6 +54,45 @@ async function seedCustomerAndProfile(
 }
 
 describe('invoice routes', () => {
+  it('persists named delivery charges, recalculates percentages and clears charges', async () => {
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db });
+        const owner = await signUp(app, 'Delivery Owner');
+        const customer = await seedCustomerAndProfile(app, owner.cookie);
+        const headers = { ...originHeaders, Cookie: owner.cookie };
+        const charge = { id: 'delivery-1', type: 'delivery', label: 'Delivery', calculationType: 'fixed', amount: '30', isActive: true };
+        const created = await app.request('/api/invoices', { method: 'POST', headers, body: JSON.stringify({
+          customerId: customer.id, date: '2026-09-14', dueDate: '2026-10-14', taxInclusive: false, taxRate: '15',
+          items: [{ description: 'Goods', quantity: '1', rate: '100' }], additionalChargesList: [charge], additionalCharges: '999',
+        }) });
+        expect(created.status).toBe(201);
+        const invoice = await created.json() as any;
+        expect(invoice.additionalChargesList).toEqual([charge]);
+        expect(invoice.additionalCharges).toBe('30.00');
+        expect(invoice.total).toBe('145.00');
+        const read = await app.request(`/api/invoices/${invoice.id}`, { headers });
+        expect((await read.json() as any).additionalChargesList).toEqual([charge]);
+        const patch = async (body: unknown) => {
+          const result = await app.request(`/api/invoices/${invoice.id}`, { method: 'PATCH', headers, body: JSON.stringify(body) });
+          expect(result.status).toBe(200);
+          return await result.json() as any;
+        };
+        expect((await patch({ notes: 'Keep delivery' })).additionalChargesList).toEqual([charge]);
+        const percent = await patch({ additionalChargesList: [{ ...charge, calculationType: 'percentage', amount: '10' }] });
+        expect(percent.total).toBe('125.00');
+        expect((await patch({ items: [{ description: 'Goods', quantity: '2', rate: '100' }] })).additionalCharges).toBe('20.00');
+        const cleared = await patch({ additionalChargesList: [] });
+        expect(cleared.additionalChargesList).toEqual([]);
+        expect(cleared.total).toBe('230.00');
+        expect(cleared.additionalCharges).toBeNull();
+        await patch({ additionalCharges: '30' });
+        expect((await patch({ additionalCharges: null })).additionalCharges).toBeNull();
+      } finally { await sql.end({ timeout: 5 }); }
+    });
+  });
+
   it('unauthenticated GET /api/invoices returns 401', async () => {
     const response = await createApp().request('/api/invoices');
     expect(response.status).toBe(401);
@@ -556,7 +595,7 @@ describe('invoice routes', () => {
         });
         expect(shared.status).toBe(201);
         const share = (await shared.json()) as { shareToken: string };
-        expect(share.shareToken).toMatch(/^[0-9a-f-]{32,}$/i);
+        expect(share.shareToken).toMatch(/^[0-9a-f-]{36}_[0-9a-f-]{36}$/i);
 
         const publicView = await app.request(`/api/public/invoices/${share.shareToken}`);
         expect(publicView.status).toBe(200);

@@ -1,6 +1,6 @@
 import type { CreateInvoiceRequest } from '@ledgercraft/contracts';
 import { apiError } from '../../http-error';
-import { parseMoney, roundMoney } from './money';
+import { decimal, Decimal, roundMoney } from './money';
 
 export type ComputedInvoiceTotals = {
   lines: Array<{
@@ -18,6 +18,7 @@ export type ComputedInvoiceTotals = {
   discountPercent: string | null;
   discount: string | null;
   additionalCharges: string | null;
+  additionalChargesList: CreateInvoiceRequest['additionalChargesList'];
   total: string;
   taxInclusive: boolean;
 };
@@ -27,6 +28,7 @@ type DiscountInput = {
   discountPercent?: string | null;
   discount?: string | null;
   additionalCharges?: string | null;
+  additionalChargesList?: CreateInvoiceRequest['additionalChargesList'];
   taxInclusive?: boolean;
   taxRate?: string | null;
   items: CreateInvoiceRequest['items'];
@@ -39,26 +41,26 @@ type DiscountInput = {
  */
 export function computeInvoiceTotals(
   input: DiscountInput,
-  defaultTaxRatePercent: number,
+  defaultTaxRatePercent: string | number,
 ): ComputedInvoiceTotals {
   const taxInclusive = input.taxInclusive ?? true;
-  const taxRatePercent = input.taxRate == null ? defaultTaxRatePercent : parseMoney(input.taxRate);
-  const taxRate = taxRatePercent / 100;
-  const additionalCharges = input.additionalCharges == null ? 0 : parseMoney(input.additionalCharges);
+  const taxRatePercent = decimal(input.taxRate ?? defaultTaxRatePercent);
+  const taxRate = taxRatePercent.div(100);
+
   const discountType = input.discountType ?? 'fixed';
 
   const lines = input.items.map((item) => {
-    const quantity = parseMoney(item.quantity);
-    const rate = parseMoney(item.rate);
-    const lineAmount = quantity * rate;
+    const quantity = decimal(item.quantity);
+    const rate = decimal(item.rate);
+    const lineAmount = quantity.mul(rate);
     let exclusive = lineAmount;
-    let tax = 0;
-    if (taxRate > 0) {
+    let tax = decimal(0);
+    if (taxRate.compare(0) > 0) {
       if (taxInclusive) {
-        exclusive = lineAmount / (1 + taxRate);
-        tax = lineAmount - exclusive;
+        exclusive = lineAmount.div(taxRate.add(1));
+        tax = lineAmount.sub(exclusive);
       } else {
-        tax = lineAmount * taxRate;
+        tax = lineAmount.mul(taxRate);
       }
     }
     return {
@@ -70,25 +72,32 @@ export function computeInvoiceTotals(
       tax: roundMoney(tax),
       total: roundMoney(taxInclusive ? lineAmount : exclusive),
       exclusive,
-      inclusive: taxInclusive ? lineAmount : exclusive + tax,
+      inclusive: taxInclusive ? lineAmount : exclusive.add(tax),
       taxValue: tax,
     };
   });
 
-  const subtotalNumber = lines.reduce((sum, line) => sum + line.exclusive, 0);
-  const inclusiveSubtotal = lines.reduce((sum, line) => sum + line.inclusive, 0);
+  const subtotalNumber = lines.reduce((sum, line) => sum.add(line.exclusive), decimal(0));
+  const additionalCharges = input.additionalChargesList !== undefined
+    ? input.additionalChargesList.reduce((sum, charge) => {
+        if (!charge.isActive) return sum;
+        const amount = decimal(charge.amount);
+        return sum.add(charge.calculationType === 'percentage' ? subtotalNumber.mul(amount).div(100) : amount);
+      }, decimal(0))
+    : decimal(input.additionalCharges);
+  const inclusiveSubtotal = lines.reduce((sum, line) => sum.add(line.inclusive), decimal(0));
   const discountBase = taxInclusive ? inclusiveSubtotal : subtotalNumber;
   const { amount: discountAmount, percent: discountPercent } = resolveDiscount(input, discountType, discountBase);
 
-  let taxAmountNumber: number;
-  let totalNumber: number;
+  let taxAmountNumber: Decimal;
+  let totalNumber: Decimal;
   if (taxInclusive) {
-    taxAmountNumber = lines.reduce((sum, line) => sum + line.taxValue, 0);
-    totalNumber = inclusiveSubtotal - discountAmount + additionalCharges;
+    taxAmountNumber = lines.reduce((sum, line) => sum.add(line.taxValue), decimal(0));
+    totalNumber = inclusiveSubtotal.sub(discountAmount).add(additionalCharges);
   } else {
-    const taxable = subtotalNumber - discountAmount;
-    taxAmountNumber = taxRate > 0 ? taxable * taxRate : 0;
-    totalNumber = taxable + taxAmountNumber + additionalCharges;
+    const taxable = subtotalNumber.sub(discountAmount);
+    taxAmountNumber = taxRate.compare(0) > 0 ? taxable.mul(taxRate) : decimal(0);
+    totalNumber = taxable.add(taxAmountNumber).add(additionalCharges);
   }
 
   return {
@@ -97,8 +106,9 @@ export function computeInvoiceTotals(
     taxAmount: roundMoney(taxAmountNumber),
     discountType,
     discountPercent,
-    discount: discountAmount === 0 ? null : roundMoney(discountAmount),
-    additionalCharges: additionalCharges === 0 ? null : roundMoney(additionalCharges),
+    discount: discountAmount.compare(0) === 0 ? null : roundMoney(discountAmount),
+    additionalChargesList: input.additionalChargesList,
+    additionalCharges: additionalCharges.compare(0) === 0 ? null : roundMoney(additionalCharges),
     total: roundMoney(totalNumber),
     taxInclusive,
   };
@@ -107,22 +117,22 @@ export function computeInvoiceTotals(
 function resolveDiscount(
   input: DiscountInput,
   discountType: 'fixed' | 'percent',
-  discountBase: number,
-): { amount: number; percent: string | null } {
+  discountBase: Decimal,
+): { amount: Decimal; percent: string | null } {
   if (discountType === 'percent') {
-    const percent = input.discountPercent == null ? 0 : parseMoney(input.discountPercent);
-    if (percent < 0 || percent > 100) {
+    const percent = decimal(input.discountPercent);
+    if (percent.compare(0) < 0 || percent.compare(100) > 0) {
       throw apiError(400, 'VALIDATION_ERROR', 'Enter a discount between 0 and 100%');
     }
-    const amount = Math.round(discountBase * (percent / 100) * 100) / 100;
+    const amount = decimal(discountBase.mul(percent).div(100).toFixed());
     return { amount, percent: roundMoney(percent) };
   }
 
-  const amount = input.discount == null ? 0 : parseMoney(input.discount);
-  if (amount < 0) {
+  const amount = decimal(input.discount);
+  if (amount.compare(0) < 0) {
     throw apiError(400, 'VALIDATION_ERROR', 'Discount must be a positive amount');
   }
-  if (amount - discountBase > 0.0001) {
+  if (amount.compare(discountBase) > 0) {
     throw apiError(400, 'VALIDATION_ERROR', "Discount can't exceed the subtotal");
   }
   return { amount, percent: null };

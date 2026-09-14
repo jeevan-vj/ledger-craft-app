@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
 
-describe('readyz against Postgres', () => {
-  it('returns 200 when SELECT 1 succeeds as ledgercraft_app', async () => {
+describe('readyz against SQLite', () => {
+  it('returns 200 when the SQLite connection responds', async () => {
     await assertLocalDatabaseReachable();
     await withTestDb(async ({ appSql }) => {
       const app = createApp({

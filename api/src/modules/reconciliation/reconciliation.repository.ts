@@ -21,7 +21,7 @@ import {
   reconciliationMatches,
   reconciliationSessions,
 } from '../../db/schema/reconciliation';
-import { parseMoney, roundMoney } from '../invoices/money';
+import { decimal, roundMoney } from '../invoices/money';
 
 function toSessionDto(row: typeof reconciliationSessions.$inferSelect): ReconciliationSessionDto {
   return reconciliationSessionSchema.parse({
@@ -29,19 +29,19 @@ function toSessionDto(row: typeof reconciliationSessions.$inferSelect): Reconcil
     bankAccountId: row.bankAccountId,
     statementStartDate: row.statementStartDate,
     statementEndDate: row.statementEndDate,
-    statementOpeningBalance: roundMoney(Number(row.statementOpeningBalance)),
-    statementClosingBalance: roundMoney(Number(row.statementClosingBalance)),
-    bookOpeningBalance: roundMoney(Number(row.bookOpeningBalance)),
-    bookClosingBalance: row.bookClosingBalance == null ? null : roundMoney(Number(row.bookClosingBalance)),
-    totalDeposits: roundMoney(Number(row.totalDeposits)),
-    totalWithdrawals: roundMoney(Number(row.totalWithdrawals)),
+    statementOpeningBalance: roundMoney(row.statementOpeningBalance),
+    statementClosingBalance: roundMoney(row.statementClosingBalance),
+    bookOpeningBalance: roundMoney(row.bookOpeningBalance),
+    bookClosingBalance: row.bookClosingBalance == null ? null : roundMoney(row.bookClosingBalance),
+    totalDeposits: roundMoney(row.totalDeposits),
+    totalWithdrawals: roundMoney(row.totalWithdrawals),
     status: row.status,
     reconciledAt: row.reconciledAt ? row.reconciledAt.toISOString() : null,
     matchedCount: row.matchedCount,
     unmatchedBankCount: row.unmatchedBankCount,
     unmatchedBookCount: row.unmatchedBookCount,
     adjustmentCount: row.adjustmentCount,
-    difference: roundMoney(Number(row.difference)),
+    difference: roundMoney(row.difference),
     notes: row.notes ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -60,9 +60,9 @@ function toMatchDto(row: typeof reconciliationMatches.$inferSelect): Reconciliat
     journalEntryId: row.journalEntryId ?? null,
     matchType: row.matchType,
     confidenceScore: stored <= 1 ? Math.round(stored * 100) : stored,
-    bankAmount: row.bankAmount == null ? null : roundMoney(Number(row.bankAmount)),
-    bookAmount: row.bookAmount == null ? null : roundMoney(Number(row.bookAmount)),
-    difference: roundMoney(Number(row.difference)),
+    bankAmount: row.bankAmount == null ? null : roundMoney(row.bankAmount),
+    bookAmount: row.bookAmount == null ? null : roundMoney(row.bookAmount),
+    difference: roundMoney(row.difference),
     status: row.status,
     notes: row.notes ?? null,
     matchedAt: row.matchedAt.toISOString(),
@@ -76,7 +76,7 @@ function toAdjustmentDto(row: typeof reconciliationAdjustments.$inferSelect): Re
     reconciliationId: row.reconciliationId,
     adjustmentType: row.adjustmentType,
     description: row.description,
-    amount: roundMoney(Number(row.amount)),
+    amount: roundMoney(row.amount),
     affectsBank: row.affectsBank,
     affectsBook: row.affectsBook,
     referenceNumber: row.referenceNumber ?? null,
@@ -135,7 +135,7 @@ export async function lastCompletedBookBalance(
     )
     .orderBy(desc(reconciliationSessions.statementEndDate));
   if (!row || row.statementEndDate >= beforeDate || row.bookClosingBalance == null) return undefined;
-  return roundMoney(Number(row.bookClosingBalance));
+  return roundMoney(row.bookClosingBalance);
 }
 
 export async function insertSession(
@@ -152,8 +152,8 @@ export async function insertSession(
       bankAccountId: input.bankAccountId,
       statementStartDate: input.statementStartDate,
       statementEndDate: input.statementEndDate,
-      statementOpeningBalance: roundMoney(Number(input.statementOpeningBalance)),
-      statementClosingBalance: roundMoney(Number(input.statementClosingBalance)),
+      statementOpeningBalance: roundMoney(input.statementOpeningBalance),
+      statementClosingBalance: roundMoney(input.statementClosingBalance),
       bookOpeningBalance,
       notes: input.notes ?? null,
     })
@@ -221,7 +221,7 @@ export async function insertMatch(
       confidenceScore: (percent / 100).toFixed(4),
       bankAmount: amounts.bankAmount,
       bookAmount: amounts.bookAmount,
-      difference: roundMoney(Math.abs(parseMoney(amounts.bankAmount) - parseMoney(amounts.bookAmount))),
+      difference: roundMoney(decimal(amounts.bankAmount).sub(amounts.bookAmount).abs()),
       status: input.status ?? 'pending',
       notes: input.notes ?? null,
       matchedBy: ctx.userId,
@@ -263,7 +263,7 @@ export async function insertAdjustment(
       reconciliationId,
       adjustmentType: input.adjustmentType,
       description: input.description,
-      amount: roundMoney(Number(input.amount)),
+      amount: roundMoney(input.amount),
       affectsBank: input.affectsBank,
       affectsBook: input.affectsBook,
       referenceNumber: input.referenceNumber ?? null,
@@ -310,7 +310,7 @@ export async function listBookEntries(
         type: 'invoice' as const,
         date: row.date,
         description: `Invoice ${row.invoiceNumber}`,
-        amount: roundMoney(Number(row.total)),
+        amount: roundMoney(row.total),
         reference: row.invoiceNumber,
       }),
     ),
@@ -320,7 +320,7 @@ export async function listBookEntries(
         type: 'expense' as const,
         date: row.expenseDate,
         description: row.description,
-        amount: roundMoney(Number(row.amount)),
+        amount: roundMoney(row.amount),
         reference: row.vendorName ?? null,
       }),
     ),
@@ -330,7 +330,7 @@ export async function listBookEntries(
         type: 'payment' as const,
         date: row.paymentDate,
         description: `Payment - ${row.paymentMethod}`,
-        amount: roundMoney(Number(row.amount)),
+        amount: roundMoney(row.amount),
         reference: row.referenceNumber ?? null,
       }),
     ),

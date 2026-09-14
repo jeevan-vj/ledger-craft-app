@@ -1,34 +1,216 @@
-# Cloudflare deploy (Hono + Pages)
+# Cloudflare deployment
 
-Production shape: Pages (Vite SPA) on `easybizinvoice.com`, same-origin `/api/*` via Pages Function proxy to a Node Hono **container**. Postgres is Neon (or any Postgres) through a connection string. Do not use D1.
+The `mobile-app` branch targets Cloudflare's free plan. Pages serves the Vite
+frontend (`ledger-craft-app`); the `ledgercraft-api` Worker routes Hono requests
+to SQLite-backed Durable Objects. One Identity object owns Better Auth users,
+unique emails and sessions. Each organisation has a separate Ledger object for
+its accounting records and attachments. The authenticated gateway chooses the
+organisation object; client-supplied tenant IDs do not grant access.
 
-## Same origin
+This is the approved replacement for the earlier container/PostgreSQL proposal.
+It uses no D1, paid Containers, R2, PostgreSQL, Supabase, external email service,
+or external AI service. Durable Objects provide the transaction boundary and
+CPU budget needed by accounting operations and secure password hashing. Money
+is stored as decimal TEXT and calculated with exact server decimal helpers.
+Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
+and downloaded by the client. Email delivery and AI features are unavailable in
+this deployment; they must not claim successful delivery or generation.
 
-`BETTER_AUTH_URL` must be the Pages origin so Better Auth cookies are `SameSite=Lax` on `/`.
+**Release status (2026-09-14): deployed and verified.**
 
-Set Pages env `API_ORIGIN` to the container origin (no trailing slash). `functions/api/[[path]].ts` forwards `/api/*`.
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://3324259f.ledger-craft-app.pages.dev
+- Frontend build: `6849a8db7473` (production, version 0.0.8).
+- Worker: `ledgercraft-api`, version `ab83b548-acf0-4c8b-a05b-d8dcdd33dd92`.
+- 43 contract tests and 74 API tests passed; web/API/Worker type checks and the
+  SQLite schema/constraints checks passed.
+- Live checks through the website passed signup, sessions, tenant isolation,
+  invoice totals, concurrent numbering, rollback, idempotency, attachments,
+  public sharing, sign-out/sign-in and persistence.
+- The repeatable script deployed the version-display fix and applied
+  `0001_index_session_user.sql`; the live readiness migration header matched.
+- Chrome verified existing-account login on the custom domain, the sidebar
+  `v0.0.8` / `6849a8`, authenticated refresh and invoice navigation. A tab opened
+  during publication briefly referenced an old dashboard chunk; reload loaded
+  the current release successfully. The existing update banner can remain visible
+  even on the current release; its notification behavior was not changed.
+- A pre-deployment session survived Worker redeployment with the local signing
+  secret file absent, proving the remote key was preserved.
 
-## API container
+The CLI's first readiness request needed propagation retries. Pages requires
+`CLOUDFLARE_ACCOUNT_ID` in the deployment environment rather than `account_id`
+in its TOML configuration; the repeatable script includes both corrections.
+Synthetic verification accounts and records remain clearly named as checks.
+Email, password-recovery email, Google OAuth and AI services are not configured.
+
+## Setup
+
+The primary website is https://easybiz.iamjeevan.com. Cloudflare Pages associates
+this custom domain with `ledger-craft-app`; its DNS CNAME `easybiz` points to
+`ledger-craft-app.pages.dev`. The Pages address remains available. Better Auth
+uses the custom domain as its base URL and trusts both explicit HTTPS origins.
+The deployment script verifies both addresses and runs authenticated smoke
+checks using the custom domain as the request Origin. The smoke script derives
+its Origin from the supplied URL unless `VERIFY_ORIGIN` is explicitly set.
+
+Use Node.js 24 or newer (Node 26 is the tested local runtime) and the pnpm
+version pinned in `package.json`. No Docker or hosted database is required.
+Sign in to Cloudflare with `pnpm exec wrangler login`; complete authorization in
+the browser. Configuration explicitly targets account
+`c611a72b3bacd0c105ab864d7006fca7`.
+
+The Pages project `ledger-craft-app` already exists. Wrangler creates or updates
+the Worker and its SQLite Durable Object namespaces from
+`deploy/api/wrangler.jsonc`. `wrangler.toml` contains Pages configuration and the
+API proxy origin. The Pages production branch label remains `main` when
+uploading this `mobile-app` checkout; the script does not merge, commit or push.
+
+If `deploy/secrets.local.json` exists, the script reuses its validated
+`BETTER_AUTH_SECRET`. Keep this Git-ignored file backed up securely. If the local
+file is missing, the script first inspects the existing Worker's remote secret
+names. When `BETTER_AUTH_SECRET` already exists remotely, deployment preserves
+that secret without uploading a replacement. A new secret is generated only
+when the initial secret is absent; failure to inspect the remote state stops
+deployment. Losing a local file must never silently rotate the remote secret.
+Do not regenerate a signing secret as part of a routine release: changing it
+invalidates existing authentication state. Never place secrets in frontend
+build variables.
+
+## Code and database changes
+
+For application changes only, run `pnpm deploy:cloudflare` from the repository.
+It updates the existing resources listed below. Use `pnpm deploy:help` for the
+command summary.
+
+For database changes:
+
+1. Edit the Drizzle definitions in `api/src/db/schema/`.
+2. Run `pnpm db:generate --name describe_the_change`.
+3. Review the new SQL in `api/sqlite-migrations/`. Keep already-deployed SQL
+   files unchanged. Include generated metadata with the change.
+4. Run `pnpm deploy:cloudflare`. This validates the migrations locally, bundles
+   them, deploys the backend, and publishes and verifies the frontend.
+
+`pnpm db:migrate` applies migrations to **local SQLite only**. Production uses
+SQLite Durable Objects, so there is no separate D1 migration command. Each
+object applies pending migrations transactionally when it next starts, before
+serving its request; deployment does not wake every inactive organisation.
+Use additive changes compatible with the previous frontend while backend and
+frontend deployments roll out. A failed migration rolls back and prevents that
+object from serving against a partially changed schema.
+
+## Repeatable release
 
 ```bash
-docker build -t ledgercraft-api .
-docker run --rm -p 3001:3001 \
-  -e API_HOST=0.0.0.0 \
-  -e DATABASE_URL=postgres://ledgercraft_app:... \
-  -e BETTER_AUTH_URL=https://easybizinvoice.com \
-  -e BETTER_AUTH_SECRET=... \
-  -e BETTER_AUTH_TRUSTED_ORIGINS=https://easybizinvoice.com \
-  ledgercraft-api
+pnpm install --frozen-lockfile
+pnpm run deploy:check
+pnpm run deploy:cloudflare
 ```
 
-Migrations are a CI job, never container boot:
+`deploy:check` installs pinned dependencies, regenerates the bundled migration
+manifest, runs API/contracts checks and the real SQLite baseline checks, builds
+the frontend and Pages Function, typechecks the Worker, and runs Wrangler's
+deployment dry run. It makes no production changes.
+
+`deploy:cloudflare` performs those checks, confirms authenticated Cloudflare
+access, deploys the Worker while preserving the signing secret, checks API readiness
+and anonymous-access rejection, then deploys Pages. It verifies the published
+frontend build marker and routes, and runs the authenticated smoke script.
+A local lock prevents concurrent releases from the same checkout. If invoking
+from multiple machines, coordinate releases outside that local lock. No GitHub
+workflow is installed by this script.
+
+Production entry points:
+
+- [Website](https://ledger-craft-app.pages.dev)
+- [API](https://ledgercraft-api.jeevan90wijerathna.workers.dev)
+
+The Pages Function proxies `/api/*` to the Worker so browser authentication stays
+on the Pages origin. Better Auth's URL and trusted origins match that origin.
+
+## Migrations and local development
+
+Reviewed SQLite SQL lives in `api/sqlite-migrations/*.sql`. The release script
+bundles it with checksums. Each Durable Object applies pending migrations
+inside `storage.transactionSync` when it starts, before serving requests, and
+records the checksum. Before executing schema changes, it records recovery
+bookmarks in `_migration_recovery` for migration recovery. A changed previously applied migration fails rather than being
+silently replayed. Append new reviewed migration files; never edit an applied
+file, replay the old PostgreSQL/Supabase SQL, or use `drizzle-kit push` against
+production. Objects created later receive the same checked-in migration history.
+
+Wrangler's `sqlite-v1` migration declares the Identity and Ledger SQLite
+classes. It is separate from application table migrations. A successful Worker
+upload does not prove that every inactive tenant has already been migrated;
+each object applies the current history before serving its next request.
+Keep future migrations compatible with rollout and recovery requirements.
+
+For local Node API development, set `DATABASE_URL` to a SQLite filename or file
+URL, then migrate and start the API. Use an absolute path to avoid workspace
+working-directory ambiguity:
 
 ```bash
-DATABASE_MIGRATE_URL=postgres://ledgercraft_migrator:... pnpm --filter @ledgercraft/api db:migrate
+DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm db:migrate
+DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm dev:api
+pnpm dev
 ```
 
-Hyperdrive, if used, must be **transaction** pooling. RLS uses `set_config(..., true)` inside `withOrganisationTx`. Session-mode pooling can leak tenants.
+The API uses port 3001 and Vite uses 8080 with an `/api` proxy. Local Node SQLite
+is useful for API testing; Wrangler local development exercises the production
+Worker/Durable Object model:
 
-## Go-live gate
+```bash
+pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
+```
 
-Do not cut DNS until protected clients have no `supabase.from` for the domains you ship. W5 (idempotency + share tokens) is required for invoices. Expenses/payments/bank are still supabase-js until W6–W8.
+Provide a development-only Better Auth secret through Wrangler's local secret
+configuration. Never use production credentials in tests.
+
+## Verification and free-plan limits
+
+`node scripts/verify-cloudflare.mjs https://easybiz.iamjeevan.com` checks
+synthetic signup/login, session rejection, cross-organisation isolation,
+invoicing, rollback, concurrent numbering, idempotency, sharing and persistence.
+It creates synthetic verification accounts and records; it does not send email.
+Browser verification remains necessary to check the actual web flows and PDF
+presentation. Record the release build marker, API version and verified flows.
+
+The target is the free plan, not unlimited capacity. Cloudflare enforces free
+request, CPU and storage quotas; service can stop at those limits. Do not enable
+paid subscriptions or add a paid service as an implicit deployment step.
+
+Platform references: [SQLite-backed Durable Objects](https://developers.cloudflare.com/durable-objects/api/sqlite-storage-api/),
+[Durable Objects free-plan pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/),
+[Workers limits](https://developers.cloudflare.com/workers/platform/limits/).
+
+### Additional-charge fix (2026-09-14, published; live mutation verification pending)
+
+Named invoice charges now cross the shared contract, web mapper and SQLite
+repository. The server computes fixed/percentage active charges with exact
+money helpers; empty lists clear charges. The web form retains legacy unnamed
+charges and submits an empty list when charges are disabled. Existing SQLite
+columns are reused; no schema migration is required.
+
+Validation: 44 contract tests, 75 API tests, two web mapping tests, API/contracts
+and Worker typechecks, real SQLite checks, frontend build and Wrangler dry run
+pass (`pnpm deploy:check`). The broader web TypeScript check is blocked by an
+existing syntax error at `src/services/__tests__/aiService.test.ts:21`.
+
+Published frontend build `1b3eef9860bf` at
+https://aa9f8b7c.ledger-craft-app.pages.dev and Worker version
+`1b20615b-343e-4a6f-99e9-38fa157005d3`. The existing signing secret is preserved.
+Live readiness returns `0001_index_session_user.sql`; no new migration was needed.
+The canonical domain and Pages domain serve the matching build, healthy API,
+login and home routes, and reject anonymous `/api/me`. Chrome authenticated
+invoice navigation loaded build `1b3eef` after app Force Refresh and reload;
+the verification account was signed out afterward. The update banner remains
+visible despite the correct build marker.
+
+The full release script was paused before publishing because automatic review
+blocked synthetic production test-data creation. After `pnpm deploy:check`
+passed and the user explicitly approved Wrangler OAuth, the checked Worker and
+Pages artifacts were published directly with the script's Wrangler commands.
+Only read-only live HTTP and browser checks ran; the expanded live mutation
+smoke script has not run and still needs approval. No customer invoice edits
+have occurred: those await the customer's authenticated browser session.
+Do not report the requested invoices as corrected.

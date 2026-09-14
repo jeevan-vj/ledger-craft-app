@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   createInvoiceRequestSchema,
+  updateInvoiceRequestSchema,
   createShareInvoiceRequestSchema,
   invoiceSchema,
   publicSharedInvoiceSchema,
@@ -156,4 +157,14 @@ describe('invoice contracts', () => {
       }).success,
     ).toBe(true);
   });
+});
+
+it('accepts named charges and rejects invalid amounts and client-computed totals', () => {
+  const charge = { id: 'delivery', type: 'delivery', label: 'Delivery', calculationType: 'fixed', amount: '30.00', isActive: true };
+  expect(updateInvoiceRequestSchema.parse({ additionalChargesList: [charge] }).additionalChargesList).toEqual([charge]);
+  expect(updateInvoiceRequestSchema.parse({ additionalChargesList: [] }).additionalChargesList).toEqual([]);
+  for (const amount of ['-30', 'NaN', 'Infinity', '1e3', 30]) {
+    expect(updateInvoiceRequestSchema.safeParse({ additionalChargesList: [{ ...charge, amount }] }).success).toBe(false);
+  }
+  expect(updateInvoiceRequestSchema.safeParse({ additionalChargesTotal: '1' }).success).toBe(false);
 });

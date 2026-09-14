@@ -5,6 +5,16 @@ const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 const paymentTermDays = z.number().int().min(0).max(365);
 const discountType = z.enum(['fixed', 'percent']);
 
+export const additionalChargeSchema = z.object({
+  id: z.string().min(1),
+  type: z.enum(['delivery', 'handling', 'rush', 'service', 'processing', 'international', 'setup', 'administrative', 'custom']),
+  label: z.string().min(1),
+  calculationType: z.enum(['fixed', 'percentage']),
+  amount: z.string().regex(/^\d+(\.\d+)?$/),
+  description: z.string().optional(),
+  isActive: z.boolean(),
+}).strict();
+
 export const invoiceLineInputSchema = z
   .object({
     description: z.string().min(1),
@@ -53,6 +63,7 @@ export const createInvoiceRequestSchema = z
     discountPercent: money.nullable().optional(),
     discount: money.nullable().optional(),
     additionalCharges: money.nullable().optional(),
+    additionalChargesList: z.array(additionalChargeSchema).max(100).optional(),
     status: z.enum(['draft', 'sent', 'paid', 'overdue']).optional(),
     items: z.array(invoiceLineInputSchema).min(1),
   })
@@ -73,6 +84,7 @@ export const updateInvoiceRequestSchema = z
     taxInclusive: z.boolean().optional(),
     taxRate: money.nullable().optional(),
     additionalCharges: money.nullable().optional(),
+    additionalChargesList: z.array(additionalChargeSchema).max(100).optional(),
     items: z.array(invoiceLineInputSchema).min(1).optional(),
   })
   .strict()
@@ -118,6 +130,8 @@ export const invoiceSchema = z.object({
   discountPercent: money.nullable(),
   discount: money.nullable(),
   additionalCharges: money.nullable(),
+  additionalChargesList: z.array(additionalChargeSchema).optional(),
+  additionalChargesTotal: money.optional(),
   total: money,
   totalPaid: money,
   balanceDue: money,

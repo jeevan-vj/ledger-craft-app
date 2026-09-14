@@ -1,3 +1,4 @@
+import { decimal } from '../invoices/money';
 import {
   expenseListResponseSchema,
   type CreateExpenseCategoryRequest,
@@ -68,7 +69,7 @@ export async function updateExpenseForUser(
   input: UpdateExpenseRequest,
 ): Promise<ExpenseDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    if (input.amount !== undefined && Number(input.amount) <= 0) {
+    if (input.amount !== undefined && decimal(input.amount).compare(0) <= 0) {
       throw new HTTPException(400, { message: 'Amount must be greater than 0' });
     }
     await assertRefs(tx, ctx.organisationId, input);

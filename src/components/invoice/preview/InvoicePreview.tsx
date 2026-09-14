@@ -60,6 +60,8 @@ const InvoicePreview = ({
       effectiveBusinessProfile?.country
     ].filter(Boolean).join(', ') || '',
     companyPhone: effectiveBusinessProfile?.phone || '',
+    bankAccountName: effectiveBusinessProfile?.bankAccountName,
+    bankAccountNumber: effectiveBusinessProfile?.bankAccountNumber,
     clientName: invoice.customer?.name || 'Client Name',
     clientAddress: [
       invoice.customer?.address,

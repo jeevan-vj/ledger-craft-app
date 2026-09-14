@@ -1,3 +1,4 @@
+import { decimal } from './money';
 import { and, eq, sql } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -78,14 +79,14 @@ export async function postInvoiceJournal(
     .returning();
   if (!entry) throw new HTTPException(500, { message: 'Failed to post journal entry' });
 
-  const taxAmount = Number(input.taxAmount);
-  const total = Number(input.total);
-  const salesCredit = (Math.round((total - taxAmount) * 100) / 100).toFixed(2);
+  const taxAmount = decimal(input.taxAmount);
+  const total = decimal(input.total);
+  const salesCredit = total.sub(taxAmount).toFixed();
   const lines = [
     { accountId: arId, description: `Invoice ${input.invoiceNumber}`, debit: input.total, credit: '0.00', order: 1 },
     { accountId: salesId, description: `Sales revenue - Invoice ${input.invoiceNumber}`, debit: '0.00', credit: salesCredit, order: 2 },
   ];
-  if (taxAmount > 0) {
+  if (taxAmount.compare(0) > 0) {
     lines.push({
       accountId: gstId,
       description: `GST on Invoice ${input.invoiceNumber}`,
@@ -95,10 +96,10 @@ export async function postInvoiceJournal(
     });
   }
 
-  const debit = lines.reduce((sum, line) => sum + Number(line.debit), 0);
-  const credit = lines.reduce((sum, line) => sum + Number(line.credit), 0);
-  if (Math.abs(debit - credit) > 0.01) {
-    throw new HTTPException(500, { message: `Journal unbalanced: ${debit} != ${credit}` });
+  const debit = lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
+  const credit = lines.reduce((sum, line) => sum.add(line.credit), decimal(0));
+  if (debit.compare(credit) !== 0) {
+    throw new HTTPException(500, { message: `Journal unbalanced: ${debit.toFixed()} != ${credit.toFixed()}` });
   }
 
   for (const line of lines) {

@@ -28,6 +28,8 @@ const profileFormSchema = z.object({
   state: z.string().optional(),
   zip: z.string().optional(),
   country: z.string().default('New Zealand'),
+  bankAccountName: z.string().trim().max(200).optional(),
+  bankAccountNumber: z.string().trim().max(100).optional(),
   defaultTerms: z.string().optional(),
   paymentTermDays: z.number().int().min(0).max(365).default(30),
   defaultNotes: z.string().optional(),
@@ -60,6 +62,8 @@ const Settings = () => {
       state: businessProfile?.state || '',
       zip: businessProfile?.zip || '',
       country: businessProfile?.country || 'New Zealand',
+      bankAccountName: businessProfile?.bankAccountName || '',
+      bankAccountNumber: businessProfile?.bankAccountNumber || '',
       defaultTerms: businessProfile?.defaultTerms || '',
       paymentTermDays: businessProfile?.paymentTermDays ?? 30,
       defaultNotes: businessProfile?.defaultNotes || '',
@@ -89,6 +93,8 @@ const Settings = () => {
         state: businessProfile.state || '',
         zip: businessProfile.zip || '',
         country: businessProfile.country || 'New Zealand',
+        bankAccountName: businessProfile.bankAccountName || '',
+        bankAccountNumber: businessProfile.bankAccountNumber || '',
         defaultTerms: businessProfile.defaultTerms || '',
         paymentTermDays: businessProfile.paymentTermDays ?? 30,
         defaultNotes: businessProfile.defaultNotes || '',
@@ -128,6 +134,8 @@ const Settings = () => {
         city: data.city || null,
         state: data.state || null,
         zip: data.zip || null,
+        bankAccountName: data.bankAccountName || null,
+        bankAccountNumber: data.bankAccountNumber || null,
         defaultTerms: data.defaultTerms || null,
         paymentTermDays: data.paymentTermDays ?? 30,
         defaultNotes: data.defaultNotes || null,
@@ -434,6 +442,20 @@ const Settings = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
+                    <fieldset className="space-y-4 rounded-lg border p-4">
+                      <legend className="px-1 font-semibold">Bank transfer details</legend>
+                      <p className="text-sm text-muted-foreground">Shown on invoices and PDFs. Leave blank to hide.</p>
+                      <FormField control={form.control} name="bankAccountName" render={({ field }) => (
+                        <FormItem><FormLabel>Account name</FormLabel><FormControl>
+                          <Input {...field} maxLength={200} placeholder="e.g. Kauri Studio Ltd" />
+                        </FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={form.control} name="bankAccountNumber" render={({ field }) => (
+                        <FormItem><FormLabel>Account number</FormLabel><FormControl>
+                          <Input {...field} type="text" maxLength={100} placeholder="e.g. 01-0123-0000123-00" />
+                        </FormControl><FormMessage /></FormItem>
+                      )} />
+                    </fieldset>
                     <FormField
                       control={form.control}
                       name="paymentTermDays"

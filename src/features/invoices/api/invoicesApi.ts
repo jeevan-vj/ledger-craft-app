@@ -74,6 +74,8 @@ function toInvoice(dto: InvoiceDto): Invoice {
     discountPercent: dto.discountPercent == null ? null : Number(dto.discountPercent),
     discount: dto.discount == null ? null : Number(dto.discount),
     additionalCharges: dto.additionalCharges == null ? null : Number(dto.additionalCharges),
+    additionalChargesList: dto.additionalChargesList?.map(charge => ({ ...charge, amount: Number(charge.amount) })),
+    additionalChargesTotal: Number(dto.additionalChargesTotal ?? dto.additionalCharges ?? 0),
     total: Number(dto.total),
     status: dto.status,
     notes: dto.notes,
@@ -107,6 +109,7 @@ export function toCreateInvoiceRequest(
     discountPercent: money(invoice.discountPercent),
     discount: money(invoice.discount),
     additionalCharges: money(invoice.additionalCharges),
+    additionalChargesList: invoice.additionalChargesList?.map(charge => ({ ...charge, amount: String(charge.amount) })),
     status: invoice.status,
     items: lineItems.map((item) => ({
       description: item.description,
@@ -196,6 +199,7 @@ export const invoicesApi = {
       discountPercent: money(invoice.discountPercent),
       discount: money(invoice.discount),
       additionalCharges: money(invoice.additionalCharges),
+      additionalChargesList: invoice.additionalChargesList?.map(charge => ({ ...charge, amount: String(charge.amount) })),
       status: invoice.status,
       items: lineItems && lineItems.length > 0
         ? lineItems.map((item) => ({

@@ -1,20 +1,22 @@
-import { integer, jsonb, pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
+import { organisations, users } from './identity';
+import { sql } from 'drizzle-orm';
+import { integer, sqliteTable, text, unique } from 'drizzle-orm/sqlite-core';
 
-const timestamptz = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
+const timestamptz = (name: string) => integer(name, { mode: 'timestamp_ms' });
 
-export const idempotencyKeys = pgTable(
+export const idempotencyKeys = sqliteTable(
   'idempotency_keys',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    organisationId: uuid('organisation_id').notNull(),
-    userId: uuid('user_id').notNull(),
+    id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+    organisationId: text('organisation_id').notNull().references(() => organisations.id),
+    userId: text('user_id').notNull().references(() => users.id),
     key: text('key').notNull(),
     method: text('method').notNull(),
     path: text('path').notNull(),
     requestHash: text('request_hash').notNull(),
     responseStatus: integer('response_status').notNull(),
-    responseBody: jsonb('response_body').notNull(),
-    createdAt: timestamptz('created_at').defaultNow().notNull(),
+    responseBody: text('response_body', { mode: 'json' }).notNull(),
+    createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   },
   (table) => [
     unique('idempotency_keys_scope').on(table.organisationId, table.userId, table.method, table.path, table.key),

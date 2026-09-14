@@ -34,16 +34,18 @@ function toDto(
     date: row.date,
     dueDate: row.dueDate,
     paymentTermDays: row.paymentTermDays ?? null,
-    subtotal: roundMoney(Number(row.subtotal)),
-    taxAmount: roundMoney(Number(row.taxAmount)),
+    subtotal: roundMoney(row.subtotal),
+    taxAmount: roundMoney(row.taxAmount),
     discountType: row.discountType === 'percent' ? 'percent' : 'fixed',
-    discountPercent: row.discountPercent == null ? null : roundMoney(Number(row.discountPercent)),
-    discount: row.discount == null ? null : roundMoney(Number(row.discount)),
+    discountPercent: row.discountPercent == null ? null : roundMoney(row.discountPercent),
+    discount: row.discount == null ? null : roundMoney(row.discount),
     additionalCharges:
-      row.additionalCharges == null ? null : roundMoney(Number(row.additionalCharges)),
-    total: roundMoney(Number(row.total)),
-    totalPaid: roundMoney(Number(row.totalPaid)),
-    balanceDue: roundMoney(Number(row.balanceDue)),
+      row.additionalCharges == null ? null : roundMoney(row.additionalCharges),
+    additionalChargesList: row.additionalChargesList ?? undefined,
+    additionalChargesTotal: roundMoney(row.additionalChargesTotal ?? row.additionalCharges ?? 0),
+    total: roundMoney(row.total),
+    totalPaid: roundMoney(row.totalPaid),
+    balanceDue: roundMoney(row.balanceDue),
     paymentStatus: row.paymentStatus,
     taxInclusive: row.taxInclusive,
     status: row.status,
@@ -61,13 +63,13 @@ export async function listInvoices(tx: Database, organisationId: string): Promis
   const rows = await tx
     .select({ invoice: invoices, customerName: customers.name })
     .from(invoices)
-    .leftJoin(customers, eq(customers.id, invoices.customerId))
+    .leftJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
     .where(eq(invoices.organisationId, organisationId))
     .orderBy(desc(invoices.date), desc(invoices.createdAt));
 
   const result: InvoiceDto[] = [];
   for (const row of rows) {
-    const lines = await tx.select().from(lineItems).where(eq(lineItems.invoiceId, row.invoice.id));
+    const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
     result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null));
   }
   return result;
@@ -81,10 +83,10 @@ export async function getInvoice(
   const [row] = await tx
     .select({ invoice: invoices, customerName: customers.name })
     .from(invoices)
-    .leftJoin(customers, eq(customers.id, invoices.customerId))
+    .leftJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));
   if (!row) return undefined;
-  const lines = await tx.select().from(lineItems).where(eq(lineItems.invoiceId, row.invoice.id));
+  const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
   return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null);
 }
 
@@ -122,6 +124,7 @@ export async function insertInvoice(
       discount: input.totals.discount,
       additionalCharges: input.totals.additionalCharges,
       additionalChargesTotal: input.totals.additionalCharges,
+      additionalChargesList: input.totals.additionalChargesList ?? null,
       total: input.totals.total,
       totalPaid: paid ? input.totals.total : '0.00',
       balanceDue: paid ? '0.00' : input.totals.total,
@@ -175,6 +178,7 @@ export async function replaceInvoiceTotals(
             discount: totals.discount,
             additionalCharges: totals.additionalCharges,
             additionalChargesTotal: totals.additionalCharges,
+            additionalChargesList: totals.additionalChargesList ?? null,
             total: totals.total,
             taxInclusive: totals.taxInclusive,
             totalPaid: paid ? totals.total : existing.totalPaid,
@@ -186,7 +190,7 @@ export async function replaceInvoiceTotals(
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));
 
   if (totals) {
-    await tx.delete(lineItems).where(eq(lineItems.invoiceId, id));
+    await tx.delete(lineItems).where(and(eq(lineItems.invoiceId, id), eq(lineItems.organisationId, organisationId)));
     await insertLines(tx, organisationId, id, totals);
   }
 

@@ -3,7 +3,7 @@ import {
   type BusinessProfileDto,
   type UpsertBusinessProfileRequest,
 } from '@ledgercraft/contracts';
-import { eq } from 'drizzle-orm';
+import { and, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { businessProfiles } from '../../db/schema/business-profiles';
 import { users } from '../../db/schema/identity';
@@ -27,6 +27,8 @@ function toDto(row: typeof businessProfiles.$inferSelect): BusinessProfileDto {
     paymentTermDays: row.paymentTermDays,
     defaultNotes: row.defaultNotes ?? null,
     bankInfo: row.bankInfo ?? null,
+    bankAccountName: row.bankAccountName ?? null,
+    bankAccountNumber: row.bankAccountNumber ?? null,
     theme: row.theme ?? null,
     invoiceNumberFormat: row.invoiceNumberFormat ?? null,
     invoiceNumberSequence: row.invoiceNumberSequence ?? null,
@@ -74,6 +76,8 @@ export async function upsertBusinessProfile(
   if (input.defaultTerms !== undefined) values.defaultTerms = input.defaultTerms;
   if (input.paymentTermDays !== undefined) values.paymentTermDays = input.paymentTermDays;
   if (input.defaultNotes !== undefined) values.defaultNotes = input.defaultNotes;
+  if (input.bankAccountName !== undefined) values.bankAccountName = input.bankAccountName;
+  if (input.bankAccountNumber !== undefined) values.bankAccountNumber = input.bankAccountNumber;
   if (input.bankInfo !== undefined) values.bankInfo = input.bankInfo;
   if (input.theme !== undefined) values.theme = input.theme;
   if (input.invoiceNumberFormat !== undefined) values.invoiceNumberFormat = input.invoiceNumberFormat;
@@ -83,7 +87,7 @@ export async function upsertBusinessProfile(
     const [row] = await tx
       .update(businessProfiles)
       .set(values)
-      .where(eq(businessProfiles.id, existing[0].id))
+      .where(and(eq(businessProfiles.id, existing[0].id), eq(businessProfiles.organisationId, ctx.organisationId)))
       .returning();
     if (!row) throw new Error('Failed to update business profile');
     return toDto(row);
@@ -110,6 +114,8 @@ export async function upsertBusinessProfile(
       paymentTermDays: input.paymentTermDays ?? 30,
       defaultNotes: input.defaultNotes ?? null,
       bankInfo: input.bankInfo ?? null,
+      bankAccountName: input.bankAccountName ?? null,
+      bankAccountNumber: input.bankAccountNumber ?? null,
       theme: input.theme ?? null,
       invoiceNumberFormat: input.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
       invoiceNumberSequence: input.invoiceNumberSequence ?? 1,
@@ -146,8 +152,7 @@ export async function lockBusinessProfile(
   const rows = await tx
     .select()
     .from(businessProfiles)
-    .where(eq(businessProfiles.organisationId, organisationId))
-    .for('update');
+    .where(eq(businessProfiles.organisationId, organisationId));
   return rows[0];
 }
 

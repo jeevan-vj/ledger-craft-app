@@ -9,16 +9,16 @@ import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as invoicesRepo from '../invoices/invoices.repository';
-import { moneyToCents, parseMoney, roundMoney } from '../invoices/money';
+import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as repo from './payments.repository';
 
 function paymentState(total: string, totalPaid: string, currentStatus: string) {
-  const paid = parseMoney(totalPaid);
-  const invoiceTotal = parseMoney(total);
-  if (paid <= 0) {
+  const paid = decimal(totalPaid);
+  const invoiceTotal = decimal(total);
+  if (paid.compare(0) <= 0) {
     return { paymentStatus: 'unpaid', status: currentStatus === 'paid' ? 'sent' : currentStatus };
   }
-  if (paid >= invoiceTotal) {
+  if (paid.compare(invoiceTotal) >= 0) {
     return { paymentStatus: 'paid', status: 'paid' };
   }
   return { paymentStatus: 'partially_paid', status: currentStatus === 'paid' ? 'sent' : currentStatus };
@@ -60,7 +60,8 @@ export async function createPaymentForUser(
 
     const payment = await repo.insertPayment(tx, ctx, input);
     const totalPaid = roundMoney(await repo.sumCompletedPayments(tx, ctx.organisationId, invoice.id));
-    const balanceDue = roundMoney(Math.max(0, parseMoney(invoice.total) - parseMoney(totalPaid)));
+    const remaining = decimal(invoice.total).sub(totalPaid);
+    const balanceDue = roundMoney(remaining.compare(0) < 0 ? '0' : remaining);
     const next = paymentState(invoice.total, totalPaid, invoice.status);
     await invoicesRepo.applyPaymentTotals(tx, ctx.organisationId, invoice.id, {
       totalPaid,

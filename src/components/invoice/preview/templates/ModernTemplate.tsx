@@ -1,3 +1,4 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +10,8 @@ interface ModernTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const ModernTemplate = ({
   companyName, 
   companyAddress, 
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName, 
   clientAddress, 
   taxRate, 
@@ -224,6 +229,7 @@ const ModernTemplate = ({
         </div>
       </div>
       
+      <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
       {/* Notes */}
       {invoice.notes && (
         <div className="mt-4 notes-section">

@@ -1,7 +1,7 @@
 import { businessProfileSchema, errorEnvelopeSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
-import { createDb } from '../../db/client';
+import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
@@ -52,11 +52,18 @@ describe('business profile routes', () => {
             email: 'hello@kauristudio.nz',
             country: 'NZ',
             defaultTaxRate: '15',
+            bankAccountName: 'Kauri Studio Ltd',
+            bankAccountNumber: '01-0123-0000123-00',
           }),
         });
         expect(saved.status).toBe(200);
         const profile = businessProfileSchema.parse(await saved.json());
         expect(profile.name).toBe('Kauri Studio Ltd');
+        expect(profile).toMatchObject({ bankAccountName: 'Kauri Studio Ltd', bankAccountNumber: '01-0123-0000123-00' });
+        const loaded = await app.request('/api/business-profile', { headers: { Cookie: ownerA.cookie } });
+        expect(await loaded.json()).toMatchObject({ bankAccountName: 'Kauri Studio Ltd', bankAccountNumber: '01-0123-0000123-00' });
+        const cleared = await app.request('/api/business-profile', { method: 'PUT', headers: { ...originHeaders, Cookie: ownerA.cookie }, body: JSON.stringify({ name: profile.name, email: profile.email, bankAccountName: null, bankAccountNumber: null }) });
+        expect(await cleared.json()).toMatchObject({ bankAccountName: null, bankAccountNumber: null });
         expect(profile).not.toHaveProperty('organisationId');
 
         const leaked = await app.request('/api/business-profile', {

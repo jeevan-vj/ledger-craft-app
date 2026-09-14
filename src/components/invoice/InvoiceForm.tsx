@@ -353,6 +353,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       if (initialValues.additionalChargesList && initialValues.additionalChargesList.length > 0) {
         setAdditionalChargesList(initialValues.additionalChargesList);
         setIsAdditionalChargesEnabled(true);
+      } else if ((initialValues.additionalCharges ?? 0) > 0) {
+        setAdditionalChargesList([{
+          id: 'legacy-additional-charge', type: 'custom', label: 'Additional charges',
+          calculationType: 'fixed', amount: initialValues.additionalCharges!, isActive: true,
+        }]);
+        setIsAdditionalChargesEnabled(true);
       } else {
         setAdditionalChargesList([]);
         setIsAdditionalChargesEnabled(false);
@@ -560,7 +566,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       createdAt: initialValues?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       additionalCharges: vals.additionalCharges,
-      additionalChargesList: additionalChargesList, // Add structured charges for preview
+      additionalChargesList: isAdditionalChargesEnabled ? additionalChargesList : [], // Add structured charges for preview
       additionalChargesTotal: calculateAdditionalChargesTotal(), // Add calculated total
       paymentTermDays: vals.paymentTermDays,
       discountType: discountMode === 'off' ? 'fixed' : discountMode,
@@ -860,7 +866,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         taxAmount,
         finalAdditionalCharges,
         Number(valuesWithTemplate.discount),
-        additionalChargesList,
+        isAdditionalChargesEnabled ? additionalChargesList : [],
         submitIntentRef.current,
       );
       

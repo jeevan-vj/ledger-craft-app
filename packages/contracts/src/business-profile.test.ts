@@ -50,3 +50,10 @@ describe('business profile contracts', () => {
     expect(parsed.paymentTermDays).toBe(14);
   });
 });
+
+it('accepts separate bank fields as text and rejects oversized values', () => {
+  const input = { name: 'Studio', email: 'studio@example.com', bankAccountName: ' Studio Ltd ', bankAccountNumber: '01-0123-0000123-00' };
+  expect(upsertBusinessProfileRequestSchema.parse(input)).toMatchObject({ bankAccountName: 'Studio Ltd', bankAccountNumber: input.bankAccountNumber });
+  expect(upsertBusinessProfileRequestSchema.safeParse({ ...input, bankAccountName: 'x'.repeat(201) }).success).toBe(false);
+  expect(upsertBusinessProfileRequestSchema.safeParse({ ...input, bankAccountNumber: 123 }).success).toBe(false);
+});

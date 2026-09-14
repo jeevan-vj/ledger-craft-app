@@ -30,8 +30,8 @@ function toDto(row: typeof accounts.$inferSelect): AccountDto {
     name: row.name,
     type: row.type,
     currency: row.currency,
-    openingBalance: roundMoney(Number(row.openingBalance)),
-    currentBalance: roundMoney(Number(row.currentBalance)),
+    openingBalance: roundMoney(row.openingBalance),
+    currentBalance: roundMoney(row.currentBalance),
     accountNumber: row.accountNumber ?? null,
     accountClass: row.accountClass ?? null,
     isActive: row.isActive,
@@ -67,8 +67,8 @@ export async function createAccountForUser(
         name: input.name,
         type: input.type,
         currency: input.currency ?? 'NZD',
-        openingBalance: roundMoney(Number(input.openingBalance ?? 0)),
-        currentBalance: roundMoney(Number(input.openingBalance ?? 0)),
+        openingBalance: roundMoney(input.openingBalance ?? 0),
+        currentBalance: roundMoney(input.openingBalance ?? 0),
         accountNumber: input.accountNumber ?? null,
         accountClass: input.accountClass ?? null,
         description: input.description ?? null,
@@ -91,8 +91,8 @@ export async function updateAccountForUser(
     if (input.name !== undefined) patch.name = input.name;
     if (input.type !== undefined) patch.type = input.type;
     if (input.currency !== undefined) patch.currency = input.currency;
-    if (input.openingBalance !== undefined) patch.openingBalance = roundMoney(Number(input.openingBalance));
-    if (input.currentBalance !== undefined) patch.currentBalance = roundMoney(Number(input.currentBalance));
+    if (input.openingBalance !== undefined) patch.openingBalance = roundMoney(input.openingBalance);
+    if (input.currentBalance !== undefined) patch.currentBalance = roundMoney(input.currentBalance);
     if (input.accountNumber !== undefined) patch.accountNumber = input.accountNumber;
     if (input.accountClass !== undefined) patch.accountClass = input.accountClass;
     if (input.description !== undefined) patch.description = input.description;

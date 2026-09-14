@@ -1,3 +1,4 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
@@ -9,6 +10,8 @@ interface MinimalTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const MinimalTemplate = ({
   companyName, 
   companyAddress, 
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName, 
   clientAddress,
   taxRate,
@@ -181,6 +186,7 @@ const MinimalTemplate = ({
             </div>
           </div>
 
+          <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
           {/* Notes */}
           {invoice.notes && (
             <div className="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t text-xs sm:text-sm notes-section" style={{ borderColor: theme.textLight + '30' }}>

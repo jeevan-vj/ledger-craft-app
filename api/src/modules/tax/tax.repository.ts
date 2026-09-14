@@ -17,7 +17,7 @@ function toConfigDto(row: typeof taxConfigurations.$inferSelect): TaxConfigurati
     id: row.id,
     countryCode: row.countryCode,
     taxType: row.taxType,
-    taxRate: roundMoney(Number(row.taxRate)),
+    taxRate: roundMoney(row.taxRate),
     taxName: row.taxName,
     appliesToServices: row.appliesToServices,
     appliesToGoods: row.appliesToGoods,
@@ -35,11 +35,11 @@ function toReturnDto(row: typeof taxReturns.$inferSelect): TaxReturnDto {
     periodStart: row.periodStart,
     periodEnd: row.periodEnd,
     returnType: row.returnType,
-    totalSales: roundMoney(Number(row.totalSales)),
-    totalPurchases: roundMoney(Number(row.totalPurchases)),
-    gstOnSales: roundMoney(Number(row.gstOnSales)),
-    gstOnPurchases: roundMoney(Number(row.gstOnPurchases)),
-    netGst: roundMoney(Number(row.netGst)),
+    totalSales: roundMoney(row.totalSales),
+    totalPurchases: roundMoney(row.totalPurchases),
+    gstOnSales: roundMoney(row.gstOnSales),
+    gstOnPurchases: roundMoney(row.gstOnPurchases),
+    netGst: roundMoney(row.netGst),
     status: row.status,
     submittedAt: row.submittedAt ? row.submittedAt.toISOString() : null,
     irdReference: row.irdReference ?? null,
@@ -79,7 +79,7 @@ export async function insertDefaultConfig(
       userId: ctx.userId,
       countryCode: input.countryCode ?? 'NZ',
       taxType: input.taxType ?? 'GST',
-      taxRate: roundMoney(Number(input.taxRate ?? '0.15')),
+      taxRate: roundMoney(input.taxRate ?? '0.15'),
       taxName: input.taxName ?? 'GST',
       appliesToServices: input.appliesToServices ?? true,
       appliesToGoods: input.appliesToGoods ?? true,
@@ -102,7 +102,7 @@ export async function upsertConfig(
   if (!existing) return insertDefaultConfig(tx, ctx, { ...input, countryCode });
   const patch: Partial<typeof taxConfigurations.$inferInsert> = { updatedAt: new Date() };
   if (input.taxType !== undefined) patch.taxType = input.taxType;
-  if (input.taxRate !== undefined) patch.taxRate = roundMoney(Number(input.taxRate));
+  if (input.taxRate !== undefined) patch.taxRate = roundMoney(input.taxRate);
   if (input.taxName !== undefined) patch.taxName = input.taxName;
   if (input.appliesToServices !== undefined) patch.appliesToServices = input.appliesToServices;
   if (input.appliesToGoods !== undefined) patch.appliesToGoods = input.appliesToGoods;
@@ -151,11 +151,11 @@ export async function insertReturn(
       periodStart: input.periodStart,
       periodEnd: input.periodEnd,
       returnType: input.returnType ?? 'GST',
-      totalSales: roundMoney(Number(input.totalSales)),
-      totalPurchases: roundMoney(Number(input.totalPurchases)),
-      gstOnSales: roundMoney(Number(input.gstOnSales)),
-      gstOnPurchases: roundMoney(Number(input.gstOnPurchases)),
-      netGst: roundMoney(Number(input.netGst)),
+      totalSales: roundMoney(input.totalSales),
+      totalPurchases: roundMoney(input.totalPurchases),
+      gstOnSales: roundMoney(input.gstOnSales),
+      gstOnPurchases: roundMoney(input.gstOnPurchases),
+      netGst: roundMoney(input.netGst),
       status: input.status ?? 'draft',
       irdReference: input.irdReference ?? null,
     })
@@ -176,11 +176,11 @@ export async function updateReturn(
   if (input.periodStart !== undefined) patch.periodStart = input.periodStart;
   if (input.periodEnd !== undefined) patch.periodEnd = input.periodEnd;
   if (input.returnType !== undefined) patch.returnType = input.returnType;
-  if (input.totalSales !== undefined) patch.totalSales = roundMoney(Number(input.totalSales));
-  if (input.totalPurchases !== undefined) patch.totalPurchases = roundMoney(Number(input.totalPurchases));
-  if (input.gstOnSales !== undefined) patch.gstOnSales = roundMoney(Number(input.gstOnSales));
-  if (input.gstOnPurchases !== undefined) patch.gstOnPurchases = roundMoney(Number(input.gstOnPurchases));
-  if (input.netGst !== undefined) patch.netGst = roundMoney(Number(input.netGst));
+  if (input.totalSales !== undefined) patch.totalSales = roundMoney(input.totalSales);
+  if (input.totalPurchases !== undefined) patch.totalPurchases = roundMoney(input.totalPurchases);
+  if (input.gstOnSales !== undefined) patch.gstOnSales = roundMoney(input.gstOnSales);
+  if (input.gstOnPurchases !== undefined) patch.gstOnPurchases = roundMoney(input.gstOnPurchases);
+  if (input.netGst !== undefined) patch.netGst = roundMoney(input.netGst);
   if (input.status !== undefined) {
     patch.status = input.status;
     if (input.status === 'submitted') patch.submittedAt = new Date();

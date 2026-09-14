@@ -23,7 +23,7 @@ export function createAuth(db: Database) {
     baseURL: getBetterAuthUrl(),
     trustedOrigins: getBetterAuthTrustedOrigins(),
     database: drizzleAdapter(db, {
-      provider: 'pg',
+      provider: 'sqlite',
       schema: identitySchema,
     }),
     user: { modelName: 'users' },

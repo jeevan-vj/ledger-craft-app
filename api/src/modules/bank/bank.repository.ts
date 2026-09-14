@@ -20,8 +20,8 @@ function toAccountDto(row: typeof bankAccounts.$inferSelect): BankAccountDto {
     bankName: row.bankName,
     accountType: row.accountType,
     currency: row.currency,
-    openingBalance: roundMoney(Number(row.openingBalance)),
-    currentBalance: roundMoney(Number(row.currentBalance)),
+    openingBalance: roundMoney(row.openingBalance),
+    currentBalance: roundMoney(row.currentBalance),
     isActive: row.isActive,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -35,9 +35,9 @@ function toTxDto(row: typeof bankTransactions.$inferSelect): BankTransactionDto 
     transactionDate: row.transactionDate,
     description: row.description,
     reference: row.reference ?? null,
-    amount: roundMoney(Number(row.amount)),
+    amount: roundMoney(row.amount),
     type: row.type,
-    balance: row.balance == null ? null : roundMoney(Number(row.balance)),
+    balance: row.balance == null ? null : roundMoney(row.balance),
     category: row.category ?? null,
     merchant: row.merchant ?? null,
     isReconciled: row.isReconciled,
@@ -73,7 +73,7 @@ export async function insertAccount(
   ctx: { organisationId: string; userId: string },
   input: CreateBankAccountRequest,
 ): Promise<BankAccountDto> {
-  const opening = roundMoney(Number(input.openingBalance ?? '0'));
+  const opening = roundMoney(input.openingBalance ?? '0');
   const [row] = await tx
     .insert(bankAccounts)
     .values({
@@ -85,7 +85,7 @@ export async function insertAccount(
       accountType: input.accountType,
       currency: input.currency ?? 'NZD',
       openingBalance: opening,
-      currentBalance: roundMoney(Number(input.currentBalance ?? opening)),
+      currentBalance: roundMoney(input.currentBalance ?? opening),
       isActive: input.isActive ?? true,
     })
     .returning();
@@ -107,8 +107,8 @@ export async function updateAccount(
   if (input.bankName !== undefined) patch.bankName = input.bankName;
   if (input.accountType !== undefined) patch.accountType = input.accountType;
   if (input.currency !== undefined) patch.currency = input.currency;
-  if (input.openingBalance !== undefined) patch.openingBalance = roundMoney(Number(input.openingBalance));
-  if (input.currentBalance !== undefined) patch.currentBalance = roundMoney(Number(input.currentBalance));
+  if (input.openingBalance !== undefined) patch.openingBalance = roundMoney(input.openingBalance);
+  if (input.currentBalance !== undefined) patch.currentBalance = roundMoney(input.currentBalance);
   if (input.isActive !== undefined) patch.isActive = input.isActive;
   const [row] = await tx
     .update(bankAccounts)
@@ -182,7 +182,7 @@ export async function importTransactions(
   const dates: string[] = [];
 
   for (const row of input.transactions) {
-    const amount = roundMoney(Number(row.amount));
+    const amount = roundMoney(row.amount);
     const isDup =
       skip &&
       existing.some(
@@ -206,7 +206,7 @@ export async function importTransactions(
         reference: row.reference ?? null,
         amount,
         type: row.type,
-        balance: row.balance == null ? null : roundMoney(Number(row.balance)),
+        balance: row.balance == null ? null : roundMoney(row.balance),
         category: row.category ?? null,
         merchant: row.merchant ?? null,
         isReconciled: false,

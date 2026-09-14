@@ -133,3 +133,10 @@ export async function insertCategory(
   if (!row) throw new Error('Failed to insert item category');
   return toCategoryDto(row);
 }
+
+export async function getCategory(tx: Database, organisationId: string, id: string) {
+  const [row] = await tx.select().from(itemCategories).where(and(
+    eq(itemCategories.organisationId, organisationId), eq(itemCategories.id, id),
+  ));
+  return row;
+}

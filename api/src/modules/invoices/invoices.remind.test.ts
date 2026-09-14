@@ -1,7 +1,7 @@
 import { errorEnvelopeSchema, invoiceSchema } from '@ledgercraft/contracts';
 import { describe, expect, it, vi } from 'vitest';
 import { createApp } from '../../app';
-import { createDb } from '../../db/client';
+import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';

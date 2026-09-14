@@ -1,6 +1,7 @@
+import 'dotenv/config';
 import { serve } from '@hono/node-server';
 import { createApp } from './app';
-import { createAppDb } from './db/client';
+import { createAppDb } from './db/local';
 import { apiHost, apiPort } from './env';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from './modules/ai/openai';
 import { createAuth } from './modules/auth/auth';

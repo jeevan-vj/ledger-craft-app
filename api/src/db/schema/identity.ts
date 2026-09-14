@@ -1,38 +1,39 @@
-import { boolean, pgTable, text, timestamp, uniqueIndex, uuid } from 'drizzle-orm/pg-core';
+import { sql } from 'drizzle-orm';
+import { index, integer, sqliteTable, text, unique, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
-const timestamptz = (name: string) => timestamp(name, { withTimezone: true, mode: 'date' });
+const timestamptz = (name: string) => integer(name, { mode: 'timestamp_ms' });
 
-export const users = pgTable('users', {
-  id: uuid('id').defaultRandom().primaryKey(),
+export const users = sqliteTable('users', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   name: text('name').notNull(),
   email: text('email').notNull().unique(),
-  emailVerified: boolean('email_verified').default(false).notNull(),
+  emailVerified: integer('email_verified', { mode: 'boolean' }).default(false).notNull(),
   image: text('image'),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 });
 
-export const sessions = pgTable('sessions', {
-  id: uuid('id').defaultRandom().primaryKey(),
+export const sessions = sqliteTable('sessions', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   expiresAt: timestamptz('expires_at').notNull(),
   token: text('token').notNull().unique(),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
   ipAddress: text('ip_address'),
   userAgent: text('user_agent'),
-  userId: uuid('user_id')
+  userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
-});
+}, table => [index('sessions_user_id_idx').on(table.userId)]);
 
-export const authAccounts = pgTable(
+export const authAccounts = sqliteTable(
   'auth_accounts',
   {
-    id: uuid('id').defaultRandom().primaryKey(),
-    issuer: text('issuer').notNull(),
+    id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+    issuer: text('issuer').notNull().default('credential'),
     accountId: text('account_id').notNull(),
     providerId: text('provider_id').notNull(),
-    userId: uuid('user_id')
+    userId: text('user_id')
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     accessToken: text('access_token'),
@@ -42,38 +43,42 @@ export const authAccounts = pgTable(
     refreshTokenExpiresAt: timestamptz('refresh_token_expires_at'),
     scope: text('scope'),
     password: text('password'),
-    createdAt: timestamptz('created_at').defaultNow().notNull(),
-    updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+    createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+    updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
   },
   (table) => ({
-    issuerAccount: uniqueIndex('auth_accounts_issuer_account_id_uidx').on(table.issuer, table.accountId),
+    providerAccount: uniqueIndex('auth_accounts_provider_account_id_uidx').on(table.providerId, table.accountId),
   }),
 );
 
-export const verifications = pgTable('verifications', {
-  id: uuid('id').defaultRandom().primaryKey(),
+export const verifications = sqliteTable('verifications', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   identifier: text('identifier').notNull(),
   value: text('value').notNull(),
   expiresAt: timestamptz('expires_at').notNull(),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 });
 
-export const organisations = pgTable('organisations', {
-  id: uuid('id').defaultRandom().primaryKey(),
+export const organisations = sqliteTable('organisations', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   name: text('name').notNull(),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-  updatedAt: timestamptz('updated_at').defaultNow().notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 });
 
-export const organisationMemberships = pgTable('organisation_memberships', {
-  id: uuid('id').defaultRandom().primaryKey(),
-  organisationId: uuid('organisation_id')
+export const organisationMemberships = sqliteTable('organisation_memberships', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id')
     .notNull()
     .references(() => organisations.id, { onDelete: 'cascade' }),
-  userId: uuid('user_id')
+  userId: text('user_id')
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
   role: text('role').notNull().default('owner'),
-  createdAt: timestamptz('created_at').defaultNow().notNull(),
-});
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('organisation_memberships_org_id_uidx').on(table.organisationId, table.id),
+  index('organisation_memberships_org_idx').on(table.organisationId),
+  uniqueIndex('organisation_memberships_organisationId_userId_uidx').on(table.organisationId, table.userId),
+]);

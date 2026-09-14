@@ -1,3 +1,4 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { Invoice } from '@/types';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
@@ -9,6 +10,8 @@ interface ClassicTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -21,6 +24,8 @@ const ClassicTemplate = ({
   companyName, 
   companyAddress, 
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName, 
   clientAddress,
   taxRate,
@@ -227,6 +232,9 @@ const ClassicTemplate = ({
         </div>
       </div>
 
+      <div className="px-3 sm:px-4">
+        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+      </div>
       {/* Notes */}
       {invoice.notes && (
         <div className="mt-4 px-3 sm:px-4">

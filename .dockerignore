@@ -9,3 +9,9 @@ test-results
 .env
 .env.*
 !.env.example
+**/node_modules
+**/.env*
+**/*.local.json
+**/*.local.env
+.wrangler
+deploy

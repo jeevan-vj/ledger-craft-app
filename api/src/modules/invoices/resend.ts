@@ -1,5 +1,5 @@
 import { apiError } from '../../http-error';
-import type { InvoiceMail, InvoiceMailer } from './mailer';
+import { createUnavailableInvoiceMailer, type InvoiceMail, type InvoiceMailer } from './mailer';
 
 type ResendOptions = {
   apiKey?: string;
@@ -51,14 +51,7 @@ export function createResendInvoiceMailer(opts: ResendOptions = {}): InvoiceMail
 export function createRuntimeInvoiceMailer(): InvoiceMailer {
   const apiKey = process.env.RESEND_API_KEY;
   if (!apiKey || apiKey === 'your_resend_api_key') {
-    return {
-      async sendInvoice(mail) {
-        console.info(JSON.stringify({ msg: 'invoice_email_queued', ...mail }));
-      },
-      async sendReminder(mail) {
-        console.info(JSON.stringify({ msg: 'invoice_reminder_queued', ...mail }));
-      },
-    };
+    return createUnavailableInvoiceMailer();
   }
   return createResendInvoiceMailer({ apiKey });
 }

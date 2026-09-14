@@ -33,8 +33,8 @@ function toExpenseDto(
   return expenseSchema.parse({
     id: row.id,
     description: row.description,
-    amount: roundMoney(Number(row.amount)),
-    taxAmount: roundMoney(Number(row.taxAmount)),
+    amount: roundMoney(row.amount),
+    taxAmount: roundMoney(row.taxAmount),
     currency: row.currency,
     expenseDate: row.expenseDate,
     status: row.status,
@@ -75,9 +75,9 @@ export async function listExpenses(tx: Database, organisationId: string): Promis
       customerName: customers.name,
     })
     .from(expenses)
-    .leftJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId))
-    .leftJoin(accounts, eq(accounts.id, expenses.accountId))
-    .leftJoin(customers, eq(customers.id, expenses.customerId))
+    .leftJoin(expenseCategories, and(eq(expenseCategories.id, expenses.categoryId), eq(expenseCategories.organisationId, organisationId)))
+    .leftJoin(accounts, and(eq(accounts.id, expenses.accountId), eq(accounts.organisationId, organisationId)))
+    .leftJoin(customers, and(eq(customers.id, expenses.customerId), eq(customers.organisationId, organisationId)))
     .where(eq(expenses.organisationId, organisationId))
     .orderBy(desc(expenses.expenseDate), desc(expenses.createdAt));
   return rows.map((row) =>
@@ -102,9 +102,9 @@ export async function getExpense(
       customerName: customers.name,
     })
     .from(expenses)
-    .leftJoin(expenseCategories, eq(expenseCategories.id, expenses.categoryId))
-    .leftJoin(accounts, eq(accounts.id, expenses.accountId))
-    .leftJoin(customers, eq(customers.id, expenses.customerId))
+    .leftJoin(expenseCategories, and(eq(expenseCategories.id, expenses.categoryId), eq(expenseCategories.organisationId, organisationId)))
+    .leftJoin(accounts, and(eq(accounts.id, expenses.accountId), eq(accounts.organisationId, organisationId)))
+    .leftJoin(customers, and(eq(customers.id, expenses.customerId), eq(customers.organisationId, organisationId)))
     .where(and(eq(expenses.id, id), eq(expenses.organisationId, organisationId)));
   if (!row) return undefined;
   return toExpenseDto(row.expense, {
@@ -186,8 +186,8 @@ export async function insertExpense(
       organisationId: ctx.organisationId,
       userId: ctx.userId,
       description: input.description,
-      amount: roundMoney(Number(input.amount)),
-      taxAmount: roundMoney(Number(input.taxAmount ?? '0')),
+      amount: roundMoney(input.amount),
+      taxAmount: roundMoney(input.taxAmount ?? '0'),
       currency: input.currency ?? 'NZD',
       expenseDate: input.expenseDate,
       status: input.status ?? 'pending',
@@ -215,8 +215,8 @@ export async function updateExpense(
   if (!existing) return undefined;
   const patch: Partial<typeof expenses.$inferInsert> = { updatedAt: new Date() };
   if (input.description !== undefined) patch.description = input.description;
-  if (input.amount !== undefined) patch.amount = roundMoney(Number(input.amount));
-  if (input.taxAmount !== undefined) patch.taxAmount = roundMoney(Number(input.taxAmount));
+  if (input.amount !== undefined) patch.amount = roundMoney(input.amount);
+  if (input.taxAmount !== undefined) patch.taxAmount = roundMoney(input.taxAmount);
   if (input.currency !== undefined) patch.currency = input.currency;
   if (input.expenseDate !== undefined) patch.expenseDate = input.expenseDate;
   if (input.status !== undefined) patch.status = input.status;

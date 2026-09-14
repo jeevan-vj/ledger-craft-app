@@ -2,11 +2,10 @@ import {
   publicSharedInvoiceSchema,
   shareInvoiceResponseSchema,
   type CreateShareInvoiceRequest,
-  type InvoiceDto,
   type PublicSharedInvoice,
   type ShareInvoiceResponse,
 } from '@ledgercraft/contracts';
-import { sql } from 'drizzle-orm';
+import { and, eq, gt, isNull, or } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { sharedInvoices } from '../../db/schema/shared-invoices';
@@ -40,7 +39,7 @@ export async function createShareForUser(
     }
 
     const expiresAt = parseExpiry(input.expiresAt);
-    const shareToken = crypto.randomUUID();
+    const shareToken = `${ctx.organisationId}_${crypto.randomUUID()}`;
     const templateName = input.templateName ?? 'classic';
 
     await tx.insert(sharedInvoices).values({
@@ -65,19 +64,21 @@ export async function getPublicSharedInvoice(
   db: Database,
   token: string,
 ): Promise<PublicSharedInvoice> {
-  const rows = await db.execute<{ invoice_data: InvoiceDto; template_data: unknown }>(sql`
-    SELECT invoice_data, template_data
-    FROM ledgercraft_get_shared_invoice(${token})
-  `);
-  const row = rows[0];
+  const organisationId = token.split('_')[0];
+  const [row] = await db.select().from(sharedInvoices).where(and(
+    eq(sharedInvoices.organisationId, organisationId),
+    eq(sharedInvoices.shareToken, token),
+    eq(sharedInvoices.isActive, true),
+    or(isNull(sharedInvoices.expiresAt), gt(sharedInvoices.expiresAt, new Date())),
+  )).limit(1);
   if (!row) throw new HTTPException(404, { message: 'Invoice not found' });
 
-  const templateData = (row.template_data ?? {}) as {
+  const templateData = (row.templateData ?? {}) as {
     templateName?: string;
     businessProfile?: unknown;
   };
   return publicSharedInvoiceSchema.parse({
-    invoice: row.invoice_data,
+    invoice: row.invoiceData,
     templateName: templateData.templateName ?? 'classic',
     businessProfile: templateData.businessProfile,
   });
