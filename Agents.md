@@ -1,5 +1,13 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Design-system release (deployed, 2026-10-02):** The web app now follows the
+LedgerCraft Revolut-inspired system and the Expo client follows the Wise-inspired
+native system, with reusable agent skills documenting both. Production frontend
+build `ad2aaea114f0` and Worker
+`d8bff048-7d26-48e1-8384-18b6d3031ac8` are published. Local release gates and
+live authenticated smoke checks pass. No SQL migration was added; readiness
+remains `0002_business_bank_details.sql`. See `deploy/cloudflare.md`.
+
 **Invoice sharing (deployed, 2026-09-15):** Invoices → Share generates a token
 link with copy/open actions. Logged-out recipients can view the invoice and
 download its PDF with the selected template, actual tax rate and separate bank

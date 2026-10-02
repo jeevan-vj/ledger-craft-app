@@ -16,7 +16,29 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
-**Latest release (2026-09-15): invoice sharing deployed and verified.**
+**Latest release (2026-10-02): web and mobile design systems deployed and verified.**
+
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://c2dc7d87.ledger-craft-app.pages.dev
+- Frontend: `ad2aaea114f0`, version 0.0.8.
+- Worker: `d8bff048-7d26-48e1-8384-18b6d3031ac8`.
+- Source commit: `3bfbffb` on `mobile-app`; the GitHub push is pending an
+  authorized repository credential after the configured account returned 403.
+- No new SQL migration; readiness remains `0002_business_bank_details.sql`.
+- `pnpm deploy:cloudflare` exited zero: 45 contract and 75 API tests, SQLite
+  validation, API/contracts/Worker typechecks, the production build and Worker
+  dry run passed.
+- Live smoke checks passed readiness, signup/session, tenant isolation, exact
+  invoice totals, named-charge save/reopen/remove, concurrent invoices,
+  rollback, idempotency, attachments, public sharing, sign-out/sign-in and
+  persistence. The existing signing secret was preserved.
+- Chrome verified synthetic signup, the authenticated dashboard, sign-out and
+  the fresh Pages artifact at desktop and 390px mobile widths. The canonical
+  custom-domain tab retained the previous `934e59` service-worker shell despite
+  `/version.json` serving `ad2aaea114f0`; the preview artifact loaded the new
+  `index-BCJbg-nm.js` bundle without an update prompt. No customer data changed.
+
+**Earlier release (2026-09-15): invoice sharing deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
 - Pages deployment: https://6674884d.ledger-craft-app.pages.dev
