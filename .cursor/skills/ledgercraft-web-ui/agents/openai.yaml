@@ -1,0 +1,5 @@
+interface:
+  display_name: "LedgerCraft Web UI"
+  short_description: "Build consistent Revolut-inspired web interfaces"
+  brand_color: "#5B72EE"
+  default_prompt: "Use $ledgercraft-web-ui to build or refine this LedgerCraft web interface."

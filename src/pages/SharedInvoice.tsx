@@ -133,14 +133,14 @@ const SharedInvoice: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sticky top-0 z-10">
+      <div className="bg-white border-b border-gray-200 sm:sticky sm:top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-wrap items-center justify-between gap-3 py-3">
-            <div className="flex items-center space-x-3">
-              <div className="bg-blue-100 rounded-lg p-2">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
+            <div className="flex min-w-0 items-center gap-3">
+              <div className="bg-blue-100 rounded-lg p-2 shrink-0">
                 <FileText className="h-5 w-5 text-blue-600" />
               </div>
-              <div>
+              <div className="min-w-0 break-words">
                 <h1 className="text-lg font-semibold text-gray-900">
                   Invoice {invoiceData?.invoiceNumber}
                 </h1>
@@ -150,12 +150,12 @@ const SharedInvoice: React.FC = () => {
               </div>
             </div>
             
-            <div className="flex items-center space-x-3">
+            <div className="shrink-0">
               <Button
                 variant="outline"
                 onClick={handleDownloadPdf}
                 disabled={isDownloading}
-                className="flex items-center space-x-2"
+                className="flex min-h-11 w-full sm:w-auto items-center justify-center gap-2"
               >
                 {isDownloading ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
@@ -170,9 +170,9 @@ const SharedInvoice: React.FC = () => {
       </div>
 
       {/* Invoice Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
-          <div ref={templateRef} className="p-3 sm:p-6 md:p-8">
+          <div ref={templateRef} className="p-2 sm:p-6 md:p-8">
             {renderTemplate()}
           </div>
         </div>

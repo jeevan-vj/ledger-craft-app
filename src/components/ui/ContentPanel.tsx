@@ -11,7 +11,7 @@ export function ContentPanel({ children, className, padded = true }: ContentPane
   return (
     <div
       className={cn(
-        'rounded-3xl border border-border bg-card',
+        'rounded-2xl bg-card shadow-surface',
         padded && 'p-6 sm:p-8',
         className
       )}

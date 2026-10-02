@@ -39,7 +39,7 @@ export default defineConfig(({ mode }) => ({
         clientsClaim: true,
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api/'),
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/shared/invoice/'),
             handler: 'NetworkOnly',
           },
           {
@@ -59,7 +59,7 @@ export default defineConfig(({ mode }) => ({
           },
         ],
         // Exclude files that should always be fresh
-        navigateFallbackDenylist: [/^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
+        navigateFallbackDenylist: [/^\/shared\/invoice\//, /^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
         cleanupOutdatedCaches: true,
       },
       manifest: {

@@ -18,7 +18,17 @@ export default {
 			}
 		},
 		extend: {
+			fontFamily: {
+				sans: ['Avenir Next', 'Avenir', 'Helvetica Neue', 'ui-sans-serif', 'sans-serif'],
+			},
 			colors: {
+				chart: {
+					1: 'hsl(var(--chart-1))',
+					2: 'hsl(var(--chart-2))',
+					3: 'hsl(var(--chart-3))',
+					4: 'hsl(var(--chart-4))',
+					5: 'hsl(var(--chart-5))'
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',
@@ -35,6 +45,18 @@ export default {
 				destructive: {
 					DEFAULT: 'hsl(var(--destructive))',
 					foreground: 'hsl(var(--destructive-foreground))'
+				},
+				success: {
+					DEFAULT: 'hsl(var(--success))',
+					foreground: 'hsl(var(--success-foreground))'
+				},
+				warning: {
+					DEFAULT: 'hsl(var(--warning))',
+					foreground: 'hsl(var(--warning-foreground))'
+				},
+				info: {
+					DEFAULT: 'hsl(var(--info))',
+					foreground: 'hsl(var(--info-foreground))'
 				},
 				muted: {
 					DEFAULT: 'hsl(var(--muted))',
@@ -146,6 +168,8 @@ export default {
 				'slide-up': 'slide-up 0.4s ease-out'
 			},
 			boxShadow: {
+				'surface': '0 1px 2px rgba(19, 24, 48, 0.04), 0 12px 30px rgba(19, 24, 48, 0.07)',
+				'surface-lg': '0 2px 4px rgba(19, 24, 48, 0.05), 0 22px 54px rgba(19, 24, 48, 0.11)',
 				'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
 				'revolut': '0 10px 40px rgba(46, 76, 238, 0.2)',
 				'revolut-lg': '0 20px 60px rgba(46, 76, 238, 0.3)'

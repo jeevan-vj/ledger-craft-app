@@ -191,7 +191,7 @@ const ModernLogin = () => {
           <ModernButton
             type="button"
             variant="outline"
-            grid-cols-2 
+            fullWidth
             icon={Chrome}
             disabled={isLoading || isGoogleLoading}
             loading={isGoogleLoading}

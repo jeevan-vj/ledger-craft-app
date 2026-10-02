@@ -61,11 +61,22 @@ module.exports = {
           950: '#0A1F0A'
         },
         ios: {
-          grouped: '#F2F2F2',
+          grouped: '#F5F6F3',
           fill: '#EDEDED',
-        }
+        },
+        wise: {
+          forest: '#163300',
+          lime: '#9FE870',
+          'lime-pressed': '#8FDC62',
+          canvas: '#F5F6F3',
+          surface: '#FFFFFF',
+          fill: '#EDEDED',
+          muted: '#62605B',
+        },
       },
       borderRadius: {
+        xl: '1rem',
+        '2xl': '1.25rem',
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
@@ -74,4 +85,3 @@ module.exports = {
   },
   plugins: [],
 };
-

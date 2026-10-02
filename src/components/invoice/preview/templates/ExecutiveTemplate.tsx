@@ -1,3 +1,4 @@
+import './ExecutiveTemplate.css';
 import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
@@ -49,10 +50,10 @@ const ExecutiveTemplate = ({
   }, [isMobile]);
 
   return (
-    <div className="p-4 sm:p-8 max-w-4xl mx-auto" style={{ backgroundColor: theme.surface, color: theme.text }}>
+    <div className="executive-invoice p-3 sm:p-8 max-w-4xl mx-auto" style={{ backgroundColor: theme.surface, color: theme.text }}>
       {/* Header */}
       <div className="border-b-2 pb-4 sm:pb-6 mb-4 sm:mb-6" style={{ borderColor: theme.textLight + '40' }}>
-        <div className="flex justify-between items-start">
+        <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-start">
           <div>
             {businessLogo && (
               <div className="mb-2">
@@ -64,9 +65,9 @@ const ExecutiveTemplate = ({
               </div>
             )}
             <h1 className="text-2xl sm:text-3xl font-light tracking-wider mb-1" style={{ color: theme.text }}>INVOICE</h1>
-            <p className="text-base sm:text-lg font-semibold" style={{ color: theme.primary }}>#{invoice.invoiceNumber}</p>
+            <p className="text-base sm:text-lg font-semibold break-words" style={{ color: theme.primary }}>#{invoice.invoiceNumber}</p>
           </div>
-          <div className="text-right">
+          <div className="min-w-0 sm:text-right">
             <h2 className="text-lg sm:text-xl font-bold" style={{ color: theme.text }}>{companyName}</h2>
             <p className="text-xs sm:text-sm whitespace-pre-line no-underline no-autolink" style={{ color: theme.textLight }}>{companyAddress}</p>
             {companyPhone && (
@@ -124,7 +125,7 @@ const ExecutiveTemplate = ({
       <PDFCard className="mb-6 sm:mb-8">
         <PDFCardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="executive-items w-full">
               <thead className="text-left" style={{ backgroundColor: theme.background }}>
                 <tr>
                   <th className="py-3 sm:py-4 px-3 sm:px-6 font-semibold uppercase tracking-wider text-xs" style={{ color: theme.textLight }}>Description</th>
@@ -139,15 +140,15 @@ const ExecutiveTemplate = ({
                     <td className="py-2 sm:py-3 px-3 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>
                       {item.description}
                       {/* Only render details if it exists */}
-                      {(item as any).details && (
+                      {('details' in item && typeof item.details === 'string') && (
                         <div className="text-xs break-words" style={{ color: theme.textLight }}>
-                          {(item as any).details}
+                          {item.details}
                         </div>
                       )}
                     </td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{item.quantity} {item.unit}</td>
-                    <td className="py-2 sm:py-3 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
-                    <td className="py-2 sm:py-3 px-3 sm:px-6 border-t text-right" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{formatCurrency(item.total || item.quantity * item.rate, invoice.currency)}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}><span className="item-mobile-label">Qty</span>{item.quantity} {item.unit}</td>
+                    <td className="py-2 sm:py-3 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}><span className="item-mobile-label">Rate</span>{formatCurrency(item.rate, invoice.currency)}<wbr />/{item.rateUnit || item.unit}</td>
+                    <td className="py-2 sm:py-3 px-3 sm:px-6 border-t text-right" style={{ borderColor: theme.textLight + '30', color: theme.text }}><span className="item-mobile-label">Amount</span>{formatCurrency(item.total || item.quantity * item.rate, invoice.currency)}</td>
                   </tr>
                 ))}
               </tbody>

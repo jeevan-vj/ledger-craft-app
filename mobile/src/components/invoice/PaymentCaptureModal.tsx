@@ -13,11 +13,12 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Feather } from '@expo/vector-icons';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import { PAYMENT_METHOD_OPTIONS } from '@/utils/statusUtils';
 import { formatMoney } from '@/utils/money';
-import { palette } from '@/theme/tokens';
+import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
 
 interface PaymentCaptureModalProps {
   visible: boolean;
@@ -149,7 +150,7 @@ export default function PaymentCaptureModal({
     <Modal
       visible={visible}
       animationType="slide"
-      presentationStyle="fullScreen"
+      presentationStyle="pageSheet"
       onRequestClose={onClose}
     >
       <KeyboardAvoidingView
@@ -159,8 +160,14 @@ export default function PaymentCaptureModal({
       >
         {/* Header */}
         <View style={[styles.header, { paddingTop: insets.top || 16 }]}>
-          <TouchableOpacity onPress={onClose} disabled={loading}>
-            <Text style={styles.headerButton}>✕</Text>
+          <TouchableOpacity
+            onPress={onClose}
+            disabled={loading}
+            style={styles.headerButton}
+            accessibilityRole="button"
+            accessibilityLabel="Close payment form"
+          >
+            <Feather name="x" size={22} color={palette.textSecondary} />
           </TouchableOpacity>
           <Text style={styles.headerTitle}>Record Payment</Text>
           <View style={styles.headerButtonPlaceholder} />
@@ -178,7 +185,7 @@ export default function PaymentCaptureModal({
             <View style={styles.infoDivider} />
             <Text style={styles.infoLabel}>Amount Due</Text>
             <Text style={styles.infoValueLarge}>
-              ${invoice.total?.toFixed(2) || '0.00'}
+              {formatMoney(invoice.total || 0, invoice.currency || 'NZD')}
             </Text>
           </View>
 
@@ -196,6 +203,8 @@ export default function PaymentCaptureModal({
                   onPress={() => setPaymentMethod(method.value)}
                   disabled={loading}
                   activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: paymentMethod === method.value, disabled: loading }}
                 >
                   <Text style={[
                     styles.methodButtonText,
@@ -225,6 +234,8 @@ export default function PaymentCaptureModal({
                 }}
                 keyboardType="decimal-pad"
                 placeholder="0.00"
+                placeholderTextColor={palette.textTertiary}
+                accessibilityLabel="Payment amount"
                 editable={!loading}
               />
             </View>
@@ -241,10 +252,12 @@ export default function PaymentCaptureModal({
                 value={paymentDate}
                 onChangeText={setPaymentDate}
                 placeholder="YYYY-MM-DD"
+                placeholderTextColor={palette.textTertiary}
+                accessibilityLabel="Payment date"
                 editable={!loading}
               />
             </View>
-            <Text style={styles.fieldHelper}>Format: YYYY-MM-DD (e.g., 2025-11-02)</Text>
+            <Text style={styles.fieldHelper}>Format: YYYY-MM-DD</Text>
           </View>
 
           {/* Reference Number */}
@@ -254,13 +267,15 @@ export default function PaymentCaptureModal({
             </Text>
             <View style={[styles.inputContainer, errors.referenceNumber && styles.inputError]}>
               <TextInput
-                style={[styles.input, { paddingLeft: 16 }]}
+                style={[styles.input, { paddingLeft: space.lg }]}
                 value={referenceNumber}
                 onChangeText={(text) => {
                   setReferenceNumber(text);
                   if (errors.referenceNumber) setErrors({ ...errors, referenceNumber: '' });
                 }}
                 placeholder="Transaction ID, Check #, etc."
+                placeholderTextColor={palette.textTertiary}
+                accessibilityLabel="Payment reference number"
                 editable={!loading}
               />
             </View>
@@ -275,6 +290,8 @@ export default function PaymentCaptureModal({
               value={notes}
               onChangeText={setNotes}
               placeholder="Additional payment details..."
+              placeholderTextColor={palette.textTertiary}
+              accessibilityLabel="Payment notes"
               multiline
               numberOfLines={4}
               textAlignVertical="top"
@@ -318,6 +335,8 @@ export default function PaymentCaptureModal({
             onPress={handleSubmit}
             disabled={loading}
             activeOpacity={0.8}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: loading, busy: loading }}
           >
             {loading ? (
               <ActivityIndicator color={palette.accentForeground} />
@@ -334,195 +353,181 @@ export default function PaymentCaptureModal({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: palette.background,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingBottom: 16,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    paddingHorizontal: space.screen,
+    paddingBottom: space.md,
+    backgroundColor: palette.surface,
+    borderBottomWidth: hairline,
+    borderBottomColor: palette.separator,
   },
   headerButton: {
-    fontSize: 28,
-    color: '#64748b',
-    fontWeight: '300',
-    width: 44,
+    width: control.touchTarget,
+    height: control.touchTarget,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
   },
   headerButtonPlaceholder: {
-    width: 44,
+    width: control.touchTarget,
   },
   headerTitle: {
+    ...type.headline,
     fontSize: 20,
-    fontWeight: '700',
-    color: '#0f172a',
   },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    padding: 20,
+    padding: space.screen,
   },
   infoCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    marginBottom: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    backgroundColor: palette.surface,
+    borderRadius: radius.group,
+    padding: space.xl,
+    marginBottom: space.xxl,
   },
   infoLabel: {
-    fontSize: 13,
-    color: '#64748b',
-    marginBottom: 4,
-    fontWeight: '500',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    ...type.section,
+    marginBottom: space.xs,
   },
   infoValue: {
-    fontSize: 18,
-    color: '#0f172a',
-    fontWeight: '600',
-    marginBottom: 16,
+    ...type.headline,
+    marginBottom: space.lg,
   },
   infoDivider: {
-    height: 1,
-    backgroundColor: '#e2e8f0',
-    marginBottom: 16,
+    height: hairline,
+    backgroundColor: palette.separator,
+    marginBottom: space.lg,
   },
   infoValueLarge: {
     fontSize: 32,
-    color: '#0f172a',
+    color: palette.text,
     fontWeight: '700',
+    fontVariant: ['tabular-nums'],
   },
   field: {
-    marginBottom: 24,
+    marginBottom: space.xxl,
   },
   fieldLabel: {
-    fontSize: 15,
+    ...type.subhead,
+    color: palette.text,
     fontWeight: '600',
-    color: '#0f172a',
-    marginBottom: 8,
+    marginBottom: space.sm,
   },
   fieldHelper: {
-    fontSize: 13,
-    color: '#64748b',
+    ...type.footnote,
     marginTop: 6,
   },
   methodGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 8,
+    gap: space.sm,
   },
   methodButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#f1f5f9',
-    borderRadius: 10,
-    borderWidth: 2,
+    minHeight: control.touchTarget,
+    justifyContent: 'center',
+    paddingVertical: space.sm,
+    paddingHorizontal: space.lg,
+    backgroundColor: palette.fillMuted,
+    borderRadius: radius.pill,
+    borderWidth: 1,
     borderColor: 'transparent',
   },
   methodButtonActive: {
-    backgroundColor: '#eff6ff',
-    borderColor: '#3b82f6',
+    backgroundColor: palette.accentFill,
+    borderColor: palette.focus,
   },
   methodButtonText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
-    color: '#64748b',
+    color: palette.textSecondary,
   },
   methodButtonTextActive: {
-    color: '#1e40af',
+    color: palette.accentForeground,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: palette.surface,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    paddingHorizontal: 16,
-    height: 52,
+    borderColor: palette.separator,
+    paddingHorizontal: space.lg,
+    minHeight: control.prominent,
   },
   inputError: {
-    borderColor: '#ef4444',
+    borderColor: palette.danger,
   },
   inputPrefix: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#64748b',
-    marginRight: 8,
+    color: palette.textSecondary,
+    marginRight: space.sm,
   },
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#0f172a',
+    color: palette.text,
     fontWeight: '500',
   },
   textArea: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
+    backgroundColor: palette.surface,
+    borderRadius: radius.md,
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    padding: 16,
+    borderColor: palette.separator,
+    padding: space.lg,
     fontSize: 16,
-    color: '#0f172a',
+    color: palette.text,
     minHeight: 100,
   },
   errorText: {
     fontSize: 13,
-    color: '#ef4444',
+    color: palette.danger,
     marginTop: 6,
   },
   warningText: {
     fontSize: 13,
-    color: '#f59e0b',
+    color: palette.warning,
     marginTop: 6,
   },
   summaryCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
-    padding: 20,
-    marginTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    elevation: 2,
+    backgroundColor: palette.surface,
+    borderRadius: radius.group,
+    padding: space.xl,
+    marginTop: space.sm,
   },
   summaryTitle: {
     fontSize: 17,
     fontWeight: '700',
-    color: '#0f172a',
-    marginBottom: 16,
+    color: palette.text,
+    marginBottom: space.lg,
   },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 12,
+    marginBottom: space.md,
   },
   summaryLabel: {
     fontSize: 15,
-    color: '#64748b',
+    color: palette.textSecondary,
   },
   summaryValue: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#0f172a',
+    color: palette.text,
+    fontVariant: ['tabular-nums'],
   },
   summaryValueSuccess: {
-    color: '#10b981',
+    color: palette.success,
   },
   summaryDivider: {
-    height: 1,
-    backgroundColor: '#e2e8f0',
-    marginVertical: 12,
+    height: hairline,
+    backgroundColor: palette.separator,
+    marginVertical: space.md,
   },
   statusRow: {
     flexDirection: 'row',
@@ -532,35 +537,37 @@ const styles = StyleSheet.create({
   statusLabel: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#0f172a',
+    color: palette.text,
   },
   statusBadge: {
     paddingHorizontal: 12,
     paddingVertical: 6,
-    borderRadius: 8,
+    borderRadius: radius.pill,
     fontSize: 13,
     fontWeight: '700',
   },
   statusBadgePaid: {
-    backgroundColor: '#d1fae5',
-    color: '#065f46',
+    backgroundColor: palette.successFill,
+    color: palette.text,
   },
   statusBadgePartial: {
-    backgroundColor: '#fef3c7',
-    color: '#92400e',
+    backgroundColor: palette.warningFill,
+    color: palette.text,
   },
   footer: {
-    padding: 20,
-    paddingTop: 16,
-    backgroundColor: '#ffffff',
-    borderTopWidth: 1,
-    borderTopColor: '#e2e8f0',
+    padding: space.screen,
+    paddingTop: space.lg,
+    backgroundColor: palette.surface,
+    borderTopWidth: hairline,
+    borderTopColor: palette.separator,
   },
   submitButton: {
     backgroundColor: palette.accent,
-    paddingVertical: 16,
-    borderRadius: 980,
+    minHeight: control.prominent,
+    paddingHorizontal: space.xl,
+    borderRadius: radius.pill,
     alignItems: 'center',
+    justifyContent: 'center',
   },
   submitButtonDisabled: {
     opacity: 0.6,
@@ -571,4 +578,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-

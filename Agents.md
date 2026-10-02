@@ -83,6 +83,8 @@ See `deploy/cloudflare.md` for commands and rollout/verification details.
 | `.cursor/skills/ledgercraft-tdd/SKILL.md` | Tests and implementation order |
 | `.cursor/skills/ledgercraft-verify/SKILL.md` | Prove a feature/wave works |
 | `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Browser, screenshots, invoice PDF |
+| `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Revolut-inspired web UI implementation and review |
+| `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Wise-inspired native UI implementation and review |
 | `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema from app types |
 | `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |
 | `.cursor/skills/ledgercraft-agent-roster/SKILL.md` | Task subagent prompts |
@@ -715,6 +717,7 @@ create policy "Users can view own features"
 ### Documentation
 
 - `README.md` - Project overview and setup
+- `DESIGN.md` - Web Revolut-inspired and mobile Wise-inspired design systems
 - `.cursor/rules/project-guide.mdc` - Comprehensive development rules
 - `mobile/PLAY_STORE_CHECKLIST.md` - Mobile deployment checklist
 - This file: `Agents.md` - LLM agent guide

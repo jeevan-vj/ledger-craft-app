@@ -28,6 +28,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { ActionRow } from '@/components/ui/ActionRow';
 import { ContentPanel } from '@/components/ui/ContentPanel';
 import { SegmentedControl } from '@/components/ui/SegmentedControl';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 type ActivityTab = 'invoices' | 'expenses' | 'pending';
@@ -91,7 +92,13 @@ const Dashboard = () => {
     .sort((a, b) => b.value - a.value)
     .slice(0, 5);
 
-  const categoryColors = ['#5BC0BE', '#64748B', '#94A3B8', '#CBD5E1', '#E2E8F0'];
+  const categoryColors = [
+    'hsl(var(--chart-1))',
+    'hsl(var(--chart-2))',
+    'hsl(var(--chart-3))',
+    'hsl(var(--chart-4))',
+    'hsl(var(--chart-5))',
+  ];
 
   const recentInvoices = [...invoices]
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime())
@@ -200,13 +207,11 @@ const Dashboard = () => {
                 <p className="mt-1 text-sm text-muted-foreground">
                   Send it, get paid, GST-ready.
                 </p>
-                <Link
-                  to="/invoices/new"
-                  data-testid="dashboard-empty-create-invoice"
-                  className="mt-4 inline-flex items-center justify-center rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground"
-                >
-                  Create your first invoice
-                </Link>
+                <Button asChild className="mt-4">
+                  <Link to="/invoices/new" data-testid="dashboard-empty-create-invoice">
+                    Create your first invoice
+                  </Link>
+                </Button>
               </div>
             ))}
 
@@ -259,17 +264,17 @@ const Dashboard = () => {
           <div className="h-[280px] mt-6">
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart data={monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#E8EAED" />
-                <XAxis dataKey="name" tick={{ fill: '#64748B', fontSize: 12 }} axisLine={{ stroke: '#E8EAED' }} />
+                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
+                <XAxis dataKey="name" tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }} axisLine={{ stroke: 'hsl(var(--border))' }} />
                 <YAxis
-                  tick={{ fill: '#64748B', fontSize: 12 }}
-                  axisLine={{ stroke: '#E8EAED' }}
+                  tick={{ fill: 'hsl(var(--muted-foreground))', fontSize: 12 }}
+                  axisLine={{ stroke: 'hsl(var(--border))' }}
                   tickFormatter={(value) => `$${(value / 1000).toFixed(0)}k`}
                 />
                 <Tooltip formatter={(value) => formatCurrency(Number(value))} />
-                <Bar dataKey="revenue" fill="#5BC0BE" radius={[6, 6, 0, 0]} name="Revenue" />
-                <Bar dataKey="expenses" fill="#94A3B8" radius={[6, 6, 0, 0]} name="Expenses" />
-                <Line dataKey="netIncome" stroke="#1E293B" strokeWidth={2} name="Net Income" type="monotone" />
+                <Bar dataKey="revenue" fill="hsl(var(--chart-2))" radius={[6, 6, 0, 0]} name="Revenue" />
+                <Bar dataKey="expenses" fill="hsl(var(--chart-5))" radius={[6, 6, 0, 0]} name="Expenses" />
+                <Line dataKey="netIncome" stroke="hsl(var(--foreground))" strokeWidth={2} name="Net Income" type="monotone" />
               </ComposedChart>
             </ResponsiveContainer>
           </div>

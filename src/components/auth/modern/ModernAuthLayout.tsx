@@ -47,7 +47,7 @@ const testimonials = [
 
 export default function ModernAuthLayout({ children, title, subtitle, showFeatures = true }: ModernAuthLayoutProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
+    <div className="min-h-screen bg-background">
       {/* Theme Toggle */}
       <div className="absolute top-4 right-4 z-10">
         <ThemeToggle />
@@ -55,15 +55,7 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
       
       <div className="flex min-h-screen">
         {/* Left Panel - Brand & Features */}
-        <div className="hidden lg:flex lg:flex-1 relative overflow-hidden">
-            {/* Background Pattern */}
-            <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-primary/10 to-accent/5" />
-            <div 
-              className="absolute inset-0 opacity-30"
-              style={{
-                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000' fill-opacity='0.02'%3E%3Ccircle cx='7' cy='7' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
-              }}
-            />
+        <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-accent/[0.45]">
             
             <div className="relative flex flex-col justify-center px-12 py-16">
             {/* Logo & Brand */}
@@ -73,7 +65,7 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
                   <img src="/logo.png" alt="EasyBizInvoice" className="w-10 h-10" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  <h1 className="text-3xl font-bold tracking-tight text-foreground">
                     EasyBizInvoice
                   </h1>
                   <p className="text-muted-foreground text-sm">Professional Business Solutions</p>
@@ -83,7 +75,7 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
               <div className="space-y-4">
                 <h2 className="text-4xl font-bold text-foreground leading-tight">
                   Streamline Your
-                  <span className="block bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                  <span className="block text-primary">
                     Business Operations
                   </span>
                 </h2>
@@ -99,9 +91,9 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
                   <h3 className="text-xl font-semibold text-foreground mb-4">Why choose EasyBizInvoice?</h3>
                 <div className="grid grid-cols-1 gap-4">
                   {features.map((feature, index) => (
-                      <div key={index} className="flex items-start space-x-3 group hover:transform hover:scale-105 transition-all duration-300">
-                        <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/20 transition-all duration-300 group-hover:scale-110">
-                          <feature.icon className="h-4 w-4 text-primary transition-transform duration-300 group-hover:scale-110" />
+                      <div key={index} className="flex items-start space-x-3 group">
+                        <div className="flex-shrink-0 w-8 h-8 bg-primary/10 rounded-lg flex items-center justify-center transition-colors duration-200 group-hover:bg-primary/20">
+                          <feature.icon className="h-4 w-4 text-primary" />
                         </div>
                         <div>
                           <h4 className="font-medium text-foreground">{feature.title}</h4>
@@ -116,10 +108,10 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
             {/* Testimonials */}
             <div className="space-y-6">
               {testimonials.map((testimonial, index) => (
-                  <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 hover:shadow-lg hover:scale-105 transition-all duration-300 group">
+                  <div key={index} className="rounded-2xl bg-card p-6 shadow-surface">
                     <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-8 h-8 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                        <CheckCircle className="h-4 w-4 text-green-600 dark:text-green-400" />
+                      <div className="flex-shrink-0 w-8 h-8 bg-success/[0.10] rounded-full flex items-center justify-center">
+                        <CheckCircle className="h-4 w-4 text-success" />
                       </div>
                       <div>
                         <p className="text-foreground italic mb-2">"{testimonial.text}"</p>
@@ -144,14 +136,14 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
                     <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center mr-3 shadow-lg">
                       <img src="/logo.png" alt="EasyBizInvoice" className="w-8 h-8" />
                     </div>
-                    <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground">
                       EasyBizInvoice
                     </h1>
                   </div>
                 </div>
 
               {/* Form Card */}
-                <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-2xl shadow-xl p-8 space-y-6 hover:shadow-2xl transition-all duration-500 hover:scale-[1.02]">
+                <div className="rounded-2xl bg-card p-8 shadow-surface-lg space-y-6">
                     <div className="text-center space-y-2">
                       <h2 className="text-2xl font-bold text-card-foreground">{title}</h2>
                       <p className="text-muted-foreground">{subtitle}</p>

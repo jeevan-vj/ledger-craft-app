@@ -1,5 +1,6 @@
-import React from 'react';
-import { View, Text, TextInput, TextInputProps } from 'react-native';
+import React, { useState } from 'react';
+import { View, Text, TextInput, TextInputProps, StyleSheet } from 'react-native';
+import { control, palette, radius, space, type } from '@/theme/tokens';
 
 interface FormInputProps extends TextInputProps {
   label: string;
@@ -7,21 +8,70 @@ interface FormInputProps extends TextInputProps {
   required?: boolean;
 }
 
-export function FormInput({ label, error, required, ...props }: FormInputProps) {
+export function FormInput({
+  label,
+  error,
+  required,
+  style,
+  onFocus,
+  onBlur,
+  ...props
+}: FormInputProps) {
+  const [focused, setFocused] = useState(false);
+
   return (
-    <View className="mb-4">
-      <Text className="text-sm font-medium text-gray-700 mb-1.5">
-        {label} {required && <Text className="text-red-500">*</Text>}
+    <View style={styles.wrap}>
+      <Text style={styles.label}>
+        {label} {required && <Text style={styles.required}>*</Text>}
       </Text>
       <TextInput
-        className={`bg-white border ${error ? 'border-red-500' : 'border-gray-300'} rounded-xl px-4 py-3 text-base`}
-        placeholderTextColor="#9CA3AF"
+        style={[styles.input, focused && styles.focused, error ? styles.errorInput : null, style]}
+        placeholderTextColor={palette.textTertiary}
+        onFocus={(event) => {
+          setFocused(true);
+          onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          setFocused(false);
+          onBlur?.(event);
+        }}
         {...props}
       />
       {error && (
-        <Text className="text-red-500 text-xs mt-1">{error}</Text>
+        <Text style={styles.error}>{error}</Text>
       )}
     </View>
   );
 }
 
+const styles = StyleSheet.create({
+  wrap: { marginBottom: space.lg },
+  label: {
+    ...type.footnote,
+    color: palette.textSecondary,
+    fontWeight: '500',
+    marginBottom: 6,
+  },
+  required: { color: palette.danger },
+  input: {
+    minHeight: control.default,
+    borderWidth: 1,
+    borderColor: 'transparent',
+    borderRadius: radius.md,
+    backgroundColor: palette.fillMuted,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.md,
+    fontSize: 17,
+    color: palette.text,
+  },
+  focused: {
+    borderColor: palette.focus,
+    backgroundColor: palette.surface,
+  },
+  errorInput: { borderColor: palette.danger },
+  error: {
+    ...type.caption,
+    color: palette.danger,
+    marginTop: 6,
+  },
+});

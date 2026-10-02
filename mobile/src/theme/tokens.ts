@@ -1,11 +1,13 @@
 import { Platform, StyleSheet } from 'react-native';
 
 export const palette = {
-  background: '#F2F2F2',
+  background: '#F5F6F3',
   surface: '#FFFFFF',
+  surfaceRaised: '#FFFFFF',
   fill: '#EDEDED',
   fillMuted: '#F7F7F5',
   accent: '#9FE870',
+  accentPressed: '#8FDC62',
   accentFill: '#E8F8D8',
   accentForeground: '#163300',
   text: '#163300',
@@ -15,10 +17,16 @@ export const palette = {
   danger: '#FF3B30',
   dangerFill: '#FFF2F1',
   success: '#34C759',
+  successFill: '#ECF9EF',
   warning: '#FF9F0A',
+  warningFill: '#FFF7E8',
+  info: '#3478F6',
+  infoFill: '#EEF4FF',
+  focus: '#4D7C0F',
 } as const;
 
 export const space = {
+  none: 0,
   xs: 4,
   sm: 8,
   md: 12,
@@ -26,6 +34,7 @@ export const space = {
   xl: 20,
   xxl: 24,
   screen: 20,
+  section: 32,
 } as const;
 
 export const radius = {
@@ -36,6 +45,20 @@ export const radius = {
   group: 16,
   well: 28,
   pill: 980,
+} as const;
+
+export const control = {
+  compact: 36,
+  default: 48,
+  prominent: 56,
+  touchTarget: 44,
+} as const;
+
+export const motion = {
+  quick: 140,
+  standard: 220,
+  deliberate: 320,
+  pressedScale: 0.98,
 } as const;
 
 export const type = {
@@ -103,6 +126,19 @@ export const groupedShadow = Platform.select({
   },
   android: {
     elevation: 0,
+  },
+  default: {},
+});
+
+export const elevatedShadow = Platform.select({
+  ios: {
+    shadowColor: palette.text,
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.08,
+    shadowRadius: 24,
+  },
+  android: {
+    elevation: 4,
   },
   default: {},
 });

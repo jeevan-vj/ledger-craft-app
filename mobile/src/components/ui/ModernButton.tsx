@@ -90,6 +90,9 @@ export function ModernButton({
   return (
     <GestureDetector gesture={tapGesture}>
       <Animated.View
+        accessible
+        accessibilityRole="button"
+        accessibilityState={{ disabled: isDisabled, busy: loading }}
         style={[
           styles.button,
           variant === 'primary' && styles.primary,

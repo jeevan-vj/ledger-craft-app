@@ -1,7 +1,7 @@
 import { DefaultTheme, Theme } from '@react-navigation/native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Platform } from 'react-native';
-import { palette } from '@/theme/tokens';
+import { motion, palette } from '@/theme/tokens';
 
 export const COLORS = {
   accent: palette.accent,
@@ -56,7 +56,7 @@ export const nativeHeaderOptions: NativeStackNavigationOptions = {
     backgroundColor: COLORS.background,
   },
   animation: 'slide_from_right',
-  animationDuration: 220,
+  animationDuration: motion.standard,
   gestureEnabled: true,
   fullScreenGestureEnabled: Platform.OS === 'ios',
 };

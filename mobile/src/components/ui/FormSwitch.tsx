@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Switch } from 'react-native';
+import { View, Text, Switch, StyleSheet } from 'react-native';
+import { palette, space, type } from '@/theme/tokens';
 
 interface FormSwitchProps {
   label: string;
@@ -10,20 +11,34 @@ interface FormSwitchProps {
 
 export function FormSwitch({ label, value, onValueChange, description }: FormSwitchProps) {
   return (
-    <View className="flex-row items-center justify-between py-3 mb-2">
-      <View className="flex-1 pr-4">
-        <Text className="text-sm font-medium text-gray-700">{label}</Text>
+    <View style={styles.row}>
+      <View style={styles.copy}>
+        <Text style={styles.label}>{label}</Text>
         {description && (
-          <Text className="text-xs text-gray-500 mt-0.5">{description}</Text>
+          <Text style={styles.description}>{description}</Text>
         )}
       </View>
       <Switch
         value={value}
         onValueChange={onValueChange}
-        trackColor={{ false: '#D1D5DB', true: '#9FE870' }}
-        thumbColor={value ? '#163300' : '#F3F4F6'}
+        trackColor={{ false: palette.fill, true: palette.accent }}
+        thumbColor={value ? palette.accentForeground : palette.surface}
+        ios_backgroundColor={palette.fill}
+        accessibilityLabel={label}
       />
     </View>
   );
 }
 
+const styles = StyleSheet.create({
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: space.md,
+    marginBottom: space.sm,
+  },
+  copy: { flex: 1, paddingRight: space.lg },
+  label: { ...type.subhead, color: palette.text, fontWeight: '600' },
+  description: { ...type.caption, marginTop: 2 },
+});

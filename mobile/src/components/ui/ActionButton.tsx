@@ -1,5 +1,12 @@
 import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, TouchableOpacityProps } from 'react-native';
+import {
+  TouchableOpacity,
+  Text,
+  ActivityIndicator,
+  TouchableOpacityProps,
+  StyleSheet,
+} from 'react-native';
+import { control, palette, radius, space } from '@/theme/tokens';
 
 interface ActionButtonProps extends TouchableOpacityProps {
   title: string;
@@ -14,45 +21,52 @@ export function ActionButton({
   loading = false, 
   size = 'md',
   disabled,
+  style,
   ...props 
 }: ActionButtonProps) {
   const variantStyles = {
-    primary: 'bg-lime-700',
-    secondary: 'bg-gray-200',
-    danger: 'bg-red-600',
+    primary: styles.primary,
+    secondary: styles.secondary,
+    danger: styles.danger,
   };
 
   const textStyles = {
-    primary: 'text-white',
-    secondary: 'text-gray-900',
-    danger: 'text-white',
+    primary: styles.primaryText,
+    secondary: styles.secondaryText,
+    danger: styles.dangerText,
   };
 
   const sizeStyles = {
-    sm: 'px-4 py-2',
-    md: 'px-6 py-3',
-    lg: 'px-8 py-4',
+    sm: styles.small,
+    md: styles.medium,
+    lg: styles.large,
   };
 
   const textSizeStyles = {
-    sm: 'text-sm',
-    md: 'text-base',
-    lg: 'text-lg',
+    sm: styles.smallText,
+    md: styles.mediumText,
+    lg: styles.largeText,
   };
 
   return (
     <TouchableOpacity
-      className={`${variantStyles[variant]} ${sizeStyles[size]} rounded-xl items-center justify-center ${
-        disabled || loading ? 'opacity-50' : ''
-      }`}
+      style={[
+        styles.base,
+        variantStyles[variant],
+        sizeStyles[size],
+        (disabled || loading) && styles.disabled,
+        style,
+      ]}
       disabled={disabled || loading}
-      activeOpacity={0.7}
+      activeOpacity={0.82}
+      accessibilityRole="button"
+      accessibilityState={{ disabled: Boolean(disabled || loading), busy: loading }}
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'secondary' ? '#111827' : '#FFFFFF'} />
+        <ActivityIndicator color={variant === 'danger' ? '#FFFFFF' : palette.text} />
       ) : (
-        <Text className={`${textStyles[variant]} ${textSizeStyles[size]} font-semibold`}>
+        <Text style={[styles.label, textStyles[variant], textSizeStyles[size]]}>
           {title}
         </Text>
       )}
@@ -60,3 +74,25 @@ export function ActionButton({
   );
 }
 
+const styles = StyleSheet.create({
+  base: {
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.xl,
+  },
+  primary: { backgroundColor: palette.accent },
+  secondary: { backgroundColor: palette.fill },
+  danger: { backgroundColor: palette.danger },
+  primaryText: { color: palette.accentForeground },
+  secondaryText: { color: palette.text },
+  dangerText: { color: '#FFFFFF' },
+  small: { minHeight: control.compact, paddingHorizontal: space.lg },
+  medium: { minHeight: control.default },
+  large: { minHeight: control.prominent, paddingHorizontal: space.xxl },
+  label: { fontWeight: '600', textAlign: 'center' },
+  smallText: { fontSize: 14 },
+  mediumText: { fontSize: 16 },
+  largeText: { fontSize: 17 },
+  disabled: { opacity: 0.45 },
+});

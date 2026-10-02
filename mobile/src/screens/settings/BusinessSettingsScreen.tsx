@@ -4,14 +4,12 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  TextInput,
   Image,
   Alert,
   KeyboardAvoidingView,
   Platform,
   ActivityIndicator,
   StyleSheet,
-  StatusBar,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { businessProfileService, BusinessProfile, BusinessProfileUpdate } from '@/services/businessProfileService';
@@ -19,6 +17,7 @@ import { FormInput } from '@/components/ui/FormInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
+import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
@@ -233,6 +232,8 @@ export default function BusinessSettingsScreen() {
         style={[styles.tab, activeTab === 'profile' && styles.tabActive]}
         onPress={() => setActiveTab('profile')}
         activeOpacity={0.7}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: activeTab === 'profile' }}
       >
         <Text style={[styles.tabText, activeTab === 'profile' && styles.tabTextActive]}>
           Profile
@@ -242,6 +243,8 @@ export default function BusinessSettingsScreen() {
         style={[styles.tab, activeTab === 'preferences' && styles.tabActive]}
         onPress={() => setActiveTab('preferences')}
         activeOpacity={0.7}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: activeTab === 'preferences' }}
       >
         <Text style={[styles.tabText, activeTab === 'preferences' && styles.tabTextActive]}>
           Preferences
@@ -251,6 +254,8 @@ export default function BusinessSettingsScreen() {
         style={[styles.tab, activeTab === 'appearance' && styles.tabActive]}
         onPress={() => setActiveTab('appearance')}
         activeOpacity={0.7}
+        accessibilityRole="tab"
+        accessibilityState={{ selected: activeTab === 'appearance' }}
       >
         <Text style={[styles.tabText, activeTab === 'appearance' && styles.tabTextActive]}>
           Appearance
@@ -269,6 +274,9 @@ export default function BusinessSettingsScreen() {
           onPress={pickImage}
           activeOpacity={0.7}
           disabled={imagePickerLoading}
+          accessibilityRole="button"
+          accessibilityLabel={logoUri ? 'Change business logo' : 'Upload business logo'}
+          accessibilityState={{ disabled: imagePickerLoading, busy: imagePickerLoading }}
         >
           {logoUri ? (
             <Image 
@@ -280,13 +288,13 @@ export default function BusinessSettingsScreen() {
             />
           ) : (
             <View style={styles.logoPlaceholder}>
-              <Feather name="camera" size={24} color="#163300" />
+              <Feather name="camera" size={24} color={palette.accentForeground} />
               <Text style={styles.logoPlaceholderSubtext}>Tap to upload</Text>
             </View>
           )}
         </TouchableOpacity>
         {imagePickerLoading && (
-          <ActivityIndicator style={styles.logoLoader} color="#163300" />
+          <ActivityIndicator style={styles.logoLoader} color={palette.accentForeground} />
         )}
       </View>
 
@@ -338,9 +346,11 @@ export default function BusinessSettingsScreen() {
           onPress={() => setShowCountryPicker(true)}
           style={styles.countryButton}
           activeOpacity={0.7}
+          accessibilityRole="button"
+          accessibilityLabel={`Country, ${country || 'not selected'}`}
         >
           <Text style={styles.countryButtonText}>{country || 'Select country'}</Text>
-          <Text style={styles.countryButtonIcon}>›</Text>
+          <Feather name="chevron-right" size={20} color={palette.textTertiary} />
         </TouchableOpacity>
       </View>
 
@@ -428,7 +438,7 @@ export default function BusinessSettingsScreen() {
   const renderAppearanceTab = () => (
     <View style={styles.tabContent}>
       <View style={styles.comingSoonContainer}>
-        <Feather name="sliders" size={32} color="#163300" />
+        <Feather name="sliders" size={32} color={palette.accentForeground} />
         <Text style={styles.comingSoonTitle}>Theme Customization</Text>
         <Text style={styles.comingSoonText}>
           Custom theme selection coming soon! You'll be able to personalize your brand colors and appearance.
@@ -481,9 +491,11 @@ export default function BusinessSettingsScreen() {
             onPress={handleSave}
             activeOpacity={0.7}
             disabled={saving}
+            accessibilityRole="button"
+            accessibilityState={{ disabled: saving, busy: saving }}
           >
             {saving ? (
-              <ActivityIndicator color="#FFFFFF" />
+              <ActivityIndicator color={palette.accentForeground} />
             ) : (
               <Text style={styles.saveButtonText}>Save</Text>
             )}
@@ -508,87 +520,55 @@ export default function BusinessSettingsScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8FAFC',
-  },
-  headerGradient: {
-    backgroundColor: '#1E2875',
-    paddingTop: 48,
-    paddingBottom: 20,
-    marginTop: 0,
-    borderBottomLeftRadius: 24,
-    borderBottomRightRadius: 24,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
-    paddingHorizontal: 24,
-    paddingBottom: 12,
-  },
-  titleSection: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 30,
-    fontWeight: '800',
-    color: '#FFFFFF',
-    marginBottom: 4,
-  },
-  dateText: {
-    fontSize: 14,
-    color: 'rgba(255, 255, 255, 0.7)',
+    backgroundColor: palette.background,
   },
   tabContainer: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    borderBottomWidth: 2,
-    borderBottomColor: '#E2E8F0',
+    backgroundColor: palette.surface,
+    borderBottomWidth: hairline,
+    borderBottomColor: palette.separator,
   },
   tab: {
     flex: 1,
-    paddingVertical: 16,
+    minHeight: control.default,
+    paddingVertical: space.md,
     alignItems: 'center',
-    borderBottomWidth: 3,
+    justifyContent: 'center',
+    borderBottomWidth: 2,
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: '#163300',
+    borderBottomColor: palette.accentForeground,
   },
   tabText: {
-    fontSize: 15,
+    ...type.subhead,
     fontWeight: '600',
-    color: '#64748B',
   },
   tabTextActive: {
-    color: '#163300',
+    color: palette.accentForeground,
   },
   scrollView: {
     flex: 1,
   },
   tabContent: {
-    padding: 20,
+    padding: space.screen,
     paddingBottom: 100,
   },
   logoSection: {
-    marginBottom: 24,
+    marginBottom: space.xxl,
   },
   logoLabel: {
-    fontSize: 14,
+    ...type.footnote,
+    color: palette.text,
     fontWeight: '600',
-    color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: space.sm,
   },
   logoButton: {
     width: 120,
     height: 120,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: '#E2E8F0',
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.separator,
     borderStyle: 'dashed',
     overflow: 'hidden',
   },
@@ -601,7 +581,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
   },
   logoPlaceholderText: {
     fontSize: 32,
@@ -609,51 +589,48 @@ const styles = StyleSheet.create({
   },
   logoPlaceholderSubtext: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   logoLoader: {
     marginTop: 8,
   },
   inputContainer: {
-    marginBottom: 16,
+    marginBottom: space.lg,
   },
   inputLabel: {
-    fontSize: 14,
+    ...type.footnote,
+    color: palette.text,
     fontWeight: '600',
-    color: '#1E293B',
-    marginBottom: 8,
+    marginBottom: space.sm,
   },
   required: {
-    color: '#EF4444',
+    color: palette.danger,
   },
   countryButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-    padding: 16,
+    minHeight: control.default,
+    backgroundColor: palette.fillMuted,
+    borderRadius: radius.md,
+    padding: space.lg,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: 'transparent',
   },
   countryButtonText: {
-    fontSize: 16,
-    color: '#1E293B',
-  },
-  countryButtonIcon: {
-    fontSize: 24,
-    color: '#94A3B8',
+    ...type.callout,
+    color: palette.text,
   },
   row: {
     flexDirection: 'row',
-    gap: 12,
+    gap: space.md,
   },
   halfWidth: {
     flex: 1,
   },
   helperText: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
     marginTop: -8,
     marginBottom: 16,
     lineHeight: 18,
@@ -669,12 +646,12 @@ const styles = StyleSheet.create({
   comingSoonTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1E293B',
+    color: palette.text,
     marginBottom: 8,
   },
   comingSoonText: {
     fontSize: 14,
-    color: '#64748B',
+    color: palette.textSecondary,
     textAlign: 'center',
     lineHeight: 20,
     paddingHorizontal: 32,
@@ -682,16 +659,14 @@ const styles = StyleSheet.create({
   currentThemeContainer: {
     marginTop: 32,
     padding: 20,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E2E8F0',
+    backgroundColor: palette.surface,
+    borderRadius: radius.group,
     width: '100%',
   },
   currentThemeLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E293B',
+    color: palette.text,
     marginBottom: 12,
   },
   colorRow: {
@@ -704,37 +679,28 @@ const styles = StyleSheet.create({
   colorBox: {
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: radius.pill,
     marginBottom: 8,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: palette.separator,
   },
   colorLabel: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   bottomContainer: {
-    backgroundColor: '#FFFFFF',
-    borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
-    padding: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: -2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 4,
+    backgroundColor: palette.surface,
+    borderTopWidth: hairline,
+    borderTopColor: palette.separator,
+    padding: space.lg,
   },
   saveButton: {
-    backgroundColor: '#163300',
-    paddingVertical: 16,
-    borderRadius: 12,
+    minHeight: control.prominent,
+    backgroundColor: palette.accent,
+    paddingHorizontal: space.xl,
+    borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#163300',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.3,
-    shadowRadius: 8,
-    elevation: 4,
   },
   saveButtonDisabled: {
     opacity: 0.5,
@@ -742,7 +708,6 @@ const styles = StyleSheet.create({
   saveButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: palette.accentForeground,
   },
 });
-

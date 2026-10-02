@@ -93,6 +93,8 @@ Do not move `src/` → `apps/web` or `mobile/` → `apps/mobile` until every pro
 | `ledgercraft-tdd` | Implementing or testing a slice |
 | `ledgercraft-verify` | Prove a feature/wave works (tests + live HTTP) |
 | `ledgercraft-verify-ui` | Browser clicks, screenshots, invoice PDF |
+| `ledgercraft-web-ui` | Web React/Tailwind design and visual QA |
+| `ledgercraft-mobile-ui` | Expo/React Native design and device QA |
 | `ledgercraft-schema-rebuild` | Tables, Drizzle, RLS, compatibility schema |
 | `ledgercraft-vertical-slice` | Cutting over one domain to Hono |
 | `ledgercraft-agent-roster` | Launching Task subagents |
