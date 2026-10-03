@@ -24,6 +24,7 @@ import { taxConfigurations, taxReturns, taxAdjustments } from './schema/tax';
 import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
+import { billLines, billPayments, bills, vendors } from './schema/purchases';
 
 export const schema = {
   rlsProbe,
@@ -61,6 +62,10 @@ export const schema = {
   taxAdjustments,
   idempotencyKeys,
   sharedInvoices,
+  vendors,
+  bills,
+  billLines,
+  billPayments,
 };
 
 

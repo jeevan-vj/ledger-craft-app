@@ -49,6 +49,9 @@ const FinancialReportsPage = lazy(() => import("@/pages/FinancialReportsPage"));
 const IRDReportingPage = lazy(() => import("@/pages/IRDReportingPage"));
 const JournalEntriesPage = lazy(() => import("@/pages/JournalEntriesPage"));
 const ReceiptViewPage = lazy(() => import("@/pages/ReceiptViewPage"));
+const Vendors = lazy(() => import("@/pages/Vendors"));
+const Bills = lazy(() => import("@/pages/Bills"));
+const BillForm = lazy(() => import("@/pages/BillForm"));
 const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
 const PaymentDetailPage = lazy(() => import("@/pages/PaymentDetailPage"));
 // Loading component
@@ -146,6 +149,10 @@ const appRoutes: RouteObject[] = [
           { path: "categories", element: <Categories /> },
           { path: "expenses", element: <Expenses /> },
           { path: "expense-categories", element: <ExpenseCategories /> },
+          { path: "vendors", element: <Vendors /> },
+          { path: "bills", element: <Bills /> },
+          { path: "bills/new", element: <BillForm /> },
+          { path: "bills/:id/edit", element: <BillForm /> },
           
           // Payment & Accounting Routes
           { 

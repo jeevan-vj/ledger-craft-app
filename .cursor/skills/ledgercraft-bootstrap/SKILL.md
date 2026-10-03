@@ -7,7 +7,12 @@ description: Start-here operating instructions for LedgerCraft reconstruction. U
 
 Read this before writing code. Then follow the named skill for the wave you are on.
 
-## You are here (2026-09-11)
+## You are here (2026-10-03)
+
+The active deployment is Cloudflare Pages plus a Hono Worker, with Identity and
+per-organisation Ledger SQLite Durable Objects. The PostgreSQL reconstruction
+table below is historical context only; do not start Docker or Postgres for the
+current architecture.
 
 | Fact | Detail |
 | --- | --- |
@@ -27,24 +32,25 @@ Read this before writing code. Then follow the named skill for the wave you are 
 | W11 | **Verified (2026-09-11).** Journals CRUD, account writes/initialize, invoice remind mailer. |
 | W12 | **Verified (2026-09-11).** `POST /api/ai/chat`; client OpenAI gone. |
 | W13 | **Verified (2026-09-11).** `@supabase/supabase-js` removed; hosted URL/anon key and Edge Function URLs gone. |
+| AKP-01 | **Partially implemented and locally verified (2026-10-03).** Vendor CRUD and web bill draft/receive/void/payment workflows, exact AP journals, and SQLite migration `0004_purchases-payables.sql` pass the release gate. Native mobile purchases and the remaining lifecycle/import/attachment/recurring scope are pending. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
 
 ## Pickup
 
-1. Read `AGENTS.md` § Reconstruction agents (TanStack Router / `apps/` only after leftover stubbed client SQL is gone if you want a clean cut).
-2. If this clone does not contain `src/features/journals/api/journalsApi.ts`, W11 is missing.
-3. Commit/push if origin is behind and the user asks.
+1. Read `AGENTS.md`, `TARGET_ARCHITECTURE.md`, and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+2. Continue the dependency-ordered AKP tasks; finish the remaining AKP-01 scope or begin AKP-02 only as a separate verified slice.
+3. Commit, push, or deploy only when the user asks.
 
 ## First command
 
 ```bash
 pnpm install
-pnpm db:up
-pnpm verify:w13
+pnpm db:migrate
+pnpm deploy:check
 ```
 
-If `pnpm-lock.yaml` changes, commit it. Next: TanStack Router / `apps/` only after leftover stubbed client SQL is gone if you want a clean cut. Dev smoke:
+If `pnpm-lock.yaml` changes, preserve and review it. Dev smoke:
 
 ```bash
 pnpm dev:api          # 127.0.0.1:3001
@@ -59,14 +65,12 @@ See `.env.example`.
 
 | Name | Value |
 | --- | --- |
-| Postgres host port | **55432** (container 5432). Avoids other stacks on 5432. |
-| `DATABASE_URL` | `postgres://ledgercraft_app:app@127.0.0.1:55432/ledgercraft` |
-| `DATABASE_MIGRATE_URL` | `postgres://ledgercraft_migrator:migrator@127.0.0.1:55432/ledgercraft` |
-| `DATABASE_ADMIN_URL` | `postgres://postgres:postgres@127.0.0.1:55432/ledgercraft` (local only) |
-| Test DB | `ledgercraft_test` — Vitest only. `withTestDb` TRUNCATE stays off the app DB. |
+| SQLite | Local `DATABASE_URL` only for `pnpm db:migrate`; production uses Ledger Durable Objects. |
 | `API_PORT` | `3001` |
 
-API process uses the **app** role. Migrations and test seed use the **migrator** role. Never connect the API as superuser, `BYPASSRLS`, or table owner.
+Reviewed SQL lives in `api/sqlite-migrations/`, is checksum tracked, and applies
+transactionally on Durable Object startup. Never rotate the signing secret
+implicitly.
 
 ## Layout (do not move yet)
 
@@ -76,7 +80,7 @@ mobile/                  Expo. Not in the pnpm workspace yet.
 api/                     Hono + Drizzle + tests
 packages/contracts/      Zod DTOs only
 docker/postgres/init/    roles
-api/drizzle/             0000 probe + 0001 compatibility + 0002 identity + 0003 terms + 0004 idempotency/share
+api/sqlite-migrations/   reviewed, checksum-tracked SQLite migrations
 TARGET_ARCHITECTURE.md   end-state spec
 AGENTS.md                this project’s agent guide
 .cursor/skills/          procedures

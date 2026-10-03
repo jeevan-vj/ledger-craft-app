@@ -1,0 +1,326 @@
+# Akaunting Feature Parity Audit and Backlog
+
+Audit date: 2026-10-02
+LedgerCraft baseline: `mobile-app` at `c5d66d6`
+Akaunting baseline: [`akaunting/akaunting` at `edde6b54`](https://github.com/akaunting/akaunting/commit/edde6b54f27ee0635b9a5dbde52117d441a18195), 2026-09-29
+
+## Scope and decision
+
+Required parity means functional coverage of the open-source Akaunting core in the linked GitHub repository. It does not mean copying Akaunting's UI or source code. LedgerCraft keeps its Revolut-inspired web design, Wise-inspired native design, Hono API, Better Auth, exact decimal money rules, organisation isolation, and Cloudflare SQLite deployment.
+
+Akaunting also exposes more than 100 optional marketplace apps. Those are not silently included in the core-parity promise. Major first-party modules are inventoried separately below and each needs an explicit product decision. Third-party marketplace integrations are represented by a capability framework task rather than one task per vendor.
+
+Evidence was taken from:
+
+- [Akaunting core admin routes](https://github.com/akaunting/akaunting/blob/master/routes/admin.php)
+- [Akaunting core API routes](https://github.com/akaunting/akaunting/blob/master/routes/api.php)
+- [Akaunting navigation and default features](https://akaunting.com/hc/docs/the-user-interface/navigation-menu/)
+- [Akaunting invoices and estimates](https://akaunting.com/hc/docs/invoices-and-estimates/)
+- [Akaunting bills](https://akaunting.com/hc/docs/bills/)
+- [Akaunting banking and reconciliation](https://akaunting.com/hc/docs/banking-feeds-reconciliations/)
+- [Akaunting users, roles, and client portal](https://akaunting.com/hc/docs/users-and-roles/roles-and-permission-levels/)
+- [Akaunting settings](https://akaunting.com/hc/docs/settings/)
+- [Akaunting import/export](https://akaunting.com/hc/docs/import-export/)
+- [Akaunting app model](https://akaunting.com/hc/docs/apps-and-integrations/what-are-apps/)
+
+## Status legend
+
+- **Available**: an organisation-scoped API and usable web workflow exist, with meaningful automated coverage.
+- **Partial**: some capability exists, but an Akaunting core workflow, persistence path, or verification gate is missing.
+- **Missing**: no production domain/API/UI workflow exists.
+- **Extension**: an optional Akaunting module, not part of the open-source core baseline.
+
+File presence alone is not treated as feature completion. Mock-only UI, client-only calculations, and providers that intentionally return unavailable are classified as partial or missing.
+
+## Comparison summary
+
+| Capability | LedgerCraft status | Evidence and remaining gap |
+| --- | --- | --- |
+| Business dashboard | Partial | Dashboard and accounting pages exist; there is no saved dashboard/widget layout, payables widget, or date-filtered configurable dashboard comparable to Akaunting. |
+| Products and services | Partial | Items and item categories have API CRUD coverage. Bulk import/export, duplicate, enable/disable, media, and per-item multi-tax behavior are missing. |
+| Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
+| Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
+| Invoice payments and receipts | Available | Invoice-linked payments, partial/full status updates, and payment receipts exist. Account-ledger posting and split/connected banking workflows still need hardening under the banking task. |
+| Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows now use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Native mobile purchases, attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
+| Expenses | Available | Expense and category CRUD, tax amounts, account/customer links, receipt reference, and web/mobile entry flows exist. Approval policy, claims, reimbursements, and recurring expenses are extensions/gaps. |
+| Payment/bank accounts | Partial | Bank-account CRUD and accounting accounts exist. Default payment account, account statements/performance, bulk enable/disable, and a unified posting model are incomplete. |
+| Banking transactions | Partial | List and file import exist. Manual income/expense CRUD, duplicate/export/PDF, split transactions, document connections, and category/payment-method parity are missing. |
+| Transfers | Missing | No first-class transfer entity or atomic source/destination account workflow exists. |
+| Reconciliation | Available | Sessions, matches, confirmation, adjustments, completion, and history exist. It cannot yet reconcile against bills or the missing transfer/manual-transaction workflows. |
+| Recurring activity | Missing | No persisted schedule/execution engine for invoices, bills, income, expenses, or transfers exists. |
+| Chart of accounts and journals | Available | Account initialization/write and manual journal CRUD exist with exact values and organisation scoping. General-ledger/report authority remains client-heavy. |
+| Financial reports | Partial | P&L, balance sheet, cash flow, trial balance, receivables, and payables UI calculations exist. Reports are not server-authoritative, saved, pinnable, configurable by cash/accrual basis, or consistently printable/exportable. |
+| Tax | Partial | Tax configuration, returns, adjustments, and NZ GST/IRD workflows exceed Akaunting's basic summary in places. A reusable tax-rate catalogue, compound/withholding tax types, line-level tax assignment, and full settings CRUD are missing. |
+| Currencies and localization | Missing | Currency codes are stored on several records, but there is no currency catalogue, exchange rate, base/transaction currency accounting, locale/language, date/number formatting, or financial-year configuration. |
+| Company settings | Partial | Business identity, logo, invoice numbering, terms, bank details, template appearance, and default tax rate exist. Email templates, scheduling, defaults, localization, currencies, and richer invoice settings are missing. |
+| Companies/organisations | Partial | The data model isolates one provisioned organisation per user. Organisation CRUD, membership administration, switching, and multiple-company UX are missing. |
+| Users and permissions | Missing | Membership roles exist in identity data and the web has presentation guards, but there is no invitation/user administration or server-enforced action permission matrix. Current tests describe authenticated users as owners. |
+| Customer portal | Missing | Token-scoped invoice viewing/download is available, but customers cannot authenticate to a portal, manage a profile, list invoices, or review payments. |
+| Attachments/uploads | Partial | Organisation-scoped object upload/list/delete exists with the 1 MB SQLite limit. Attachments are not consistently linked to invoices, bills, items, contacts, and transactions. |
+| Import/export | Partial | Bank transaction import exists. Akaunting-style import/export for items, customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports is missing. |
+| Search, bulk actions, notifications | Missing | Individual screens have local filtering, but there is no cross-domain search, reusable server bulk-action model, or persistent notification centre. |
+| External API and API keys | Missing | The first-party clients use Hono APIs, but there is no customer-facing API-key lifecycle, scoped external API, webhook delivery, or public API documentation. |
+| Mobile coverage | Partial | Auth, dashboard, invoices, expenses, and settings exist. Most accounting, banking, reporting, team, purchase, and portal workflows are web-only or absent. |
+
+Conclusion: LedgerCraft has a strong sales, expense, NZ tax, and reconciliation foundation, but it does **not** currently contain every Akaunting core feature.
+
+## Core-parity tasks
+
+Tasks are dependency ordered. A task is complete only when its API/domain behavior, web workflow, relevant mobile workflow, organisation isolation, exact-money behavior, migrations, and automated tests pass. New domains follow the existing contract → route → use case → repository → client hook structure.
+
+### AKP-00 — Freeze the parity contract and verification gate (P0)
+
+Expected outcome: the comparison becomes an executable release gate instead of a one-time document.
+
+Acceptance criteria:
+
+- Add a machine-readable capability manifest covering every row in the core comparison table.
+- Map each capability to its contract, API integration test, web E2E test, and mobile test where applicable.
+- Add `pnpm verify:akaunting-core` that fails for unimplemented required capabilities and reports intentionally deferred extension modules separately.
+- Pin the Akaunting comparison SHA and document the process for reviewing future upstream changes without automatically expanding scope.
+
+### AKP-01 — Vendors, bills, and accounts payable (P0)
+
+Expected outcome: users can manage supplier obligations from vendor creation through bill settlement, with correct payables and tax accounting.
+
+Status (2026-10-03): **partial, locally verified, not deployed.** Shared
+contracts, migration `0004_purchases-payables.sql`, vendor CRUD, bill line
+account coding, draft/receive/void/payment use cases, exact tax-inclusive totals,
+balanced AP journals, partial/full balance updates, overpayment rejection,
+tenant isolation, and responsive web workflows are implemented. The remaining
+acceptance criteria below stay open; this status does not mark AKP-01 complete.
+
+Acceptance criteria:
+
+- Add vendor/contact-person records with CRUD, active state, defaults, notes, and import/export identifiers.
+- Add bill, bill-line, bill-tax, attachment, status/history, and payment-allocation records using exact decimal TEXT values.
+- Support draft, received/open, partial, paid, overdue, cancelled, and restored states with validated transitions.
+- Record full and split bill payments against a payment account and update accounts payable atomically.
+- Add vendor and bill list/detail/create/edit/payment workflows on web; add vendor/bill read and payment-critical flows on mobile.
+- Prove numbering uniqueness, idempotency, rollback, tax-inclusive/exclusive totals, overpayment rejection, and cross-organisation isolation.
+
+### AKP-02 — Complete banking transactions and atomic transfers (P0)
+
+Expected outcome: users can record and manage income, expenses, and transfers without relying on imported statements.
+
+Acceptance criteria:
+
+- Add manual bank transaction create/detail/update/delete with income/expense category, payment method, counterparty, reference, attachment, and reconciliation state.
+- Add a first-class transfer that atomically posts equal and opposite entries to two organisation-owned accounts; prevent same-account, cross-currency-without-rate, and cross-organisation transfers.
+- Support transaction split allocation and connections to invoices and bills without exceeding document balances.
+- Add duplicate, printable/PDF detail, and CSV export workflows.
+- Reconciliation excludes or correctly represents paired transfer legs and document allocations.
+- Integration tests prove atomic rollback and exact balances under concurrent writes.
+
+### AKP-03 — Multi-company, invitations, roles, and server authorization (P0)
+
+Expected outcome: an owner can operate multiple companies and safely collaborate with managers, accountants, employees, and read-only users.
+
+Acceptance criteria:
+
+- Add organisation create/update/archive and active-organisation switching without weakening the one-Durable-Object-per-organisation boundary.
+- Add invitation accept/revoke/resend, membership lifecycle, and user administration.
+- Define a server-side permission catalogue for customers, invoices, bills, banking, reports, settings, users, and API access.
+- Enforce permissions in Hono before every protected use case; UI guards only mirror server decisions.
+- Add roles for owner, admin/manager, accountant, employee/member, and read-only, with custom-role support deferred only by an explicit product decision.
+- Prove privilege escalation, stale invite, removed membership, direct API access, and cross-organisation attacks fail.
+
+### AKP-04 — Recurring document and transaction scheduler (P0)
+
+Expected outcome: users can schedule recurring invoices, bills, income, and expenses and can trust retries not to create duplicates.
+
+Acceptance criteria:
+
+- Store recurrence templates with daily, weekly, monthly, annual, and custom intervals; start/end/occurrence limits; timezone; next-run state; and pause/end controls.
+- Generate normal invoices, bills, or transactions through the same application use cases as manual creation.
+- Use deterministic occurrence keys so retries, Worker restarts, and concurrent alarms cannot duplicate a period.
+- Record run history, failure reason, next attempt, and generated document links.
+- Auto-send only when a mail provider is configured; otherwise create the document and surface an honest delivery status.
+- Verify month-end, leap-year, timezone/DST, catch-up, pause/resume, and idempotent retry behavior.
+
+### AKP-05 — Server-authoritative accounting and reports (P0)
+
+Expected outcome: invoices, bills, payments, expenses, transfers, and adjustments produce balanced postings, and every report is derived from the same ledger.
+
+Acceptance criteria:
+
+- Define posting rules and transaction boundaries for every money-changing workflow.
+- Add general-ledger and account-statement APIs with opening, movement, and closing balances.
+- Move P&L, balance sheet, trial balance, cash flow, receivables, payables, and tax summary calculations behind validated Hono contracts.
+- Support cash/accrual basis, date range, comparison period, account/category/customer/vendor filters, and base currency.
+- Remove production reliance on client-only or stubbed Supabase report branches.
+- Golden accounting fixtures prove the accounting equation, debits equal credits, report drill-down totals, void/reversal handling, and period boundaries.
+
+### AKP-06 — Currency, exchange-rate, localization, and financial-year settings (P1)
+
+Expected outcome: multi-currency documents and reports remain mathematically auditable while users see localized dates and amounts.
+
+Acceptance criteria:
+
+- Add an organisation base currency and managed currency catalogue with precision, symbol, position, enabled state, and explicit dated rates.
+- Persist transaction currency, rate, base-currency totals, and realized/unrealized difference postings where applicable.
+- Require an explicit reviewed rate when currencies differ; no silent live-rate dependency is introduced.
+- Add financial-year start, timezone, date/number formats, language/locale, and percent/discount presentation settings.
+- PDFs, exports, dashboards, tax reports, web, and mobile use the same formatting rules while APIs keep canonical decimal strings.
+- Tests cover zero/three-decimal currencies, rate direction, rounding, historical rate immutability, and timezone boundaries.
+
+### AKP-07 — Complete invoice lifecycle and document fidelity (P1)
+
+Expected outcome: LedgerCraft supports the remaining Akaunting invoice-management operations without regressing sharing or PDFs.
+
+Acceptance criteria:
+
+- Add cancel/void, restore, delete/archive policy, and duplicate actions with an immutable status/history trail.
+- Add line-level fixed/percent discounts and multiple line tax assignments; authoritative totals remain server-calculated.
+- Attach private files to invoices with type/size policy and token-scoped shared-invoice access rules.
+- Add import/export and printable detail actions using shared DTOs.
+- Preserve existing six templates, snapshot sharing, payment terms, additional charges, bank details, and public PDF behavior.
+- Test every state transition, mixed tax/discount rounding, duplicate numbering, attachment authorization, and shared snapshot immutability.
+
+### AKP-08 — Customer contacts, statements, and authenticated portal (P1)
+
+Expected outcome: customers can securely view their own commercial history while businesses manage richer contact records.
+
+Acceptance criteria:
+
+- Add contact people, billing/shipping addresses, tax/currency defaults, active state, and customer notes.
+- Add customer statements with opening balance, invoices, credits/adjustments, payments, and running balance.
+- Add invitation-based customer identities or a separately scoped portal membership that cannot access admin APIs.
+- Portal users can manage their profile and list/view/download their own invoices, statements, and payment receipts.
+- Existing public share links remain optional, snapshot-based, revocable/expiring, and independent of portal sessions.
+- Authorization tests prove one customer cannot enumerate or access another customer's records.
+
+### AKP-09 — Domain-wide import, export, and bulk actions (P1)
+
+Expected outcome: businesses can migrate into or out of LedgerCraft and manage large lists safely.
+
+Acceptance criteria:
+
+- Add preview/validate/import pipelines for customers, vendors, items, invoices, bills, accounts, journals, categories, taxes, and bank transactions.
+- Support stable CSV templates first; add XLSX only if it can be verified within the deployment limits.
+- Provide row-level validation errors, duplicate strategy, dry run, resumable/idempotent batches, and an audit summary.
+- Export the same domains with canonical IDs and enough references for a lossless round trip.
+- Add permission-aware bulk activate/deactivate/archive/delete actions where domain rules permit.
+- Round-trip and failure-injection tests prove no partial accounting writes and no cross-organisation references.
+
+### AKP-10 — Configurable dashboards and saved reports (P1)
+
+Expected outcome: users can configure a useful company dashboard and retain report definitions.
+
+Acceptance criteria:
+
+- Add date-filtered receivables, payables, cash flow, P&L, expenses by category, and account-balance widgets backed by server reports.
+- Save per-user widget visibility/order/size and default dashboard per organisation.
+- Save, rename, duplicate, pin, archive, print/PDF, and export report definitions.
+- Report filters survive refresh/shareable URLs on web and have an equivalent saved-filter model on mobile.
+- Widget drill-down resolves to the exact transactions making up the displayed total.
+
+### AKP-11 — Settings, email templates, reminders, and notification centre (P1)
+
+Expected outcome: organisation administrators can control defaults and communications, and users can see delivery/job outcomes.
+
+Acceptance criteria:
+
+- Consolidate company, invoice, tax, currency, localization, payment, email-template, and schedule settings behind typed APIs.
+- Add versioned invoice/reminder/receipt templates with safe variables, preview, validation, and reset-to-default.
+- Add overdue invoice and upcoming bill schedules with quiet hours, timezone, idempotency, and run history.
+- Add a persistent in-app notification centre for imports, scheduled work, failed sends, and required user action.
+- Preserve the free deployment rule: external email is clearly unavailable unless an explicitly configured provider exists.
+
+### AKP-12 — Search and activity history (P2)
+
+Expected outcome: users can find records across the company and understand material changes.
+
+Acceptance criteria:
+
+- Add organisation-scoped search across customers, vendors, items, invoices, bills, transactions, and accounts with permission filtering.
+- Add immutable activity records for status changes, payments, voids, imports, membership changes, and settings changes.
+- Expose entity timelines with actor, timestamp, safe summary, and linked source record.
+- Never log secrets, session material, raw attachment contents, or full sensitive payloads.
+
+### AKP-13 — Scoped external API, keys, and webhooks (P2)
+
+Expected outcome: approved external systems can integrate without using a human session or receiving broad organisation access.
+
+Acceptance criteria:
+
+- Add hashed API keys with label, scopes, organisation, expiry, last-used time, rotation, and revocation.
+- Publish an OpenAPI document from the same Zod/Hono contracts used at runtime.
+- Add signed, retryable, idempotent webhook delivery for selected invoice, bill, payment, and customer events.
+- Add per-key rate limits, audit logs, secret redaction, and replay protection.
+- Keep API keys out of browser/mobile bundles and reject access outside the key's organisation and scopes.
+
+## Optional Akaunting module decisions
+
+These are extensions advertised by Akaunting, not open-source core blockers. Each task begins with a product decision and is implemented only if the decision is **build**. A decision of **exclude** must record the user problem, reason, and alternative; it is not treated as an unnoticed gap.
+
+### AKX-00 — Catalogue and disposition all first-party Akaunting modules (P1)
+
+Expected outcome: there is a versioned list of Akaunting-maintained modules with `already covered`, `build`, `integrate`, or `exclude` decisions, so “all features” has a measurable boundary.
+
+Acceptance criteria:
+
+- Record module name, source URL, user problem, required dependencies, data sensitivity, Cloudflare/free-tier fit, and decision owner.
+- Review the catalogue at each Akaunting baseline update.
+- Do not treat third-party marketplace availability as a requirement unless a named integration is approved.
+
+### AKX-01 — Two-factor authentication
+
+Expected outcome: users can enroll, verify, recover, and disable TOTP-based 2FA with step-up checks for sensitive operations.
+
+### AKX-02 — Estimates/quotes
+
+Expected outcome: users can draft, send/share, accept/reject/expire, and convert estimates into invoices without re-entering line data.
+
+### AKX-03 — Inventory
+
+Expected outcome: products support SKU, tracked stock, warehouses, variants, adjustments, transfers, reorder signals, and auditable cost/quantity history linked to sales and purchases.
+
+### AKX-04 — Automated bank feeds
+
+Expected outcome: approved NZ-capable provider connections sync transactions idempotently with consent lifecycle, cursor recovery, disconnect/delete controls, and reconciliation provenance. This requires an explicit exception to the current no-external-provider architecture.
+
+### AKX-05 — Employee expense claims
+
+Expected outcome: employees submit receipts and claims through approval, rejection, reimbursement, and accounting posting with role-based visibility.
+
+### AKX-06 — Projects and time tracking
+
+Expected outcome: users manage projects, tasks, assignees, time, billable rates, costs, and invoice/bill links with project profitability reports.
+
+### AKX-07 — CRM
+
+Expected outcome: contacts can progress through lead and opportunity pipelines with activities, ownership, notes, and conversion to customers/invoices.
+
+### AKX-08 — Employees and payroll
+
+Expected outcome: approved jurisdictions support employee records, pay calendars, earnings/deductions, payslips, payroll journals, filings, and strict access controls. Do not claim payroll support before jurisdiction-specific compliance review.
+
+### AKX-09 — Accounting calendar
+
+Expected outcome: users see due dates and scheduled activity for invoices, bills, tax, recurring runs, projects, and payroll, with links to source records and timezone-correct reminders.
+
+### AKX-10 — Payment, commerce, and connector framework
+
+Expected outcome: named payment gateways, e-commerce systems, and business tools can be added through isolated adapters with encrypted credentials, scoped webhooks, idempotent sync, mapping UI, replay, and observable failures. No connector is considered supported until its own end-to-end certification passes.
+
+## Recommended delivery sequence
+
+1. **Foundation gate:** AKP-00.
+2. **Accounting completeness:** AKP-01, AKP-02, then AKP-05.
+3. **Safe collaboration and automation:** AKP-03 and AKP-04.
+4. **Operational parity:** AKP-06 through AKP-11.
+5. **Platform capabilities:** AKP-12 and AKP-13.
+6. **Extension decisions and approved modules:** AKX-00, then selected AKX tasks.
+
+Do not combine a UI redesign, router migration, repository move, and accounting-domain cutover in the same task. Each task must preserve the deployed Cloudflare architecture unless the user separately approves an architecture change.
+
+## Definition of core parity
+
+Core parity is reached only when:
+
+- every AKP task is complete or has an explicit user-approved exclusion;
+- `pnpm verify:akaunting-core`, existing release checks, web E2E, and relevant mobile tests pass;
+- production migrations are reviewed and checksum-tracked;
+- live authenticated smoke checks cover sales, purchases, banking, reporting, company switching, role restrictions, and the customer portal;
+- the comparison is rechecked against the pinned Akaunting baseline and any later baseline change is triaged.

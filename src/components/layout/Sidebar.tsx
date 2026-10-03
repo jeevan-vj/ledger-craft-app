@@ -22,6 +22,7 @@ import {
   Building2,
   Upload,
   Landmark,
+  Truck,
   type LucideIcon,
 } from 'lucide-react';
 import AppVersion from '@/components/common/AppVersion';
@@ -52,6 +53,14 @@ const NAV_ITEMS: NavItem[] = [
   { name: 'Invoices', path: '/invoices', icon: Receipt, permission: 'invoices:read' },
   { name: 'Customers', path: '/customers', icon: Users, permission: 'customers:read' },
   { name: 'Items', path: '/items', icon: FolderOpen },
+  {
+    name: 'Purchases',
+    icon: Truck,
+    children: [
+      { name: 'Vendors', path: '/vendors', icon: Building2 },
+      { name: 'Bills', path: '/bills', icon: FileText },
+    ],
+  },
   {
     name: 'Money',
     icon: Wallet,

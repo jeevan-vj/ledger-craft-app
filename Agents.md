@@ -1,5 +1,15 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Purchases/payables slice (locally verified, 2026-10-03):** Vendor CRUD and
+bill draft/receive/void/payment workflows are implemented through Hono/SQLite
+with exact totals, balanced accounts-payable journals, overpayment rejection,
+and organisation isolation. Web Vendors, Bills, and Bill form screens follow
+the current Revolut-inspired UI and responsive layout. Migration
+`0004_purchases-payables.sql` is reviewed; `pnpm deploy:check` and authenticated
+browser create/receive/partial-payment/reload verification pass. This work is
+not deployed. AKP-01 still requires native mobile purchase flows, attachments,
+history, cancel/restore, split allocations, import/export, and recurring bills.
+
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists IRD GST treatment, exemption reason, claimable percentage and private-use
 percentage through Hono/SQLite. New expenses default to NZD, and amount/tax input
@@ -75,9 +85,9 @@ review it, then use `pnpm deploy:cloudflare` to deploy code and bundled migratio
 | --- | --- |
 | Spec | `TARGET_ARCHITECTURE.md` — end state and gates. Not optional. |
 | Live DB | Hosted `public` is empty (2026-09-03). Greenfield. Do not replay Git SQL. No UUID import. |
-| Now | W1–W13 **verified** (2026-09-11). Journals, account writes, reminders, and chat completions are Hono. `@supabase/supabase-js` is gone. Next: TanStack Router / `apps/`. |
-| Release gate | SQLite API is deployed and verified; new Pages publication and website verification remain pending. |
-| Clients | Web and mobile email auth are Better Auth. Live web auth routes do not call `supabase.auth`. Product CRUD (customers, invoices, expenses, payments, accounts, journals, bank, recon, tax, objects, receipts, receipt-scan, conversations, chat) → Hono. Invoice send and payment reminders use the Hono mailer. Web lists use TanStack Query when flags are on. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
+| Now | W1–W13 **verified**. Purchases/payables is locally verified through migration `0004`; remaining AKP-01 work is explicitly tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. |
+| Release gate | Deployed production remains on migration `0003_expense_gst_treatment.sql`; the local `0004` purchase slice passes `pnpm deploy:check` but is not deployed. |
+| Clients | Web and mobile email auth are Better Auth. Product CRUD, including web vendors and bills, routes through Hono. Native mobile purchases remain pending. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
 | Ports | Local API **3001**, Vite **8080** (`/api` proxy); SQLite needs no database port. |
 | Package manager | **pnpm** workspace (`api`, `packages/contracts`). `mobile/` is not in the workspace yet. |
 

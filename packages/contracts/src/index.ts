@@ -226,3 +226,26 @@ export {
   type UpdateJournalEntryRequest,
 } from './journal';
 
+export {
+  billLineInputSchema,
+  billLineSchema,
+  billListResponseSchema,
+  billPaymentSchema,
+  billSchema,
+  createBillRequestSchema,
+  createVendorRequestSchema,
+  recordBillPaymentRequestSchema,
+  updateBillRequestSchema,
+  updateVendorRequestSchema,
+  vendorListResponseSchema,
+  vendorSchema,
+  type BillDto,
+  type BillLineInput,
+  type BillPaymentDto,
+  type CreateBillRequest,
+  type CreateVendorRequest,
+  type RecordBillPaymentRequest,
+  type UpdateBillRequest,
+  type UpdateVendorRequest,
+  type VendorDto,
+} from './purchase';

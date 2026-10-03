@@ -29,6 +29,13 @@
       "when": 1790913223682,
       "tag": "0003_expense_gst_treatment",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1791010617358,
+      "tag": "0004_purchases-payables",
+      "breakpoints": true
     }
   ]
 }

@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Purchases/payables slice (locally verified, 2026-10-03):** Vendor CRUD and
+draft/receive/void/pay bill workflows now run through shared Zod contracts,
+Hono use cases, Drizzle repositories, and organisation-scoped SQLite tables.
+Receiving a bill posts expense/GST input against accounts payable; payments
+post accounts payable against bank and update exact partial/paid balances
+atomically. Web vendor and bill workflows follow the existing Revolut-inspired
+system and adapt to mobile web. Migration `0004_purchases-payables.sql` is
+reviewed and checksum tracked. `pnpm deploy:check`, purchase API/component tests,
+and an authenticated create/receive/partial-payment/reload browser flow pass.
+This slice is not deployed; native mobile purchase flows, attachments, history,
+cancel/restore, split allocations, import/export, and recurring bills remain in
+AKP-01.
+
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
 and private-use percentage fields through Hono/SQLite. New expenses default to
@@ -33,7 +46,7 @@ the API/web mapper. Build `1b3eef9860bf` and Worker
 read-only checks pass. Customer invoice updates and live mutation verification
 remain pending access/approval. See `deploy/cloudflare.md`.
 
-**Status (2026-09-14):** the user approved the Cloudflare-only free SQLite
+**Status (2026-10-03):** the user approved the Cloudflare-only free SQLite
 architecture below. It supersedes this document's older PostgreSQL, S3, Resend
 and container decisions. The earlier reconstruction phases remain historical
 context; their API/DTO boundaries, exact-money rules, transaction guarantees and

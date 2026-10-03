@@ -21,6 +21,7 @@ import { aiRoutes } from './modules/ai/ai.routes';
 import { conversationRoutes } from './modules/conversations/conversations.routes';
 import { journalRoutes } from './modules/journals/journals.routes';
 import { getBetterAuthTrustedOrigins } from './env';
+import { purchaseRoutes } from './modules/purchases/purchases.routes';
 import type { AppDependencies, AppEnv } from './types';
 
 export function createApp(deps: AppDependencies = {}) {
@@ -88,6 +89,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', aiRoutes());
   app.route('/', conversationRoutes());
   app.route('/', journalRoutes());
+  app.route('/', purchaseRoutes());
 
   if (process.env.NODE_ENV === 'test') {
     app.get('/api/__test/boom', () => {
