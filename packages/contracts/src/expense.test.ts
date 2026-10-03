@@ -21,12 +21,41 @@ describe('expense contracts', () => {
     receiptUrl: null,
     paymentMethod: 'card' as const,
     notes: null,
+    gstTreatment: 'partial' as const,
+    gstExemptionReason: 'entertainment_50' as const,
+    gstClaimablePercentage: 50,
+    privateUsePercentage: 10,
     createdAt: '2026-09-08T00:00:00.000Z',
     updatedAt: '2026-09-08T00:00:00.000Z',
   };
 
   it('accepts a camelCase expense DTO without ownership ids', () => {
-    expect(expenseSchema.parse(expense).amount).toBe('79.00');
+    expect(expenseSchema.parse(expense)).toMatchObject({
+      amount: '79.00',
+      gstTreatment: 'partial',
+      gstExemptionReason: 'entertainment_50',
+      gstClaimablePercentage: 50,
+      privateUsePercentage: 10,
+    });
+  });
+
+  it('accepts NZ GST treatment fields on create', () => {
+    expect(
+      createExpenseRequestSchema.parse({
+        description: 'Client lunch',
+        amount: '115.00',
+        expenseDate: '2026-10-02',
+        gstTreatment: 'partial',
+        gstExemptionReason: 'entertainment_50',
+        gstClaimablePercentage: 50,
+        privateUsePercentage: 0,
+      }),
+    ).toMatchObject({
+      gstTreatment: 'partial',
+      gstExemptionReason: 'entertainment_50',
+      gstClaimablePercentage: 50,
+      privateUsePercentage: 0,
+    });
   });
 
   it('rejects ownership ids and negative amounts on create', () => {

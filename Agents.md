@@ -1,5 +1,15 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
+persists IRD GST treatment, exemption reason, claimable percentage and private-use
+percentage through Hono/SQLite. New expenses default to NZD, and amount/tax input
+labels correctly target their fields. Migration `0003_expense_gst_treatment.sql`
+preserves existing rows with standard/none/100/0 defaults. Production frontend
+build `1a996cac23f2` and Worker `6b5c99a4-7df6-4a91-8cfb-493b88708c97` are
+published. Local release gates, live smoke checks, and authenticated browser
+create/edit/reload verification pass. Readiness reports
+`0003_expense_gst_treatment.sql`. See `deploy/cloudflare.md`.
+
 **Design-system release (deployed, 2026-10-02):** The web app now follows the
 LedgerCraft Revolut-inspired system and the Expo client follows the Wise-inspired
 native system, with reusable agent skills documenting both. Production frontend

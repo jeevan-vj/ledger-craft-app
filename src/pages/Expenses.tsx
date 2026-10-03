@@ -59,6 +59,10 @@ const Expenses = () => {
         currency: expenseData.currency,
         paymentMethod: expenseData.paymentMethod || null,
         notes: expenseData.notes || null,
+        gstTreatment: expenseData.gstTreatment,
+        gstExemptionReason: expenseData.gstExemptionReason,
+        gstClaimablePercentage: expenseData.gstClaimablePercentage,
+        privateUsePercentage: expenseData.privateUsePercentage,
       };
 
       if (selectedExpense) {

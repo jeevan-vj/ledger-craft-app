@@ -3,6 +3,20 @@ import { z } from 'zod';
 const money = z.string().regex(/^\d+(\.\d+)?$/);
 const expenseStatus = z.enum(['pending', 'approved', 'rejected']);
 const expensePaymentMethod = z.enum(['cash', 'card', 'bank_transfer', 'check', 'other']);
+const gstTreatment = z.enum(['standard', 'zero_rated', 'exempt', 'partial', 'private_use']);
+const gstExemptionReason = z.enum([
+  'none',
+  'motor_vehicle',
+  'financial_services',
+  'residential_rent',
+  'insurance_life',
+  'exported_services',
+  'entertainment_50',
+  'home_office',
+  'second_hand_goods',
+  'other_exempt',
+]);
+const percentage = z.number().int().min(0).max(100);
 
 export const expenseCategorySchema = z.object({
   id: z.string().uuid(),
@@ -32,6 +46,10 @@ export const expenseSchema = z.object({
   receiptUrl: z.string().nullable(),
   paymentMethod: expensePaymentMethod.nullable(),
   notes: z.string().nullable(),
+  gstTreatment,
+  gstExemptionReason,
+  gstClaimablePercentage: percentage,
+  privateUsePercentage: percentage,
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -52,6 +70,10 @@ const expenseWriteObject = z
     receiptUrl: z.string().nullable().optional(),
     paymentMethod: expensePaymentMethod.nullable().optional(),
     notes: z.string().nullable().optional(),
+    gstTreatment: gstTreatment.optional(),
+    gstExemptionReason: gstExemptionReason.optional(),
+    gstClaimablePercentage: percentage.optional(),
+    privateUsePercentage: percentage.optional(),
   })
   .strict();
 

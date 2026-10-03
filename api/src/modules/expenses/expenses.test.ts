@@ -68,12 +68,44 @@ describe('expense routes', () => {
             categoryId: categoryDto.id,
             paymentMethod: 'card',
             vendorName: 'Adobe',
+            gstTreatment: 'partial',
+            gstExemptionReason: 'entertainment_50',
+            gstClaimablePercentage: 50,
+            privateUsePercentage: 10,
           }),
         });
         expect(created.status).toBe(201);
         const expense = expenseSchema.parse(await created.json());
         expect(expense.amount).toBe('79.00');
         expect(expense.categoryName).toBe('Software');
+        expect(expense).toMatchObject({
+          gstTreatment: 'partial',
+          gstExemptionReason: 'entertainment_50',
+          gstClaimablePercentage: 50,
+          privateUsePercentage: 10,
+        });
+
+        const updated = await app.request(`/api/expenses/${expense.id}`, {
+          method: 'PATCH',
+          headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({
+            description: 'Adobe CC updated',
+            status: 'approved',
+            gstTreatment: 'private_use',
+            gstExemptionReason: 'motor_vehicle',
+            gstClaimablePercentage: 80,
+            privateUsePercentage: 25,
+          }),
+        });
+        expect(updated.status).toBe(200);
+        expect(expenseSchema.parse(await updated.json())).toMatchObject({
+          description: 'Adobe CC updated',
+          status: 'approved',
+          gstTreatment: 'private_use',
+          gstExemptionReason: 'motor_vehicle',
+          gstClaimablePercentage: 80,
+          privateUsePercentage: 25,
+        });
 
         const ownership = await app.request('/api/expenses', {
           method: 'POST',
@@ -90,7 +122,7 @@ describe('expense routes', () => {
         const listA = expenseListResponseSchema.parse(
           await (await app.request('/api/expenses', { headers: { Cookie: ownerA.cookie } })).json(),
         );
-        expect(listA.expenses.map((row) => row.description)).toEqual(['Adobe CC']);
+        expect(listA.expenses.map((row) => row.description)).toEqual(['Adobe CC updated']);
 
         const listB = expenseListResponseSchema.parse(
           await (await app.request('/api/expenses', { headers: { Cookie: ownerB.cookie } })).json(),
@@ -113,6 +145,22 @@ describe('expense routes', () => {
           }),
         });
         expect(foreignCategory.status).toBe(400);
+
+        const foreignDelete = await app.request(`/api/expenses/${expense.id}`, {
+          method: 'DELETE',
+          headers: { Cookie: ownerB.cookie },
+        });
+        expect(foreignDelete.status).toBe(404);
+
+        const deleted = await app.request(`/api/expenses/${expense.id}`, {
+          method: 'DELETE',
+          headers: { Cookie: ownerA.cookie },
+        });
+        expect(deleted.status).toBe(204);
+        const afterDelete = expenseListResponseSchema.parse(
+          await (await app.request('/api/expenses', { headers: { Cookie: ownerA.cookie } })).json(),
+        );
+        expect(afterDelete.expenses).toEqual([]);
       } finally {
         await sql.end({ timeout: 5 });
       }

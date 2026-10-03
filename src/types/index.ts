@@ -370,6 +370,8 @@ export interface SupabaseAccount {
 // Expense types
 export type ExpenseStatus = 'pending' | 'approved' | 'rejected';
 export type PaymentMethod = 'cash' | 'card' | 'bank_transfer' | 'check' | 'other';
+export type GstTreatment = 'standard' | 'zero_rated' | 'exempt' | 'partial' | 'private_use';
+export type GstExemptionReason = 'none' | 'motor_vehicle' | 'financial_services' | 'residential_rent' | 'insurance_life' | 'exported_services' | 'entertainment_50' | 'home_office' | 'second_hand_goods' | 'other_exempt';
 
 export interface ExpenseCategory {
   id: string;
@@ -400,6 +402,10 @@ export interface Expense {
   currency: string;
   paymentMethod?: PaymentMethod | null;
   notes?: string | null;
+  gstTreatment?: GstTreatment;
+  gstExemptionReason?: GstExemptionReason;
+  gstClaimablePercentage?: number;
+  privateUsePercentage?: number;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

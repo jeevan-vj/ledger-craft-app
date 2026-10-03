@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
+persists the existing IRD GST treatment, exemption reason, claimable percentage
+and private-use percentage fields through Hono/SQLite. New expenses default to
+NZD, and amount/tax inputs have valid label associations. Migration
+`0003_expense_gst_treatment.sql` preserves existing rows with standard/none/
+100/0 defaults. Production frontend build `1a996cac23f2` and Worker
+`6b5c99a4-7df6-4a91-8cfb-493b88708c97` are published. Contract, API/SQLite,
+component, live smoke, and authenticated browser create/edit/reload checks pass.
+Production readiness reports `0003_expense_gst_treatment.sql`.
+
 **Invoice sharing (deployed, 2026-09-15):** Invoices → Share generates a token
 link with copy/open actions. Logged-out recipients can view the invoice and
 download its PDF with the selected template, actual tax rate and separate bank

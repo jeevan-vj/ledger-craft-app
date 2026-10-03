@@ -3,12 +3,12 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import Expenses from '../Expenses';
-import { useAppContext } from '@/context/AppContext';
-import { mockExpenses } from '@/test/fixtures/expenseFixtures';
+import { useAppData } from '@/hooks/useAppData';
+import { mockExpense } from '@/test/fixtures/expenseFixtures';
 
 // Mock the context
-vi.mock('@/context/AppContext', () => ({
-  useAppContext: vi.fn(),
+vi.mock('@/hooks/useAppData', () => ({
+  useAppData: vi.fn(),
 }));
 
 // Mock the toast hook
@@ -36,7 +36,18 @@ vi.mock('@/components/expense/ExpenseTable', () => ({
 vi.mock('@/components/expense/ExpenseFormDrawer', () => ({
   default: ({ open, onSubmit, initialValues }: any) => (
     <div data-testid="expense-form-drawer" style={{ display: open ? 'block' : 'none' }}>
-      <button onClick={() => onSubmit({ description: 'Test', amount: 100 })}>
+      <button onClick={() => onSubmit({
+        description: 'Test',
+        amount: 100,
+        currency: 'NZD',
+        categoryId: 'no-category',
+        accountId: 'no-account',
+        customerId: 'no-customer',
+        gstTreatment: 'partial',
+        gstExemptionReason: 'entertainment_50',
+        gstClaimablePercentage: 50,
+        privateUsePercentage: 0,
+      })}>
         Submit
       </button>
       {initialValues && <div data-testid="edit-mode">Edit Mode</div>}
@@ -45,7 +56,10 @@ vi.mock('@/components/expense/ExpenseFormDrawer', () => ({
 }));
 
 const mockContextValue = {
-  expenses: mockExpenses,
+  expenses: [
+    { ...mockExpense, id: '1' },
+    { ...mockExpense, id: '2', description: 'Second expense' },
+  ],
   isLoadingExpenses: false,
   createExpense: vi.fn(),
   updateExpense: vi.fn(),
@@ -61,7 +75,7 @@ const mockContextValue = {
 describe('Expenses Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useAppContext).mockReturnValue(mockContextValue);
+    vi.mocked(useAppData).mockReturnValue(mockContextValue as ReturnType<typeof useAppData>);
   });
 
   const renderComponent = () => {
@@ -72,19 +86,19 @@ describe('Expenses Page', () => {
     );
   };
 
-  it('renders page title and description', () => {
+  it('renders page title and primary action', () => {
     renderComponent();
     
     expect(screen.getByText('Expenses')).toBeInTheDocument();
-    expect(screen.getByText(/manage your business expenses/i)).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /new expense/i })).toBeInTheDocument();
   });
 
   it('shows loading skeletons when loading', () => {
-    vi.mocked(useAppContext).mockReturnValue({
+    vi.mocked(useAppData).mockReturnValue({
       ...mockContextValue,
       expenses: [],
       isLoadingExpenses: true,
-    });
+    } as ReturnType<typeof useAppData>);
 
     renderComponent();
     
@@ -103,15 +117,15 @@ describe('Expenses Page', () => {
   });
 
   it('shows empty state when no expenses', () => {
-    vi.mocked(useAppContext).mockReturnValue({
+    vi.mocked(useAppData).mockReturnValue({
       ...mockContextValue,
       expenses: [],
-    });
+    } as ReturnType<typeof useAppData>);
 
     renderComponent();
     
-    expect(screen.getByText(/no expenses yet/i)).toBeInTheDocument();
-    expect(screen.getByText(/get started by creating/i)).toBeInTheDocument();
+    expect(screen.getByText(/track every dollar out/i)).toBeInTheDocument();
+    expect(screen.getByText(/log costs as they happen/i)).toBeInTheDocument();
   });
 
   it('opens form drawer when New Expense button clicked', () => {
@@ -198,6 +212,11 @@ describe('Expenses Page', () => {
           categoryId: null,
           accountId: null,
           customerId: null,
+          currency: 'NZD',
+          gstTreatment: 'partial',
+          gstExemptionReason: 'entertainment_50',
+          gstClaimablePercentage: 50,
+          privateUsePercentage: 0,
         })
       );
     });

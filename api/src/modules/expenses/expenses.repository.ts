@@ -49,6 +49,10 @@ function toExpenseDto(
     receiptUrl: row.receiptUrl ?? null,
     paymentMethod: row.paymentMethod ?? null,
     notes: row.notes ?? null,
+    gstTreatment: row.gstTreatment,
+    gstExemptionReason: row.gstExemptionReason,
+    gstClaimablePercentage: row.gstClaimablePercentage,
+    privateUsePercentage: row.privateUsePercentage,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -199,6 +203,10 @@ export async function insertExpense(
       receiptUrl: input.receiptUrl ?? null,
       paymentMethod: input.paymentMethod ?? null,
       notes: input.notes ?? null,
+      gstTreatment: input.gstTreatment ?? 'standard',
+      gstExemptionReason: input.gstExemptionReason ?? 'none',
+      gstClaimablePercentage: input.gstClaimablePercentage ?? 100,
+      privateUsePercentage: input.privateUsePercentage ?? 0,
     })
     .returning();
   if (!row) throw new Error('Failed to insert expense');
@@ -228,6 +236,10 @@ export async function updateExpense(
   if (input.receiptUrl !== undefined) patch.receiptUrl = input.receiptUrl;
   if (input.paymentMethod !== undefined) patch.paymentMethod = input.paymentMethod;
   if (input.notes !== undefined) patch.notes = input.notes;
+  if (input.gstTreatment !== undefined) patch.gstTreatment = input.gstTreatment;
+  if (input.gstExemptionReason !== undefined) patch.gstExemptionReason = input.gstExemptionReason;
+  if (input.gstClaimablePercentage !== undefined) patch.gstClaimablePercentage = input.gstClaimablePercentage;
+  if (input.privateUsePercentage !== undefined) patch.privateUsePercentage = input.privateUsePercentage;
   await tx
     .update(expenses)
     .set(patch)

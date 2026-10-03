@@ -82,6 +82,10 @@ function toExpense(dto: ExpenseDto): Expense {
     receiptUrl: dto.receiptUrl,
     paymentMethod: dto.paymentMethod as PaymentMethod | null,
     notes: dto.notes,
+    gstTreatment: dto.gstTreatment,
+    gstExemptionReason: dto.gstExemptionReason,
+    gstClaimablePercentage: dto.gstClaimablePercentage,
+    privateUsePercentage: dto.privateUsePercentage,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -105,6 +109,10 @@ export function toCreateExpenseRequest(
     receiptUrl: expense.receiptUrl ?? null,
     paymentMethod: expense.paymentMethod ?? null,
     notes: expense.notes ?? null,
+    gstTreatment: expense.gstTreatment ?? 'standard',
+    gstExemptionReason: expense.gstExemptionReason ?? 'none',
+    gstClaimablePercentage: expense.gstClaimablePercentage ?? 100,
+    privateUsePercentage: expense.privateUsePercentage ?? 0,
   };
 }
 
@@ -126,6 +134,10 @@ export function toUpdateExpenseRequest(
   if (expense.receiptUrl !== undefined) input.receiptUrl = expense.receiptUrl ?? null;
   if (expense.paymentMethod !== undefined) input.paymentMethod = expense.paymentMethod ?? null;
   if (expense.notes !== undefined) input.notes = expense.notes ?? null;
+  if (expense.gstTreatment !== undefined) input.gstTreatment = expense.gstTreatment;
+  if (expense.gstExemptionReason !== undefined) input.gstExemptionReason = expense.gstExemptionReason;
+  if (expense.gstClaimablePercentage !== undefined) input.gstClaimablePercentage = expense.gstClaimablePercentage;
+  if (expense.privateUsePercentage !== undefined) input.privateUsePercentage = expense.privateUsePercentage;
   return input;
 }
 

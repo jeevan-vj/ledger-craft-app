@@ -79,7 +79,7 @@ const expenseFormSchema = z.object({
   isBillable: z.boolean().default(false),
   customerId: z.string().optional(),
   taxAmount: z.number().min(0).default(0),
-  currency: z.string().default('USD'),
+  currency: z.string().default('NZD'),
   paymentMethod: z.enum(['cash', 'card', 'bank_transfer', 'check', 'other']).optional(),
   notes: z.string().optional().or(z.literal('')),
   // NZ IRD GST exemption fields
@@ -126,7 +126,7 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       isBillable: false,
       customerId: 'no-customer',
       taxAmount: 0,
-      currency: 'USD',
+      currency: 'NZD',
       // GST exemption defaults
       gstTreatment: 'standard',
       gstExemptionReason: 'none',
@@ -155,7 +155,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: isBillable,
         customerId: initialValues.customerId || 'no-customer',
         taxAmount: initialValues.taxAmount || 0,
-        currency: initialValues.currency || 'USD',
+        currency: initialValues.currency || 'NZD',
+        gstTreatment: initialValues.gstTreatment || 'standard',
+        gstExemptionReason: initialValues.gstExemptionReason || 'none',
+        gstClaimablePercentage: initialValues.gstClaimablePercentage ?? 100,
+        privateUsePercentage: initialValues.privateUsePercentage ?? 0,
         paymentMethod: initialValues.paymentMethod || undefined,
         notes: initialValues.notes || ''
       });
@@ -177,7 +181,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: false,
         customerId: 'no-customer',
         taxAmount: 0,
-        currency: 'USD',
+        currency: 'NZD',
+        gstTreatment: 'standard',
+        gstExemptionReason: 'none',
+        gstClaimablePercentage: 100,
+        privateUsePercentage: 0,
         paymentMethod: undefined,
         notes: ''
       });
@@ -195,9 +203,6 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       ...values,
       receiptUrl: receiptUrl || values.receiptUrl || null
     };
-    console.log('Submitting expense with data:', formData);
-    console.log('Receipt URL from state:', receiptUrl);
-    console.log('Receipt URL from form:', values.receiptUrl);
     onSubmit(formData);
   };
 
@@ -215,7 +220,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: false,
         customerId: 'no-customer',
         taxAmount: 0,
-        currency: 'USD',
+        currency: 'NZD',
+        gstTreatment: 'standard',
+        gstExemptionReason: 'none',
+        gstClaimablePercentage: 100,
+        privateUsePercentage: 0,
         paymentMethod: undefined,
         notes: ''
       });
@@ -228,12 +237,10 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
   }, [open, form]);
 
   const handleReceiptChange = (url: string | null, file: File | null) => {
-    console.log('Receipt change in ExpenseFormDrawer:', { url, file });
     setReceiptUrl(url);
     setReceiptFile(file);
     // Update the form field as well
     form.setValue('receiptUrl', url || '');
-    console.log('Form receiptUrl updated to:', url || '');
   };
 
   const handleScanComplete = (scanResult: ReceiptScanResult) => {
@@ -347,9 +354,9 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                           <DollarSign className="h-3 w-3" />
                           Amount *
                         </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
                             <Input 
                               type="number" 
                               step="0.01" 
@@ -358,8 +365,8 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                               placeholder="0.00"
                               className="h-11 pl-10"
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -594,9 +601,9 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-sm font-medium">Tax Amount (GST/VAT)</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
                             <Input 
                               type="number" 
                               step="0.01" 
@@ -605,8 +612,8 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                               placeholder="0.00"
                               className="h-11 pl-10"
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}

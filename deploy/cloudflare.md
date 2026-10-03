@@ -16,7 +16,29 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
-**Latest release (2026-10-02): web and mobile design systems deployed and verified.**
+**Latest release (2026-10-03): expense flow repair deployed and verified.**
+
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://58800acb.ledger-craft-app.pages.dev
+- Frontend: `1a996cac23f2`, version 0.0.8.
+- Worker: `6b5c99a4-7df6-4a91-8cfb-493b88708c97`.
+- Migration: `0003_expense_gst_treatment.sql`; readiness reports it applied.
+  Existing expense rows are preserved with standard/none/100/0 GST defaults.
+- `pnpm deploy:cloudflare` exited zero: 46 contract and 75 API tests, SQLite
+  validation, API/contracts/Worker typechecks, the production build and Worker
+  dry run passed.
+- Live smoke checks passed readiness, signup/session, tenant isolation, exact
+  invoice totals, named-charge save/reopen/remove, concurrent invoices,
+  rollback, idempotency, attachments, public sharing, sign-out/sign-in and
+  persistence. The existing signing secret was preserved.
+- An isolated production browser session verified build `1a996c`, accessible
+  amount/tax inputs, NZD formatting, expense create/edit/reload, Approved status,
+  and persisted Partial / Entertainment (50%) / 50% GST fields. The synthetic
+  account signed out afterward. The existing Chrome profile still showed the
+  prior PWA shell, so its caches and local storage were left untouched.
+- Source changes remain uncommitted in the `mobile-app` checkout.
+
+**Earlier release (2026-10-02): web and mobile design systems deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
 - Pages deployment: https://c2dc7d87.ledger-craft-app.pages.dev
