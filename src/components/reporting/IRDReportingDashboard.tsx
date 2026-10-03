@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { format } from 'date-fns';
 import {
   FileText,
@@ -24,6 +24,16 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Progress } from '@/components/ui/progress';
 import { Separator } from '@/components/ui/separator';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
 import { TaxReturn } from '@/types/payment';
 
 interface IRDReportingDashboardProps {
@@ -36,7 +46,7 @@ interface IRDReportingDashboardProps {
   };
   onCreateGSTReturn: () => void;
   onCreateIncomeReturn: (period: { start: string; end: string }) => void;
-  onSubmitReturn: (returnId: string) => void;
+  onSubmitReturn: (returnId: string, irdReference: string) => Promise<void>;
   onExportReturn: (returnId: string, format: string) => void;
   isLoading?: boolean;
 }
@@ -51,6 +61,37 @@ export function IRDReportingDashboard({
   onExportReturn,
   isLoading = false
 }: IRDReportingDashboardProps) {
+  const [filingReturn, setFilingReturn] = useState<TaxReturn | null>(null);
+  const [irdReference, setIrdReference] = useState('');
+  const [isRecordingFiled, setIsRecordingFiled] = useState(false);
+  const [filingError, setFilingError] = useState('');
+
+  const closeFilingDialog = () => {
+    if (isRecordingFiled) return;
+    setFilingReturn(null);
+    setIrdReference('');
+    setFilingError('');
+  };
+
+  const recordFiledReturn = async () => {
+    const reference = irdReference.trim();
+    if (!filingReturn || !reference) {
+      setFilingError('Enter the confirmation reference shown in myIR.');
+      return;
+    }
+    setIsRecordingFiled(true);
+    setFilingError('');
+    try {
+      await onSubmitReturn(filingReturn.id, reference);
+      setFilingReturn(null);
+      setIrdReference('');
+    } catch (error) {
+      setFilingError(error instanceof Error ? error.message : 'Could not record the filed return.');
+    } finally {
+      setIsRecordingFiled(false);
+    }
+  };
+
   // Separate returns by type
   const gstReturns = taxReturns.filter(r => r.returnType === 'GST');
   const incomeReturns = taxReturns.filter(r => r.returnType === 'Income_Tax');
@@ -120,9 +161,7 @@ export function IRDReportingDashboard({
       </div>
 
       {/* Compliance Status */}
-      <Card className={`border-l-4 ${
-        complianceStatus.isCompliant ? 'border-l-green-500' : 'border-l-red-500'
-      }`}>
+      <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="flex items-center gap-2">
@@ -332,6 +371,7 @@ export function IRDReportingDashboard({
                               <Button 
                                 variant="ghost" 
                                 size="sm"
+                                aria-label={`Download GST return for ${gstReturn.periodStart} to ${gstReturn.periodEnd}`}
                                 onClick={() => onExportReturn(gstReturn.id, 'pdf')}
                               >
                                 <Download className="h-4 w-4" />
@@ -340,7 +380,11 @@ export function IRDReportingDashboard({
                                 <Button 
                                   variant="ghost" 
                                   size="sm"
-                                  onClick={() => onSubmitReturn(gstReturn.id)}
+                                  aria-label={`Record GST return for ${gstReturn.periodStart} to ${gstReturn.periodEnd} as filed`}
+                                  onClick={() => {
+                                    setFilingReturn(gstReturn);
+                                    setFilingError('');
+                                  }}
                                 >
                                   <Send className="h-4 w-4" />
                                 </Button>
@@ -443,6 +487,50 @@ export function IRDReportingDashboard({
           />
         </TabsContent>
       </Tabs>
+
+      <Dialog open={Boolean(filingReturn)} onOpenChange={(open) => !open && closeFilingDialog()}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Record GST return as filed</DialogTitle>
+            <DialogDescription>
+              LedgerCraft cannot submit directly to IRD. File this return in myIR first, then
+              enter the confirmation reference below to lock in the filing record.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-2">
+            <Button
+              type="button"
+              variant="outline"
+              className="w-full"
+              onClick={() => window.open('https://my.ird.govt.nz/', '_blank', 'noopener,noreferrer')}
+            >
+              <ExternalLink className="mr-2 h-4 w-4" />
+              Open myIR
+            </Button>
+            <div className="space-y-2">
+              <Label htmlFor="ird-confirmation-reference">IRD confirmation reference</Label>
+              <Input
+                id="ird-confirmation-reference"
+                value={irdReference}
+                onChange={(event) => setIrdReference(event.target.value)}
+                placeholder="For example, GST-2026-12345"
+                autoComplete="off"
+              />
+              {filingError && <p className="text-sm text-destructive">{filingError}</p>}
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button type="button" variant="outline" onClick={closeFilingDialog} disabled={isRecordingFiled}>
+              Cancel
+            </Button>
+            <Button type="button" onClick={recordFiledReturn} disabled={isRecordingFiled || !irdReference.trim()}>
+              {isRecordingFiled ? 'Recording…' : 'Record as filed'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

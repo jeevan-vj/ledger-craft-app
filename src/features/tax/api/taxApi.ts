@@ -1,5 +1,6 @@
 import type {
   CreateTaxReturnRequest,
+  FileTaxReturnRequest,
   TaxConfigurationDto,
   TaxReturnDto,
   TaxReturnListResponse,
@@ -59,6 +60,7 @@ export function toTaxReturn(dto: TaxReturnDto): TaxReturn {
     status: dto.status,
     submittedAt: dto.submittedAt ?? undefined,
     irdReference: dto.irdReference ?? undefined,
+    returnData: dto.returnData ?? undefined,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -123,6 +125,15 @@ export const taxApi = {
   async createReturn(input: CreateTaxReturnRequest): Promise<TaxReturn> {
     return toTaxReturn(
       await request<TaxReturnDto>('/api/tax-returns', { method: 'POST', body: JSON.stringify(input) }),
+    );
+  },
+
+  async fileReturn(id: string, input: FileTaxReturnRequest): Promise<TaxReturn> {
+    return toTaxReturn(
+      await request<TaxReturnDto>(`/api/tax-returns/${id}/file`, {
+        method: 'POST',
+        body: JSON.stringify(input),
+      }),
     );
   },
 

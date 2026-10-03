@@ -9,6 +9,7 @@ import { TaxReturn } from '@/types/payment';
 import { supabaseDataService } from '@/services/supabaseDataService';
 import { taxCalculationService } from '@/services/taxCalculationService';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { downloadGstReturnPdf } from '@/features/tax/export/gstReturnPdf';
 
 export default function IRDReportingPage() {
   const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
@@ -233,57 +234,50 @@ export default function IRDReportingPage() {
     }
   };
 
-  const handleSubmitReturn = async (returnId: string) => {
+  const handleSubmitReturn = async (returnId: string, irdReference: string) => {
     try {
-      // Simulate IRD submission process
       toast({
-        title: "Submitting to IRD",
-        description: "Processing your tax return submission..."
+        title: 'Recording filed return',
+        description: 'Saving your myIR confirmation reference...',
       });
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const irdReference = `IRD-GST-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
-      
-      // Update the tax return status in Supabase
-      const updatedReturn = await supabaseDataService.updateTaxReturn(returnId, {
-        status: 'submitted',
-        submittedAt: new Date().toISOString(),
-        irdReference
-      });
+
+      const updatedReturn = await supabaseDataService.fileTaxReturn(returnId, irdReference);
       
       setTaxReturns(prev => 
         prev.map(ret => ret.id === returnId ? updatedReturn : ret)
       );
       
       toast({
-        title: "Success",
-        description: `Tax return submitted successfully. IRD Reference: ${irdReference}`
+        title: 'GST return recorded as filed',
+        description: `IRD confirmation reference: ${irdReference}`,
       });
     } catch (error) {
-      console.error('Error submitting tax return:', error);
+      console.error('Error recording filed tax return:', error);
       toast({
-        title: "Error",
-        description: "Failed to submit tax return to IRD",
-        variant: "destructive"
+        title: 'Could not record filed return',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
       });
+      throw error;
     }
   };
 
   const handleExportReturn = async (returnId: string, format: string) => {
     try {
-      // Simulate export
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const taxReturn = taxReturns.find((row) => row.id === returnId);
+      if (!taxReturn) throw new Error('Tax return not found');
+      if (format !== 'pdf') throw new Error(`Unsupported export format: ${format}`);
+      await downloadGstReturnPdf(taxReturn);
+
       toast({
-        title: "Success",
-        description: `Tax return exported as ${format.toUpperCase()}`
+        title: 'GST return downloaded',
+        description: 'Your PDF preparation and filing record is ready.',
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to export tax return",
-        variant: "destructive"
+        title: 'Could not download GST return',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
       });
     }
   };

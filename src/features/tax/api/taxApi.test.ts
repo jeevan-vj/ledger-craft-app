@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { Expense, Invoice } from '@/types';
 
 vi.mock('@/features/invoices/api/invoicesApi', () => ({
@@ -20,6 +20,8 @@ import { expensesApi } from '@/features/expenses/api/expensesApi';
 import { taxApi } from './taxApi';
 
 describe('taxApi period fetches', () => {
+  afterEach(() => vi.unstubAllGlobals());
+
   it('maps Hono invoices and expenses into GST snake_case aliases', async () => {
     vi.mocked(invoicesApi.list).mockResolvedValue([
       {
@@ -58,5 +60,37 @@ describe('taxApi period fetches', () => {
     expect(expenses[0].tax_amount).toBe(6);
     expect(expenses[0].expense_date).toBe('2026-03-12');
     expect(expenses[0].is_claimable).toBe(true);
+  });
+
+  it('records an externally filed return through the dedicated API action', async () => {
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({
+      id: '11111111-1111-4111-8111-111111111111',
+      periodStart: '2026-07-01',
+      periodEnd: '2026-09-30',
+      returnType: 'GST',
+      totalSales: '1150.00',
+      totalPurchases: '230.00',
+      gstOnSales: '150.00',
+      gstOnPurchases: '30.00',
+      netGst: '120.00',
+      status: 'submitted',
+      submittedAt: '2026-10-03T01:00:00.000Z',
+      irdReference: 'GST-2026-12345',
+      returnData: null,
+      createdAt: '2026-10-03T00:00:00.000Z',
+      updatedAt: '2026-10-03T01:00:00.000Z',
+    }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    vi.stubGlobal('fetch', fetchMock);
+
+    const filed = await taxApi.fileReturn('11111111-1111-4111-8111-111111111111', {
+      irdReference: 'GST-2026-12345',
+    });
+
+    expect(filed.status).toBe('submitted');
+    expect(filed.irdReference).toBe('GST-2026-12345');
+    expect(fetchMock).toHaveBeenCalledWith(
+      '/api/tax-returns/11111111-1111-4111-8111-111111111111/file',
+      expect.objectContaining({ method: 'POST', credentials: 'include' }),
+    );
   });
 });

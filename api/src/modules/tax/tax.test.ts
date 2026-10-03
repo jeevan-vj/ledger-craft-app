@@ -77,11 +77,70 @@ describe('tax routes', () => {
             gstOnSales: '150.00',
             gstOnPurchases: '30.00',
             netGst: '120.00',
+            returnData: {
+              gstReturn: {
+                salesDetails: {
+                  standardRated: 1150,
+                  zeroRated: 0,
+                  exempt: 0,
+                  totalSales: 1150,
+                  gstOnSales: 150,
+                },
+                purchaseDetails: {
+                  standardRated: 230,
+                  capitalGoods: 0,
+                  totalPurchases: 230,
+                  gstOnPurchases: 30,
+                },
+                adjustments: { badDebts: 0, otherAdjustments: 0 },
+              },
+              reconciliation: {
+                status: 'ready',
+                unreconciledTransactionCount: 0,
+                figuresMatch: true,
+                accounts: [],
+                issues: [],
+              },
+            },
           }),
         });
         expect(created.status).toBe(201);
         const taxReturn = taxReturnSchema.parse(await created.json());
         expect(taxReturn.netGst).toBe('120.00');
+        expect(taxReturn.returnData?.reconciliation?.status).toBe('ready');
+
+        const missingReference = await app.request(`/api/tax-returns/${taxReturn.id}/file`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ irdReference: '' }),
+        });
+        expect(missingReference.status).toBe(400);
+
+        const bypassFiling = await app.request(`/api/tax-returns/${taxReturn.id}`, {
+          method: 'PATCH',
+          headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ status: 'submitted' }),
+        });
+        expect(bypassFiling.status).toBe(400);
+
+        const filed = await app.request(`/api/tax-returns/${taxReturn.id}/file`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ irdReference: 'GST-2026-12345' }),
+        });
+        expect(filed.status).toBe(200);
+        const filedReturn = taxReturnSchema.parse(await filed.json());
+        expect(filedReturn.status).toBe('submitted');
+        expect(filedReturn.irdReference).toBe('GST-2026-12345');
+        expect(filedReturn.submittedAt).not.toBeNull();
+        expect(filedReturn.returnData?.reconciliation?.status).toBe('ready');
+
+        const filedTwice = await app.request(`/api/tax-returns/${taxReturn.id}/file`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ irdReference: 'GST-2026-duplicate' }),
+        });
+        expect(filedTwice.status).toBe(409);
 
         const ownership = await app.request('/api/tax-returns', {
           method: 'POST',
@@ -103,6 +162,7 @@ describe('tax routes', () => {
           await (await app.request('/api/tax-returns', { headers: { Cookie: ownerA.cookie } })).json(),
         );
         expect(listA.taxReturns.map((row) => row.id)).toEqual([taxReturn.id]);
+        expect(listA.taxReturns[0]?.returnData?.gstReturn?.salesDetails.totalSales).toBe(1150);
 
         const listB = taxReturnListResponseSchema.parse(
           await (await app.request('/api/tax-returns', { headers: { Cookie: ownerB.cookie } })).json(),

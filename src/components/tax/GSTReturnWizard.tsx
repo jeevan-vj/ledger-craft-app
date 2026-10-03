@@ -41,6 +41,7 @@ import {
   toReconciliationSnapshot,
 } from '@/utils/gstReconciliation';
 import { GstReconciliationSnapshot } from '@/types/payment';
+import { getQuarterPeriod } from '@/features/tax/gstPeriod';
 
 export interface GSTReturnData {
   returnPeriod: {
@@ -139,14 +140,14 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     { number: 3, title: 'Purchases & Input', description: 'Purchase data and GST paid' },
     { number: 4, title: 'Adjustments', description: 'Bad debts and other adjustments' },
     { number: 5, title: 'Reconciliation', description: 'Bank recs and GST figure check' },
-    { number: 6, title: 'Review & File', description: 'Final review and save the return' }
+    { number: 6, title: 'Review & Save', description: 'Final review and save the draft' }
   ];
 
   const quarterOptions = [
-    { value: 'Q1', label: 'Q1 (Jan-Mar)', months: [0, 1, 2] },
-    { value: 'Q2', label: 'Q2 (Apr-Jun)', months: [3, 4, 5] },
-    { value: 'Q3', label: 'Q3 (Jul-Sep)', months: [6, 7, 8] },
-    { value: 'Q4', label: 'Q4 (Oct-Dec)', months: [9, 10, 11] }
+    { value: 'Q1', label: 'Q1 (Jan-Mar)' },
+    { value: 'Q2', label: 'Q2 (Apr-Jun)' },
+    { value: 'Q3', label: 'Q3 (Jul-Sep)' },
+    { value: 'Q4', label: 'Q4 (Oct-Dec)' }
   ];
 
   useEffect(() => {
@@ -268,23 +269,11 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     }
   };
 
-  const handleQuarterChange = (quarter: string) => {
-    const quarterData = quarterOptions.find(q => q.value === quarter);
-    if (!quarterData) return;
-
-    const year = returnData.returnPeriod.year;
-    const startMonth = quarterData.months[0];
-    const endMonth = quarterData.months[2];
-    
-    const startDate = new Date(year, startMonth, 1);
-    const endDate = new Date(year, endMonth + 1, 0);
-    
-    // Calculate due date (28th of month following quarter end)
-    const dueDate = new Date(year, endMonth + 1, 28);
-    
+  const updatePeriod = (year: number, quarter: string) => {
+    const { startDate, endDate, dueDate } = getQuarterPeriod(year, quarter);
     const updatedPeriod = {
-      startDate: startDate.toISOString().split('T')[0],
-      endDate: endDate.toISOString().split('T')[0],
+      startDate,
+      endDate,
       quarter,
       year
     };
@@ -292,11 +281,27 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     setReturnData(prev => ({
       ...prev,
       returnPeriod: updatedPeriod,
-      dueDate: dueDate.toISOString().split('T')[0]
+      dueDate
     }));
 
     // Auto-load data for this period
     loadPeriodData(updatedPeriod.startDate, updatedPeriod.endDate);
+  };
+
+  const handleQuarterChange = (quarter: string) => {
+    updatePeriod(returnData.returnPeriod.year, quarter);
+  };
+
+  const handleYearChange = (value: string) => {
+    const year = Number.parseInt(value, 10);
+    if (returnData.returnPeriod.quarter) {
+      updatePeriod(year, returnData.returnPeriod.quarter);
+      return;
+    }
+    setReturnData(prev => ({
+      ...prev,
+      returnPeriod: { ...prev.returnPeriod, year },
+    }));
   };
 
   const validateStep = (step: number): boolean => {
@@ -382,10 +387,7 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
                 <Label htmlFor="year">Tax Year</Label>
                 <Select
                   value={returnData.returnPeriod.year.toString()}
-                  onValueChange={(value) => setReturnData(prev => ({
-                    ...prev,
-                    returnPeriod: { ...prev.returnPeriod, year: parseInt(value) }
-                  }))}
+                  onValueChange={handleYearChange}
                 >
                   <SelectTrigger>
                     <SelectValue />
@@ -818,8 +820,8 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
             <Alert>
               <Shield className="h-4 w-4" />
               <AlertDescription>
-                Please review all information carefully before submitting. Once submitted,
-                you'll receive a confirmation and the return will be filed with IRD.
+                Review these figures carefully, then save the draft. LedgerCraft does not send
+                returns to IRD. File through myIR, then record the IRD confirmation reference here.
               </AlertDescription>
             </Alert>
           </div>

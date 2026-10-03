@@ -43,6 +43,7 @@ function toReturnDto(row: typeof taxReturns.$inferSelect): TaxReturnDto {
     status: row.status,
     submittedAt: row.submittedAt ? row.submittedAt.toISOString() : null,
     irdReference: row.irdReference ?? null,
+    returnData: row.returnData ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -158,6 +159,7 @@ export async function insertReturn(
       netGst: roundMoney(input.netGst),
       status: input.status ?? 'draft',
       irdReference: input.irdReference ?? null,
+      returnData: input.returnData ?? null,
     })
     .returning();
   if (!row) throw new Error('Failed to insert tax return');
@@ -183,13 +185,37 @@ export async function updateReturn(
   if (input.netGst !== undefined) patch.netGst = roundMoney(input.netGst);
   if (input.status !== undefined) {
     patch.status = input.status;
-    if (input.status === 'submitted') patch.submittedAt = new Date();
   }
   if (input.irdReference !== undefined) patch.irdReference = input.irdReference;
+  if (input.returnData !== undefined) patch.returnData = input.returnData;
   const [row] = await tx
     .update(taxReturns)
     .set(patch)
     .where(and(eq(taxReturns.id, id), eq(taxReturns.organisationId, organisationId)))
+    .returning();
+  return row ? toReturnDto(row) : undefined;
+}
+
+export async function fileReturn(
+  tx: Database,
+  organisationId: string,
+  id: string,
+  irdReference: string,
+): Promise<TaxReturnDto | undefined> {
+  const now = new Date();
+  const [row] = await tx
+    .update(taxReturns)
+    .set({
+      status: 'submitted',
+      submittedAt: now,
+      irdReference,
+      updatedAt: now,
+    })
+    .where(and(
+      eq(taxReturns.id, id),
+      eq(taxReturns.organisationId, organisationId),
+      eq(taxReturns.status, 'draft'),
+    ))
     .returning();
   return row ? toReturnDto(row) : undefined;
 }

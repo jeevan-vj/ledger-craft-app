@@ -1,6 +1,7 @@
 import {
   taxReturnListResponseSchema,
   type CreateTaxReturnRequest,
+  type FileTaxReturnRequest,
   type TaxConfigurationDto,
   type TaxReturnDto,
   type TaxReturnListResponse,
@@ -64,6 +65,24 @@ export async function updateTaxReturnForUser(
     const row = await repo.updateReturn(tx, ctx.organisationId, id, input);
     if (!row) throw new HTTPException(404, { message: 'Tax return not found' });
     return row;
+  });
+}
+
+export async function fileTaxReturnForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: FileTaxReturnRequest,
+): Promise<TaxReturnDto> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const existing = await repo.getReturn(tx, ctx.organisationId, id);
+    if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
+    if (existing.status !== 'draft') {
+      throw new HTTPException(409, { message: 'Only a draft tax return can be recorded as filed' });
+    }
+    const filed = await repo.fileReturn(tx, ctx.organisationId, id, input.irdReference);
+    if (!filed) throw new HTTPException(409, { message: 'Tax return is no longer a draft' });
+    return filed;
   });
 }
 

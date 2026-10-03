@@ -308,6 +308,7 @@ export class SupabaseDataService {
         netGst: String(taxReturn.netGst),
         status: taxReturn.status,
         irdReference: taxReturn.irdReference ?? null,
+        returnData: taxReturn.returnData ?? null,
       });
     }
     const { data, error } = await supabase
@@ -442,6 +443,9 @@ export class SupabaseDataService {
     updates: Partial<TaxReturn>
   ): Promise<TaxReturn> {
     if (taxApiEnabled()) {
+      if (updates.status && updates.status !== 'draft') {
+        throw new Error('Use fileTaxReturn to record a filed GST return');
+      }
       return taxApi.updateReturn(taxReturnId, {
         periodStart: updates.periodStart,
         periodEnd: updates.periodEnd,
@@ -451,8 +455,9 @@ export class SupabaseDataService {
         gstOnSales: updates.gstOnSales == null ? undefined : String(updates.gstOnSales),
         gstOnPurchases: updates.gstOnPurchases == null ? undefined : String(updates.gstOnPurchases),
         netGst: updates.netGst == null ? undefined : String(updates.netGst),
-        status: updates.status,
+        status: updates.status === 'draft' ? 'draft' : undefined,
         irdReference: updates.irdReference ?? undefined,
+        returnData: updates.returnData,
       });
     }
     const updateData: TablesUpdate<'tax_returns'> = {};
@@ -496,6 +501,17 @@ export class SupabaseDataService {
       createdAt: data.created_at,
       updatedAt: data.updated_at
     };
+  }
+
+  async fileTaxReturn(taxReturnId: string, irdReference: string): Promise<TaxReturn> {
+    if (taxApiEnabled()) {
+      return taxApi.fileReturn(taxReturnId, { irdReference });
+    }
+    return this.updateTaxReturn(taxReturnId, {
+      status: 'submitted',
+      submittedAt: new Date().toISOString(),
+      irdReference,
+    });
   }
 
   async deleteTaxReturn(taxReturnId: string): Promise<void> {

@@ -160,12 +160,16 @@ export {
 
 export {
   createTaxReturnRequestSchema,
+  fileTaxReturnRequestSchema,
+  gstReconciliationSnapshotSchema,
+  irdReturnDataSchema,
   taxConfigurationSchema,
   taxReturnListResponseSchema,
   taxReturnSchema,
   updateTaxReturnRequestSchema,
   upsertTaxConfigurationRequestSchema,
   type CreateTaxReturnRequest,
+  type FileTaxReturnRequest,
   type TaxConfigurationDto,
   type TaxReturnDto,
   type TaxReturnListResponse,

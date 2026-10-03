@@ -8,6 +8,14 @@ global.ResizeObserver = vi.fn().mockImplementation(() => ({
   disconnect: vi.fn(),
 }))
 
+// Radix Select relies on pointer-capture APIs that jsdom does not implement.
+Object.defineProperties(HTMLElement.prototype, {
+  hasPointerCapture: { configurable: true, value: vi.fn(() => false) },
+  setPointerCapture: { configurable: true, value: vi.fn() },
+  releasePointerCapture: { configurable: true, value: vi.fn() },
+  scrollIntoView: { configurable: true, value: vi.fn() },
+});
+
 // Mock Supabase client
 vi.mock('@/integrations/supabase/client', () => ({
   supabase: {
