@@ -31,12 +31,12 @@ this deployment; they must not claim successful delivery or generation.
   invoice totals, named-charge save/reopen/remove, concurrent invoices,
   rollback, idempotency, attachments, public sharing, sign-out/sign-in, and
   persistence. The existing signing secret was preserved.
-- Authenticated local Browser verification covered GST create, period loading,
-  reconciliation snapshot, draft persistence, PDF generation, myIR-reference
-  filing, and reload persistence. The canonical Chrome profile retained the old
-  `1a996c` PWA shell; production metadata and the freshly published Pages
-  artifact report `714caea84c59`. No synthetic GST filing was written to
-  production.
+- Authenticated production Chrome verified build `714cae`, Q3 period selection,
+  live invoice/expense/reconciliation loading, and the final Review & Save copy
+  explaining the myIR filing boundary. The flow was cancelled without saving
+  and the disposable account signed out. Local Browser verification covered
+  draft persistence, PDF generation, myIR-reference filing, and reload
+  persistence. No synthetic GST filing was written to production.
 
 **Earlier release (2026-10-03): purchases/payables deployed and verified.**
 
