@@ -16,7 +16,32 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
-**Latest release (2026-10-03): expense flow repair deployed and verified.**
+**Latest release (2026-10-03): purchases/payables deployed and verified.**
+
+- Website: https://easybiz.iamjeevan.com
+- Pages deployment: https://eb7d93c7.ledger-craft-app.pages.dev
+- Frontend: `2fb57d9d033e`, version 0.0.8.
+- Worker: `383a4429-5305-412d-b95b-70ac37cb2bd6`.
+- Migration: `0004_purchases-payables.sql`; readiness reports it applied.
+  The additive migration creates tenant-scoped vendors, bills, bill lines and
+  bill payments with exact-decimal checks and composite tenant foreign keys.
+- Source commit: `b97b09e` on `mobile-app`; no Git push was requested.
+- `pnpm deploy:cloudflare` exited zero: 50 contract and 77 API tests, SQLite
+  validation, API/contracts/Worker typechecks, the production build, Pages
+  Functions compile and Worker dry run passed.
+- Live smoke checks passed readiness, signup/session, tenant isolation, exact
+  invoice totals, named-charge save/reopen/remove, concurrent invoices,
+  rollback, idempotency, attachments, public sharing, sign-out/sign-in and
+  persistence. The existing signing secret was preserved.
+- Local authenticated Browser verification covered vendor create/search/edit/
+  reload, bill draft/edit/receive/void, exact GST totals, overpayment rejection,
+  partial/final payment, reload persistence, and 390px responsive layouts. The
+  production canonical Browser session signed in and out successfully, but its
+  installed PWA shell remained on build `1a996c`; Force Refresh was not used
+  because it clears browser caches and local storage. Production metadata and
+  the freshly published Pages artifact report `2fb57d9d033e`.
+
+**Earlier release (2026-10-03): expense flow repair deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
 - Pages deployment: https://58800acb.ledger-craft-app.pages.dev

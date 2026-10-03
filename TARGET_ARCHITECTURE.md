@@ -1,17 +1,17 @@
 # LedgerCraft target architecture
 
-**Purchases/payables slice (locally verified, 2026-10-03):** Vendor CRUD and
+**Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 draft/receive/void/pay bill workflows now run through shared Zod contracts,
 Hono use cases, Drizzle repositories, and organisation-scoped SQLite tables.
 Receiving a bill posts expense/GST input against accounts payable; payments
 post accounts payable against bank and update exact partial/paid balances
 atomically. Web vendor and bill workflows follow the existing Revolut-inspired
 system and adapt to mobile web. Migration `0004_purchases-payables.sql` is
-reviewed and checksum tracked. `pnpm deploy:check`, purchase API/component tests,
-and an authenticated create/receive/partial-payment/reload browser flow pass.
-This slice is not deployed; native mobile purchase flows, attachments, history,
-cancel/restore, split allocations, import/export, and recurring bills remain in
-AKP-01.
+reviewed, checksum tracked and applied in production. Frontend build
+`2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published.
+Release gates, live smoke checks, and authenticated Browser purchase flows pass.
+Native mobile purchase flows, attachments, history, cancel/restore, split
+allocations, import/export, and recurring bills remain in AKP-01.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage

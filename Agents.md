@@ -1,14 +1,15 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
-**Purchases/payables slice (locally verified, 2026-10-03):** Vendor CRUD and
+**Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 bill draft/receive/void/payment workflows are implemented through Hono/SQLite
 with exact totals, balanced accounts-payable journals, overpayment rejection,
 and organisation isolation. Web Vendors, Bills, and Bill form screens follow
 the current Revolut-inspired UI and responsive layout. Migration
-`0004_purchases-payables.sql` is reviewed; `pnpm deploy:check` and authenticated
-browser create/receive/partial-payment/reload verification pass. This work is
-not deployed. AKP-01 still requires native mobile purchase flows, attachments,
-history, cancel/restore, split allocations, import/export, and recurring bills.
+`0004_purchases-payables.sql` is applied in production. Frontend build
+`2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published;
+release gates, live smoke checks, and authenticated Browser purchase flows pass.
+AKP-01 still requires native mobile purchase flows, attachments, history,
+cancel/restore, split allocations, import/export, and recurring bills.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists IRD GST treatment, exemption reason, claimable percentage and private-use
@@ -85,8 +86,8 @@ review it, then use `pnpm deploy:cloudflare` to deploy code and bundled migratio
 | --- | --- |
 | Spec | `TARGET_ARCHITECTURE.md` — end state and gates. Not optional. |
 | Live DB | Hosted `public` is empty (2026-09-03). Greenfield. Do not replay Git SQL. No UUID import. |
-| Now | W1–W13 **verified**. Purchases/payables is locally verified through migration `0004`; remaining AKP-01 work is explicitly tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. |
-| Release gate | Deployed production remains on migration `0003_expense_gst_treatment.sql`; the local `0004` purchase slice passes `pnpm deploy:check` but is not deployed. |
+| Now | W1–W13 **verified**. Purchases/payables is deployed through migration `0004`; remaining AKP-01 work is explicitly tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. |
+| Release gate | Production build `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are verified; readiness reports `0004_purchases-payables.sql`. |
 | Clients | Web and mobile email auth are Better Auth. Product CRUD, including web vendors and bills, routes through Hono. Native mobile purchases remain pending. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
 | Ports | Local API **3001**, Vite **8080** (`/api` proxy); SQLite needs no database port. |
 | Package manager | **pnpm** workspace (`api`, `packages/contracts`). `mobile/` is not in the workspace yet. |
