@@ -1,5 +1,16 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**GST return workflow (deployed, 2026-10-03):** Web GST returns now
+persist the calculated IRD/reconciliation snapshot through Hono/SQLite, use a
+dedicated draft-to-filed action with the myIR confirmation reference, and export
+a real PDF preparation/filing record. The UI no longer claims to submit directly
+to IRD. Quarter boundaries use date-only NZ calendar values. Contract/API/UI
+tests, the local release gate, and an authenticated create/save/download/file/
+reload browser flow pass. Frontend build `714caea84c59` and Worker
+`77d9125d-f89c-44fb-9ec2-1d50ad1c7603` are published; the production smoke
+suite passes. No migration was required; readiness remains
+`0004_purchases-payables.sql`. See `deploy/cloudflare.md`.
+
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 bill draft/receive/void/payment workflows are implemented through Hono/SQLite
 with exact totals, balanced accounts-payable journals, overpayment rejection,

@@ -1,5 +1,17 @@
 # LedgerCraft target architecture
 
+**GST return workflow (deployed, 2026-10-03):** The GST wizard now
+stores its calculated IRD and reconciliation snapshot in the existing
+`tax_returns.return_data` column. Filing is a dedicated, atomic draft-to-
+submitted transition that requires the confirmation reference obtained after
+filing in myIR; LedgerCraft does not claim to transmit returns to IRD. The web
+client exports a PDF preparation/filing record and uses date-only quarter
+boundaries. Contract/API/UI tests, the local release gate, and an authenticated
+create/save/download/file/reload browser flow pass. Frontend build
+`714caea84c59` and Worker `77d9125d-f89c-44fb-9ec2-1d50ad1c7603` are published,
+and the production smoke suite passes. No schema migration was needed;
+readiness remains `0004_purchases-payables.sql`.
+
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 draft/receive/void/pay bill workflows now run through shared Zod contracts,
 Hono use cases, Drizzle repositories, and organisation-scoped SQLite tables.

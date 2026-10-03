@@ -32,6 +32,7 @@ current architecture.
 | W11 | **Verified (2026-09-11).** Journals CRUD, account writes/initialize, invoice remind mailer. |
 | W12 | **Verified (2026-09-11).** `POST /api/ai/chat`; client OpenAI gone. |
 | W13 | **Verified (2026-09-11).** `@supabase/supabase-js` removed; hosted URL/anon key and Edge Function URLs gone. |
+| GST filing | **Deployed (2026-10-03).** Hono/SQLite persists IRD + reconciliation snapshots; a dedicated action records the external myIR confirmation reference; PDF export and authenticated create/save/download/file/reload browser QA pass. Frontend `714caea84c59`, Worker `77d9125d-f89c-44fb-9ec2-1d50ad1c7603`; no migration. |
 | AKP-01 | **Partially implemented and deployed (2026-10-03).** Vendor CRUD and web bill draft/receive/void/payment workflows, exact AP journals, and SQLite migration `0004_purchases-payables.sql` pass the production release gate. Native mobile purchases and the remaining lifecycle/import/attachment/recurring scope are pending. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
