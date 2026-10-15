@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { KeyboardAvoidingView, Modal, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import type { BankAccountDto, BillDto, RecordBillPaymentRequest } from '@/features/purchases/api/purchasesApi';
 import { GroupedSection } from '@/components/ui/GroupedSection';
 import { ListRow } from '@/components/ui/ListRow';
@@ -48,25 +49,27 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
-      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
-        <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
-          <View style={styles.heading}>
-            <Text style={styles.title}>Record payment</Text>
-            <Text style={styles.subtitle}>{bill.billNumber} · {formatMoney(Number(bill.balanceDue), bill.currency)} remaining</Text>
-          </View>
-          <GroupedSection title="Payment account">
-            <ListRow label="Paid from" value={selected?.accountName} placeholder="Choose account" onPress={() => setPickerVisible(true)} />
-          </GroupedSection>
-          <ModernInput label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" error={amount && !validAmount ? `Enter up to ${bill.balanceDue}` : undefined} />
-          <SmartDatePicker label="Payment date" value={paymentDate} showPresets={false} onChangeDate={setPaymentDate} />
-          <ModernInput label="Reference (optional)" value={referenceNumber} onChangeText={setReferenceNumber} autoCapitalize="characters" />
-          {error ? <Text style={styles.error} selectable>{error}</Text> : null}
-          <View style={styles.actions}>
-            <ModernButton variant="secondary" fullWidth onPress={onClose} disabled={saving}>Cancel</ModernButton>
-            <ModernButton fullWidth onPress={() => onSubmit({ bankAccountId, amount, paymentDate, referenceNumber: referenceNumber.trim() || null })} loading={saving} disabled={!bankAccountId || !validAmount}>Record payment</ModernButton>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
+      <SafeAreaView style={styles.container} edges={['bottom']}>
+        <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+            <View style={styles.heading}>
+              <Text style={styles.title}>Record payment</Text>
+              <Text style={styles.subtitle}>{bill.billNumber} · {formatMoney(Number(bill.balanceDue), bill.currency)} remaining</Text>
+            </View>
+            <GroupedSection title="Payment account">
+              <ListRow label="Paid from" value={selected?.accountName} placeholder="Choose account" accessibilityHint="Opens the payment account picker" onPress={() => setPickerVisible(true)} />
+            </GroupedSection>
+            <ModernInput label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" error={amount && !validAmount ? `Enter up to ${bill.balanceDue}` : undefined} />
+            <SmartDatePicker label="Payment date" value={paymentDate} showPresets={false} onChangeDate={setPaymentDate} />
+            <ModernInput label="Reference (optional)" value={referenceNumber} onChangeText={setReferenceNumber} autoCapitalize="characters" />
+            {error ? <Text style={styles.error} selectable>{error}</Text> : null}
+            <View style={styles.actions}>
+              <ModernButton variant="secondary" fullWidth onPress={onClose} disabled={saving}>Cancel</ModernButton>
+              <ModernButton fullWidth onPress={() => onSubmit({ bankAccountId, amount, paymentDate, referenceNumber: referenceNumber.trim() || null })} loading={saving} disabled={!bankAccountId || !validAmount}>Record payment</ModernButton>
+            </View>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
       <SelectionSheet
         visible={pickerVisible}
         title="Payment account"

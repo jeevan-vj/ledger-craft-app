@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { selectionHaptic } from '@/utils/haptics';
 
 interface SelectionSheetProps {
   visible: boolean;
@@ -75,6 +76,7 @@ export function SelectionSheet({
               autoCorrect={false}
               returnKeyType="search"
               clearButtonMode="while-editing"
+              accessibilityLabel={searchPlaceholder}
             />
           </View>
         </View>
@@ -106,14 +108,20 @@ export function SelectionSheet({
 }
 
 export function SelectionRow({ title, subtitle, selected, onPress, leading }: SelectionRowProps) {
+  const handlePress = () => {
+    if (!selected) selectionHaptic();
+    onPress();
+  };
+
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       style={styles.row}
       activeOpacity={0.65}
       accessibilityRole="button"
       accessibilityState={{ selected }}
       accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
+      accessibilityHint="Selects this option"
     >
       {leading ? <View style={styles.leading}>{leading}</View> : null}
       <View style={styles.rowCopy}>

@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   View,
   StyleSheet,
-  Platform,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -13,8 +12,8 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import * as Haptics from 'expo-haptics';
 import { SPRING_CONFIG, SCALE, OPACITY } from '@/utils/animations';
+import { lightImpactHaptic } from '@/utils/haptics';
 import { palette, radius } from '@/theme/tokens';
 
 interface ModernButtonProps {
@@ -46,9 +45,7 @@ export function ModernButton({
   const pressed = useSharedValue(false);
 
   const triggerHaptic = useCallback(() => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
-    }
+    lightImpactHaptic();
   }, []);
 
   const handlePress = useCallback(() => {
@@ -93,6 +90,7 @@ export function ModernButton({
         accessible
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
+        onAccessibilityTap={handlePress}
         style={[
           styles.button,
           variant === 'primary' && styles.primary,

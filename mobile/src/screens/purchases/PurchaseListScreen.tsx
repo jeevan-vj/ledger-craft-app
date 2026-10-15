@@ -19,7 +19,7 @@ import { FilterPills } from '@/components/ui/FilterPills';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type BillDto, type VendorDto } from '@/features/purchases/api/purchasesApi';
 import type { PurchaseStackParamList } from '@/navigation/types';
-import { hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
@@ -50,7 +50,7 @@ export default function PurchaseListScreen() {
         onChangeText: (event) => setSearch(event.nativeEvent.text),
       } : undefined,
       headerRight: () => mode === 'bills' ? (
-        <NativeHeaderButton label="New" primary onPress={() => navigation.navigate('BillCreate')} />
+        <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={() => navigation.navigate('BillCreate')} />
       ) : null,
     });
   }, [mode, navigation]);
@@ -87,12 +87,13 @@ export default function PurchaseListScreen() {
             placeholder={`Search ${mode}`}
             placeholderTextColor={palette.textTertiary}
             style={styles.searchInput}
+            accessibilityLabel={`Search ${mode}`}
           />
         </View>
       ) : null}
       <FilterPills options={['bills', 'vendors'] as const} value={mode} onChange={(next) => { setMode(next); setSearch(''); }} />
       {error && activeQuery.data !== undefined ? (
-        <Pressable style={styles.banner} onPress={() => activeQuery.refetch()} accessibilityRole="button">
+        <Pressable style={styles.banner} onPress={() => activeQuery.refetch()} accessibilityRole="button" accessibilityLabel="Refresh failed" accessibilityHint="Retries loading purchases">
           <Text style={styles.bannerText}>Couldn’t refresh. Showing saved data. Tap to retry.</Text>
         </Pressable>
       ) : null}
@@ -132,6 +133,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(Number(bill.balanceDue), bill.currency)} due`}
+      accessibilityHint="Opens bill details"
       style={({ pressed }) => [styles.row, first && styles.first, last && styles.last, pressed && styles.pressed]}
     >
       <View style={[styles.iconWell, { backgroundColor: `${statusColor[bill.displayStatus]}18` }]}>
@@ -171,7 +173,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: 40, flexGrow: 1 },
-  search: { marginHorizontal: space.screen, marginTop: space.sm, height: 44, borderRadius: radius.md, backgroundColor: palette.fill, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, gap: space.sm },
+  search: { marginHorizontal: space.screen, marginTop: space.sm, minHeight: control.touchTarget, borderRadius: radius.md, backgroundColor: palette.fill, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, gap: space.sm },
   searchInput: { ...type.body, flex: 1 },
   banner: { marginHorizontal: space.screen, marginBottom: space.sm, padding: space.md, borderRadius: radius.md, backgroundColor: palette.warningFill },
   bannerText: { ...type.footnote, color: palette.text },

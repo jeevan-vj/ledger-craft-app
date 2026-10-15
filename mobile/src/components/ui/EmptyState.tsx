@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { palette, radius, space, type } from '@/theme/tokens';
+import { control, palette, radius, space, type } from '@/theme/tokens';
 
 interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     marginTop: space.lg,
     backgroundColor: palette.accent,
     paddingHorizontal: 20,
-    height: 44,
+    minHeight: control.touchTarget,
     borderRadius: radius.pill,
     alignItems: 'center',
     justifyContent: 'center',

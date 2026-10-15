@@ -14,6 +14,7 @@ interface ListRowProps {
   destructive?: boolean;
   showChevron?: boolean;
   accessory?: React.ReactNode;
+  accessibilityHint?: string;
 }
 
 export function ListRow({
@@ -27,7 +28,9 @@ export function ListRow({
   destructive = false,
   showChevron = true,
   accessory,
+  accessibilityHint,
 }: ListRowProps) {
+  const spokenValue = value ?? placeholder;
   const content = (
     <View style={[styles.row, disabled && styles.disabled]}>
       {icon ? <View style={styles.icon}>{icon}</View> : null}
@@ -70,7 +73,9 @@ export function ListRow({
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
-      accessibilityLabel={label}
+      accessibilityLabel={spokenValue ? `${label}, ${spokenValue}` : label}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
       style={({ pressed }) => pressed && styles.pressed}
     >
       {content}

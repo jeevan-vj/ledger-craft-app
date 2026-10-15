@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScrollView, Pressable, Text, StyleSheet, View } from 'react-native';
-import { palette, radius, space } from '@/theme/tokens';
+import { control, palette, radius, space } from '@/theme/tokens';
+import { selectionHaptic } from '@/utils/haptics';
 
 interface FilterPillsProps<T extends string> {
   options: readonly T[];
@@ -29,8 +30,11 @@ export function FilterPills<T extends string>({
           return (
             <Pressable
               key={option}
-              onPress={() => onChange(option)}
-              accessibilityRole="button"
+              onPress={() => {
+                if (!active) selectionHaptic();
+                onChange(option);
+              }}
+              accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               accessibilityLabel={label}
               style={({ pressed }) => [
@@ -39,7 +43,7 @@ export function FilterPills<T extends string>({
                 pressed && styles.pressed,
               ]}
             >
-              <Text style={[styles.label, active && styles.labelActive]}>{label}</Text>
+              <Text maxFontSizeMultiplier={1.4} style={[styles.label, active && styles.labelActive]}>{label}</Text>
             </Pressable>
           );
         })}
@@ -65,7 +69,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   pill: {
-    height: 32,
+    minHeight: control.touchTarget,
     paddingHorizontal: 14,
     borderRadius: radius.pill,
     backgroundColor: 'transparent',
