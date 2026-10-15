@@ -43,7 +43,7 @@ export function FilterPills<T extends string>({
                 pressed && styles.pressed,
               ]}
             >
-              <Text maxFontSizeMultiplier={1.4} style={[styles.label, active && styles.labelActive]}>{label}</Text>
+              <Text style={[styles.label, active && styles.labelActive]}>{label}</Text>
             </Pressable>
           );
         })}

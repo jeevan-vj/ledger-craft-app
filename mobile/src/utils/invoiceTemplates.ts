@@ -3,6 +3,69 @@ import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { formatMoney } from '@/utils/money';
 
 // Helper functions
+const HTML_ENTITIES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
+};
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
+}
+
+function escapeInvoiceText(invoice: Invoice): Invoice {
+  return {
+    ...invoice,
+    invoiceNumber: escapeHtml(invoice.invoiceNumber),
+    customer: invoice.customer
+      ? {
+          ...invoice.customer,
+          name: escapeHtml(invoice.customer.name),
+          email: escapeHtml(invoice.customer.email),
+          phone: invoice.customer.phone == null ? invoice.customer.phone : escapeHtml(invoice.customer.phone),
+          address: invoice.customer.address == null ? invoice.customer.address : escapeHtml(invoice.customer.address),
+          city: invoice.customer.city == null ? invoice.customer.city : escapeHtml(invoice.customer.city),
+          state: invoice.customer.state == null ? invoice.customer.state : escapeHtml(invoice.customer.state),
+          zip: invoice.customer.zip == null ? invoice.customer.zip : escapeHtml(invoice.customer.zip),
+          country: invoice.customer.country == null ? invoice.customer.country : escapeHtml(invoice.customer.country),
+        }
+      : undefined,
+    items: invoice.items.map((item) => ({
+      ...item,
+      description: escapeHtml(item.description),
+      unit: escapeHtml(item.unit),
+    })),
+    additionalChargesList: invoice.additionalChargesList?.map((charge) => ({
+      ...charge,
+      name: escapeHtml(charge.name),
+    })),
+    notes: invoice.notes == null ? invoice.notes : escapeHtml(invoice.notes),
+    terms: invoice.terms == null ? invoice.terms : escapeHtml(invoice.terms),
+  };
+}
+
+function escapeBusinessProfileText(profile?: BusinessProfile): BusinessProfile | undefined {
+  if (!profile) return undefined;
+  return {
+    ...profile,
+    name: escapeHtml(profile.name),
+    email: escapeHtml(profile.email),
+    phone: profile.phone == null ? profile.phone : escapeHtml(profile.phone),
+    address: profile.address == null ? profile.address : escapeHtml(profile.address),
+    city: profile.city == null ? profile.city : escapeHtml(profile.city),
+    state: profile.state == null ? profile.state : escapeHtml(profile.state),
+    zip: profile.zip == null ? profile.zip : escapeHtml(profile.zip),
+    country: profile.country == null ? profile.country : escapeHtml(profile.country),
+    taxId: profile.taxId == null ? profile.taxId : escapeHtml(profile.taxId),
+    logoUrl: profile.logoUrl == null ? profile.logoUrl : escapeHtml(profile.logoUrl),
+    website: profile.website == null ? profile.website : escapeHtml(profile.website),
+    defaultNotes: profile.defaultNotes == null ? profile.defaultNotes : escapeHtml(profile.defaultNotes),
+    defaultTerms: profile.defaultTerms == null ? profile.defaultTerms : escapeHtml(profile.defaultTerms),
+  };
+}
+
 const formatCurrency = (amount: number, currency: string): string => {
   return formatMoney(amount, currency);
 };
@@ -87,7 +150,7 @@ const getStatusColor = (status: string): string => {
 };
 
 // Classic Template
-export function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   const companyAddress = [
     businessProfile?.address,
@@ -374,7 +437,7 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Modern Template
-export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -624,7 +687,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
 }
 
 // Minimal Template
-export function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -832,7 +895,7 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Executive Template - Continued in next part due to length
-export function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1061,7 +1124,7 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Corporate Template
-export function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1324,7 +1387,7 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Modern Pro Template
-export function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1672,7 +1735,11 @@ export function generateInvoiceHTML(
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
 ): string {
-  return getRawTemplateHTML(templateId, invoice, businessProfile)
+  return getRawTemplateHTML(
+    templateId,
+    escapeInvoiceText(invoice),
+    escapeBusinessProfileText(businessProfile),
+  )
     .replace(
       /<meta\s+name="viewport"\s+content="[^"]*">/i,
       '<meta name="viewport" content="width=595, initial-scale=1, maximum-scale=5, user-scalable=yes">',

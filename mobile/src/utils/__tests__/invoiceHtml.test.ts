@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import type { Invoice } from '@/types/invoice';
+import type { BusinessProfile, Invoice } from '@/types/invoice';
 import { generateInvoiceHTML } from '../invoiceTemplates';
 
 const invoice: Invoice = {
@@ -79,5 +79,33 @@ describe('generateInvoiceHTML', () => {
 
     expect(html).toContain('Amount Due:');
     expect(html).toContain('$0.00');
+  });
+
+  it('escapes user-provided text and attributes before creating invoice HTML', () => {
+    const hostileText = `<img src=x onerror="globalThis.pwned=true"> O'Reilly & Co`;
+    const profile = {
+      id: 'profile-1',
+      userId: 'user-1',
+      name: hostileText,
+      email: 'owner@example.com',
+      logoUrl: `https://example.com/logo.png" onerror="globalThis.pwned=true`,
+    } as BusinessProfile;
+    const html = generateInvoiceHTML(
+      {
+        ...invoice,
+        invoiceNumber: hostileText,
+        customer: { ...invoice.customer!, name: hostileText },
+        items: [{ ...invoice.items[0], description: hostileText, unit: hostileText }],
+        notes: hostileText,
+        terms: hostileText,
+      },
+      profile,
+      'classic',
+    );
+
+    expect(html).not.toContain('<img src=x onerror=');
+    expect(html).not.toContain('logo.png" onerror=');
+    expect(html).toContain('&lt;img src=x onerror=&quot;globalThis.pwned=true&quot;&gt; O&#39;Reilly &amp; Co');
+    expect(html).toContain('src="https://example.com/logo.png&quot; onerror=&quot;globalThis.pwned=true"');
   });
 });

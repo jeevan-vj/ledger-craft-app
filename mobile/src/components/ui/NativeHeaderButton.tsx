@@ -40,7 +40,6 @@ export function NativeHeaderButton({
       ]}
     >
       <Text
-        maxFontSizeMultiplier={1.4}
         style={[
           styles.label,
           { color },

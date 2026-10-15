@@ -1,7 +1,6 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
 import { palette, space, type } from '@/theme/tokens';
-import { selectionHaptic } from '@/utils/haptics';
 
 interface FormSwitchProps {
   label: string;
@@ -11,11 +10,6 @@ interface FormSwitchProps {
 }
 
 export function FormSwitch({ label, value, onValueChange, description }: FormSwitchProps) {
-  const handleValueChange = (nextValue: boolean) => {
-    selectionHaptic();
-    onValueChange(nextValue);
-  };
-
   return (
     <View style={styles.row}>
       <View style={styles.copy}>
@@ -26,7 +20,7 @@ export function FormSwitch({ label, value, onValueChange, description }: FormSwi
       </View>
       <Switch
         value={value}
-        onValueChange={handleValueChange}
+        onValueChange={onValueChange}
         trackColor={{ false: palette.fill, true: palette.accent }}
         thumbColor={value ? palette.accentForeground : palette.surface}
         ios_backgroundColor={palette.fill}
