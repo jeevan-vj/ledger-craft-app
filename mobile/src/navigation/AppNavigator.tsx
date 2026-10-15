@@ -8,6 +8,7 @@ import {
   HomeStackParamList,
   InvoiceStackParamList,
   ExpenseStackParamList,
+  PurchaseStackParamList,
   SettingsStackParamList,
   MainTabParamList,
 } from './types';
@@ -25,6 +26,9 @@ import InvoiceDetailScreen from '@/screens/invoices/InvoiceDetailScreen';
 import ExpenseListScreen from '@/screens/expenses/ExpenseListScreen';
 import ExpenseCreateScreen from '@/screens/expenses/ExpenseCreateScreen';
 import ExpenseEditScreen from '@/screens/expenses/ExpenseEditScreen';
+import PurchaseListScreen from '@/screens/purchases/PurchaseListScreen';
+import BillDetailScreen from '@/screens/purchases/BillDetailScreen';
+import BillFormScreen from '@/screens/purchases/BillFormScreen';
 import SettingsScreen from '@/screens/settings/SettingsScreen';
 import BusinessSettingsScreen from '@/screens/settings/BusinessSettingsScreen';
 
@@ -32,6 +36,7 @@ const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const InvoiceStack = createNativeStackNavigator<InvoiceStackParamList>();
 const ExpenseStack = createNativeStackNavigator<ExpenseStackParamList>();
+const PurchaseStack = createNativeStackNavigator<PurchaseStackParamList>();
 const SettingsStackNav = createNativeStackNavigator<SettingsStackParamList>();
 
 function tabIcon(sfSymbol: SFSymbol, androidAsset: ImageSourcePropType) {
@@ -115,6 +120,17 @@ function ExpenseNavigator() {
   );
 }
 
+function PurchaseNavigator() {
+  return (
+    <PurchaseStack.Navigator screenOptions={listHeaderOptions}>
+      <PurchaseStack.Screen name="PurchaseList" component={PurchaseListScreen} options={{ title: 'Purchases' }} />
+      <PurchaseStack.Screen name="BillCreate" component={BillFormScreen} options={{ ...formHeaderOptions, title: 'New bill' }} />
+      <PurchaseStack.Screen name="BillEdit" component={BillFormScreen} options={{ ...formHeaderOptions, title: 'Edit bill' }} />
+      <PurchaseStack.Screen name="BillDetail" component={BillDetailScreen} options={{ ...detailHeaderOptions, title: 'Bill' }} />
+    </PurchaseStack.Navigator>
+  );
+}
+
 function SettingsNavigator() {
   return (
     <SettingsStackNav.Navigator screenOptions={listHeaderOptions}>
@@ -165,6 +181,14 @@ export default function AppNavigator() {
         options={{
           title: 'Expenses',
           tabBarIcon: tabIcon('dollarsign.circle.fill', require('../../assets/tabs/expenses.png')),
+        }}
+      />
+      <Tab.Screen
+        name="Purchases"
+        component={PurchaseNavigator}
+        options={{
+          title: 'Purchases',
+          tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/expenses.png')),
         }}
       />
       <Tab.Screen

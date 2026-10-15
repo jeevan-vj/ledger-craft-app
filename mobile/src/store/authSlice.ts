@@ -11,6 +11,7 @@ import {
   signUpEmail,
   type MeResponse,
 } from '@/features/auth/api/authApi';
+import { clearServerState } from '@/lib/queryClient';
 
 export type AuthUser = {
   id: string;
@@ -143,6 +144,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
     try {
       await signOutSession();
     } finally {
+      clearServerState();
       set({
         user: null,
         session: null,
@@ -166,6 +168,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   refreshUser: async () => {
     const me = await getMe();
     if (!me) {
+      clearServerState();
       set({
         user: null,
         session: null,

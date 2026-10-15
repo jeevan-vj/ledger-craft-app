@@ -41,7 +41,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
 | Invoice payments and receipts | Available | Invoice-linked payments, partial/full status updates, and payment receipts exist. Account-ledger posting and split/connected banking workflows still need hardening under the banking task. |
-| Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows now use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Native mobile purchases, attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
+| Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Expo vendor/bill browsing and payment-critical flows are implemented locally pending device QA/deployment. Attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
 | Expenses | Available | Expense and category CRUD, tax amounts, account/customer links, receipt reference, and web/mobile entry flows exist. Approval policy, claims, reimbursements, and recurring expenses are extensions/gaps. |
 | Payment/bank accounts | Partial | Bank-account CRUD and accounting accounts exist. Default payment account, account statements/performance, bulk enable/disable, and a unified posting model are incomplete. |
 | Banking transactions | Partial | List and file import exist. Manual income/expense CRUD, duplicate/export/PDF, split transactions, document connections, and category/payment-method parity are missing. |
@@ -60,7 +60,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Import/export | Partial | Bank transaction import exists. Akaunting-style import/export for items, customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports is missing. |
 | Search, bulk actions, notifications | Missing | Individual screens have local filtering, but there is no cross-domain search, reusable server bulk-action model, or persistent notification centre. |
 | External API and API keys | Missing | The first-party clients use Hono APIs, but there is no customer-facing API-key lifecycle, scoped external API, webhook delivery, or public API documentation. |
-| Mobile coverage | Partial | Auth, dashboard, invoices, expenses, and settings exist. Most accounting, banking, reporting, team, purchase, and portal workflows are web-only or absent. |
+| Mobile coverage | Partial | Auth, dashboard, invoices, expenses, settings, and payment-critical purchase workflows exist. Most accounting, banking, reporting, team, and portal workflows are web-only or absent. |
 
 Conclusion: LedgerCraft has a strong sales, expense, NZ tax, and reconciliation foundation, but it does **not** currently contain every Akaunting core feature.
 
@@ -83,12 +83,16 @@ Acceptance criteria:
 
 Expected outcome: users can manage supplier obligations from vendor creation through bill settlement, with correct payables and tax accounting.
 
-Status (2026-10-03): **partial, locally verified, not deployed.** Shared
+Status (2026-10-03): **partial.** Shared
 contracts, migration `0004_purchases-payables.sql`, vendor CRUD, bill line
 account coding, draft/receive/void/payment use cases, exact tax-inclusive totals,
 balanced AP journals, partial/full balance updates, overpayment rejection,
-tenant isolation, and responsive web workflows are implemented. The remaining
-acceptance criteria below stay open; this status does not mark AKP-01 complete.
+tenant isolation, and responsive web workflows are deployed. Expo vendor/bill
+browsing, draft create/edit, detail, receive/void, and partial/full payment flows
+are implemented locally; focused API-client tests and iOS/Android production
+exports pass. Authenticated device QA and mobile deployment remain pending. The
+remaining acceptance criteria below stay open; this status does not mark AKP-01
+complete.
 
 Acceptance criteria:
 

@@ -12,6 +12,17 @@ create/save/download/file/reload browser flow pass. Frontend build
 and the production smoke suite passes. No schema migration was needed;
 readiness remains `0004_purchases-payables.sql`.
 
+**Mobile purchases/payables (TestFlight submitted, 2026-10-04):** Expo now has
+a native Purchases tab for vendor and bill browsing, bill draft create/edit and
+detail, receive/void actions, and exact-decimal partial/full payment capture
+against bank accounts. Focused API-client tests and iOS/Android Expo production
+exports pass. EAS production iOS archive build 2
+(`170b1d99-61c0-4616-8ccd-e3a111c10f21`) finished successfully and submission
+`1b89f039-ccbc-4af5-8e7f-81874f082f54` was uploaded to App Store Connect for
+TestFlight. Apple processing and authenticated device QA remain pending;
+attachments, history, cancel/restore, split allocations, import/export, and
+recurring bills remain open in AKP-01.
+
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 draft/receive/void/pay bill workflows now run through shared Zod contracts,
 Hono use cases, Drizzle repositories, and organisation-scoped SQLite tables.
@@ -22,8 +33,8 @@ system and adapt to mobile web. Migration `0004_purchases-payables.sql` is
 reviewed, checksum tracked and applied in production. Frontend build
 `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published.
 Release gates, live smoke checks, and authenticated Browser purchase flows pass.
-Native mobile purchase flows, attachments, history, cancel/restore, split
-allocations, import/export, and recurring bills remain in AKP-01.
+Attachments, history, cancel/restore, split allocations, import/export,
+recurring bills, and final native device QA remain in AKP-01.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage

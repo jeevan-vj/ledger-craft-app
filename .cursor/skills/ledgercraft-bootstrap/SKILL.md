@@ -7,7 +7,7 @@ description: Start-here operating instructions for LedgerCraft reconstruction. U
 
 Read this before writing code. Then follow the named skill for the wave you are on.
 
-## You are here (2026-10-03)
+## You are here (2026-10-04)
 
 The active deployment is Cloudflare Pages plus a Hono Worker, with Identity and
 per-organisation Ledger SQLite Durable Objects. The PostgreSQL reconstruction
@@ -33,7 +33,7 @@ current architecture.
 | W12 | **Verified (2026-09-11).** `POST /api/ai/chat`; client OpenAI gone. |
 | W13 | **Verified (2026-09-11).** `@supabase/supabase-js` removed; hosted URL/anon key and Edge Function URLs gone. |
 | GST filing | **Deployed (2026-10-03).** Hono/SQLite persists IRD + reconciliation snapshots; a dedicated action records the external myIR confirmation reference; PDF export and authenticated create/save/download/file/reload browser QA pass. Frontend `714caea84c59`, Worker `77d9125d-f89c-44fb-9ec2-1d50ad1c7603`; no migration. |
-| AKP-01 | **Partially implemented and deployed (2026-10-03).** Vendor CRUD and web bill draft/receive/void/payment workflows, exact AP journals, and SQLite migration `0004_purchases-payables.sql` pass the production release gate. Native mobile purchases and the remaining lifecycle/import/attachment/recurring scope are pending. |
+| AKP-01 | **Partially implemented and deployed (2026-10-04).** Vendor CRUD and web bill draft/receive/void/payment workflows, exact AP journals, and SQLite migration `0004_purchases-payables.sql` pass the production release gate. Expo vendor/bill browsing, draft create/edit, receive/void and payment-critical flows pass focused tests, iOS/Android exports, and EAS production iOS archive build 2 (`170b1d99-61c0-4616-8ccd-e3a111c10f21`). Submission `1b89f039-ccbc-4af5-8e7f-81874f082f54` was uploaded to App Store Connect for TestFlight; Apple processing, authenticated device QA, attachments and the remaining lifecycle/import/recurring scope are pending. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
 
@@ -41,7 +41,8 @@ current architecture.
 
 1. Read `AGENTS.md`, `TARGET_ARCHITECTURE.md`, and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
 2. Continue the dependency-ordered AKP tasks; finish the remaining AKP-01 scope or begin AKP-02 only as a separate verified slice.
-3. Commit, push, or deploy only when the user asks.
+3. For EAS iOS builds, TestFlight, or App Store Connect work, read `ledgercraft-mobile-release` before acting.
+4. Commit, push, or deploy only when the user asks.
 
 ## First command
 

@@ -11,6 +11,17 @@ reload browser flow pass. Frontend build `714caea84c59` and Worker
 suite passes. No migration was required; readiness remains
 `0004_purchases-payables.sql`. See `deploy/cloudflare.md`.
 
+**Mobile purchases/payables (TestFlight submitted, 2026-10-04):** The Expo app
+now includes a native Purchases tab with vendor and bill browsing, draft bill
+create/edit, bill detail, receive/void actions, and exact-decimal partial/full
+payments against organisation bank accounts. Focused mobile API tests and iOS/
+Android Expo production exports pass. EAS production iOS archive build 2
+(`170b1d99-61c0-4616-8ccd-e3a111c10f21`) finished successfully and submission
+`1b89f039-ccbc-4af5-8e7f-81874f082f54` was uploaded to App Store Connect for
+TestFlight; Apple processing and authenticated device QA remain pending.
+Attachments, history, cancel/restore, split allocations, import/export, and
+recurring bills remain open in AKP-01.
+
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 bill draft/receive/void/payment workflows are implemented through Hono/SQLite
 with exact totals, balanced accounts-payable journals, overpayment rejection,
@@ -19,8 +30,8 @@ the current Revolut-inspired UI and responsive layout. Migration
 `0004_purchases-payables.sql` is applied in production. Frontend build
 `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published;
 release gates, live smoke checks, and authenticated Browser purchase flows pass.
-AKP-01 still requires native mobile purchase flows, attachments, history,
-cancel/restore, split allocations, import/export, and recurring bills.
+AKP-01 still requires attachments, history, cancel/restore, split allocations,
+import/export, recurring bills, and final native device/authenticated QA.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists IRD GST treatment, exemption reason, claimable percentage and private-use
@@ -99,7 +110,7 @@ review it, then use `pnpm deploy:cloudflare` to deploy code and bundled migratio
 | Live DB | Hosted `public` is empty (2026-09-03). Greenfield. Do not replay Git SQL. No UUID import. |
 | Now | W1–W13 **verified**. Purchases/payables is deployed through migration `0004`; remaining AKP-01 work is explicitly tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. |
 | Release gate | Production build `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are verified; readiness reports `0004_purchases-payables.sql`. |
-| Clients | Web and mobile email auth are Better Auth. Product CRUD, including web vendors and bills, routes through Hono. Native mobile purchases remain pending. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
+| Clients | Web and mobile email auth are Better Auth. Product CRUD routes through Hono. Expo has vendor/bill browsing, draft create/edit, receive/void and payment-critical flows in successful EAS iOS build 2; TestFlight submission and authenticated device QA remain pending. `@supabase/supabase-js` is not a dependency. No new client SQL, Storage SDK, Edge Functions, or `VITE_OPENAI_*`. Mobile visual language is Wise lime/forest + iOS 26 native chrome; web stays Revolut. |
 | Ports | Local API **3001**, Vite **8080** (`/api` proxy); SQLite needs no database port. |
 | Package manager | **pnpm** workspace (`api`, `packages/contracts`). `mobile/` is not in the workspace yet. |
 
@@ -125,6 +136,7 @@ See `deploy/cloudflare.md` for commands and rollout/verification details.
 | `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Browser, screenshots, invoice PDF |
 | `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Revolut-inspired web UI implementation and review |
 | `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Wise-inspired native UI implementation and review |
+| `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS iOS build, App Store Connect, TestFlight, and release handoff |
 | `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema from app types |
 | `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |
 | `.cursor/skills/ledgercraft-agent-roster/SKILL.md` | Task subagent prompts |

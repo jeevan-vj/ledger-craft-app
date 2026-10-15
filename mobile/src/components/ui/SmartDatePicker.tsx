@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -12,12 +12,15 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import { palette, radius } from '@/theme/tokens';
+import { dateForPreset, localIsoDate, parseLocalDate } from './datePickerModel';
 
 interface SmartDatePickerProps {
   label: string;
   value: string; // ISO date string
   onChangeDate: (date: string) => void;
   minimumDate?: Date;
+  presetBaseDate?: string;
+  showPresets?: boolean;
 }
 
 type DatePreset = {
@@ -37,10 +40,16 @@ export function SmartDatePicker({
   value,
   onChangeDate,
   minimumDate,
+  presetBaseDate,
+  showPresets = true,
 }: SmartDatePickerProps) {
   const [showModal, setShowModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [tempDate, setTempDate] = useState(new Date(value));
+  const [tempDate, setTempDate] = useState(parseLocalDate(value));
+
+  useEffect(() => {
+    setTempDate(parseLocalDate(value));
+  }, [value]);
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -53,9 +62,11 @@ export function SmartDatePicker({
 
   const handlePresetSelect = (days: number) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    const newDate = new Date();
-    newDate.setDate(newDate.getDate() + days);
-    const isoString = newDate.toISOString().split('T')[0];
+    const isoString = dateForPreset(
+      days,
+      presetBaseDate,
+      minimumDate ? localIsoDate(minimumDate) : undefined,
+    );
     onChangeDate(isoString);
     setShowModal(false);
   };
@@ -81,7 +92,7 @@ export function SmartDatePicker({
       setTempDate(selectedDate);
       if (Platform.OS === 'android') {
         // Android: apply immediately
-        const isoString = selectedDate.toISOString().split('T')[0];
+        const isoString = localIsoDate(selectedDate);
         onChangeDate(isoString);
       }
     }
@@ -89,7 +100,7 @@ export function SmartDatePicker({
 
   const handleIOSConfirm = () => {
     Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-    const isoString = tempDate.toISOString().split('T')[0];
+    const isoString = localIsoDate(tempDate);
     onChangeDate(isoString);
     setShowDatePicker(false);
     setShowModal(false);
@@ -102,6 +113,7 @@ export function SmartDatePicker({
         style={styles.button}
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+          setTempDate(parseLocalDate(value));
           setShowModal(true);
         }}
         activeOpacity={0.7}
@@ -125,7 +137,7 @@ export function SmartDatePicker({
           />
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Select Due Date</Text>
+              <Text style={styles.modalTitle}>Select {label.toLowerCase()}</Text>
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
@@ -135,7 +147,7 @@ export function SmartDatePicker({
             </View>
 
             <ScrollView style={styles.presetsContainer}>
-              {DATE_PRESETS.map((preset) => (
+              {showPresets ? DATE_PRESETS.map((preset) => (
                 <TouchableOpacity
                   key={preset.label}
                   style={styles.presetButton}
@@ -152,7 +164,7 @@ export function SmartDatePicker({
                   </View>
                   <Feather name="chevron-right" size={18} color={palette.textTertiary} />
                 </TouchableOpacity>
-              ))}
+              )) : null}
 
               <TouchableOpacity
                 style={[styles.presetButton, styles.customButton]}
@@ -325,5 +337,4 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
-
 
