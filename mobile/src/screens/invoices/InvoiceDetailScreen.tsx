@@ -18,8 +18,9 @@ import { paymentService } from '@/services/paymentService';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import type { BusinessProfile } from '@/types/invoice';
+import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
-import { shareInvoicePDF, downloadInvoicePDF } from '@/utils/pdfUtils';
+import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
@@ -28,6 +29,7 @@ import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompleten
 import { palette, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { ModernButton } from '@/components/ui/ModernButton';
+import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 
 type InvoiceDetailNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
@@ -53,8 +55,17 @@ export default function InvoiceDetailScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: invoice?.invoiceNumber || 'Invoice',
+      headerRight: invoice
+        ? () => (
+            <NativeHeaderButton
+              label="Preview"
+              primary
+              onPress={() => setShowPreview(true)}
+            />
+          )
+        : undefined,
     });
-  }, [navigation, invoice?.invoiceNumber]);
+  }, [navigation, invoice]);
 
   const loadData = async () => {
     try {
@@ -150,27 +161,16 @@ export default function InvoiceDetailScreen() {
     setPaymentModalVisible(true);
   };
 
-  const handleDownloadPDF = async () => {
-    if (!invoice) return;
-
-    try {
-      setGeneratingPdf(true);
-      await downloadInvoicePDF(invoice);
-      Alert.alert('Success', 'PDF saved to your device');
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      Alert.alert('Error', 'Failed to generate PDF');
-    } finally {
-      setGeneratingPdf(false);
-    }
-  };
-
   const handleSharePDF = async () => {
     if (!invoice) return;
 
     try {
       setGeneratingPdf(true);
-      await shareInvoicePDF(invoice);
+      await shareInvoicePDF(
+        invoice,
+        businessProfile || undefined,
+        (invoice.templateName as InvoiceTemplateId | undefined) || 'classic',
+      );
     } catch (error) {
       console.error('Error sharing PDF:', error);
       Alert.alert('Error', 'Failed to share PDF');
@@ -315,7 +315,9 @@ export default function InvoiceDetailScreen() {
           </View>
           {(invoice.taxAmount || 0) > 0 && (
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Tax</Text>
+              <Text style={styles.summaryLabel}>
+                {invoice.currency?.toUpperCase() === 'NZD' ? 'GST' : 'Tax'}
+              </Text>
               <Text style={styles.summaryValue}>{formatCurrency(invoice.taxAmount || 0, invoice.currency)}</Text>
             </View>
           )}
@@ -333,9 +335,21 @@ export default function InvoiceDetailScreen() {
               </Text>
             </View>
           )}
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Total</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
+          </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
+            <Text style={styles.totalLabel}>Amount due</Text>
+            <Text style={styles.totalValue}>
+              {formatCurrency(
+                invoice.balanceDue ??
+                  (invoice.status === 'paid'
+                    ? 0
+                    : Math.max(0, invoice.total - (invoice.totalPaid ?? 0))),
+                invoice.currency,
+              )}
+            </Text>
           </View>
         </View>
 
@@ -369,20 +383,21 @@ export default function InvoiceDetailScreen() {
       </ScrollView>
 
       <View style={styles.bottomBar}>
+        <ModernButton
+          onPress={() => setShowPreview(true)}
+          variant="primary"
+          size="lg"
+          fullWidth
+          icon={<Feather name="eye" size={19} color={palette.accentForeground} />}
+        >
+          Preview invoice
+        </ModernButton>
         {invoice.status !== 'paid' ? (
-          <ModernButton onPress={handleMarkAsPaid} variant="primary" size="lg" fullWidth>
+          <ModernButton onPress={handleMarkAsPaid} variant="secondary" size="lg" fullWidth>
             Record payment
           </ModernButton>
         ) : null}
         <View style={styles.secondaryRow}>
-          <Pressable
-            onPress={() => setShowPreview(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Preview"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            <Text style={styles.secondaryLabel}>Preview</Text>
-          </Pressable>
           <Pressable
             onPress={handleSharePDF}
             disabled={generatingPdf}
@@ -418,7 +433,7 @@ export default function InvoiceDetailScreen() {
           <InvoicePreviewWithTemplates
             invoice={invoice}
             businessProfile={businessProfile || undefined}
-            initialTemplate={(invoice.templateName as any) || 'classic'}
+            initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
               navigation.getParent()?.navigate('Settings' as never);
@@ -647,4 +662,3 @@ const styles = StyleSheet.create({
     color: palette.textSecondary,
   },
 });
-

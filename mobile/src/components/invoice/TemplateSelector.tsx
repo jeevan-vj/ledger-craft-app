@@ -20,7 +20,7 @@ export default function TemplateSelector({
   onSelectTemplate,
 }: TemplateSelectorProps) {
   const handleSelect = (templateId: InvoiceTemplateId) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
     onSelectTemplate(templateId);
   };
 
@@ -44,6 +44,9 @@ export default function TemplateSelector({
               ]}
               onPress={() => handleSelect(template.id)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Use ${template.name} invoice template`}
+              accessibilityState={{ selected: isSelected }}
             >
               <Text style={styles.chipIcon}>PDF</Text>
               <Text
