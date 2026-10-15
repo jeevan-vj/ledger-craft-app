@@ -16,7 +16,19 @@ export interface MobileInvoiceDto {
   discountPercent: string | null;
   discount: string | null;
   additionalCharges: string | null;
+  additionalChargesList?: Array<{
+    id: string;
+    name: string;
+    amount: string;
+    calculationType: 'fixed' | 'percentage';
+    isActive: boolean;
+  }>;
+  additionalChargesTotal?: string;
   total: string;
+  totalPaid: string;
+  balanceDue: string;
+  paymentStatus: string;
+  taxInclusive: boolean;
   status: Exclude<InvoiceStatus, 'cancelled'>;
   notes: string | null;
   terms: string | null;
@@ -77,7 +89,17 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     taxAmount: Number(dto.taxAmount),
     discount: dto.discount == null ? null : Number(dto.discount),
     additionalCharges: dto.additionalCharges == null ? null : Number(dto.additionalCharges),
+    additionalChargesList: dto.additionalChargesList?.map((charge) => ({
+      ...charge,
+      amount: Number(charge.amount),
+    })),
+    additionalChargesTotal:
+      dto.additionalChargesTotal == null ? undefined : Number(dto.additionalChargesTotal),
     total: Number(dto.total),
+    totalPaid: Number(dto.totalPaid),
+    balanceDue: Number(dto.balanceDue),
+    paymentStatus: dto.paymentStatus,
+    taxInclusive: dto.taxInclusive,
     status: dto.status,
     notes: dto.notes,
     terms: dto.terms,
