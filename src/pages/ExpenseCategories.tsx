@@ -8,6 +8,7 @@ import { ExpenseCategory } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { ExpenseCategoryFormValues } from '@/components/expense/ExpenseCategoryFormDrawer';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 const ExpenseCategories = () => {
   const { 
@@ -113,18 +114,16 @@ const ExpenseCategories = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Expense Categories</h1>
-          <p className="text-muted-foreground">
-            Organize your expenses with custom categories for better tracking and reporting.
-          </p>
-        </div>
-        <Button onClick={handleOpenDrawer}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Category
-        </Button>
-      </div>
+      <PageHeader
+        title="Expense Categories"
+        description="Organize your expenses with custom categories for better tracking and reporting."
+        actions={
+          <Button onClick={handleOpenDrawer}>
+            <Plus className="mr-2 h-4 w-4" />
+            New Category
+          </Button>
+        }
+      />
 
       {expenseCategories.length === 0 ? (
         <div className="text-center py-12">

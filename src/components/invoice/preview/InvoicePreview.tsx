@@ -11,6 +11,7 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Download, Maximize2, Minimize2, ZoomIn, ZoomOut, Printer, ArrowLeft, Save } from 'lucide-react';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
+import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useAppData } from '@/hooks/useAppData';
@@ -59,6 +60,8 @@ const InvoicePreview = ({
       effectiveBusinessProfile?.country
     ].filter(Boolean).join(', ') || '',
     companyPhone: effectiveBusinessProfile?.phone || '',
+    bankAccountName: effectiveBusinessProfile?.bankAccountName,
+    bankAccountNumber: effectiveBusinessProfile?.bankAccountNumber,
     clientName: invoice.customer?.name || 'Client Name',
     clientAddress: [
       invoice.customer?.address,
@@ -67,7 +70,7 @@ const InvoicePreview = ({
       invoice.customer?.zip,
       invoice.customer?.country
     ].filter(Boolean).join(', ') || '',
-    taxRate: ((invoice.taxAmount / invoice.subtotal) * 100).toFixed(2),
+    taxRate: invoiceDisplayTaxRate(invoice),
     tax: invoice.taxAmount,
     businessLogo: effectiveBusinessProfile?.logoUrl || '',
     theme: effectiveBusinessProfile?.theme || DEFAULT_BUSINESS_THEME,

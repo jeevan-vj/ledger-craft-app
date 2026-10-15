@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { supabaseDataService } from '@/services/supabaseDataService';
+import { readMoney } from '@/features/tax/api/periodRows';
 
 interface ComplianceStatusProps {
   score: number;
@@ -76,8 +77,8 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
       }
 
       // Check for invoices without tax calculations
-      const invoicesWithoutTax = invoices.filter(inv => 
-        inv.total > 0 && (inv.tax_amount === 0 || inv.tax_amount === null)
+      const invoicesWithoutTax = invoices.filter(inv =>
+        inv.total > 0 && readMoney(inv, 'taxAmount', 'tax_amount') === 0
       );
       
       if (invoicesWithoutTax.length > 0) {
@@ -90,8 +91,8 @@ export const ComplianceStatus: React.FC<ComplianceStatusProps> = ({
       }
 
       // Check for expenses without tax information
-      const expensesWithoutTax = expenses.filter(exp => 
-        exp.amount > 0 && exp.is_claimable && (exp.tax_amount === 0 || exp.tax_amount === null)
+      const expensesWithoutTax = expenses.filter(exp =>
+        exp.amount > 0 && exp.is_claimable && readMoney(exp, 'taxAmount', 'tax_amount') === 0
       );
       
       if (expensesWithoutTax.length > 0) {

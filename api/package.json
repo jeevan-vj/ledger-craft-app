@@ -1,0 +1,31 @@
+{
+  "name": "@ledgercraft/api",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "start": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit",
+    "db:migrate": "tsx src/db/migrate.ts",
+    "db:generate": "drizzle-kit generate --config drizzle.sqlite.config.ts"
+  },
+  "dependencies": {
+    "@hono/node-server": "^1.14.1",
+    "@ledgercraft/contracts": "workspace:*",
+    "better-auth": "^1.7.2",
+    "dotenv": "^17.2.1",
+    "drizzle-orm": "^0.44.2",
+    "hono": "^4.7.10",
+    "postgres": "^3.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "drizzle-kit": "^0.31.1",
+    "tsx": "^4.19.4",
+    "typescript": "^5.5.3",
+    "vitest": "^3.2.4"
+  }
+}

@@ -1,5 +1,11 @@
 import { supabase } from '@/integrations/supabase/client';
 import { BankAccount, SupabaseBankAccount } from '../types/bankTransaction';
+import {
+  bankApi,
+  bankApiEnabled,
+  toCreateBankAccountRequest,
+  toUpdateBankAccountRequest,
+} from '@/features/bank/api/bankApi';
 
 const mapSupabaseBankAccountToBankAccount = (account: SupabaseBankAccount): BankAccount => ({
   id: account.id,
@@ -37,6 +43,9 @@ const mapBankAccountToSupabaseBankAccount = async (
 
 export const bankAccountService = {
   async getBankAccounts(): Promise<BankAccount[]> {
+    if (bankApiEnabled()) {
+      return bankApi.listAccounts();
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       console.error('No authenticated user found');
@@ -58,6 +67,9 @@ export const bankAccountService = {
   },
 
   async getBankAccount(id: string): Promise<BankAccount | null> {
+    if (bankApiEnabled()) {
+      return bankApi.getAccount(id);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       console.error('No authenticated user found');
@@ -84,7 +96,9 @@ export const bankAccountService = {
 
   async createBankAccount(account: Omit<BankAccount, 'id' | 'createdAt' | 'updatedAt'>): Promise<BankAccount> {
     this.validateBankAccount(account);
-    
+    if (bankApiEnabled()) {
+      return bankApi.createAccount(toCreateBankAccountRequest(account));
+    } 
     const supabaseAccount = await mapBankAccountToSupabaseBankAccount(account);
 
     const { data, error } = await supabase
@@ -119,6 +133,9 @@ export const bankAccountService = {
     // Validate updated data
     const mergedAccount = { ...existingAccount, ...account };
     this.validateBankAccount(mergedAccount);
+    if (bankApiEnabled()) {
+      return bankApi.updateAccount(id, toUpdateBankAccountRequest(account));
+    }
 
     const updateData: Partial<SupabaseBankAccount> = {};
     if (account.accountName !== undefined) updateData.account_name = account.accountName;
@@ -147,6 +164,10 @@ export const bankAccountService = {
   },
 
   async deleteBankAccount(id: string): Promise<void> {
+    if (bankApiEnabled()) {
+      await bankApi.removeAccount(id);
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       throw new Error('No authenticated user found');
@@ -196,6 +217,9 @@ export const bankAccountService = {
   },
 
   async getAccountsByType(accountType: BankAccount['accountType']): Promise<BankAccount[]> {
+    if (bankApiEnabled()) {
+      return (await bankApi.listAccounts()).filter((account) => account.accountType === accountType);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       return [];
@@ -217,6 +241,9 @@ export const bankAccountService = {
   },
 
   async getActiveAccounts(): Promise<BankAccount[]> {
+    if (bankApiEnabled()) {
+      return (await bankApi.listAccounts()).filter((account) => account.isActive);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       return [];

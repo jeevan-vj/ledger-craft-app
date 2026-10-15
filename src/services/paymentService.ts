@@ -2,6 +2,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { Payment, Receipt, CreatePaymentRequest, EnhancedInvoice } from '@/types/payment';
 import { Invoice } from '@/types';
 import { invoiceService } from './supabaseService';
+import { accountingJournalService } from './accountingJournalService';
+import { paymentsApi, paymentsApiEnabled, toCreatePaymentRequest } from '@/features/payments/api/paymentsApi';
+import { receiptsApi, receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
 
 // Map Supabase payment to Payment type
 const mapSupabasePaymentToPayment = (payment: any): Payment => ({
@@ -34,6 +37,13 @@ const mapSupabaseReceiptToReceipt = (receipt: any): Receipt => ({
 export class PaymentService {
   // Create a new payment and automatically update invoice status
   async createPayment(paymentData: CreatePaymentRequest): Promise<Payment> {
+    if (paymentsApiEnabled()) {
+      const payment = await paymentsApi.create(toCreatePaymentRequest(paymentData));
+      if (receiptsApiEnabled() && paymentData.generateReceipt !== false) {
+        await receiptsApi.create({ paymentId: payment.id });
+      }
+      return payment;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -59,6 +69,24 @@ export class PaymentService {
       // Update invoice payment status and amounts
       await this.updateInvoicePaymentStatus(paymentData.invoiceId);
 
+      // Create journal entry for accounting
+      try {
+        await accountingJournalService.createPaymentJournalEntry(
+          user.id,
+          payment.id,
+          paymentData.invoiceId,
+          {
+            amount: paymentData.amount,
+            paymentDate: paymentData.paymentDate,
+            paymentMethod: paymentData.paymentMethod
+          }
+        );
+      } catch (journalError) {
+        // Log error but don't fail payment creation
+        // The payment exists, journal entry can be created manually if needed
+        console.error('Error creating journal entry for payment:', journalError);
+      }
+
       // Generate receipt
       await this.generateReceipt(payment.id);
 
@@ -71,6 +99,9 @@ export class PaymentService {
 
   // Get all payments for a user
   async getPayments(): Promise<Payment[]> {
+    if (paymentsApiEnabled()) {
+      return paymentsApi.list();
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -93,6 +124,9 @@ export class PaymentService {
 
   // Get payments for a specific invoice
   async getPaymentsByInvoice(invoiceId: string): Promise<Payment[]> {
+    if (paymentsApiEnabled()) {
+      return paymentsApi.list(invoiceId);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -109,6 +143,9 @@ export class PaymentService {
 
   // Get a specific payment
   async getPayment(paymentId: string): Promise<Payment | null> {
+    if (paymentsApiEnabled()) {
+      return paymentsApi.get(paymentId);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -230,8 +267,14 @@ export class PaymentService {
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
-    const year = new Date().getFullYear();
-    const month = String(new Date().getMonth() + 1).padStart(2, '0');
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    
+    // Calculate first day of next month for proper date range
+    const nextMonth = new Date(year, now.getMonth() + 1, 1);
+    const monthEnd = new Date(nextMonth.getTime() - 1);
+    const monthEndStr = monthEnd.toISOString().split('T')[0]; // Format as YYYY-MM-DD
     
     // Get count of receipts for current month
     const { data: receipts, error } = await supabase
@@ -239,7 +282,7 @@ export class PaymentService {
       .select('id')
       .eq('user_id', user.id)
       .gte('created_at', `${year}-${month}-01`)
-      .lt('created_at', `${year}-${month}-31`);
+      .lt('created_at', nextMonth.toISOString().split('T')[0]); // Use first day of next month for exclusive range
 
     if (error) throw error;
 
@@ -249,6 +292,9 @@ export class PaymentService {
 
   // Get all receipts for user
   async getReceipts(): Promise<Receipt[]> {
+    if (receiptsApiEnabled()) {
+      return receiptsApi.list();
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -264,6 +310,9 @@ export class PaymentService {
 
   // Get receipt by ID
   async getReceipt(receiptId: string): Promise<Receipt | null> {
+    if (receiptsApiEnabled()) {
+      return receiptsApi.get(receiptId);
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -284,6 +333,10 @@ export class PaymentService {
 
   // Get receipt by payment ID
   async getReceiptByPayment(paymentId: string): Promise<Receipt | null> {
+    if (receiptsApiEnabled()) {
+      const receipts = await receiptsApi.list();
+      return receipts.find((receipt) => receipt.paymentId === paymentId) ?? null;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 
@@ -304,6 +357,9 @@ export class PaymentService {
 
   // Mark receipt as emailed
   async markReceiptAsEmailed(receiptId: string): Promise<void> {
+    if (receiptsApiEnabled()) {
+      return;
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 

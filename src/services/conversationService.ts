@@ -11,29 +11,81 @@ import {
   Item,
   BusinessProfile
 } from '../types';
+import type { ConversationDto } from '@ledgercraft/contracts';
 import { supabase } from '@/integrations/supabase/client';
+import { conversationsApi, conversationsApiEnabled } from '@/features/conversations/api/conversationsApi';
+import { ledgerSnapshotEnabled, loadLedgerSnapshot } from '@/features/ledger/api/ledgerSnapshot';
+
+const EMPTY_CONTEXT: ConversationContext = {
+  recentEntities: {
+    customers: [],
+    invoices: [],
+    expenses: [],
+    items: [],
+  },
+  userPreferences: {
+    defaultTemplate: 'modern',
+    currency: 'USD',
+    dateFormat: 'MM/DD/YYYY',
+    language: 'en',
+  },
+};
 
 export class ConversationService {
-  
+  private mapDtoToConversation(dto: ConversationDto): ConversationSession {
+    const context = (dto.context as ConversationContext | null) ?? EMPTY_CONTEXT;
+    return {
+      id: dto.id,
+      userId: '',
+      title: dto.title ?? undefined,
+      messages: dto.messages.map((message) => ({
+        id: message.id,
+        conversationId: dto.id,
+        role: message.role as ConversationRole,
+        content: message.content,
+        timestamp: new Date(message.createdAt),
+        metadata: message.metadata as ConversationMessage['metadata'],
+      })),
+      context: {
+        ...EMPTY_CONTEXT,
+        ...context,
+        recentEntities: {
+          ...EMPTY_CONTEXT.recentEntities,
+          ...context.recentEntities,
+        },
+        userPreferences: {
+          ...EMPTY_CONTEXT.userPreferences,
+          ...context.userPreferences,
+        },
+      },
+      status: dto.status,
+      createdAt: dto.createdAt,
+      updatedAt: dto.updatedAt,
+    };
+  }
+
   async createConversation(
     userId: string, 
     initialContext?: Partial<ConversationContext>
   ): Promise<ConversationSession> {
     const defaultContext: ConversationContext = {
+      ...EMPTY_CONTEXT,
+      ...initialContext,
       recentEntities: {
-        customers: [],
-        invoices: [],
-        expenses: [],
-        items: []
+        ...EMPTY_CONTEXT.recentEntities,
+        ...initialContext?.recentEntities,
       },
       userPreferences: {
-        defaultTemplate: 'modern',
-        currency: 'USD',
-        dateFormat: 'MM/DD/YYYY',
-        language: 'en'
+        ...EMPTY_CONTEXT.userPreferences,
+        ...initialContext?.userPreferences,
       },
-      ...initialContext
     };
+
+    if (conversationsApiEnabled()) {
+      return this.mapDtoToConversation(
+        await conversationsApi.create({ context: defaultContext }),
+      );
+    }
 
     const { data, error } = await supabase
       .from('conversations')
@@ -53,6 +105,10 @@ export class ConversationService {
   }
 
   async getConversation(conversationId: string): Promise<ConversationSession | null> {
+    if (conversationsApiEnabled()) {
+      const dto = await conversationsApi.get(conversationId);
+      return dto ? this.mapDtoToConversation(dto) : null;
+    }
     const { data, error } = await supabase
       .from('conversations')
       .select(`
@@ -77,6 +133,9 @@ export class ConversationService {
   }
 
   async getUserConversations(userId: string, limit = 20): Promise<ConversationSession[]> {
+    if (conversationsApiEnabled()) {
+      return (await conversationsApi.list()).slice(0, limit).map((dto) => this.mapDtoToConversation(dto));
+    }
     const { data, error } = await supabase
       .from('conversations')
       .select(`
@@ -106,6 +165,18 @@ export class ConversationService {
     content: string,
     metadata?: any
   ): Promise<ConversationMessage> {
+    if (conversationsApiEnabled()) {
+      const dto = await conversationsApi.addMessage(conversationId, { role, content, metadata });
+      const last = dto.messages[dto.messages.length - 1];
+      return {
+        id: last.id,
+        conversationId: dto.id,
+        role: last.role as ConversationRole,
+        content: last.content,
+        timestamp: new Date(last.createdAt),
+        metadata: last.metadata as ConversationMessage['metadata'],
+      };
+    }
     const { data, error } = await supabase
       .from('conversation_messages')
       .insert({
@@ -128,6 +199,27 @@ export class ConversationService {
     conversationId: string,
     context: Partial<ConversationContext>
   ): Promise<void> {
+    if (conversationsApiEnabled()) {
+      const current = await this.getConversation(conversationId);
+      if (!conversationId || !current) {
+        throw new Error('Failed to fetch current context: Conversation not found');
+      }
+      await conversationsApi.update(conversationId, {
+        context: {
+          ...current.context,
+          ...context,
+          recentEntities: {
+            ...current.context.recentEntities,
+            ...context.recentEntities,
+          },
+          userPreferences: {
+            ...current.context.userPreferences,
+            ...context.userPreferences,
+          },
+        },
+      });
+      return;
+    }
     // First get current context
     const { data: current, error: fetchError } = await supabase
       .from('conversations')
@@ -167,6 +259,10 @@ export class ConversationService {
   }
 
   async updateConversationTitle(conversationId: string, title: string): Promise<void> {
+    if (conversationsApiEnabled()) {
+      await conversationsApi.update(conversationId, { title });
+      return;
+    }
     const { error } = await supabase
       .from('conversations')
       .update({ 
@@ -184,6 +280,10 @@ export class ConversationService {
     conversationId: string, 
     status: 'active' | 'completed' | 'paused'
   ): Promise<void> {
+    if (conversationsApiEnabled()) {
+      await conversationsApi.update(conversationId, { status });
+      return;
+    }
     const { error } = await supabase
       .from('conversations')
       .update({ 
@@ -198,6 +298,10 @@ export class ConversationService {
   }
 
   async deleteConversation(conversationId: string): Promise<void> {
+    if (conversationsApiEnabled()) {
+      await conversationsApi.remove(conversationId);
+      return;
+    }
     const { error } = await supabase
       .from('conversations')
       .delete()
@@ -210,6 +314,42 @@ export class ConversationService {
 
   async buildContextFromCurrentData(userId: string): Promise<ConversationContext> {
     try {
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        const customers = snapshot.customers.slice(0, 10);
+        const invoices = snapshot.invoices.slice(0, 10);
+        const expenses = snapshot.expenses.slice(0, 10);
+        const items = snapshot.items.slice(0, 20);
+        const businessProfile = snapshot.profile ?? undefined;
+        const recentActivity: string[] = [];
+        if (invoices.length > 0) {
+          recentActivity.push(
+            `Recent invoice: ${invoices[0].invoiceNumber} for ${invoices[0].customer?.name || 'customer'}`,
+          );
+        }
+        if (expenses.length > 0) {
+          recentActivity.push(`Recent expense: $${expenses[0].amount} for ${expenses[0].description}`);
+        }
+        return {
+          recentEntities: {
+            customers: customers.slice(0, 5),
+            invoices: invoices.slice(0, 5),
+            expenses: expenses.slice(0, 5),
+            items: items.slice(0, 10),
+          },
+          userPreferences: {
+            defaultTemplate: businessProfile?.invoiceNumberFormat || 'modern',
+            currency: invoices[0]?.currency || expenses[0]?.currency || 'USD',
+            dateFormat: 'MM/DD/YYYY',
+            language: 'en',
+          },
+          businessContext: {
+            businessProfile,
+            recentActivity,
+          },
+        };
+      }
+
       // Fetch recent business data in parallel
       const [customersResult, invoicesResult, expensesResult, itemsResult, profileResult] = 
         await Promise.allSettled([

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
+import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
 import { InvoiceTemplateId } from '../components/invoice/templates/InvoiceTemplates';
 import ClassicTemplate from '../components/invoice/preview/templates/ClassicTemplate';
 import ModernTemplate from '../components/invoice/preview/templates/ModernTemplate';
@@ -14,6 +15,8 @@ interface TemplateData {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -34,6 +37,8 @@ export const createTemplateData = (invoice: Invoice, businessProfile?: BusinessP
       businessProfile?.country
     ].filter(Boolean).join(', ') || '',
     companyPhone: businessProfile?.phone || '',
+    bankAccountName: businessProfile?.bankAccountName,
+    bankAccountNumber: businessProfile?.bankAccountNumber,
     clientName: invoice.customer?.name || 'Client Name',
     clientAddress: [
       invoice.customer?.address,
@@ -42,7 +47,7 @@ export const createTemplateData = (invoice: Invoice, businessProfile?: BusinessP
       invoice.customer?.zip,
       invoice.customer?.country
     ].filter(Boolean).join(', ') || '',
-    taxRate: invoice.subtotal > 0 ? ((invoice.taxAmount / invoice.subtotal) * 100).toFixed(2) : '0',
+    taxRate: invoiceDisplayTaxRate(invoice),
     tax: invoice.taxAmount,
     businessLogo: businessProfile?.logoUrl || '',
     theme: businessProfile?.theme || DEFAULT_BUSINESS_THEME,
@@ -95,6 +100,12 @@ export const createEmailCompatibleInvoiceHtml = (
   businessProfile?: BusinessProfile | null
 ): string => {
   const templateData = createTemplateData(invoice, businessProfile);
+  const escapeBankValue = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
+  const bankRows = [
+    ['Account name:', businessProfile?.bankAccountName?.trim()],
+    ['Account number:', businessProfile?.bankAccountNumber?.trim()],
+  ].filter(([, value]) => value).map(([label, value]) => `<tr><td style="padding:4px 12px 4px 0;">${label}</td><td style="overflow-wrap:anywhere;">${escapeBankValue(value!)}</td></tr>`).join('');
+
   
   return `
     <table width="100%" cellpadding="0" cellspacing="0" style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #ffffff;">
@@ -225,6 +236,7 @@ export const createEmailCompatibleInvoiceHtml = (
         </td>
       </tr>
       
+      ${bankRows ? `<tr><td style="padding:20px;"><h4>Payment details</h4><table>${bankRows}</table></td></tr>` : ''}
       <!-- Notes -->
       ${invoice.notes ? `
         <tr>

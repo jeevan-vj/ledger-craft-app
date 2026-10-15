@@ -214,7 +214,9 @@ export const QuarterlyTrends: React.FC<QuarterlyTrendsProps> = ({
             {/* Average GST Position */}
             <div className="text-xs">
               {(() => {
-                const avgPosition = quarterlyData.reduce((sum, q) => sum + q.gstPosition, 0) / quarterlyData.length;
+                const avgPosition = quarterlyData.length
+                  ? quarterlyData.reduce((sum, q) => sum + q.gstPosition, 0) / quarterlyData.length
+                  : 0;
                 return (
                   <div className="flex items-center justify-between">
                     <span>Avg GST Position:</span>

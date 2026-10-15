@@ -118,13 +118,13 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
         id: expense.id,
         description: expense.description,
         amount: expense.amount,
-        category: expense.category_id || 'general', // Use category_id from existing table
+        category: expense.category_id || expense.categoryId || expense.category || 'general',
         subcategory: 'General',
-        date: expense.expense_date, // Use expense_date from existing table
-        supplier: expense.vendor_name,
-        isCapitalExpense: expense.amount > 1000, // Simple heuristic
-        isGstClaimable: true, // Default to claimable
-        gstAmount: expense.tax_amount || (expense.amount * 0.15) / 1.15 // Use existing tax_amount or calculate
+        date: expense.expense_date || expense.expenseDate || expense.date,
+        supplier: expense.vendor_name || expense.vendorName,
+        isCapitalExpense: expense.amount > 1000,
+        isGstClaimable: expense.is_claimable !== false,
+        gstAmount: expense.tax_amount ?? expense.taxAmount ?? expense.gstAmount ?? (expense.amount * 0.15) / 1.15
       }));
 
       setExpenses(processedExpenses);

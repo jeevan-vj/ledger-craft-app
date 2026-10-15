@@ -1,4 +1,7 @@
 import { supabase } from './supabase';
+import { conversationsApi, conversationsApiEnabled } from '@/features/conversations/api/conversationsApi';
+import { customerService, itemService, invoiceService } from './supabaseService';
+import type { ConversationDto } from '@ledgercraft/contracts';
 
 export type ConversationRole = 'user' | 'assistant' | 'system';
 
@@ -33,7 +36,33 @@ export interface InvoiceCreationContext {
 }
 
 class AIConversationService {
+  private toConversation(dto: ConversationDto): Conversation {
+    return {
+      id: dto.id,
+      user_id: '',
+      title: dto.title ?? undefined,
+      context: dto.context,
+      status: dto.status,
+      created_at: dto.createdAt,
+      updated_at: dto.updatedAt,
+    };
+  }
+
+  private toMessage(dto: ConversationDto['messages'][number], conversationId: string): ConversationMessage {
+    return {
+      id: dto.id,
+      conversation_id: conversationId,
+      role: dto.role,
+      content: dto.content,
+      metadata: dto.metadata,
+      created_at: dto.createdAt,
+    };
+  }
+
   async createConversation(title?: string, context: any = {}): Promise<Conversation> {
+    if (conversationsApiEnabled()) {
+      return this.toConversation(await conversationsApi.create({ title, context }));
+    }
     const { data, error } = await supabase
       .from('conversations')
       .insert({
@@ -49,6 +78,10 @@ class AIConversationService {
   }
 
   async getConversation(id: string): Promise<Conversation | null> {
+    if (conversationsApiEnabled()) {
+      const dto = await conversationsApi.get(id);
+      return dto ? this.toConversation(dto) : null;
+    }
     const { data, error } = await supabase
       .from('conversations')
       .select('*')
@@ -60,6 +93,10 @@ class AIConversationService {
   }
 
   async updateConversationContext(id: string, context: any): Promise<void> {
+    if (conversationsApiEnabled()) {
+      await conversationsApi.update(id, { context });
+      return;
+    }
     const { error } = await supabase
       .from('conversations')
       .update({ context, updated_at: new Date().toISOString() })
@@ -69,6 +106,11 @@ class AIConversationService {
   }
 
   async addMessage(conversationId: string, role: ConversationRole, content: string, metadata?: any): Promise<ConversationMessage> {
+    if (conversationsApiEnabled()) {
+      const dto = await conversationsApi.addMessage(conversationId, { role, content, metadata });
+      const last = dto.messages[dto.messages.length - 1];
+      return this.toMessage(last, dto.id);
+    }
     const { data, error } = await supabase
       .from('conversation_messages')
       .insert({
@@ -85,6 +127,10 @@ class AIConversationService {
   }
 
   async getConversationMessages(conversationId: string): Promise<ConversationMessage[]> {
+    if (conversationsApiEnabled()) {
+      const dto = await conversationsApi.get(conversationId);
+      return dto ? dto.messages.map((message) => this.toMessage(message, dto.id)) : [];
+    }
     const { data, error } = await supabase
       .from('conversation_messages')
       .select('*')
@@ -96,101 +142,60 @@ class AIConversationService {
   }
 
   async searchCustomers(searchTerm: string): Promise<any[]> {
-    const { data, error } = await supabase
-      .from('customers')
-      .select('*')
-      .ilike('name', `%${searchTerm}%`)
-      .limit(10);
-
-    if (error) throw error;
-    return data || [];
+    const needle = searchTerm.toLowerCase();
+    return (await customerService.getCustomers())
+      .filter((customer) => customer.name.toLowerCase().includes(needle))
+      .slice(0, 10);
   }
 
   async searchItems(searchTerm?: string): Promise<any[]> {
-    let query = supabase
-      .from('items')
-      .select('*')
-      .eq('enable_sale_info', true);
-
-    if (searchTerm) {
-      query = query.or(`name.ilike.%${searchTerm}%,description.ilike.%${searchTerm}%`);
-    }
-
-    const { data, error } = await query.limit(20);
-
-    if (error) throw error;
-    return data || [];
+    const needle = searchTerm?.toLowerCase();
+    return (await itemService.getItems())
+      .filter((item) => item.enableSaleInfo)
+      .filter((item) =>
+        !needle ||
+        item.name.toLowerCase().includes(needle) ||
+        (item.description ?? '').toLowerCase().includes(needle),
+      )
+      .slice(0, 20);
   }
 
   async generateInvoiceNumber(): Promise<string> {
-    const { data: profile, error: profileError } = await supabase
-      .from('business_profiles')
-      .select('invoice_number_format, invoice_number_sequence')
-      .single();
-
-    if (profileError) throw profileError;
-
-    const format = profile.invoice_number_format || 'INV-{YYYY}-{SEQ}';
-    const sequence = (profile.invoice_number_sequence || 0) + 1;
-    const year = new Date().getFullYear();
-
-    const invoiceNumber = format
-      .replace('{YYYY}', year.toString())
-      .replace('{SEQ}', sequence.toString().padStart(3, '0'));
-
-    await supabase
-      .from('business_profiles')
-      .update({ invoice_number_sequence: sequence })
-      .eq('id', profile.id);
-
-    return invoiceNumber;
+    return invoiceService.getNextInvoiceNumber();
   }
 
   async createInvoice(invoiceData: any): Promise<any> {
     const invoiceNumber = await this.generateInvoiceNumber();
-    
-    const { data: invoice, error: invoiceError } = await supabase
-      .from('invoices')
-      .insert({
-        invoice_number: invoiceNumber,
-        customer_id: invoiceData.customer_id,
+    const lineItems = (invoiceData.line_items ?? []).map((item: any) => ({
+      description: item.description,
+      quantity: item.quantity,
+      unit: item.unit || 'each',
+      rate: item.rate,
+      rateUnit: item.unit || 'each',
+      tax: item.tax || 0,
+      total: item.total,
+    }));
+    return invoiceService.createInvoice(
+      {
+        invoiceNumber,
+        customerId: invoiceData.customer_id,
         date: invoiceData.date || new Date().toISOString().split('T')[0],
-        due_date: invoiceData.due_date,
+        dueDate: invoiceData.due_date,
+        items: lineItems,
         subtotal: invoiceData.subtotal,
-        tax_amount: invoiceData.tax_amount || 0,
+        taxAmount: invoiceData.tax_amount || 0,
         discount: invoiceData.discount || 0,
+        additionalCharges: invoiceData.additional_charges_total || 0,
+        additionalChargesList: invoiceData.additional_charges_list,
         total: invoiceData.total,
         status: 'draft',
         notes: invoiceData.notes,
         terms: invoiceData.terms,
-        additional_charges_list: invoiceData.additional_charges_list,
-        additional_charges_total: invoiceData.additional_charges_total || 0,
-        template_name: invoiceData.template_name || 'classic'
-      })
-      .select()
-      .single();
-
-    if (invoiceError) throw invoiceError;
-
-    if (invoiceData.line_items && invoiceData.line_items.length > 0) {
-      const lineItemsData = invoiceData.line_items.map((item: any) => ({
-        invoice_id: invoice.id,
-        description: item.description,
-        quantity: item.quantity,
-        rate: item.rate,
-        tax: item.tax || 0,
-        total: item.total,
-        unit: item.unit || 'each'
-      }));
-
-      const { error: lineItemsError } = await supabase
-        .from('line_items')
-        .insert(lineItemsData);
-
-      if (lineItemsError) throw lineItemsError;
-    }
-
-    return invoice;
+        currency: 'NZD',
+        templateName: invoiceData.template_name || 'classic',
+      },
+      lineItems,
+    );
   }
 
   async processInvoiceCreationRequest(userMessage: string, conversationId?: string): Promise<{

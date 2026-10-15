@@ -1,0 +1,79 @@
+// Invoice types for mobile app
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
+
+export interface LineItem {
+  id: string;
+  description: string;
+  quantity: number;
+  unit: string;
+  rate: number;
+  total: number;
+  tax?: number;
+}
+
+export interface AdditionalCharge {
+  id: string;
+  name: string;
+  amount: number;
+  calculationType: 'fixed' | 'percentage';
+  isActive: boolean;
+}
+
+export interface Customer {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  country?: string;
+}
+
+export interface BusinessProfile {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string | null;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  country?: string;
+  taxId?: string | null;
+  logoUrl?: string | null;
+  website?: string | null;
+  defaultTaxRate?: number | null;
+  defaultNotes?: string | null;
+  defaultTerms?: string | null;
+  currency?: string;
+  userId: string;
+}
+
+export interface Invoice {
+  id: string;
+  invoiceNumber: string;
+  customerId: string;
+  customer?: Customer;
+  businessProfile?: BusinessProfile;
+  date: string;
+  dueDate: string;
+  items: LineItem[];
+  subtotal: number;
+  taxAmount: number;
+  discount?: number | null;
+  additionalCharges?: number | null;
+  additionalChargesList?: AdditionalCharge[];
+  additionalChargesTotal?: number;
+  total: number;
+  status: InvoiceStatus;
+  notes?: string | null;
+  terms?: string | null;
+  currency: string;
+  templateName?: string;
+  userId?: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+

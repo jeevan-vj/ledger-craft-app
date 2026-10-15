@@ -4,6 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent } from "@/components/ui/card";
+import { calculateLineTotal } from '@/utils/invoiceUtils';
+import { getCompatibleUnits } from '@/utils/unitConversion';
 import {
   Form,
   FormControl,
@@ -17,15 +19,16 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { CustomerCombobox } from "@/components/ui/customer-combobox";
 import { Textarea } from "@/components/ui/textarea";
-import { CalendarIcon, Plus, Trash2, Download, Save, ArrowLeft, Eye, ChevronsUpDown, Edit, Check, Circle, Weight, UserPlus } from 'lucide-react';
+import { CalendarIcon, Plus, Trash2, Download, Save, ArrowLeft, Eye, ChevronsUpDown, Edit, Check, Circle, Weight, UserPlus, Send } from 'lucide-react';
 import { generateInvoicePdf } from "@/utils/pdfUtils";
-import { formatCurrency, formatDate } from "@/utils/invoiceUtils";
+import { formatCurrency, formatDate, invoiceDiscountLabel } from "@/utils/invoiceUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 import { LineItem, Invoice, Customer, BusinessProfile, Item, AdditionalCharge } from "@/types";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { PageHeader } from "@/components/layout/PageHeader";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Drawer,
@@ -47,6 +50,7 @@ import AdditionalChargesManager from './AdditionalChargesManager';
 import { useToast } from "@/hooks/use-toast";
 import { useAutoSave, AutoSaveData } from "@/hooks/use-auto-save";
 import InvoicePreview from "./preview/InvoicePreview";
+import { ProfileCompletenessBanner } from "./ProfileCompletenessBanner";
 import ItemSelector from "./ItemSelector";
 import ItemDrawer from "../item/ItemDrawer";
 import { ItemFormValues } from "../item/ItemForm";
@@ -72,6 +76,13 @@ import ExecutiveTemplate from "./preview/templates/ExecutiveTemplate";
 import CorporateTemplate from "./preview/templates/CorporateTemplate";
 import ModernInvoiceTemplate from './preview/templates/ModernInvoiceTemplate';
 import { itemService } from "@/services/supabaseService";
+import {
+  PAYMENT_TERM_PRESETS,
+  addDaysToDate,
+  dueDateMatchesTerm,
+  paymentTermCodeFromDays,
+} from "@/features/invoices/paymentTerms";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
 type InvoiceFormMode = "create" | "edit";
 interface InvoiceFormProps {
@@ -80,7 +91,7 @@ interface InvoiceFormProps {
   customers: Customer[];
   businessProfile: BusinessProfile | null;
   isLoadingCustomers: boolean;
-  onSubmit: (values: any, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[]) => Promise<void>;
+  onSubmit: (values: any, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[], intent?: 'draft' | 'send') => Promise<void>;
   onCancel: () => void;
   onAddCustomer?: () => void;
   newlyAddedCustomer?: Customer | null;
@@ -102,6 +113,9 @@ const invoiceFormSchema = z.object({
   terms: z.string().optional(),
   currency: z.string().default('NZD'),
   additionalCharges: z.coerce.number().nonnegative("Additional charges must be a positive amount. Enter 0 if no additional charges apply").default(0),
+  paymentTermDays: z.coerce.number().int().min(0).max(365),
+  discountType: z.enum(['fixed', 'percent']).optional(),
+  discountPercent: z.coerce.number().min(0).max(100).optional(),
   discount: z.coerce.number().nonnegative("Discount must be a positive amount. Enter 0 if no discount applies").default(0),
 });
 
@@ -182,7 +196,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     if (initialValues?.items && Array.isArray(initialValues.items) && initialValues.items.length > 0) {
       return initialValues.items;
     }
-    return [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, total: 0 }];
+    return [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0 }];
   };
 
   const [items, setItems] = useState<LineItem[]>(() => getInitialItems());
@@ -201,11 +215,18 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   
   // Item management state
   const [isItemDrawerOpen, setIsItemDrawerOpen] = useState(false);
-  const [isTaxEnabled, setIsTaxEnabled] = useState(false);
-  const [taxRate, setTaxRate] = useState(0);
+  const [isTaxEnabled, setIsTaxEnabled] = useState(() => Number(businessProfile?.defaultTaxRate) > 0);
+  const [taxRate, setTaxRate] = useState(() => Number(businessProfile?.defaultTaxRate) || 0);
   const [isAdditionalChargesEnabled, setIsAdditionalChargesEnabled] = useState(false);
   const [additionalChargesList, setAdditionalChargesList] = useState<AdditionalCharge[]>([]);
-  const [isDiscountEnabled, setIsDiscountEnabled] = useState(false);
+  const [discountMode, setDiscountMode] = useState<'off' | 'fixed' | 'percent'>(() => {
+    if (initialValues?.discountType === 'percent') return 'percent';
+    if (Number(initialValues?.discount) > 0) return 'fixed';
+    return 'off';
+  });
+  const [dueDateDirty, setDueDateDirty] = useState(false);
+  const submitIntentRef = useRef<'draft' | 'send'>('draft');
+  const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [refetchItemsTrigger, setRefetchItemsTrigger] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
   // New state to track which line item is creating a new item
@@ -228,11 +249,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         ? typeof initialValues.dueDate === "string"
           ? new Date(initialValues.dueDate)
           : initialValues.dueDate
-        : new Date(new Date().setDate(new Date().getDate() + 30)),
+        : addDaysToDate(new Date(), initialValues?.paymentTermDays ?? businessProfile?.paymentTermDays ?? 30),
       notes: initialValues?.notes || businessProfile?.defaultNotes || "",
       terms: initialValues?.terms || businessProfile?.defaultTerms || "",
       currency: initialValues?.currency || "NZD",
       additionalCharges: initialValues?.additionalCharges ?? 0,
+      paymentTermDays: initialValues?.paymentTermDays ?? businessProfile?.paymentTermDays ?? 30,
+      discountType: initialValues?.discountType,
+      discountPercent: initialValues?.discountPercent ?? undefined,
       discount: initialValues?.discount ?? 0,
     }
   });
@@ -306,11 +330,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           ? typeof initialValues.dueDate === "string"
             ? new Date(initialValues.dueDate)
             : initialValues.dueDate
-          : new Date(new Date().setDate(new Date().getDate() + 30)),
+          : addDaysToDate(new Date(), initialValues.paymentTermDays ?? 30),
         notes: initialValues.notes || businessProfile?.defaultNotes || "",
         terms: initialValues.terms || businessProfile?.defaultTerms || "",
         currency: initialValues.currency || "USD",
         additionalCharges: initialValues.additionalCharges ?? 0,
+        paymentTermDays: initialValues.paymentTermDays ?? 30,
+        discountType: initialValues.discountType,
+        discountPercent: initialValues.discountPercent ?? undefined,
         discount: initialValues.discount ?? 0,
       });
       const newItems = initialValues.items && initialValues.items.length > 0
@@ -325,6 +352,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       // Initialize additional charges list from existing invoice
       if (initialValues.additionalChargesList && initialValues.additionalChargesList.length > 0) {
         setAdditionalChargesList(initialValues.additionalChargesList);
+        setIsAdditionalChargesEnabled(true);
+      } else if ((initialValues.additionalCharges ?? 0) > 0) {
+        setAdditionalChargesList([{
+          id: 'legacy-additional-charge', type: 'custom', label: 'Additional charges',
+          calculationType: 'fixed', amount: initialValues.additionalCharges!, isActive: true,
+        }]);
         setIsAdditionalChargesEnabled(true);
       } else {
         setAdditionalChargesList([]);
@@ -369,16 +402,30 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       }
       if (businessProfile.currency) {
         form.setValue('currency', businessProfile.currency);
+      } else {
+        form.setValue('currency', 'NZD');
+      }
+      if (Number(businessProfile.defaultTaxRate) > 0 && mode === 'create') {
+        setIsTaxEnabled(true);
+        setTaxRate(Number(businessProfile.defaultTaxRate));
+      }
+      if (businessProfile.paymentTermDays != null && !form.getValues('paymentTermDays')) {
+        form.setValue('paymentTermDays', businessProfile.paymentTermDays);
+        if (!dueDateDirty) {
+          form.setValue('dueDate', addDaysToDate(form.getValues('date'), businessProfile.paymentTermDays));
+        }
       }
     }
   }, [businessProfile, mode, initialValues]);
 
 
   useEffect(() => {
-    if (!isTaxEnabled) setTaxRate(0);
     if (!isAdditionalChargesEnabled) form.setValue("additionalCharges", 0);
-    if (!isDiscountEnabled) form.setValue("discount", 0);
-  }, [isTaxEnabled, isAdditionalChargesEnabled, isDiscountEnabled]);
+    if (discountMode === 'off') {
+      form.setValue("discount", 0);
+      form.setValue("discountPercent", 0);
+    }
+  }, [isAdditionalChargesEnabled, discountMode]);
 
   // Calculate additional charges total - memoized to prevent unnecessary recalculations
   const calculateAdditionalChargesTotal = React.useCallback((): number => {
@@ -397,13 +444,25 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   // Memoize form values to prevent excessive re-renders
   const additionalChargesFormValue = form.watch('additionalCharges');
   const discountFormValue = form.watch('discount');
+  const discountPercentFormValue = form.watch('discountPercent');
+  const invoiceDateValue = form.watch('date');
+  const dueDateValue = form.watch('dueDate');
+  const paymentTermDaysValue = form.watch('paymentTermDays') ?? 30;
 
   useEffect(() => {
     const newSubtotal = items.reduce((sum, item) => sum + (Number(item.total) || 0), 0);
     setSubtotal(newSubtotal);
+    const disc = discountMode === 'percent'
+      ? Math.round(newSubtotal * (Number(discountPercentFormValue) || 0) / 100 * 100) / 100
+      : discountMode === 'fixed'
+        ? Number(discountFormValue) || 0
+        : 0;
+    if (discountMode === 'percent') {
+      form.setValue('discount', disc, { shouldDirty: false });
+    }
     let newTaxAmount = 0;
     if (isTaxEnabled && taxRate > 0) {
-      newTaxAmount = (newSubtotal * taxRate) / 100;
+      newTaxAmount = ((newSubtotal - disc) * taxRate) / 100;
     }
     setTaxAmount(newTaxAmount);
     
@@ -422,24 +481,27 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         addCharges = Number(additionalChargesFormValue);
       }
     }
-    
-    const disc = isDiscountEnabled ? Number(discountFormValue) : 0;
+
     setTotal(newSubtotal + newTaxAmount + addCharges - disc);
-  }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, isDiscountEnabled, additionalChargesList, additionalChargesFormValue, discountFormValue]);
+  }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, discountMode, additionalChargesList, additionalChargesFormValue, discountFormValue, discountPercentFormValue]);
 
   const updateItem = (idx: number, field: keyof LineItem, value: any) => {
     const updated = [...items];
     updated[idx] = { ...updated[idx], [field]: value };
-    if (field === "quantity" || field === "rate") {
+    if (field === "quantity" || field === "rate" || field === "unit" || field === "rateUnit") {
       const quantity = field === "quantity" ? Number(value) : Number(updated[idx].quantity);
+      const unit = field === "unit" ? value : updated[idx].unit;
       const rate = field === "rate" ? Number(value) : Number(updated[idx].rate);
-      updated[idx].total = quantity * rate;
+      const rateUnit = field === "rateUnit" ? value : (updated[idx].rateUnit || unit);
+      
+      // Use the calculation function with unit conversion
+      updated[idx].total = calculateLineTotal(quantity, unit, rate, rateUnit);
     }
     setItems(updated);
   };
 
   const addItem = () => {
-    const newItem = { id: `${items.length + 1}`, description: "", quantity: 1, unit: "each", rate: 0, total: 0 };
+    const newItem = { id: `${items.length + 1}`, description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0 };
     setItems([...items, newItem]);
     if (isMobile) {
       setCurrentItemIndex(items.length);
@@ -504,9 +566,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       createdAt: initialValues?.createdAt || new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       additionalCharges: vals.additionalCharges,
-      additionalChargesList: additionalChargesList, // Add structured charges for preview
+      additionalChargesList: isAdditionalChargesEnabled ? additionalChargesList : [], // Add structured charges for preview
       additionalChargesTotal: calculateAdditionalChargesTotal(), // Add calculated total
-      discount: vals.discount,
+      paymentTermDays: vals.paymentTermDays,
+      discountType: discountMode === 'off' ? 'fixed' : discountMode,
+      discountPercent: discountMode === 'percent' ? Number(vals.discountPercent) || 0 : null,
+      discount: discountMode === 'off' ? 0 : Number(vals.discount),
     };
     setInvoicePreview(previewInvoice);
     setActiveTab("preview");
@@ -545,13 +610,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       updatedLineItem.rate = 0; // Default rate if no price info is available
     }
     updatedLineItem.unit = selectedItem.unit || 'each';
-    // Tax is handled at the invoice level, not per item in this form currently
-    // updatedLineItem.tax = selectedItem.taxRate || 0;
+    updatedLineItem.rateUnit = selectedItem.unit || 'each';
     
-    // Calculate total based on quantity and rate
-    // Ensure quantity is treated as a number
+    // Calculate total based on quantity and rate with unit conversion
     const quantity = Number(updatedLineItem.quantity) || 0; 
-    updatedLineItem.total = quantity * updatedLineItem.rate;
+    updatedLineItem.total = calculateLineTotal(quantity, updatedLineItem.unit, updatedLineItem.rate, updatedLineItem.rateUnit);
     
     const updatedItems = [...items];
     updatedItems[index] = updatedLineItem;
@@ -618,7 +681,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 // Pass the currentItemIndex to handleCreateNewItem
                 onCreateNewItem={() => handleCreateNewItem(currentItemIndex)}
                 buttonClassName="w-full justify-start text-primary border border-primary font-semibold"
-                refetch={triggerItemsRefetch}
+                refetch={refetchItemsTrigger}
               />
             </div>
 
@@ -672,17 +735,44 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
               </Select>
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-medium">Rate</label>
-            <Input
-              type="number"
-              min="0"
-              step="0.01"
-              value={currentItem.rate}
-              onChange={e => updateItem(currentItemIndex, "rate", Number(e.target.value))}
-              className="w-full"
-              inputMode="decimal"
-            />
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Rate</label>
+              <Input
+                type="number"
+                min="0"
+                step="0.01"
+                value={currentItem.rate}
+                onChange={e => updateItem(currentItemIndex, "rate", Number(e.target.value))}
+                className="w-full"
+                inputMode="decimal"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Rate Unit</label>
+              <Select
+                value={currentItem.rateUnit || currentItem.unit || "each"}
+                onValueChange={value => updateItem(currentItemIndex, "rateUnit", value)}
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="per unit" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {getCompatibleUnits(currentItem.unit || "each").map(unitString => (
+                    <SelectItem key={unitString} value={unitString}>
+                      <div className="flex items-center gap-2">
+                        {unitString === 'each' && <Circle className="h-4 w-4" />}
+                        {unitString === 'kg' && <Weight className="h-4 w-4" />}
+                        {unitString === 'g' && <Weight className="h-4 w-4" />}
+                        <span>per {unitString}</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="pt-2">
             <div className="flex justify-between items-center text-sm font-medium">
@@ -732,10 +822,20 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       }
       
       // Professional validation: Check for future due date
-      if (values.dueDate <= values.date) {
+      if (formatDate(values.dueDate) < formatDate(values.date)) {
         toast({
           title: "Due Date Issue", 
-          description: "Due date should be after the invoice date to allow reasonable payment time. Please adjust the due date to maintain professional payment terms.",
+          description: "Due date can't be before the invoice date.",
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (discountMode === 'percent' && (values.discountPercent == null || Number.isNaN(Number(values.discountPercent)))) {
+        toast({
+          title: "Discount",
+          description: "Enter a discount between 0 and 100%.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -751,18 +851,23 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       // Add template name to values
       const valuesWithTemplate = {
         ...values,
-        templateName: selectedTemplate
+        templateName: selectedTemplate,
+        paymentTermDays: values.paymentTermDays,
+        discountType: discountMode === 'off' ? 'fixed' : discountMode,
+        discountPercent: discountMode === 'percent' ? values.discountPercent : null,
+        discount: discountMode === 'off' ? 0 : Number(values.discount),
       };
 
       await onSubmit(
         valuesWithTemplate,
         items,
-        subtotal + taxAmount + finalAdditionalCharges - Number(values.discount),
+        subtotal + taxAmount + finalAdditionalCharges - Number(valuesWithTemplate.discount),
         subtotal,
         taxAmount,
         finalAdditionalCharges,
-        Number(values.discount),
-        additionalChargesList // Pass the structured charges list
+        Number(valuesWithTemplate.discount),
+        isAdditionalChargesEnabled ? additionalChargesList : [],
+        submitIntentRef.current,
       );
       
       // Clear auto-saved data on successful submission
@@ -775,11 +880,29 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     } catch (error) {
       console.error("Submission failed in InvoiceForm:", error);
     } finally {
+      submitIntentRef.current = 'draft';
       setIsSubmitting(false);
     }
   };
 
   const selectedCustomer = customers.find(c => c.id === form.watch('customerId'));
+  const hasValidLines = items.some((item) => item.description?.trim() && item.quantity > 0 && item.rate >= 0);
+  const customerEmail = selectedCustomer?.email?.trim() || '';
+  const showSend = mode === 'create' || initialValues?.status === 'draft';
+  const sendDisabledReason = !form.watch('customerId')
+    ? 'Select a customer'
+    : !customerEmail
+      ? 'Add an email to this customer'
+      : !hasValidLines
+        ? 'Add at least one line item'
+        : null;
+  const canSend = showSend && !sendDisabledReason;
+
+  const submitForm = (intent: 'draft' | 'send') => {
+    submitIntentRef.current = intent;
+    const formEl = document.querySelector('form[data-invoice-form]') as HTMLFormElement | null;
+    formEl?.requestSubmit();
+  };
 
   const handleSelectTemplate = (templateId: InvoiceTemplateId) => {
     setSelectedTemplate(templateId);
@@ -796,6 +919,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
     return (
       <div className="space-y-4">
+        <ProfileCompletenessBanner profile={businessProfile} />
         {!isMobile && (
           <div className="mb-4">
             <h3 className="text-lg font-medium mb-2">Template</h3>
@@ -827,7 +951,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             const values = form.getValues();
             await localOnSubmit(values);
           }}
-          saveButtonText={mode === "create" ? "Save Invoice" : "Save Changes"}
+          saveButtonText={mode === "create" ? "Save draft" : "Save Changes"}
           isSaving={isSubmitting}
           hasUnsavedChanges={hasUnsavedChanges}
         />
@@ -837,30 +961,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
   return (
     <div className="space-y-6 pb-32 px-0 -mx-4 sm:mx-0 sm:px-0 sm:pb-6">
-      <div className="flex justify-between items-center px-4 sm:px-0">
-        <div className="flex items-center gap-3">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={onCancel}
-              className="mr-0 h-10 w-10 p-0 rounded-full hover:bg-muted/50"
-            >
-              <ArrowLeft size={18} />
-            </Button>
-          </motion.div>
-          <div>
-            <h1 className="text-xl md:text-3xl font-bold truncate bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              {mode === "edit" ? "Edit Invoice" : "Create Invoice"}
-            </h1>
-            <p className="text-sm text-muted-foreground hidden sm:block">
-              {mode === "edit" ? "Update your invoice details" : "Create a new invoice for your client"}
-            </p>
-          </div>
-        </div>
+      <div className="px-4 sm:px-0">
+        <PageHeader
+          title={mode === "edit" ? "Edit Invoice" : "Create Invoice"}
+          description={mode === "edit" ? "Update your invoice details" : "Create a new invoice for your client"}
+          onBack={onCancel}
+        />
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -886,7 +992,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             exit="exit"
             variants={tabVariants}
           >
-            <Card className="border-0 shadow-lg bg-gradient-to-br from-card to-card/50 backdrop-blur-sm">
+            <Card className="border border-border shadow-none">
               <CardContent className="pt-6 pb-4 px-4 sm:p-8 sm:pt-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(localOnSubmit)} className="space-y-6" data-invoice-form>
@@ -958,7 +1064,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                           transition={{ duration: 0.2 }}
                           className="col-span-1 md:col-span-2 mt-4"
                         >
-                        <Card className="bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/20 backdrop-blur-sm">
+                        <Card className="border border-border bg-muted/40">
                           <CardContent className="py-4 px-6 flex flex-col gap-2">
                             <div className="font-semibold text-lg flex items-center gap-3">
                               <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
@@ -1046,7 +1152,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                 <Calendar
                                   mode="single"
                                   selected={field.value}
-                                  onSelect={field.onChange}
+                                  onSelect={(next) => {
+                                    field.onChange(next);
+                                    if (next && !dueDateDirty) {
+                                      form.setValue('dueDate', addDaysToDate(next, form.getValues('paymentTermDays') ?? 30));
+                                    }
+                                  }}
                                   initialFocus
                                   className={cn("p-3 pointer-events-auto")}
                                 />
@@ -1085,15 +1196,81 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                 <Calendar
                                   mode="single"
                                   selected={field.value}
-                                  onSelect={field.onChange}
+                                  onSelect={(next) => {
+                                    setDueDateDirty(true);
+                                    field.onChange(next);
+                                  }}
                                   initialFocus
                                   className={cn("p-3 pointer-events-auto")}
                                 />
                               </PopoverContent>
                             </Popover>
+                            {dueDateDirty && dueDateValue && invoiceDateValue && !dueDateMatchesTerm(invoiceDateValue, dueDateValue, paymentTermDaysValue) && (
+                              <p className="text-xs text-muted-foreground">Doesn’t match {paymentTermDaysValue}-day terms</p>
+                            )}
                             <FormMessage />
                           </FormItem>
                         )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="paymentTermDays"
+                        render={({ field }) => {
+                          const code = paymentTermCodeFromDays(field.value ?? 30);
+                          return (
+                            <FormItem className="flex flex-col">
+                              <FormLabel className="text-base font-semibold text-foreground/90">Payment terms</FormLabel>
+                              <Select
+                                value={code}
+                                onValueChange={(value) => {
+                                  const nextDays = value === 'custom'
+                                    ? field.value ?? 30
+                                    : PAYMENT_TERM_PRESETS.find((item) => item.code === value)?.days ?? 30;
+                                  field.onChange(nextDays);
+                                  setDueDateDirty(false);
+                                  const invoiceDate = form.getValues('date');
+                                  if (invoiceDate) {
+                                    form.setValue('dueDate', addDaysToDate(invoiceDate, nextDays));
+                                  }
+                                }}
+                              >
+                                <FormControl>
+                                  <SelectTrigger data-testid="invoice-payment-terms" className="h-12 border-2 border-border/50 rounded-xl bg-background/50">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {PAYMENT_TERM_PRESETS.map((preset) => (
+                                    <SelectItem key={preset.code} value={preset.code}>
+                                      {preset.label}
+                                    </SelectItem>
+                                  ))}
+                                  <SelectItem value="custom">Custom</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              {code === 'custom' && (
+                                <Input
+                                  type="number"
+                                  min={0}
+                                  max={365}
+                                  value={field.value ?? 30}
+                                  onChange={(event) => {
+                                    const nextDays = Number(event.target.value);
+                                    field.onChange(nextDays);
+                                    setDueDateDirty(false);
+                                    const invoiceDate = form.getValues('date');
+                                    if (invoiceDate && Number.isFinite(nextDays)) {
+                                      form.setValue('dueDate', addDaysToDate(invoiceDate, nextDays));
+                                    }
+                                  }}
+                                  aria-label="Custom payment term days"
+                                  className="h-11 border-2 border-border/50 rounded-lg"
+                                />
+                              )}
+                              <FormMessage />
+                            </FormItem>
+                          );
+                        }}
                       />
                     </motion.div>
                     {/* Additional Charges Manager */}
@@ -1119,32 +1296,58 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                       className="grid grid-cols-1 md:grid-cols-2 gap-6"
                     >
                       <div className="p-4 rounded-xl bg-gradient-to-r from-muted/30 to-muted/10 border border-border/50">
-                        <div className="flex items-center gap-3 mb-3">
-                          <Switch
-                            checked={isDiscountEnabled}
-                            onCheckedChange={setIsDiscountEnabled}
-                            id="discount-toggle"
-                            className="data-[state=checked]:bg-primary"
-                          />
-                          <label htmlFor="discount-toggle" className="text-sm font-semibold text-foreground/90">Enable Discount</label>
+                        <p className="text-sm font-semibold text-foreground/90 mb-3">Add discount</p>
+                        <div className="flex gap-2 mb-3" role="group" aria-label="Discount type">
+                          {(['off', 'percent', 'fixed'] as const).map((modeOption) => (
+                            <Button
+                              key={modeOption}
+                              type="button"
+                              variant={discountMode === modeOption ? 'default' : 'outline'}
+                              className="h-9 rounded-xl px-4"
+                              onClick={() => {
+                                setDiscountMode(modeOption);
+                                if (modeOption === 'off') {
+                                  form.setValue('discount', 0);
+                                  form.setValue('discountPercent', 0);
+                                  form.setValue('discountType', 'fixed');
+                                } else {
+                                  form.setValue('discountType', modeOption);
+                                }
+                              }}
+                            >
+                              {modeOption === 'off' ? 'Off' : modeOption === 'percent' ? '%' : '$'}
+                            </Button>
+                          ))}
                         </div>
-                        {isDiscountEnabled && (
-                          <motion.div
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
+                        {discountMode === 'percent' && (
+                          <div className="space-y-2">
                             <Input
                               type="number"
                               min={0}
+                              max={100}
                               step="0.01"
-                              value={form.watch('discount')}
-                              onChange={handleDiscountChange}
-                              placeholder="Discount amount"
-                              className="w-full h-11 border-2 border-border/50 rounded-lg bg-background/50 backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                              value={form.watch('discountPercent') ?? 0}
+                              onChange={(event) => form.setValue('discountPercent', Number(event.target.value), { shouldDirty: true })}
+                              placeholder="Discount percent"
+                              aria-label="Discount percent"
+                              className="w-full h-11 border-2 border-border/50 rounded-lg"
                             />
-                          </motion.div>
+                            <p className="text-xs text-muted-foreground">
+                              {formatCurrency(Number(form.watch('discount') || 0), form.getValues('currency'))} off subtotal
+                            </p>
+                          </div>
+                        )}
+                        {discountMode === 'fixed' && (
+                          <Input
+                            type="number"
+                            min={0}
+                            step="0.01"
+                            value={form.watch('discount')}
+                            onChange={handleDiscountChange}
+                            placeholder="Discount amount"
+                            aria-label="Discount amount"
+                            className="w-full h-11 border-2 border-border/50 rounded-lg bg-background/50 backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20"
+                          />
                         )}
                       </div>
                       <div className="p-4 rounded-xl bg-gradient-to-r from-accent/10 to-accent/5 border border-accent/30">
@@ -1264,6 +1467,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                           <th className="text-right py-2 text-sm font-medium">Qty</th>
                                           <th className="text-left py-2 text-sm font-medium">Unit</th>
                                           <th className="text-right py-2 text-sm font-medium">Rate</th>
+                                          <th className="text-left py-2 text-sm font-medium">Per</th>
                                           <th className="text-right py-2 text-sm font-medium">Total</th>
                                           <th className="py-2 w-10"></th>
                                         </tr>
@@ -1295,7 +1499,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                                       onCreateNewItem={() => handleCreateNewItem(index)}
                                                       buttonClassName="h-6 w-6 p-0"
                                                       iconOnly
-                                                      refetch={triggerItemsRefetch}
+                                                      refetch={refetchItemsTrigger}
                                                     />
                                                   </div>
                                                 </div>
@@ -1347,6 +1551,25 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                                 className="w-full text-right"
                                                 data-testid={`item-rate-${index}`}
                                               />
+                                            </td>
+                                            <td className="py-2 px-2">
+                                              <Select
+                                                value={item.rateUnit || item.unit || "each"}
+                                                onValueChange={value => updateItem(index, "rateUnit", value)}
+                                              >
+                                                <FormControl>
+                                                  <SelectTrigger className="h-9">
+                                                    <SelectValue placeholder="per" />
+                                                  </SelectTrigger>
+                                                </FormControl>
+                                                <SelectContent>
+                                                  {getCompatibleUnits(item.unit || "each").map(unitString => (
+                                                    <SelectItem key={unitString} value={unitString}>
+                                                      <span>per {unitString}</span>
+                                                    </SelectItem>
+                                                  ))}
+                                                </SelectContent>
+                                              </Select>
                                             </td>
                                             <td className="py-2 px-2 text-right" data-testid={`item-amount-${index}`}>
                                               {formatCurrency(item.total, form.getValues('currency'))}
@@ -1411,9 +1634,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                       )}</span>
                                     </div>
                                   )}
-                                  {isDiscountEnabled && (
+                                  {discountMode !== 'off' && Number(form.watch('discount')) > 0 && (
                                     <div className="flex justify-between">
-                                      <span className="font-medium">Discount</span>
+                                      <span className="font-medium">{invoiceDiscountLabel({
+                                        discountType: discountMode === 'percent' ? 'percent' : 'fixed',
+                                        discountPercent: form.watch('discountPercent'),
+                                      })}</span>
                                       <span>-{formatCurrency(Number(form.watch('discount')), form.getValues('currency'))}</span>
                                     </div>
                                   )}
@@ -1488,17 +1714,39 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             className="flex-1"
           >
             <Button 
-              onClick={() => {
-                const form = document.querySelector('form[data-invoice-form]') as HTMLFormElement;
-                if (form) form.requestSubmit();
-              }}
-              className="gap-2 w-full h-12 rounded-xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-200 shadow-lg"
+              onClick={() => submitForm('draft')}
+              className="gap-2 w-full h-12"
               data-testid="save-invoice-button"
             >
               <Save size={16} />
-              <span>{mode === "create" ? "Save Invoice" : "Save Changes"}</span>
+              <span>{mode === "create" ? "Save draft" : "Save Changes"}</span>
             </Button>
           </motion.div>
+          {showSend && (
+            <motion.div whileHover="hover" whileTap="tap" variants={buttonVariants} className="flex-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="block">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      disabled={!canSend || isSubmitting}
+                      onClick={() => setSendConfirmOpen(true)}
+                      className="gap-2 w-full h-12"
+                      aria-label="Send invoice"
+                      data-testid="send-invoice-button"
+                    >
+                      <Send size={16} />
+                      <span>Send</span>
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {sendDisabledReason && (
+                  <TooltipContent>{sendDisabledReason}</TooltipContent>
+                )}
+              </Tooltip>
+            </motion.div>
+          )}
         </motion.div>
           </div>
         </div>
@@ -1540,17 +1788,38 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             variants={buttonVariants}
           >
             <Button 
-              onClick={() => {
-                const form = document.querySelector('form[data-invoice-form]') as HTMLFormElement;
-                if (form) form.requestSubmit();
-              }}
-              className="gap-2 h-12 px-6 rounded-xl bg-gradient-to-r from-primary to-accent hover:from-primary/90 hover:to-accent/90 transition-all duration-200 shadow-lg"
+              onClick={() => submitForm('draft')}
+              className="gap-2 h-12 px-6"
               data-testid="save-invoice-button"
             >
               <Save size={16} />
-              <span>{mode === "create" ? "Save Invoice" : "Save Changes"}</span>
+              <span>{mode === "create" ? "Save draft" : "Save Changes"}</span>
             </Button>
           </motion.div>
+          {showSend && (
+            <motion.div whileHover="hover" whileTap="tap" variants={buttonVariants}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span className="inline-flex">
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      disabled={!canSend || isSubmitting}
+                      onClick={() => setSendConfirmOpen(true)}
+                      className="gap-2 h-12 px-6"
+                      aria-label="Send invoice"
+                    >
+                      <Send size={16} />
+                      <span>Send</span>
+                    </Button>
+                  </span>
+                </TooltipTrigger>
+                {sendDisabledReason && (
+                  <TooltipContent>{sendDisabledReason}</TooltipContent>
+                )}
+              </Tooltip>
+            </motion.div>
+          )}
         </motion.div>
         </div>
       )}
@@ -1565,6 +1834,28 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         title="Create New Item"
         description="Add a new product or service to your inventory"
       />
+
+      <AlertDialog open={sendConfirmOpen} onOpenChange={setSendConfirmOpen}>
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Send this invoice?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Send invoice {form.getValues('invoiceNumber') || 'draft'} to {customerEmail || 'the customer'}?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                setSendConfirmOpen(false);
+                submitForm('send');
+              }}
+            >
+              Send invoice
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
 
       {blocker && blocker.state === "blocked" && (
         <AlertDialog open={blocker.state === "blocked"}>

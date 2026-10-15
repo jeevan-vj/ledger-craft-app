@@ -1,7 +1,8 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
-import { formatCurrency } from '@/utils/invoiceUtils';
+import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 interface ModernTemplateProps {
@@ -9,6 +10,8 @@ interface ModernTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const ModernTemplate = ({
   companyName, 
   companyAddress, 
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName, 
   clientAddress, 
   taxRate, 
@@ -159,8 +164,8 @@ const ModernTemplate = ({
                     </div>
                   )}
                 </td>
-                <td className="py-2 px-1 text-right" style={{ padding: '8px', textAlign: 'right', color: theme.text }}>{item.quantity}</td>
-                <td className="py-2 px-1 text-right" style={{ padding: '8px', textAlign: 'right', color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}</td>
+                <td className="py-2 px-1 text-right" style={{ padding: '8px', textAlign: 'right', color: theme.text }}>{item.quantity} {item.unit}</td>
+                <td className="py-2 px-1 text-right" style={{ padding: '8px', textAlign: 'right', color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
                 <td className="py-2 px-2 text-right" style={{ padding: '8px', textAlign: 'right', color: theme.text }}>{formatCurrency(item.quantity * item.rate, invoice.currency)}</td>
               </tr>
             ))}
@@ -212,7 +217,7 @@ const ModernTemplate = ({
           
           {invoice.discount > 0 && (
             <div className="flex justify-between py-1">
-              <span className="font-semibold" style={{ color: theme.text }}>Discount:</span>
+              <span className="font-semibold" style={{ color: theme.text }}>{invoiceDiscountLabel(invoice)}:</span>
               <span style={{ color: theme.accent }}>-{formatCurrency(invoice.discount, invoice.currency)}</span>
             </div>
           )}
@@ -224,6 +229,7 @@ const ModernTemplate = ({
         </div>
       </div>
       
+      <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
       {/* Notes */}
       {invoice.notes && (
         <div className="mt-4 notes-section">

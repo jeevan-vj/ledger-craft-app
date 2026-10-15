@@ -117,11 +117,22 @@ export default function EnhancedExpensesPage() {
 
       // Transform data to match our interface
       const transformedExpenses: Expense[] = expenseData.map(expense => ({
-        ...expense,
-        netAmount: expense.amount - (expense.gstAmount || 0),
-        status: 'approved', // Default status
-        createdAt: expense.date,
-        updatedAt: expense.date
+        id: expense.id,
+        description: expense.description,
+        amount: Number(expense.amount) || 0,
+        category: expense.category_id || expense.categoryId || expense.category || 'general',
+        subcategory: expense.subcategory,
+        date: expense.expense_date || expense.expenseDate || expense.date,
+        supplier: expense.vendor_name || expense.vendorName || expense.supplier,
+        receiptNumber: expense.receiptNumber,
+        isCapitalExpense: Boolean(expense.is_capital_expense ?? expense.isCapitalExpense),
+        isGstClaimable: expense.is_claimable !== false,
+        gstAmount: Number(expense.tax_amount ?? expense.taxAmount ?? expense.gstAmount ?? 0),
+        netAmount: Number(expense.amount || 0) - Number(expense.tax_amount ?? expense.taxAmount ?? expense.gstAmount ?? 0),
+        notes: expense.notes,
+        status: 'approved',
+        createdAt: expense.createdAt || expense.date,
+        updatedAt: expense.updatedAt || expense.date,
       }));
 
       setExpenses(transformedExpenses);

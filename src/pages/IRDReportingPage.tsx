@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { IRDReportingDashboard } from '@/components/reporting/IRDReportingDashboard';
-import { GSTReturnWizard } from '@/components/tax/GSTReturnWizard';
+import { GSTReturnWizard, GSTReturnData } from '@/components/tax/GSTReturnWizard';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from "@/context/StableAuthContext";
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent } from '@/components/ui/card';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { TaxReturn } from '@/types/payment';
 import { supabaseDataService } from '@/services/supabaseDataService';
 import { taxCalculationService } from '@/services/taxCalculationService';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { downloadGstReturnPdf } from '@/features/tax/export/gstReturnPdf';
 
 export default function IRDReportingPage() {
   const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
@@ -19,6 +20,7 @@ export default function IRDReportingPage() {
     warnings: [] as string[]
   });
   const [nextGSTDueDate, setNextGSTDueDate] = useState('');
+  const [showGSTWizard, setShowGSTWizard] = useState(false);
   
   const { toast } = useToast();
   const { user } = useAuth();
@@ -87,51 +89,83 @@ export default function IRDReportingPage() {
     }
   }, [user?.id]);
 
-  const handleCreateGSTReturn = async (period: { start: string; end: string }) => {
+  const handleCreateGSTReturn = () => {
+    setShowGSTWizard(true);
+  };
+
+  const handleGSTWizardComplete = async (returnData: GSTReturnData) => {
     if (!user?.id) return;
-    
+
     try {
       toast({
-        title: "Creating GST Return",
-        description: "Calculating tax amounts from your transaction data..."
+        title: 'Saving GST Return',
+        description: 'Creating a draft from your invoices, expenses, and reconciliations...',
       });
 
-      // Generate IRD return data from real Supabase data
       const irdReturnData = await taxCalculationService.generateIRDGSTReturn(
         user.id,
-        period.start,
-        period.end
+        returnData.returnPeriod.startDate,
+        returnData.returnPeriod.endDate
       );
 
-      // Create the tax return with calculated data
+      const netGst =
+        returnData.salesData.gstOnSales -
+        (returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods) -
+        (returnData.adjustments.badDebtAdjustments +
+          returnData.adjustments.creditNoteAdjustments +
+          returnData.adjustments.otherAdjustments);
+
       const newReturnData: Omit<TaxReturn, 'id' | 'createdAt' | 'updatedAt'> = {
         userId: user.id,
-        periodStart: period.start,
-        periodEnd: period.end,
+        periodStart: returnData.returnPeriod.startDate,
+        periodEnd: returnData.returnPeriod.endDate,
         returnType: 'GST',
-        totalSales: irdReturnData.gstReturn.salesDetails.totalSales,
-        totalPurchases: irdReturnData.gstReturn.purchaseDetails.totalPurchases,
-        gstOnSales: irdReturnData.gstReturn.salesDetails.gstOnSales,
-        gstOnPurchases: irdReturnData.gstReturn.purchaseDetails.gstOnPurchases,
-        netGst: irdReturnData.gstReturn.salesDetails.gstOnSales - irdReturnData.gstReturn.purchaseDetails.gstOnPurchases,
+        totalSales: returnData.salesData.totalSales,
+        totalPurchases: returnData.purchaseData.totalPurchases,
+        gstOnSales: returnData.salesData.gstOnSales,
+        gstOnPurchases: returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods,
+        netGst: Math.round(netGst * 100) / 100,
         status: 'draft',
-        returnData: irdReturnData
+        returnData: {
+          ...irdReturnData,
+          gstReturn: {
+            salesDetails: {
+              standardRated: irdReturnData.gstReturn?.salesDetails.standardRated ?? returnData.salesData.totalSales,
+              zeroRated: returnData.salesData.zeroRatedSales,
+              exempt: returnData.salesData.exemptSales,
+              totalSales: returnData.salesData.totalSales,
+              gstOnSales: returnData.salesData.gstOnSales,
+            },
+            purchaseDetails: {
+              standardRated: irdReturnData.gstReturn?.purchaseDetails.standardRated ?? returnData.purchaseData.totalPurchases,
+              capitalGoods: returnData.purchaseData.capitalGoods,
+              totalPurchases: returnData.purchaseData.totalPurchases,
+              gstOnPurchases: returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods,
+            },
+            adjustments: {
+              badDebts: returnData.adjustments.badDebtAdjustments,
+              otherAdjustments:
+                returnData.adjustments.creditNoteAdjustments + returnData.adjustments.otherAdjustments,
+            },
+          },
+          reconciliation: returnData.reconciliation,
+        },
       };
 
       const createdReturn = await supabaseDataService.createTaxReturn(newReturnData);
-      setTaxReturns(prev => [createdReturn, ...prev]);
-      
-      toast({
-        title: "Success",
-        description: `GST return created with $${newReturnData.netGst.toFixed(2)} ${newReturnData.netGst >= 0 ? 'owing' : 'refund'}`
-      });
+      setTaxReturns((prev) => [createdReturn, ...prev]);
+      setShowGSTWizard(false);
 
+      toast({
+        title: 'GST return saved',
+        description: `Draft created with $${Math.abs(newReturnData.netGst).toFixed(2)} ${newReturnData.netGst >= 0 ? 'owing' : 'refund'}`,
+      });
     } catch (error) {
       console.error('Error creating GST return:', error);
       toast({
-        title: "Error",
-        description: "Failed to create GST return. Please check your transaction data.",
-        variant: "destructive"
+        title: 'Error',
+        description: 'Failed to save GST return. Please check your transaction data.',
+        variant: 'destructive',
       });
     }
   };
@@ -200,57 +234,50 @@ export default function IRDReportingPage() {
     }
   };
 
-  const handleSubmitReturn = async (returnId: string) => {
+  const handleSubmitReturn = async (returnId: string, irdReference: string) => {
     try {
-      // Simulate IRD submission process
       toast({
-        title: "Submitting to IRD",
-        description: "Processing your tax return submission..."
+        title: 'Recording filed return',
+        description: 'Saving your myIR confirmation reference...',
       });
-      
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      const irdReference = `IRD-GST-${new Date().getFullYear()}-${Date.now().toString().slice(-6)}`;
-      
-      // Update the tax return status in Supabase
-      const updatedReturn = await supabaseDataService.updateTaxReturn(returnId, {
-        status: 'submitted',
-        submittedAt: new Date().toISOString(),
-        irdReference
-      });
+
+      const updatedReturn = await supabaseDataService.fileTaxReturn(returnId, irdReference);
       
       setTaxReturns(prev => 
         prev.map(ret => ret.id === returnId ? updatedReturn : ret)
       );
       
       toast({
-        title: "Success",
-        description: `Tax return submitted successfully. IRD Reference: ${irdReference}`
+        title: 'GST return recorded as filed',
+        description: `IRD confirmation reference: ${irdReference}`,
       });
     } catch (error) {
-      console.error('Error submitting tax return:', error);
+      console.error('Error recording filed tax return:', error);
       toast({
-        title: "Error",
-        description: "Failed to submit tax return to IRD",
-        variant: "destructive"
+        title: 'Could not record filed return',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
       });
+      throw error;
     }
   };
 
   const handleExportReturn = async (returnId: string, format: string) => {
     try {
-      // Simulate export
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      const taxReturn = taxReturns.find((row) => row.id === returnId);
+      if (!taxReturn) throw new Error('Tax return not found');
+      if (format !== 'pdf') throw new Error(`Unsupported export format: ${format}`);
+      await downloadGstReturnPdf(taxReturn);
+
       toast({
-        title: "Success",
-        description: `Tax return exported as ${format.toUpperCase()}`
+        title: 'GST return downloaded',
+        description: 'Your PDF preparation and filing record is ready.',
       });
     } catch (error) {
       toast({
-        title: "Error",
-        description: "Failed to export tax return",
-        variant: "destructive"
+        title: 'Could not download GST return',
+        description: error instanceof Error ? error.message : 'Please try again.',
+        variant: 'destructive',
       });
     }
   };
@@ -318,25 +345,29 @@ export default function IRDReportingPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">IRD Tax Reporting</h1>
-        <p className="text-muted-foreground">
-          Manage GST returns, income tax filings, and compliance with New Zealand IRD requirements
-        </p>
-      </div>
-
-      {/* IRD Reporting Dashboard */}
-      <IRDReportingDashboard
-        taxReturns={taxReturns}
-        nextGSTDueDate={nextGSTDueDate}
-        complianceStatus={complianceStatus}
-        onCreateGSTReturn={handleCreateGSTReturn}
-        onCreateIncomeReturn={handleCreateIncomeReturn}
-        onSubmitReturn={handleSubmitReturn}
-        onExportReturn={handleExportReturn}
-        isLoading={isLoading}
+      <PageHeader
+        title="IRD Tax Reporting"
+        description="Prepare GST returns against bank reconciliations, then file with IRD"
+        onBack={showGSTWizard ? () => setShowGSTWizard(false) : undefined}
       />
+
+      {showGSTWizard ? (
+        <GSTReturnWizard
+          onComplete={handleGSTWizardComplete}
+          onCancel={() => setShowGSTWizard(false)}
+        />
+      ) : (
+        <IRDReportingDashboard
+          taxReturns={taxReturns}
+          nextGSTDueDate={nextGSTDueDate}
+          complianceStatus={complianceStatus}
+          onCreateGSTReturn={handleCreateGSTReturn}
+          onCreateIncomeReturn={handleCreateIncomeReturn}
+          onSubmitReturn={handleSubmitReturn}
+          onExportReturn={handleExportReturn}
+          isLoading={isLoading}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { useAuth } from "@/context/StableAuthContext";
+import { useAuth } from '@/context/StableAuthContext';
+import { getMe } from '@/features/auth/api/authApi';
 import { Loader2 } from 'lucide-react';
 
 const AuthCallback = () => {
@@ -13,60 +13,33 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error('Auth callback error:', error);
-          toast({
-            title: 'Authentication Failed',
-            description: error.message,
-            variant: 'destructive'
-          });
-          navigate('/login');
+        await refreshUser();
+        const me = await getMe();
+
+        if (!me) {
+          navigate('/login', { replace: true });
           return;
         }
 
-        if (data.session) {
-          // Check if this is a new user by looking at metadata
-          const user = data.session.user;
-          const isNewUser = user.user_metadata?.iss && 
-                           new Date(user.created_at).getTime() > (Date.now() - 60000); // Created in last minute
-          
-          // Refresh the auth context
-          await refreshUser();
-          
-          if (isNewUser) {
-            toast({
-              title: 'Welcome to EasyBizInvoice!',
-              description: 'Your account has been created. Let\'s set up your business profile.'
-            });
-            navigate('/onboarding', { replace: true });
-          } else {
-            toast({
-              title: 'Welcome back!',
-              description: 'You have been successfully logged in with Google.'
-            });
-            
-            // Navigate to dashboard or intended destination
-            const urlParams = new URLSearchParams(window.location.search);
-            const next = urlParams.get('next') || '/';
-            navigate(next, { replace: true });
-          }
-        } else {
-          navigate('/login');
-        }
+        toast({
+          title: 'Welcome back!',
+          description: 'You have been signed in.',
+        });
+
+        const next = new URLSearchParams(window.location.search).get('next') || '/';
+        navigate(next, { replace: true });
       } catch (error) {
         console.error('Unexpected error during auth callback:', error);
         toast({
           title: 'Authentication Error',
           description: 'An unexpected error occurred. Please try again.',
-          variant: 'destructive'
+          variant: 'destructive',
         });
-        navigate('/login');
+        navigate('/login', { replace: true });
       }
     };
 
-    handleAuthCallback();
+    void handleAuthCallback();
   }, [navigate, toast, refreshUser]);
 
   return (

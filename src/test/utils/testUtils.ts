@@ -33,14 +33,8 @@ export const mockOpenAIFetch = (response: any) => {
   global.fetch = vi.fn().mockResolvedValue({
     ok: true,
     json: async () => ({
-      choices: [
-        {
-          message: {
-            content: JSON.stringify(response)
-          }
-        }
-      ]
-    })
+      content: JSON.stringify(response),
+    }),
   } as Response);
 };
 

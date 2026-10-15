@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { format } from 'date-fns';
 import { BreadcrumbNavigation } from '@/components/common/BreadcrumbNavigation';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { 
   financialReportsService, 
   FinancialReport, 
@@ -732,12 +733,10 @@ export default function FinancialReportsPage() {
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Financial Reports</h1>
-          <p className="text-muted-foreground">
-            Generate and view comprehensive financial reports and analytics
-          </p>
-        </div>
+        <PageHeader
+          title="Financial Reports"
+          description="Generate and view comprehensive financial reports and analytics"
+        />
         
         <div className="flex items-center gap-3">
           <Button

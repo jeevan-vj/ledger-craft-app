@@ -1,4 +1,5 @@
 import { supabase } from '@/integrations/supabase/client';
+import { inInclusiveDateRange, ledgerSnapshotEnabled, loadLedgerSnapshot } from '@/features/ledger/api/ledgerSnapshot';
 
 interface SimpleTaxData {
   currentGSTPosition: number;
@@ -131,6 +132,16 @@ export class SimpleTaxService {
   }
 
   private async getInvoiceData(userId: string, startDate: Date, endDate: Date) {
+    if (ledgerSnapshotEnabled()) {
+      return (await loadLedgerSnapshot()).invoices
+        .filter((invoice) => inInclusiveDateRange(invoice.date, startDate, endDate))
+        .map((invoice) => ({
+          id: invoice.id,
+          invoice_number: invoice.invoiceNumber,
+          total: invoice.total,
+          date: invoice.date,
+        }));
+    }
     const { data, error } = await supabase
       .from('invoices')
       .select('id, invoice_number, total, date')
@@ -148,6 +159,16 @@ export class SimpleTaxService {
   }
 
   private async getExpenseData(userId: string, startDate: Date, endDate: Date) {
+    if (ledgerSnapshotEnabled()) {
+      return (await loadLedgerSnapshot()).expenses
+        .filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate))
+        .map((expense) => ({
+          id: expense.id,
+          description: expense.description,
+          amount: expense.amount,
+          date: expense.expenseDate,
+        }));
+    }
     // Try to get expenses from expenses table first, fallback to other approaches
     try {
       const { data, error } = await supabase

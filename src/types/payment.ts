@@ -144,6 +144,20 @@ export interface TaxReturn {
   updatedAt: string;
 }
 
+export interface GstReconciliationSnapshot {
+  status: 'ready' | 'warning' | 'not_applicable';
+  unreconciledTransactionCount: number;
+  figuresMatch: boolean;
+  accounts: Array<{
+    accountId: string;
+    accountName: string;
+    status: 'complete' | 'partial' | 'in_progress' | 'missing';
+    sessionId: string | null;
+  }>;
+  issues: string[];
+  acknowledgedAt?: string;
+}
+
 export interface IRDReturnData {
   // GST Return specific data
   gstReturn?: {
@@ -165,6 +179,7 @@ export interface IRDReturnData {
       otherAdjustments: number;
     };
   };
+  reconciliation?: GstReconciliationSnapshot;
   // Income Tax Return specific data
   incomeTax?: {
     grossIncome: number;

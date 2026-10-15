@@ -1,11 +1,7 @@
-import { 
-  TaxConfiguration, 
-  TaxCalculationRequest, 
-  TaxCalculationResult,
-  TaxBreakdown,
-  IRDReturnData 
-} from '@/types/payment';
+import { TaxConfiguration, TaxCalculationRequest, TaxCalculationResult, TaxBreakdown, IRDReturnData } from '@/types/payment';
 import { supabaseDataService } from './supabaseDataService';
+import { expenseService, invoiceService } from './supabaseService';
+import { readMoney } from '@/features/tax/api/periodRows';
 
 export class TaxCalculationService {
   /**
@@ -255,24 +251,37 @@ export class TaxCalculationService {
 
       const salesCalculation = await this.calculateGSTReturnSales(salesData, taxConfig);
 
-      // Calculate purchase data using real expense data
-      const purchaseData = expenses.map(expense => ({
-        amount: expense.amount,
-        taxInclusive: expense.tax_inclusive,
-        taxable: expense.is_claimable
-      }));
-
-      const purchaseCalculation = await this.calculateGSTReturnPurchases(purchaseData, taxConfig);
-
-      // Calculate capital goods from expenses
-      const capitalGoods = expenses
-        .filter(expense => expense.is_capital_expense)
-        .reduce((sum, expense) => sum + expense.amount, 0);
+      // Calculate purchase data using actual stored tax_amount from expenses
+      // Use stored tax_amount directly instead of recalculating from amount
+      // Default is_claimable to true if not explicitly set to false
+      const claimableExpenses = expenses.filter(expense => 
+        expense.is_claimable !== false && !expense.is_capital_expense
+      );
+      const capitalExpenses = expenses.filter(expense => expense.is_capital_expense);
+      
+      const totalPurchases = expenses.reduce((sum, exp) => sum + (exp.amount || 0), 0);
+      const gstOnPurchases = claimableExpenses.reduce((sum, exp) => 
+        sum + readMoney(exp, 'taxAmount', 'tax_amount'), 0
+      );
+      const gstOnCapitalGoods = capitalExpenses.reduce((sum, exp) => 
+        sum + readMoney(exp, 'taxAmount', 'tax_amount'), 0
+      );
+      
+      // Calculate capital goods total
+      const capitalGoods = capitalExpenses.reduce((sum, expense) => 
+        sum + (expense.amount || 0), 0
+      );
+      
+      const purchaseCalculation = {
+        totalPurchases: Math.round(totalPurchases * 100) / 100,
+        gstOnPurchases: Math.round((gstOnPurchases + gstOnCapitalGoods) * 100) / 100,
+        standardRated: Math.round(totalPurchases * 100) / 100
+      };
 
       // Calculate bad debts from written-off invoices
       const badDebts = invoices
         .filter(invoice => invoice.paymentStatus === 'written_off')
-        .reduce((sum, invoice) => sum + (invoice.tax_amount || 0), 0);
+        .reduce((sum, invoice) => sum + readMoney(invoice, 'taxAmount', 'tax_amount'), 0);
 
       return {
         gstReturn: {
@@ -434,56 +443,28 @@ export class TaxCalculationService {
     netGstPosition: number;
   }> {
     try {
-      // Get tax configuration
-      const taxConfig = await this.getActiveTaxConfiguration(userId);
-      if (!taxConfig) {
-        return {
-          totalSales: 0,
-          totalPurchases: 0,
-          gstOnSales: 0,
-          gstOnPurchases: 0,
-          netGstPosition: 0
-        };
-      }
+      const invoices = await invoiceService.getInvoices();
+      const expenses = await expenseService.getExpenses().catch(() => []);
+      const invoicesInPeriod = invoices.filter((invoice) => {
+        const date = invoice.date.slice(0, 10);
+        return date >= periodStart && date <= periodEnd;
+      });
+      const expensesInPeriod = expenses.filter((expense) => {
+        const date = String(expense.expenseDate).slice(0, 10);
+        return date >= periodStart && date <= periodEnd;
+      });
 
-      // Fetch real data from Supabase
-      const [invoices, expenses] = await Promise.all([
-        supabaseDataService.getInvoicesByPeriod(userId, periodStart, periodEnd),
-        supabaseDataService.getExpensesByPeriod(userId, periodStart, periodEnd)
-      ]);
-
-      // Calculate sales totals
       let totalSales = 0;
       let gstOnSales = 0;
-
-      for (const invoice of invoices) {
+      for (const invoice of invoicesInPeriod) {
         totalSales += invoice.total || 0;
-        
-        // Calculate GST from invoice
-        if (invoice.tax_amount) {
-          gstOnSales += invoice.tax_amount;
-        } else {
-          // Estimate GST if not stored (assuming tax-inclusive)
-          const estimatedGST = (invoice.total * taxConfig.taxRate) / (1 + taxConfig.taxRate);
-          gstOnSales += estimatedGST;
-        }
+        gstOnSales += invoice.taxAmount || 0;
       }
 
-      // Calculate purchase totals
       let totalPurchases = 0;
       let gstOnPurchases = 0;
-
-      for (const expense of expenses) {
+      for (const expense of expensesInPeriod) {
         totalPurchases += expense.amount || 0;
-        
-        // Calculate claimable GST from expenses
-        if (expense.tax_amount) {
-          gstOnPurchases += expense.tax_amount;
-        } else {
-          // Estimate GST if not stored (assuming tax-inclusive)
-          const estimatedGST = (expense.amount * taxConfig.taxRate) / (1 + taxConfig.taxRate);
-          gstOnPurchases += estimatedGST;
-        }
       }
 
       // Round values

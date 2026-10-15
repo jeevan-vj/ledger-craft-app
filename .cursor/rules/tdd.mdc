@@ -1,0 +1,14 @@
+---
+description: Require TDD for API, schema, RLS, and vertical-slice work.
+globs: api/**/*.{ts,tsx},packages/contracts/**/*.ts,src/services/**/*.ts,mobile/src/services/**/*.ts
+alwaysApply: false
+---
+
+# TDD
+
+Follow `.cursor/skills/ledgercraft-tdd/SKILL.md`.
+
+- Failing test before production code
+- Real PostgreSQL for SQL, constraints, transactions, RLS — do not mock Drizzle there
+- Invoice create: numbering, lines, totals, journal, idempotency in one transaction
+- Standard API error: `{ error: { code, message, requestId } }`

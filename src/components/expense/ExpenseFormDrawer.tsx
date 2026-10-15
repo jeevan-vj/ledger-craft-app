@@ -44,6 +44,29 @@ import { cn } from '@/lib/utils';
 import ReceiptUpload from './ReceiptUpload';
 import { ReceiptScanResult } from '@/types/receipt';
 
+// NZ IRD GST Treatment Types
+const gstTreatmentOptions = [
+  { value: 'standard', label: '✅ Standard (15% fully claimable)' },
+  { value: 'zero_rated', label: '0️⃣ Zero-Rated (0% but claimable)' },
+  { value: 'exempt', label: '⛔ Exempt (No GST)' },
+  { value: 'partial', label: '⚠️ Partial (Limited claim %)' },
+  { value: 'private_use', label: '🏠 Private Use Adjustment' },
+] as const;
+
+// NZ IRD GST Exemption Reasons
+const gstExemptionReasons = [
+  { value: 'none', label: 'Fully Claimable (100%)', claimablePercent: 100 },
+  { value: 'motor_vehicle', label: '🚗 Motor Vehicle', claimablePercent: 100 },
+  { value: 'financial_services', label: '🏦 Financial Services (Exempt)', claimablePercent: 0 },
+  { value: 'residential_rent', label: '🏘️ Residential Rent (Exempt)', claimablePercent: 0 },
+  { value: 'insurance_life', label: '📋 Life Insurance (Exempt)', claimablePercent: 0 },
+  { value: 'exported_services', label: '✈️ Zero-Rated (Exports)', claimablePercent: 100 },
+  { value: 'entertainment_50', label: '🍽️ Entertainment (50%)', claimablePercent: 50 },
+  { value: 'home_office', label: '🏠 Home Office', claimablePercent: 100 },
+  { value: 'second_hand_goods', label: '🔄 Second-hand Goods', claimablePercent: 100 },
+  { value: 'other_exempt', label: '❌ Other Exempt', claimablePercent: 0 },
+] as const;
+
 const expenseFormSchema = z.object({
   description: z.string().min(1, { message: 'Description is required' }),
   amount: z.number().min(0.01, { message: 'Amount must be greater than 0' }),
@@ -56,9 +79,14 @@ const expenseFormSchema = z.object({
   isBillable: z.boolean().default(false),
   customerId: z.string().optional(),
   taxAmount: z.number().min(0).default(0),
-  currency: z.string().default('USD'),
+  currency: z.string().default('NZD'),
   paymentMethod: z.enum(['cash', 'card', 'bank_transfer', 'check', 'other']).optional(),
-  notes: z.string().optional().or(z.literal(''))
+  notes: z.string().optional().or(z.literal('')),
+  // NZ IRD GST exemption fields
+  gstTreatment: z.enum(['standard', 'zero_rated', 'exempt', 'partial', 'private_use']).default('standard'),
+  gstExemptionReason: z.enum(['none', 'motor_vehicle', 'financial_services', 'residential_rent', 'insurance_life', 'exported_services', 'entertainment_50', 'home_office', 'second_hand_goods', 'other_exempt']).default('none'),
+  gstClaimablePercentage: z.number().min(0).max(100).default(100),
+  privateUsePercentage: z.number().min(0).max(100).default(0),
 });
 
 export type ExpenseFormValues = z.infer<typeof expenseFormSchema>;
@@ -82,6 +110,7 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
   const [showTaxDetails, setShowTaxDetails] = useState(false);
   const [showBillingDetails, setShowBillingDetails] = useState(false);
+  const [showGstExemptionDetails, setShowGstExemptionDetails] = useState(false);
 
   const form = useForm<ExpenseFormValues>({
     resolver: zodResolver(expenseFormSchema),
@@ -97,7 +126,12 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       isBillable: false,
       customerId: 'no-customer',
       taxAmount: 0,
-      currency: 'USD',
+      currency: 'NZD',
+      // GST exemption defaults
+      gstTreatment: 'standard',
+      gstExemptionReason: 'none',
+      gstClaimablePercentage: 100,
+      privateUsePercentage: 0,
       paymentMethod: undefined,
       notes: ''
     }
@@ -121,7 +155,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: isBillable,
         customerId: initialValues.customerId || 'no-customer',
         taxAmount: initialValues.taxAmount || 0,
-        currency: initialValues.currency || 'USD',
+        currency: initialValues.currency || 'NZD',
+        gstTreatment: initialValues.gstTreatment || 'standard',
+        gstExemptionReason: initialValues.gstExemptionReason || 'none',
+        gstClaimablePercentage: initialValues.gstClaimablePercentage ?? 100,
+        privateUsePercentage: initialValues.privateUsePercentage ?? 0,
         paymentMethod: initialValues.paymentMethod || undefined,
         notes: initialValues.notes || ''
       });
@@ -143,7 +181,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: false,
         customerId: 'no-customer',
         taxAmount: 0,
-        currency: 'USD',
+        currency: 'NZD',
+        gstTreatment: 'standard',
+        gstExemptionReason: 'none',
+        gstClaimablePercentage: 100,
+        privateUsePercentage: 0,
         paymentMethod: undefined,
         notes: ''
       });
@@ -161,9 +203,6 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       ...values,
       receiptUrl: receiptUrl || values.receiptUrl || null
     };
-    console.log('Submitting expense with data:', formData);
-    console.log('Receipt URL from state:', receiptUrl);
-    console.log('Receipt URL from form:', values.receiptUrl);
     onSubmit(formData);
   };
 
@@ -181,7 +220,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
         isBillable: false,
         customerId: 'no-customer',
         taxAmount: 0,
-        currency: 'USD',
+        currency: 'NZD',
+        gstTreatment: 'standard',
+        gstExemptionReason: 'none',
+        gstClaimablePercentage: 100,
+        privateUsePercentage: 0,
         paymentMethod: undefined,
         notes: ''
       });
@@ -194,12 +237,10 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
   }, [open, form]);
 
   const handleReceiptChange = (url: string | null, file: File | null) => {
-    console.log('Receipt change in ExpenseFormDrawer:', { url, file });
     setReceiptUrl(url);
     setReceiptFile(file);
     // Update the form field as well
     form.setValue('receiptUrl', url || '');
-    console.log('Form receiptUrl updated to:', url || '');
   };
 
   const handleScanComplete = (scanResult: ReceiptScanResult) => {
@@ -313,9 +354,9 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                           <DollarSign className="h-3 w-3" />
                           Amount *
                         </FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
                             <Input 
                               type="number" 
                               step="0.01" 
@@ -324,8 +365,8 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                               placeholder="0.00"
                               className="h-11 pl-10"
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -560,9 +601,9 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="text-sm font-medium">Tax Amount (GST/VAT)</FormLabel>
-                        <FormControl>
-                          <div className="relative">
-                            <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <div className="relative">
+                          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                          <FormControl>
                             <Input 
                               type="number" 
                               step="0.01" 
@@ -571,12 +612,181 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                               placeholder="0.00"
                               className="h-11 pl-10"
                             />
-                          </div>
-                        </FormControl>
+                          </FormControl>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+                </div>
+              </div>
+
+              {/* NZ IRD GST Exemption Section - Collapsible */}
+              <div className="space-y-4">
+                <button
+                  type="button"
+                  onClick={() => setShowGstExemptionDetails(!showGstExemptionDetails)}
+                  className="flex items-center justify-between w-full p-3 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors border border-blue-200"
+                >
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-4 w-4 text-blue-600" />
+                    <span className="text-sm font-medium text-blue-700">🇳🇿 NZ IRD GST Treatment</span>
+                    <span className="text-xs text-blue-500">(Vehicle, Entertainment, Exempt)</span>
+                  </div>
+                  {showGstExemptionDetails ? (
+                    <ChevronUp className="h-4 w-4 text-blue-500" />
+                  ) : (
+                    <ChevronDown className="h-4 w-4 text-blue-500" />
+                  )}
+                </button>
+                
+                <div className={cn(
+                  "space-y-4 overflow-hidden transition-all duration-300 ease-in-out p-3 bg-blue-50/50 rounded-lg border border-blue-100",
+                  showGstExemptionDetails ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0 p-0 border-0"
+                )}>
+                  {/* GST Treatment Type */}
+                  <FormField
+                    control={form.control}
+                    name="gstTreatment"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium">GST Treatment Type</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select GST treatment" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {gstTreatmentOptions.map((option) => (
+                              <SelectItem key={option.value} value={option.value}>
+                                {option.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* GST Exemption Reason */}
+                  <FormField
+                    control={form.control}
+                    name="gstExemptionReason"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel className="text-sm font-medium">Exemption/Adjustment Reason</FormLabel>
+                        <Select 
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            // Auto-update claimable percentage based on reason
+                            const reason = gstExemptionReasons.find(r => r.value === value);
+                            if (reason) {
+                              form.setValue('gstClaimablePercentage', reason.claimablePercent);
+                            }
+                          }} 
+                          value={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger className="h-11">
+                              <SelectValue placeholder="Select reason" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {gstExemptionReasons.map((reason) => (
+                              <SelectItem key={reason.value} value={reason.value}>
+                                {reason.label}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {/* Percentage Controls - Only show for partial/private_use treatments */}
+                  {(form.watch('gstTreatment') === 'partial' || form.watch('gstTreatment') === 'private_use') && (
+                    <div className="grid grid-cols-2 gap-4">
+                      {/* Claimable Percentage */}
+                      <FormField
+                        control={form.control}
+                        name="gstClaimablePercentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">
+                              GST Claimable %
+                              <span className="ml-2 text-green-600 font-bold">{field.value}%</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0"
+                                max="100"
+                                {...field} 
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                className="h-11"
+                              />
+                            </FormControl>
+                            {form.watch('gstExemptionReason') === 'entertainment_50' && (
+                              <p className="text-xs text-amber-600">⚠️ NZ IRD: Entertainment capped at 50%</p>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+
+                      {/* Private Use Percentage */}
+                      <FormField
+                        control={form.control}
+                        name="privateUsePercentage"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel className="text-sm font-medium">
+                              Private Use %
+                              <span className="ml-2 text-red-600 font-bold">{field.value}%</span>
+                            </FormLabel>
+                            <FormControl>
+                              <Input 
+                                type="number" 
+                                min="0"
+                                max="100"
+                                {...field} 
+                                onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                                className="h-11"
+                              />
+                            </FormControl>
+                            {form.watch('gstExemptionReason') === 'motor_vehicle' && (
+                              <p className="text-xs text-blue-600">🚗 Track logbook for vehicle private use</p>
+                            )}
+                            {form.watch('gstExemptionReason') === 'home_office' && (
+                              <p className="text-xs text-blue-600">🏠 Calculate based on floor area %</p>
+                            )}
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+
+                  {/* Effective Claim Summary */}
+                  <div className="p-3 bg-white rounded-lg border">
+                    <div className="text-sm text-center">
+                      <span className="text-muted-foreground">Effective GST Claim: </span>
+                      <span className="font-bold text-green-600 text-lg">
+                        {(() => {
+                          const claimable = form.watch('gstClaimablePercentage') ?? 100;
+                          const privateUse = form.watch('privateUsePercentage') ?? 0;
+                          const businessUse = 100 - privateUse;
+                          return Math.round((claimable / 100) * (businessUse / 100) * 100);
+                        })()}%
+                      </span>
+                      <span className="text-muted-foreground ml-2">
+                        ({form.watch('gstClaimablePercentage') ?? 100}% × {100 - (form.watch('privateUsePercentage') ?? 0)}% business use)
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 

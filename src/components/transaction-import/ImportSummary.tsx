@@ -8,10 +8,8 @@ import {
   AlertCircle, 
   RotateCcw,
   Eye,
-  Download,
   TrendingUp,
   TrendingDown,
-  Calendar,
   CreditCard,
   BarChart3,
   FileText
@@ -45,15 +43,15 @@ export function ImportSummary({
 
   const renderSummaryCards = () => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-      <Card className="border-green-200 bg-green-50">
+      <Card className="bg-success/10 shadow-none">
         <CardContent className="pt-6">
           <div className="flex items-center">
-            <CheckCircle className="h-8 w-8 text-green-600" />
+            <CheckCircle className="h-8 w-8 text-success" aria-hidden="true" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-green-600">
+              <p className="text-2xl font-bold text-success tabular-nums">
                 {importResult.imported}
               </p>
-              <p className="text-green-700 text-sm font-medium">
+              <p className="text-foreground text-sm font-medium">
                 Successfully Imported
               </p>
             </div>
@@ -61,15 +59,15 @@ export function ImportSummary({
         </CardContent>
       </Card>
 
-      <Card className="border-orange-200 bg-orange-50">
+      <Card className="bg-warning/10 shadow-none">
         <CardContent className="pt-6">
           <div className="flex items-center">
-            <AlertCircle className="h-8 w-8 text-orange-600" />
+            <AlertCircle className="h-8 w-8 text-warning" aria-hidden="true" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-orange-600">
+              <p className="text-2xl font-bold text-warning tabular-nums">
                 {importResult.skipped}
               </p>
-              <p className="text-orange-700 text-sm font-medium">
+              <p className="text-foreground text-sm font-medium">
                 Skipped (Duplicates)
               </p>
             </div>
@@ -77,15 +75,15 @@ export function ImportSummary({
         </CardContent>
       </Card>
 
-      <Card className="border-red-200 bg-red-50">
+      <Card className="bg-destructive/10 shadow-none">
         <CardContent className="pt-6">
           <div className="flex items-center">
-            <AlertCircle className="h-8 w-8 text-red-600" />
+            <AlertCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-red-600">
+              <p className="text-2xl font-bold text-destructive tabular-nums">
                 {importResult.errors}
               </p>
-              <p className="text-red-700 text-sm font-medium">
+              <p className="text-foreground text-sm font-medium">
                 Failed to Import
               </p>
             </div>
@@ -93,15 +91,15 @@ export function ImportSummary({
         </CardContent>
       </Card>
 
-      <Card className="border-blue-200 bg-blue-50">
+      <Card className="bg-info/10 shadow-none">
         <CardContent className="pt-6">
           <div className="flex items-center">
-            <BarChart3 className="h-8 w-8 text-blue-600" />
+            <BarChart3 className="h-8 w-8 text-info" aria-hidden="true" />
             <div className="ml-4">
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-info tabular-nums">
                 {getSuccessRate()}%
               </p>
-              <p className="text-blue-700 text-sm font-medium">
+              <p className="text-foreground text-sm font-medium">
                 Success Rate
               </p>
             </div>
@@ -132,32 +130,32 @@ export function ImportSummary({
             <div className="space-y-4">
               <h4 className="font-medium">Transaction Amounts</h4>
               <div className="space-y-3">
-                <div className="flex items-center justify-between p-3 bg-green-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-xl bg-success/10 p-3">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-green-600" />
-                    <span className="text-green-700 font-medium">Total Credits</span>
+                    <TrendingUp className="w-4 h-4 text-success" aria-hidden="true" />
+                    <span className="font-medium">Total Credits</span>
                   </div>
-                  <span className="text-green-600 font-semibold">
+                  <span className="font-semibold text-success tabular-nums">
                     {formatAmount(totalCredits)}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
+                <div className="flex items-center justify-between rounded-xl bg-destructive/10 p-3">
                   <div className="flex items-center gap-2">
-                    <TrendingDown className="w-4 h-4 text-red-600" />
-                    <span className="text-red-700 font-medium">Total Debits</span>
+                    <TrendingDown className="w-4 h-4 text-destructive" aria-hidden="true" />
+                    <span className="font-medium">Total Debits</span>
                   </div>
-                  <span className="text-red-600 font-semibold">
+                  <span className="font-semibold text-destructive tabular-nums">
                     {formatAmount(totalDebits)}
                   </span>
                 </div>
                 
-                <div className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border-2">
+                <div className="flex items-center justify-between rounded-xl bg-muted p-3">
                   <div className="flex items-center gap-2">
-                    <BarChart3 className="w-4 h-4 text-gray-600" />
-                    <span className="text-gray-700 font-medium">Net Amount</span>
+                    <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
+                    <span className="font-medium">Net Amount</span>
                   </div>
-                  <span className={`font-semibold ${netAmount >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                  <span className={`font-semibold tabular-nums ${netAmount >= 0 ? 'text-success' : 'text-destructive'}`}>
                     {formatAmount(netAmount)}
                   </span>
                 </div>
@@ -194,7 +192,7 @@ export function ImportSummary({
       <CardContent>
         <div className="space-y-4">
           <div className="flex items-start gap-3">
-            <Eye className="w-5 h-5 text-blue-600 mt-0.5" />
+            <Eye className="w-5 h-5 text-info mt-0.5" aria-hidden="true" />
             <div>
               <h4 className="font-medium">Review Transactions</h4>
               <p className="text-sm text-muted-foreground">
@@ -204,7 +202,7 @@ export function ImportSummary({
           </div>
           
           <div className="flex items-start gap-3">
-            <FileText className="w-5 h-5 text-green-600 mt-0.5" />
+            <FileText className="w-5 h-5 text-success mt-0.5" aria-hidden="true" />
             <div>
               <h4 className="font-medium">Categorize & Tag</h4>
               <p className="text-sm text-muted-foreground">
@@ -214,7 +212,7 @@ export function ImportSummary({
           </div>
           
           <div className="flex items-start gap-3">
-            <BarChart3 className="w-5 h-5 text-purple-600 mt-0.5" />
+            <BarChart3 className="w-5 h-5 text-primary mt-0.5" aria-hidden="true" />
             <div>
               <h4 className="font-medium">Generate Reports</h4>
               <p className="text-sm text-muted-foreground">
@@ -224,7 +222,7 @@ export function ImportSummary({
           </div>
           
           <div className="flex items-start gap-3">
-            <CreditCard className="w-5 h-5 text-orange-600 mt-0.5" />
+            <CreditCard className="w-5 h-5 text-warning mt-0.5" aria-hidden="true" />
             <div>
               <h4 className="font-medium">Reconcile Account</h4>
               <p className="text-sm text-muted-foreground">
@@ -240,14 +238,14 @@ export function ImportSummary({
   return (
     <div className="space-y-8">
       {/* Success Header */}
-      <Card className="border-green-200 bg-gradient-to-r from-green-50 to-emerald-50">
+      <Card className="bg-success/10 shadow-none">
         <CardContent className="pt-6">
           <div className="text-center">
-            <CheckCircle className="w-16 h-16 text-green-600 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-green-800 mb-2">
-              Import Completed Successfully!
+            <CheckCircle className="w-14 h-14 text-success mx-auto mb-4" aria-hidden="true" />
+            <h2 className="text-2xl font-bold text-foreground mb-2">
+              Import complete
             </h2>
-            <p className="text-green-700">
+            <p className="text-muted-foreground">
               {importResult.imported} transactions have been imported into{' '}
               <strong>{bankAccount.accountName}</strong>
             </p>
@@ -286,7 +284,7 @@ export function ImportSummary({
       {renderNextSteps()}
 
       {/* Action Buttons */}
-      <div className="flex justify-center gap-4">
+      <div className="flex flex-col-reverse justify-center gap-3 sm:flex-row">
         <Button 
           onClick={onViewTransactions}
           size="lg"

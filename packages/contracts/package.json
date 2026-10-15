@@ -1,0 +1,21 @@
+{
+  "name": "@ledgercraft/contracts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^3.24.3"
+  },
+  "devDependencies": {
+    "typescript": "^5.5.3",
+    "vitest": "^3.2.4"
+  }
+}

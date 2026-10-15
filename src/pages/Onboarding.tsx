@@ -1,193 +1,111 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
-import { OnboardingStep, OnboardingData, DEFAULT_BUSINESS_THEME } from '../types';
+import { OnboardingData, DEFAULT_BUSINESS_THEME } from '../types';
 import { useAuth } from '../context/StableAuthContext';
 import { businessProfileService } from '../services/supabaseService';
-import { supabase } from '@/integrations/supabase/client';
 import OnboardingLayout from '../components/onboarding/OnboardingLayout';
 import WelcomeStep from '../components/onboarding/WelcomeStep';
-import InvoiceSetupStep from '../components/onboarding/InvoiceSetupStep';
-import BrandingStep from '../components/onboarding/BrandingStep';
-
-const stepTitles: Record<OnboardingStep, { title: string; subtitle?: string }> = {
-  welcome: {
-    title: 'Tell us about your business',
-    subtitle: 'We need some basic information to get you started'
-  },
-  'invoice-setup': {
-    title: 'Configure your invoices',
-    subtitle: 'Set up professional invoice defaults'
-  },
-  branding: {
-    title: 'Make it yours',
-    subtitle: 'Add your logo and choose your brand colors'
-  },
-  complete: {
-    title: 'All set!',
-    subtitle: 'Welcome to EasyBizInvoice'
-  }
-};
+import {
+  DEFAULT_INVOICE_NUMBER_FORMAT,
+  DEFAULT_ONBOARDING_COUNTRY,
+  getDefaultTaxRate,
+  stubBusinessName,
+} from '@/utils/countryTaxDefaults';
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, refreshUser } = useAuth();
+  const { user, markOnboardingComplete } = useAuth();
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState<OnboardingStep>('welcome');
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     businessName: '',
     businessEmail: user?.email || '',
-    country: 'New Zealand',
-    theme: DEFAULT_BUSINESS_THEME
+    country: DEFAULT_ONBOARDING_COUNTRY,
+    invoiceNumberFormat: DEFAULT_INVOICE_NUMBER_FORMAT,
+    defaultTaxRate: getDefaultTaxRate(DEFAULT_ONBOARDING_COUNTRY),
+    theme: DEFAULT_BUSINESS_THEME,
   });
 
   const updateData = (updates: Partial<OnboardingData>) => {
-    setOnboardingData(prev => ({ ...prev, ...updates }));
+    setOnboardingData((prev) => ({ ...prev, ...updates }));
   };
 
-  const uploadLogo = async (logoFile: File): Promise<string | null> => {
-    try {
-      const fileExt = logoFile.name.split('.').pop();
-      const fileName = `business-logo-${Date.now()}.${fileExt}`;
-      const filePath = `business-logos/${fileName}`;
-
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('business-assets')
-        .upload(filePath, logoFile);
-
-      if (uploadError) {
-        throw new Error(uploadError.message || "Failed to upload logo");
-      }
-
-      if (uploadData) {
-        const { data: publicUrlData } = supabase.storage
-          .from('business-assets')
-          .getPublicUrl(filePath);
-          
-        return publicUrlData.publicUrl;
-      }
-      
-      return null;
-    } catch (error) {
-      console.error('Error uploading logo:', error);
-      toast({
-        title: 'Logo Upload Failed',
-        description: 'Failed to upload logo. Please try again.',
-        variant: 'destructive'
-      });
-      return null;
-    }
-  };
-
-  const completeOnboarding = async () => {
+  const completeOnboarding = async (data: OnboardingData) => {
     if (!user?.id) {
       toast({
         title: 'Authentication Error',
         description: 'Please try logging in again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
       return;
     }
 
     setIsLoading(true);
     try {
-      // Upload logo if provided
-      let logoUrl: string | null = null;
-      if (onboardingData.logoFile) {
-        logoUrl = await uploadLogo(onboardingData.logoFile);
-      }
-
-      // Create business profile
-      const businessProfileData = {
-        name: onboardingData.businessName,
-        email: onboardingData.businessEmail,
-        country: onboardingData.country,
-        address: onboardingData.address || null,
-        city: onboardingData.city || null,
-        state: onboardingData.state || null,
-        zip: onboardingData.zip || null,
-        defaultTaxRate: onboardingData.defaultTaxRate || null,
-        invoiceNumberFormat: onboardingData.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
+      await businessProfileService.createOrUpdateBusinessProfile({
+        name: data.businessName,
+        email: data.businessEmail || user.email || '',
+        country: data.country,
+        address: data.address || null,
+        city: data.city || null,
+        state: data.state || null,
+        zip: data.zip || null,
+        defaultTaxRate: data.defaultTaxRate ?? getDefaultTaxRate(data.country) ?? null,
+        invoiceNumberFormat: data.invoiceNumberFormat || DEFAULT_INVOICE_NUMBER_FORMAT,
         invoiceNumberSequence: 1,
-        theme: onboardingData.theme || DEFAULT_BUSINESS_THEME,
-        logoUrl,
-        userId: user.id
-      };
-
-      await businessProfileService.createOrUpdateBusinessProfile(businessProfileData);
-      
-      // Refresh user data to update onboarding status
-      await refreshUser();
-      
-      toast({
-        title: 'Welcome to EasyBizInvoice!',
-        description: 'Your business profile has been set up successfully.'
+        theme: data.theme || DEFAULT_BUSINESS_THEME,
+        logoUrl: null,
+        userId: user.id,
       });
-      
-      // Small delay to ensure state is updated before navigation
-      setTimeout(() => {
-        navigate('/');
-      }, 100);
+
+      markOnboardingComplete();
+
+      toast({
+        title: 'You are in',
+        description: 'Create your first invoice whenever you are ready.',
+      });
+
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Error completing onboarding:', error);
       toast({
         title: 'Setup Failed',
         description: 'Failed to complete setup. Please try again.',
-        variant: 'destructive'
+        variant: 'destructive',
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleNext = async () => {
-    if (currentStep === 'welcome') {
-      setCurrentStep('invoice-setup');
-    } else if (currentStep === 'invoice-setup') {
-      setCurrentStep('branding');
-    } else if (currentStep === 'branding') {
-      await completeOnboarding();
-    }
+  const handleSubmit = () => {
+    void completeOnboarding(onboardingData);
   };
 
-  const handleBack = () => {
-    if (currentStep === 'invoice-setup') {
-      setCurrentStep('welcome');
-    } else if (currentStep === 'branding') {
-      setCurrentStep('invoice-setup');
-    }
-  };
-
-  const renderStep = () => {
-    const stepProps = {
-      data: onboardingData,
-      onDataChange: updateData,
-      onNext: handleNext,
-      onBack: currentStep !== 'welcome' ? handleBack : undefined,
-      isLoading
-    };
-
-    switch (currentStep) {
-      case 'welcome':
-        return <WelcomeStep {...stepProps} />;
-      case 'invoice-setup':
-        return <InvoiceSetupStep {...stepProps} />;
-      case 'branding':
-        return <BrandingStep {...stepProps} />;
-      default:
-        return null;
-    }
+  const handleSkip = () => {
+    void completeOnboarding({
+      ...onboardingData,
+      businessName: stubBusinessName(user),
+      country: onboardingData.country || DEFAULT_ONBOARDING_COUNTRY,
+      defaultTaxRate:
+        onboardingData.defaultTaxRate ?? getDefaultTaxRate(DEFAULT_ONBOARDING_COUNTRY),
+    });
   };
 
   return (
     <OnboardingLayout
-      currentStep={currentStep}
-      title={stepTitles[currentStep].title}
-      subtitle={stepTitles[currentStep].subtitle}
+      title="What is your business called?"
+      subtitle="We will set GST, invoice numbers, and a default theme. You can change them later."
     >
-      {renderStep()}
+      <WelcomeStep
+        data={onboardingData}
+        onDataChange={updateData}
+        onNext={handleSubmit}
+        onSkip={handleSkip}
+        isLoading={isLoading}
+      />
     </OnboardingLayout>
   );
 }

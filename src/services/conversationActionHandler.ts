@@ -1,16 +1,14 @@
 import {
   ConversationAction,
-  ConversationEntity,
   ConversationContext,
   ActionResult,
   Customer,
   Invoice,
   Expense,
-  Item,
   LineItem
 } from '../types';
-import { supabase } from '@/integrations/supabase/client';
 import { conversationService } from './conversationService';
+import { customerService, expenseService, invoiceService } from './supabaseService';
 
 export class ConversationActionHandler {
   async executeAction(
@@ -71,16 +69,10 @@ export class ConversationActionHandler {
 
       // If not found in recent, search database
       if (!customer) {
-        const { data, error } = await supabase
-          .from('customers')
-          .select('*')
-          .ilike('name', `%${customerName}%`)
-          .limit(1)
-          .single();
-
-        if (!error && data) {
-          customer = this.mapSupabaseCustomer(data);
-        }
+        const matches = (await customerService.getCustomers()).filter((row) =>
+          row.name.toLowerCase().includes(customerName.toLowerCase()),
+        );
+        customer = matches[0] ?? null;
       }
 
       if (!customer) {
@@ -166,81 +158,37 @@ export class ConversationActionHandler {
     const taxAmount = lineItems.reduce((sum, item) => sum + (item.total * (item.tax || 0) / 100), 0);
     const total = subtotal + taxAmount;
 
-    // 5. Create invoice
-    const { data: invoice, error } = await supabase
-      .from('invoices')
-      .insert({
-        invoice_number: invoiceNumber,
-        customer_id: customer.id,
-        date: new Date().toISOString().split('T')[0],
-        due_date: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 30 days
-        subtotal,
-        tax_amount: taxAmount,
-        total,
-        status: 'draft',
-        currency: context.userPreferences.currency,
-        template_name: context.userPreferences.defaultTemplate,
-        user_id: (await supabase.auth.getUser()).data.user?.id
-      })
-      .select()
-      .single();
-
-    if (error) {
+    // 5. Create invoice through the forked invoice service (Hono when the flag is on)
+    const today = new Date().toISOString().split('T')[0];
+    const dueDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+    let newInvoice: Invoice;
+    try {
+      newInvoice = await invoiceService.createInvoice(
+        {
+          invoiceNumber,
+          customerId: customer.id,
+          customer,
+          date: today,
+          dueDate,
+          items: lineItems as LineItem[],
+          subtotal,
+          taxAmount,
+          total,
+          status: 'draft',
+          notes: null,
+          terms: null,
+          currency: context.userPreferences.currency,
+          templateName: context.userPreferences.defaultTemplate,
+        },
+        lineItems,
+      );
+    } catch (error) {
       return {
         success: false,
-        error: `Failed to create invoice: ${error.message}`,
-        suggestions: ['Try again', 'Check customer details']
+        error: `Failed to create invoice: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        suggestions: ['Try again', 'Check customer details'],
       };
     }
-
-    // 6. Create line items
-    const lineItemsWithInvoiceId = lineItems.map(item => ({
-      ...item,
-      invoice_id: invoice.id
-    }));
-
-    const { error: lineItemsError } = await supabase
-      .from('line_items')
-      .insert(lineItemsWithInvoiceId);
-
-    if (lineItemsError) {
-      // Rollback invoice if line items failed
-      await supabase.from('invoices').delete().eq('id', invoice.id);
-      return {
-        success: false,
-        error: `Failed to create invoice items: ${lineItemsError.message}`,
-        suggestions: ['Try again', 'Simplify the items']
-      };
-    }
-
-    // 7. Update business profile sequence
-    if (businessProfile?.id) {
-      await supabase
-        .from('business_profiles')
-        .update({ invoice_number_sequence: sequence })
-        .eq('id', businessProfile.id);
-    }
-
-    // 8. Add invoice to conversation context
-    const newInvoice: Invoice = {
-      id: invoice.id,
-      invoiceNumber: invoice.invoice_number,
-      customerId: customer.id,
-      customer,
-      date: invoice.date,
-      dueDate: invoice.due_date,
-      items: lineItems.map((item, index) => ({
-        ...item,
-        id: `temp-${index}`,
-        invoiceId: invoice.id
-      })),
-      subtotal,
-      taxAmount,
-      total,
-      status: invoice.status,
-      currency: invoice.currency,
-      templateName: invoice.template_name
-    };
 
     await conversationService.addEntityToContext(conversationId, 'invoices', newInvoice);
 
@@ -248,12 +196,12 @@ export class ConversationActionHandler {
       success: true,
       data: {
         type: 'invoice',
-        invoiceNumber: invoice.invoice_number,
+        invoiceNumber: newInvoice.invoiceNumber,
         customerName: customer.name,
-        total,
-        currency: invoice.currency,
-        status: invoice.status,
-        dueDate: invoice.due_date
+        total: newInvoice.total,
+        currency: newInvoice.currency,
+        status: newInvoice.status,
+        dueDate: newInvoice.dueDate,
       },
       suggestions: [
         'Send this invoice via email',
@@ -285,22 +233,13 @@ export class ConversationActionHandler {
       (customer.phone && customer.phone.includes(query))
     );
 
-    // Search in database
-    const { data, error } = await supabase
-      .from('customers')
-      .select('*')
-      .or(`name.ilike.%${query}%,email.ilike.%${query}%,phone.ilike.%${query}%`)
-      .limit(10);
-
-    if (error) {
-      return {
-        success: false,
-        error: `Search failed: ${error.message}`,
-        suggestions: ['Try a different search term', 'Create a new customer']
-      };
-    }
-
-    const databaseMatches = (data || []).map(this.mapSupabaseCustomer);
+    const queryLower = query.toLowerCase();
+    const databaseMatches = (await customerService.getCustomers()).filter(
+      (customer) =>
+        customer.name.toLowerCase().includes(queryLower) ||
+        customer.email.toLowerCase().includes(queryLower) ||
+        (customer.phone && customer.phone.includes(query)),
+    ).slice(0, 10);
     
     // Combine and deduplicate
     const allMatches = [...recentMatches];
@@ -352,28 +291,28 @@ export class ConversationActionHandler {
       };
     }
 
-    const { data, error } = await supabase
-      .from('customers')
-      .insert({
+    let newCustomer: Customer;
+    try {
+      newCustomer = await customerService.createCustomer({
         name,
         email: email || '',
         phone,
-        address,
-        country: context.businessContext?.businessProfile?.country || 'US',
-        user_id: (await supabase.auth.getUser()).data.user?.id
-      })
-      .select()
-      .single();
-
-    if (error) {
+        address: address ?? null,
+        city: null,
+        state: null,
+        zip: null,
+        country: context.businessContext?.businessProfile?.country || 'NZ',
+        isVip: false,
+        tags: [],
+      });
+    } catch (error) {
       return {
         success: false,
-        error: `Failed to create customer: ${error.message}`,
+        error: `Failed to create customer: ${error instanceof Error ? error.message : 'Unknown error'}`,
         suggestions: ['Try again', 'Check if customer already exists']
       };
     }
 
-    const newCustomer = this.mapSupabaseCustomer(data);
     await conversationService.addEntityToContext(conversationId, 'customers', newCustomer);
 
     return {
@@ -417,30 +356,32 @@ export class ConversationActionHandler {
       };
     }
 
-    const { data, error } = await supabase
-      .from('expenses')
-      .insert({
+    let newExpense: Expense;
+    try {
+      newExpense = await expenseService.createExpense({
         description,
         amount: expenseAmount,
-        expense_date: new Date().toISOString().split('T')[0],
-        status: 'pending',
-        is_billable: false,
-        tax_amount: 0,
+        taxAmount: 0,
         currency: context.userPreferences.currency,
-        user_id: (await supabase.auth.getUser()).data.user?.id
-      })
-      .select()
-      .single();
-
-    if (error) {
+        expenseDate: new Date().toISOString().split('T')[0],
+        status: 'pending',
+        isBillable: false,
+        categoryId: null,
+        accountId: null,
+        customerId: null,
+        vendorName: null,
+        receiptUrl: null,
+        paymentMethod: null,
+        notes: null,
+      });
+    } catch (error) {
       return {
         success: false,
-        error: `Failed to create expense: ${error.message}`,
+        error: `Failed to create expense: ${error instanceof Error ? error.message : 'Unknown error'}`,
         suggestions: ['Try again', 'Simplify the description']
       };
     }
 
-    const newExpense = this.mapSupabaseExpense(data);
     await conversationService.addEntityToContext(conversationId, 'expenses', newExpense);
 
     return {
@@ -450,7 +391,7 @@ export class ConversationActionHandler {
         amount: expenseAmount,
         description,
         currency: context.userPreferences.currency,
-        date: data.expense_date
+        date: newExpense.expenseDate
       },
       suggestions: [
         'Upload receipt for this expense',
@@ -494,21 +435,14 @@ export class ConversationActionHandler {
 
     try {
       // Fetch financial data
-      const [invoicesResult, expensesResult] = await Promise.all([
-        supabase
-          .from('invoices')
-          .select('*')
-          .gte('date', startDate.toISOString().split('T')[0])
-          .lte('date', endDate.toISOString().split('T')[0]),
-        supabase
-          .from('expenses')
-          .select('*')
-          .gte('expense_date', startDate.toISOString().split('T')[0])
-          .lte('expense_date', endDate.toISOString().split('T')[0])
+      const start = startDate.toISOString().split('T')[0];
+      const end = endDate.toISOString().split('T')[0];
+      const [invoices, expenses] = await Promise.all([
+        invoiceService.getInvoices().then((rows) =>
+          rows.filter((row) => row.date >= start && row.date <= end),
+        ),
+        expenseService.getExpenses({ dateFrom: start, dateTo: end }),
       ]);
-
-      const invoices = invoicesResult.data || [];
-      const expenses = expensesResult.data || [];
 
       // Calculate metrics
       const totalRevenue = invoices
@@ -561,25 +495,17 @@ export class ConversationActionHandler {
   ): Promise<ActionResult> {
     const { query } = action.parameters;
 
-    const { data, error } = await supabase
-      .from('invoices')
-      .select('*, customers(name, email)')
-      .or(`invoice_number.ilike.%${query}%`)
-      .limit(10);
-
-    if (error) {
-      return {
-        success: false,
-        error: `Search failed: ${error.message}`
-      };
-    }
+    const queryLower = (query ?? '').toLowerCase();
+    const invoices = (await invoiceService.getInvoices())
+      .filter((invoice) => invoice.invoiceNumber.toLowerCase().includes(queryLower))
+      .slice(0, 10);
 
     return {
       success: true,
       data: {
         type: 'invoices',
-        invoices: data || [],
-        count: (data || []).length
+        invoices,
+        count: invoices.length
       }
     };
   }

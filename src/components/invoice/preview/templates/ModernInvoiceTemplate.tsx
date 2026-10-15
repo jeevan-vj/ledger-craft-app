@@ -1,5 +1,6 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
-import { formatCurrency } from '@/utils/invoiceUtils';
+import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { Invoice, LineItem, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { PDFCard, PDFCardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,6 +10,8 @@ interface ModernInvoiceTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const ModernInvoiceTemplate = ({
   companyName,
   companyAddress,
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName,
   clientAddress,
   taxRate,
@@ -135,8 +140,12 @@ const ModernInvoiceTemplate = ({
                         <div className="text-xs mt-1" style={{ color: theme.textLight }}>{(item as any).details}</div>
                       )}
                     </td>
-                    <td className="px-2 py-3 align-top" style={{ color: theme.text }}>{item.quantity}</td>
-                    <td className="px-2 py-3 align-top" style={{ color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}</td>
+                    <td className="px-2 py-3 align-top" style={{ color: theme.text }}>
+                      {item.quantity} {item.unit}
+                    </td>
+                    <td className="px-2 py-3 align-top" style={{ color: theme.text }}>
+                      {formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}
+                    </td>
                     <td className="px-4 py-3 text-right font-semibold align-top" style={{ color: theme.text }}>{formatCurrency(item.total || item.quantity * item.rate, invoice.currency)}</td>
                   </tr>
                 ))}
@@ -188,7 +197,7 @@ const ModernInvoiceTemplate = ({
             
             {invoice.discount && invoice.discount > 0 && (
               <div className="flex justify-between py-1 text-sm">
-                <span className="font-medium" style={{ color: theme.textLight }}>Discount</span>
+                <span className="font-medium" style={{ color: theme.textLight }}>{invoiceDiscountLabel(invoice)}</span>
                 <span className="font-semibold" style={{ color: theme.accent }}>-{formatCurrency(invoice.discount, invoice.currency)}</span>
               </div>
             )}
@@ -199,6 +208,7 @@ const ModernInvoiceTemplate = ({
           </div>
         </div>
 
+        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
         {/* Notes & Terms */}
         {(invoice.notes || invoice.terms) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-8 pb-8" style={{ backgroundColor: theme.surface }}>

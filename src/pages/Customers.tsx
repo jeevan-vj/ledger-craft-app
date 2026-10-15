@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Plus, Star, Pencil, Trash, Mail, Phone, MapPin, ChevronRight, Filter, X, Search, ChevronDown, RefreshCw, Loader2 } from 'lucide-react';
-import { useAppData } from '@/hooks/useAppData';
+import { Plus, Star, Pencil, Trash, Mail, Phone, MapPin, ChevronRight, Filter, X, Search, ChevronDown, RefreshCw, Loader2, Users } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ContentPanel } from '@/components/ui/ContentPanel';
+import { useCustomerDirectory } from '@/features/customers/hooks/useCustomerDirectory';
 import { Customer } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Spinner } from '@/components/ui/spinner';
@@ -85,7 +88,7 @@ const Customers = () => {
     createCustomer: createCustomerFromAppData,
     updateCustomer: updateCustomerFromAppData,
     deleteCustomer: deleteCustomerFromAppData
-  } = useAppData();
+  } = useCustomerDirectory();
   
   const [deleteCustomerId, setDeleteCustomerId] = useState<string | null>(null);
   const isMobile = useIsMobile();
@@ -367,28 +370,35 @@ const Customers = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 mt-5">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Customers</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={handleManualRefresh}
-              disabled={isRefreshing || loading}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
-              {isMobile ? "" : "Refresh"}
-            </Button>
-            <Button
-              className="flex items-center gap-2 bg-invoice-teal hover:bg-invoice-teal/90"
-              onClick={handleOpenCreateCustomerDrawer}
-            >
+      <PageHeader
+        title="Customers"
+        actions={
+          customers.length > 0 ? (
+            <Button onClick={handleOpenCreateCustomerDrawer}>
               <Plus size={18} />
               <span>New Customer</span>
             </Button>
-          </div>
-        </div>
+          ) : undefined
+        }
+      />
+
+      {customers.length === 0 ? (
+        <EmptyState
+          variant="panel"
+          title="Here's how to get started"
+          description="Add the people and businesses you invoice so you can bill them in a few taps."
+          actions={[
+            {
+              icon: Users,
+              title: 'Add a customer',
+              subtitle: 'Name, email, and billing details for your next invoice.',
+              onClick: handleOpenCreateCustomerDrawer,
+            },
+          ]}
+        />
+      ) : (
+      <>
+      <div className="flex flex-col gap-4">
 
         {/* Search and Quick Filters */}
         <div className="flex flex-col gap-3">
@@ -563,9 +573,7 @@ const Customers = () => {
       {isMobile ? (
         <div className="grid grid-cols-1 gap-4">
           {filteredAndSortedCustomers.length === 0 ? (
-            <Card className="flex items-center justify-center h-32 text-muted-foreground">
-              {customers.length === 0 ? 'No customers found. Create your first customer to get started.' : 'No customers match your filters.'}
-            </Card>
+            <p className="py-10 text-center text-muted-foreground">No customers match your filters.</p>
           ) : (
             filteredAndSortedCustomers.map((customer) => (
               <Card key={customer.id} className="overflow-hidden">
@@ -639,7 +647,7 @@ const Customers = () => {
           )}
         </div>
       ) : (
-        <Card className="overflow-hidden">
+        <ContentPanel padded={false} className="overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -655,8 +663,8 @@ const Customers = () => {
               <TableBody>
                 {filteredAndSortedCustomers.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={6} className="text-center text-muted-foreground">
-                      {customers.length === 0 ? 'No customers found. Create your first customer to get started.' : 'No customers match your filters.'}
+                    <TableCell colSpan={6} className="text-center text-muted-foreground py-10">
+                      No customers match your filters.
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -674,7 +682,9 @@ const Customers = () => {
                       <TableCell>{customer.email}</TableCell>
                       <TableCell>{customer.phone || 'N/A'}</TableCell>
                       <TableCell>
-                        {customer.city && customer.state ? `${customer.city}, ${customer.state}` : 'N/A'}
+                        {customer.city && customer.state
+                          ? `${customer.city}, ${customer.state}`
+                          : customer.city || customer.state || 'N/A'}
                       </TableCell>
                       <TableCell>
                         {customer.tags && customer.tags.length > 0 ? (
@@ -714,7 +724,9 @@ const Customers = () => {
               </TableBody>
             </Table>
           </div>
-        </Card>
+        </ContentPanel>
+      )}
+      </>
       )}
       
       <CustomerFormDrawer

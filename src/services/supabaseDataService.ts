@@ -7,12 +7,20 @@ import {
   Payment, 
   IRDReturnData 
 } from '@/types/payment';
+import { taxApi, taxApiEnabled } from '@/features/tax/api/taxApi';
+import { summarizeGst } from '@/features/tax/api/periodRows';
+import { accountsApi, accountsApiEnabled } from '@/features/payments/api/paymentsApi';
+import { journalsApi, journalsApiEnabled } from '@/features/journals/api/journalsApi';
+import { businessProfileApi, businessProfileApiEnabled } from '@/features/business-profile/api/businessProfileApi';
 
 export class SupabaseDataService {
   /**
    * Tax Configuration Management
    */
   async getTaxConfiguration(userId: string, countryCode: string = 'NZ'): Promise<TaxConfiguration | null> {
+    if (taxApiEnabled()) {
+      return taxApi.getConfiguration(countryCode);
+    }
     const { data, error } = await supabase
       .from('tax_configurations')
       .select('*')
@@ -46,6 +54,19 @@ export class SupabaseDataService {
   }
 
   async createTaxConfiguration(config: Omit<TaxConfiguration, 'id' | 'createdAt' | 'updatedAt'>): Promise<TaxConfiguration> {
+    if (taxApiEnabled()) {
+      return taxApi.upsertConfiguration({
+        countryCode: config.countryCode,
+        taxType: config.taxType,
+        taxRate: String(config.taxRate),
+        taxName: config.taxName,
+        appliesToServices: config.appliesToServices,
+        appliesToGoods: config.appliesToGoods,
+        effectiveFrom: config.effectiveFrom,
+        effectiveTo: config.effectiveTo ?? null,
+        isActive: config.isActive,
+      });
+    }
     const { data, error } = await supabase
       .from('tax_configurations')
       .insert({
@@ -92,6 +113,9 @@ export class SupabaseDataService {
     periodStart: string,
     periodEnd: string
   ): Promise<EnhancedInvoice[]> {
+    if (taxApiEnabled()) {
+      return taxApi.invoicesByPeriod(periodStart, periodEnd);
+    }
     const { data: invoicesData, error: invoicesError } = await supabase
       .from('invoices')
       .select(`
@@ -156,6 +180,9 @@ export class SupabaseDataService {
     periodStart: string,
     periodEnd: string
   ): Promise<any[]> {
+    if (taxApiEnabled()) {
+      return taxApi.expensesByPeriod(periodStart, periodEnd);
+    }
     const { data, error } = await supabase
       .from('expenses')
       .select('*')
@@ -211,6 +238,9 @@ export class SupabaseDataService {
     periodStart: string,
     periodEnd: string
   ): Promise<Payment[]> {
+    if (taxApiEnabled()) {
+      return taxApi.paymentsByPeriod(periodStart, periodEnd);
+    }
     const { data, error } = await supabase
       .from('payments')
       .select('*')
@@ -266,6 +296,21 @@ export class SupabaseDataService {
    * Tax Return Management
    */
   async createTaxReturn(taxReturn: Omit<TaxReturn, 'id' | 'createdAt' | 'updatedAt'>): Promise<TaxReturn> {
+    if (taxApiEnabled()) {
+      return taxApi.createReturn({
+        periodStart: taxReturn.periodStart,
+        periodEnd: taxReturn.periodEnd,
+        returnType: taxReturn.returnType,
+        totalSales: String(taxReturn.totalSales),
+        totalPurchases: String(taxReturn.totalPurchases),
+        gstOnSales: String(taxReturn.gstOnSales),
+        gstOnPurchases: String(taxReturn.gstOnPurchases),
+        netGst: String(taxReturn.netGst),
+        status: taxReturn.status,
+        irdReference: taxReturn.irdReference ?? null,
+        returnData: taxReturn.returnData ?? null,
+      });
+    }
     const { data, error } = await supabase
       .from('tax_returns')
       .insert({
@@ -316,6 +361,11 @@ export class SupabaseDataService {
     limit: number = 50,
     offset: number = 0
   ): Promise<TaxReturn[]> {
+    if (taxApiEnabled()) {
+      const rows = await taxApi.listReturns();
+      const filtered = returnType ? rows.filter((row) => row.returnType === returnType) : rows;
+      return filtered.slice(offset, offset + limit);
+    }
     let query = supabase
       .from('tax_returns')
       .select('*')
@@ -354,6 +404,9 @@ export class SupabaseDataService {
   }
 
   async getTaxReturnById(taxReturnId: string): Promise<TaxReturn | null> {
+    if (taxApiEnabled()) {
+      return taxApi.getReturn(taxReturnId);
+    }
     const { data, error } = await supabase
       .from('tax_returns')
       .select('*')
@@ -389,6 +442,24 @@ export class SupabaseDataService {
     taxReturnId: string,
     updates: Partial<TaxReturn>
   ): Promise<TaxReturn> {
+    if (taxApiEnabled()) {
+      if (updates.status && updates.status !== 'draft') {
+        throw new Error('Use fileTaxReturn to record a filed GST return');
+      }
+      return taxApi.updateReturn(taxReturnId, {
+        periodStart: updates.periodStart,
+        periodEnd: updates.periodEnd,
+        returnType: updates.returnType,
+        totalSales: updates.totalSales == null ? undefined : String(updates.totalSales),
+        totalPurchases: updates.totalPurchases == null ? undefined : String(updates.totalPurchases),
+        gstOnSales: updates.gstOnSales == null ? undefined : String(updates.gstOnSales),
+        gstOnPurchases: updates.gstOnPurchases == null ? undefined : String(updates.gstOnPurchases),
+        netGst: updates.netGst == null ? undefined : String(updates.netGst),
+        status: updates.status === 'draft' ? 'draft' : undefined,
+        irdReference: updates.irdReference ?? undefined,
+        returnData: updates.returnData,
+      });
+    }
     const updateData: TablesUpdate<'tax_returns'> = {};
     
     if (updates.status) updateData.status = updates.status;
@@ -432,7 +503,22 @@ export class SupabaseDataService {
     };
   }
 
+  async fileTaxReturn(taxReturnId: string, irdReference: string): Promise<TaxReturn> {
+    if (taxApiEnabled()) {
+      return taxApi.fileReturn(taxReturnId, { irdReference });
+    }
+    return this.updateTaxReturn(taxReturnId, {
+      status: 'submitted',
+      submittedAt: new Date().toISOString(),
+      irdReference,
+    });
+  }
+
   async deleteTaxReturn(taxReturnId: string): Promise<void> {
+    if (taxApiEnabled()) {
+      await taxApi.removeReturn(taxReturnId);
+      return;
+    }
     const { error } = await supabase
       .from('tax_returns')
       .delete()
@@ -447,6 +533,17 @@ export class SupabaseDataService {
    * Utility Functions
    */
   async getUserBusinessProfile(userId: string): Promise<Tables<'business_profiles'> | null> {
+    if (businessProfileApiEnabled()) {
+      const profile = await businessProfileApi.get();
+      if (!profile) return null;
+      return {
+        id: profile.id,
+        user_id: userId,
+        name: profile.name,
+        email: profile.email,
+        country: profile.country,
+      } as Tables<'business_profiles'>;
+    }
     const { data, error } = await supabase
       .from('business_profiles')
       .select('*')
@@ -462,8 +559,30 @@ export class SupabaseDataService {
   }
 
   async createDefaultTaxConfiguration(userId: string): Promise<TaxConfiguration> {
+    if (taxApiEnabled()) {
+      return taxApi.getConfiguration('NZ');
+    }
     const businessProfile = await this.getUserBusinessProfile(userId);
-    const countryCode = businessProfile?.country || 'NZ';
+    
+    // Map country name to ISO 2-letter code (VARCHAR(2) constraint in database)
+    const countryNameToCode: Record<string, string> = {
+      'New Zealand': 'NZ',
+      'Australia': 'AU',
+      'United States': 'US',
+      'United Kingdom': 'GB',
+      'Canada': 'CA',
+      'Germany': 'DE',
+      'France': 'FR',
+      'Japan': 'JP',
+      'Singapore': 'SG',
+      'India': 'IN',
+    };
+    
+    const rawCountry = businessProfile?.country || 'NZ';
+    // If already a 2-letter code, use it; otherwise map from name
+    const countryCode = rawCountry.length === 2 
+      ? rawCountry.toUpperCase() 
+      : (countryNameToCode[rawCountry] || 'NZ');
     
     // Default to NZ GST configuration
     const defaultConfig = {
@@ -493,6 +612,17 @@ export class SupabaseDataService {
     periodStart?: string,
     periodEnd?: string
   ): Promise<any[]> {
+    if (journalsApiEnabled()) {
+      const entries = await journalsApi.list();
+      return entries
+        .filter((entry) => {
+          if (statusFilter && statusFilter !== 'all' && entry.status !== statusFilter) return false;
+          if (periodStart && entry.entryDate < periodStart) return false;
+          if (periodEnd && entry.entryDate > periodEnd) return false;
+          return true;
+        })
+        .slice(offset, offset + limit);
+    }
     let query = supabase
       .from('journal_entries')
       .select(`
@@ -570,6 +700,17 @@ export class SupabaseDataService {
       notes?: string;
     }
   ): Promise<any> {
+    if (journalsApiEnabled()) {
+      return journalsApi.create({
+        description: entryData.description,
+        entryDate: entryData.entryDate,
+        debitAccountId: entryData.debitAccountId,
+        creditAccountId: entryData.creditAccountId,
+        amount: String(entryData.amount),
+        referenceNumber: entryData.referenceNumber,
+        notes: entryData.notes,
+      });
+    }
     try {
       // Generate entry number
       const { data: existingEntries } = await supabase
@@ -671,6 +812,10 @@ export class SupabaseDataService {
   }
 
   async updateJournalEntryStatus(entryId: string, status: 'draft' | 'posted' | 'reversed'): Promise<void> {
+    if (journalsApiEnabled()) {
+      await journalsApi.update(entryId, { status });
+      return;
+    }
     const { error } = await supabase
       .from('journal_entries')
       .update({ 
@@ -685,6 +830,10 @@ export class SupabaseDataService {
   }
 
   async deleteJournalEntry(entryId: string): Promise<void> {
+    if (journalsApiEnabled()) {
+      await journalsApi.remove(entryId);
+      return;
+    }
     // First delete the lines (due to foreign key constraint)
     const { error: linesError } = await supabase
       .from('journal_entry_lines')
@@ -722,6 +871,17 @@ export class SupabaseDataService {
   }
 
   async getAccounts(userId: string): Promise<any[]> {
+    if (accountsApiEnabled()) {
+      return (await accountsApi.list())
+        .filter((account) => account.isActive !== false)
+        .map((account) => ({
+          id: account.id,
+          name: account.name,
+          number: account.accountNumber ?? null,
+          type: account.accountClass || account.type,
+          description: null,
+        }));
+    }
     const { data, error } = await supabase
       .from('accounts')
       .select('*')
@@ -758,26 +918,10 @@ export class SupabaseDataService {
   }> {
     const [invoices, expenses] = await Promise.all([
       this.getInvoicesByPeriod(userId, periodStart, periodEnd),
-      this.getExpensesByPeriod(userId, periodStart, periodEnd)
+      this.getExpensesByPeriod(userId, periodStart, periodEnd),
     ]);
 
-    const totalSales = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
-    const gstOnSales = invoices.reduce((sum, invoice) => sum + invoice.tax_amount, 0);
-    
-    const totalPurchases = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-    const gstOnPurchases = expenses
-      .filter(expense => expense.is_claimable)
-      .reduce((sum, expense) => sum + expense.tax_amount, 0);
-
-    const netGstPosition = gstOnSales - gstOnPurchases;
-
-    return {
-      totalSales,
-      totalPurchases,
-      gstOnSales,
-      gstOnPurchases,
-      netGstPosition
-    };
+    return summarizeGst(invoices, expenses);
   }
 }
 

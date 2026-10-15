@@ -13,7 +13,7 @@ import { Badge } from '@/components/ui/badge';
 import { useToast } from '@/hooks/use-toast';
 import { Invoice } from '@/types';
 import { paymentReminderService } from '@/services/paymentReminderService';
-import { emailService } from '@/services/emailService';
+import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { businessProfileService } from '@/services/supabaseService';
 
 interface PaymentReminderModalProps {
@@ -77,46 +77,26 @@ const PaymentReminderModal: React.FC<PaymentReminderModalProps> = ({
 
     setIsSending(true);
     try {
-      // Get business profile
       const businessProfile = await businessProfileService.getBusinessProfile();
-
-      // Create reminder email
       const reminderEmail = await paymentReminderService.createPaymentReminderEmail({
         to: customerEmail,
         invoice,
         businessProfile,
         reminderType,
-        daysPastDue
+        daysPastDue,
       });
-
-      // Send email (we'll use the existing email service structure)
-      const response = await fetch(`https://viqckjmborlqaemavrzu.supabase.co/functions/v1/send-invoice-email`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZpcWNram1ib3JscWFlbWF2cnp1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ4NjIxMzIsImV4cCI6MjA2MDQzODEzMn0.ccFdzJbDBjGzYaGenOz8Gnsuyj-LtljPeXAjcFyPllA`,
-        },
-        body: JSON.stringify({
-          to: customerEmail,
-          subject: reminderEmail.subject,
-          html: reminderEmail.html,
-          isReminder: true,
-          reminderType,
-          daysPastDue
-        })
+      await invoicesApi.remind(invoice.id, {
+        to: [customerEmail],
+        subject: reminderEmail.subject,
+        html: reminderEmail.html,
+        reminderType,
+        daysPastDue,
       });
-
-      const result = await response.json();
-
-      if (result.success) {
-        toast({
-          title: 'Payment reminder sent!',
-          description: `${reminderInfo.title} has been sent to ${customerEmail}`,
-        });
-        onOpenChange(false);
-      } else {
-        throw new Error(result.error || 'Failed to send reminder');
-      }
+      toast({
+        title: 'Payment reminder sent!',
+        description: `${reminderInfo.title} has been sent to ${customerEmail}`,
+      });
+      onOpenChange(false);
     } catch (error) {
       console.error('Error sending payment reminder:', error);
       toast({

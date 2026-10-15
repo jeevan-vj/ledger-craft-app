@@ -1,0 +1,31 @@
+.item-mobile-label { display: none; }
+@media (max-width: 639px) {
+  .executive-invoice .executive-items,
+  .executive-invoice .executive-items tbody { display: block; width: 100%; }
+  .executive-invoice .executive-items thead { display: none; }
+  .executive-invoice .executive-items tr {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    padding: 12px;
+    gap: 8px;
+  }
+  .executive-invoice .executive-items td {
+    display: block;
+    min-width: 0;
+    padding: 0;
+    border-top: 0;
+    font-size: 14px;
+    overflow-wrap: anywhere;
+  }
+  .executive-invoice .executive-items td:first-child {
+    grid-column: 1 / -1;
+    font-weight: 500;
+    font-size: 15px;
+  }
+  .executive-invoice .item-mobile-label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 2px;
+    font-weight: 600;
+  }
+}

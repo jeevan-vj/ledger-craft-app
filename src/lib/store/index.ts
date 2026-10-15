@@ -26,7 +26,7 @@ export const useStore = create<RootStore>()(
       }))
     ),
     {
-      name: 'ledger-craft-store',
+      name: 'easybizinvoice-store',
     }
   )
 );

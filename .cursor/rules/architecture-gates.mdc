@@ -1,0 +1,19 @@
+---
+description: LedgerCraft target architecture gates for all reconstruction and new domain work.
+alwaysApply: true
+---
+
+# Architecture gates
+
+Follow `TARGET_ARCHITECTURE.md` and `.cursor/skills/ledgercraft-architecture/SKILL.md`.
+
+- Request path: Client → Hono → use case → repository → Drizzle → PostgreSQL
+- No new `supabase.from`, Storage SDK, Edge Function, or client OpenAI/Resend calls
+- DTOs from Zod contracts; never expose Drizzle types to clients
+- Ownership IDs from session/membership, never from the body
+- Do not replay existing Git SQL onto empty Postgres; reconstruct from app types
+- Do not mix UI redesign, TanStack Router, `apps/` moves, and data cutover
+- After each wave: run `.cursor/skills/ledgercraft-knowledge-sync/SKILL.md`
+- Launch specialists via `.cursor/skills/ledgercraft-agent-roster/SKILL.md`
+- Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`
+- Feature proof: `.cursor/skills/ledgercraft-verify/SKILL.md`

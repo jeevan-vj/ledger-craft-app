@@ -1,235 +1,1616 @@
-<testsuites id="" name="" tests="7" failures="0" skipped="0" errors="0" time="2.657705">
-<testsuite name="professional-error-messages.spec.ts" timestamp="2025-07-03T11:03:33.276Z" hostname="chromium" tests="7" failures="0" skipped="0" time="11.045" errors="0">
-<testcase name="Professional Error Messages › Form validation message enhancement validation" classname="professional-error-messages.spec.ts" time="1.43">
+<testsuites id="" name="" tests="18" failures="11" skipped="0" errors="0" time="133.69595">
+<testsuite name="signup-onboarding-flow.spec.ts" timestamp="2026-09-02T12:00:44.911Z" hostname="chromium" tests="2" failures="1" skipped="0" time="28.664" errors="0">
+<testcase name="Signup to onboarding › signup without confirm password reaches one-screen onboarding" classname="signup-onboarding-flow.spec.ts" time="9.251">
+</testcase>
+<testcase name="Signup to onboarding › completing onboarding shows dashboard create CTA" classname="signup-onboarding-flow.spec.ts" time="19.413">
+<failure message="signup-onboarding-flow.spec.ts:30:3 completing onboarding shows dashboard create CTA" type="FAILURE">
+<![CDATA[  [chromium] › signup-onboarding-flow.spec.ts:30:3 › Signup to onboarding › completing onboarding shows dashboard create CTA 
+
+    Error: Timed out 10000ms waiting for expect(locator).toBeVisible()
+
+    Locator: getByTestId('dashboard-empty-create-invoice').or(getByTestId('empty-create-invoice')).first()
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for getByTestId('dashboard-empty-create-invoice').or(getByTestId('empty-create-invoice')).first()
+
+
+      41 |     const dashboardCta = page.getByTestId('dashboard-empty-create-invoice');
+      42 |     const listCta = page.getByTestId('empty-create-invoice');
+    > 43 |     await expect(dashboardCta.or(listCta).first()).toBeVisible({ timeout: 10000 });
+         |                                                    ^
+      44 |   });
+      45 | });
+      46 |
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup-onboarding-flow.spec.ts:43:52
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing enhanced form validation messages
-📝 Professional validation message standards:
-1. Invoice Number:
-   Before: "Invoice number is required"
-   After: "Invoice number is required for IRD compliance and proper business records"
-   Improvement: Explains WHY the field is required for business context
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/test-failed-1.png]]
 
-2. Customer Selection:
-   Before: "Customer is required"
-   After: "Please select a customer to ensure accurate billing and maintain business relationships"
-   Improvement: Actionable language with business rationale
+[[ATTACHMENT|../test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/video.webm]]
 
-3. Invoice Date:
-   Before: "Invoice date is required"
-   After: "Invoice date is required for accurate tax period assignment and reporting"
-   Improvement: Links to tax compliance and reporting requirements
-
-4. Due Date:
-   Before: "Due date is required"
-   After: "Due date is required for cash flow management and payment terms clarity"
-   Improvement: Connects to business financial management
-
-5. Additional Charges:
-   Before: "Must be a positive amount"
-   After: "Additional charges must be a positive amount. Enter 0 if no additional charges apply"
-   Improvement: Provides specific guidance on what to do
-
-✅ Form validation message enhancements documented
+[[ATTACHMENT|../test-results/signup-onboarding-flow-Sig-cfdbc--shows-dashboard-create-CTA-chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › Toast notification message enhancement validation" classname="professional-error-messages.spec.ts" time="1.51">
+</testsuite>
+<testsuite name="signup.spec.ts" timestamp="2026-09-02T12:00:44.911Z" hostname="chromium" tests="16" failures="10" skipped="0" time="773.539" errors="0">
+<testcase name="Sign Up Flow › should display sign-up form with all required fields" classname="signup.spec.ts" time="2.105">
+</testcase>
+<testcase name="Sign Up Flow › should show password strength indicator on focus" classname="signup.spec.ts" time="11.272">
+<failure message="signup.spec.ts:84:3 should show password strength indicator on focus" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:84:3 › Sign Up Flow › should show password strength indicator on focus 
+
+    Error: Timed out 10000ms waiting for expect(locator).toBeVisible()
+
+    Locator: locator('.password-strength, [data-testid="password-strength"]')
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for locator('.password-strength, [data-testid="password-strength"]')
+
+
+      89 |     
+      90 |     // Password strength indicator should appear
+    > 91 |     await expect(page.locator('.password-strength, [data-testid="password-strength"]')).toBeVisible();
+         |                                                                                         ^
+      92 |   });
+      93 |
+      94 |   test('should toggle password visibility', async ({ page }) => {
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:91:89
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing enhanced toast notification messages
-🔔 Professional toast message standards:
-1. Preview Generation Failure:
-   Before: "Cannot generate preview" - "Please fix the errors in the form to proceed."
-   After: "Preview Unavailable" - "Please complete all required fields (customer, invoice number, and line items) before generating preview. This ensures accurate invoice presentation."
-   Improvement: Specific field guidance + professional rationale
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/test-failed-1.png]]
 
-2. PDF Generation Failure:
-   Before: "Error" - "Could not generate PDF. Please try again."
-   After: "PDF Generation Failed" - "Unable to create PDF document. Please check your browser's download settings and try again. If the issue persists, contact support."
-   Improvement: Specific troubleshooting steps + escalation path
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/video.webm]]
 
-3. Item Creation Issue:
-   Before: "Error" - "Failed to determine where to add the new item."
-   After: "Item Creation Issue" - "Unable to add new item to invoice. Please try adding the line item again or refresh the page if the problem persists."
-   Improvement: Clear recovery steps + alternative solutions
-
-4. Save Before Navigation:
-   Before: "Save Failed" - "Could not save invoice. Your changes may be lost."
-   After: "Save Failed" - "Unable to save invoice before navigation. Please check your connection and try saving manually, or your auto-saved draft will be preserved."
-   Improvement: Multiple recovery options + reassurance about auto-save
-
-✅ Toast notification message enhancements documented
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-a2a53-strength-indicator-on-focus-chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › Business validation logic enhancement" classname="professional-error-messages.spec.ts" time="1.674">
+<testcase name="Sign Up Flow › should toggle password visibility" classname="signup.spec.ts" time="2.041">
+</testcase>
+<testcase name="Sign Up Flow › should validate required fields" classname="signup.spec.ts" time="11.304">
+<failure message="signup.spec.ts:111:3 should validate required fields" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:111:3 › Sign Up Flow › should validate required fields ───────────────
+
+    Error: Timed out 10000ms waiting for expect(locator).toBeVisible()
+
+    Locator: getByText('Full name must be at least 2 characters')
+    Expected: visible
+    Received: <element(s) not found>
+    Call log:
+      - Expect "toBeVisible" with timeout 10000ms
+      - waiting for getByText('Full name must be at least 2 characters')
+
+
+      126 |     
+      127 |     // Should show validation errors after interaction
+    > 128 |     await expect(page.getByText('Full name must be at least 2 characters')).toBeVisible();
+          |                                                                             ^
+      129 |     await expect(page.getByText('Invalid email address')).toBeVisible();
+      130 |     await expect(page.getByText('Password must be at least 8 characters')).toBeVisible();
+      131 |     
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:128:77
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing enhanced business validation logic
-💼 Professional business validation enhancements:
-1. Line Item Completeness:
-   Logic: Requires description, positive quantity, and non-negative rate
-   Message: "Please add at least one line item with description, quantity, and rate. Professional invoices require detailed service or product information."
-   Business Context: Ensures invoices meet professional standards and provide clear billing details
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/test-failed-1.png]]
 
-2. Due Date Logic:
-   Logic: Due date must be after invoice date
-   Message: "Due date should be after the invoice date to allow reasonable payment time. Please adjust the due date to maintain professional payment terms."
-   Business Context: Maintains professional payment terms and cash flow management
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/video.webm]]
 
-3. Item Creation Recovery:
-   Logic: Handles inventory save failures gracefully
-   Message: "Unable to save new item to your inventory. Please check your connection and try again. The item information has been preserved on this invoice."
-   Business Context: Separates inventory management from invoice creation, preventing data loss
-
-✅ Business validation logic enhancements documented
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-required-fields-chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › Error message quality standards validation" classname="professional-error-messages.spec.ts" time="1.599">
+<testcase name="Sign Up Flow › Password Validation › should reject weak password: &quot;weak&quot;" classname="signup.spec.ts" time="120.136">
+<failure message="signup.spec.ts:138:7 should reject weak password: &quot;weak&quot;" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:138:7 › Sign Up Flow › Password Validation › should reject weak password: "weak" 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        98 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        27 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        9 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        5 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        47 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+      143 |         
+      144 |         // Try to submit
+    > 145 |         await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                     ^
+      146 |         
+      147 |         // Should show password validation error
+      148 |         await expect(page.getByText(error)).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:145:69
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing error message quality standards
-📊 Professional error message quality framework:
-Clarity:
-  Principle: Messages explain what went wrong in plain business language
-  Example: Before: "Error" → After: "PDF Generation Failed"
-  Example: Before: "Required" → After: "Required for IRD compliance"
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/test-failed-1.png]]
 
-Actionability:
-  Principle: Messages tell users exactly what to do next
-  Example: Before: "Please try again" → After: "Please check your browser's download settings and try again"
-  Example: Before: "Fix errors" → After: "Complete all required fields (customer, invoice number, and line items)"
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/video.webm]]
 
-Context:
-  Principle: Messages explain the business reason behind requirements
-  Example: Before: "Invoice date is required" → After: "Required for accurate tax period assignment"
-  Example: Before: "Customer is required" → After: "To ensure accurate billing and maintain business relationships"
-
-Reassurance:
-  Principle: Messages provide confidence in data protection and recovery
-  Example: Auto-save protection mentioned when save fails
-  Example: Data preservation confirmed when operations fail
-
-Professional Tone:
-  Principle: Language matches business software expectations
-  Example: Professional terminology: "IRD compliance", "cash flow management"
-  Example: Business context: "professional payment terms", "accurate billing"
-
-✅ Error message quality standards validated
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-9cf01--reject-weak-password-weak--chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › User experience impact assessment" classname="professional-error-messages.spec.ts" time="1.448">
+<testcase name="Sign Up Flow › Password Validation › should reject weak password: &quot;alllowercase123&quot;" classname="signup.spec.ts" time="120.141">
+<failure message="signup.spec.ts:138:7 should reject weak password: &quot;alllowercase123&quot;" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:138:7 › Sign Up Flow › Password Validation › should reject weak password: "alllowercase123" 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        95 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        26 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        8 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        15 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        5 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        51 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+      143 |         
+      144 |         // Try to submit
+    > 145 |         await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                     ^
+      146 |         
+      147 |         // Should show password validation error
+      148 |         await expect(page.getByText(error)).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:145:69
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing user experience impact of enhanced error messages
-👤 User experience impact analysis:
-1. Reduced User Confusion:
-   Before: Generic error messages leave users guessing
-   After: Specific, contextual messages guide users to resolution
-   Measurable Impact: Reduced support tickets and user frustration
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/test-failed-1.png]]
 
-2. Increased Professional Confidence:
-   Before: Technical error messages break professional workflow
-   After: Business-focused messages maintain professional context
-   Measurable Impact: Users trust the system for professional use
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/video.webm]]
 
-3. Faster Error Resolution:
-   Before: Users must guess what fields need attention
-   After: Clear instructions enable immediate corrective action
-   Measurable Impact: Reduced time to complete invoice creation
-
-4. Better Business Understanding:
-   Before: Requirements presented without business context
-   After: Business rationale helps users understand importance
-   Measurable Impact: Improved compliance with business practices
-
-5. Enhanced Data Protection Confidence:
-   Before: Errors create fear of data loss
-   After: Clear communication about auto-save and data preservation
-   Measurable Impact: Users feel secure during error recovery
-
-✅ User experience impact assessment completed
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-4510d-k-password-alllowercase123--chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › Professional error messages compliance score" classname="professional-error-messages.spec.ts" time="1.615">
+<testcase name="Sign Up Flow › Password Validation › should reject weak password: &quot;ALLUPPERCASE123&quot;" classname="signup.spec.ts" time="120.124">
+<failure message="signup.spec.ts:138:7 should reject weak password: &quot;ALLUPPERCASE123&quot;" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:138:7 › Sign Up Flow › Password Validation › should reject weak password: "ALLUPPERCASE123" 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        95 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        27 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        9 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        5 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        51 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+      143 |         
+      144 |         // Try to submit
+    > 145 |         await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                     ^
+      146 |         
+      147 |         // Should show password validation error
+      148 |         await expect(page.getByText(error)).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:145:69
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Testing professional error messages compliance score
-📊 Professional error message compliance assessment:
-Message Clarity:
-  Score: 92/100
-  Implementation: Clear, specific error titles and descriptions
-  Rationale: Users understand exactly what went wrong
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/test-failed-1.png]]
 
-Business Context:
-  Score: 95/100
-  Implementation: IRD compliance, tax periods, cash flow mentioned
-  Rationale: Messages connect to real business needs
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/video.webm]]
 
-Actionable Guidance:
-  Score: 90/100
-  Implementation: Specific steps provided for error resolution
-  Rationale: Users know exactly what to do next
-
-Professional Tone:
-  Score: 93/100
-  Implementation: Business terminology and professional language
-  Rationale: Matches enterprise software expectations
-
-Error Recovery:
-  Score: 88/100
-  Implementation: Multiple recovery options and data protection assurance
-  Rationale: Users have clear path forward from any error state
-
-User Confidence:
-  Score: 89/100
-  Implementation: Auto-save reminders and data preservation messages
-  Rationale: Users trust the system to protect their work
-
-==================================================
-OVERALL ERROR MESSAGE QUALITY SCORE: 91%
-✅ EXCELLENT - Professional enterprise standard achieved
-==================================================
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-b4cee-k-password-ALLUPPERCASE123--chromium/error-context.md]]
 ]]>
 </system-out>
 </testcase>
-<testcase name="Professional Error Messages › Error message enhancement summary" classname="professional-error-messages.spec.ts" time="1.769">
+<testcase name="Sign Up Flow › Password Validation › should reject weak password: &quot;NoNumbers&quot;" classname="signup.spec.ts" time="120.139">
+<failure message="signup.spec.ts:138:7 should reject weak password: &quot;NoNumbers&quot;" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:138:7 › Sign Up Flow › Password Validation › should reject weak password: "NoNumbers" 
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        83 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        27 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        9 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        5 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        65 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+
+
+      143 |         
+      144 |         // Try to submit
+    > 145 |         await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                     ^
+      146 |         
+      147 |         // Should show password validation error
+      148 |         await expect(page.getByText(error)).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:145:69
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/error-context.md
+]]>
+</failure>
 <system-out>
-<![CDATA[🧪 Professional error message enhancement summary
-============================================================
-PROFESSIONAL ERROR MESSAGE ENHANCEMENT SUMMARY
-============================================================
-ENHANCEMENT BREAKDOWN:
-Form Validation:
-  Enhancements: 5 messages improved
-  Impact: Users understand business requirements behind each field
-  Examples: IRD compliance, cash flow management, business relationships
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/test-failed-1.png]]
 
-Toast Notifications:
-  Enhancements: 4 messages improved
-  Impact: Clear recovery paths and troubleshooting guidance
-  Examples: Specific field requirements, browser settings, auto-save assurance
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/video.webm]]
 
-Business Logic:
-  Enhancements: 3 messages improved
-  Impact: Professional business validation with contextual feedback
-  Examples: Line item completeness, professional payment terms
-
-Error Recovery:
-  Enhancements: 6 messages improved
-  Impact: Multiple recovery options and data protection confidence
-  Examples: Auto-save preservation, manual save options, support escalation
-
-============================================================
-PROFESSIONAL BENEFITS:
-✅ Users understand WHY fields are required
-✅ Clear business context for all validation rules
-✅ Actionable guidance for error resolution
-✅ Professional tone matching business software
-✅ Data protection confidence through clear communication
-✅ Reduced support burden through better self-service
-============================================================
-🎯 PHASE 2.3 COMPLETED: Error messages enhanced to 91% professional standard
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-Passwo-3043b-ct-weak-password-NoNumbers--chromium/error-context.md]]
 ]]>
 </system-out>
+</testcase>
+<testcase name="Sign Up Flow › should validate email format" classname="signup.spec.ts" time="120.15">
+<failure message="signup.spec.ts:153:3 should validate email format" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:153:3 › Sign Up Flow › should validate email format ──────────────────
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        - waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 100ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      76 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is not enabled
+      - retrying click action
+        - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 100ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      26 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is not enabled
+      2 × retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      2 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      - retrying click action
+        - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      7 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      - retrying click action
+        - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      14 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is not enabled
+      2 × retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      5 × retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      - retrying click action
+        - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      - retrying click action
+        - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      - retrying click action
+        - waiting 100ms
+        - waiting for element to be visible, enabled and stable
+        - element is not enabled
+      - retrying click action
+        - waiting 100ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not stable
+        - retrying click action
+        - waiting 20ms
+        - waiting for element to be visible, enabled and stable
+        - element is not stable
+      2 × retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+      69 × retrying click action
+           - waiting 500ms
+           - waiting for element to be visible, enabled and stable
+           - element is not enabled
+      - retrying click action
+        - waiting 500ms
+
+
+      159 |     
+      160 |     // Try to submit
+    > 161 |     await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                 ^
+      162 |     
+      163 |     // Should show email validation error
+      164 |     await expect(page.getByText('Invalid email address')).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:161:65
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-validate-email-format-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Sign Up Flow › should require terms agreement" classname="signup.spec.ts" time="120.116">
+<failure message="signup.spec.ts:167:3 should require terms agreement" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:167:3 › Sign Up Flow › should require terms agreement ────────────────
+
+    Test timeout of 120000ms exceeded.
+
+    Error: locator.click: Test timeout of 120000ms exceeded.
+    Call log:
+      - waiting for getByRole('button', { name: /create account/i })
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        79 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      - element was detached from the DOM, retrying
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        27 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        - element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        9 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      2 × element was detached from the DOM, retrying
+          - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+        - attempting click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 20ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+          - waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+        5 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 500ms
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        - waiting for" http://localhost:8080/signup" navigation to finish...
+        - navigated to "http://localhost:8080/signup"
+        - waiting for element to be visible, enabled and stable
+      - element was detached from the DOM, retrying
+        - locator resolved to <button disabled type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidd…>…</button>
+      - attempting click action
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+        - waiting 20ms
+        2 × waiting for element to be visible, enabled and stable
+          - element is not enabled
+        - retrying click action
+          - waiting 100ms
+        70 × waiting for element to be visible, enabled and stable
+           - element is not enabled
+         - retrying click action
+           - waiting 500ms
+        - waiting for element to be visible, enabled and stable
+
+
+      172 |     
+      173 |     // Try to submit without checking terms
+    > 174 |     await page.getByRole('button', { name: /create account/i }).click();
+          |                                                                 ^
+      175 |     
+      176 |     // Should show terms validation error
+      177 |     await expect(page.getByText('You must agree to the terms and conditions')).toBeVisible();
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:174:65
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-require-terms-agreement-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Sign Up Flow › should navigate to login page" classname="signup.spec.ts" time="0.692">
+</testcase>
+<testcase name="Sign Up Flow › should show loading state during submission" classname="signup.spec.ts" time="11.451">
+<failure message="signup.spec.ts:189:3 should show loading state during submission" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:189:3 › Sign Up Flow › should show loading state during submission ───
+
+    Error: Timed out 10000ms waiting for expect(locator).toBeDisabled()
+
+    Locator: getByRole('button', { name: /create account/i })
+    Expected: disabled
+    Received: enabled
+    Call log:
+      - Expect "toBeDisabled" with timeout 10000ms
+      - waiting for getByRole('button', { name: /create account/i })
+        9 × locator resolved to <button type="submit" data-component-line="204" data-lov-name="ModernButton" data-component-content="%7B%7D" data-component-name="ModernButton" data-component-file="ModernSignup.tsx" data-lov-id="src/pages/ModernSignup.tsx:204:8" data-component-path="src/pages/ModernSignup.tsx" class="inline-flex items-center justify-center font-medium transition-all duration-300 ease-out focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed relative overflow-hidden group …>…</button>
+          - unexpected value "enabled"
+
+
+      206 |     
+      207 |     // Should show loading state
+    > 208 |     await expect(submitButton).toBeDisabled();
+          |                                ^
+      209 |     await expect(page.getByText(/creating account/i)).toBeVisible();
+      210 |   });
+      211 |
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:208:32
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-c4d8d-ing-state-during-submission-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Sign Up Flow › should handle successful signup" classname="signup.spec.ts" time="11.433">
+<failure message="signup.spec.ts:212:3 should handle successful signup" type="FAILURE">
+<![CDATA[  [chromium] › signup.spec.ts:212:3 › Sign Up Flow › should handle successful signup ───────────────
+
+    Error: Timed out 10000ms waiting for expect(locator).toHaveURL(expected)
+
+    Locator: locator(':root')
+    Expected pattern: /\/onboarding/
+    Received string:  "http://localhost:8080/login"
+    Call log:
+      - Expect "toHaveURL" with timeout 10000ms
+      - waiting for locator(':root')
+        2 × locator resolved to <html lang="en" class="light">…</html>
+          - unexpected value "http://localhost:8080/signup"
+        12 × locator resolved to <html lang="en" class="light">…</html>
+           - unexpected value "http://localhost:8080/login"
+
+
+      235 |     
+      236 |     // Should redirect to onboarding page
+    > 237 |     await expect(page).toHaveURL(/\/onboarding/);
+          |                        ^
+      238 |   });
+      239 |
+      240 |   test('should handle signup errors', async ({ page }) => {
+        at /Users/jeevan.wijerathna/jeevan/projects/ledger-craft-app/tests/e2e/signup.spec.ts:237:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: ../../test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/error-context.md
+]]>
+</failure>
+<system-out>
+<![CDATA[
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/test-failed-1.png]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/video.webm]]
+
+[[ATTACHMENT|../test-results/signup-Sign-Up-Flow-should-handle-successful-signup-chromium/error-context.md]]
+]]>
+</system-out>
+</testcase>
+<testcase name="Sign Up Flow › should handle signup errors" classname="signup.spec.ts" time="1.465">
+</testcase>
+<testcase name="Sign Up Flow › should be responsive on mobile" classname="signup.spec.ts" time="0.513">
+</testcase>
+<testcase name="Sign Up Flow › should have proper accessibility attributes" classname="signup.spec.ts" time="0.457">
 </testcase>
 </testsuite>
 </testsuites>

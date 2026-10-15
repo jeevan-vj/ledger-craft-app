@@ -1,0 +1,41 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1789100322269,
+      "tag": "0000_initial",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1789362134069,
+      "tag": "0001_index_session_user",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1789383912559,
+      "tag": "0002_business_bank_details",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1790913223682,
+      "tag": "0003_expense_gst_treatment",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1791010617358,
+      "tag": "0004_purchases-payables",
+      "breakpoints": true
+    }
+  ]
+}

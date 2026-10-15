@@ -120,64 +120,24 @@ export function PaymentHistory({
 
   return (
     <div className="space-y-6">
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <DollarSign className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Received</p>
-                <p className="text-2xl font-bold">${totalAmount.toFixed(2)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Receipt className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Payments</p>
-                <p className="text-2xl font-bold">{totalPayments}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <TrendingUp className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Average Payment</p>
-                <p className="text-2xl font-bold">${averagePayment.toFixed(2)}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-yellow-100 rounded-lg">
-                <Calendar className="h-5 w-5 text-yellow-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Pending</p>
-                <p className="text-2xl font-bold">{pendingPayments}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+      <dl className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+        <div>
+          <dt className="text-sm text-muted-foreground">Received</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">${totalAmount.toFixed(2)}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">Payments</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">{totalPayments}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">Average</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">${averagePayment.toFixed(2)}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">Pending</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">{pendingPayments}</dd>
+        </div>
+      </dl>
 
       {/* Filters and Search */}
       <Card>

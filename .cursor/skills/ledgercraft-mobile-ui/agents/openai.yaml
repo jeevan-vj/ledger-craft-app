@@ -1,0 +1,5 @@
+interface:
+  display_name: "LedgerCraft Mobile UI"
+  short_description: "Build native Wise-inspired mobile interfaces"
+  brand_color: "#9FE870"
+  default_prompt: "Use $ledgercraft-mobile-ui to build or refine this LedgerCraft mobile interface."

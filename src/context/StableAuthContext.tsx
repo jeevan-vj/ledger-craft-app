@@ -1,397 +1,202 @@
 /**
- * HMR-Safe Auth Context following React best practices
- * - Stable exports for Fast Refresh compatibility
- * - Single responsibility (authentication only)
- * - Memory leak prevention
+ * HMR-safe auth context. Web sessions are Better Auth HttpOnly cookies via Hono.
  */
 
-import React, { createContext, useContext, useState, useEffect, useMemo } from 'react';
-import { supabase } from '@/integrations/supabase/client';
-import { User, Session } from '@supabase/supabase-js';
+import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { businessProfileService } from '../services/supabaseService';
+import type { MeResponse } from '@ledgercraft/contracts';
+import { AuthApiError, getMe, signInEmail, signOutSession, signUpEmail } from '@/features/auth/api/authApi';
 
-// Stable interface
+export type AuthUser = {
+  id: string;
+  email: string;
+  user_metadata: { full_name?: string };
+};
+
 interface AuthContextValue {
-  readonly user: User | null;
-  readonly session: Session | null;
+  readonly user: AuthUser | null;
+  readonly session: { user: AuthUser } | null;
   readonly loading: boolean;
   readonly hasCompletedOnboarding: boolean;
   readonly onboardingChecked: boolean;
-  readonly signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any; data?: any; needsEmailConfirmation?: boolean }>;
-  readonly signIn: (email: string, password: string) => Promise<{ error: any }>;
-  readonly signInWithGoogle: () => Promise<{ error: any }>;
+  readonly signUp: (
+    email: string,
+    password: string,
+    fullName?: string,
+  ) => Promise<{ error: { message: string } | null; data?: unknown; needsEmailConfirmation?: boolean }>;
+  readonly signIn: (email: string, password: string) => Promise<{ error: { message: string } | null }>;
+  readonly signInWithGoogle: () => Promise<{ error: { message: string } | null }>;
   readonly signOut: () => Promise<void>;
   readonly refreshUser: () => Promise<void>;
   readonly retryOnboardingCheck: () => Promise<void>;
+  readonly markOnboardingComplete: () => void;
 }
 
-// Create context with stable default
 const AuthContext = createContext<AuthContextValue | null>(null);
 AuthContext.displayName = 'AuthContext';
 
-// Onboarding check function - extracted for reusability
-async function checkOnboardingStatus(
-  userId: string,
-  setHasCompletedOnboarding: (value: boolean) => void,
-  setOnboardingChecked: (value: boolean) => void,
-  setLastCheckedUserId: (value: string) => void,
-  lastCheckedUserId: string | null,
-  onboardingChecked: boolean,
-  getCachedOnboardingStatus: (userId: string) => any,
-  setCachedOnboardingStatus: (userId: string, status: boolean) => void
-): Promise<void> {
-  // Don't check again if already checked for this specific user
-  if (onboardingChecked && lastCheckedUserId === userId) {
-    console.log('AuthContext: Onboarding status already checked for this user, skipping...');
-    return;
-  }
-
-  // Check cache first
-  const cached = getCachedOnboardingStatus(userId);
-  if (cached && cached.expires > Date.now()) {
-    console.log('AuthContext: Using cached onboarding status:', cached.status);
-    setHasCompletedOnboarding(cached.status);
-    setOnboardingChecked(true);
-    setLastCheckedUserId(userId);
-    return;
-  }
-  
-  // Prevent multiple simultaneous checks
-  if ((checkOnboardingStatus as any).isChecking) {
-    console.log('AuthContext: Onboarding check already in progress, skipping...');
-    return;
-  }
-  
-  try {
-    (checkOnboardingStatus as any).isChecking = true;
-    console.log('AuthContext: Starting onboarding check for user:', userId);
-    
-    // Reasonable timeout with retry logic
-    const timeoutPromise = new Promise<never>((_, reject) => {
-      setTimeout(() => reject(new Error('Onboarding check timeout')), 8000);
-    });
-    
-    // Add network check before attempting business profile fetch
-    if (!navigator.onLine) {
-      console.log('AuthContext: Device is offline, skipping onboarding check');
-      setOnboardingChecked(true);
-      return;
-    }
-    
-    const businessProfilePromise = businessProfileService.getBusinessProfile()
-      .catch((error) => {
-        console.warn('AuthContext: Business profile service error:', error.message);
-        // Return null instead of throwing to handle gracefully
-        return null;
-      });
-    
-    const businessProfile = await Promise.race([businessProfilePromise, timeoutPromise]);
-    console.log('AuthContext: Business profile found:', !!businessProfile);
-    
-    // Set onboarding status based on business profile
-    const isOnboarded = !!businessProfile;
-    setHasCompletedOnboarding(isOnboarded);
-    setOnboardingChecked(true);
-    setLastCheckedUserId(userId);
-    
-    // Cache the result
-    setCachedOnboardingStatus(userId, isOnboarded);
-    
-    console.log('AuthContext: Onboarding status set to:', isOnboarded);
-    
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.warn('AuthContext: Onboarding check failed:', errorMessage);
-    
-    // For timeout errors, assume not onboarded to be safe
-    if (errorMessage.includes('timeout')) {
-      console.log('AuthContext: Timeout occurred, defaulting to not onboarded');
-      setHasCompletedOnboarding(false);
-    }
-    
-    setOnboardingChecked(true);
-    console.log('AuthContext: Onboarding check completed with fallback');
-  } finally {
-    (checkOnboardingStatus as any).isChecking = false;
-  }
+function toAuthUser(me: MeResponse): AuthUser {
+  return {
+    id: me.user.id,
+    email: me.user.email,
+    user_metadata: { full_name: me.user.name },
+  };
 }
 
-// Main provider component - must be a named function for HMR
+function toAuthError(error: unknown): { message: string } {
+  if (error instanceof AuthApiError) {
+    return { message: error.message };
+  }
+  if (error instanceof Error) {
+    return { message: error.message };
+  }
+  return { message: 'Something went wrong' };
+}
+
 function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [onboardingChecked, setOnboardingChecked] = useState(false);
-  const [lastCheckedUserId, setLastCheckedUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // Add localStorage caching for onboarding status to prevent repeated checks
-  const getOnboardingCacheKey = (userId: string) => `onboarding_status_${userId}`;
-  const getCachedOnboardingStatus = (userId: string) => {
-    try {
-      const cached = localStorage.getItem(getOnboardingCacheKey(userId));
-      return cached ? JSON.parse(cached) : null;
-    } catch {
-      return null;
-    }
-  };
-  const setCachedOnboardingStatus = (userId: string, status: boolean) => {
-    try {
-      localStorage.setItem(getOnboardingCacheKey(userId), JSON.stringify({
-        status,
-        timestamp: Date.now(),
-        expires: Date.now() + (5 * 60 * 1000) // Cache for 5 minutes
-      }));
-    } catch {
-      // Ignore localStorage errors
-    }
-  };
-
-  // Auth functions
-  const signUp = async (email: string, password: string, fullName?: string) => {
-    setLoading(true);
-    const { error, data } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          full_name: fullName,
-        },
-      },
-    });
-    
-    if (error) {
-      setLoading(false);
-      return { error };
-    }
-    
-    const needsEmailConfirmation = !data.session && data.user && !data.user.email_confirmed_at;
-    setLoading(false);
-    return { error: null, data, needsEmailConfirmation };
-  };
-
-  const signIn = async (email: string, password: string) => {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
-    setLoading(false);
-    return { error };
-  };
-
-  const signInWithGoogle = async () => {
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-      },
-    });
-    return { error };
-  };
-
-  const signOut = async () => {
-    await supabase.auth.signOut();
-  };
-
-  const refreshUser = async () => {
-    const { data: { session: currentSession } } = await supabase.auth.getSession();
-    setSession(currentSession);
-    setUser(currentSession?.user ?? null);
-    
-    if (currentSession?.user?.id) {
-      // Only reset onboarding check if it's a different user
-      if (lastCheckedUserId !== currentSession.user.id) {
-        setOnboardingChecked(false);
-        setLastCheckedUserId(null);
-      }
-      await checkOnboardingStatus(
-        currentSession.user.id,
-        setHasCompletedOnboarding,
-        setOnboardingChecked,
-        setLastCheckedUserId,
-        lastCheckedUserId,
-        onboardingChecked,
-        getCachedOnboardingStatus,
-        setCachedOnboardingStatus
-      );
-    }
-  };
-
-  const retryOnboardingCheck = async () => {
-    if (user?.id) {
-      console.log('Retrying onboarding check...');
-      setOnboardingChecked(false);
-      setLastCheckedUserId(null);
+  const applySession = useCallback((me: MeResponse | null) => {
+    if (!me) {
+      setUser(null);
       setHasCompletedOnboarding(false);
-      await checkOnboardingStatus(
-        user.id,
-        setHasCompletedOnboarding,
-        setOnboardingChecked,
-        setLastCheckedUserId,
-        lastCheckedUserId,
-        onboardingChecked,
-        getCachedOnboardingStatus,
-        setCachedOnboardingStatus
-      );
+      setOnboardingChecked(true);
+      return;
     }
-  };
+    setUser(toAuthUser(me));
+    // Business profile is still on supabase-js. A Better Auth session is enough to enter the app.
+    setHasCompletedOnboarding(true);
+    setOnboardingChecked(true);
+  }, []);
 
-  // Single useEffect for auth management
+  const refreshUser = useCallback(async () => {
+    applySession(await getMe());
+  }, [applySession]);
+
+  const signUp = useCallback(
+    async (email: string, password: string, fullName?: string) => {
+      setLoading(true);
+      try {
+        await signUpEmail({
+          name: fullName?.trim() || email.split('@')[0] || 'Owner',
+          email,
+          password,
+        });
+        applySession(await getMe());
+        return { error: null, needsEmailConfirmation: false };
+      } catch (error) {
+        return { error: toAuthError(error) };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [applySession],
+  );
+
+  const signIn = useCallback(
+    async (email: string, password: string) => {
+      setLoading(true);
+      try {
+        await signInEmail({ email, password });
+        applySession(await getMe());
+        return { error: null };
+      } catch (error) {
+        return { error: toAuthError(error) };
+      } finally {
+        setLoading(false);
+      }
+    },
+    [applySession],
+  );
+
+  const signInWithGoogle = useCallback(async () => {
+    return {
+      error: { message: 'Google sign-in is not available yet. Use email and password.' },
+    };
+  }, []);
+
+  const signOut = useCallback(async () => {
+    try {
+      await signOutSession();
+    } finally {
+      applySession(null);
+      navigate('/login');
+    }
+  }, [applySession, navigate]);
+
+  const retryOnboardingCheck = useCallback(async () => {
+    await refreshUser();
+  }, [refreshUser]);
+
+  const markOnboardingComplete = useCallback(() => {
+    setHasCompletedOnboarding(true);
+    setOnboardingChecked(true);
+  }, []);
+
   useEffect(() => {
     let isMounted = true;
-
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, currentSession) => {
-        if (!isMounted) return;
-        
-        console.log('Auth state change:', event, !!currentSession?.user);
-        
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        if (currentSession?.user?.id) {
-          // Only handle specific auth events that require onboarding checks
-          if (event === 'SIGNED_IN') {
-            console.log('User signed in, checking onboarding status...');
-            setOnboardingChecked(false);
-            setHasCompletedOnboarding(false);
-            await checkOnboardingStatus(
-              currentSession.user.id,
-              setHasCompletedOnboarding,
-              setOnboardingChecked,
-              setLastCheckedUserId,
-              lastCheckedUserId,
-              onboardingChecked,
-              getCachedOnboardingStatus,
-              setCachedOnboardingStatus
-            );
-          } else if (event === 'TOKEN_REFRESHED') {
-            console.log('Token refreshed - no onboarding check needed');
-          } else {
-            console.log(`Auth event ${event} - no onboarding check needed`);
-          }
-        } else {
-          console.log('No user session, resetting onboarding status');
-          setHasCompletedOnboarding(false);
-          setOnboardingChecked(true);
-        }
-        
-        if (event === 'SIGNED_OUT') {
-          console.log('User signed out, redirecting to login');
-          setHasCompletedOnboarding(false);
-          setOnboardingChecked(false);
-          setLastCheckedUserId(null);
-          navigate('/login');
-        }
-      }
-    );
-
-    // Note: We intentionally don't listen for visibility changes to avoid
-    // unnecessary session rechecks that could trigger unwanted onboarding flows
-
-    // Check for existing session
     const checkSession = async () => {
-      if (!isMounted) return;
-      
       try {
-        console.log('AuthContext: Starting session check...');
-        const { data: { session: currentSession } } = await supabase.auth.getSession();
-        console.log('AuthContext: Session retrieved:', !!currentSession?.user);
-        
-        if (!isMounted) return;
-        
-        setSession(currentSession);
-        setUser(currentSession?.user ?? null);
-        
-        if (currentSession?.user?.id) {
-          console.log('AuthContext: User found, checking if onboarding already verified...');
-          
-          // Check if onboarding status is already known for this user
-          if (onboardingChecked && lastCheckedUserId === currentSession.user.id) {
-            console.log('AuthContext: Onboarding already checked for this user, skipping recheck');
-          } else {
-            // Check cache first before doing full onboarding check
-            const cached = getCachedOnboardingStatus(currentSession.user.id);
-            if (cached && cached.expires > Date.now()) {
-              console.log('AuthContext: Using cached onboarding status on session check:', cached.status);
-              setHasCompletedOnboarding(cached.status);
-              setOnboardingChecked(true);
-              setLastCheckedUserId(currentSession.user.id);
-            } else {
-              console.log('AuthContext: No valid cache, running onboarding check...');
-              await checkOnboardingStatus(
-                currentSession.user.id,
-                setHasCompletedOnboarding,
-                setOnboardingChecked,
-                setLastCheckedUserId,
-                lastCheckedUserId,
-                onboardingChecked,
-                getCachedOnboardingStatus,
-                setCachedOnboardingStatus
-              );
-            }
-          }
-        } else {
-          console.log('AuthContext: No user, setting defaults...');
-          setOnboardingChecked(true);
-          setHasCompletedOnboarding(false);
-        }
-      } catch (error) {
-        console.error('AuthContext: Error checking session:', error);
+        const me = await getMe();
         if (isMounted) {
-          setOnboardingChecked(true);
-          setHasCompletedOnboarding(false);
+          applySession(me);
+        }
+      } catch {
+        if (isMounted) {
+          applySession(null);
         }
       } finally {
         if (isMounted) {
-          console.log('AuthContext: Setting loading to false');
           setLoading(false);
         }
       }
     };
-
-    checkSession();
-
-    // Cleanup
+    void checkSession();
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
     };
-  }, []); // Empty deps - only run once
+  }, [applySession]);
 
-  // Memoize context value
-  const contextValue = useMemo<AuthContextValue>(() => ({
-    user,
-    session,
-    loading,
-    hasCompletedOnboarding,
-    onboardingChecked,
-    signUp,
-    signIn,
-    signInWithGoogle,
-    signOut,
-    refreshUser,
-    retryOnboardingCheck,
-  }), [
-    user,
-    session,
-    loading,
-    hasCompletedOnboarding,
-    onboardingChecked,
-  ]);
+  const session = user ? { user } : null;
 
-  return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+  const contextValue = useMemo<AuthContextValue>(
+    () => ({
+      user,
+      session,
+      loading,
+      hasCompletedOnboarding,
+      onboardingChecked,
+      signUp,
+      signIn,
+      signInWithGoogle,
+      signOut,
+      refreshUser,
+      retryOnboardingCheck,
+      markOnboardingComplete,
+    }),
+    [
+      user,
+      session,
+      loading,
+      hasCompletedOnboarding,
+      onboardingChecked,
+      signUp,
+      signIn,
+      signInWithGoogle,
+      signOut,
+      refreshUser,
+      retryOnboardingCheck,
+      markOnboardingComplete,
+    ],
   );
+
+  return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
 }
 
-// Stable hook export
 function useAuth(): AuthContextValue {
   const context = useContext(AuthContext);
   if (!context) {
@@ -400,5 +205,4 @@ function useAuth(): AuthContextValue {
   return context;
 }
 
-// Named exports for HMR compatibility
 export { AuthProvider, useAuth };

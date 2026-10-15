@@ -1,13 +1,13 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { User, Session } from '@supabase/supabase-js';
+import type { AuthSession, AuthUser } from '@/types/auth-user';
 import { useNavigate } from 'react-router-dom';
 import { businessProfileService } from '../services/supabaseService';
 
 interface AuthContextType {
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: AuthSession | null;
   signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any; data?: any; needsEmailConfirmation?: boolean }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signInWithGoogle: () => Promise<{ error: any }>;
@@ -22,8 +22,8 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<AuthSession | null>(null);
   const [loading, setLoading] = useState(true);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [onboardingChecked, setOnboardingChecked] = useState(false);

@@ -1,6 +1,7 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
 import { Invoice } from '@/types';
-import { formatCurrency } from '@/utils/invoiceUtils';
+import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
 
@@ -9,6 +10,8 @@ interface ClassicTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -21,6 +24,8 @@ const ClassicTemplate = ({
   companyName, 
   companyAddress, 
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName, 
   clientAddress,
   taxRate,
@@ -162,8 +167,8 @@ const ClassicTemplate = ({
                     </div>
                   )}
                 </td>
-                <td className="py-2 px-1 text-right">{item.quantity}</td>
-                <td className="py-2 px-1 text-right">{formatCurrency(item.rate, invoice.currency)}</td>
+                <td className="py-2 px-1 text-right">{item.quantity} {item.unit}</td>
+                <td className="py-2 px-1 text-right">{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
                 <td className="py-2 px-2 text-right">{formatCurrency(item.quantity * item.rate, invoice.currency)}</td>
               </tr>
             ))}
@@ -213,9 +218,9 @@ const ClassicTemplate = ({
             )
           )}
           
-          {invoice.discount > 0 && (
+              {invoice.discount && invoice.discount > 0 && (
             <div className="flex justify-between py-1">
-              <span className="font-semibold">Discount:</span>
+              <span className="font-semibold">{invoiceDiscountLabel(invoice)}:</span>
               <span>-{formatCurrency(invoice.discount, invoice.currency)}</span>
             </div>
           )}
@@ -227,6 +232,9 @@ const ClassicTemplate = ({
         </div>
       </div>
 
+      <div className="px-3 sm:px-4">
+        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+      </div>
       {/* Notes */}
       {invoice.notes && (
         <div className="mt-4 px-3 sm:px-4">

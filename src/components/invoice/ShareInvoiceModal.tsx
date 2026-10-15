@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Copy, Calendar, Share2, Link2, Check, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import {
@@ -19,13 +19,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { sharedInvoiceService } from '@/services/supabaseService';
+import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
 import { Invoice, InvoiceTemplateName } from '@/types';
 import EmailInputModal from './EmailInputModal';
 import { emailService } from '@/services/emailService';
 import { pdfService } from '@/services/pdfService';
 import { renderTemplateToHtml, createTemplateElement } from '@/services/invoiceTemplateRenderer';
 import { businessProfileService } from '@/services/supabaseService';
+import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
+import type { BusinessProfile } from '@/types';
 
 interface ShareInvoiceModalProps {
   open: boolean;
@@ -65,7 +67,39 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
   const [enableExpiration, setEnableExpiration] = useState(false);
   const [expirationDays, setExpirationDays] = useState(30);
   const [copied, setCopied] = useState(false);
+  const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    setSelectedTemplate((invoice.templateName as InvoiceTemplateName) || 'classic');
+    setShowTemplateSelection(!invoice.templateName);
+    setShareUrl('');
+    setCopied(false);
+  }, [invoice.id, invoice.templateName, open]);
+
+  useEffect(() => {
+    if (!open) {
+      return;
+    }
+
+    let cancelled = false;
+    businessProfileService
+      .getBusinessProfile()
+      .then((data) => {
+        if (!cancelled) {
+          setProfile(data);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setProfile(null);
+        }
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [open]);
 
   const handleCreateShareLink = async () => {
     setIsCreating(true);
@@ -74,11 +108,10 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
         ? new Date(Date.now() + expirationDays * 24 * 60 * 60 * 1000).toISOString()
         : undefined;
 
-      const sharedInvoice = await sharedInvoiceService.createSharedInvoice(
-        invoice.id,
-        selectedTemplate,
-        expiresAt
-      );
+      const sharedInvoice = await invoicesApi.share(invoice.id, {
+        templateName: selectedTemplate,
+        expiresAt,
+      });
 
       const url = `${window.location.origin}/shared/invoice/${sharedInvoice.shareToken}`;
       setShareUrl(url);
@@ -168,13 +201,21 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
           ? new Date(Date.now() + expirationDays * 24 * 60 * 60 * 1000).toISOString()
           : undefined;
 
-        const sharedInvoice = await sharedInvoiceService.createSharedInvoice(
-          invoice.id,
-          selectedTemplate,
-          expiresAt
-        );
+        const sharedInvoice = await invoicesApi.share(invoice.id, {
+          templateName: selectedTemplate,
+          expiresAt,
+        });
         url = `${window.location.origin}/shared/invoice/${sharedInvoice.shareToken}`;
         setShareUrl(url);
+      }
+
+      if (invoicesApiEnabled()) {
+        await invoicesApi.send(invoice.id, { to: [email] });
+        toast({
+          title: 'Email sent successfully!',
+          description: `Invoice has been sent to ${email}`,
+        });
+        return;
       }
 
       // Get business profile for template rendering
@@ -255,11 +296,12 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
             Share Invoice {invoice.invoiceNumber}
           </DialogTitle>
           <DialogDescription>
-            Create a secure link to share this invoice. Recipients can view the invoice without needing an account.
+            Create a secure link to share this invoice. Anyone with the link can view the invoice and download its PDF without an account.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
+          <ProfileCompletenessBanner profile={profile} />
           {/* Template Selection - Only show if no template is saved */}
           {showTemplateSelection && (
             <div className="space-y-2">
@@ -387,6 +429,7 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
                   <Button
                     variant="outline"
                     size="icon"
+                    aria-label="Copy share link"
                     onClick={handleCopyLink}
                     className="shrink-0"
                   >
@@ -400,6 +443,9 @@ const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
               </div>
 
               <div className="space-y-2">
+                <Button asChild variant="outline" className="w-full">
+                  <a href={shareUrl} target="_blank" rel="noopener noreferrer">Open invoice</a>
+                </Button>
                 <div className="flex gap-2">
                   <Button
                     variant="outline"

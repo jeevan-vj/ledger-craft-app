@@ -1,5 +1,6 @@
 import { supabase } from '@/integrations/supabase/client';
 import { startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, subMonths, subQuarters, subYears, format } from 'date-fns';
+import { inInclusiveDateRange, ledgerSnapshotEnabled, loadLedgerSnapshot } from '@/features/ledger/api/ledgerSnapshot';
 
 export interface FinancialReport {
   id: string;
@@ -132,41 +133,76 @@ export class FinancialReportsService {
     }
   }
 
+  private async loadSnapshotRows(startDate: Date, endDate: Date) {
+    const snapshot = await loadLedgerSnapshot();
+    return {
+      invoices: snapshot.invoices.filter((invoice) => inInclusiveDateRange(invoice.date, startDate, endDate)),
+      expenses: snapshot.expenses.filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate)),
+      accounts: snapshot.accounts,
+      unpaidInvoices: snapshot.invoices.filter(
+        (invoice) => invoice.status === 'sent' && inInclusiveDateRange(invoice.date, new Date('1970-01-01'), endDate),
+      ),
+      unpaidExpenses: snapshot.expenses.filter(
+        (expense) => expense.status === 'pending' && inInclusiveDateRange(expense.expenseDate, new Date('1970-01-01'), endDate),
+      ),
+      paidInvoices: snapshot.invoices.filter(
+        (invoice) => invoice.status === 'paid' && inInclusiveDateRange(invoice.date, startDate, endDate),
+      ),
+    };
+  }
+
   async generateProfitLossReport(period: string, customStartDate?: Date, customEndDate?: Date): Promise<ProfitLossData> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) throw new Error('User not authenticated');
-
       const { startDate, endDate } = this.getPeriodDates(period, customStartDate, customEndDate);
-      
-      // Get revenue data from invoices
-      const { data: invoices, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total, tax_amount, created_at, status')
-        .eq('user_id', user.id)
-        .gte('date', startDate.toISOString().split('T')[0])
-        .lte('date', endDate.toISOString().split('T')[0])
-        .eq('status', 'paid');
+      const start = startDate.toISOString().split('T')[0];
+      const end = endDate.toISOString().split('T')[0];
 
-      if (invoiceError) throw invoiceError;
+      let invoices: Array<{ total: number; tax_amount?: number; status?: string }> | null;
+      let expenses: Array<{ amount: number; tax_amount?: number; expense_categories?: { name?: string } | null }> | null;
 
-      // Get expense data
-      const { data: expenses, error: expenseError } = await supabase
-        .from('expenses')
-        .select(`
-          amount, 
-          tax_amount,
-          expense_date,
-          category_id,
-          expense_categories (
-            name
-          )
-        `)
-        .eq('user_id', user.id)
-        .gte('expense_date', startDate.toISOString().split('T')[0])
-        .lte('expense_date', endDate.toISOString().split('T')[0]);
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        invoices = snapshot.invoices
+          .filter((invoice) => invoice.status === 'paid' && inInclusiveDateRange(invoice.date, start, end))
+          .map((invoice) => ({ total: invoice.total, tax_amount: invoice.taxAmount, status: invoice.status }));
+        expenses = snapshot.expenses
+          .filter((expense) => inInclusiveDateRange(expense.expenseDate, start, end))
+          .map((expense) => ({
+            amount: expense.amount,
+            tax_amount: expense.taxAmount,
+            expense_categories: { name: expense.category?.name },
+          }));
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user?.id) throw new Error('User not authenticated');
 
-      if (expenseError) throw expenseError;
+        const { data: invoiceRows, error: invoiceError } = await supabase
+          .from('invoices')
+          .select('total, tax_amount, created_at, status')
+          .eq('user_id', user.id)
+          .gte('date', start)
+          .lte('date', end)
+          .eq('status', 'paid');
+        if (invoiceError) throw invoiceError;
+
+        const { data: expenseRows, error: expenseError } = await supabase
+          .from('expenses')
+          .select(`
+            amount, 
+            tax_amount,
+            expense_date,
+            category_id,
+            expense_categories (
+              name
+            )
+          `)
+          .eq('user_id', user.id)
+          .gte('expense_date', start)
+          .lte('expense_date', end);
+        if (expenseError) throw expenseError;
+        invoices = invoiceRows;
+        expenses = expenseRows;
+      }
 
       // Calculate totals
       const totalRevenue = invoices?.reduce((sum, invoice) => sum + (invoice.total || 0), 0) || 0;
@@ -222,36 +258,53 @@ export class FinancialReportsService {
 
   async generateBalanceSheetReport(asOfDate: Date): Promise<BalanceSheetData> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) throw new Error('User not authenticated');
+      const asOf = asOfDate.toISOString().split('T')[0];
+      let accounts: Array<{ current_balance: number; name: string; type: string }> | null;
+      let unpaidInvoices: Array<{ total: number }> | null;
+      let unpaidExpenses: Array<{ amount: number }> | null;
 
-      // Get cash and bank account balances
-      const { data: accounts, error: accountError } = await supabase
-        .from('accounts')
-        .select('current_balance, name, type')
-        .eq('user_id', user.id);
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        accounts = snapshot.accounts.map((account) => ({
+          current_balance: account.currentBalance,
+          name: account.name,
+          type: account.type,
+        }));
+        unpaidInvoices = snapshot.invoices
+          .filter((invoice) => invoice.status === 'sent' && invoice.date <= asOf)
+          .map((invoice) => ({ total: invoice.total }));
+        unpaidExpenses = snapshot.expenses
+          .filter((expense) => expense.status === 'pending' && expense.expenseDate <= asOf)
+          .map((expense) => ({ amount: expense.amount }));
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user?.id) throw new Error('User not authenticated');
 
-      if (accountError) throw accountError;
+        const { data: accountRows, error: accountError } = await supabase
+          .from('accounts')
+          .select('current_balance, name, type')
+          .eq('user_id', user.id);
+        if (accountError) throw accountError;
 
-      // Get accounts receivable (unpaid invoices)
-      const { data: unpaidInvoices, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total, due_date')
-        .eq('user_id', user.id)
-        .eq('status', 'sent')
-        .lte('date', asOfDate.toISOString().split('T')[0]);
+        const { data: invoiceRows, error: invoiceError } = await supabase
+          .from('invoices')
+          .select('total, due_date')
+          .eq('user_id', user.id)
+          .eq('status', 'sent')
+          .lte('date', asOf);
+        if (invoiceError) throw invoiceError;
 
-      if (invoiceError) throw invoiceError;
-
-      // Get accounts payable (unpaid bills/expenses)
-      const { data: unpaidExpenses, error: expenseError } = await supabase
-        .from('expenses')
-        .select('amount')
-        .eq('user_id', user.id)
-        .eq('status', 'pending')
-        .lte('expense_date', asOfDate.toISOString().split('T')[0]);
-
-      if (expenseError) throw expenseError;
+        const { data: expenseRows, error: expenseError } = await supabase
+          .from('expenses')
+          .select('amount')
+          .eq('user_id', user.id)
+          .eq('status', 'pending')
+          .lte('expense_date', asOf);
+        if (expenseError) throw expenseError;
+        accounts = accountRows;
+        unpaidInvoices = invoiceRows;
+        unpaidExpenses = expenseRows;
+      }
 
       // Calculate assets
       const cashAccounts = accounts?.filter(acc => acc.type === 'cash' || acc.type === 'bank') || [];
@@ -312,37 +365,61 @@ export class FinancialReportsService {
 
   async generateCashFlowReport(period: string, customStartDate?: Date, customEndDate?: Date): Promise<CashFlowData> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) throw new Error('User not authenticated');
-
       const { startDate, endDate } = this.getPeriodDates(period, customStartDate, customEndDate);
-      
-      // Get invoice payments (operating cash inflow)
-      const { data: invoicePayments, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total, date')
-        .eq('user_id', user.id)
-        .eq('status', 'paid')
-        .gte('date', startDate.toISOString().split('T')[0])
-        .lte('date', endDate.toISOString().split('T')[0]);
+      const start = startDate.toISOString().split('T')[0];
+      const end = endDate.toISOString().split('T')[0];
+      let invoicePayments: Array<{ total: number }> | null;
+      let expensePayments: Array<{ amount: number; expense_categories?: { name?: string } | null }> | null;
+      let cashAccounts: Array<{ current_balance: number }> | null;
 
-      if (invoiceError) throw invoiceError;
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        invoicePayments = snapshot.invoices
+          .filter((invoice) => invoice.status === 'paid' && inInclusiveDateRange(invoice.date, start, end))
+          .map((invoice) => ({ total: invoice.total }));
+        expensePayments = snapshot.expenses
+          .filter((expense) => inInclusiveDateRange(expense.expenseDate, start, end))
+          .map((expense) => ({ amount: expense.amount, expense_categories: { name: expense.category?.name } }));
+        cashAccounts = snapshot.accounts
+          .filter((account) => account.type === 'cash' || account.type === 'bank')
+          .map((account) => ({ current_balance: account.currentBalance }));
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user?.id) throw new Error('User not authenticated');
 
-      // Get expense payments (operating cash outflow)
-      const { data: expensePayments, error: expenseError } = await supabase
-        .from('expenses')
-        .select(`
-          amount, 
-          expense_date,
-          expense_categories (
-            name
-          )
-        `)
-        .eq('user_id', user.id)
-        .gte('expense_date', startDate.toISOString().split('T')[0])
-        .lte('expense_date', endDate.toISOString().split('T')[0]);
+        const { data: invoiceRows, error: invoiceError } = await supabase
+          .from('invoices')
+          .select('total, date')
+          .eq('user_id', user.id)
+          .eq('status', 'paid')
+          .gte('date', start)
+          .lte('date', end);
+        if (invoiceError) throw invoiceError;
 
-      if (expenseError) throw expenseError;
+        const { data: expenseRows, error: expenseError } = await supabase
+          .from('expenses')
+          .select(`
+            amount, 
+            expense_date,
+            expense_categories (
+              name
+            )
+          `)
+          .eq('user_id', user.id)
+          .gte('expense_date', start)
+          .lte('expense_date', end);
+        if (expenseError) throw expenseError;
+
+        const { data: accountRows, error: accountError } = await supabase
+          .from('accounts')
+          .select('current_balance')
+          .eq('user_id', user.id)
+          .in('type', ['cash', 'bank']);
+        if (accountError) throw accountError;
+        invoicePayments = invoiceRows;
+        expensePayments = expenseRows;
+        cashAccounts = accountRows;
+      }
 
       // Calculate operating cash flow
       const cashFromSales = invoicePayments?.reduce((sum, invoice) => sum + (invoice.total || 0), 0) || 0;
@@ -366,15 +443,6 @@ export class FinancialReportsService {
       }).reduce((sum, exp) => sum + (exp.amount || 0), 0) || 0);
 
       const netCashFlow = operatingCashFlow + investingCashFlow + financingCashFlow;
-
-      // Get beginning cash balance from accounts
-      const { data: cashAccounts, error: accountError } = await supabase
-        .from('accounts')
-        .select('current_balance')
-        .eq('user_id', user.id)
-        .in('type', ['cash', 'bank']);
-
-      if (accountError) throw accountError;
 
       const beginningCash = cashAccounts?.reduce((sum, account) => sum + (account.current_balance || 0), 0) || 0;
       const endingCash = beginningCash + netCashFlow;
@@ -414,40 +482,60 @@ export class FinancialReportsService {
 
   async generateTrialBalanceReport(asOfDate: Date): Promise<TrialBalanceData> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user?.id) throw new Error('User not authenticated');
+      const asOf = asOfDate.toISOString().split('T')[0];
+      let accounts: Array<{ name: string; current_balance: number; type: string }> | null = null;
+      let invoices: Array<{ total: number; status?: string }> | null = null;
+      let expenses: Array<{ amount: number; expense_categories?: { name?: string } | null }> | null = null;
 
-      // Get all accounts and their balances
-      const { data: accounts, error: accountError } = await supabase
-        .from('accounts')
-        .select('name, current_balance, type')
-        .eq('user_id', user.id);
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        accounts = snapshot.accounts.map((account) => ({
+          name: account.name,
+          current_balance: account.currentBalance,
+          type: account.type,
+        }));
+        invoices = snapshot.invoices
+          .filter((invoice) => invoice.status === 'paid' && inInclusiveDateRange(invoice.date, new Date('1970-01-01'), asOfDate))
+          .map((invoice) => ({ total: invoice.total, status: invoice.status }));
+        expenses = snapshot.expenses
+          .filter((expense) => inInclusiveDateRange(expense.expenseDate, new Date('1970-01-01'), asOfDate))
+          .map((expense) => ({
+            amount: expense.amount,
+            expense_categories: { name: expense.category?.name },
+          }));
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user?.id) throw new Error('User not authenticated');
 
-      if (accountError) throw accountError;
+        const { data: accountRows, error: accountError } = await supabase
+          .from('accounts')
+          .select('name, current_balance, type')
+          .eq('user_id', user.id);
+        if (accountError) throw accountError;
+        accounts = accountRows;
 
-      // Get revenue accounts (from invoices)
-      const { data: invoices, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total, status')
-        .eq('user_id', user.id)
-        .lte('date', asOfDate.toISOString().split('T')[0])
-        .eq('status', 'paid');
+        const { data: invoiceRows, error: invoiceError } = await supabase
+          .from('invoices')
+          .select('total, status')
+          .eq('user_id', user.id)
+          .lte('date', asOf)
+          .eq('status', 'paid');
+        if (invoiceError) throw invoiceError;
+        invoices = invoiceRows;
 
-      if (invoiceError) throw invoiceError;
-
-      // Get expense accounts
-      const { data: expenses, error: expenseError } = await supabase
-        .from('expenses')
-        .select(`
+        const { data: expenseRows, error: expenseError } = await supabase
+          .from('expenses')
+          .select(`
           amount,
           expense_categories (
             name
           )
         `)
-        .eq('user_id', user.id)
-        .lte('expense_date', asOfDate.toISOString().split('T')[0]);
-
-      if (expenseError) throw expenseError;
+          .eq('user_id', user.id)
+          .lte('expense_date', asOf);
+        if (expenseError) throw expenseError;
+        expenses = expenseRows as typeof expenses;
+      }
 
       // Build trial balance accounts
       const trialBalanceAccounts: Array<{

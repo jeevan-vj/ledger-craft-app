@@ -7,6 +7,7 @@ import CategoryDrawer from '@/components/category/CategoryDrawer';
 import { ItemCategory } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 const Categories = () => {
   const { 
@@ -95,10 +96,8 @@ const Categories = () => {
 
   if (isLoadingItemCategories) {
     return (
-      <div className="container mx-auto py-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Categories</h1>
-        </div>
+      <div className="space-y-6">
+        <PageHeader title="Categories" />
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
             <Skeleton key={i} className="w-full h-16" />
@@ -109,17 +108,16 @@ const Categories = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Categories</h1>
-        <Button
-          onClick={handleOpenDrawer}
-          className="bg-invoice-teal hover:bg-invoice-teal/90"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Category
-        </Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Categories"
+        actions={
+          <Button onClick={handleOpenDrawer}>
+            <Plus className="w-4 h-4 mr-2" />
+            Add Category
+          </Button>
+        }
+      />
 
       <CategoriesTable
         categories={itemCategories}

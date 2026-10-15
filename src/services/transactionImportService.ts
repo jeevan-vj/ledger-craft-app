@@ -1,6 +1,7 @@
 import { supabase } from '@/integrations/supabase/client';
 import { parseCSVTransactions } from './csvTransactionParser';
 import { bankAccountService } from './bankAccountService';
+import { bankApi, bankApiEnabled, toBankTransaction } from '@/features/bank/api/bankApi';
 import {
   TransactionImportConfig,
   ImportedTransaction,
@@ -151,6 +152,32 @@ export const transactionImportService = {
       // Auto-categorize transactions
       const categorizedTransactions = this.categorizeTransactions(importedTransactions);
 
+      if (bankApiEnabled()) {
+        const result = await bankApi.importTransactions({
+          bankAccountId: config.bankAccountId,
+          fileName: 'import.csv',
+          fileType: config.fileType === 'pdf' ? 'pdf' : 'csv',
+          skipDuplicates: config.skipDuplicates,
+          transactions: categorizedTransactions.map((importedTx) => ({
+            transactionDate: importedTx.date,
+            description: importedTx.description,
+            reference: importedTx.reference ?? null,
+            amount: String(importedTx.amount),
+            type: importedTx.type,
+            balance: importedTx.balance == null ? null : String(importedTx.balance),
+            category: importedTx.category ?? null,
+            merchant: importedTx.merchant ?? null,
+          })),
+        });
+        return {
+          success: true,
+          importedCount: result.importedCount,
+          duplicatesSkipped: result.duplicatesSkipped,
+          errors: parseErrors,
+          transactions: result.transactions.map(toBankTransaction),
+        };
+      }
+
       // Check for duplicates if enabled
       let duplicateIndices: number[] = [];
       if (config.skipDuplicates) {
@@ -220,6 +247,9 @@ export const transactionImportService = {
   },
 
   async getExistingTransactions(bankAccountId: string): Promise<BankTransaction[]> {
+    if (bankApiEnabled()) {
+      return bankApi.listTransactions({ bankAccountId });
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {
       return [];

@@ -10,7 +10,7 @@ import { usePermissions } from '@/hooks/usePermissions';
 import { useBreadcrumbs } from '@/hooks/useBreadcrumbs';
 
 // Mock authentication context
-vi.mock('@/context/AuthContext', () => ({
+vi.mock('@/context/StableAuthContext', () => ({
   useAuth: () => ({
     user: {
       id: 'test-user-id',
@@ -266,7 +266,7 @@ describe('Navigation Integration Tests', () => {
   describe('Integration Edge Cases', () => {
     it('should handle unauthenticated users gracefully', () => {
       // Mock unauthenticated user
-      vi.mocked(vi.doMock('@/context/AuthContext', () => ({
+      vi.mocked(vi.doMock('@/context/StableAuthContext', () => ({
         useAuth: () => ({
           user: null,
           signOut: vi.fn(),

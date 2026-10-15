@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, FolderOpen } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ContentPanel } from '@/components/ui/ContentPanel';
 import ItemsTable from '@/components/item/ItemsTable';
 import ItemDrawer from '@/components/item/ItemDrawer';
 import { Item, ItemCategory } from '@/types';
@@ -139,10 +142,8 @@ const Items = () => {
 
   if (isLoadingItems) {
     return (
-      <div className="container mx-auto py-6 space-y-6">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Items</h1>
-        </div>
+      <div className="space-y-6">
+        <PageHeader title="Items" />
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
             <Skeleton key={i} className="w-full h-16" />
@@ -153,18 +154,37 @@ const Items = () => {
   }
 
   return (
-    <div className="container mx-auto py-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Items</h1>
-        <Button 
-          onClick={handleOpenDrawer}
-          className="bg-invoice-teal hover:bg-invoice-teal/90"
-        >
-          <Plus className="w-4 h-4 mr-2" />
-          Add Item
-        </Button>
-      </div>
-      
+    <div className="space-y-6">
+      <PageHeader
+        title="Items"
+        actions={
+          items.length > 0 ? (
+            <Button onClick={handleOpenDrawer}>
+              <Plus className="w-4 h-4 mr-2" />
+              Add Item
+            </Button>
+          ) : undefined
+        }
+      />
+
+      {items.length === 0 && (
+        <EmptyState
+          variant="panel"
+          title="Here's how to get started"
+          description="Save products and services you invoice often so you can add them in one tap."
+          actions={[
+            {
+              icon: FolderOpen,
+              title: 'Add an item',
+              subtitle: 'Name, price, and tax for products or services.',
+              onClick: handleOpenDrawer,
+            },
+          ]}
+        />
+      )}
+
+      {items.length > 0 && (
+      <>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
         <div className="space-y-2">
           <Label htmlFor="search">Search</Label>
@@ -212,11 +232,15 @@ const Items = () => {
         </div>
       </div>
       
-      <ItemsTable
-        items={filteredItems}
-        onEdit={handleEditItem}
-        onDelete={handleDeleteItem}
-      />
+      <ContentPanel padded={false}>
+        <ItemsTable
+          items={filteredItems}
+          onEdit={handleEditItem}
+          onDelete={handleDeleteItem}
+        />
+      </ContentPanel>
+      </>
+      )}
 
       <ItemDrawer
         open={isDrawerOpen}

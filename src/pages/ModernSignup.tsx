@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from "@/context/StableAuthContext";
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Lock, ArrowRight, Chrome, Github, Shield } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight, Chrome, Shield } from 'lucide-react';
 import ModernAuthLayout from '../components/auth/modern/ModernAuthLayout';
 import { ModernInput } from '../components/auth/modern/ModernInput';
 import { ModernButton } from '../components/auth/modern/ModernButton';
@@ -17,11 +17,7 @@ const signupSchema = z.object({
   password: z.string()
     .min(8, 'Password must be at least 8 characters')
     .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
-  confirmPassword: z.string(),
   agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms and conditions')
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"],
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
@@ -166,18 +162,6 @@ const ModernSignup = () => {
             />
           )}
         </div>
-
-        {/* Confirm Password Field */}
-        <ModernInput
-          {...register('confirmPassword')}
-          label="Confirm password"
-          type="password"
-          icon={Lock}
-          placeholder="Confirm your password"
-          showPasswordToggle
-          error={errors.confirmPassword?.message}
-          autoComplete="new-password"
-        />
 
         {/* Terms and Conditions */}
         <div className="space-y-4">

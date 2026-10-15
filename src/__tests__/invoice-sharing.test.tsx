@@ -2,14 +2,24 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
-import { sharedInvoiceService } from '@/services/supabaseService';
+import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { Invoice } from '@/types';
+
+vi.mock('@/features/invoices/api/invoicesApi', () => ({
+  invoicesApi: {
+    share: vi.fn(),
+    getShared: vi.fn(),
+  },
+}));
 
 // Mock the supabase service
 vi.mock('@/services/supabaseService', () => ({
   sharedInvoiceService: {
     createSharedInvoice: vi.fn(),
     getSharedInvoiceByToken: vi.fn(),
+  },
+  businessProfileService: {
+    getBusinessProfile: vi.fn().mockResolvedValue(null),
   },
 }));
 
@@ -82,6 +92,8 @@ describe('Invoice Sharing Feature', () => {
 
     it('allows template selection', async () => {
       renderShareModal();
+
+      fireEvent.click(screen.getByText('Change'));
       
       const templateSelect = screen.getByRole('combobox');
       fireEvent.click(templateSelect);
@@ -103,19 +115,11 @@ describe('Invoice Sharing Feature', () => {
     });
 
     it('creates share link when button is clicked', async () => {
-      const mockSharedInvoice = {
-        id: 'shared-id',
+      vi.mocked(invoicesApi.share).mockResolvedValue({
         shareToken: 'test-token-123',
-        originalInvoiceId: 'test-invoice-id',
-        invoiceData: mockInvoice,
-        templateData: { templateName: 'classic', businessProfile: {} },
-        createdAt: '2024-01-01',
-        accessCount: 0,
+        expiresAt: null,
         isActive: true,
-        createdBy: 'user-id',
-      };
-
-      vi.mocked(sharedInvoiceService.createSharedInvoice).mockResolvedValue(mockSharedInvoice);
+      });
 
       renderShareModal();
       
@@ -123,28 +127,19 @@ describe('Invoice Sharing Feature', () => {
       fireEvent.click(generateButton);
 
       await waitFor(() => {
-        expect(sharedInvoiceService.createSharedInvoice).toHaveBeenCalledWith(
-          'test-invoice-id',
-          'classic',
-          undefined
-        );
+        expect(invoicesApi.share).toHaveBeenCalledWith('test-invoice-id', {
+          templateName: 'classic',
+          expiresAt: undefined,
+        });
       });
     });
 
     it('displays share URL after generation', async () => {
-      const mockSharedInvoice = {
-        id: 'shared-id',
+      vi.mocked(invoicesApi.share).mockResolvedValue({
         shareToken: 'test-token-123',
-        originalInvoiceId: 'test-invoice-id',
-        invoiceData: mockInvoice,
-        templateData: { templateName: 'classic', businessProfile: {} },
-        createdAt: '2024-01-01',
-        accessCount: 0,
+        expiresAt: null,
         isActive: true,
-        createdBy: 'user-id',
-      };
-
-      vi.mocked(sharedInvoiceService.createSharedInvoice).mockResolvedValue(mockSharedInvoice);
+      });
 
       renderShareModal();
       

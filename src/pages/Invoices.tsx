@@ -3,8 +3,11 @@ import { useAppData } from '@/hooks/useAppData';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, getStatusColor, formatDate } from '@/utils/invoiceUtils';
 import { Button } from '@/components/ui/button';
-import { Plus, ChevronRight, Calendar, DollarSign, Edit, Trash2, Copy, Loader2, Share2, Filter, X, Search, ChevronDown, RefreshCw, Clock } from 'lucide-react';
+import { Plus, ChevronRight, Calendar, DollarSign, Edit, Trash2, Copy, Loader2, Share2, Filter, X, Search, ChevronDown, RefreshCw, Clock, Upload } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ContentPanel } from '@/components/ui/ContentPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription, DialogClose, DialogTrigger } from '@/components/ui/dialog';
@@ -365,27 +368,44 @@ const Invoices = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 mt-5">
-        <div className="flex justify-between items-center">
-          <h1 className="text-3xl font-bold">Invoices</h1>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={handleManualRefresh}
-              disabled={isRefreshing || isLoadingInvoices}
-              className="flex items-center gap-2"
-            >
-              <RefreshCw size={16} className={isRefreshing ? "animate-spin" : ""} />
-              {isMobile ? "" : "Refresh"}
-            </Button>
-            <Button className="flex items-center gap-2 bg-invoice-teal hover:bg-invoice-teal/90" asChild>
+      <PageHeader
+        title="Invoices"
+        actions={
+          invoices.length > 0 ? (
+            <Button asChild>
               <Link to="/invoices/new">
                 <Plus size={18} />
                 <span>New Invoice</span>
               </Link>
             </Button>
-          </div>
-        </div>
+          ) : undefined
+        }
+      />
+
+      {invoices.length === 0 ? (
+        <EmptyState
+          variant="panel"
+          title="Here's how to get started"
+          description="Create a draft invoice, or import bank transactions to match later."
+          actions={[
+            {
+              icon: Plus,
+              title: 'Create invoice',
+              subtitle: 'Add a customer, line items, and send when you are ready.',
+              to: '/invoices/new',
+              testId: 'empty-create-invoice',
+            },
+            {
+              icon: Upload,
+              title: 'Import transactions',
+              subtitle: 'Upload a statement and we will help you reconcile payments.',
+              to: '/transaction-import',
+            },
+          ]}
+        />
+      ) : (
+      <>
+      <div className="flex flex-col gap-4">
 
         {/* Search and Quick Filters */}
         <div className="flex flex-col gap-3">
@@ -591,9 +611,7 @@ const Invoices = () => {
       {isMobile ? (
         <div className="grid grid-cols-1 gap-4">
           {filteredAndSortedInvoices.length === 0 ? (
-            <Card className="flex items-center justify-center h-32 text-muted-foreground">
-              {invoices.length === 0 ? 'No invoices found. Create your first invoice to get started.' : 'No invoices match your filters.'}
-            </Card>
+            <p className="py-10 text-center text-muted-foreground">No invoices match your filters.</p>
           ) : (
             filteredAndSortedInvoices.map((invoice) => (
               <Card key={invoice.id} className="overflow-hidden">
@@ -711,7 +729,7 @@ const Invoices = () => {
           )}
         </div>
       ) : (
-        <Card className="overflow-hidden">
+        <ContentPanel padded={false} className="overflow-hidden">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
@@ -728,8 +746,8 @@ const Invoices = () => {
               <TableBody>
                 {filteredAndSortedInvoices.length === 0 ? (
                   <TableRow>
-                    <TableCell colSpan={7} className="text-center text-muted-foreground">
-                      {invoices.length === 0 ? 'No invoices found. Create your first invoice to get started.' : 'No invoices match your filters.'}
+                    <TableCell colSpan={7} className="text-center text-muted-foreground py-10">
+                      No invoices match your filters.
                     </TableCell>
                   </TableRow>
                 ) : (
@@ -820,7 +838,9 @@ const Invoices = () => {
               </TableBody>
             </Table>
           </div>
-        </Card>
+        </ContentPanel>
+      )}
+      </>
       )}
 
       {/* Delete Confirmation Dialog */}

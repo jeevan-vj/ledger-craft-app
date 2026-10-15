@@ -2,12 +2,12 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ExpenseFormDrawer from '../ExpenseFormDrawer';
-import { useAppContext } from '@/context/AppContext';
-import { mockExpenseCategories, mockAccounts, mockCustomers } from '@/test/fixtures/expenseFixtures';
+import { useAppData } from '@/hooks/useAppData';
+import { mockExpenseCategory } from '@/test/fixtures/expenseFixtures';
 
 // Mock the context
-vi.mock('@/context/AppContext', () => ({
-  useAppContext: vi.fn(),
+vi.mock('@/hooks/useAppData', () => ({
+  useAppData: vi.fn(),
 }));
 
 // Mock the toast hook
@@ -18,9 +18,28 @@ vi.mock('@/hooks/use-toast', () => ({
 }));
 
 const mockContextValue = {
-  expenseCategories: mockExpenseCategories,
-  accounts: mockAccounts,
-  customers: mockCustomers,
+  expenseCategories: [mockExpenseCategory],
+  accounts: [{
+    id: 'acc-1',
+    name: 'Business account',
+    type: 'bank' as const,
+    currency: 'NZD',
+    openingBalance: 0,
+    currentBalance: 0,
+  }],
+  customers: [{
+    id: 'cust-1',
+    name: 'Test customer',
+    email: 'customer@example.com',
+    address: null,
+    city: null,
+    state: null,
+    zip: null,
+    country: 'NZ',
+    phone: null,
+    isVip: false,
+    tags: [],
+  }],
   isLoadingExpenseCategories: false,
   isLoadingAccounts: false,
   isLoadingCustomers: false,
@@ -32,7 +51,7 @@ describe('ExpenseFormDrawer', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useAppContext).mockReturnValue(mockContextValue);
+    vi.mocked(useAppData).mockReturnValue(mockContextValue as ReturnType<typeof useAppData>);
   });
 
   const defaultProps = {
@@ -44,9 +63,9 @@ describe('ExpenseFormDrawer', () => {
   it('renders the form when open', () => {
     render(<ExpenseFormDrawer {...defaultProps} />);
     
-    expect(screen.getByText('Create Expense')).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Create Expense' })).toBeInTheDocument();
     expect(screen.getByLabelText(/description/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/amount/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/^amount \*$/i)).toBeInTheDocument();
   });
 
   it('shows edit title when editing existing expense', () => {
@@ -75,7 +94,7 @@ describe('ExpenseFormDrawer', () => {
     render(<ExpenseFormDrawer {...defaultProps} />);
     
     const descriptionInput = screen.getByLabelText(/description/i);
-    const amountInput = screen.getByLabelText(/amount/i);
+    const amountInput = screen.getByLabelText(/^amount \*$/i);
     const submitButton = screen.getByRole('button', { name: /create expense/i });
 
     fireEvent.change(descriptionInput, { target: { value: 'Test expense' } });
@@ -88,6 +107,11 @@ describe('ExpenseFormDrawer', () => {
         expect.objectContaining({
           description: 'Test expense',
           amount: 150.50,
+          currency: 'NZD',
+          gstTreatment: 'standard',
+          gstExemptionReason: 'none',
+          gstClaimablePercentage: 100,
+          privateUsePercentage: 0,
         })
       );
     });
@@ -126,11 +150,10 @@ describe('ExpenseFormDrawer', () => {
   it('shows customer field when isBillable is true', async () => {
     render(<ExpenseFormDrawer {...defaultProps} />);
     
-    const billableSwitch = screen.getByRole('switch');
-    fireEvent.click(billableSwitch);
+    fireEvent.click(screen.getByRole('button', { name: /client billing/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/customer/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/^customer \*$/i)).toBeInTheDocument();
     });
   });
 
@@ -158,7 +181,7 @@ describe('ExpenseFormDrawer', () => {
     render(<ExpenseFormDrawer {...defaultProps} />);
     
     const descriptionInput = screen.getByLabelText(/description/i);
-    const amountInput = screen.getByLabelText(/amount/i);
+    const amountInput = screen.getByLabelText(/^amount \*$/i);
     const submitButton = screen.getByRole('button', { name: /create expense/i });
 
     fireEvent.change(descriptionInput, { target: { value: 'Test' } });

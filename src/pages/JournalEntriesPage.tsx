@@ -14,6 +14,7 @@ import { JournalEntry } from '@/types/payment';
 import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, subMonths, subQuarters } from 'date-fns';
 import { useAuth } from "@/context/StableAuthContext";
 import { supabaseDataService } from '@/services/supabaseDataService';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 interface JournalEntryFormData {
   description: string;
@@ -287,12 +288,10 @@ export default function JournalEntriesPage() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Journal Entries</h1>
-          <p className="text-muted-foreground">
-            Manage and track all accounting journal entries
-          </p>
-        </div>
+        <PageHeader
+          title="Journal Entries"
+          description="Manage and track all accounting journal entries"
+        />
         
         <div className="flex items-center gap-3">
           <Button

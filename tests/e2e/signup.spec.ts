@@ -5,7 +5,6 @@ const validUser = {
   fullName: 'John Doe',
   email: `test+${Date.now()}@example.com`, // Unique email for each test run
   password: 'SecurePass123',
-  confirmPassword: 'SecurePass123'
 };
 
 const invalidPasswords = [
@@ -29,13 +28,12 @@ test.describe('Sign Up Flow', () => {
     await expect(page.locator('input[name="fullName"]')).toBeVisible();
     await expect(page.locator('input[name="email"]')).toBeVisible();
     await expect(page.locator('input[name="password"]')).toBeVisible();
-    await expect(page.locator('input[name="confirmPassword"]')).toBeVisible();
+    await expect(page.locator('input[name="confirmPassword"]')).toHaveCount(0);
     
     // Verify placeholders - first field is autofocused so has empty placeholder, others show placeholders
-    await expect(page.locator('input[name="fullName"]')).toHaveAttribute('placeholder', ''); // Autofocused
+    await expect(page.locator('input[name="fullName"]')).toHaveAttribute('placeholder', 'Enter your full name');
     await expect(page.locator('input[name="email"]')).toHaveAttribute('placeholder', 'Enter your email');
     await expect(page.locator('input[name="password"]')).toHaveAttribute('placeholder', 'Create a password');
-    await expect(page.locator('input[name="confirmPassword"]')).toHaveAttribute('placeholder', 'Confirm your password');
     
     // Check terms checkbox
     await expect(page.getByRole('checkbox')).toBeVisible();
@@ -54,18 +52,16 @@ test.describe('Sign Up Flow', () => {
     const nameInput = page.locator('input[name="fullName"]');
     const emailInput = page.locator('input[name="email"]');
     const passwordInput = page.locator('input[name="password"]');
-    const confirmPasswordInput = page.locator('input[name="confirmPassword"]');
     
     await expect(nameInput).toBeVisible();
     await expect(emailInput).toBeVisible();
     await expect(passwordInput).toBeVisible();
-    await expect(confirmPasswordInput).toBeVisible();
+    await expect(page.locator('input[name="confirmPassword"]')).toHaveCount(0);
     
     // Test initial placeholder behavior - first field is autofocused so placeholder is empty
-    await expect(nameInput).toHaveAttribute('placeholder', ''); // Autofocused, so placeholder is hidden
+    await expect(nameInput).toHaveAttribute('placeholder', 'Enter your full name');
     await expect(emailInput).toHaveAttribute('placeholder', 'Enter your email');
     await expect(passwordInput).toHaveAttribute('placeholder', 'Create a password');
-    await expect(confirmPasswordInput).toHaveAttribute('placeholder', 'Confirm your password');
     
     // Test that placeholder disappears when focused (better UX with floating label)
     await nameInput.focus();
@@ -144,7 +140,6 @@ test.describe('Sign Up Flow', () => {
         await page.locator('input[name="fullName"]').fill(validUser.fullName);
         await page.locator('input[name="email"]').fill(validUser.email);
         await page.locator('input[name="password"]').fill(password);
-        await page.locator('input[name="confirmPassword"]').fill(password);
         
         // Try to submit
         await page.getByRole('button', { name: /create account/i }).click();
@@ -155,27 +150,11 @@ test.describe('Sign Up Flow', () => {
     });
   });
 
-  test('should validate password confirmation match', async ({ page }) => {
-    // Fill form with mismatched passwords
-    await page.locator('input[name="fullName"]').fill(validUser.fullName);
-    await page.locator('input[name="email"]').fill(validUser.email);
-    await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill('DifferentPassword123');
-    await page.getByRole('checkbox').check();
-    
-    // Try to submit
-    await page.getByRole('button', { name: /create account/i }).click();
-    
-    // Should show password mismatch error
-    await expect(page.getByText(/passwords do not match/i)).toBeVisible();
-  });
-
   test('should validate email format', async ({ page }) => {
     // Fill form with invalid email
     await page.locator('input[name="fullName"]').fill(validUser.fullName);
     await page.locator('input[name="email"]').fill('invalid-email');
     await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill(validUser.confirmPassword);
     await page.getByRole('checkbox').check();
     
     // Try to submit
@@ -190,7 +169,6 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="fullName"]').fill(validUser.fullName);
     await page.locator('input[name="email"]').fill(validUser.email);
     await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill(validUser.confirmPassword);
     
     // Try to submit without checking terms
     await page.getByRole('button', { name: /create account/i }).click();
@@ -213,7 +191,6 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="fullName"]').fill(validUser.fullName);
     await page.locator('input[name="email"]').fill(validUser.email);
     await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill(validUser.confirmPassword);
     await page.getByRole('checkbox').check();
     
     // Mock slow network response to see loading state
@@ -252,7 +229,6 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="fullName"]').fill(validUser.fullName);
     await page.locator('input[name="email"]').fill(validUser.email);
     await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill(validUser.confirmPassword);
     await page.getByRole('checkbox').check();
     
     await page.getByRole('button', { name: /create account/i }).click();
@@ -277,7 +253,6 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="fullName"]').fill(validUser.fullName);
     await page.locator('input[name="email"]').fill(validUser.email);
     await page.locator('input[name="password"]').fill(validUser.password);
-    await page.locator('input[name="confirmPassword"]').fill(validUser.confirmPassword);
     await page.getByRole('checkbox').check();
     
     await page.getByRole('button', { name: /create account/i }).click();

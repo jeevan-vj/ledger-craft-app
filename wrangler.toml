@@ -1,0 +1,6 @@
+name = "ledger-craft-app"
+compatibility_date = "2026-09-08"
+pages_build_output_dir = "dist"
+
+[vars]
+API_ORIGIN = "https://ledgercraft-api.jeevan90wijerathna.workers.dev"

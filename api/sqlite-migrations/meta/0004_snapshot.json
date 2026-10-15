@@ -1,0 +1,6215 @@
+{
+  "version": "6",
+  "dialect": "sqlite",
+  "id": "411a937f-fcb1-4d3f-a6c3-5f3e8b9b2867",
+  "prevId": "9c182785-b268-479c-a9b0-f9ed2db5cb84",
+  "tables": {
+    "account_contacts": {
+      "name": "account_contacts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organization": {
+          "name": "organization",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "account_contacts_org_id_uidx": {
+          "name": "account_contacts_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "account_contacts_org_idx": {
+          "name": "account_contacts_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "account_contacts_organisation_id_organisations_id_fk": {
+          "name": "account_contacts_organisation_id_organisations_id_fk",
+          "tableFrom": "account_contacts",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "account_contacts_user_id_users_id_fk": {
+          "name": "account_contacts_user_id_users_id_fk",
+          "tableFrom": "account_contacts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "account_templates": {
+      "name": "account_templates",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_class": {
+          "name": "account_class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_type": {
+          "name": "account_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "normal_balance": {
+          "name": "normal_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_system": {
+          "name": "is_system",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "country_code": {
+          "name": "country_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZ'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "account_templates_countryCode_accountNumber_uidx": {
+          "name": "account_templates_countryCode_accountNumber_uidx",
+          "columns": [
+            "country_code",
+            "account_number"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "account_templates_normal_balance_check": {
+          "name": "account_templates_normal_balance_check",
+          "value": "normal_balance IN ('debit', 'credit')"
+        }
+      }
+    },
+    "accounts": {
+      "name": "accounts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZD'"
+        },
+        "opening_balance": {
+          "name": "opening_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "current_balance": {
+          "name": "current_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "account_class": {
+          "name": "account_class",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "normal_balance": {
+          "name": "normal_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "parent_account_id": {
+          "name": "parent_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "accounts_org_id_uidx": {
+          "name": "accounts_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "accounts_org_idx": {
+          "name": "accounts_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "accounts_organisation_id_organisations_id_fk": {
+          "name": "accounts_organisation_id_organisations_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "accounts_user_id_users_id_fk": {
+          "name": "accounts_user_id_users_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "accounts_organisation_id_parent_account_id_accounts_organisation_id_id_fk": {
+          "name": "accounts_organisation_id_parent_account_id_accounts_organisation_id_id_fk",
+          "tableFrom": "accounts",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "parent_account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "accounts_normal_balance_check": {
+          "name": "accounts_normal_balance_check",
+          "value": "normal_balance IN ('debit', 'credit')"
+        }
+      }
+    },
+    "journal_entries": {
+      "name": "journal_entries",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entry_number": {
+          "name": "entry_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "entry_date": {
+          "name": "entry_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reference_type": {
+          "name": "reference_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reference_id": {
+          "name": "reference_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total_amount": {
+          "name": "total_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'posted'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "journal_entries_org_id_uidx": {
+          "name": "journal_entries_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "journal_entries_org_idx": {
+          "name": "journal_entries_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        },
+        "journal_entries_organisationId_entryNumber_uidx": {
+          "name": "journal_entries_organisationId_entryNumber_uidx",
+          "columns": [
+            "organisation_id",
+            "entry_number"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "journal_entries_organisation_id_organisations_id_fk": {
+          "name": "journal_entries_organisation_id_organisations_id_fk",
+          "tableFrom": "journal_entries",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "journal_entries_user_id_users_id_fk": {
+          "name": "journal_entries_user_id_users_id_fk",
+          "tableFrom": "journal_entries",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "journal_entries_total_amount_check": {
+          "name": "journal_entries_total_amount_check",
+          "value": "total_amount <> '' AND total_amount NOT GLOB '*[^0-9.]*' AND total_amount GLOB '[0-9]*' AND total_amount NOT LIKE '%.' AND length(total_amount) - length(replace(total_amount, '.', '')) <= 1"
+        },
+        "journal_entries_status_check": {
+          "name": "journal_entries_status_check",
+          "value": "status IN ('draft', 'posted', 'reversed')"
+        }
+      }
+    },
+    "journal_entry_lines": {
+      "name": "journal_entry_lines",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "journal_entry_id": {
+          "name": "journal_entry_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "debit_amount": {
+          "name": "debit_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "credit_amount": {
+          "name": "credit_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "line_order": {
+          "name": "line_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "journal_entry_lines_org_id_uidx": {
+          "name": "journal_entry_lines_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "journal_entry_lines_org_idx": {
+          "name": "journal_entry_lines_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "journal_entry_lines_organisation_id_organisations_id_fk": {
+          "name": "journal_entry_lines_organisation_id_organisations_id_fk",
+          "tableFrom": "journal_entry_lines",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "journal_entry_lines_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk": {
+          "name": "journal_entry_lines_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk",
+          "tableFrom": "journal_entry_lines",
+          "tableTo": "journal_entries",
+          "columnsFrom": [
+            "organisation_id",
+            "journal_entry_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "journal_entry_lines_organisation_id_account_id_accounts_organisation_id_id_fk": {
+          "name": "journal_entry_lines_organisation_id_account_id_accounts_organisation_id_id_fk",
+          "tableFrom": "journal_entry_lines",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "journal_entry_lines_debit_amount_check": {
+          "name": "journal_entry_lines_debit_amount_check",
+          "value": "debit_amount <> '' AND debit_amount NOT GLOB '*[^0-9.]*' AND debit_amount GLOB '[0-9]*' AND debit_amount NOT LIKE '%.' AND length(debit_amount) - length(replace(debit_amount, '.', '')) <= 1"
+        },
+        "journal_entry_lines_credit_amount_check": {
+          "name": "journal_entry_lines_credit_amount_check",
+          "value": "credit_amount <> '' AND credit_amount NOT GLOB '*[^0-9.]*' AND credit_amount GLOB '[0-9]*' AND credit_amount NOT LIKE '%.' AND length(credit_amount) - length(replace(credit_amount, '.', '')) <= 1"
+        }
+      }
+    },
+    "bank_accounts": {
+      "name": "bank_accounts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_name": {
+          "name": "account_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_number": {
+          "name": "account_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_name": {
+          "name": "bank_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_type": {
+          "name": "account_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZD'"
+        },
+        "opening_balance": {
+          "name": "opening_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "current_balance": {
+          "name": "current_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "bank_accounts_org_id_uidx": {
+          "name": "bank_accounts_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "bank_accounts_org_idx": {
+          "name": "bank_accounts_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bank_accounts_organisation_id_organisations_id_fk": {
+          "name": "bank_accounts_organisation_id_organisations_id_fk",
+          "tableFrom": "bank_accounts",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bank_accounts_user_id_users_id_fk": {
+          "name": "bank_accounts_user_id_users_id_fk",
+          "tableFrom": "bank_accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "bank_accounts_account_type_check": {
+          "name": "bank_accounts_account_type_check",
+          "value": "account_type IN ('checking', 'savings', 'credit_card', 'business')"
+        }
+      }
+    },
+    "bank_transactions": {
+      "name": "bank_transactions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_account_id": {
+          "name": "bank_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "transaction_date": {
+          "name": "transaction_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reference": {
+          "name": "reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "balance": {
+          "name": "balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "category": {
+          "name": "category",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "merchant": {
+          "name": "merchant",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_reconciled": {
+          "name": "is_reconciled",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "bank_transactions_org_id_uidx": {
+          "name": "bank_transactions_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "bank_transactions_org_idx": {
+          "name": "bank_transactions_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bank_transactions_organisation_id_organisations_id_fk": {
+          "name": "bank_transactions_organisation_id_organisations_id_fk",
+          "tableFrom": "bank_transactions",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bank_transactions_user_id_users_id_fk": {
+          "name": "bank_transactions_user_id_users_id_fk",
+          "tableFrom": "bank_transactions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bank_transactions_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk": {
+          "name": "bank_transactions_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk",
+          "tableFrom": "bank_transactions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "bank_transactions_type_check": {
+          "name": "bank_transactions_type_check",
+          "value": "type IN ('debit', 'credit')"
+        }
+      }
+    },
+    "transaction_import_batches": {
+      "name": "transaction_import_batches",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_account_id": {
+          "name": "bank_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_name": {
+          "name": "file_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_type": {
+          "name": "file_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "file_size": {
+          "name": "file_size",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total_rows": {
+          "name": "total_rows",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "imported_count": {
+          "name": "imported_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "duplicates_skipped": {
+          "name": "duplicates_skipped",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "errors_count": {
+          "name": "errors_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "earliest_date": {
+          "name": "earliest_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "latest_date": {
+          "name": "latest_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'completed'"
+        },
+        "error_message": {
+          "name": "error_message",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "completed_at": {
+          "name": "completed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "transaction_import_batches_org_id_uidx": {
+          "name": "transaction_import_batches_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "transaction_import_batches_org_idx": {
+          "name": "transaction_import_batches_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "transaction_import_batches_organisation_id_organisations_id_fk": {
+          "name": "transaction_import_batches_organisation_id_organisations_id_fk",
+          "tableFrom": "transaction_import_batches",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transaction_import_batches_user_id_users_id_fk": {
+          "name": "transaction_import_batches_user_id_users_id_fk",
+          "tableFrom": "transaction_import_batches",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "transaction_import_batches_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk": {
+          "name": "transaction_import_batches_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk",
+          "tableFrom": "transaction_import_batches",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "transaction_import_batches_file_type_check": {
+          "name": "transaction_import_batches_file_type_check",
+          "value": "file_type IN ('csv', 'ofx', 'qif', 'pdf')"
+        },
+        "transaction_import_batches_status_check": {
+          "name": "transaction_import_batches_status_check",
+          "value": "status IN ('processing', 'completed', 'failed', 'partially_failed')"
+        }
+      }
+    },
+    "business_profiles": {
+      "name": "business_profiles",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "zip": {
+          "name": "zip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZ'"
+        },
+        "tax_id": {
+          "name": "tax_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "logo_url": {
+          "name": "logo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "website": {
+          "name": "website",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "default_tax_rate": {
+          "name": "default_tax_rate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "default_terms": {
+          "name": "default_terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payment_term_days": {
+          "name": "payment_term_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 30
+        },
+        "default_notes": {
+          "name": "default_notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "bank_info": {
+          "name": "bank_info",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "bank_account_name": {
+          "name": "bank_account_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "bank_account_number": {
+          "name": "bank_account_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "theme": {
+          "name": "theme",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "invoice_number_format": {
+          "name": "invoice_number_format",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "invoice_number_sequence": {
+          "name": "invoice_number_sequence",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "business_profiles_org_id_uidx": {
+          "name": "business_profiles_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "business_profiles_org_idx": {
+          "name": "business_profiles_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        },
+        "business_profiles_organisationId_uidx": {
+          "name": "business_profiles_organisationId_uidx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "business_profiles_organisation_id_organisations_id_fk": {
+          "name": "business_profiles_organisation_id_organisations_id_fk",
+          "tableFrom": "business_profiles",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "business_profiles_user_id_users_id_fk": {
+          "name": "business_profiles_user_id_users_id_fk",
+          "tableFrom": "business_profiles",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "business_profiles_payment_term_days_check": {
+          "name": "business_profiles_payment_term_days_check",
+          "value": "payment_term_days >= 0 AND payment_term_days <= 365"
+        }
+      }
+    },
+    "conversation_messages": {
+      "name": "conversation_messages",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "conversation_id": {
+          "name": "conversation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "content": {
+          "name": "content",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "metadata": {
+          "name": "metadata",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "conversation_messages_org_id_uidx": {
+          "name": "conversation_messages_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "conversation_messages_org_idx": {
+          "name": "conversation_messages_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "conversation_messages_organisation_id_organisations_id_fk": {
+          "name": "conversation_messages_organisation_id_organisations_id_fk",
+          "tableFrom": "conversation_messages",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "conversation_messages_organisation_id_conversation_id_conversations_organisation_id_id_fk": {
+          "name": "conversation_messages_organisation_id_conversation_id_conversations_organisation_id_id_fk",
+          "tableFrom": "conversation_messages",
+          "tableTo": "conversations",
+          "columnsFrom": [
+            "organisation_id",
+            "conversation_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "conversation_messages_role_check": {
+          "name": "conversation_messages_role_check",
+          "value": "role IN ('user', 'assistant', 'system')"
+        }
+      }
+    },
+    "conversations": {
+      "name": "conversations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "context": {
+          "name": "context",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "conversations_org_id_uidx": {
+          "name": "conversations_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "conversations_org_idx": {
+          "name": "conversations_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "conversations_organisation_id_organisations_id_fk": {
+          "name": "conversations_organisation_id_organisations_id_fk",
+          "tableFrom": "conversations",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "conversations_user_id_users_id_fk": {
+          "name": "conversations_user_id_users_id_fk",
+          "tableFrom": "conversations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "conversations_status_check": {
+          "name": "conversations_status_check",
+          "value": "status IN ('active', 'completed', 'paused')"
+        }
+      }
+    },
+    "customers": {
+      "name": "customers",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "city": {
+          "name": "city",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "zip": {
+          "name": "zip",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "country": {
+          "name": "country",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZ'"
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_vip": {
+          "name": "is_vip",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tags": {
+          "name": "tags",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "customers_org_id_uidx": {
+          "name": "customers_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "customers_org_idx": {
+          "name": "customers_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "customers_organisation_id_organisations_id_fk": {
+          "name": "customers_organisation_id_organisations_id_fk",
+          "tableFrom": "customers",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "customers_user_id_users_id_fk": {
+          "name": "customers_user_id_users_id_fk",
+          "tableFrom": "customers",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "expense_categories": {
+      "name": "expense_categories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "color": {
+          "name": "color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "expense_categories_org_id_uidx": {
+          "name": "expense_categories_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "expense_categories_org_idx": {
+          "name": "expense_categories_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "expense_categories_organisation_id_organisations_id_fk": {
+          "name": "expense_categories_organisation_id_organisations_id_fk",
+          "tableFrom": "expense_categories",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "expense_categories_user_id_users_id_fk": {
+          "name": "expense_categories_user_id_users_id_fk",
+          "tableFrom": "expense_categories",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "expenses": {
+      "name": "expenses",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "vendor_name": {
+          "name": "vendor_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "receipt_url": {
+          "name": "receipt_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expense_date": {
+          "name": "expense_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "is_billable": {
+          "name": "is_billable",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tax_amount": {
+          "name": "tax_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZD'"
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "gst_treatment": {
+          "name": "gst_treatment",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'standard'"
+        },
+        "gst_exemption_reason": {
+          "name": "gst_exemption_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'none'"
+        },
+        "gst_claimable_percentage": {
+          "name": "gst_claimable_percentage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 100
+        },
+        "private_use_percentage": {
+          "name": "private_use_percentage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "expenses_org_id_uidx": {
+          "name": "expenses_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "expenses_org_idx": {
+          "name": "expenses_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "expenses_organisation_id_organisations_id_fk": {
+          "name": "expenses_organisation_id_organisations_id_fk",
+          "tableFrom": "expenses",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "expenses_user_id_users_id_fk": {
+          "name": "expenses_user_id_users_id_fk",
+          "tableFrom": "expenses",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "expenses_organisation_id_category_id_expense_categories_organisation_id_id_fk": {
+          "name": "expenses_organisation_id_category_id_expense_categories_organisation_id_id_fk",
+          "tableFrom": "expenses",
+          "tableTo": "expense_categories",
+          "columnsFrom": [
+            "organisation_id",
+            "category_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "expenses_organisation_id_account_id_accounts_organisation_id_id_fk": {
+          "name": "expenses_organisation_id_account_id_accounts_organisation_id_id_fk",
+          "tableFrom": "expenses",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "expenses_organisation_id_customer_id_customers_organisation_id_id_fk": {
+          "name": "expenses_organisation_id_customer_id_customers_organisation_id_id_fk",
+          "tableFrom": "expenses",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "organisation_id",
+            "customer_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "expenses_amount_check": {
+          "name": "expenses_amount_check",
+          "value": "amount <> '' AND amount NOT GLOB '*[^0-9.]*' AND amount GLOB '[0-9]*' AND amount NOT LIKE '%.' AND length(amount) - length(replace(amount, '.', '')) <= 1"
+        },
+        "expenses_tax_amount_check": {
+          "name": "expenses_tax_amount_check",
+          "value": "tax_amount <> '' AND tax_amount NOT GLOB '*[^0-9.]*' AND tax_amount GLOB '[0-9]*' AND tax_amount NOT LIKE '%.' AND length(tax_amount) - length(replace(tax_amount, '.', '')) <= 1"
+        },
+        "expenses_status_check": {
+          "name": "expenses_status_check",
+          "value": "status IN ('pending', 'approved', 'rejected')"
+        },
+        "expenses_gst_treatment_check": {
+          "name": "expenses_gst_treatment_check",
+          "value": "gst_treatment IN ('standard', 'zero_rated', 'exempt', 'partial', 'private_use')"
+        },
+        "expenses_gst_exemption_reason_check": {
+          "name": "expenses_gst_exemption_reason_check",
+          "value": "gst_exemption_reason IN ('none', 'motor_vehicle', 'financial_services', 'residential_rent', 'insurance_life', 'exported_services', 'entertainment_50', 'home_office', 'second_hand_goods', 'other_exempt')"
+        },
+        "expenses_gst_claimable_percentage_check": {
+          "name": "expenses_gst_claimable_percentage_check",
+          "value": "gst_claimable_percentage >= 0 AND gst_claimable_percentage <= 100"
+        },
+        "expenses_private_use_percentage_check": {
+          "name": "expenses_private_use_percentage_check",
+          "value": "private_use_percentage >= 0 AND private_use_percentage <= 100"
+        }
+      }
+    },
+    "idempotency_keys": {
+      "name": "idempotency_keys",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "method": {
+          "name": "method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "path": {
+          "name": "path",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "request_hash": {
+          "name": "request_hash",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "response_status": {
+          "name": "response_status",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "response_body": {
+          "name": "response_body",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "idempotency_keys_scope": {
+          "name": "idempotency_keys_scope",
+          "columns": [
+            "organisation_id",
+            "user_id",
+            "method",
+            "path",
+            "key"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "idempotency_keys_organisation_id_organisations_id_fk": {
+          "name": "idempotency_keys_organisation_id_organisations_id_fk",
+          "tableFrom": "idempotency_keys",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "idempotency_keys_user_id_users_id_fk": {
+          "name": "idempotency_keys_user_id_users_id_fk",
+          "tableFrom": "idempotency_keys",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "auth_accounts": {
+      "name": "auth_accounts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "issuer": {
+          "name": "issuer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'credential'"
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "access_token": {
+          "name": "access_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "refresh_token": {
+          "name": "refresh_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "id_token": {
+          "name": "id_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "access_token_expires_at": {
+          "name": "access_token_expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "refresh_token_expires_at": {
+          "name": "refresh_token_expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "scope": {
+          "name": "scope",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "password": {
+          "name": "password",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "auth_accounts_provider_account_id_uidx": {
+          "name": "auth_accounts_provider_account_id_uidx",
+          "columns": [
+            "provider_id",
+            "account_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "auth_accounts_user_id_users_id_fk": {
+          "name": "auth_accounts_user_id_users_id_fk",
+          "tableFrom": "auth_accounts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "organisation_memberships": {
+      "name": "organisation_memberships",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "role": {
+          "name": "role",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'owner'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "organisation_memberships_org_id_uidx": {
+          "name": "organisation_memberships_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "organisation_memberships_org_idx": {
+          "name": "organisation_memberships_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        },
+        "organisation_memberships_organisationId_userId_uidx": {
+          "name": "organisation_memberships_organisationId_userId_uidx",
+          "columns": [
+            "organisation_id",
+            "user_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "organisation_memberships_organisation_id_organisations_id_fk": {
+          "name": "organisation_memberships_organisation_id_organisations_id_fk",
+          "tableFrom": "organisation_memberships",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "organisation_memberships_user_id_users_id_fk": {
+          "name": "organisation_memberships_user_id_users_id_fk",
+          "tableFrom": "organisation_memberships",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "organisations": {
+      "name": "organisations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "sessions": {
+      "name": "sessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "token": {
+          "name": "token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "ip_address": {
+          "name": "ip_address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_agent": {
+          "name": "user_agent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "sessions_token_unique": {
+          "name": "sessions_token_unique",
+          "columns": [
+            "token"
+          ],
+          "isUnique": true
+        },
+        "sessions_user_id_idx": {
+          "name": "sessions_user_id_idx",
+          "columns": [
+            "user_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "sessions_user_id_users_id_fk": {
+          "name": "sessions_user_id_users_id_fk",
+          "tableFrom": "sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "users": {
+      "name": "users",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email_verified": {
+          "name": "email_verified",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "image": {
+          "name": "image",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "users_email_unique": {
+          "name": "users_email_unique",
+          "columns": [
+            "email"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "verifications": {
+      "name": "verifications",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "identifier": {
+          "name": "identifier",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "value": {
+          "name": "value",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "invoices": {
+      "name": "invoices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "invoice_number": {
+          "name": "invoice_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "customer_id": {
+          "name": "customer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "date": {
+          "name": "date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_term_days": {
+          "name": "payment_term_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_amount": {
+          "name": "tax_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "discount_type": {
+          "name": "discount_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'fixed'"
+        },
+        "discount_percent": {
+          "name": "discount_percent",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "discount": {
+          "name": "discount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "additional_charges": {
+          "name": "additional_charges",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "additional_charges_list": {
+          "name": "additional_charges_list",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "additional_charges_total": {
+          "name": "additional_charges_total",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total": {
+          "name": "total",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total_paid": {
+          "name": "total_paid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "balance_due": {
+          "name": "balance_due",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "payment_status": {
+          "name": "payment_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'unpaid'"
+        },
+        "tax_inclusive": {
+          "name": "tax_inclusive",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "terms": {
+          "name": "terms",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZD'"
+        },
+        "template_name": {
+          "name": "template_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "public_viewed_at": {
+          "name": "public_viewed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "invoices_org_id_uidx": {
+          "name": "invoices_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "invoices_org_idx": {
+          "name": "invoices_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        },
+        "invoices_organisationId_invoiceNumber_uidx": {
+          "name": "invoices_organisationId_invoiceNumber_uidx",
+          "columns": [
+            "organisation_id",
+            "invoice_number"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "invoices_organisation_id_organisations_id_fk": {
+          "name": "invoices_organisation_id_organisations_id_fk",
+          "tableFrom": "invoices",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "invoices_user_id_users_id_fk": {
+          "name": "invoices_user_id_users_id_fk",
+          "tableFrom": "invoices",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "invoices_organisation_id_customer_id_customers_organisation_id_id_fk": {
+          "name": "invoices_organisation_id_customer_id_customers_organisation_id_id_fk",
+          "tableFrom": "invoices",
+          "tableTo": "customers",
+          "columnsFrom": [
+            "organisation_id",
+            "customer_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "invoices_subtotal_check": {
+          "name": "invoices_subtotal_check",
+          "value": "subtotal <> '' AND subtotal NOT GLOB '*[^0-9.]*' AND subtotal GLOB '[0-9]*' AND subtotal NOT LIKE '%.' AND length(subtotal) - length(replace(subtotal, '.', '')) <= 1"
+        },
+        "invoices_tax_amount_check": {
+          "name": "invoices_tax_amount_check",
+          "value": "tax_amount <> '' AND tax_amount NOT GLOB '*[^0-9.]*' AND tax_amount GLOB '[0-9]*' AND tax_amount NOT LIKE '%.' AND length(tax_amount) - length(replace(tax_amount, '.', '')) <= 1"
+        },
+        "invoices_total_check": {
+          "name": "invoices_total_check",
+          "value": "total <> '' AND total NOT GLOB '*[^0-9.]*' AND total GLOB '[0-9]*' AND total NOT LIKE '%.' AND length(total) - length(replace(total, '.', '')) <= 1"
+        },
+        "invoices_total_paid_check": {
+          "name": "invoices_total_paid_check",
+          "value": "total_paid <> '' AND total_paid NOT GLOB '*[^0-9.]*' AND total_paid GLOB '[0-9]*' AND total_paid NOT LIKE '%.' AND length(total_paid) - length(replace(total_paid, '.', '')) <= 1"
+        },
+        "invoices_payment_status_check": {
+          "name": "invoices_payment_status_check",
+          "value": "payment_status IN ('unpaid', 'partially_paid', 'paid', 'overdue', 'cancelled')"
+        },
+        "invoices_status_check": {
+          "name": "invoices_status_check",
+          "value": "status IN ('draft', 'sent', 'paid', 'overdue')"
+        },
+        "invoices_discount_type_check": {
+          "name": "invoices_discount_type_check",
+          "value": "discount_type IN ('fixed', 'percent')"
+        },
+        "invoices_payment_term_days_check": {
+          "name": "invoices_payment_term_days_check",
+          "value": "payment_term_days >= 0 AND payment_term_days <= 365"
+        }
+      }
+    },
+    "line_items": {
+      "name": "line_items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "invoice_id": {
+          "name": "invoice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ea'"
+        },
+        "rate": {
+          "name": "rate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rate_unit": {
+          "name": "rate_unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ea'"
+        },
+        "tax": {
+          "name": "tax",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total": {
+          "name": "total",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "line_items_org_id_uidx": {
+          "name": "line_items_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "line_items_org_idx": {
+          "name": "line_items_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "line_items_organisation_id_organisations_id_fk": {
+          "name": "line_items_organisation_id_organisations_id_fk",
+          "tableFrom": "line_items",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "line_items_organisation_id_invoice_id_invoices_organisation_id_id_fk": {
+          "name": "line_items_organisation_id_invoice_id_invoices_organisation_id_id_fk",
+          "tableFrom": "line_items",
+          "tableTo": "invoices",
+          "columnsFrom": [
+            "organisation_id",
+            "invoice_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "line_items_quantity_check": {
+          "name": "line_items_quantity_check",
+          "value": "quantity <> '' AND quantity NOT GLOB '*[^0-9.]*' AND quantity GLOB '[0-9]*' AND quantity NOT LIKE '%.' AND length(quantity) - length(replace(quantity, '.', '')) <= 1 AND trim(quantity, '0.') <> ''"
+        },
+        "line_items_rate_check": {
+          "name": "line_items_rate_check",
+          "value": "rate <> '' AND rate NOT GLOB '*[^0-9.]*' AND rate GLOB '[0-9]*' AND rate NOT LIKE '%.' AND length(rate) - length(replace(rate, '.', '')) <= 1"
+        },
+        "line_items_total_check": {
+          "name": "line_items_total_check",
+          "value": "total <> '' AND total NOT GLOB '*[^0-9.]*' AND total GLOB '[0-9]*' AND total NOT LIKE '%.' AND length(total) - length(replace(total, '.', '')) <= 1"
+        }
+      }
+    },
+    "item_categories": {
+      "name": "item_categories",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "color": {
+          "name": "color",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "item_categories_org_id_uidx": {
+          "name": "item_categories_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "item_categories_org_idx": {
+          "name": "item_categories_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "item_categories_organisation_id_organisations_id_fk": {
+          "name": "item_categories_organisation_id_organisations_id_fk",
+          "tableFrom": "item_categories",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "item_categories_user_id_users_id_fk": {
+          "name": "item_categories_user_id_users_id_fk",
+          "tableFrom": "item_categories",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "items": {
+      "name": "items",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "type": {
+          "name": "type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "category_id": {
+          "name": "category_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "sale_price": {
+          "name": "sale_price",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "purchase_price": {
+          "name": "purchase_price",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tax_rate": {
+          "name": "tax_rate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "enable_sale_info": {
+          "name": "enable_sale_info",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "enable_purchase_info": {
+          "name": "enable_purchase_info",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "unit": {
+          "name": "unit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'ea'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "items_org_id_uidx": {
+          "name": "items_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "items_org_idx": {
+          "name": "items_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "items_organisation_id_organisations_id_fk": {
+          "name": "items_organisation_id_organisations_id_fk",
+          "tableFrom": "items",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "items_user_id_users_id_fk": {
+          "name": "items_user_id_users_id_fk",
+          "tableFrom": "items",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "items_organisation_id_category_id_item_categories_organisation_id_id_fk": {
+          "name": "items_organisation_id_category_id_item_categories_organisation_id_id_fk",
+          "tableFrom": "items",
+          "tableTo": "item_categories",
+          "columnsFrom": [
+            "organisation_id",
+            "category_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "items_type_check": {
+          "name": "items_type_check",
+          "value": "type IN ('product', 'service')"
+        }
+      }
+    },
+    "payments": {
+      "name": "payments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "invoice_id": {
+          "name": "invoice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_method": {
+          "name": "payment_method",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reference_number": {
+          "name": "reference_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'completed'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "payments_org_id_uidx": {
+          "name": "payments_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "payments_org_idx": {
+          "name": "payments_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "payments_organisation_id_organisations_id_fk": {
+          "name": "payments_organisation_id_organisations_id_fk",
+          "tableFrom": "payments",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payments_user_id_users_id_fk": {
+          "name": "payments_user_id_users_id_fk",
+          "tableFrom": "payments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "payments_organisation_id_invoice_id_invoices_organisation_id_id_fk": {
+          "name": "payments_organisation_id_invoice_id_invoices_organisation_id_id_fk",
+          "tableFrom": "payments",
+          "tableTo": "invoices",
+          "columnsFrom": [
+            "organisation_id",
+            "invoice_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "payments_amount_check": {
+          "name": "payments_amount_check",
+          "value": "amount <> '' AND amount NOT GLOB '*[^0-9.]*' AND amount GLOB '[0-9]*' AND amount NOT LIKE '%.' AND length(amount) - length(replace(amount, '.', '')) <= 1"
+        },
+        "payments_status_check": {
+          "name": "payments_status_check",
+          "value": "status IN ('pending', 'completed', 'failed', 'cancelled', 'refunded')"
+        }
+      }
+    },
+    "rls_probe": {
+      "name": "rls_probe",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "label": {
+          "name": "label",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "rls_probe_org_id_uidx": {
+          "name": "rls_probe_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "rls_probe_org_idx": {
+          "name": "rls_probe_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "rls_probe_organisation_id_organisations_id_fk": {
+          "name": "rls_probe_organisation_id_organisations_id_fk",
+          "tableFrom": "rls_probe",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "bill_lines": {
+      "name": "bill_lines",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bill_id": {
+          "name": "bill_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "unit_price": {
+          "name": "unit_price",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_rate": {
+          "name": "tax_rate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'15'"
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_amount": {
+          "name": "tax_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total": {
+          "name": "total",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "account_id": {
+          "name": "account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "line_order": {
+          "name": "line_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "bill_lines_org_id_uidx": {
+          "name": "bill_lines_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "bill_lines_org_bill_idx": {
+          "name": "bill_lines_org_bill_idx",
+          "columns": [
+            "organisation_id",
+            "bill_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bill_lines_organisation_id_organisations_id_fk": {
+          "name": "bill_lines_organisation_id_organisations_id_fk",
+          "tableFrom": "bill_lines",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bill_lines_organisation_id_bill_id_bills_organisation_id_id_fk": {
+          "name": "bill_lines_organisation_id_bill_id_bills_organisation_id_id_fk",
+          "tableFrom": "bill_lines",
+          "tableTo": "bills",
+          "columnsFrom": [
+            "organisation_id",
+            "bill_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "bill_lines_organisation_id_account_id_accounts_organisation_id_id_fk": {
+          "name": "bill_lines_organisation_id_account_id_accounts_organisation_id_id_fk",
+          "tableFrom": "bill_lines",
+          "tableTo": "accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "bill_lines_quantity_check": {
+          "name": "bill_lines_quantity_check",
+          "value": "\"bill_lines\".\"quantity\" <> '' AND \"bill_lines\".\"quantity\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"quantity\" GLOB '[0-9]*' AND \"bill_lines\".\"quantity\" NOT LIKE '%.' AND length(\"bill_lines\".\"quantity\") - length(replace(\"bill_lines\".\"quantity\", '.', '')) <= 1"
+        },
+        "bill_lines_unit_price_check": {
+          "name": "bill_lines_unit_price_check",
+          "value": "\"bill_lines\".\"unit_price\" <> '' AND \"bill_lines\".\"unit_price\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"unit_price\" GLOB '[0-9]*' AND \"bill_lines\".\"unit_price\" NOT LIKE '%.' AND length(\"bill_lines\".\"unit_price\") - length(replace(\"bill_lines\".\"unit_price\", '.', '')) <= 1"
+        },
+        "bill_lines_tax_rate_check": {
+          "name": "bill_lines_tax_rate_check",
+          "value": "\"bill_lines\".\"tax_rate\" <> '' AND \"bill_lines\".\"tax_rate\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"tax_rate\" GLOB '[0-9]*' AND \"bill_lines\".\"tax_rate\" NOT LIKE '%.' AND length(\"bill_lines\".\"tax_rate\") - length(replace(\"bill_lines\".\"tax_rate\", '.', '')) <= 1"
+        },
+        "bill_lines_subtotal_check": {
+          "name": "bill_lines_subtotal_check",
+          "value": "\"bill_lines\".\"subtotal\" <> '' AND \"bill_lines\".\"subtotal\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"subtotal\" GLOB '[0-9]*' AND \"bill_lines\".\"subtotal\" NOT LIKE '%.' AND length(\"bill_lines\".\"subtotal\") - length(replace(\"bill_lines\".\"subtotal\", '.', '')) <= 1"
+        },
+        "bill_lines_tax_amount_check": {
+          "name": "bill_lines_tax_amount_check",
+          "value": "\"bill_lines\".\"tax_amount\" <> '' AND \"bill_lines\".\"tax_amount\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"tax_amount\" GLOB '[0-9]*' AND \"bill_lines\".\"tax_amount\" NOT LIKE '%.' AND length(\"bill_lines\".\"tax_amount\") - length(replace(\"bill_lines\".\"tax_amount\", '.', '')) <= 1"
+        },
+        "bill_lines_total_check": {
+          "name": "bill_lines_total_check",
+          "value": "\"bill_lines\".\"total\" <> '' AND \"bill_lines\".\"total\" NOT GLOB '*[^0-9.]*' AND \"bill_lines\".\"total\" GLOB '[0-9]*' AND \"bill_lines\".\"total\" NOT LIKE '%.' AND length(\"bill_lines\".\"total\") - length(replace(\"bill_lines\".\"total\", '.', '')) <= 1"
+        }
+      }
+    },
+    "bill_payments": {
+      "name": "bill_payments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bill_id": {
+          "name": "bill_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_account_id": {
+          "name": "bank_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_date": {
+          "name": "payment_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reference_number": {
+          "name": "reference_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "bill_payments_org_id_uidx": {
+          "name": "bill_payments_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "bill_payments_org_bill_idx": {
+          "name": "bill_payments_org_bill_idx",
+          "columns": [
+            "organisation_id",
+            "bill_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bill_payments_organisation_id_organisations_id_fk": {
+          "name": "bill_payments_organisation_id_organisations_id_fk",
+          "tableFrom": "bill_payments",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bill_payments_user_id_users_id_fk": {
+          "name": "bill_payments_user_id_users_id_fk",
+          "tableFrom": "bill_payments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bill_payments_organisation_id_bill_id_bills_organisation_id_id_fk": {
+          "name": "bill_payments_organisation_id_bill_id_bills_organisation_id_id_fk",
+          "tableFrom": "bill_payments",
+          "tableTo": "bills",
+          "columnsFrom": [
+            "organisation_id",
+            "bill_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "bill_payments_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk": {
+          "name": "bill_payments_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk",
+          "tableFrom": "bill_payments",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "bill_payments_amount_check": {
+          "name": "bill_payments_amount_check",
+          "value": "\"bill_payments\".\"amount\" <> '' AND \"bill_payments\".\"amount\" NOT GLOB '*[^0-9.]*' AND \"bill_payments\".\"amount\" GLOB '[0-9]*' AND \"bill_payments\".\"amount\" NOT LIKE '%.' AND length(\"bill_payments\".\"amount\") - length(replace(\"bill_payments\".\"amount\", '.', '')) <= 1"
+        }
+      }
+    },
+    "bills": {
+      "name": "bills",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bill_number": {
+          "name": "bill_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vendor_id": {
+          "name": "vendor_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "vendor_reference": {
+          "name": "vendor_reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "issue_date": {
+          "name": "issue_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "due_date": {
+          "name": "due_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "lifecycle_status": {
+          "name": "lifecycle_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "payment_status": {
+          "name": "payment_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'unpaid'"
+        },
+        "currency": {
+          "name": "currency",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZD'"
+        },
+        "tax_inclusive": {
+          "name": "tax_inclusive",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "subtotal": {
+          "name": "subtotal",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_amount": {
+          "name": "tax_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total": {
+          "name": "total",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total_paid": {
+          "name": "total_paid",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "balance_due": {
+          "name": "balance_due",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "received_at": {
+          "name": "received_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "voided_at": {
+          "name": "voided_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "bills_org_id_uidx": {
+          "name": "bills_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "bills_org_number_uidx": {
+          "name": "bills_org_number_uidx",
+          "columns": [
+            "organisation_id",
+            "bill_number"
+          ],
+          "isUnique": true
+        },
+        "bills_org_due_date_idx": {
+          "name": "bills_org_due_date_idx",
+          "columns": [
+            "organisation_id",
+            "due_date"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "bills_organisation_id_organisations_id_fk": {
+          "name": "bills_organisation_id_organisations_id_fk",
+          "tableFrom": "bills",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bills_user_id_users_id_fk": {
+          "name": "bills_user_id_users_id_fk",
+          "tableFrom": "bills",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "bills_organisation_id_vendor_id_vendors_organisation_id_id_fk": {
+          "name": "bills_organisation_id_vendor_id_vendors_organisation_id_id_fk",
+          "tableFrom": "bills",
+          "tableTo": "vendors",
+          "columnsFrom": [
+            "organisation_id",
+            "vendor_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "bills_lifecycle_status_check": {
+          "name": "bills_lifecycle_status_check",
+          "value": "\"bills\".\"lifecycle_status\" IN ('draft', 'received', 'void')"
+        },
+        "bills_payment_status_check": {
+          "name": "bills_payment_status_check",
+          "value": "\"bills\".\"payment_status\" IN ('unpaid', 'partial', 'paid')"
+        },
+        "bills_subtotal_check": {
+          "name": "bills_subtotal_check",
+          "value": "\"bills\".\"subtotal\" <> '' AND \"bills\".\"subtotal\" NOT GLOB '*[^0-9.]*' AND \"bills\".\"subtotal\" GLOB '[0-9]*' AND \"bills\".\"subtotal\" NOT LIKE '%.' AND length(\"bills\".\"subtotal\") - length(replace(\"bills\".\"subtotal\", '.', '')) <= 1"
+        },
+        "bills_tax_amount_check": {
+          "name": "bills_tax_amount_check",
+          "value": "\"bills\".\"tax_amount\" <> '' AND \"bills\".\"tax_amount\" NOT GLOB '*[^0-9.]*' AND \"bills\".\"tax_amount\" GLOB '[0-9]*' AND \"bills\".\"tax_amount\" NOT LIKE '%.' AND length(\"bills\".\"tax_amount\") - length(replace(\"bills\".\"tax_amount\", '.', '')) <= 1"
+        },
+        "bills_total_check": {
+          "name": "bills_total_check",
+          "value": "\"bills\".\"total\" <> '' AND \"bills\".\"total\" NOT GLOB '*[^0-9.]*' AND \"bills\".\"total\" GLOB '[0-9]*' AND \"bills\".\"total\" NOT LIKE '%.' AND length(\"bills\".\"total\") - length(replace(\"bills\".\"total\", '.', '')) <= 1"
+        },
+        "bills_total_paid_check": {
+          "name": "bills_total_paid_check",
+          "value": "\"bills\".\"total_paid\" <> '' AND \"bills\".\"total_paid\" NOT GLOB '*[^0-9.]*' AND \"bills\".\"total_paid\" GLOB '[0-9]*' AND \"bills\".\"total_paid\" NOT LIKE '%.' AND length(\"bills\".\"total_paid\") - length(replace(\"bills\".\"total_paid\", '.', '')) <= 1"
+        },
+        "bills_balance_due_check": {
+          "name": "bills_balance_due_check",
+          "value": "\"bills\".\"balance_due\" <> '' AND \"bills\".\"balance_due\" NOT GLOB '*[^0-9.]*' AND \"bills\".\"balance_due\" GLOB '[0-9]*' AND \"bills\".\"balance_due\" NOT LIKE '%.' AND length(\"bills\".\"balance_due\") - length(replace(\"bills\".\"balance_due\", '.', '')) <= 1"
+        }
+      }
+    },
+    "vendors": {
+      "name": "vendors",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "email": {
+          "name": "email",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "phone": {
+          "name": "phone",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "tax_id": {
+          "name": "tax_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "address": {
+          "name": "address",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payment_term_days": {
+          "name": "payment_term_days",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 20
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "vendors_org_id_uidx": {
+          "name": "vendors_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "vendors_org_name_idx": {
+          "name": "vendors_org_name_idx",
+          "columns": [
+            "organisation_id",
+            "name"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "vendors_organisation_id_organisations_id_fk": {
+          "name": "vendors_organisation_id_organisations_id_fk",
+          "tableFrom": "vendors",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "vendors_user_id_users_id_fk": {
+          "name": "vendors_user_id_users_id_fk",
+          "tableFrom": "vendors",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "vendors_payment_term_days_check": {
+          "name": "vendors_payment_term_days_check",
+          "value": "\"vendors\".\"payment_term_days\" >= 0 AND \"vendors\".\"payment_term_days\" <= 365"
+        }
+      }
+    },
+    "receipts": {
+      "name": "receipts",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "payment_id": {
+          "name": "payment_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "receipt_number": {
+          "name": "receipt_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "generated_at": {
+          "name": "generated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "email_sent_at": {
+          "name": "email_sent_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_emailed": {
+          "name": "is_emailed",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "receipt_data": {
+          "name": "receipt_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "receipts_org_id_uidx": {
+          "name": "receipts_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "receipts_org_idx": {
+          "name": "receipts_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "receipts_organisation_id_organisations_id_fk": {
+          "name": "receipts_organisation_id_organisations_id_fk",
+          "tableFrom": "receipts",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "receipts_user_id_users_id_fk": {
+          "name": "receipts_user_id_users_id_fk",
+          "tableFrom": "receipts",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "receipts_organisation_id_payment_id_payments_organisation_id_id_fk": {
+          "name": "receipts_organisation_id_payment_id_payments_organisation_id_id_fk",
+          "tableFrom": "receipts",
+          "tableTo": "payments",
+          "columnsFrom": [
+            "organisation_id",
+            "payment_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "reconciliation_adjustments": {
+      "name": "reconciliation_adjustments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reconciliation_id": {
+          "name": "reconciliation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "adjustment_type": {
+          "name": "adjustment_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "affects_bank": {
+          "name": "affects_bank",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "affects_book": {
+          "name": "affects_book",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
+        "reference_type": {
+          "name": "reference_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reference_id": {
+          "name": "reference_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reference_number": {
+          "name": "reference_number",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "journal_entry_id": {
+          "name": "journal_entry_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "applied_at": {
+          "name": "applied_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "reconciliation_adjustments_org_id_uidx": {
+          "name": "reconciliation_adjustments_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "reconciliation_adjustments_org_idx": {
+          "name": "reconciliation_adjustments_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reconciliation_adjustments_organisation_id_organisations_id_fk": {
+          "name": "reconciliation_adjustments_organisation_id_organisations_id_fk",
+          "tableFrom": "reconciliation_adjustments",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliation_adjustments_user_id_users_id_fk": {
+          "name": "reconciliation_adjustments_user_id_users_id_fk",
+          "tableFrom": "reconciliation_adjustments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliation_adjustments_organisation_id_reconciliation_id_reconciliation_sessions_organisation_id_id_fk": {
+          "name": "reconciliation_adjustments_organisation_id_reconciliation_id_reconciliation_sessions_organisation_id_id_fk",
+          "tableFrom": "reconciliation_adjustments",
+          "tableTo": "reconciliation_sessions",
+          "columnsFrom": [
+            "organisation_id",
+            "reconciliation_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reconciliation_adjustments_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk": {
+          "name": "reconciliation_adjustments_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk",
+          "tableFrom": "reconciliation_adjustments",
+          "tableTo": "journal_entries",
+          "columnsFrom": [
+            "organisation_id",
+            "journal_entry_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "reconciliation_adjustments_status_check": {
+          "name": "reconciliation_adjustments_status_check",
+          "value": "status IN ('pending', 'applied', 'reversed')"
+        }
+      }
+    },
+    "reconciliation_matches": {
+      "name": "reconciliation_matches",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reconciliation_id": {
+          "name": "reconciliation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_transaction_id": {
+          "name": "bank_transaction_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "invoice_id": {
+          "name": "invoice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "payment_id": {
+          "name": "payment_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expense_id": {
+          "name": "expense_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "journal_entry_id": {
+          "name": "journal_entry_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "match_type": {
+          "name": "match_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "confidence_score": {
+          "name": "confidence_score",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "bank_amount": {
+          "name": "bank_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "book_amount": {
+          "name": "book_amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "difference": {
+          "name": "difference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'pending'"
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "matched_by": {
+          "name": "matched_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "matched_at": {
+          "name": "matched_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "reconciliation_matches_org_id_uidx": {
+          "name": "reconciliation_matches_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "reconciliation_matches_org_idx": {
+          "name": "reconciliation_matches_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reconciliation_matches_organisation_id_organisations_id_fk": {
+          "name": "reconciliation_matches_organisation_id_organisations_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_reconciliation_id_reconciliation_sessions_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_reconciliation_id_reconciliation_sessions_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "reconciliation_sessions",
+          "columnsFrom": [
+            "organisation_id",
+            "reconciliation_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_bank_transaction_id_bank_transactions_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_bank_transaction_id_bank_transactions_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "bank_transactions",
+          "columnsFrom": [
+            "organisation_id",
+            "bank_transaction_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_invoice_id_invoices_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_invoice_id_invoices_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "invoices",
+          "columnsFrom": [
+            "organisation_id",
+            "invoice_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_payment_id_payments_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_payment_id_payments_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "payments",
+          "columnsFrom": [
+            "organisation_id",
+            "payment_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_expense_id_expenses_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_expense_id_expenses_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "expenses",
+          "columnsFrom": [
+            "organisation_id",
+            "expense_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        },
+        "reconciliation_matches_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk": {
+          "name": "reconciliation_matches_organisation_id_journal_entry_id_journal_entries_organisation_id_id_fk",
+          "tableFrom": "reconciliation_matches",
+          "tableTo": "journal_entries",
+          "columnsFrom": [
+            "organisation_id",
+            "journal_entry_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "reconciliation_matches_status_check": {
+          "name": "reconciliation_matches_status_check",
+          "value": "status IN ('pending', 'confirmed', 'rejected', 'adjusted')"
+        }
+      }
+    },
+    "reconciliation_sessions": {
+      "name": "reconciliation_sessions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "bank_account_id": {
+          "name": "bank_account_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "statement_start_date": {
+          "name": "statement_start_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "statement_end_date": {
+          "name": "statement_end_date",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "statement_opening_balance": {
+          "name": "statement_opening_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "statement_closing_balance": {
+          "name": "statement_closing_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "book_opening_balance": {
+          "name": "book_opening_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "book_closing_balance": {
+          "name": "book_closing_balance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "total_deposits": {
+          "name": "total_deposits",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "total_withdrawals": {
+          "name": "total_withdrawals",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'in_progress'"
+        },
+        "reconciled_at": {
+          "name": "reconciled_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "matched_count": {
+          "name": "matched_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "unmatched_bank_count": {
+          "name": "unmatched_bank_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "unmatched_book_count": {
+          "name": "unmatched_book_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "adjustment_count": {
+          "name": "adjustment_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "difference": {
+          "name": "difference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "notes": {
+          "name": "notes",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "reconciliation_sessions_org_id_uidx": {
+          "name": "reconciliation_sessions_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "reconciliation_sessions_org_idx": {
+          "name": "reconciliation_sessions_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "reconciliation_sessions_organisation_id_organisations_id_fk": {
+          "name": "reconciliation_sessions_organisation_id_organisations_id_fk",
+          "tableFrom": "reconciliation_sessions",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliation_sessions_user_id_users_id_fk": {
+          "name": "reconciliation_sessions_user_id_users_id_fk",
+          "tableFrom": "reconciliation_sessions",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "reconciliation_sessions_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk": {
+          "name": "reconciliation_sessions_organisation_id_bank_account_id_bank_accounts_organisation_id_id_fk",
+          "tableFrom": "reconciliation_sessions",
+          "tableTo": "bank_accounts",
+          "columnsFrom": [
+            "organisation_id",
+            "bank_account_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "reconciliation_sessions_status_check": {
+          "name": "reconciliation_sessions_status_check",
+          "value": "status IN ('in_progress', 'completed', 'locked')"
+        }
+      }
+    },
+    "shared_invoices": {
+      "name": "shared_invoices",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "original_invoice_id": {
+          "name": "original_invoice_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "invoice_data": {
+          "name": "invoice_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "template_data": {
+          "name": "template_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "share_token": {
+          "name": "share_token",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "access_count": {
+          "name": "access_count",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_by": {
+          "name": "created_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "shared_invoices_share_token_unique": {
+          "name": "shared_invoices_share_token_unique",
+          "columns": [
+            "share_token"
+          ],
+          "isUnique": true
+        },
+        "shared_invoices_org_id_uidx": {
+          "name": "shared_invoices_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "shared_invoices_org_idx": {
+          "name": "shared_invoices_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "shared_invoices_organisation_id_organisations_id_fk": {
+          "name": "shared_invoices_organisation_id_organisations_id_fk",
+          "tableFrom": "shared_invoices",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "shared_invoices_organisation_id_original_invoice_id_invoices_organisation_id_id_fk": {
+          "name": "shared_invoices_organisation_id_original_invoice_id_invoices_organisation_id_id_fk",
+          "tableFrom": "shared_invoices",
+          "tableTo": "invoices",
+          "columnsFrom": [
+            "organisation_id",
+            "original_invoice_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "tax_adjustments": {
+      "name": "tax_adjustments",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_return_id": {
+          "name": "tax_return_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "adjustment_type": {
+          "name": "adjustment_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "amount": {
+          "name": "amount",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_impact": {
+          "name": "tax_impact",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "tax_adjustments_org_id_uidx": {
+          "name": "tax_adjustments_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "tax_adjustments_org_idx": {
+          "name": "tax_adjustments_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tax_adjustments_organisation_id_organisations_id_fk": {
+          "name": "tax_adjustments_organisation_id_organisations_id_fk",
+          "tableFrom": "tax_adjustments",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tax_adjustments_user_id_users_id_fk": {
+          "name": "tax_adjustments_user_id_users_id_fk",
+          "tableFrom": "tax_adjustments",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tax_adjustments_organisation_id_tax_return_id_tax_returns_organisation_id_id_fk": {
+          "name": "tax_adjustments_organisation_id_tax_return_id_tax_returns_organisation_id_id_fk",
+          "tableFrom": "tax_adjustments",
+          "tableTo": "tax_returns",
+          "columnsFrom": [
+            "organisation_id",
+            "tax_return_id"
+          ],
+          "columnsTo": [
+            "organisation_id",
+            "id"
+          ],
+          "onDelete": "restrict",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "tax_adjustments_type_check": {
+          "name": "tax_adjustments_type_check",
+          "value": "adjustment_type IN ('bad_debt', 'capital_goods', 'correction', 'other')"
+        }
+      }
+    },
+    "tax_configurations": {
+      "name": "tax_configurations",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "country_code": {
+          "name": "country_code",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'NZ'"
+        },
+        "tax_type": {
+          "name": "tax_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_rate": {
+          "name": "tax_rate",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "tax_name": {
+          "name": "tax_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "applies_to_services": {
+          "name": "applies_to_services",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "applies_to_goods": {
+          "name": "applies_to_goods",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "effective_from": {
+          "name": "effective_from",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "effective_to": {
+          "name": "effective_to",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "is_active": {
+          "name": "is_active",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "tax_configurations_org_id_uidx": {
+          "name": "tax_configurations_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "tax_configurations_org_idx": {
+          "name": "tax_configurations_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tax_configurations_organisation_id_organisations_id_fk": {
+          "name": "tax_configurations_organisation_id_organisations_id_fk",
+          "tableFrom": "tax_configurations",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tax_configurations_user_id_users_id_fk": {
+          "name": "tax_configurations_user_id_users_id_fk",
+          "tableFrom": "tax_configurations",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "tax_configurations_tax_type_check": {
+          "name": "tax_configurations_tax_type_check",
+          "value": "tax_type IN ('GST', 'VAT', 'Sales_Tax')"
+        }
+      }
+    },
+    "tax_returns": {
+      "name": "tax_returns",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "organisation_id": {
+          "name": "organisation_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "user_id": {
+          "name": "user_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "period_start": {
+          "name": "period_start",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "period_end": {
+          "name": "period_end",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "return_type": {
+          "name": "return_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "total_sales": {
+          "name": "total_sales",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "total_purchases": {
+          "name": "total_purchases",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "gst_on_sales": {
+          "name": "gst_on_sales",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "gst_on_purchases": {
+          "name": "gst_on_purchases",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "net_gst": {
+          "name": "net_gst",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'0'"
+        },
+        "status": {
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'draft'"
+        },
+        "submitted_at": {
+          "name": "submitted_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "ird_reference": {
+          "name": "ird_reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "return_data": {
+          "name": "return_data",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(unixepoch() * 1000)"
+        }
+      },
+      "indexes": {
+        "tax_returns_org_id_uidx": {
+          "name": "tax_returns_org_id_uidx",
+          "columns": [
+            "organisation_id",
+            "id"
+          ],
+          "isUnique": true
+        },
+        "tax_returns_org_idx": {
+          "name": "tax_returns_org_idx",
+          "columns": [
+            "organisation_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "tax_returns_organisation_id_organisations_id_fk": {
+          "name": "tax_returns_organisation_id_organisations_id_fk",
+          "tableFrom": "tax_returns",
+          "tableTo": "organisations",
+          "columnsFrom": [
+            "organisation_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        },
+        "tax_returns_user_id_users_id_fk": {
+          "name": "tax_returns_user_id_users_id_fk",
+          "tableFrom": "tax_returns",
+          "tableTo": "users",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "no action",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "tax_returns_return_type_check": {
+          "name": "tax_returns_return_type_check",
+          "value": "return_type IN ('GST', 'Income_Tax', 'PAYE')"
+        },
+        "tax_returns_status_check": {
+          "name": "tax_returns_status_check",
+          "value": "status IN ('draft', 'submitted', 'approved', 'rejected')"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "schemas": {},
+    "tables": {},
+    "columns": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

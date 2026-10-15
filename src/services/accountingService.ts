@@ -1,6 +1,8 @@
 import { supabase } from '@/integrations/supabase/client';
 import { FinancialSummary, AccountBalanceSummary } from '@/types/payment';
 import { startOfMonth, endOfMonth, format } from 'date-fns';
+import { inInclusiveDateRange, ledgerSnapshotEnabled, loadLedgerSnapshot } from '@/features/ledger/api/ledgerSnapshot';
+import { accountsApiEnabled } from '@/features/payments/api/paymentsApi';
 
 export interface FinancialPeriod {
   startDate: string;
@@ -22,14 +24,37 @@ export interface RevenueExpenseData {
 export class AccountingService {
   async getFinancialSummary(period?: FinancialPeriod): Promise<FinancialSummary> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
-      // Default to current month if no period specified
       const startDate = period?.startDate || format(startOfMonth(new Date()), 'yyyy-MM-dd');
       const endDate = period?.endDate || format(endOfMonth(new Date()), 'yyyy-MM-dd');
 
-      console.log('Fetching financial data for user:', user.id, 'from', startDate, 'to', endDate);
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        const invoices = snapshot.invoices.filter((invoice) => inInclusiveDateRange(invoice.date, startDate, endDate));
+        const expenses = snapshot.expenses.filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate));
+        const payments = snapshot.payments.filter((payment) => inInclusiveDateRange(payment.paymentDate, startDate, endDate));
+        const totalRevenue = invoices.reduce((sum, invoice) => sum + (invoice.total || 0), 0);
+        const totalExpenses = expenses.reduce((sum, expense) => sum + (expense.amount || 0), 0);
+        const unpaidInvoices = snapshot.invoices.filter((invoice) => invoice.status === 'sent');
+        const gstCollected = invoices
+          .filter((invoice) => invoice.status === 'paid')
+          .reduce((sum, invoice) => sum + (invoice.taxAmount || invoice.total * 0.15), 0);
+        const gstPaid = expenses.reduce((sum, expense) => sum + (expense.amount || 0) * 0.15, 0);
+        return {
+          totalRevenue,
+          totalExpenses,
+          netIncome: totalRevenue - totalExpenses,
+          totalReceivables: unpaidInvoices.reduce((sum, invoice) => sum + (invoice.total || 0), 0),
+          totalPayables: snapshot.expenses
+            .filter((expense) => expense.status === 'pending')
+            .reduce((sum, expense) => sum + (expense.amount || 0), 0),
+          cashPosition: payments.reduce((sum, payment) => sum + (payment.amount || 0), 0),
+          gstLiability: Math.max(0, gstCollected - gstPaid),
+          period: { startDate, endDate },
+        };
+      }
+
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
 
       // Get invoices data with error handling
       const { data: invoices, error: invoicesError } = await supabase
@@ -132,6 +157,20 @@ export class AccountingService {
 
   async getAccountBalances(): Promise<AccountBalanceSummary[]> {
     try {
+      if (accountsApiEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        if (snapshot.accounts.length === 0) return this.getDefaultAccountBalances();
+        return snapshot.accounts.map((account) => ({
+          accountId: account.id,
+          accountName: account.name,
+          accountNumber: '0000',
+          accountClass: account.type || 'Asset',
+          openingBalance: account.openingBalance || 0,
+          totalDebits: 0,
+          totalCredits: 0,
+          closingBalance: account.currentBalance || account.openingBalance || 0,
+        }));
+      }
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('User not authenticated');
 
@@ -200,11 +239,28 @@ export class AccountingService {
 
   async getRevenueExpenseData(months: number = 6): Promise<RevenueExpenseData[]> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
       const data: RevenueExpenseData[] = [];
       const currentDate = new Date();
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        for (let i = months - 1; i >= 0; i--) {
+          const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
+          const startDate = format(startOfMonth(date), 'yyyy-MM-dd');
+          const endDate = format(endOfMonth(date), 'yyyy-MM-dd');
+          data.push({
+            month: format(date, 'MMM'),
+            revenue: snapshot.invoices
+              .filter((invoice) => inInclusiveDateRange(invoice.date, startDate, endDate))
+              .reduce((sum, invoice) => sum + (invoice.total || 0), 0),
+            expenses: snapshot.expenses
+              .filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate))
+              .reduce((sum, expense) => sum + (expense.amount || 0), 0),
+          });
+        }
+        return data;
+      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
 
       for (let i = months - 1; i >= 0; i--) {
         const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
@@ -247,15 +303,32 @@ export class AccountingService {
 
   async getCashFlowData(days: number = 30): Promise<CashFlowData[]> {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
       const data: CashFlowData[] = [];
       const currentDate = new Date();
-
-      // Get payments (inflow) and expenses (outflow) for the last 30 days
-      // Group by week for better visualization
       const weeksToShow = Math.ceil(days / 7);
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        for (let i = weeksToShow - 1; i >= 0; i--) {
+          const weekStart = new Date(currentDate);
+          weekStart.setDate(weekStart.getDate() - (i * 7 + 6));
+          const weekEnd = new Date(currentDate);
+          weekEnd.setDate(weekEnd.getDate() - (i * 7));
+          const startDate = format(weekStart, 'yyyy-MM-dd');
+          const endDate = format(weekEnd, 'yyyy-MM-dd');
+          data.push({
+            day: format(weekEnd, 'd'),
+            inflow: snapshot.payments
+              .filter((payment) => inInclusiveDateRange(payment.paymentDate, startDate, endDate))
+              .reduce((sum, payment) => sum + (payment.amount || 0), 0),
+            outflow: snapshot.expenses
+              .filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate))
+              .reduce((sum, expense) => sum + (expense.amount || 0), 0),
+          });
+        }
+        return data;
+      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
 
       for (let i = weeksToShow - 1; i >= 0; i--) {
         const weekStart = new Date(currentDate);
@@ -305,11 +378,30 @@ export class AccountingService {
 
   async getExpenseBreakdown(period?: FinancialPeriod) {
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) throw new Error('User not authenticated');
-
       const startDate = period?.startDate || format(startOfMonth(new Date()), 'yyyy-MM-dd');
       const endDate = period?.endDate || format(endOfMonth(new Date()), 'yyyy-MM-dd');
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        const categoryTotals: { [key: string]: number } = {};
+        let totalExpenses = 0;
+        snapshot.expenses
+          .filter((expense) => inInclusiveDateRange(expense.expenseDate, startDate, endDate))
+          .forEach((expense) => {
+            const categoryName = expense.category?.name || 'Uncategorized';
+            const amount = expense.amount || 0;
+            categoryTotals[categoryName] = (categoryTotals[categoryName] || 0) + amount;
+            totalExpenses += amount;
+          });
+        return Object.entries(categoryTotals)
+          .map(([category, amount]) => ({
+            category,
+            amount,
+            percentage: totalExpenses > 0 ? Math.round((amount / totalExpenses) * 100) : 0,
+          }))
+          .sort((a, b) => b.amount - a.amount);
+      }
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error('User not authenticated');
 
       // Get expenses with categories - try category_id first, fallback to category
       let { data: expenses, error } = await supabase

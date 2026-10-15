@@ -110,12 +110,15 @@ export interface BusinessProfile {
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   bankInfo?: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   theme?: BusinessTheme | null;  // Business theme colors
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
   invoiceNumberFormat?: string | null;
   invoiceNumberSequence?: number | null;
+  paymentTermDays?: number;
 }
 
 export interface LineItem {
@@ -123,8 +126,9 @@ export interface LineItem {
   invoiceId?: string;
   description: string;
   quantity: number;
-  unit: string;  // Already has this field
+  unit: string;  // Unit for quantity
   rate: number;
+  rateUnit: string;  // Unit the rate is specified in (e.g., per kg)
   tax?: number | null;
   total: number;
   createdAt?: string;
@@ -174,9 +178,12 @@ export interface Invoice {
   businessProfile?: BusinessProfile;
   date: string;
   dueDate: string;
+  paymentTermDays?: number | null;
   items: LineItem[];
   subtotal: number;
   taxAmount: number;
+  discountType?: 'fixed' | 'percent';
+  discountPercent?: number | null;
   discount?: number | null;
   additionalCharges?: number | null; // Keep for backward compatibility
   additionalChargesList?: AdditionalCharge[]; // New structured charges
@@ -244,8 +251,9 @@ export interface SupabaseLineItem {
   invoice_id: string;
   description: string;
   quantity: number;
-  unit: string;  // This field already exists
+  unit: string;  // Unit for quantity
   rate: number;
+  rate_unit: string;  // Unit the rate is specified in (snake_case for database)
   tax: number | null;
   total: number;
   created_at: string;
@@ -339,6 +347,9 @@ export interface Account {
   currency: string;
   openingBalance: number;
   currentBalance: number;
+  accountNumber?: string | null;
+  accountClass?: string | null;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -359,6 +370,8 @@ export interface SupabaseAccount {
 // Expense types
 export type ExpenseStatus = 'pending' | 'approved' | 'rejected';
 export type PaymentMethod = 'cash' | 'card' | 'bank_transfer' | 'check' | 'other';
+export type GstTreatment = 'standard' | 'zero_rated' | 'exempt' | 'partial' | 'private_use';
+export type GstExemptionReason = 'none' | 'motor_vehicle' | 'financial_services' | 'residential_rent' | 'insurance_life' | 'exported_services' | 'entertainment_50' | 'home_office' | 'second_hand_goods' | 'other_exempt';
 
 export interface ExpenseCategory {
   id: string;
@@ -389,6 +402,10 @@ export interface Expense {
   currency: string;
   paymentMethod?: PaymentMethod | null;
   notes?: string | null;
+  gstTreatment?: GstTreatment;
+  gstExemptionReason?: GstExemptionReason;
+  gstClaimablePercentage?: number;
+  privateUsePercentage?: number;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -426,32 +443,24 @@ export interface SupabaseExpense {
 }
 
 // Onboarding types
-export type OnboardingStep = 'welcome' | 'invoice-setup' | 'branding' | 'complete';
-
 export interface OnboardingData {
-  // Welcome step - business basics (required)
   businessName: string;
   businessEmail: string;
   country: string;
-  
-  // Invoice setup step (recommended)
   invoiceNumberFormat?: string;
   defaultTaxRate?: number;
   address?: string;
   city?: string;
   state?: string;
   zip?: string;
-  
-  // Branding step (optional)
   theme?: BusinessTheme;
-  logoFile?: File;
 }
 
 export interface OnboardingStepProps {
   data: OnboardingData;
   onDataChange: (updates: Partial<OnboardingData>) => void;
   onNext: () => void;
-  onBack?: () => void;
+  onSkip?: () => void;
   isLoading?: boolean;
 }
 

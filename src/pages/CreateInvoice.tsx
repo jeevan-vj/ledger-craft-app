@@ -9,18 +9,23 @@ import CustomerFormDrawer, { CustomerFormValues } from '@/components/customer/Cu
 import { invoiceService } from '@/services/supabaseService';
 import { useForm } from 'react-hook-form';
 import { formatDate } from '@/utils/invoiceUtils';
+import { useCustomerDirectory } from '@/features/customers/hooks/useCustomerDirectory';
+import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 
 const CreateInvoice = () => {
   const { 
-    customers, 
-    isLoadingCustomers, 
     createInvoice, 
     businessProfile, 
-    createCustomer, 
     items, 
     isLoadingItems,
-    refreshBusinessProfile
+    refreshBusinessProfile,
+    refreshInvoices,
   } = useAppData();
+  const {
+    customers,
+    isLoadingCustomers,
+    createCustomer,
+  } = useCustomerDirectory();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [newlyAddedCustomer, setNewlyAddedCustomer] = useState<Customer | null>(null);
@@ -37,7 +42,7 @@ const CreateInvoice = () => {
       dueDate: new Date(new Date().setDate(new Date().getDate() + 30)),
       notes: "",
       terms: "",
-      currency: "USD",
+      currency: "NZD",
       additionalCharges: 0,
       discount: 0,
     },
@@ -86,7 +91,7 @@ const CreateInvoice = () => {
     if (businessProfile) {
       form.setValue('notes', businessProfile.defaultNotes || "");
       form.setValue('terms', businessProfile.defaultTerms || "");
-      form.setValue('currency', businessProfile.currency || "USD");
+        form.setValue('currency', businessProfile.currency || "NZD");
     }
   }, [businessProfile]);
 
@@ -98,14 +103,16 @@ const CreateInvoice = () => {
     taxAmount: number,
     additionalCharges: number,
     discount: number,
-    additionalChargesList?: any[]
+    additionalChargesList?: any[],
+    intent: 'draft' | 'send' = 'draft',
   ) => {
     try {
-      console.log("Attempting to create invoice with data:", {
+      const created = await createInvoice({
         invoiceNumber: values.invoiceNumber,
         customerId: values.customerId,
         date: formatDate(values.date),
         dueDate: formatDate(values.dueDate),
+        paymentTermDays: values.paymentTermDays,
         items: items,
         subtotal: subtotal,
         taxAmount: taxAmount,
@@ -115,38 +122,32 @@ const CreateInvoice = () => {
         notes: values.notes,
         terms: values.terms,
         additionalCharges: additionalCharges,
-        discount: discount,
-      });
-      await createInvoice({
-        invoiceNumber: values.invoiceNumber,
-        customerId: values.customerId,
-        date: formatDate(values.date),
-        dueDate: formatDate(values.dueDate),
-        items: items,
-        subtotal: subtotal,
-        taxAmount: taxAmount,
-        total: total,
-        status: 'draft',
-        currency: values.currency,
-        notes: values.notes,
-        terms: values.terms,
-        additionalCharges: additionalCharges,
+        discountType: values.discountType,
+        discountPercent: values.discountPercent,
         discount: discount,
         additionalChargesList: additionalChargesList,
-        additionalChargesTotal: additionalCharges, // Store calculated total
-        templateName: values.templateName, // Save selected template
+        additionalChargesTotal: additionalCharges,
+        templateName: values.templateName,
       });
-      toast({
-        title: "Invoice Created",
-        description: "Your invoice has been successfully created."
-      });
+      if (intent === 'send') {
+        await invoicesApi.send(created.id);
+        await refreshInvoices();
+        toast({
+          title: "Invoice sent",
+          description: `Invoice ${created.invoiceNumber} was sent.`,
+        });
+      } else {
+        toast({
+          title: "Draft saved",
+          description: "Your invoice has been saved as a draft."
+        });
+      }
       navigate('/invoices');
     } catch (error) {
-      console.error('Error caught during invoice creation submission:', error);
       console.error('Error creating invoice:', error);
       toast({
         title: "Error",
-        description: "Failed to create invoice. Please try again.",
+        description: error instanceof Error ? error.message : "Failed to create invoice. Please try again.",
         variant: "destructive"
       });
     }

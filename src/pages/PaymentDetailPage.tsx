@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Payment, EnhancedInvoice, Receipt } from '@/types/payment';
 import { format } from 'date-fns';
 import { BreadcrumbNavigation } from '@/components/common/BreadcrumbNavigation';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { paymentService } from '@/services/paymentService';
 import { useAppData } from '@/hooks/useAppData';
 
@@ -305,22 +306,12 @@ export default function PaymentDetailPage() {
       
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div className="flex items-center gap-4">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/payments')}
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold">Payment Details</h1>
-            <p className="text-muted-foreground">
-              Payment ID: {payment.id}
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title="Payment Details"
+          description={`Payment ID: ${payment.id}`}
+          backTo="/payments"
+          className="mb-0"
+        />
         
         <div className="flex items-center gap-3">
           {invoice && (

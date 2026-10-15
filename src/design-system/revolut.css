@@ -1,0 +1,160 @@
+:root {
+  color-scheme: light;
+
+  /* Revolut-inspired web system: quiet canvas, crisp ink, electric blue action. */
+  --background: 228 33% 97%;
+  --foreground: 228 32% 12%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 228 32% 12%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 228 32% 12%;
+
+  --brand: 231 82% 65%;
+  --primary: 232 65% 54%;
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 228 24% 93%;
+  --secondary-foreground: 228 32% 16%;
+  --muted: 228 24% 94%;
+  --muted-foreground: 226 12% 40%;
+  --accent: 232 100% 96%;
+  --accent-foreground: 232 65% 38%;
+
+  --destructive: 356 68% 49%;
+  --destructive-foreground: 0 0% 100%;
+  --success: 158 64% 34%;
+  --success-foreground: 0 0% 100%;
+  --warning: 35 92% 43%;
+  --warning-foreground: 32 100% 10%;
+  --info: 202 83% 42%;
+  --info-foreground: 0 0% 100%;
+
+  --chart-1: 232 65% 54%;
+  --chart-2: 158 64% 34%;
+  --chart-3: 202 83% 42%;
+  --chart-4: 35 92% 43%;
+  --chart-5: 226 12% 40%;
+
+  --border: 228 21% 88%;
+  --input: 228 21% 88%;
+  --ring: 231 82% 65%;
+  --radius: 1rem;
+
+  --sidebar-background: 0 0% 100%;
+  --sidebar-foreground: 228 32% 12%;
+  --sidebar-primary: 232 65% 54%;
+  --sidebar-primary-foreground: 0 0% 100%;
+  --sidebar-accent: 232 100% 96%;
+  --sidebar-accent-foreground: 232 65% 38%;
+  --sidebar-border: 228 21% 91%;
+  --sidebar-ring: 231 82% 65%;
+}
+
+.dark {
+  color-scheme: dark;
+  --background: 228 29% 7%;
+  --foreground: 225 33% 96%;
+
+  --card: 228 24% 11%;
+  --card-foreground: 225 33% 96%;
+  --popover: 228 24% 10%;
+  --popover-foreground: 225 33% 96%;
+
+  --brand: 231 90% 72%;
+  --primary: 231 88% 68%;
+  --primary-foreground: 231 45% 10%;
+
+  --secondary: 228 19% 17%;
+  --secondary-foreground: 225 33% 96%;
+  --muted: 228 19% 15%;
+  --muted-foreground: 225 14% 68%;
+  --accent: 232 38% 19%;
+  --accent-foreground: 231 90% 82%;
+
+  --destructive: 356 76% 62%;
+  --destructive-foreground: 228 29% 7%;
+  --success: 158 61% 49%;
+  --success-foreground: 158 80% 8%;
+  --warning: 38 95% 59%;
+  --warning-foreground: 35 100% 9%;
+  --info: 199 89% 60%;
+  --info-foreground: 202 100% 9%;
+
+  --chart-1: 231 88% 68%;
+  --chart-2: 158 61% 49%;
+  --chart-3: 199 89% 60%;
+  --chart-4: 38 95% 59%;
+  --chart-5: 225 14% 68%;
+
+  --border: 228 17% 22%;
+  --input: 228 17% 22%;
+  --ring: 231 90% 72%;
+
+  --sidebar-background: 228 29% 8%;
+  --sidebar-foreground: 225 33% 96%;
+  --sidebar-primary: 231 88% 68%;
+  --sidebar-primary-foreground: 231 45% 10%;
+  --sidebar-accent: 228 19% 17%;
+  --sidebar-accent-foreground: 225 33% 96%;
+  --sidebar-border: 228 17% 18%;
+  --sidebar-ring: 231 90% 72%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    font-family: "Avenir Next", Avenir, "Helvetica Neue", ui-sans-serif, sans-serif;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    caret-color: hsl(var(--brand));
+  }
+
+  ::selection {
+    background: hsl(var(--brand) / 0.24);
+    color: hsl(var(--foreground));
+  }
+
+  :focus-visible {
+    outline-color: hsl(var(--ring));
+  }
+
+  :where(table, [data-financial-value]) {
+    font-variant-numeric: tabular-nums;
+  }
+
+  * {
+    scrollbar-color: hsl(var(--muted-foreground) / 0.38) transparent;
+    scrollbar-width: thin;
+  }
+
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border: 3px solid transparent;
+    border-radius: 999px;
+    background: hsl(var(--muted-foreground) / 0.38);
+    background-clip: padding-box;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -19,6 +19,7 @@ import {
   TrendingUp
 } from 'lucide-react';
 import { bankAccountService } from '@/services/bankAccountService';
+import { PageHeader } from '@/components/layout/PageHeader';
 import { BankAccount, TransactionImportResult, ImportedTransaction } from '@/types/bankTransaction';
 import { FileUploadZone } from '@/components/transaction-import/FileUploadZone';
 import { ImportPreview } from '@/components/transaction-import/ImportPreview';
@@ -121,24 +122,11 @@ export default function TransactionImportPage() {
 
   const renderHeader = () => (
     <div className="space-y-4">
-      <div className="flex items-center gap-4">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={() => navigate('/bank-accounts')}
-          className="flex items-center gap-2"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Back to Bank Accounts
-        </Button>
-      </div>
-      
-      <div>
-        <h1 className="text-3xl font-bold">Import Transactions</h1>
-        <p className="text-muted-foreground mt-2">
-          Upload your bank statement (CSV or PDF) to automatically import transactions
-        </p>
-      </div>
+      <PageHeader
+        title="Import Transactions"
+        description="Upload your bank statement (CSV or PDF) to automatically import transactions"
+        backTo="/bank-accounts"
+      />
 
       <div className="space-y-2">
         <div className="flex justify-between text-sm text-muted-foreground">

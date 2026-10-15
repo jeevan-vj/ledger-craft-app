@@ -168,9 +168,10 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
        return;
      }
 
-    // Map form values back to Item type, including ID, createdAt, updatedAt from initialData
-    const itemData: Item = {
-      id: initialData?.id || '',
+    // Map form values back to Item type
+    // For new items (no initialData.id), don't include id/createdAt/updatedAt
+    // For existing items, include them from initialData
+    const baseItemData = {
       name: values.name,
       type: values.type,
       description: values.description || null,
@@ -181,9 +182,20 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
       enableSaleInfo: showSaleInfo,
       enablePurchaseInfo: showPurchaseInfo,
       unit: values.unit,
-      createdAt: initialData?.createdAt,
-      updatedAt: initialData?.updatedAt,
     };
+
+    // Only include id, createdAt, updatedAt if we have an existing item
+    const itemData: Item = initialData?.id
+      ? {
+          ...baseItemData,
+          id: initialData.id,
+          createdAt: initialData.createdAt,
+          updatedAt: initialData.updatedAt,
+        }
+      : {
+          ...baseItemData,
+          id: '', // Will be ignored by createItem service
+        } as Item;
 
     onSubmit(itemData);
   };

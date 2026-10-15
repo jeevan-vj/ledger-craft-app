@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, Download, Mail, Search, Filter, RefreshCw, Calendar } from 'lucide-react';
+import { Eye, Download, Mail, Search, Filter, Calendar, FileText } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ContentPanel } from '@/components/ui/ContentPanel';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -128,72 +131,46 @@ export default function ReceiptsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <PageHeader title="Receipts" />
+
+      {receipts.length === 0 && (
+        <EmptyState
+          variant="hero"
+          title="Receipts land here"
+          description="When you record a payment, a receipt is generated automatically."
+          benefits={[
+            {
+              icon: FileText,
+              title: 'Generated from payments',
+              subtitle: 'Each recorded payment creates a receipt you can send.',
+            },
+            {
+              icon: Mail,
+              title: 'Email to the customer',
+              subtitle: 'Resend any time from the receipt list.',
+            },
+          ]}
+          ctaLabel="Go to payments"
+          ctaTo="/payments"
+        />
+      )}
+
+      {receipts.length > 0 && (
+      <>
+      <dl className="grid grid-cols-2 sm:grid-cols-3 gap-6">
         <div>
-          <h1 className="text-3xl font-bold">Receipt Management</h1>
-          <p className="text-muted-foreground">
-            View and manage payment receipts
-          </p>
+          <dt className="text-sm text-muted-foreground">Total receipts</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">{totalReceipts}</dd>
         </div>
-        
-        <Button
-          variant="outline"
-          onClick={refreshReceipts}
-          disabled={isLoadingReceipts}
-        >
-          <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingReceipts ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
-      </div>
-
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-blue-100 rounded-lg">
-                <Calendar className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Receipts</p>
-                <p className="text-2xl font-bold">{totalReceipts}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-100 rounded-lg">
-                <Mail className="h-5 w-5 text-green-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Emailed</p>
-                <p className="text-2xl font-bold">{emailedReceipts}</p>
-                <p className="text-xs text-muted-foreground">
-                  {totalReceipts > 0 ? Math.round((emailedReceipts / totalReceipts) * 100) : 0}% of total
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center gap-3">
-              <div className="p-2 bg-purple-100 rounded-lg">
-                <Download className="h-5 w-5 text-purple-600" />
-              </div>
-              <div>
-                <p className="text-sm text-muted-foreground">Total Amount</p>
-                <p className="text-2xl font-bold">${totalAmount.toLocaleString()}</p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">Emailed</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">{emailedReceipts}</dd>
+        </div>
+        <div>
+          <dt className="text-sm text-muted-foreground">Total amount</dt>
+          <dd className="mt-1 text-2xl font-bold tabular-nums">${totalAmount.toLocaleString()}</dd>
+        </div>
+      </dl>
 
       {/* Filters and Search */}
       <Card>
@@ -321,6 +298,8 @@ export default function ReceiptsPage() {
           )}
         </CardContent>
       </Card>
+      </>
+      )}
     </div>
   );
 }

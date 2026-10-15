@@ -1,5 +1,9 @@
 import { supabase } from '@/lib/supabase';
 import { startOfMonth, endOfMonth, format, subMonths, startOfWeek, endOfWeek, eachDayOfInterval, eachMonthOfInterval, subDays } from 'date-fns';
+import { bankAccountService } from '@/services/bankAccountService';
+import { bankApiEnabled } from '@/features/bank/api/bankApi';
+import { ledgerSnapshotEnabled, loadLedgerSnapshot, inInclusiveDateRange } from '@/features/ledger/api/ledgerSnapshot';
+import type { Expense, Invoice } from '@/types';
 
 export interface RevenueExpenseData {
   month: string;
@@ -25,6 +29,14 @@ export interface AccountTypeData {
   color: string;
 }
 
+function invoiceInstant(invoice: Invoice): Date {
+  return new Date(invoice.date || invoice.createdAt || 0);
+}
+
+function expenseInstant(expense: Expense): Date {
+  return new Date(expense.expenseDate || expense.createdAt || 0);
+}
+
 export class DashboardDataService {
   private static instance: DashboardDataService;
   
@@ -39,11 +51,31 @@ export class DashboardDataService {
     try {
       const endDate = new Date();
       const startDate = subMonths(endDate, months);
-      
-      // Get all months in the range
       const monthsInRange = eachMonthOfInterval({ start: startDate, end: endDate });
-      
-      // Get invoice data
+
+      if (ledgerSnapshotEnabled()) {
+        const snapshot = await loadLedgerSnapshot();
+        const invoices = snapshot.invoices.filter((invoice) => invoice.status === 'paid');
+        const expenses = snapshot.expenses;
+        return monthsInRange.map((month) => {
+          const monthStart = startOfMonth(month);
+          const monthEnd = endOfMonth(month);
+          const monthRevenue = invoices
+            .filter((invoice) => {
+              const invoiceDate = invoiceInstant(invoice);
+              return invoiceDate >= monthStart && invoiceDate <= monthEnd;
+            })
+            .reduce((sum, invoice) => sum + (invoice.total || 0), 0);
+          const monthExpenses = expenses
+            .filter((expense) => {
+              const expenseDate = expenseInstant(expense);
+              return expenseDate >= monthStart && expenseDate <= monthEnd;
+            })
+            .reduce((sum, expense) => sum + (expense.amount || 0), 0);
+          return { month: format(month, 'MMM'), revenue: monthRevenue, expenses: monthExpenses };
+        });
+      }
+
       const { data: invoices, error: invoiceError } = await supabase
         .from('invoices')
         .select('total_amount, created_at, status')
@@ -53,7 +85,6 @@ export class DashboardDataService {
 
       if (invoiceError) throw invoiceError;
 
-      // Get expense data
       const { data: expenses, error: expenseError } = await supabase
         .from('expenses')
         .select('amount, created_at')
@@ -62,7 +93,6 @@ export class DashboardDataService {
 
       if (expenseError) throw expenseError;
 
-      // Group data by month
       const monthlyData: RevenueExpenseData[] = monthsInRange.map(month => {
         const monthStart = startOfMonth(month);
         const monthEnd = endOfMonth(month);
@@ -101,25 +131,35 @@ export class DashboardDataService {
     try {
       const endDate = new Date();
       const startDate = subDays(endDate, days);
-      
-      // Get cash inflows (paid invoices)
-      const { data: invoices, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total_amount, created_at, status')
-        .eq('status', 'paid')
-        .gte('created_at', startDate.toISOString())
-        .lte('created_at', endDate.toISOString());
 
-      if (invoiceError) throw invoiceError;
+      const invoices = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).invoices
+            .filter((invoice) => invoice.status === 'paid' && inInclusiveDateRange(invoice.date, startDate, endDate))
+            .map((invoice) => ({ total_amount: invoice.total, created_at: invoice.date, status: invoice.status }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('invoices')
+              .select('total_amount, created_at, status')
+              .eq('status', 'paid')
+              .gte('created_at', startDate.toISOString())
+              .lte('created_at', endDate.toISOString());
+            if (error) throw error;
+            return data;
+          })();
 
-      // Get cash outflows (expenses)
-      const { data: expenses, error: expenseError } = await supabase
-        .from('expenses')
-        .select('amount, created_at')
-        .gte('created_at', startDate.toISOString())
-        .lte('created_at', endDate.toISOString());
-
-      if (expenseError) throw expenseError;
+      const expenses = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).expenses
+            .filter((expense) => inInclusiveDateRange(expense.expenseDate || expense.createdAt || '', startDate, endDate))
+            .map((expense) => ({ amount: expense.amount, created_at: expense.expenseDate }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('expenses')
+              .select('amount, created_at')
+              .gte('created_at', startDate.toISOString())
+              .lte('created_at', endDate.toISOString());
+            if (error) throw error;
+            return data;
+          })();
 
       // Group by week for better visualization
       const weeklyData: CashFlowData[] = [];
@@ -164,14 +204,19 @@ export class DashboardDataService {
       const startDate = startOfMonth(new Date());
       const endDate = endOfMonth(new Date());
       
-      // Get expense data grouped by category
-      const { data: expenses, error } = await supabase
-        .from('expenses')
-        .select('amount, category')
-        .gte('created_at', startDate.toISOString())
-        .lte('created_at', endDate.toISOString());
-
-      if (error) throw error;
+      const expenses = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).expenses
+            .filter((expense) => inInclusiveDateRange(expense.expenseDate || expense.createdAt || '', startDate, endDate))
+            .map((expense) => ({ amount: expense.amount, category: expense.category?.name || 'General' }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('expenses')
+              .select('amount, category')
+              .gte('created_at', startDate.toISOString())
+              .lte('created_at', endDate.toISOString());
+            if (error) throw error;
+            return data;
+          })();
 
       // Group by category
       const categoryTotals = new Map<string, number>();
@@ -203,31 +248,42 @@ export class DashboardDataService {
 
   async getAccountTypeData(): Promise<AccountTypeData[]> {
     try {
-      // Get bank account balances (assets)
-      const { data: bankAccounts, error: bankError } = await supabase
-        .from('bank_accounts')
-        .select('balance, account_type');
+      const cashAssets = bankApiEnabled()
+        ? (await bankAccountService.getBankAccounts()).reduce((sum, account) => sum + (account.currentBalance || 0), 0)
+        : await (async () => {
+            const { data: bankAccounts, error: bankError } = await supabase
+              .from('bank_accounts')
+              .select('balance, account_type');
+            if (bankError) throw bankError;
+            return bankAccounts?.reduce((sum, account) => sum + (account.balance || 0), 0) || 0;
+          })();
 
-      if (bankError) throw bankError;
+      const unpaidInvoices = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).invoices
+            .filter((invoice) => invoice.status === 'sent')
+            .map((invoice) => ({ total_amount: invoice.total }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('invoices')
+              .select('total_amount')
+              .eq('status', 'sent');
+            if (error) throw error;
+            return data;
+          })();
 
-      // Get accounts receivable (assets)
-      const { data: unpaidInvoices, error: invoiceError } = await supabase
-        .from('invoices')
-        .select('total_amount')
-        .eq('status', 'sent');
+      const unpaidExpenses = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).expenses
+            .filter((expense) => expense.status === 'pending')
+            .map((expense) => ({ amount: expense.amount }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('expenses')
+              .select('amount')
+              .eq('status', 'pending');
+            if (error) throw error;
+            return data;
+          })();
 
-      if (invoiceError) throw invoiceError;
-
-      // Get accounts payable (liabilities)
-      const { data: unpaidExpenses, error: expenseError } = await supabase
-        .from('expenses')
-        .select('amount')
-        .eq('status', 'pending');
-
-      if (expenseError) throw expenseError;
-
-      // Calculate totals
-      const cashAssets = bankAccounts?.reduce((sum, account) => sum + (account.balance || 0), 0) || 0;
       const receivables = unpaidInvoices?.reduce((sum, invoice) => sum + (invoice.total_amount || 0), 0) || 0;
       const totalAssets = cashAssets + receivables;
 
@@ -259,12 +315,22 @@ export class DashboardDataService {
       const thirtyDaysAgo = subDays(now, 30);
       const sixtyDaysAgo = subDays(now, 60);
 
-      const { data: invoices, error } = await supabase
-        .from('invoices')
-        .select('total_amount, created_at, due_date')
-        .eq('status', 'sent');
-
-      if (error) throw error;
+      const invoices = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).invoices
+            .filter((invoice) => invoice.status === 'sent')
+            .map((invoice) => ({
+              total_amount: invoice.total,
+              created_at: invoice.createdAt,
+              due_date: invoice.dueDate,
+            }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('invoices')
+              .select('total_amount, created_at, due_date')
+              .eq('status', 'sent');
+            if (error) throw error;
+            return data;
+          })();
 
       let current = 0;
       let thirtyDays = 0;
@@ -299,12 +365,22 @@ export class DashboardDataService {
       const now = new Date();
       const oneWeekFromNow = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
 
-      const { data: expenses, error } = await supabase
-        .from('expenses')
-        .select('amount, due_date, created_at')
-        .eq('status', 'pending');
-
-      if (error) throw error;
+      const expenses = ledgerSnapshotEnabled()
+        ? (await loadLedgerSnapshot()).expenses
+            .filter((expense) => expense.status === 'pending')
+            .map((expense) => ({
+              amount: expense.amount,
+              due_date: expense.expenseDate,
+              created_at: expense.createdAt || expense.expenseDate,
+            }))
+        : await (async () => {
+            const { data, error } = await supabase
+              .from('expenses')
+              .select('amount, due_date, created_at')
+              .eq('status', 'pending');
+            if (error) throw error;
+            return data;
+          })();
 
       let notDue = 0;
       let dueThisWeek = 0;

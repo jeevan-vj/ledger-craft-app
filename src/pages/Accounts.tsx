@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Spinner } from '@/components/ui/spinner';
 import { toast } from '@/components/ui/use-toast';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 const ACCOUNT_TYPES: { value: AccountType; label: string }[] = [
   { value: 'bank', label: 'Bank' },
@@ -93,11 +94,11 @@ export default function AccountsPage() {
   }
 
   return (
-    <div className="p-6 max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">Accounts</h1>
-        <Button onClick={openCreate}>Add Account</Button>
-      </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Accounts"
+        actions={<Button onClick={openCreate}>Add Account</Button>}
+      />
       {isLoadingAccounts ? (
         <div className="flex justify-center items-center h-32"><Spinner /></div>
       ) : (

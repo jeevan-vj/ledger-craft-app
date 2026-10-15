@@ -4,6 +4,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { TaxConfiguration } from '@/types/payment';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 export default function TaxConfigurationPage() {
   const [configurations, setConfigurations] = useState<TaxConfiguration[]>([]);
@@ -255,13 +256,10 @@ export default function TaxConfigurationPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div>
-        <h1 className="text-3xl font-bold">Tax Configuration</h1>
-        <p className="text-muted-foreground">
-          Configure tax rates and settings for accurate tax calculations
-        </p>
-      </div>
+      <PageHeader
+        title="Tax Configuration"
+        description="Configure tax rates and settings for accurate tax calculations"
+      />
 
       {/* Tax Configuration Panel */}
       <TaxConfigurationPanel

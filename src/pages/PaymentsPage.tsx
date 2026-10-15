@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Filter, Download, RefreshCw } from 'lucide-react';
+import { Plus, Download, RefreshCw, Wallet, Calendar, Repeat } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { PaymentHistory } from '@/components/payment/PaymentHistory';
@@ -190,68 +192,73 @@ export default function PaymentsPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-3xl font-bold">Payment Management</h1>
-          <p className="text-muted-foreground">
-            Track and manage customer payments
-          </p>
-        </div>
-        
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            onClick={handleRefresh}
-            disabled={isLoadingPayments}
-          >
-            <RefreshCw className={`mr-2 h-4 w-4 ${isLoadingPayments ? 'animate-spin' : ''}`} />
-            Refresh
-          </Button>
-          
-          <Button
-            variant="outline"
-            onClick={handleExportPayments}
-          >
-            <Download className="mr-2 h-4 w-4" />
-            Export
-          </Button>
-          
-          <Button
-            onClick={() => setShowQuickPayment(true)}
-            disabled={unpaidInvoices.length === 0}
-          >
-            <Plus className="mr-2 h-4 w-4" />
-            Record Payment
-          </Button>
-        </div>
-      </div>
+      <PageHeader
+        title="Payments"
+        actions={
+          payments.length > 0 ? (
+            <Button
+              onClick={() => setShowQuickPayment(true)}
+              disabled={unpaidInvoices.length === 0}
+            >
+              <Plus className="mr-2 h-4 w-4" />
+              Record Payment
+            </Button>
+          ) : undefined
+        }
+      />
 
-      {/* Quick Payment Alert */}
-      {unpaidInvoices.length > 0 && (
+      {payments.length === 0 && (
+        <EmptyState
+          variant="hero"
+          title="Record. Match. Done."
+          description="Keep invoice balances accurate as money comes in."
+          benefits={[
+            {
+              icon: Wallet,
+              title: 'Record a payment',
+              subtitle: 'Apply cash, transfer, or card payments to an invoice.',
+            },
+            {
+              icon: Calendar,
+              title: 'See what is still due',
+              subtitle: 'Outstanding invoices stay visible until they are settled.',
+            },
+            {
+              icon: Repeat,
+              title: 'Partial payments welcome',
+              subtitle: 'Split a balance across multiple payments if you need to.',
+            },
+          ]}
+          ctaLabel="Record payment"
+          onCta={() => setShowQuickPayment(true)}
+        />
+      )}
+
+      {payments.length > 0 && unpaidInvoices.length > 0 && (
         <Alert>
           <AlertDescription>
-            You have {unpaidInvoices.length} invoice{unpaidInvoices.length > 1 ? 's' : ''} with outstanding payments. 
-            <Button 
-              variant="link" 
-              className="p-0 h-auto ml-1"
+            You have {unpaidInvoices.length} invoice{unpaidInvoices.length > 1 ? 's' : ''} with outstanding payments.{' '}
+            <Button
+              variant="link"
+              className="p-0 h-auto"
               onClick={() => setShowQuickPayment(true)}
             >
-              Record a payment →
+              Record a payment
             </Button>
           </AlertDescription>
         </Alert>
       )}
 
-      {/* Payment History Component */}
-      <PaymentHistory
-        payments={payments}
-        invoices={invoices}
-        isLoading={isLoadingPayments}
-        onViewReceipt={handleViewReceipt}
-        onDownloadReceipt={handleDownloadReceipt}
-        onResendReceipt={handleResendReceipt}
-      />
+      {payments.length > 0 && (
+        <PaymentHistory
+          payments={payments}
+          invoices={invoices}
+          isLoading={isLoadingPayments}
+          onViewReceipt={handleViewReceipt}
+          onDownloadReceipt={handleDownloadReceipt}
+          onResendReceipt={handleResendReceipt}
+        />
+      )}
 
       {/* Quick Payment Dialog */}
       <Dialog open={showQuickPayment} onOpenChange={setShowQuickPayment}>

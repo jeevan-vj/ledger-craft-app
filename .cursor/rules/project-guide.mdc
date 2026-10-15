@@ -1,8 +1,13 @@
 ---
-description: 
+description: LedgerCraft - React + React Native + Supabase Best Practices with Revolut UI Design System
 globs: 
 alwaysApply: true
 ---
+
+# Current authority
+
+For UI work, `DESIGN.md`, `ledgercraft-web-ui`, `ledgercraft-mobile-ui`, and the current platform token files supersede conflicting legacy design examples below. For data, auth, and deployment work, the current Cloudflare/Hono/SQLite decisions in `Agents.md` and `TARGET_ARCHITECTURE.md` supersede the Supabase-era guidance below. Do not add new client Supabase calls, emoji interface chrome, decorative glassmorphism, or white text on mobile lime actions.
+
 rules:
   # React component best practices
   - description: "Write React code following best practices (functional components, hooks, prop types, etc)."
@@ -143,9 +148,291 @@ rules:
       - Sanitize user-generated content.
       - Assume the frontend is not secure — validate and protect via backend/Supabase RLS.
 
-metadata:
-  name: "React + Supabase Best Practices"
-  description: "Cursor AI rules for building scalable, clean, and secure React apps using Supabase and AppContext."
-  version: "2.0.0"
-  project_type: "react"
+  # ========================================
+  # REVOLUT UI DESIGN SYSTEM
+  # ========================================
 
+  # Revolut Color Palette & Design Tokens
+  - description: "Use Revolut-inspired color palette and design tokens consistently."
+    match: "**/*.ts|**/*.tsx|**/tailwind.config.*"
+    completion_guidelines:
+      - Primary brand color: #5B72EE (Revolut blue)
+      - Secondary: #4A5FD8 (darker blue)
+      - Accent: #00D4FF (cyan for highlights)
+      - Success: #10B981 (emerald green)
+      - Warning: #F59E0B (amber)
+      - Danger: #EF4444 (red)
+      - Background: #F8FAFC (light gray)
+      - Surface: #FFFFFF (white cards)
+      - Text primary: #1E293B (dark slate)
+      - Text secondary: #64748B (medium slate)
+      - Borders: #E2E8F0 (light slate)
+      - Use gradient backgrounds for hero sections: `from-blue-600 via-blue-500 to-cyan-400`
+
+  # Revolut Card Design
+  - description: "Apply Revolut-style card designs with shadows and rounded corners."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Use rounded corners: `rounded-xl` (12px) or `rounded-2xl` (16px)
+      - Apply soft shadows: `shadow-sm` or custom `shadowColor`, `shadowOffset`, `shadowOpacity`
+      - White background with borders: `bg-white border border-gray-200`
+      - Card padding: `p-4` or `p-6` for spacing
+      - For React Native: StyleSheet with borderRadius 12-16, backgroundColor '#FFFFFF', shadowColor '#000', shadowOpacity 0.1, elevation 2-4
+      - Avoid harsh borders; prefer subtle shadows for depth
+      - Use glass-morphism for overlays: semi-transparent background with blur
+
+  # Revolut Typography
+  - description: "Follow Revolut typography hierarchy and font weights."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Headings: `font-bold` (700) for primary headings, `font-semibold` (600) for subheadings
+      - Body text: `font-normal` (400) or `font-medium` (500)
+      - Labels: `font-medium` (500), often uppercase with `text-xs` and letter-spacing
+      - Use clear hierarchy: large prominent amounts/totals, smaller supporting text
+      - Colors: Primary text #1E293B, secondary text #64748B, light text #94A3B8
+      - Font sizes (web): text-sm (14px), text-base (16px), text-lg (18px), text-xl (20px), text-2xl (24px)
+      - Font sizes (mobile): fontSize 12-14 for labels, 16-18 for body, 20-24 for headings, 28-32 for prominent amounts
+
+  # Revolut Button Styles
+  - description: "Create buttons following Revolut's modern button design."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Primary button: Blue background (#5B72EE), white text, rounded-xl, shadow, font-semibold
+      - Secondary button: White background, blue border, blue text, rounded-xl
+      - Ghost button: Transparent background, blue text, no border
+      - Danger button: Red background (#EF4444), white text
+      - Disabled state: Reduced opacity (0.5), no interaction
+      - Loading state: Show ActivityIndicator/spinner, disable interaction
+      - Buttons should have padding (py-3 px-6 web, paddingVertical 14-16 mobile)
+      - Use active opacity (0.7-0.8) for touch feedback on mobile
+      - Avoid default button styles; always customize
+
+  # Revolut Form Inputs
+  - description: "Design form inputs with Revolut's clean, modern aesthetic."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Input container: Light gray background (#F8FAFC), rounded borders (rounded-xl)
+      - Label: Above input, font-medium, text-sm, color #64748B
+      - Input text: Font-normal, text-base (16px), color #1E293B
+      - Placeholder: Light gray (#94A3B8)
+      - Focus state: Blue border (#5B72EE), no outline
+      - Error state: Red border (#EF4444), red helper text below
+      - Required indicator: Red asterisk (*) next to label
+      - Use consistent padding: p-3 or p-4 inside inputs
+      - For React Native: Use TextInput with custom styling, avoid default borders
+
+  # Revolut Animations & Transitions
+  - description: "Apply smooth animations and micro-interactions."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Use subtle transitions for hover/press states: `transition-all duration-200`
+      - Fade-in animations for content: opacity and translateY
+      - Scale animations for buttons on press: slightly reduce scale (0.95-0.98)
+      - Skeleton loaders for data fetching: animated shimmer effect
+      - Smooth page transitions: slide-in from right for new pages
+      - For React Native: Use `Animated` API or `react-native-reanimated` for complex animations
+      - Keep animations performant: avoid animating layout properties when possible
+      - Duration: 200-300ms for quick interactions, 400-500ms for page transitions
+
+  # Revolut Status Badges & Icons
+  - description: "Use color-coded status badges and emoji/icon indicators."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Status badges: Small rounded pills with colored backgrounds
+      - Paid: Green background (#10B981 with 15% opacity), green text, ✓ checkmark emoji
+      - Sent: Blue background, blue text, 📤 emoji
+      - Draft: Gray background, gray text, 📝 emoji
+      - Overdue: Red background, red text, ⚠️ emoji
+      - Use uppercase text for status labels: `text-xs font-semibold uppercase tracking-wide`
+      - Icons: Prefer emoji for simplicity (🔍 search, 📅 date, ⏰ time, 📄 document, 👤 user)
+      - For complex icons, use react-native-vector-icons or similar
+      - Icon size: 18-24px for small icons, 32-48px for large feature icons
+
+  # Revolut Lists & Cards
+  - description: "Design list items and cards with clear hierarchy and spacing."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - List items: White card background, rounded corners, shadow, margin between items
+      - Use FlatList (React Native) or map (React) with proper keyExtractor
+      - Card header: Gradient or colored background (15% opacity), contains key info (invoice number, customer)
+      - Card body: White background, contains secondary info (amounts, dates)
+      - Amount display: Large, bold, prominent position (right-aligned or center)
+      - Date display: Smaller, with emoji labels (📅 Date, ⏰ Due)
+      - Dividers: Use subtle dividers or spacing instead of thick lines
+      - Touch feedback: activeOpacity={0.7} for React Native TouchableOpacity
+      - Empty states: Large emoji (📄), bold headline, friendly subtext, centered
+
+  # Revolut Navigation & Headers
+  - description: "Create navigation headers following Revolut's clean design."
+    match: "**/*.tsx"
+    completion_guidelines:
+      - Header: White background with subtle shadow, larger title (text-2xl font-bold)
+      - Action button in header: Blue background, "+ New" text, rounded-xl, shadow
+      - Search bar: Light gray background, rounded-xl, search icon (🔍), no border
+      - Filter buttons: Pill-shaped, deep blue when active (#5B72EE), light gray when inactive
+      - Tab bars: Clean, icon + label, blue indicator for active tab
+      - Back button: Simple arrow "←" or icon, no text
+      - Header spacing: Adequate padding (p-4 to p-6), rounded bottom corners for depth
+      - For React Native Stack Navigator: Use custom header component for consistency
+
+  # ========================================
+  # REACT NATIVE MOBILE SPECIFIC
+  # ========================================
+
+  # Wise + iOS mobile visual language
+  - description: "Mobile uses Wise-inspired lime/forest tokens and native iOS chrome, not Revolut blue or emoji."
+    match: "**/mobile/**/*.ts|**/mobile/**/*.tsx|**/mobile/tailwind.config.*"
+    completion_guidelines:
+      - Accent lime #9FE870; lime CTAs use forest text #163300, never white
+      - Canvas #FFFFFF / grouped #F2F2F2; text #163300; secondary #62605B
+      - Tokens live in mobile/src/theme/tokens.ts; format money with formatMoney
+      - Keep native tabs and native stack. Do not set tabBarStyle backgroundColor (kills iOS 26 Liquid Glass)
+      - Large titles on lists; iOS form screens stay modal; native headerSearchBarOptions
+      - No emoji as UI chrome; use Feather or SF Symbols in circular IconWells
+      - Prefer Pressable over TouchableOpacity
+      - Web Revolut rules do not apply inside mobile/
+
+  # React Native Component Patterns
+  - description: "Follow React Native best practices for mobile development."
+    match: "**/mobile/**/*.tsx|**/mobile/**/*.ts"
+    completion_guidelines:
+      - Use React Native core components: View, Text, Pressable, ScrollView, FlatList
+      - Never use HTML elements (div, span, button) in mobile code
+      - Import components from 'react-native', not 'react-native-web'
+      - Use StyleSheet.create for performance and organization
+      - Avoid inline styles except for dynamic values
+      - Use Platform-specific code when needed: Platform.OS === 'ios'
+
+  # React Native Styling with NativeWind
+  - description: "Use NativeWind (Tailwind for React Native) consistently."
+    match: "**/mobile/**/*.tsx"
+    completion_guidelines:
+      - Use className prop for Tailwind classes on React Native components
+      - For complex styles, combine className with StyleSheet styles
+      - NativeWind classes must be valid Tailwind classes (no arbitrary values without config)
+      - Use style prop for dynamic styles, className for static styles
+      - Configure custom colors in tailwind.config.js, not arbitrary values
+      - Test styles on both iOS and Android for consistency
+
+  # React Native Navigation
+  - description: "Implement React Navigation with proper typing and flow."
+    match: "**/mobile/src/navigation/**/*.tsx|**/mobile/src/navigation/**/*.ts"
+    completion_guidelines:
+      - Use React Navigation v6+ with TypeScript
+      - Define navigation types in types.ts: RootStackParamList, BottomTabParamList, etc.
+      - Use typed navigation hooks: useNavigation<NavigationProp<RootStackParamList>>()
+      - Check auth state before rendering navigators
+      - Implement proper deep linking and universal links
+      - Use Stack.Screen options for custom headers and transitions
+      - Handle back button on Android properly
+
+  # React Native State Management (Zustand)
+  - description: "Use Zustand for mobile app state management."
+    match: "**/mobile/src/store/**/*.ts"
+    completion_guidelines:
+      - Create slices for different domains: authSlice, invoiceSlice, customerSlice
+      - Use TypeScript for store typing
+      - Keep state normalized and avoid deep nesting
+      - Use selectors for derived state
+      - Implement async actions with proper error handling
+      - Persist critical state (auth) using zustand/middleware
+      - Clear state on logout
+
+  # React Native Services Layer
+  - description: "Create service abstractions for API calls and Supabase."
+    match: "**/mobile/src/services/**/*.ts"
+    completion_guidelines:
+      - One service per domain: invoiceService, customerService, itemService, authService
+      - Use snake_case for Supabase column names, transform to camelCase in services
+      - Always handle errors and return consistent response format
+      - Include proper TypeScript types for all methods
+      - Use async/await with try-catch for all async operations
+      - Log errors to console for debugging
+      - Never expose raw Supabase queries in components
+
+  # React Native Image Handling
+  - description: "Handle images and media properly in React Native."
+    match: "**/mobile/**/*.tsx|**/mobile/**/*.ts"
+    completion_guidelines:
+      - Use expo-image-picker for accessing camera/gallery
+      - Request permissions before accessing media: requestCameraPermissionsAsync, requestMediaLibraryPermissionsAsync
+      - Use standard web APIs (fetch, Blob, FileReader) for image processing
+      - Avoid deprecated expo-file-system methods; use fetch and FileReader instead
+      - Compress images before upload to reduce size
+      - Store image URIs in state, upload to Supabase Storage
+      - Get public URLs from Supabase Storage after upload
+      - Use Image component from 'react-native' or 'expo-image' for display
+
+  # React Native Forms & Validation
+  - description: "Build forms with proper validation and user feedback."
+    match: "**/mobile/**/*.tsx"
+    completion_guidelines:
+      - Create reusable form components: FormInput, FormSelect, FormSwitch
+      - Validate on blur and on submit, not on every keystroke
+      - Show clear error messages below inputs
+      - Disable submit button when form is invalid or loading
+      - Use KeyboardAvoidingView for iOS keyboard handling
+      - Auto-dismiss keyboard on submit: Keyboard.dismiss()
+      - Provide clear visual feedback for required fields
+      - Use appropriate keyboard types: email, numeric, phone-pad
+
+  # React Native Modals & Overlays
+  - description: "Create modals and pickers following Revolut patterns."
+    match: "**/mobile/**/*.tsx"
+    completion_guidelines:
+      - Use Modal component from 'react-native' with transparent overlay
+      - Modal slides from bottom: animationType="slide"
+      - Overlay: Semi-transparent black background (rgba(0,0,0,0.5))
+      - Modal content: White, rounded top corners (20px), takes 70-80% of screen height
+      - Close button: Top-right, circular, light gray background, X icon
+      - Use FlatList for scrollable content in modals (pickers)
+      - Add search input at top for filterable lists
+      - Handle keyboard properly: keyboardShouldPersistTaps="handled"
+      - Provide clear selection feedback: checkmark, highlight, or blue text
+
+  # React Native Performance
+  - description: "Optimize React Native performance for smooth UX."
+    match: "**/mobile/**/*.tsx"
+    completion_guidelines:
+      - Use FlatList for long lists, never ScrollView with map
+      - Implement proper keyExtractor for FlatList items
+      - Use React.memo for expensive components
+      - Optimize images: resize, compress, cache
+      - Avoid heavy computations in render; use useMemo/useCallback
+      - Use native driver for animations: useNativeDriver: true
+      - Implement pull-to-refresh with RefreshControl
+      - Handle loading states to prevent flickering
+      - Use react-native-fast-image for better image performance
+
+  # React Native Error Handling
+  - description: "Handle errors gracefully with user-friendly messages."
+    match: "**/mobile/**/*.tsx|**/mobile/**/*.ts"
+    completion_guidelines:
+      - Use try-catch for all async operations
+      - Show Alert.alert() for critical errors
+      - Use toast notifications for non-critical feedback
+      - Log errors to console with context: console.error('Error creating invoice:', error)
+      - Provide specific error messages, not generic "Something went wrong"
+      - Handle network errors separately: "No internet connection"
+      - Implement error boundaries for crash recovery
+      - Clear error states after user action
+
+  # Database Schema Conventions
+  - description: "Follow consistent database naming and querying patterns."
+    match: "**/services/**/*.ts"
+    completion_guidelines:
+      - Supabase uses snake_case for column names: user_id, created_at, sale_price
+      - Supabase uses snake_case for table names: business_profiles, item_categories
+      - Always use snake_case in .select(), .insert(), .update() queries
+      - Transform snake_case to camelCase in service layer for TypeScript types
+      - Example: Database has `user_id`, TypeScript interface has `userId`
+      - Use .eq('user_id', userId) for filters, not .eq('userId', userId)
+      - Check Supabase schema to confirm exact column names before querying
+
+metadata:
+  name: "LedgerCraft - React + React Native + Supabase + Revolut UI"
+  description: "Comprehensive rules for building LedgerCraft with modern web and mobile apps, featuring Revolut-inspired design system."
+  version: "3.0.0"
+  project_type: "fullstack"
+  platforms: ["web", "mobile"]
+  design_system: "Revolut"

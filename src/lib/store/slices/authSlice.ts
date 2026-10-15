@@ -4,14 +4,14 @@
  */
 
 import { StateCreator } from 'zustand';
-import { User, Session } from '@supabase/supabase-js';
+import type { AuthSession, AuthUser } from '@/types/auth-user';
 import { supabase } from '@/integrations/supabase/client';
 import { businessProfileService } from '@/services/supabaseService';
 
 export interface AuthSlice {
   // State
-  user: User | null;
-  session: Session | null;
+  user: AuthUser | null;
+  session: AuthSession | null;
   loading: boolean;
   hasCompletedOnboarding: boolean;
   onboardingChecked: boolean;
@@ -26,14 +26,14 @@ export interface AuthSlice {
   refreshUser: () => Promise<void>;
   
   // Internal state updaters
-  setUser: (user: User | null) => void;
-  setSession: (session: Session | null) => void;
+  setUser: (user: AuthUser | null) => void;
+  setSession: (session: AuthSession | null) => void;
   setLoading: (loading: boolean) => void;
   setOnboardingStatus: (completed: boolean, checked: boolean) => void;
   setError: (error: string | null) => void;
   
   // Auth event handlers
-  handleAuthStateChange: (event: string, session: Session | null) => void;
+  handleAuthStateChange: (event: string, session: AuthSession | null) => void;
   initialize: () => Promise<void>;
 }
 
@@ -180,7 +180,7 @@ export const createAuthSlice: StateCreator<
   setError: (error) => set((state) => { state.error = error; }),
 
   // Auth event handlers
-  handleAuthStateChange: async (event: string, session: Session | null) => {
+  handleAuthStateChange: async (event: string, session: AuthSession | null) => {
     console.log('Auth state change:', event);
     
     set((state) => {

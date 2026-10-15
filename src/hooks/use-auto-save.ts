@@ -30,6 +30,7 @@ export function useAutoSave({
   const lastSavedData = useRef<string>('');
   const saveTimeoutRef = useRef<NodeJS.Timeout>();
   const lastSaveTime = useRef<number>(0);
+  const hasCheckedDraft = useRef<boolean>(false);
   
   // Generate storage key with user context
   const storageKey = `invoice-autosave-${key}`;
@@ -131,7 +132,13 @@ export function useAutoSave({
    * Check for existing draft on mount
    */
   useEffect(() => {
-    if (!enabled) return;
+    // Only run once on mount - use sessionStorage to track across HMR and re-renders
+    const sessionKey = `draft-checked-${key}`;
+    const hasCheckedInSession = sessionStorage.getItem(sessionKey);
+    
+    if (!enabled || hasCheckedInSession || hasCheckedDraft.current) return;
+    hasCheckedDraft.current = true;
+    sessionStorage.setItem(sessionKey, 'true');
     
     const savedData = loadSavedData();
     if (savedData && data.mode === 'create') {
@@ -146,7 +153,7 @@ export function useAutoSave({
         clearSavedData();
       }
     }
-  }, [enabled, data.mode]); // Only run on mount
+  }, [enabled, data.mode, key, loadSavedData, restoreData, clearSavedData]); // Only run on mount
   
   /**
    * Auto-save effect

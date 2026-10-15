@@ -8,11 +8,13 @@ import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { BusinessProfile, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
-import { supabase } from '@/integrations/supabase/client';
 import ThemePicker from '@/components/business/ThemePicker';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, { message: "Business name is required" }),
@@ -26,7 +28,10 @@ const profileFormSchema = z.object({
   state: z.string().optional(),
   zip: z.string().optional(),
   country: z.string().default('New Zealand'),
+  bankAccountName: z.string().trim().max(200).optional(),
+  bankAccountNumber: z.string().trim().max(100).optional(),
   defaultTerms: z.string().optional(),
+  paymentTermDays: z.number().int().min(0).max(365).default(30),
   defaultNotes: z.string().optional(),
   invoiceNumberFormat: z.string().min(2, { message: "Format required" }).optional(),
   invoiceNumberSequence: z.number().optional(),
@@ -57,7 +62,10 @@ const Settings = () => {
       state: businessProfile?.state || '',
       zip: businessProfile?.zip || '',
       country: businessProfile?.country || 'New Zealand',
+      bankAccountName: businessProfile?.bankAccountName || '',
+      bankAccountNumber: businessProfile?.bankAccountNumber || '',
       defaultTerms: businessProfile?.defaultTerms || '',
+      paymentTermDays: businessProfile?.paymentTermDays ?? 30,
       defaultNotes: businessProfile?.defaultNotes || '',
       invoiceNumberFormat: businessProfile?.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
       invoiceNumberSequence: businessProfile?.invoiceNumberSequence ?? 1,
@@ -85,7 +93,10 @@ const Settings = () => {
         state: businessProfile.state || '',
         zip: businessProfile.zip || '',
         country: businessProfile.country || 'New Zealand',
+        bankAccountName: businessProfile.bankAccountName || '',
+        bankAccountNumber: businessProfile.bankAccountNumber || '',
         defaultTerms: businessProfile.defaultTerms || '',
+        paymentTermDays: businessProfile.paymentTermDays ?? 30,
         defaultNotes: businessProfile.defaultNotes || '',
         invoiceNumberFormat: businessProfile.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
         invoiceNumberSequence: businessProfile.invoiceNumberSequence ?? 1,
@@ -102,26 +113,13 @@ const Settings = () => {
       let logoUrlToSave = businessProfile?.logoUrl || null;
 
       if (data.logoFile && data.logoFile.length > 0) {
-        const file = data.logoFile[0];
-        const fileExt = file.name.split('.').pop();
-        const fileName = `business-logo-${Date.now()}.${fileExt}`;
-        const filePath = `business-logos/${fileName}`;
-
-        const { data: uploadData, error: uploadError } = await supabase.storage
-          .from('business-assets')
-          .upload(filePath, file);
-
-        if (uploadError) {
-          throw new Error(uploadError.message || "Failed to upload logo");
-        }
-
-        if (uploadData) {
-          const { data: publicUrlData } = supabase.storage
-            .from('business-assets')
-            .getPublicUrl(filePath);
-            
-          logoUrlToSave = publicUrlData.publicUrl;
-        }
+        const file = data.logoFile[0] as File;
+        logoUrlToSave = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(String(reader.result));
+          reader.onerror = () => reject(new Error('Failed to read logo file'));
+          reader.readAsDataURL(file);
+        });
       }
 
       const profileData: BusinessProfile = {
@@ -136,7 +134,10 @@ const Settings = () => {
         city: data.city || null,
         state: data.state || null,
         zip: data.zip || null,
+        bankAccountName: data.bankAccountName || null,
+        bankAccountNumber: data.bankAccountNumber || null,
         defaultTerms: data.defaultTerms || null,
+        paymentTermDays: data.paymentTermDays ?? 30,
         defaultNotes: data.defaultNotes || null,
         id: businessProfile?.id,
         invoiceNumberFormat: data.invoiceNumberFormat?.trim() || 'INV-{YYYY}-{SEQ}',
@@ -200,7 +201,7 @@ const Settings = () => {
 
   return (
     <div className="space-y-6">
-      <h1 className="text-3xl font-bold">Settings</h1>
+      <PageHeader title="Settings" />
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
         <TabsList>
           <TabsTrigger value="profile">Business Profile</TabsTrigger>
@@ -441,6 +442,72 @@ const Settings = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
+                    <fieldset className="space-y-4 rounded-lg border p-4">
+                      <legend className="px-1 font-semibold">Bank transfer details</legend>
+                      <p className="text-sm text-muted-foreground">Shown on invoices and PDFs. Leave blank to hide.</p>
+                      <FormField control={form.control} name="bankAccountName" render={({ field }) => (
+                        <FormItem><FormLabel>Account name</FormLabel><FormControl>
+                          <Input {...field} maxLength={200} placeholder="e.g. Kauri Studio Ltd" />
+                        </FormControl><FormMessage /></FormItem>
+                      )} />
+                      <FormField control={form.control} name="bankAccountNumber" render={({ field }) => (
+                        <FormItem><FormLabel>Account number</FormLabel><FormControl>
+                          <Input {...field} type="text" maxLength={100} placeholder="e.g. 01-0123-0000123-00" />
+                        </FormControl><FormMessage /></FormItem>
+                      )} />
+                    </fieldset>
+                    <FormField
+                      control={form.control}
+                      name="paymentTermDays"
+                      render={({ field }) => {
+                        const code = paymentTermCodeFromDays(field.value ?? 30);
+                        return (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Payment terms</FormLabel>
+                            <Select
+                              value={code}
+                              onValueChange={(value) => {
+                                if (value === 'custom') {
+                                  field.onChange(field.value ?? 30);
+                                  return;
+                                }
+                                const preset = PAYMENT_TERM_PRESETS.find((item) => item.code === value);
+                                if (preset) field.onChange(preset.days);
+                              }}
+                            >
+                              <FormControl>
+                                <SelectTrigger data-testid="payment-term-days">
+                                  <SelectValue placeholder="30 days" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {PAYMENT_TERM_PRESETS.map((preset) => (
+                                  <SelectItem key={preset.code} value={preset.code}>
+                                    {preset.label}
+                                  </SelectItem>
+                                ))}
+                                <SelectItem value="custom">Custom</SelectItem>
+                              </SelectContent>
+                            </Select>
+                            {code === 'custom' && (
+                              <Input
+                                type="number"
+                                min={0}
+                                max={365}
+                                value={field.value ?? 30}
+                                onChange={(event) => field.onChange(Number(event.target.value))}
+                                aria-label="Custom payment term days"
+                              />
+                            )}
+                            <p className="text-sm text-muted-foreground">
+                              New invoices set due date to invoice date + this many days. You can still pick another date on the invoice.
+                            </p>
+                            <FormMessage />
+                          </FormItem>
+                        );
+                      }}
+                    />
+
                     <FormField
                       control={form.control}
                       name="defaultTerms"
@@ -483,7 +550,7 @@ const Settings = () => {
             <div className="mt-6">
               <Button
                 type="submit"
-                className="bg-invoice-teal hover:bg-invoice-teal/90"
+                className=""
                 disabled={isSaving}
               >
                 {isSaving ? (

@@ -1,6 +1,8 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
+import { readFileSync } from "node:fs";
+const buildVersion = JSON.parse(readFileSync(new URL("./public/version.json", import.meta.url), "utf8"));
 import { componentTagger } from "lovable-tagger";
 import { VitePWA } from 'vite-plugin-pwa';
 
@@ -9,8 +11,17 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
+    proxy: {
+      "/api": {
+        target: "http://127.0.0.1:3001",
+        changeOrigin: true,
+      },
+    },
   },
   define: {
+    "import.meta.env.VITE_APP_VERSION": JSON.stringify(buildVersion.version),
+    "import.meta.env.VITE_BUILD_HASH": JSON.stringify(buildVersion.hash),
+    "import.meta.env.VITE_BUILD_TIME": JSON.stringify(String(buildVersion.buildTime)),
     // Development environment flags
     __DEV_MODE__: mode === 'development',
     __VERSION_POLLING_ENABLED__: mode === 'production',
@@ -28,15 +39,12 @@ export default defineConfig(({ mode }) => ({
         clientsClaim: true,
         runtimeCaching: [
           {
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/shared/invoice/'),
+            handler: 'NetworkOnly',
+          },
+          {
             urlPattern: /^https:\/\/api\./,
-            handler: 'NetworkFirst',
-            options: {
-              cacheName: 'api-cache',
-              networkTimeoutSeconds: 3,
-              cacheableResponse: {
-                statuses: [0, 200],
-              },
-            },
+            handler: 'NetworkOnly',
           },
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico)$/,
@@ -51,7 +59,7 @@ export default defineConfig(({ mode }) => ({
           },
         ],
         // Exclude files that should always be fresh
-        navigateFallbackDenylist: [/^\/_/, /\/[^/?]+\.[^/]+$/],
+        navigateFallbackDenylist: [/^\/shared\/invoice\//, /^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
         cleanupOutdatedCaches: true,
       },
       manifest: {
@@ -90,6 +98,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      "@ledgercraft/contracts": path.resolve(__dirname, "./packages/contracts/src/index.ts"),
     },
   },
 }));

@@ -23,7 +23,8 @@
 
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@ledgercraft/contracts": ["./packages/contracts/src/index.ts"]
     }
   },
   "include": ["src"]

@@ -11,6 +11,13 @@ import { IDataManager, IDataState, ILoadingState, IDataSubscriber } from "@/inte
 import { serviceContainer } from "@/services/ServiceContainer";
 import { Customer, Invoice, BusinessProfile, Item, ItemCategory, Account, Expense, ExpenseCategory } from "@/types";
 import { Payment, Receipt, CreatePaymentRequest, EnhancedInvoice } from "@/types/payment";
+import { businessProfileApiEnabled } from '@/features/business-profile/api/businessProfileApi';
+import { customersApiEnabled } from '@/features/customers/api/customersApi';
+import { expensesApiEnabled } from '@/features/expenses/api/expensesApi';
+import { invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import { itemsApiEnabled } from '@/features/items/api/itemsApi';
+import { accountsApiEnabled, paymentsApiEnabled } from '@/features/payments/api/paymentsApi';
+import { receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
 
 // Single Responsibility: State Management
 class DataStateManager {
@@ -187,19 +194,25 @@ class SOLIDDataManager implements IDataManager {
       return;
     }
 
-    // Fetch all data in parallel
+    const skip = async (key: keyof ILoadingState) => {
+      this.stateManager.updateLoading(key, false);
+    };
+
     await Promise.all([
-      this.fetchCustomers(),
-      this.fetchInvoices(),
-      this.fetchBusinessProfile(),
-      this.fetchItems(),
-      this.fetchItemCategories(),
-      this.fetchAccounts(),
-      this.fetchExpenses(),
-      this.fetchExpenseCategories(),
-      this.fetchPayments(),
-      this.fetchReceipts()
+      customersApiEnabled() ? skip('customers') : this.fetchCustomers(),
+      invoicesApiEnabled() ? skip('invoices') : this.fetchInvoices(),
+      businessProfileApiEnabled() ? skip('businessProfile') : this.fetchBusinessProfile(),
+      itemsApiEnabled()
+        ? Promise.all([skip('items'), skip('itemCategories')])
+        : Promise.all([this.fetchItems(), this.fetchItemCategories()]),
+      accountsApiEnabled() ? skip('accounts') : this.fetchAccounts(),
+      expensesApiEnabled()
+        ? Promise.all([skip('expenses'), skip('expenseCategories')])
+        : Promise.all([this.fetchExpenses(), this.fetchExpenseCategories()]),
+      paymentsApiEnabled() ? skip('payments') : this.fetchPayments(),
+      receiptsApiEnabled() ? skip('receipts') : this.fetchReceipts(),
     ]);
+    this.notify();
   }
 
   reset(): void {

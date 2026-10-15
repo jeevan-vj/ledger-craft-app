@@ -45,8 +45,8 @@ const AppVersion: React.FC<AppVersionProps> = ({
           onClick={() => setShowDetails(!showDetails)}
         >
           <div className="flex items-center space-x-2">
-            <div className="w-6 h-6 rounded-md bg-white/10 flex items-center justify-center">
-              <Info className="w-3 h-3 text-sidebar-foreground/60" />
+            <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center">
+              <Info className="w-3 h-3 text-muted-foreground" />
             </div>
             <span className="text-xs text-sidebar-foreground/50 font-medium">
               Version {version.version}
@@ -83,8 +83,8 @@ const AppVersion: React.FC<AppVersionProps> = ({
           onClick={() => setShowDetails(!showDetails)}
         >
           <div className="flex items-center space-x-2">
-            <div className="w-5 h-5 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-              <Info className="w-3 h-3 text-sidebar-foreground/50 group-hover:text-sidebar-foreground/70 transition-colors" />
+            <div className="w-5 h-5 rounded-md bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+              <Info className="w-3 h-3 text-muted-foreground" />
             </div>
             <span className="text-xs text-sidebar-foreground/50 font-medium group-hover:text-sidebar-foreground/70 transition-colors">
               v{version.version}
@@ -92,7 +92,7 @@ const AppVersion: React.FC<AppVersionProps> = ({
           </div>
           <div className="flex items-center space-x-1">
             {import.meta.env.DEV && (
-              <span className="text-xs px-1.5 py-0.5 rounded bg-orange-500/20 text-orange-300 font-medium">
+              <span className="text-xs px-1.5 py-0.5 rounded bg-muted text-muted-foreground font-medium">
                 DEV
               </span>
             )}
@@ -107,8 +107,8 @@ const AppVersion: React.FC<AppVersionProps> = ({
           onClick={() => setShowDetails(!showDetails)}
           title={`Version ${version.version} (${version.hash.substring(0, 8)})`}
         >
-          <div className="w-6 h-6 rounded-md bg-white/5 flex items-center justify-center group-hover:bg-white/10 transition-colors">
-            <Info className="w-3 h-3 text-sidebar-foreground/50 group-hover:text-sidebar-foreground/70 transition-colors" />
+          <div className="w-6 h-6 rounded-md bg-muted flex items-center justify-center group-hover:bg-muted/80 transition-colors">
+            <Info className="w-3 h-3 text-muted-foreground" />
           </div>
         </div>
       )}

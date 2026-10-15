@@ -9,7 +9,7 @@ import {
 import { aiService } from '../services/aiService';
 import { conversationService } from '../services/conversationService';
 import { conversationActionHandler } from '../services/conversationActionHandler';
-import { useAuth } from './AuthContext';
+import { useAuth } from './StableAuthContext';
 import { useToast } from '../hooks/use-toast';
 import { useNavigate } from 'react-router-dom';
 

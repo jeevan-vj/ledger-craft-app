@@ -1,7 +1,10 @@
 import React, { useState } from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
+import { Plus, Receipt } from 'lucide-react';
+import { PageHeader } from '@/components/layout/PageHeader';
+import { EmptyState } from '@/components/ui/EmptyState';
+import { ContentPanel } from '@/components/ui/ContentPanel';
 import ExpenseTable from '@/components/expense/ExpenseTable';
 import ExpenseFormDrawer from '@/components/expense/ExpenseFormDrawer';
 import { Expense } from '@/types';
@@ -56,6 +59,10 @@ const Expenses = () => {
         currency: expenseData.currency,
         paymentMethod: expenseData.paymentMethod || null,
         notes: expenseData.notes || null,
+        gstTreatment: expenseData.gstTreatment,
+        gstExemptionReason: expenseData.gstExemptionReason,
+        gstClaimablePercentage: expenseData.gstClaimablePercentage,
+        privateUsePercentage: expenseData.privateUsePercentage,
       };
 
       if (selectedExpense) {
@@ -124,36 +131,46 @@ const Expenses = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Expenses</h1>
-          <p className="text-muted-foreground">
-            Manage your business expenses and track spending.
-          </p>
-        </div>
-        <Button onClick={handleOpenDrawer}>
-          <Plus className="mr-2 h-4 w-4" />
-          New Expense
-        </Button>
-      </div>
+      <PageHeader
+        title="Expenses"
+        actions={
+          expenses.length > 0 ? (
+            <Button onClick={handleOpenDrawer}>
+              <Plus className="mr-2 h-4 w-4" />
+              New Expense
+            </Button>
+          ) : undefined
+        }
+      />
 
       {expenses.length === 0 ? (
-        <div className="text-center py-12">
-          <div className="text-muted-foreground">
-            <div className="text-lg font-medium mb-2">No expenses yet</div>
-            <div className="text-sm">Get started by creating your first expense.</div>
-          </div>
-          <Button className="mt-4" onClick={handleOpenDrawer}>
-            <Plus className="mr-2 h-4 w-4" />
-            Create Expense
-          </Button>
-        </div>
-      ) : (
-        <ExpenseTable
-          expenses={expenses}
-          onEdit={handleEditExpense}
-          onDelete={handleDeleteExpense}
+        <EmptyState
+          variant="hero"
+          title="Track every dollar out"
+          description="Log costs as they happen so your profit picture stays honest."
+          benefits={[
+            {
+              icon: Receipt,
+              title: 'Record expenses now',
+              subtitle: 'Capture vendor, category, and receipt in one place.',
+            },
+            {
+              icon: Plus,
+              title: 'Bill them back later',
+              subtitle: 'Mark costs as billable and add them to the next invoice.',
+            },
+          ]}
+          ctaLabel="Record expense"
+          onCta={handleOpenDrawer}
         />
+      ) : (
+        <ContentPanel padded={false}>
+          <ExpenseTable
+            expenses={expenses}
+            onEdit={handleEditExpense}
+            onDelete={handleDeleteExpense}
+          />
+        </ContentPanel>
       )}
 
       <ExpenseFormDrawer

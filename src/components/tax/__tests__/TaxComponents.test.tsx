@@ -9,6 +9,26 @@ import { GSTReturnWizard } from '../GSTReturnWizard';
 // Mock the router
 vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn(),
+  Link: ({ children, to }: { children: React.ReactNode; to: string }) => <a href={to}>{children}</a>,
+}));
+
+vi.mock('@/context/StableAuthContext', () => ({
+  useAuth: () => ({ user: { id: 'test-user' } }),
+}));
+
+vi.mock('@/services/gstReconciliationService', () => ({
+  gstReconciliationService: {
+    getPeriodReconciliation: vi.fn().mockResolvedValue({
+      period: { startDate: '2024-01-01', endDate: '2024-03-31' },
+      readiness: 'not_applicable',
+      accounts: [],
+      unreconciledTransactionCount: 0,
+      unreconciledSamples: [],
+      figures: [],
+      figuresMatch: true,
+      issues: [],
+    }),
+  },
 }));
 
 // Mock the auth hook
@@ -135,7 +155,7 @@ describe('Tax Components', () => {
         />
       );
 
-      const categorySelect = screen.getByRole('combobox');
+      const categorySelect = screen.getAllByRole('combobox')[0];
       await user.click(categorySelect);
       
       await waitFor(() => {
@@ -182,10 +202,12 @@ describe('Tax Components', () => {
   });
 
   describe('ExpenseGSTSummary', () => {
-    it('should render GST summary with period selector', () => {
+    it('should render GST summary with period selector', async () => {
       render(<ExpenseGSTSummary userId="test-user" />);
 
-      expect(screen.getByText('GST Claimable Summary')).toBeInTheDocument();
+      await waitFor(() => {
+        expect(screen.getByText('GST Claimable Summary')).toBeInTheDocument();
+      });
       expect(screen.getByRole('combobox')).toBeInTheDocument();
       expect(screen.getByText('Export')).toBeInTheDocument();
     });
@@ -270,20 +292,6 @@ describe('Tax Components', () => {
       global.URL.createObjectURL = mockCreateObjectURL;
       global.URL.revokeObjectURL = mockRevokeObjectURL;
 
-      // Mock document.createElement and appendChild/removeChild
-      const mockAnchor = {
-        href: '',
-        download: '',
-        click: vi.fn(),
-      };
-      const mockCreateElement = vi.fn(() => mockAnchor);
-      const mockAppendChild = vi.fn();
-      const mockRemoveChild = vi.fn();
-      
-      Object.defineProperty(document, 'createElement', { value: mockCreateElement });
-      Object.defineProperty(document.body, 'appendChild', { value: mockAppendChild });
-      Object.defineProperty(document.body, 'removeChild', { value: mockRemoveChild });
-
       render(
         <BulkExpenseProcessor 
           onProcessComplete={mockOnProcessComplete}
@@ -291,12 +299,20 @@ describe('Tax Components', () => {
         />
       );
 
+      const originalCreateElement = document.createElement.bind(document);
+      const mockAnchor = originalCreateElement('a');
+      const clickSpy = vi.spyOn(mockAnchor, 'click').mockImplementation(() => {});
+      const mockCreateElement = vi.spyOn(document, 'createElement').mockImplementation((tagName, options) =>
+        tagName === 'a' ? mockAnchor : originalCreateElement(tagName, options)
+      );
+
       const downloadButton = screen.getByText('Download Template');
       await user.click(downloadButton);
 
       expect(mockCreateElement).toHaveBeenCalledWith('a');
       expect(mockAnchor.download).toBe('expense-template.csv');
-      expect(mockAnchor.click).toHaveBeenCalled();
+      expect(clickSpy).toHaveBeenCalled();
+      mockCreateElement.mockRestore();
     });
   });
 
@@ -318,8 +334,8 @@ describe('Tax Components', () => {
       );
 
       expect(screen.getByText('GST Return Wizard')).toBeInTheDocument();
-      expect(screen.getByText('Step 1 of 5')).toBeInTheDocument();
-      expect(screen.getByText('Return Period')).toBeInTheDocument();
+      expect(screen.getByText('Step 1 of 6')).toBeInTheDocument();
+      expect(screen.getAllByText('Return Period').length).toBeGreaterThan(0);
     });
 
     it('should show all wizard steps in progress bar', () => {
@@ -330,11 +346,12 @@ describe('Tax Components', () => {
         />
       );
 
-      expect(screen.getByText('Return Period')).toBeInTheDocument();
+      expect(screen.getAllByText('Return Period').length).toBeGreaterThan(0);
       expect(screen.getByText('Sales & Output')).toBeInTheDocument();
       expect(screen.getByText('Purchases & Input')).toBeInTheDocument();
       expect(screen.getByText('Adjustments')).toBeInTheDocument();
-      expect(screen.getByText('Review & Submit')).toBeInTheDocument();
+      expect(screen.getByText('Reconciliation')).toBeInTheDocument();
+      expect(screen.getByText('Review & Save')).toBeInTheDocument();
     });
 
     it('should handle quarter selection in step 1', async () => {
@@ -379,7 +396,7 @@ describe('Tax Components', () => {
       await user.click(nextButton);
 
       await waitFor(() => {
-        expect(screen.getByText('Step 2 of 5')).toBeInTheDocument();
+        expect(screen.getByText('Step 2 of 6')).toBeInTheDocument();
       });
     });
 
@@ -436,7 +453,7 @@ describe('Tax Components', () => {
       await user.type(screen.getByLabelText(/Amount/), '115');
       
       // Select category
-      const categorySelect = screen.getByRole('combobox');
+      const categorySelect = screen.getAllByRole('combobox')[0];
       await user.click(categorySelect);
       
       await waitFor(async () => {

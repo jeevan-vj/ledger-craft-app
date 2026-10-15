@@ -7,7 +7,7 @@ import {
   AIResponse, 
   ActionResult 
 } from '../types';
-import { supabase } from '@/integrations/supabase/client';
+import { customerService, itemService, invoiceService } from './supabaseService';
 
 interface OpenAIMessage {
   role: 'system' | 'user' | 'assistant';
@@ -16,7 +16,6 @@ interface OpenAIMessage {
 
 export class AIConversationService {
   private apiKey: string;
-  private baseUrl = 'https://api.openai.com/v1';
 
   constructor() {
     this.apiKey = import.meta.env.VITE_OPENAI_API_KEY || '';
@@ -214,40 +213,32 @@ Return your analysis as JSON:
   }
 
   private async callOpenAI(messages: OpenAIMessage[]): Promise<string> {
-    if (!this.apiKey) {
-      console.warn('OpenAI API key not configured, using fallback analysis');
-      // Fallback analysis for common patterns
+    const useHono = import.meta.env.VITE_AI_API !== 'false' || Boolean(this.apiKey);
+    if (!useHono) {
       const lastMessage = messages[messages.length - 1]?.content || '';
       return this.fallbackAnalysis(lastMessage);
     }
 
     try {
-      const response = await fetch(`${this.baseUrl}/chat/completions`, {
+      const response = await fetch('/api/ai/chat', {
         method: 'POST',
+        credentials: 'include',
         headers: {
-          'Authorization': `Bearer ${this.apiKey}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
-          messages,
-          max_tokens: 500,
-          temperature: 0.3,
-        }),
+        body: JSON.stringify({ messages }),
       });
 
       if (!response.ok) {
-        console.error(`OpenAI API error: ${response.statusText}`);
-        // Fallback to rule-based analysis
+        console.error(`Chat API error: ${response.statusText}`);
         const lastMessage = messages[messages.length - 1]?.content || '';
         return this.fallbackAnalysis(lastMessage);
       }
 
-      const data = await response.json();
-      return data.choices[0]?.message?.content || this.fallbackAnalysis(messages[messages.length - 1]?.content || '');
+      const data = (await response.json()) as { content?: string };
+      return data.content || this.fallbackAnalysis(messages[messages.length - 1]?.content || '');
     } catch (error) {
-      console.error('OpenAI API call failed:', error);
-      // Fallback to rule-based analysis
+      console.error('Chat API call failed:', error);
       const lastMessage = messages[messages.length - 1]?.content || '';
       return this.fallbackAnalysis(lastMessage);
     }
@@ -486,25 +477,10 @@ Return your analysis as JSON:
   // Invoice creation helper methods
   async searchCustomersByName(name: string): Promise<any[]> {
     try {
-      // Check authentication first
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        console.error('Authentication error in searchCustomersByName:', authError);
-        return [];
-      }
-
-      const { data, error } = await supabase
-        .from('customers')
-        .select('id, name, email, phone, city, state, country, address')
-        .ilike('name', `%${name}%`)
-        .limit(10);
-
-      if (error) {
-        console.error('Error searching customers:', error);
-        return [];
-      }
-      
-      return data || [];
+      const needle = name.toLowerCase();
+      return (await customerService.getCustomers())
+        .filter((customer) => customer.name.toLowerCase().includes(needle))
+        .slice(0, 10);
     } catch (error) {
       console.error('Exception in searchCustomersByName:', error);
       return [];
@@ -513,25 +489,7 @@ Return your analysis as JSON:
 
   async getAvailableItems(): Promise<any[]> {
     try {
-      // Check authentication first
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        console.error('Authentication error in getAvailableItems:', authError);
-        return [];
-      }
-
-      const { data, error } = await supabase
-        .from('items')
-        .select('id, name, description, salePrice, unit, type')
-        .eq('enable_sale_info', true)
-        .limit(20);
-
-      if (error) {
-        console.error('Error fetching items:', error);
-        return [];
-      }
-      
-      return data || [];
+      return (await itemService.getItems()).filter((item) => item.enableSaleInfo).slice(0, 20);
     } catch (error) {
       console.error('Exception in getAvailableItems:', error);
       return [];
@@ -540,112 +498,46 @@ Return your analysis as JSON:
 
   async generateInvoiceNumber(): Promise<string> {
     try {
-      // Check authentication first
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        throw new Error('User not authenticated');
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('business_profiles')
-        .select('id, invoice_number_format, invoice_number_sequence')
-        .eq('user_id', user.id)
-        .single();
-
-      if (profileError) {
-        console.error('Error fetching business profile:', profileError);
-        // Fallback to default format
-        return `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
-      }
-
-      const format = profile.invoice_number_format || 'INV-{YYYY}-{SEQ}';
-      const sequence = (profile.invoice_number_sequence || 0) + 1;
-      const year = new Date().getFullYear();
-
-      const invoiceNumber = format
-        .replace('{YYYY}', year.toString())
-        .replace('{SEQ}', sequence.toString().padStart(3, '0'));
-
-      // Update the sequence number
-      const { error: updateError } = await supabase
-        .from('business_profiles')
-        .update({ invoice_number_sequence: sequence })
-        .eq('id', profile.id);
-
-      if (updateError) {
-        console.error('Error updating invoice sequence:', updateError);
-        // Still return the invoice number even if sequence update fails
-      }
-
-      return invoiceNumber;
+      return await invoiceService.getNextInvoiceNumber();
     } catch (error) {
       console.error('Exception in generateInvoiceNumber:', error);
-      // Fallback invoice number
       return `INV-${new Date().getFullYear()}-${String(Date.now()).slice(-6)}`;
     }
   }
 
   async createInvoiceFromData(invoiceData: any): Promise<any> {
     try {
-      // Check authentication first
-      const { data: { user }, error: authError } = await supabase.auth.getUser();
-      if (authError || !user) {
-        throw new Error('User not authenticated');
-      }
-
       const invoiceNumber = await this.generateInvoiceNumber();
-      
-      const { data: invoice, error: invoiceError } = await supabase
-        .from('invoices')
-        .insert({
-          invoice_number: invoiceNumber,
-          customer_id: invoiceData.customer_id,
+      const lineItems = (invoiceData.line_items ?? []).map((item: any) => ({
+        description: item.description,
+        quantity: item.quantity,
+        unit: item.unit || 'each',
+        rate: item.rate,
+        rateUnit: item.unit || 'each',
+        tax: item.tax || 0,
+        total: item.total,
+      }));
+      return await invoiceService.createInvoice(
+        {
+          invoiceNumber,
+          customerId: invoiceData.customer_id,
           date: invoiceData.date || new Date().toISOString().split('T')[0],
-          due_date: invoiceData.due_date,
+          dueDate: invoiceData.due_date,
+          items: lineItems,
           subtotal: invoiceData.subtotal,
-          tax_amount: invoiceData.tax_amount || 0,
+          taxAmount: invoiceData.tax_amount || 0,
           discount: invoiceData.discount || 0,
+          additionalCharges: invoiceData.additional_charges_total || 0,
+          additionalChargesList: invoiceData.additional_charges_list,
           total: invoiceData.total,
           status: 'draft',
           notes: invoiceData.notes,
           terms: invoiceData.terms,
-          additional_charges_list: invoiceData.additional_charges_list,
-          additional_charges_total: invoiceData.additional_charges_total || 0,
-          template_name: invoiceData.template_name || 'classic',
-          user_id: user.id
-        })
-        .select()
-        .single();
-
-      if (invoiceError) {
-        console.error('Error creating invoice:', invoiceError);
-        throw new Error(`Failed to create invoice: ${invoiceError.message}`);
-      }
-
-      if (invoiceData.line_items && invoiceData.line_items.length > 0) {
-        const lineItemsData = invoiceData.line_items.map((item: any) => ({
-          invoice_id: invoice.id,
-          description: item.description,
-          quantity: item.quantity,
-          rate: item.rate,
-          tax: item.tax || 0,
-          total: item.total,
-          unit: item.unit || 'each'
-        }));
-
-        const { error: lineItemsError } = await supabase
-          .from('line_items')
-          .insert(lineItemsData);
-
-        if (lineItemsError) {
-          console.error('Error creating line items:', lineItemsError);
-          // Try to clean up the invoice if line items failed
-          await supabase.from('invoices').delete().eq('id', invoice.id);
-          throw new Error(`Failed to create invoice items: ${lineItemsError.message}`);
-        }
-      }
-
-      return invoice;
+          currency: 'NZD',
+          templateName: invoiceData.template_name || 'classic',
+        },
+        lineItems,
+      );
     } catch (error) {
       console.error('Exception in createInvoiceFromData:', error);
       throw error;

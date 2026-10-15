@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true
+  },
+  "include": ["src"]
+}

@@ -15,7 +15,14 @@ dist-ssr
 # Editor directories and files
 .vscode/*
 .cursor/*
+!.cursor/skills/
+!.cursor/skills/**
+!.cursor/rules/
+!.cursor/rules/**
 !.vscode/extensions.json
+
+# Local-only package vendor (do not commit). Other machines use pnpm install.
+api/vendor
 .idea
 .DS_Store
 *.suo
@@ -32,3 +39,13 @@ dist-ssr
 *.env.production.local
 
 test-results/*
+
+.wrangler/
+deploy/*.local.json
+deploy/*.local.env
+
+.dev.vars
+.dev.vars.*
+.data/
+
+.pnpm-store/

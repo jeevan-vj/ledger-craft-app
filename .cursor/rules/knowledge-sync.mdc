@@ -1,0 +1,11 @@
+---
+description: Keep TARGET_ARCHITECTURE.md, AGENTS.md, and project skills in sync with code.
+globs: TARGET_ARCHITECTURE.md,AGENTS.md,Agents.md,.cursor/skills/**/*,.cursor/rules/**
+alwaysApply: false
+---
+
+# Knowledge sync
+
+When these files or a domain cutover changes, follow `.cursor/skills/ledgercraft-knowledge-sync/SKILL.md`.
+
+Write present-tense facts in `TARGET_ARCHITECTURE.md` current status. Do not add a second architecture spec. Patch skills in the same change that proves them wrong.

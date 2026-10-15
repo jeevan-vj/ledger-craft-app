@@ -4,10 +4,11 @@ import { bankAccountService } from '@/services/bankAccountService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload } from 'lucide-react';
+import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload, ArrowRightLeft } from 'lucide-react';
 import { toast } from 'sonner';
 import { BankAccountDialog } from '@/components/bank-account/BankAccountDialog';
 import { useNavigate } from 'react-router-dom';
+import { PageHeader } from '@/components/layout/PageHeader';
 
 const ACCOUNT_TYPE_CONFIG = {
   checking: { label: 'Checking', icon: Building, color: 'bg-blue-500' },
@@ -89,14 +90,11 @@ export default function BankAccountsPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Bank Accounts</h1>
-          <p className="text-muted-foreground">
-            Manage your bank accounts for transaction imports and reconciliation
-          </p>
-        </div>
+    <div className="space-y-6">
+      <PageHeader
+        title="Bank Accounts"
+        description="Manage your bank accounts for transaction imports and reconciliation"
+        actions={
         <div className="flex gap-2">
           <Button 
             variant="outline" 
@@ -107,12 +105,22 @@ export default function BankAccountsPage() {
             <Upload className="h-4 w-4" />
             Import Transactions
           </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => navigate('/reconciliation')} 
+            className="gap-2"
+            disabled={accounts.length === 0}
+          >
+            <ArrowRightLeft className="h-4 w-4" />
+            Reconcile
+          </Button>
           <Button onClick={handleCreateAccount} className="gap-2">
             <Plus className="h-4 w-4" />
             Add Bank Account
           </Button>
         </div>
-      </div>
+        }
+      />
 
       {accounts.length === 0 ? (
         <Card>

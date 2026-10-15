@@ -1,8 +1,14 @@
 
 import { supabase } from '@/integrations/supabase/client';
+import { objectsApi, storageApiEnabled } from '@/features/storage/api/objectsApi';
 
 export const storageService = {
   async uploadFile(file: File, path: string): Promise<string | null> {
+    if (storageApiEnabled()) {
+      const kind = path.includes('logo') ? 'logo' : 'receipt';
+      const uploaded = await objectsApi.uploadFile(file, kind);
+      return uploaded?.url ?? null;
+    }
     try {
       const { data, error } = await supabase.storage
         .from('business-assets')
@@ -25,6 +31,9 @@ export const storageService = {
   },
   
   async deleteFile(path: string): Promise<boolean> {
+    if (storageApiEnabled()) {
+      return objectsApi.delete(path);
+    }
     try {
       const { error } = await supabase.storage
         .from('business-assets')
@@ -39,6 +48,9 @@ export const storageService = {
 
   // Receipt-specific upload with better error handling
   async uploadReceipt(file: File, expenseId?: string): Promise<{ url: string; path: string } | null> {
+    if (storageApiEnabled()) {
+      return objectsApi.uploadFile(file, 'receipt');
+    }
     try {
       // Generate unique filename
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
@@ -76,6 +88,9 @@ export const storageService = {
 
   // Delete receipt with path extraction
   async deleteReceipt(urlOrPath: string): Promise<boolean> {
+    if (storageApiEnabled()) {
+      return objectsApi.delete(urlOrPath);
+    }
     try {
       let filePath = urlOrPath;
       

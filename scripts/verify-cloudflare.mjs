@@ -1,0 +1,63 @@
+#!/usr/bin/env node
+import assert from 'node:assert/strict';
+import {randomBytes,randomUUID} from 'node:crypto';
+const base=process.argv[2] ?? 'https://easybiz.iamjeevan.com';
+const origin=process.env.VERIFY_ORIGIN ?? new URL(base).origin;
+const password=randomBytes(24).toString('base64url');
+const cookies=new Map();
+async function request(path,{method='GET',body,user,expected=200,headers={}}={}) {
+  const response=await fetch(base+path,{method,headers:{Origin:origin,...(body?{'Content-Type':'application/json'}:{}),...(user?{Cookie:cookies.get(user)??''}:{}),...headers},body:body?JSON.stringify(body):undefined});
+  const data=await response.json();
+  assert.equal(response.status,expected,`${method} ${path}: ${JSON.stringify(data)}`);
+  const set=response.headers.getSetCookie();
+  if(user && set.length) cookies.set(user,set.map(value=>value.split(';')[0]).join('; '));
+  return data;
+}
+await request('/api/readyz');
+await request('/api/me',{expected:401});
+const accounts=[];
+for(const user of ['a','b']) {
+  const email=`cloudflare-verify-${randomUUID()}@example.com`;
+  await request('/api/auth/sign-up/email',{method:'POST',body:{email,password,name:'Deployment verification '+user},user});
+  accounts.push(email);
+  await request('/api/me',{user});
+}
+await request('/api/business-profile',{method:'PUT',user:'a',body:{name:'Deployment verification',email:accounts[0],country:'NZ',defaultTaxRate:'15'}});
+const customer=await request('/api/customers',{method:'POST',user:'a',expected:201,body:{name:'Verification customer',email:'verification@example.com',country:'NZ'}});
+await request('/api/customers/'+customer.id,{user:'b',expected:404});
+const input={customerId:customer.id,date:'2026-09-14',dueDate:'2026-10-14',taxInclusive:false,taxRate:'15',items:[{description:'Verification item',quantity:'1',rate:'100'}]};
+const beforeFailure=await request('/api/invoices/next-number',{user:'a'});
+await request('/api/invoices',{method:'POST',user:'a',expected:400,body:{...input,discount:'1000'}});
+assert.deepEqual(await request('/api/invoices/next-number',{user:'a'}),beforeFailure,'Failed invoice must roll back sequence');
+const idempotencyKey=randomUUID();
+const invoice=await request('/api/invoices',{method:'POST',user:'a',expected:201,body:input,headers:{'Idempotency-Key':idempotencyKey}});
+assert.equal(invoice.total,'115.00');
+const replay=await request('/api/invoices',{method:'POST',user:'a',expected:201,body:input,headers:{'Idempotency-Key':idempotencyKey}});
+assert.equal(replay.id,invoice.id,'Idempotent retry must return same invoice');
+await request('/api/invoices/'+invoice.id,{user:'b',expected:404});
+const concurrent=await Promise.all([1,2,3].map(()=>request('/api/invoices',{method:'POST',user:'a',expected:201,body:input})));
+assert.equal(new Set([invoice,...concurrent].map(i=>i.invoiceNumber)).size,4,'Concurrent invoice numbers must be unique');
+const delivery={id:randomUUID(),type:'delivery',label:'Delivery',calculationType:'fixed',amount:'30',isActive:true};
+const charged=await request('/api/invoices/'+invoice.id,{method:'PATCH',user:'a',body:{additionalChargesList:[delivery]}});
+assert.equal(charged.total,'145.00');
+assert.equal(charged.additionalCharges,'30.00');
+const reopened=await request('/api/invoices/'+invoice.id,{user:'a'});
+assert.deepEqual(reopened.additionalChargesList,[delivery]);
+const cleared=await request('/api/invoices/'+invoice.id,{method:'PATCH',user:'a',body:{additionalChargesList:[]}});
+assert.equal(cleared.total,'115.00');
+assert.deepEqual(cleared.additionalChargesList,[]);
+const share=await request('/api/invoices/'+invoice.id+'/share',{method:'POST',user:'a',expected:201,body:{}});
+const publicInvoice=await request('/api/public/invoices/'+share.shareToken);
+assert.equal(publicInvoice.invoice.id,invoice.id);
+const object=await request('/api/objects',{method:'POST',user:'a',expected:201,body:{kind:'receipt',filename:'verification.png',contentType:'image/png',contentBase64:'aGVsbG8='}});
+const download=await fetch(base+'/api/objects?key='+encodeURIComponent(object.key),{headers:{Cookie:cookies.get('a')}});
+assert.equal(download.status,200);
+assert.equal(await download.text(),'hello');
+await request('/api/objects?key='+encodeURIComponent(object.key),{user:'b',expected:404});
+await request('/api/auth/sign-out',{method:'POST',body:{},user:'a'});
+await request('/api/me',{user:'a',expected:401});
+await request('/api/auth/sign-in/email',{method:'POST',body:{email:accounts[0],password},user:'a'});
+await request('/api/invoices/'+invoice.id,{user:'a'});
+await request('/api/auth/sign-out',{method:'POST',body:{},user:'a'});
+await request('/api/auth/sign-out',{method:'POST',body:{},user:'b'});
+console.log(JSON.stringify({status:'passed',base,checks:['readiness','signup','session','tenant isolation','invoice totals','named delivery charge save/reopen/remove','concurrent invoices','rollback','idempotency','attachments','public sharing','signout','signin','persistence'],verificationAccounts:accounts}));

@@ -27,11 +27,31 @@ import {
   Calendar,
   FileText,
   Zap,
-  PiggyBank
+  PiggyBank,
+  Shield,
+  Car,
+  Home,
+  Percent
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from "@/context/StableAuthContext";
 import { supabaseDataService } from '@/services/supabaseDataService';
+
+// NZ IRD GST Treatment Types
+type GstTreatmentType = 'standard' | 'zero_rated' | 'exempt' | 'partial' | 'private_use';
+
+// NZ IRD GST Exemption Reasons
+type GstExemptionReason = 
+  | 'none'
+  | 'motor_vehicle'           // Special rules for vehicles >$10k
+  | 'financial_services'      // Exempt - bank fees, interest
+  | 'residential_rent'        // Exempt - residential accommodation
+  | 'insurance_life'          // Exempt - life insurance
+  | 'exported_services'       // Zero-rated - exports
+  | 'entertainment_50'        // 50% claimable - entertainment
+  | 'home_office'             // Partial - private use adjustment
+  | 'second_hand_goods'       // Special rules - no tax invoice
+  | 'other_exempt';           // Other IRD exempt supplies
 
 interface ExpenseFormData {
   description: string;
@@ -46,6 +66,11 @@ interface ExpenseFormData {
   receiptNumber?: string;
   notes?: string;
   supplier?: string;
+  // New GST exemption fields
+  gstTreatment: GstTreatmentType;
+  gstExemptionReason: GstExemptionReason;
+  gstClaimablePercentage: number; // 0-100% for partial claims
+  privateUsePercentage: number;   // For home office, vehicle private use
 }
 
 interface TaxCategory {
@@ -84,12 +109,31 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
     receiptNumber: '',
     notes: '',
     supplier: '',
+    // GST exemption defaults
+    gstTreatment: 'standard',
+    gstExemptionReason: 'none',
+    gstClaimablePercentage: 100,
+    privateUsePercentage: 0,
     ...expense
   });
 
   const [taxRate, setTaxRate] = useState(0.15); // Default GST rate for NZ
   const [isAmountIncludingGst, setIsAmountIncludingGst] = useState(true);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+
+  // NZ IRD GST exemption descriptions for user guidance
+  const gstExemptionDescriptions: Record<GstExemptionReason, { label: string; description: string; claimablePercent: number }> = {
+    none: { label: 'Fully Claimable', description: 'Standard GST - 100% claimable', claimablePercent: 100 },
+    motor_vehicle: { label: 'Motor Vehicle', description: 'Special rules apply for vehicles over $10,000. Private use portion not claimable.', claimablePercent: 100 },
+    financial_services: { label: 'Financial Services (Exempt)', description: 'Bank fees, interest, life insurance premiums are GST exempt', claimablePercent: 0 },
+    residential_rent: { label: 'Residential Rent (Exempt)', description: 'Residential accommodation is GST exempt', claimablePercent: 0 },
+    insurance_life: { label: 'Life Insurance (Exempt)', description: 'Life insurance premiums are GST exempt', claimablePercent: 0 },
+    exported_services: { label: 'Zero-Rated (Exports)', description: 'Services exported outside NZ - zero-rated but claimable', claimablePercent: 100 },
+    entertainment_50: { label: 'Entertainment (50%)', description: 'Entertainment expenses - only 50% GST claimable per IRD rules', claimablePercent: 50 },
+    home_office: { label: 'Home Office', description: 'Business portion only - adjust for private use', claimablePercent: 100 },
+    second_hand_goods: { label: 'Second-hand Goods', description: 'No tax invoice required - special rules apply', claimablePercent: 100 },
+    other_exempt: { label: 'Other Exempt', description: 'Other IRD exempt supplies - no GST claimable', claimablePercent: 0 }
+  };
 
   // Predefined tax categories with GST claimability rules
   const taxCategories: TaxCategory[] = [
@@ -108,6 +152,14 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
       isCapitalDefault: false,
       gstClaimable: true,
       subcategories: ['Fuel', 'Parking', 'Accommodation', 'Flights', 'Vehicle Maintenance']
+    },
+    {
+      id: 'motor_vehicle',
+      name: '🚗 Motor Vehicle Purchase',
+      description: 'Vehicle purchase over $10,000 - special GST rules apply',
+      isCapitalDefault: true,
+      gstClaimable: true,
+      subcategories: ['Car Purchase', 'Truck Purchase', 'Van Purchase', 'Motorcycle', 'Vehicle Lease']
     },
     {
       id: 'equipment',
@@ -134,12 +186,36 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
       subcategories: ['Legal Fees', 'Accounting', 'Consulting', 'Banking Fees', 'Insurance']
     },
     {
-      id: 'entertainment',
-      name: 'Entertainment & Meals',
-      description: 'Business meals, client entertainment',
+      id: 'financial',
+      name: '🏦 Financial Services (Exempt)',
+      description: 'Bank fees, interest, insurance - GST exempt',
       isCapitalDefault: false,
-      gstClaimable: false, // 50% rule for entertainment in NZ
+      gstClaimable: false,
+      subcategories: ['Bank Fees', 'Interest Paid', 'Life Insurance', 'Credit Card Fees', 'Loan Fees']
+    },
+    {
+      id: 'entertainment',
+      name: '🍽️ Entertainment & Meals (50%)',
+      description: 'Business meals, client entertainment - 50% GST claimable',
+      isCapitalDefault: false,
+      gstClaimable: true, // But only 50%
       subcategories: ['Client Meals', 'Business Entertainment', 'Staff Functions', 'Conference Meals']
+    },
+    {
+      id: 'home_office',
+      name: '🏠 Home Office',
+      description: 'Working from home expenses - adjust for private use',
+      isCapitalDefault: false,
+      gstClaimable: true,
+      subcategories: ['Internet', 'Phone', 'Electricity', 'Heating', 'Home Office Equipment']
+    },
+    {
+      id: 'rent_residential',
+      name: '🏘️ Residential Rent (Exempt)',
+      description: 'Residential accommodation - GST exempt',
+      isCapitalDefault: false,
+      gstClaimable: false,
+      subcategories: ['Residential Rent', 'Accommodation Deposit', 'Residential Lease']
     }
   ];
 
@@ -163,10 +239,14 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
   // Calculate GST amounts when relevant fields change
   useEffect(() => {
     calculateGstAmounts();
-  }, [formData.amount, formData.isGstClaimable, taxRate, isAmountIncludingGst]);
+  }, [formData.amount, formData.isGstClaimable, formData.gstTreatment, formData.gstClaimablePercentage, formData.privateUsePercentage, taxRate, isAmountIncludingGst]);
 
   const calculateGstAmounts = () => {
-    if (!formData.isGstClaimable || formData.amount <= 0) {
+    // Check if GST is claimable based on treatment type
+    const isExempt = formData.gstTreatment === 'exempt';
+    const isZeroRated = formData.gstTreatment === 'zero_rated';
+    
+    if (!formData.isGstClaimable || formData.amount <= 0 || isExempt) {
       setFormData(prev => ({
         ...prev,
         gstAmount: 0,
@@ -188,9 +268,18 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
       gstAmount = formData.amount * taxRate;
     }
 
+    // Apply claimable percentage (e.g., 50% for entertainment)
+    const claimablePercent = formData.gstClaimablePercentage / 100;
+    
+    // Apply private use adjustment (reduce claim by private use %)
+    const businessUsePercent = (100 - formData.privateUsePercentage) / 100;
+    
+    // Final claimable GST = base GST × claimable% × business use%
+    const claimableGst = gstAmount * claimablePercent * businessUsePercent;
+
     setFormData(prev => ({
       ...prev,
-      gstAmount: Math.round(gstAmount * 100) / 100,
+      gstAmount: Math.round(claimableGst * 100) / 100,
       netAmount: Math.round(netAmount * 100) / 100
     }));
   };
@@ -198,12 +287,55 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
   const handleCategoryChange = (categoryId: string) => {
     const category = taxCategories.find(c => c.id === categoryId);
     if (category) {
+      // Auto-set GST treatment based on category
+      let gstTreatment: GstTreatmentType = 'standard';
+      let gstExemptionReason: GstExemptionReason = 'none';
+      let gstClaimablePercentage = 100;
+      let privateUsePercentage = 0;
+
+      // Map categories to GST treatment
+      switch (categoryId) {
+        case 'motor_vehicle':
+          gstTreatment = 'partial';
+          gstExemptionReason = 'motor_vehicle';
+          privateUsePercentage = 20; // Default 20% private use for vehicles
+          break;
+        case 'financial':
+          gstTreatment = 'exempt';
+          gstExemptionReason = 'financial_services';
+          gstClaimablePercentage = 0;
+          break;
+        case 'entertainment':
+          gstTreatment = 'partial';
+          gstExemptionReason = 'entertainment_50';
+          gstClaimablePercentage = 50; // NZ IRD 50% rule
+          break;
+        case 'home_office':
+          gstTreatment = 'partial';
+          gstExemptionReason = 'home_office';
+          privateUsePercentage = 50; // Default 50% private use for home office
+          break;
+        case 'rent_residential':
+          gstTreatment = 'exempt';
+          gstExemptionReason = 'residential_rent';
+          gstClaimablePercentage = 0;
+          break;
+        default:
+          gstTreatment = 'standard';
+          gstExemptionReason = 'none';
+          gstClaimablePercentage = 100;
+      }
+
       setFormData(prev => ({
         ...prev,
         category: categoryId,
         subcategory: '',
         isCapitalExpense: category.isCapitalDefault,
-        isGstClaimable: category.gstClaimable
+        isGstClaimable: category.gstClaimable,
+        gstTreatment,
+        gstExemptionReason,
+        gstClaimablePercentage,
+        privateUsePercentage
       }));
     }
   };
@@ -431,6 +563,179 @@ export const ExpenseTaxInterface: React.FC<ExpenseTaxInterfaceProps> = ({
           </CardContent>
         </Card>
       </div>
+
+      {/* NZ IRD GST Treatment Section */}
+      <Card className="border-blue-200 bg-blue-50/30">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Shield className="h-4 w-4 text-blue-600" />
+            🇳🇿 NZ IRD GST Treatment
+            <Badge variant="outline" className="ml-auto bg-white">
+              {formData.gstTreatment === 'standard' && '✅ Standard 15%'}
+              {formData.gstTreatment === 'zero_rated' && '0️⃣ Zero-Rated'}
+              {formData.gstTreatment === 'exempt' && '⛔ Exempt'}
+              {formData.gstTreatment === 'partial' && '⚠️ Partial Claim'}
+              {formData.gstTreatment === 'private_use' && '🏠 Private Use'}
+            </Badge>
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {/* GST Treatment Type */}
+            <div>
+              <Label htmlFor="gst-treatment">GST Treatment Type</Label>
+              <Select 
+                value={formData.gstTreatment} 
+                onValueChange={(value: GstTreatmentType) => {
+                  const isExempt = value === 'exempt';
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    gstTreatment: value,
+                    isGstClaimable: !isExempt,
+                    gstClaimablePercentage: isExempt ? 0 : prev.gstClaimablePercentage
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select GST treatment" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="standard">✅ Standard (15% fully claimable)</SelectItem>
+                  <SelectItem value="zero_rated">0️⃣ Zero-Rated (0% but claimable)</SelectItem>
+                  <SelectItem value="exempt">⛔ Exempt (No GST)</SelectItem>
+                  <SelectItem value="partial">⚠️ Partial (Limited claim %)</SelectItem>
+                  <SelectItem value="private_use">🏠 Private Use Adjustment</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Exemption Reason */}
+            <div>
+              <Label htmlFor="exemption-reason">Exemption/Adjustment Reason</Label>
+              <Select 
+                value={formData.gstExemptionReason} 
+                onValueChange={(value: GstExemptionReason) => {
+                  const exemptionInfo = gstExemptionDescriptions[value];
+                  setFormData(prev => ({ 
+                    ...prev, 
+                    gstExemptionReason: value,
+                    gstClaimablePercentage: exemptionInfo.claimablePercent
+                  }));
+                }}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select reason" />
+                </SelectTrigger>
+                <SelectContent>
+                  {Object.entries(gstExemptionDescriptions).map(([key, info]) => (
+                    <SelectItem key={key} value={key}>
+                      {info.label} ({info.claimablePercent}%)
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {formData.gstExemptionReason !== 'none' && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  ℹ️ {gstExemptionDescriptions[formData.gstExemptionReason].description}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Percentage Adjustments */}
+          {(formData.gstTreatment === 'partial' || formData.gstTreatment === 'private_use') && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t">
+              {/* Claimable Percentage */}
+              <div>
+                <Label htmlFor="claimable-percent">
+                  GST Claimable Percentage
+                  <span className="text-muted-foreground ml-2">({formData.gstClaimablePercentage}%)</span>
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="claimable-percent"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={formData.gstClaimablePercentage}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gstClaimablePercentage: Number(e.target.value) }))}
+                    className="flex-1"
+                  />
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.gstClaimablePercentage}
+                    onChange={(e) => setFormData(prev => ({ ...prev, gstClaimablePercentage: Number(e.target.value) }))}
+                    className="w-20"
+                  />
+                </div>
+                {formData.gstExemptionReason === 'entertainment_50' && (
+                  <p className="text-xs text-amber-600 mt-1">⚠️ NZ IRD Rule: Entertainment capped at 50%</p>
+                )}
+              </div>
+
+              {/* Private Use Percentage */}
+              <div>
+                <Label htmlFor="private-use-percent">
+                  Private Use Percentage (Non-claimable)
+                  <span className="text-muted-foreground ml-2">({formData.privateUsePercentage}%)</span>
+                </Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    id="private-use-percent"
+                    type="range"
+                    min="0"
+                    max="100"
+                    step="5"
+                    value={formData.privateUsePercentage}
+                    onChange={(e) => setFormData(prev => ({ ...prev, privateUsePercentage: Number(e.target.value) }))}
+                    className="flex-1"
+                  />
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    value={formData.privateUsePercentage}
+                    onChange={(e) => setFormData(prev => ({ ...prev, privateUsePercentage: Number(e.target.value) }))}
+                    className="w-20"
+                  />
+                </div>
+                {formData.gstExemptionReason === 'motor_vehicle' && (
+                  <p className="text-xs text-blue-600 mt-1">🚗 Track logbook % for vehicle private use</p>
+                )}
+                {formData.gstExemptionReason === 'home_office' && (
+                  <p className="text-xs text-blue-600 mt-1">🏠 Calculate based on floor area % used for business</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* GST Calculation Summary */}
+          <Alert className="bg-white border-blue-200">
+            <Calculator className="h-4 w-4 text-blue-600" />
+            <AlertDescription>
+              <div className="grid grid-cols-3 gap-2 text-sm">
+                <div>
+                  <span className="text-muted-foreground">Claimable:</span>
+                  <span className="font-medium ml-1">{formData.gstClaimablePercentage}%</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Business Use:</span>
+                  <span className="font-medium ml-1">{100 - formData.privateUsePercentage}%</span>
+                </div>
+                <div>
+                  <span className="text-muted-foreground">Effective Claim:</span>
+                  <span className="font-bold text-green-600 ml-1">
+                    {Math.round((formData.gstClaimablePercentage / 100) * ((100 - formData.privateUsePercentage) / 100) * 100)}%
+                  </span>
+                </div>
+              </div>
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
 
       {/* GST Calculator */}
       <Card>

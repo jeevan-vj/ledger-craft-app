@@ -1,0 +1,17 @@
+node_modules
+.git
+dist
+mobile
+tests
+playwright-report
+test-results
+*.md
+.env
+.env.*
+!.env.example
+**/node_modules
+**/.env*
+**/*.local.json
+**/*.local.env
+.wrangler
+deploy

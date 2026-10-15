@@ -1,5 +1,6 @@
+import { BankPaymentDetails } from '../BankPaymentDetails';
 import React from 'react';
-import { formatCurrency } from '@/utils/invoiceUtils';
+import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { Invoice, LineItem, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { PDFCard, PDFCardContent } from '@/components/ui/card';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -9,6 +10,8 @@ interface CorporateTemplateProps {
   companyName: string;
   companyAddress: string;
   companyPhone: string;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   clientName: string;
   clientAddress: string;
   taxRate: string;
@@ -22,6 +25,8 @@ const CorporateTemplate = ({
   companyName,
   companyAddress,
   companyPhone,
+  bankAccountName,
+  bankAccountNumber,
   clientName,
   clientAddress,
   taxRate,
@@ -162,8 +167,8 @@ const CorporateTemplate = ({
                         </div>
                       )}
                     </td>
-                    <td className="py-2 sm:py-4 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{item.quantity}</td>
-                    <td className="py-2 sm:py-4 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}</td>
+                    <td className="py-2 sm:py-4 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{item.quantity} {item.unit}</td>
+                    <td className="py-2 sm:py-4 px-2 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
                     <td className="py-2 sm:py-4 px-3 sm:px-6 border-t text-right" style={{ borderColor: theme.textLight + '30', color: theme.text }}>{formatCurrency(item.total || item.quantity * item.rate, invoice.currency)}</td>
                   </tr>
                 ))}
@@ -214,7 +219,7 @@ const CorporateTemplate = ({
           
           {invoice.discount && invoice.discount > 0 && (
             <div className="flex justify-between py-1 sm:py-2 text-xs sm:text-sm">
-              <span className="font-medium" style={{ color: theme.text }}>Discount:</span>
+              <span className="font-medium" style={{ color: theme.text }}>{invoiceDiscountLabel(invoice)}:</span>
               <span style={{ color: theme.accent }}>-{formatCurrency(invoice.discount, invoice.currency)}</span>
             </div>
           )}
@@ -225,6 +230,7 @@ const CorporateTemplate = ({
         </div>
       </div>
       
+      <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
       {/* Notes & Terms */}
       {(invoice.notes || invoice.terms) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 sm:mt-6 border-t pt-4 sm:pt-6" style={{ borderColor: theme.textLight + '40' }}>
