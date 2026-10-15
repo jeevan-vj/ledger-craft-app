@@ -1,0 +1,51 @@
+name: CI
+
+# Mirrors CleanTrack (jeevan-vj/timesheet) ci.yml: verify every PR and every push to main.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { persist-credentials: false }
+      - uses: pnpm/action-setup@v4 # version comes from package.json "packageManager"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      # Non-blocking for now: main has ~457 pre-existing ESLint errors. Remove
+      # continue-on-error once `pnpm lint` is clean.
+      - name: Lint (non-blocking)
+        continue-on-error: true
+        run: pnpm lint
+      - name: Typecheck (web)
+        run: pnpm type-check
+      - name: Typecheck (API, contracts, Worker)
+        run: |
+          pnpm type-check:api
+          node_modules/.bin/tsc --noEmit -p deploy/api/tsconfig.json
+      - name: Test (contracts, API)
+        run: |
+          pnpm test:contracts
+          pnpm test:api
+      # Non-blocking for now: legacy web suites (Supabase-era database/payment tests)
+      # fail on main (62 of 440). Remove continue-on-error once fixed.
+      - name: Test (web, non-blocking)
+        continue-on-error: true
+        run: pnpm test:run
+      - name: SQLite migration baseline
+        run: node api/sqlite-migrations/verify.mjs
+      - name: Build
+        run: pnpm build
