@@ -51,7 +51,7 @@ export const control = {
   compact: 36,
   default: 48,
   prominent: 56,
-  touchTarget: 44,
+  touchTarget: Platform.OS === 'android' ? 48 : 44,
 } as const;
 
 export const motion = {

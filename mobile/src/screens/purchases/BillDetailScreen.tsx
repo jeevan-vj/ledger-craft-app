@@ -13,6 +13,7 @@ import { purchasesApi, type RecordBillPaymentRequest } from '@/features/purchase
 import type { PurchaseStackParamList } from '@/navigation/types';
 import { palette, space, type } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { errorHaptic, successHaptic } from '@/utils/haptics';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'BillDetail'>;
 type Route = RouteProp<PurchaseStackParamList, 'BillDetail'>;
@@ -30,11 +31,20 @@ export default function BillDetailScreen() {
       queryClient.invalidateQueries({ queryKey: ['purchases', 'bill', params.billId] }),
     ]);
   };
-  const receive = useMutation({ mutationFn: () => purchasesApi.receiveBill(params.billId), onSuccess: refresh });
-  const voidBill = useMutation({ mutationFn: () => purchasesApi.voidBill(params.billId), onSuccess: refresh });
+  const receive = useMutation({
+    mutationFn: () => purchasesApi.receiveBill(params.billId),
+    onSuccess: async () => { await refresh(); successHaptic(); },
+    onError: errorHaptic,
+  });
+  const voidBill = useMutation({
+    mutationFn: () => purchasesApi.voidBill(params.billId),
+    onSuccess: async () => { await refresh(); successHaptic(); },
+    onError: errorHaptic,
+  });
   const payment = useMutation({
     mutationFn: (input: RecordBillPaymentRequest) => purchasesApi.recordPayment(params.billId, input),
-    onSuccess: async () => { await refresh(); setPaymentOpen(false); },
+    onSuccess: async () => { await refresh(); successHaptic(); setPaymentOpen(false); },
+    onError: errorHaptic,
   });
 
   useLayoutEffect(() => {

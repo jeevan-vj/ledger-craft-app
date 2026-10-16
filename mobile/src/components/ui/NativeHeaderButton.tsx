@@ -1,6 +1,7 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
 import { COLORS } from '@/theme/navigation';
+import { control } from '@/theme/tokens';
 
 interface NativeHeaderButtonProps {
   label: string;
@@ -8,6 +9,7 @@ interface NativeHeaderButtonProps {
   disabled?: boolean;
   primary?: boolean;
   destructive?: boolean;
+  accessibilityHint?: string;
 }
 
 export function NativeHeaderButton({
@@ -16,6 +18,7 @@ export function NativeHeaderButton({
   disabled = false,
   primary = false,
   destructive = false,
+  accessibilityHint,
 }: NativeHeaderButtonProps) {
   const color = destructive
     ? COLORS.danger
@@ -28,6 +31,8 @@ export function NativeHeaderButton({
       hitSlop={8}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityHint={accessibilityHint}
+      accessibilityState={{ disabled }}
       style={({ pressed }) => [
         styles.button,
         pressed && styles.pressed,
@@ -49,8 +54,8 @@ export function NativeHeaderButton({
 
 const styles = StyleSheet.create({
   button: {
-    minHeight: 44,
-    minWidth: 44,
+    minHeight: control.touchTarget,
+    minWidth: control.touchTarget,
     justifyContent: 'center',
     paddingHorizontal: 4,
   },

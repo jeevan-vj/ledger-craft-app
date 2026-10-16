@@ -67,6 +67,10 @@ export interface Invoice {
   additionalChargesList?: AdditionalCharge[];
   additionalChargesTotal?: number;
   total: number;
+  totalPaid?: number;
+  balanceDue?: number;
+  paymentStatus?: 'unpaid' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled' | string;
+  taxInclusive?: boolean;
   status: InvoiceStatus;
   notes?: string | null;
   terms?: string | null;
@@ -76,4 +80,3 @@ export interface Invoice {
   createdAt?: string;
   updatedAt?: string;
 }
-

@@ -1,11 +1,134 @@
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
+import { formatMoney } from '@/utils/money';
 
 // Helper functions
-const formatCurrency = (amount: number, currency: string): string => {
-  const symbol = currency === 'NZD' ? '$' : currency;
-  return `${symbol}${amount.toFixed(2)}`;
+const HTML_ENTITIES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
 };
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
+}
+
+function escapeInvoiceText(invoice: Invoice): Invoice {
+  return {
+    ...invoice,
+    invoiceNumber: escapeHtml(invoice.invoiceNumber),
+    customer: invoice.customer
+      ? {
+          ...invoice.customer,
+          name: escapeHtml(invoice.customer.name),
+          email: escapeHtml(invoice.customer.email),
+          phone: invoice.customer.phone == null ? invoice.customer.phone : escapeHtml(invoice.customer.phone),
+          address: invoice.customer.address == null ? invoice.customer.address : escapeHtml(invoice.customer.address),
+          city: invoice.customer.city == null ? invoice.customer.city : escapeHtml(invoice.customer.city),
+          state: invoice.customer.state == null ? invoice.customer.state : escapeHtml(invoice.customer.state),
+          zip: invoice.customer.zip == null ? invoice.customer.zip : escapeHtml(invoice.customer.zip),
+          country: invoice.customer.country == null ? invoice.customer.country : escapeHtml(invoice.customer.country),
+        }
+      : undefined,
+    items: invoice.items.map((item) => ({
+      ...item,
+      description: escapeHtml(item.description),
+      unit: escapeHtml(item.unit),
+    })),
+    additionalChargesList: invoice.additionalChargesList?.map((charge) => ({
+      ...charge,
+      name: escapeHtml(charge.name),
+    })),
+    notes: invoice.notes == null ? invoice.notes : escapeHtml(invoice.notes),
+    terms: invoice.terms == null ? invoice.terms : escapeHtml(invoice.terms),
+  };
+}
+
+function escapeBusinessProfileText(profile?: BusinessProfile): BusinessProfile | undefined {
+  if (!profile) return undefined;
+  return {
+    ...profile,
+    name: escapeHtml(profile.name),
+    email: escapeHtml(profile.email),
+    phone: profile.phone == null ? profile.phone : escapeHtml(profile.phone),
+    address: profile.address == null ? profile.address : escapeHtml(profile.address),
+    city: profile.city == null ? profile.city : escapeHtml(profile.city),
+    state: profile.state == null ? profile.state : escapeHtml(profile.state),
+    zip: profile.zip == null ? profile.zip : escapeHtml(profile.zip),
+    country: profile.country == null ? profile.country : escapeHtml(profile.country),
+    taxId: profile.taxId == null ? profile.taxId : escapeHtml(profile.taxId),
+    logoUrl: profile.logoUrl == null ? profile.logoUrl : escapeHtml(profile.logoUrl),
+    website: profile.website == null ? profile.website : escapeHtml(profile.website),
+    defaultNotes: profile.defaultNotes == null ? profile.defaultNotes : escapeHtml(profile.defaultNotes),
+    defaultTerms: profile.defaultTerms == null ? profile.defaultTerms : escapeHtml(profile.defaultTerms),
+  };
+}
+
+const formatCurrency = (amount: number, currency: string): string => {
+  return formatMoney(amount, currency);
+};
+
+function invoiceAmountDue(invoice: Invoice): number {
+  if (Number.isFinite(invoice.balanceDue)) {
+    return Math.max(0, invoice.balanceDue ?? 0);
+  }
+  if (invoice.status === 'paid') {
+    return 0;
+  }
+  return Math.max(0, invoice.total - (invoice.totalPaid ?? 0));
+}
+
+function invoiceTaxLabel(invoice: Invoice): string {
+  const discount = invoice.discount ?? 0;
+  const taxBase = invoice.taxInclusive ? invoice.subtotal : invoice.subtotal - discount;
+  const taxRate = taxBase > 0 ? (invoice.taxAmount / taxBase) * 100 : 0;
+  const roundedRate = Math.round(taxRate * 100) / 100;
+  const label = invoice.currency.toUpperCase() === 'NZD' ? 'GST' : 'Tax';
+  return roundedRate > 0 ? `${label} (${roundedRate.toLocaleString('en-NZ')}%):` : `${label}:`;
+}
+
+function renderInvoiceTotals(invoice: Invoice): string {
+  const currency = invoice.currency || 'NZD';
+  const discount = invoice.discount ?? 0;
+  const additionalCharges = invoice.additionalChargesTotal ?? invoice.additionalCharges ?? 0;
+
+  return `
+    <div data-invoice-totals="true">
+      <div class="total-row">
+        <span class="total-label">Subtotal:</span>
+        <span class="total-value">${formatCurrency(invoice.subtotal, currency)}</span>
+      </div>
+      ${invoice.taxAmount > 0 ? `
+        <div class="total-row">
+          <span class="total-label">${invoiceTaxLabel(invoice)}</span>
+          <span class="total-value">${formatCurrency(invoice.taxAmount, currency)}</span>
+        </div>
+      ` : ''}
+      ${discount > 0 ? `
+        <div class="total-row">
+          <span class="total-label">Discount:</span>
+          <span class="total-value">-${formatCurrency(discount, currency)}</span>
+        </div>
+      ` : ''}
+      ${additionalCharges > 0 ? `
+        <div class="total-row">
+          <span class="total-label">Additional Charges:</span>
+          <span class="total-value">${formatCurrency(additionalCharges, currency)}</span>
+        </div>
+      ` : ''}
+      <div class="total-row">
+        <span class="total-label">Total:</span>
+        <span class="total-value">${formatCurrency(invoice.total, currency)}</span>
+      </div>
+      <div class="total-row grand-total">
+        <span class="total-label">Amount Due:</span>
+        <span class="total-value">${formatCurrency(invoiceAmountDue(invoice), currency)}</span>
+      </div>
+    </div>
+  `;
+}
 
 const formatDate = (dateString: string): string => {
   const date = new Date(dateString);
@@ -27,7 +150,7 @@ const getStatusColor = (status: string): string => {
 };
 
 // Classic Template
-export function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   const companyAddress = [
     businessProfile?.address,
@@ -287,32 +410,7 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal:</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax:</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount:</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.additionalCharges && invoice.additionalCharges > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Additional Charges:</span>
-                <span class="total-value">${formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total:</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes ? `
@@ -339,7 +437,7 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Modern Template
-export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -488,7 +586,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
             background: #f8fafc;
             padding: 20px;
             border-radius: 12px;
-            border-left: 4px solid #5B72EE;
+            border: 1px solid #e2e8f0;
             margin-bottom: 20px;
           }
           .notes-title, .terms-title {
@@ -565,32 +663,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.additionalCharges && invoice.additionalCharges > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Additional Charges:</span>
-                  <span class="total-value">${formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">Total:</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes ? `
@@ -614,7 +687,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
 }
 
 // Minimal Template
-export function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -800,26 +873,7 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -841,7 +895,7 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Executive Template - Continued in next part due to length
-export function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1048,26 +1102,7 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal:</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax:</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount:</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total Due:</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -1089,7 +1124,7 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Corporate Template
-export function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1329,26 +1364,7 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">TOTAL DUE</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1371,7 +1387,7 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Modern Pro Template
-export function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1570,7 +1586,6 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             padding: 30px;
             border-radius: 16px;
-            border-left: 6px solid #5B72EE;
             margin-top: 30px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           }
@@ -1649,26 +1664,7 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">TOTAL DUE</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1690,8 +1686,7 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
   `;
 }
 
-// Main dispatcher function
-export function getTemplateHTML(
+function getRawTemplateHTML(
   templateId: InvoiceTemplateId,
   invoice: Invoice,
   businessProfile?: BusinessProfile
@@ -1715,3 +1710,48 @@ export function getTemplateHTML(
   }
 }
 
+const A4_DOCUMENT_STYLES = `
+  @page { size: 595px 842px; margin: 0; }
+  html {
+    width: 595px;
+    min-height: 842px;
+    background: #ffffff;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    width: 595px;
+    min-height: 842px;
+    overflow-x: hidden;
+  }
+`;
+
+/**
+ * The single invoice document generator used by both the on-device preview and
+ * Expo Print. Keeping the A4 viewport here makes the same HTML scale to the
+ * WebView width and render at the requested PDF page size.
+ */
+export function generateInvoiceHTML(
+  invoice: Invoice,
+  businessProfile?: BusinessProfile,
+  templateId: InvoiceTemplateId = 'classic',
+): string {
+  return getRawTemplateHTML(
+    templateId,
+    escapeInvoiceText(invoice),
+    escapeBusinessProfileText(businessProfile),
+  )
+    .replace(
+      /<meta\s+name="viewport"\s+content="[^"]*">/i,
+      '<meta name="viewport" content="width=595, initial-scale=1, maximum-scale=5, user-scalable=yes">',
+    )
+    .replace('<style>', `<style>${A4_DOCUMENT_STYLES}`);
+}
+
+/** @deprecated Use generateInvoiceHTML so preview and PDF cannot diverge. */
+export function getTemplateHTML(
+  templateId: InvoiceTemplateId,
+  invoice: Invoice,
+  businessProfile?: BusinessProfile,
+): string {
+  return generateInvoiceHTML(invoice, businessProfile, templateId);
+}

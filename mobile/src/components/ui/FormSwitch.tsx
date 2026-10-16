@@ -25,6 +25,7 @@ export function FormSwitch({ label, value, onValueChange, description }: FormSwi
         thumbColor={value ? palette.accentForeground : palette.surface}
         ios_backgroundColor={palette.fill}
         accessibilityLabel={label}
+        accessibilityHint={description}
       />
     </View>
   );
