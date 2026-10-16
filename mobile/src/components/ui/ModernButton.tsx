@@ -83,7 +83,7 @@ export function ModernButton({
   });
 
   const padding = {
-    sm: { paddingHorizontal: 14, height: 36 },
+    sm: { paddingHorizontal: 14, minHeight: theme.control.touchTarget },
     md: { paddingHorizontal: 20, height: 52 },
     lg: { paddingHorizontal: 24, height: 56 },
   };

@@ -4,15 +4,20 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
   TextInput,
   ActivityIndicator,
-  SafeAreaView,
+  Pressable,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { customerService, Customer } from '@/services/customerService';
 import { Feather } from '@expo/vector-icons';
 import { FormInput } from '../ui/FormInput';
 import { ActionButton } from '../ui/ActionButton';
+import { useTheme } from '@/theme';
+import { control, radius, space } from '@/theme/tokens';
 
 interface CustomerPickerProps {
   visible: boolean;
@@ -27,14 +32,17 @@ export function CustomerPicker({
   onClose,
   selectedCustomerId,
 }: CustomerPickerProps) {
+  const theme = useTheme();
+  const { colors: palette } = theme;
+  const styles = createStyles(theme);
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [filteredCustomers, setFilteredCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
-  // Form state
   const [newCustomer, setNewCustomer] = useState({
     name: '',
     email: '',
@@ -72,18 +80,31 @@ export function CustomerPicker({
   const loadCustomers = async () => {
     try {
       setLoading(true);
+      setLoadError(null);
       const data = await customerService.fetchCustomers();
       setCustomers(data);
       setFilteredCustomers(data);
     } catch (error) {
       console.error('Error loading customers:', error);
+      setLoadError('Customers could not be loaded.');
     } finally {
       setLoading(false);
     }
   };
 
+  const resetForm = () => {
+    setNewCustomer({
+      name: '',
+      email: '',
+      phone: '',
+      address: '',
+      city: '',
+      country: 'New Zealand',
+    });
+    setErrors({});
+  };
+
   const handleCreateCustomer = async () => {
-    // Validate
     const newErrors: Record<string, string> = {};
     if (!newCustomer.name.trim()) {
       newErrors.name = 'Name is required';
@@ -99,23 +120,23 @@ export function CustomerPicker({
 
     try {
       setCreating(true);
-      const customer = await customerService.createCustomer(newCustomer);
+      const customer = await customerService.createCustomer({
+        name: newCustomer.name.trim(),
+        email: newCustomer.email.trim(),
+        phone: newCustomer.phone.trim() || null,
+        address: newCustomer.address.trim() || null,
+        city: newCustomer.city.trim() || null,
+        state: null,
+        zip: null,
+        country: newCustomer.country.trim() || 'New Zealand',
+      });
       onSelect(customer);
       onClose();
-      // Reset form
-      setNewCustomer({
-        name: '',
-        email: '',
-        phone: '',
-        address: '',
-        city: '',
-        country: 'New Zealand',
-      });
-      setErrors({});
+      resetForm();
       setShowCreateForm(false);
     } catch (error) {
       console.error('Error creating customer:', error);
-      alert('Failed to create customer');
+      setErrors({ name: 'Could not create this customer. Try again.' });
     } finally {
       setCreating(false);
     }
@@ -133,219 +154,248 @@ export function CustomerPicker({
   if (!visible) return null;
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <SafeAreaView className="flex-1 bg-gray-50">
-        {/* Header */}
-        <View className="bg-white border-b border-gray-200 px-4 py-3">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-xl font-bold">
-              {showCreateForm ? 'New Customer' : 'Select Customer'}
-            </Text>
-            <TouchableOpacity onPress={onClose} className="p-2">
-              <Text className="text-lime-700 font-semibold">Done</Text>
-            </TouchableOpacity>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.header}>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{showCreateForm ? 'New customer' : 'Select customer'}</Text>
+              <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Done" style={styles.done}>
+                <Text style={styles.doneLabel}>Done</Text>
+              </Pressable>
+            </View>
+
+            {!showCreateForm && (
+              <View style={styles.search}>
+                <Feather name="search" size={16} color={palette.textTertiary} />
+                <TextInput
+                  placeholder="Search customers"
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  style={styles.searchInput}
+                  placeholderTextColor={palette.textTertiary}
+                  accessibilityLabel="Search customers"
+                />
+              </View>
+            )}
           </View>
 
-          {!showCreateForm && (
-            <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-2">
-              <Feather name="search" size={16} color="#94A3B8" />
-              <TextInput
-                placeholder="Search customers..."
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                className="flex-1 text-base"
-                placeholderTextColor="#9CA3AF"
-              />
-            </View>
-          )}
-        </View>
-
-        {/* Content */}
-        <ScrollView className="flex-1">
-          {showCreateForm ? (
-            // Create Form
-            <View className="p-4">
-              <View className="bg-white rounded-2xl p-4 mb-4">
-                <FormInput
-                  label="Customer Name"
-                  value={newCustomer.name}
-                  onChangeText={(text) => {
-                    setNewCustomer({ ...newCustomer, name: text });
-                    setErrors({ ...errors, name: '' });
-                  }}
-                  error={errors.name}
-                  placeholder="Enter customer name"
-                  required
-                />
-
-                <FormInput
-                  label="Email"
-                  value={newCustomer.email}
-                  onChangeText={(text) => {
-                    setNewCustomer({ ...newCustomer, email: text });
-                    setErrors({ ...errors, email: '' });
-                  }}
-                  error={errors.email}
-                  placeholder="email@example.com"
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-
-                <FormInput
-                  label="Phone"
-                  value={newCustomer.phone}
-                  onChangeText={(text) =>
-                    setNewCustomer({ ...newCustomer, phone: text })
-                  }
-                  placeholder="+64 21 123 4567"
-                  keyboardType="phone-pad"
-                />
-
-                <FormInput
-                  label="Address"
-                  value={newCustomer.address}
-                  onChangeText={(text) =>
-                    setNewCustomer({ ...newCustomer, address: text })
-                  }
-                  placeholder="Street address"
-                />
-
-                <FormInput
-                  label="City"
-                  value={newCustomer.city}
-                  onChangeText={(text) =>
-                    setNewCustomer({ ...newCustomer, city: text })
-                  }
-                  placeholder="City"
-                />
-
-                <FormInput
-                  label="Country"
-                  value={newCustomer.country}
-                  onChangeText={(text) =>
-                    setNewCustomer({ ...newCustomer, country: text })
-                  }
-                  placeholder="New Zealand"
-                />
-              </View>
-
-              <View className="flex-row gap-3 mb-4">
-                <View className="flex-1">
-                  <ActionButton
-                    title="Cancel"
-                    variant="secondary"
-                    onPress={() => {
-                      setShowCreateForm(false);
-                      setNewCustomer({
-                        name: '',
-                        email: '',
-                        phone: '',
-                        address: '',
-                        city: '',
-                        country: 'New Zealand',
-                      });
-                      setErrors({});
+          <ScrollView style={styles.flex} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+            {showCreateForm ? (
+              <View>
+                <View style={styles.formCard}>
+                  <FormInput
+                    label="Customer Name"
+                    value={newCustomer.name}
+                    onChangeText={(text) => {
+                      setNewCustomer({ ...newCustomer, name: text });
+                      setErrors({ ...errors, name: '' });
                     }}
+                    error={errors.name}
+                    placeholder="Enter customer name"
+                    required
+                  />
+                  <FormInput
+                    label="Email"
+                    value={newCustomer.email}
+                    onChangeText={(text) => {
+                      setNewCustomer({ ...newCustomer, email: text });
+                      setErrors({ ...errors, email: '' });
+                    }}
+                    error={errors.email}
+                    placeholder="email@example.com"
+                    keyboardType="email-address"
+                    autoCapitalize="none"
+                  />
+                  <FormInput
+                    label="Phone"
+                    value={newCustomer.phone}
+                    onChangeText={(text) => setNewCustomer({ ...newCustomer, phone: text })}
+                    placeholder="+64 21 123 4567"
+                    keyboardType="phone-pad"
+                  />
+                  <FormInput
+                    label="Address"
+                    value={newCustomer.address}
+                    onChangeText={(text) => setNewCustomer({ ...newCustomer, address: text })}
+                    placeholder="Street address"
+                  />
+                  <FormInput
+                    label="City"
+                    value={newCustomer.city}
+                    onChangeText={(text) => setNewCustomer({ ...newCustomer, city: text })}
+                    placeholder="City"
+                  />
+                  <FormInput
+                    label="Country"
+                    value={newCustomer.country}
+                    onChangeText={(text) => setNewCustomer({ ...newCustomer, country: text })}
+                    placeholder="New Zealand"
                   />
                 </View>
-                <View className="flex-1">
-                  <ActionButton
-                    title="Create"
-                    variant="primary"
-                    onPress={handleCreateCustomer}
-                    loading={creating}
-                  />
+                <View style={styles.formActions}>
+                  <View style={styles.flex}>
+                    <ActionButton
+                      title="Cancel"
+                      variant="secondary"
+                      onPress={() => {
+                        setShowCreateForm(false);
+                        resetForm();
+                      }}
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ActionButton title="Create" variant="primary" onPress={handleCreateCustomer} loading={creating} />
+                  </View>
                 </View>
               </View>
-            </View>
-          ) : (
-            // Customer List
-            <View className="p-4">
-              {/* Create New Button */}
-              <TouchableOpacity
-                onPress={() => setShowCreateForm(true)}
-                className="bg-lime-700 rounded-xl p-4 mb-4 flex-row items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <Text className="text-white text-lg mr-2">+</Text>
-                <Text className="text-white font-semibold text-base">
-                  Create New Customer
-                </Text>
-              </TouchableOpacity>
+            ) : (
+              <View>
+                <Pressable
+                  onPress={() => setShowCreateForm(true)}
+                  accessibilityRole="button"
+                  accessibilityLabel="Create new customer"
+                  style={styles.createButton}
+                >
+                  <Text style={styles.createLabel}>Create new customer</Text>
+                </Pressable>
 
-              {loading ? (
-                <View className="py-12 items-center">
-                  <ActivityIndicator size="large" color="#163300" />
-                </View>
-              ) : filteredCustomers.length === 0 ? (
-                <View className="py-12 items-center">
-                  <Text className="text-gray-500 text-center mb-2">
-                    {searchQuery
-                      ? 'No customers found'
-                      : 'No customers yet'}
-                  </Text>
-                  {!searchQuery && (
-                    <Text className="text-sm text-gray-400 text-center">
-                      Create your first customer to get started
-                    </Text>
-                  )}
-                </View>
-              ) : (
-                <View className="gap-2">
-                  {filteredCustomers.map((customer) => (
-                    <TouchableOpacity
-                      key={customer.id}
-                      onPress={() => {
-                        onSelect(customer);
-                        onClose();
-                      }}
-                      className={`bg-white rounded-xl p-4 flex-row items-center ${
-                        selectedCustomerId === customer.id
-                          ? 'border-2 border-lime-700'
-                          : 'border border-gray-200'
-                      }`}
-                      activeOpacity={0.7}
-                    >
-                      {/* Avatar */}
-                      <View className="bg-lime-100 w-12 h-12 rounded-full items-center justify-center mr-3">
-                        <Text className="text-revolut-blue-700 font-bold">
-                          {getInitials(customer.name)}
-                        </Text>
-                      </View>
-
-                      {/* Info */}
-                      <View className="flex-1">
-                        <Text className="font-semibold text-gray-900 mb-0.5">
-                          {customer.name}
-                        </Text>
-                        {customer.email && (
-                          <Text className="text-sm text-gray-500">
-                            {customer.email}
-                          </Text>
-                        )}
-                        {customer.city && (
-                          <Text className="text-xs text-gray-400 mt-0.5">
-                            {customer.city}
-                            {customer.country && `, ${customer.country}`}
-                          </Text>
-                        )}
-                      </View>
-
-                      {/* Check mark if selected */}
-                      {selectedCustomerId === customer.id && (
-                        <View className="bg-lime-700 w-6 h-6 rounded-full items-center justify-center">
-                          <Feather name="check" size={12} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  ))}
-                </View>
-              )}
-            </View>
-          )}
-        </ScrollView>
+                {loading ? (
+                  <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading customers" style={styles.loader} />
+                ) : loadError ? (
+                  <View style={styles.empty}>
+                    <Text style={styles.emptyTitle}>{loadError}</Text>
+                    <Pressable onPress={loadCustomers} accessibilityRole="button" accessibilityLabel="Try again" style={styles.retry}>
+                      <Text style={styles.retryLabel}>Try again</Text>
+                    </Pressable>
+                  </View>
+                ) : filteredCustomers.length === 0 ? (
+                  <View style={styles.empty}>
+                    <Text style={styles.emptyTitle}>{searchQuery ? 'No customers found' : 'No customers yet'}</Text>
+                    {!searchQuery ? <Text style={styles.emptyBody}>Create your first customer to get started</Text> : null}
+                  </View>
+                ) : (
+                  <View style={styles.list}>
+                    {filteredCustomers.map((customer) => {
+                      const selected = selectedCustomerId === customer.id;
+                      return (
+                        <Pressable
+                          key={customer.id}
+                          onPress={() => {
+                            onSelect(customer);
+                            onClose();
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel={customer.name}
+                          accessibilityState={{ selected }}
+                          style={[styles.row, selected && styles.rowSelected]}
+                        >
+                          <View style={styles.avatar}>
+                            <Text style={styles.avatarText}>{getInitials(customer.name)}</Text>
+                          </View>
+                          <View style={styles.flex}>
+                            <Text style={styles.name}>{customer.name}</Text>
+                            {customer.email ? <Text style={styles.meta}>{customer.email}</Text> : null}
+                            {customer.city ? (
+                              <Text style={styles.meta}>
+                                {customer.city}
+                                {customer.country ? `, ${customer.country}` : ''}
+                              </Text>
+                            ) : null}
+                          </View>
+                          {selected ? (
+                            <View style={styles.check}>
+                              <Feather name="check" size={14} color={palette.accentForeground} />
+                            </View>
+                          ) : null}
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
   );
 }
 
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
+  safe: { flex: 1, backgroundColor: palette.background },
+  flex: { flex: 1 },
+  header: {
+    backgroundColor: palette.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: palette.separator,
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    paddingBottom: space.md,
+  },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.md },
+  title: { ...type.headline, fontSize: 20 },
+  done: { minHeight: control.touchTarget, minWidth: control.touchTarget, alignItems: 'flex-end', justifyContent: 'center' },
+  doneLabel: { color: palette.accentText, fontWeight: '700', fontSize: 17 },
+  search: {
+    minHeight: control.touchTarget,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: palette.fill,
+    borderRadius: radius.md,
+    paddingHorizontal: space.lg,
+    gap: space.sm,
+  },
+  searchInput: { flex: 1, color: palette.text, fontSize: 16, minHeight: control.touchTarget },
+  content: { padding: space.lg, paddingBottom: 32 },
+  formCard: { backgroundColor: palette.surface, borderRadius: radius.group, padding: space.lg, marginBottom: space.lg },
+  formActions: { flexDirection: 'row', gap: space.md, marginBottom: space.lg },
+  createButton: {
+    minHeight: control.default,
+    backgroundColor: palette.accent,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.lg,
+    paddingHorizontal: space.lg,
+  },
+  createLabel: { color: palette.accentForeground, fontWeight: '700', fontSize: 16 },
+  loader: { marginTop: 48 },
+  empty: { alignItems: 'center', paddingVertical: 48 },
+  emptyTitle: { ...type.callout, textAlign: 'center', marginBottom: space.sm },
+  emptyBody: { ...type.subhead, textAlign: 'center' },
+  retry: { minHeight: control.touchTarget, justifyContent: 'center', paddingHorizontal: space.lg },
+  retryLabel: { color: palette.accentText, fontWeight: '700', fontSize: 16 },
+  list: { gap: space.sm },
+  row: {
+    minHeight: 64,
+    backgroundColor: palette.surface,
+    borderRadius: radius.md,
+    padding: space.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: palette.border,
+    gap: space.md,
+  },
+  rowSelected: { borderWidth: 2, borderColor: palette.accent },
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: palette.accentFill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  avatarText: { color: palette.accentText, fontWeight: '800' },
+  name: { ...type.callout, marginBottom: 2 },
+  meta: { ...type.footnote },
+  check: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: palette.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

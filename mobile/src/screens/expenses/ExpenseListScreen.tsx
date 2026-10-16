@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Pressable,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -37,15 +38,17 @@ export default function ExpenseListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadExpenses = async () => {
     try {
       const data = await expenseService.fetchExpenses();
       setExpenses(data);
+      setLoadError(null);
       applyFilters(data, searchQuery, filter);
     } catch (error) {
       console.error('Error loading expenses:', error);
-      Alert.alert('Error', 'Failed to load expenses. Please try again.');
+      setLoadError('Expenses could not be loaded.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -186,8 +189,8 @@ export default function ExpenseListScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accent} />
-        <Text style={styles.loadingText}>Loading expenses...</Text>
+        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading expenses" />
+        <Text style={styles.loadingText}>Loading expenses</Text>
       </View>
     );
   }
@@ -196,16 +199,22 @@ export default function ExpenseListScreen() {
     <View style={styles.container}>
       {Platform.OS === 'android' && expenses.length > 0 && (
         <View style={styles.androidSearch}>
-          <Feather name="search" size={18} color="#64748B" />
+          <Feather name="search" size={18} color={palette.textSecondary} />
           <TextInput
             style={styles.androidSearchInput}
             placeholder="Search expenses"
             value={searchQuery}
             onChangeText={handleSearch}
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={palette.textTertiary}
+            accessibilityLabel="Search expenses"
           />
         </View>
       )}
+      {loadError && expenses.length > 0 ? (
+        <Pressable onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Retry loading expenses" style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>{loadError} Tap to retry.</Text>
+        </Pressable>
+      ) : null}
       {renderFilterButtons()}
       <FlatList
         data={filteredExpenses}
@@ -217,7 +226,14 @@ export default function ExpenseListScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} />
         }
         ListEmptyComponent={
-          expenses.length === 0 ? (
+          loadError ? (
+            <EmptyState
+              title="Couldn't load expenses"
+              description={loadError}
+              actionLabel="Try again"
+              onAction={onRefresh}
+            />
+          ) : expenses.length === 0 ? (
             <EmptyState
               title="No expenses yet"
               description="Log a receipt or add one by hand."
@@ -225,10 +241,16 @@ export default function ExpenseListScreen() {
               onAction={() => navigation.navigate('ExpenseCreate')}
             />
           ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No expenses match</Text>
-              <Text style={styles.emptySubtext}>Try a different search or status</Text>
-            </View>
+            <EmptyState
+              title="No expenses match"
+              description="Try a different search or status."
+              actionLabel="Show all"
+              onAction={() => {
+                setSearchQuery('');
+                setFilter('all');
+                applyFilters(expenses, '', 'all');
+              }}
+            />
           )
         }
       />
@@ -292,5 +314,19 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 15,
     color: palette.textSecondary,
     textAlign: 'center',
+  },
+  errorBanner: {
+    marginHorizontal: space.screen,
+    marginTop: 8,
+    minHeight: 44,
+    borderRadius: 16,
+    backgroundColor: palette.dangerFill,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  errorBannerText: {
+    color: palette.danger,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

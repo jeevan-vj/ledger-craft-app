@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -45,6 +46,11 @@ export default function InvoiceListScreen() {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<Invoice | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const clearFilters = () => {
+    setSearchQuery('');
+    setFilter('all');
+    applyFilters(invoices, '', 'all');
+  };
 
   const loadInvoices = async () => {
     try {
@@ -212,7 +218,7 @@ export default function InvoiceListScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accent} />
+        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoices" />
       </View>
     );
   }
@@ -228,9 +234,15 @@ export default function InvoiceListScreen() {
             value={searchQuery}
             onChangeText={handleSearch}
             placeholderTextColor={palette.textTertiary}
+            accessibilityLabel="Search invoices"
           />
         </View>
       )}
+      {loadError && invoices.length > 0 ? (
+        <Pressable onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Retry loading invoices" style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>{loadError} Tap to retry.</Text>
+        </Pressable>
+      ) : null}
       {renderFilterButtons()}
       <FlatList
         data={filteredInvoices}
@@ -257,10 +269,12 @@ export default function InvoiceListScreen() {
               onAction={() => navigation.navigate('InvoiceCreate')}
             />
           ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No invoices match your filters</Text>
-              <Text style={styles.emptySubtext}>Try a different search or status</Text>
-            </View>
+            <EmptyState
+              title="No invoices match"
+              description="Try a different search or status."
+              actionLabel="Show all"
+              onAction={clearFilters}
+            />
           )
         }
       />
@@ -328,5 +342,19 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 15,
     color: palette.textSecondary,
     textAlign: 'center',
+  },
+  errorBanner: {
+    marginHorizontal: space.screen,
+    marginTop: 8,
+    minHeight: 44,
+    borderRadius: 16,
+    backgroundColor: palette.dangerFill,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  errorBannerText: {
+    color: palette.danger,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

@@ -26,7 +26,8 @@ import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
-import { getStatusColor, getStatusLabel } from '@/utils/statusUtils';
+import { getStatusLabel, statusInk } from '@/utils/statusUtils';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
@@ -58,6 +59,7 @@ export default function InvoiceDetailScreen() {
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -80,6 +82,7 @@ export default function InvoiceDetailScreen() {
 
   const loadData = async () => {
     try {
+      setLoadError(null);
       const [invoiceData, profileData] = await Promise.all([
         invoiceService.fetchInvoiceById(invoiceId),
         businessProfileService.getBusinessProfile().catch((error) => {
@@ -89,11 +92,10 @@ export default function InvoiceDetailScreen() {
       ]);
       setInvoice(invoiceData);
       setBusinessProfile(profileData);
+      if (!invoiceData) setLoadError(null);
     } catch (error) {
       console.error('Error loading data:', error);
-      Alert.alert('Error', 'Failed to load invoice', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      setLoadError('This invoice could not be loaded.');
     } finally {
       setLoading(false);
     }
@@ -105,9 +107,7 @@ export default function InvoiceDetailScreen() {
       setInvoice(data);
     } catch (error) {
       console.error('Error loading invoice:', error);
-      Alert.alert('Error', 'Failed to load invoice', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      Alert.alert('Error', 'Failed to refresh this invoice.');
     }
   };
 
@@ -187,19 +187,26 @@ export default function InvoiceDetailScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accent} />
+        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoice" />
         <Text style={styles.loadingText}>Loading invoice</Text>
       </View>
     );
   }
 
-  if (!invoice) {
+  if (loadError || !invoice) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>Invoice not found</Text>
+        <EmptyState
+          title={loadError ? "Couldn't open this invoice" : 'Invoice not found'}
+          description={loadError ?? 'It may have been deleted.'}
+          actionLabel={loadError ? 'Try again' : 'Go back'}
+          onAction={loadError ? () => { setLoading(true); loadData(); } : () => navigation.goBack()}
+        />
       </View>
     );
   }
+
+  const ink = statusInk(invoice.status, palette);
 
   return (
     <View style={styles.container}>
@@ -216,7 +223,7 @@ export default function InvoiceDetailScreen() {
           <Text style={styles.heroMeta}>
             {invoice.invoiceNumber}
             {' · '}
-            <Text style={{ color: getStatusColor(invoice.status) }}>
+            <Text style={{ color: ink }}>
               {getStatusLabel(invoice.status)}
             </Text>
           </Text>
@@ -231,7 +238,7 @@ export default function InvoiceDetailScreen() {
             accessibilityRole="button"
             accessibilityLabel="Change invoice status"
           >
-            <View style={[styles.statusDot, { backgroundColor: getStatusColor(invoice.status) }]} />
+            <View style={[styles.statusDot, { backgroundColor: ink }]} />
             <Text style={styles.statusButtonValue}>{getStatusLabel(invoice.status)}</Text>
             <Feather name="chevron-right" size={18} color={palette.textTertiary} />
           </Pressable>
@@ -373,9 +380,7 @@ export default function InvoiceDetailScreen() {
         <View style={{ paddingBottom: 8 }}>
           <ProfileCompletenessBanner
             profile={businessProfile}
-            onCompleteProfile={() => {
-              navigation.navigate('More', { screen: 'BusinessSettings' });
-            }}
+            onCompleteProfile={() => navigation.navigate('BusinessSettings')}
           />
         </View>
         <View style={{ height: 100 }} />
@@ -435,7 +440,8 @@ export default function InvoiceDetailScreen() {
             initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
-              navigation.navigate('More', { screen: 'BusinessSettings' });
+              setShowPreview(false);
+              navigation.navigate('BusinessSettings');
             }}
           />
         )}

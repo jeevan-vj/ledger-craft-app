@@ -68,7 +68,7 @@ export function ActionButton({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'danger' ? '#FFFFFF' : palette.text} />
+        <ActivityIndicator color={variant === 'primary' ? palette.accentForeground : variant === 'danger' ? '#FFFFFF' : palette.text} />
       ) : (
         <Text style={[styles.label, textStyles[variant], textSizeStyles[size]]}>
           {title}
@@ -91,7 +91,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   primaryText: { color: palette.accentForeground },
   secondaryText: { color: palette.text },
   dangerText: { color: '#FFFFFF' },
-  small: { minHeight: control.compact, paddingHorizontal: space.lg },
+  small: { minHeight: control.touchTarget, paddingHorizontal: space.lg },
   medium: { minHeight: control.default },
   large: { minHeight: control.prominent, paddingHorizontal: space.xxl },
   label: { fontWeight: '600', textAlign: 'center' },

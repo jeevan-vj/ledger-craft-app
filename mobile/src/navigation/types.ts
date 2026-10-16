@@ -24,6 +24,8 @@ export type InvoiceStackParamList = {
   InvoiceCreate: undefined;
   InvoiceEdit: { invoiceId: string };
   InvoiceDetail: { invoiceId: string };
+  /** Contextual detour so Back returns to the invoice instead of the More tab. */
+  BusinessSettings: undefined;
 };
 
 export type ExpenseStackParamList = {

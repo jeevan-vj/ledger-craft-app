@@ -126,7 +126,7 @@ export default function BillFormScreen() {
 
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionTitle}>Line items</Text>
-          <Pressable onPress={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })} accessibilityRole="button" style={styles.addButton}>
+          <Pressable onPress={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })} accessibilityRole="button" accessibilityLabel="Add line" style={styles.addButton}>
             <Feather name="plus" size={17} color={palette.accentText} /><Text style={styles.addLabel}>Add line</Text>
           </Pressable>
         </View>

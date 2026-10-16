@@ -19,10 +19,12 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
 export default function BusinessSettingsScreen() {
+  const insets = useSafeAreaInsets();
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -237,6 +239,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('profile')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Profile"
         accessibilityState={{ selected: activeTab === 'profile' }}
       >
         <Text style={[styles.tabText, activeTab === 'profile' && styles.tabTextActive]}>
@@ -248,6 +251,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('preferences')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Preferences"
         accessibilityState={{ selected: activeTab === 'preferences' }}
       >
         <Text style={[styles.tabText, activeTab === 'preferences' && styles.tabTextActive]}>
@@ -259,6 +263,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('appearance')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Appearance"
         accessibilityState={{ selected: activeTab === 'appearance' }}
       >
         <Text style={[styles.tabText, activeTab === 'appearance' && styles.tabTextActive]}>
@@ -478,10 +483,11 @@ export default function BusinessSettingsScreen() {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       {renderTabButtons()}
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive" contentContainerStyle={{ paddingBottom: insets.bottom }}>
         {activeTab === 'profile' && renderProfileTab()}
         {activeTab === 'preferences' && renderPreferencesTab()}
         {activeTab === 'appearance' && renderAppearanceTab()}
@@ -489,13 +495,14 @@ export default function BusinessSettingsScreen() {
 
       {/* Save Button */}
       {activeTab !== 'appearance' && (
-        <View style={styles.bottomContainer}>
+        <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
           <TouchableOpacity
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
             activeOpacity={0.7}
             disabled={saving}
             accessibilityRole="button"
+            accessibilityLabel="Save business profile"
             accessibilityState={{ disabled: saving, busy: saving }}
           >
             {saving ? (

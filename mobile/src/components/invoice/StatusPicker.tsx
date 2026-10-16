@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { STATUS_OPTIONS } from '@/utils/statusUtils';
+import { STATUS_OPTIONS, statusInk } from '@/utils/statusUtils';
 import { hairline, radius } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -140,9 +140,12 @@ export default function StatusPicker({
                   ]}
                   onPress={() => handleSelect(status.value)}
                   activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${status.label}. ${status.description}`}
+                  accessibilityState={{ selected: isSelected }}
                 >
                   <View style={[styles.optionLeft, { gap: 12 }]}>
-                    <Feather name={status.icon} size={20} color={status.color} />
+                    <Feather name={status.icon} size={20} color={statusInk(status.value, palette)} />
                     <View style={styles.optionTextContainer}>
                       <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
                         {status.label}
@@ -151,7 +154,7 @@ export default function StatusPicker({
                     </View>
                   </View>
                   <View style={styles.optionRight}>
-                    <View style={[styles.colorDot, { backgroundColor: status.color }]} />
+                    <View style={[styles.colorDot, { backgroundColor: statusInk(status.value, palette) }]} />
                     {isSelected && <Feather name="check" size={18} color={palette.accent} />}
                   </View>
                 </TouchableOpacity>
@@ -240,7 +243,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     marginBottom: 2,
   },
   optionLabelSelected: {
-    color: palette.accent,
+    color: palette.accentText,
   },
   optionDescription: {
     fontSize: 13,
