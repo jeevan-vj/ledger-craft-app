@@ -15,7 +15,7 @@ import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
 import { shareInvoicePDF } from '@/utils/pdfUtils';
-import { palette, radius, space } from '@/theme/tokens';
+import { control, palette, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
 
@@ -80,7 +80,7 @@ export default function InvoicePreviewWithTemplates({
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={[styles.header, { paddingTop: Math.max(insets.top, space.md) }]}>
         <View style={styles.titleGroup}>
           <Text style={styles.title}>Invoice preview</Text>
@@ -154,6 +154,12 @@ export default function InvoicePreviewWithTemplates({
               source={{ html }}
               style={styles.webView}
               originWhitelist={['*']}
+              javaScriptEnabled={false}
+              domStorageEnabled={false}
+              allowFileAccess={false}
+              allowFileAccessFromFileURLs={false}
+              sharedCookiesEnabled={false}
+              thirdPartyCookiesEnabled={false}
               onLoadStart={() => setIsLoading(true)}
               onLoadEnd={() => setIsLoading(false)}
               onError={showWebViewError}
@@ -218,8 +224,8 @@ const styles = StyleSheet.create({
     gap: space.sm,
   },
   headerButton: {
-    minWidth: 44,
-    minHeight: 44,
+    minWidth: control.touchTarget,
+    minHeight: control.touchTarget,
     borderRadius: radius.pill,
     backgroundColor: palette.fill,
     alignItems: 'center',

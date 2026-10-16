@@ -11,8 +11,30 @@ const HTML_ENTITIES: Record<string, string> = {
   "'": '&#39;',
 };
 
-function escapeHtml(value: string): string {
-  return value.replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
+function escapeHtml(value: string | null | undefined): string {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
+}
+
+function optionalText<T extends string | null | undefined>(value: T): T {
+  if (value == null) return value;
+  return escapeHtml(value) as T;
+}
+
+function finiteNumber(value: unknown): number {
+  const number = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function currencyCode(currency: string | null | undefined): string {
+  const code = (currency ?? '').trim().toUpperCase();
+  return /^[A-Z]{3}$/.test(code) ? code : '';
+}
+
+function safeLogoUrl(url: string | null | undefined): string | null | undefined {
+  if (url == null) return url;
+  const trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) return null;
+  return escapeHtml(trimmed);
 }
 
 function escapeInvoiceText(invoice: Invoice): Invoice {
@@ -24,25 +46,28 @@ function escapeInvoiceText(invoice: Invoice): Invoice {
           ...invoice.customer,
           name: escapeHtml(invoice.customer.name),
           email: escapeHtml(invoice.customer.email),
-          phone: invoice.customer.phone == null ? invoice.customer.phone : escapeHtml(invoice.customer.phone),
-          address: invoice.customer.address == null ? invoice.customer.address : escapeHtml(invoice.customer.address),
-          city: invoice.customer.city == null ? invoice.customer.city : escapeHtml(invoice.customer.city),
-          state: invoice.customer.state == null ? invoice.customer.state : escapeHtml(invoice.customer.state),
-          zip: invoice.customer.zip == null ? invoice.customer.zip : escapeHtml(invoice.customer.zip),
-          country: invoice.customer.country == null ? invoice.customer.country : escapeHtml(invoice.customer.country),
+          phone: optionalText(invoice.customer.phone),
+          address: optionalText(invoice.customer.address),
+          city: optionalText(invoice.customer.city),
+          state: optionalText(invoice.customer.state),
+          zip: optionalText(invoice.customer.zip),
+          country: optionalText(invoice.customer.country),
         }
       : undefined,
     items: invoice.items.map((item) => ({
       ...item,
       description: escapeHtml(item.description),
       unit: escapeHtml(item.unit),
+      quantity: finiteNumber(item.quantity),
     })),
     additionalChargesList: invoice.additionalChargesList?.map((charge) => ({
       ...charge,
       name: escapeHtml(charge.name),
     })),
-    notes: invoice.notes == null ? invoice.notes : escapeHtml(invoice.notes),
-    terms: invoice.terms == null ? invoice.terms : escapeHtml(invoice.terms),
+    notes: optionalText(invoice.notes),
+    terms: optionalText(invoice.terms),
+    currency: currencyCode(invoice.currency),
+    status: escapeHtml(invoice.status) as Invoice['status'],
   };
 }
 
@@ -52,25 +77,30 @@ function escapeBusinessProfileText(profile?: BusinessProfile): BusinessProfile |
     ...profile,
     name: escapeHtml(profile.name),
     email: escapeHtml(profile.email),
-    phone: profile.phone == null ? profile.phone : escapeHtml(profile.phone),
-    address: profile.address == null ? profile.address : escapeHtml(profile.address),
-    city: profile.city == null ? profile.city : escapeHtml(profile.city),
-    state: profile.state == null ? profile.state : escapeHtml(profile.state),
-    zip: profile.zip == null ? profile.zip : escapeHtml(profile.zip),
-    country: profile.country == null ? profile.country : escapeHtml(profile.country),
-    taxId: profile.taxId == null ? profile.taxId : escapeHtml(profile.taxId),
-    logoUrl: profile.logoUrl == null ? profile.logoUrl : escapeHtml(profile.logoUrl),
-    website: profile.website == null ? profile.website : escapeHtml(profile.website),
-    defaultNotes: profile.defaultNotes == null ? profile.defaultNotes : escapeHtml(profile.defaultNotes),
-    defaultTerms: profile.defaultTerms == null ? profile.defaultTerms : escapeHtml(profile.defaultTerms),
+    phone: optionalText(profile.phone),
+    address: optionalText(profile.address),
+    city: optionalText(profile.city),
+    state: optionalText(profile.state),
+    zip: optionalText(profile.zip),
+    country: optionalText(profile.country),
+    taxId: optionalText(profile.taxId),
+    logoUrl: safeLogoUrl(profile.logoUrl),
+    website: optionalText(profile.website),
+    defaultNotes: optionalText(profile.defaultNotes),
+    defaultTerms: optionalText(profile.defaultTerms),
   };
 }
 
 const formatCurrency = (amount: number, currency: string): string => {
-  return formatMoney(amount, currency);
+  const code = currencyCode(currency);
+  const value = Number.isFinite(amount) ? amount : 0;
+  if (!code) {
+    return value.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return formatMoney(value, code);
 };
 
-function invoiceAmountDue(invoice: Invoice): number {
+export function invoiceAmountDue(invoice: Pick<Invoice, 'balanceDue' | 'status' | 'total' | 'totalPaid'>): number {
   if (Number.isFinite(invoice.balanceDue)) {
     return Math.max(0, invoice.balanceDue ?? 0);
   }
@@ -130,14 +160,22 @@ function renderInvoiceTotals(invoice: Invoice): string {
   `;
 }
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
+export function formatInvoiceDate(dateString: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateString ?? '').trim());
+  if (!match) return 'Invalid date';
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return 'Invalid date';
+  }
   return date.toLocaleDateString('en-NZ', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
-};
+}
 
 const getStatusColor = (status: string): string => {
   switch (status) {
@@ -376,11 +414,11 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             <div class="detail-column">
               <div class="date-row">
                 <span class="date-label">Date:</span>
-                <span class="date-value">${formatDate(invoice.date)}</span>
+                <span class="date-value">${formatInvoiceDate(invoice.date)}</span>
               </div>
               <div class="date-row">
                 <span class="date-label">Due Date:</span>
-                <span class="date-value">${formatDate(invoice.dueDate)}</span>
+                <span class="date-value">${formatInvoiceDate(invoice.dueDate)}</span>
               </div>
             </div>
           </div>
@@ -632,8 +670,8 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
               
               <div class="info-block">
                 <h3>Invoice Details</h3>
-                <p><span class="highlight">Date:</span> ${formatDate(invoice.date)}</p>
-                <p><span class="highlight">Due:</span> ${formatDate(invoice.dueDate)}</p>
+                <p><span class="highlight">Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+                <p><span class="highlight">Due:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -840,12 +878,12 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
             
             <div class="info-block">
               <h3>Date</h3>
-              <p>${formatDate(invoice.date)}</p>
+              <p>${formatInvoiceDate(invoice.date)}</p>
             </div>
             
             <div class="info-block">
               <h3>Due Date</h3>
-              <p>${formatDate(invoice.dueDate)}</p>
+              <p>${formatInvoiceDate(invoice.dueDate)}</p>
             </div>
           </div>
           
@@ -1072,8 +1110,8 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             
             <div class="info-block">
               <h3>Invoice Details</h3>
-              <p><span class="highlight">Invoice Date:</span> ${formatDate(invoice.date)}</p>
-              <p><span class="highlight">Due Date:</span> ${formatDate(invoice.dueDate)}</p>
+              <p><span class="highlight">Invoice Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+              <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
               <p><span class="highlight">Status:</span> ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</p>
             </div>
           </div>
@@ -1333,8 +1371,8 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
               
               <div class="detail-block">
                 <h3>Invoice Information</h3>
-                <p><strong>Date Issued:</strong> ${formatDate(invoice.date)}</p>
-                <p><strong>Payment Due:</strong> ${formatDate(invoice.dueDate)}</p>
+                <p><strong>Date Issued:</strong> ${formatInvoiceDate(invoice.date)}</p>
+                <p><strong>Payment Due:</strong> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><strong>Currency:</strong> ${invoice.currency}</p>
               </div>
             </div>
@@ -1633,8 +1671,8 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
               
               <div class="info-card">
                 <h3>Invoice Details</h3>
-                <p><span class="highlight">Issue Date:</span> ${formatDate(invoice.date)}</p>
-                <p><span class="highlight">Due Date:</span> ${formatDate(invoice.dueDate)}</p>
+                <p><span class="highlight">Issue Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+                <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -1722,6 +1760,10 @@ const A4_DOCUMENT_STYLES = `
     width: 595px;
     min-height: 842px;
     overflow-x: hidden;
+  }
+  .notes-text, .terms-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
   }
 `;
 

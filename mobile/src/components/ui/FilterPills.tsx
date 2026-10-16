@@ -23,7 +23,7 @@ export function FilterPills<T extends string>({
       contentContainerStyle={styles.row}
       style={styles.scroller}
     >
-      <View style={styles.track}>
+      <View style={styles.track} accessibilityRole="tablist">
         {options.map((option) => {
           const active = option === value;
           const label = labels?.[option] ?? option.charAt(0).toUpperCase() + option.slice(1);

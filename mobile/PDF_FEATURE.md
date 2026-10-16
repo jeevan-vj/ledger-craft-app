@@ -8,7 +8,9 @@ accessible error/retry, and PDF sharing states.
 `src/utils/invoiceTemplates.ts` owns the single HTML document generator used by
 both the WebView preview and `expo-print`. Its shared totals block displays the
 authoritative subtotal, GST/tax, discount, additional charges, total, and amount
-due with the invoice currency.
+due with the invoice currency. `YYYY-MM-DD` invoice dates stay on that calendar
+day. Notes and terms keep their line breaks. Logo images are limited to `http`
+and `https` URLs, and the preview WebView does not run JavaScript.
 
 `src/utils/pdfUtils.ts` provides:
 
