@@ -246,8 +246,21 @@ describe('expenseService', () => {
       const mockDelete = vi.fn().mockReturnThis()
       const mockEq1 = vi.fn().mockReturnThis()
       const mockEq2 = vi.fn().mockReturnValue({ error: null })
+      const existingExpense = {
+        select: vi.fn().mockReturnValue({
+          eq: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              single: vi.fn().mockResolvedValue({
+                data: { ...mockSupabaseExpense, receipt_url: null },
+                error: null,
+              }),
+            }),
+          }),
+        }),
+      }
       
       mockSupabase.from.mockReturnValue({
+        ...existingExpense,
         delete: mockDelete,
       } as any)
       
