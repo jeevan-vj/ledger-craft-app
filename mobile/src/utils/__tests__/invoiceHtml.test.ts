@@ -81,6 +81,122 @@ describe('generateInvoiceHTML', () => {
     expect(html).toContain('$0.00');
   });
 
+  it('keeps the calendar day for date-only invoice fields west of UTC', () => {
+    const format = (year: number, monthIndex: number, day: number) =>
+      new Date(year, monthIndex, day).toLocaleDateString('en-NZ', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+      });
+    const html = generateInvoiceHTML(
+      { ...invoice, date: '2026-10-01', dueDate: '2026-10-15' },
+      undefined,
+      'classic',
+    );
+    const due = format(2026, 9, 15);
+    const utcShiftedDue = new Date('2026-10-15').toLocaleDateString('en-NZ', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
+    expect(html).toContain(format(2026, 9, 1));
+    expect(html).toContain(due);
+    if (utcShiftedDue !== due) {
+      expect(html).not.toContain(utcShiftedDue);
+    }
+  });
+
+  it('keeps the nominal GST rate when tax is inclusive or charges are untaxed', () => {
+    const inclusive = generateInvoiceHTML(
+      {
+        ...invoice,
+        taxInclusive: true,
+        subtotal: 100,
+        taxAmount: 15,
+        discount: 15,
+        additionalCharges: 0,
+        total: 100,
+        totalPaid: 0,
+        balanceDue: 40,
+      },
+      undefined,
+      'classic',
+    );
+    expect(inclusive).toContain('GST (15%):');
+    expect(inclusive).not.toContain('GST (17');
+    expect(inclusive).toContain('Amount Due:');
+    expect(inclusive).toContain('$40.00');
+
+    const withCharges = generateInvoiceHTML(
+      {
+        ...invoice,
+        taxInclusive: false,
+        subtotal: 100,
+        discount: 0,
+        taxAmount: 15,
+        additionalCharges: 50,
+        additionalChargesTotal: 50,
+        total: 165,
+        totalPaid: 0,
+        balanceDue: 165,
+      },
+      undefined,
+      'modern',
+    );
+    expect(withCharges).toContain('GST (15%):');
+    expect(withCharges).not.toContain('GST (10%):');
+    expect(withCharges).toContain('$165.00');
+  });
+
+  it('preserves note and term line breaks without interpreting markup', () => {
+    const html = generateInvoiceHTML(
+      {
+        ...invoice,
+        notes: 'Pay by Friday\nBank 12-3456 <b>not bold</b>',
+        terms: 'Due on receipt\nNo cash',
+      },
+      undefined,
+      'minimal',
+    );
+
+    expect(html).toContain('white-space: pre-wrap');
+    expect(html).toContain('Pay by Friday\nBank 12-3456 &lt;b&gt;not bold&lt;/b&gt;');
+    expect(html).toContain('Due on receipt\nNo cash');
+    expect(html).not.toContain('<b>not bold</b>');
+  });
+
+  it('drops non-http logo URLs and ignores markup in currency, status, and quantity', () => {
+    const profile = {
+      id: 'profile-1',
+      userId: 'user-1',
+      name: 'Harbour Studio',
+      email: 'owner@example.com',
+      logoUrl: 'javascript:alert(1)',
+    } as BusinessProfile;
+    const html = generateInvoiceHTML(
+      {
+        ...invoice,
+        currency: '<img src=x onerror=alert(1)>',
+        status: 'sent"><img src=x onerror=alert(2)>' as Invoice['status'],
+        items: [
+          {
+            ...invoice.items[0],
+            quantity: '<img src=x onerror=alert(3)>' as unknown as number,
+            unit: null as unknown as string,
+          },
+        ],
+      },
+      profile,
+      'modern',
+    );
+
+    expect(html).not.toContain('javascript:');
+    expect(html).not.toContain('<img');
+    expect(html).toContain('&lt;img');
+    expect(html).toContain('75.00');
+  });
+
   it('escapes user-provided text and attributes before creating invoice HTML', () => {
     const hostileText = `<img src=x onerror="globalThis.pwned=true"> O'Reilly & Co`;
     const profile = {

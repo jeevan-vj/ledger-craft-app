@@ -9,6 +9,7 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
@@ -26,8 +27,9 @@ import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusColor, getStatusLabel } from '@/utils/statusUtils';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { palette, radius, space } from '@/theme/tokens';
+import { control, palette, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 
@@ -38,6 +40,7 @@ export default function InvoiceDetailScreen() {
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
+  const insets = useSafeAreaInsets();
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
@@ -102,15 +105,6 @@ export default function InvoiceDetailScreen() {
 
   const formatCurrency = (amount: number, currency: string) => formatMoney(amount, currency);
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-NZ', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
-
   const handleEdit = () => {
     navigation.navigate('InvoiceEdit', { invoiceId });
   };
@@ -173,7 +167,10 @@ export default function InvoiceDetailScreen() {
       );
     } catch (error) {
       console.error('Error sharing PDF:', error);
-      Alert.alert('Error', 'Failed to share PDF');
+      Alert.alert(
+        'Unable to share PDF',
+        error instanceof Error ? error.message : 'Failed to share PDF',
+      );
     } finally {
       setGeneratingPdf(false);
     }
@@ -278,11 +275,11 @@ export default function InvoiceDetailScreen() {
           <Text style={styles.sectionTitle}>Invoice Details</Text>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>{invoice.date ? formatDate(invoice.date) : 'N/A'}</Text>
+            <Text style={styles.detailValue}>{invoice.date ? formatInvoiceDate(invoice.date) : 'N/A'}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Due</Text>
-            <Text style={styles.detailValue}>{invoice.dueDate ? formatDate(invoice.dueDate) : 'N/A'}</Text>
+            <Text style={styles.detailValue}>{invoice.dueDate ? formatInvoiceDate(invoice.dueDate) : 'N/A'}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Currency</Text>
@@ -342,13 +339,7 @@ export default function InvoiceDetailScreen() {
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Amount due</Text>
             <Text style={styles.totalValue}>
-              {formatCurrency(
-                invoice.balanceDue ??
-                  (invoice.status === 'paid'
-                    ? 0
-                    : Math.max(0, invoice.total - (invoice.totalPaid ?? 0))),
-                invoice.currency,
-              )}
+              {formatCurrency(invoiceAmountDue(invoice), invoice.currency || 'NZD')}
             </Text>
           </View>
         </View>
@@ -382,7 +373,7 @@ export default function InvoiceDetailScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
         <ModernButton
           onPress={() => setShowPreview(true)}
           variant="primary"
@@ -610,7 +601,6 @@ const styles = StyleSheet.create({
     backgroundColor: palette.surface,
     paddingHorizontal: space.screen,
     paddingTop: 12,
-    paddingBottom: 28,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: palette.separator,
     gap: 8,
@@ -621,8 +611,10 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   secondaryAction: {
-    minHeight: 44,
+    minHeight: control.touchTarget,
+    minWidth: control.touchTarget,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 12,
   },
   secondaryPressed: {

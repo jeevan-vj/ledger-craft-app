@@ -30,7 +30,8 @@ async function moveToNamedDocument(uri: string, invoice: Invoice): Promise<strin
   if (existing.exists) {
     await FileSystem.deleteAsync(destination, { idempotent: true });
   }
-  await FileSystem.moveAsync({ from: uri, to: destination });
+  await FileSystem.copyAsync({ from: uri, to: destination });
+  await FileSystem.deleteAsync(uri, { idempotent: true }).catch(() => undefined);
   return destination;
 }
 
@@ -85,7 +86,11 @@ export async function shareInvoicePDF(
       UTI: 'com.adobe.pdf',
     });
   } catch (error) {
-    if (error instanceof Error && error.message === 'Sharing is not available on this device') {
+    if (
+      error instanceof Error &&
+      (error.message === 'Sharing is not available on this device' ||
+        error.message.startsWith('Could not generate the invoice PDF'))
+    ) {
       throw error;
     }
     throw new Error(`Could not share the invoice PDF: ${errorMessage(error)}`);
