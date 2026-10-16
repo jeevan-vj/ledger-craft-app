@@ -10,6 +10,9 @@
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
+      },
+      "ios": {
+        "simulator": true
       }
     },
     "preview": {
@@ -23,6 +26,10 @@
         "buildType": "app-bundle"
       },
       "autoIncrement": true
+    },
+    "development-device": {
+      "developmentClient": true,
+      "distribution": "internal"
     }
   },
   "submit": {
@@ -34,11 +41,3 @@
     }
   }
 }
-
-
-
-
-
-
-
-
