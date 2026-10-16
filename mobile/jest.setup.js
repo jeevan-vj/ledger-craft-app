@@ -1,3 +1,27 @@
+// Jest 30 rejects the lazy `require` inside Expo's WinterCG install when a suite
+// later reads one of those globals. Swap the getters for real values first.
+// Do not read the live globals here — that is what triggers the forbidden require.
+function restoreWinterGlobal(name, fallback) {
+  const backup = `original${name[0].toUpperCase()}${name.slice(1)}`;
+  const value = Object.prototype.hasOwnProperty.call(global, backup) ? global[backup] : fallback();
+  Object.defineProperty(global, name, {
+    configurable: true,
+    enumerable: true,
+    writable: true,
+    value,
+  });
+}
+
+const nodeUrl = require('node:url');
+const nodeUtil = require('node:util');
+restoreWinterGlobal('TextDecoder', () => nodeUtil.TextDecoder);
+restoreWinterGlobal('TextDecoderStream', () => class TextDecoderStream {});
+restoreWinterGlobal('TextEncoderStream', () => class TextEncoderStream {});
+restoreWinterGlobal('URL', () => nodeUrl.URL);
+restoreWinterGlobal('URLSearchParams', () => nodeUrl.URLSearchParams);
+restoreWinterGlobal('__ExpoImportMetaRegistry', () => ({ url: null }));
+restoreWinterGlobal('structuredClone', () => nodeUtil.structuredClone ?? ((value) => JSON.parse(JSON.stringify(value))));
+
 // Extend Jest with React Native Testing Library matchers
 // Note: @testing-library/jest-native is deprecated, matchers are built-in since v12.4+
 // No need to import extend-expect anymore

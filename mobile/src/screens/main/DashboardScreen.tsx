@@ -8,7 +8,8 @@ import { useAuth } from '@/store';
 import { invoiceService } from '@/services/invoiceService';
 import type { Invoice } from '@/types/invoice';
 import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
-import { Card, CircleIconButton, DashedSetupCard, PillButton } from '@/components/ui';
+import { invoiceTabParams, moreTabParams } from '@/navigation/links';
+import { Card, CircleIconButton, DashedSetupCard, EmptyState, PillButton } from '@/components/ui';
 import { formatMoney } from '@/utils/money';
 import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
@@ -29,11 +30,19 @@ export default function DashboardScreen() {
   const [summaryPage, setSummaryPage] = useState(0);
   const [tasksDismissed, setTasksDismissed] = useState(false);
   const [balanceVisible, setBalanceVisible] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
-    try { setInvoices(await invoiceService.fetchInvoices()); }
-    catch (error) { console.error('Error loading dashboard data:', error); }
-    finally { setLoading(false); setRefreshing(false); }
+    try {
+      setInvoices(await invoiceService.fetchInvoices());
+      setError(null);
+    } catch (loadError) {
+      console.error('Error loading dashboard data:', loadError);
+      setError('Invoices could not be loaded.');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }, []);
   useEffect(() => { load(); }, [load]);
 
@@ -63,15 +72,31 @@ export default function DashboardScreen() {
   const name = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const firstName = name.split(' ')[0];
 
-  const openInvoice = () => navigation.navigate('Invoices', { screen: 'InvoiceCreate' });
-  const openInvoices = () => navigation.navigate('Invoices', { screen: 'InvoiceList' });
-  const openExpense = () => navigation.navigate('More', { screen: 'ExpenseCreate' });
+  const openInvoice = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
+  const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
+  const openExpense = () => navigation.navigate('More', moreTabParams({ name: 'ExpenseCreate' }));
+  const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
+  const retry = () => { setLoading(true); load(); };
 
-  if (loading) return <View style={[styles.center, { backgroundColor: theme.colors.background }]}><ActivityIndicator size="large" color={theme.colors.accent} /></View>;
+  if (loading) {
+    return (
+      <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator size="large" color={theme.colors.accent} accessibilityLabel="Loading home" />
+      </View>
+    );
+  }
+
+  if (error && invoices.length === 0) {
+    return (
+      <View style={[styles.center, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+        <EmptyState title="Couldn't load home" description={error} actionLabel="Try again" onAction={retry} />
+      </View>
+    );
+  }
 
   return <ScrollView
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top }]}
+    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: 32 + insets.bottom }]}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
     showsVerticalScrollIndicator={false}
   >
@@ -92,8 +117,14 @@ export default function DashboardScreen() {
       <PillButton label="Scan receipt" variant="ghost" icon={<Feather name="camera" size={17} color={theme.colors.text} />} onPress={openExpense} />
     </ScrollView>
 
+    {error ? (
+      <Pressable onPress={retry} accessibilityRole="button" accessibilityLabel="Retry loading invoices" style={[styles.errorBanner, { backgroundColor: theme.colors.dangerFill }]}>
+        <Text style={[theme.type.subhead, { color: theme.colors.danger }]}>{error} Tap to retry.</Text>
+      </Pressable>
+    ) : null}
+
     <Text style={[theme.type.headline, styles.sectionTitle]}>Business summary</Text>
-    <ScrollView horizontal pagingEnabled snapToInterval={cardWidth + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }} onMomentumScrollEnd={(event) => setSummaryPage(Math.round(event.nativeEvent.contentOffset.x / (cardWidth + 12)))}>
+    <ScrollView horizontal pagingEnabled snapToInterval={cardWidth + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }} accessibilityLabel={`Business summary, card ${summaryPage + 1} of 2`} onMomentumScrollEnd={(event) => setSummaryPage(Math.round(event.nativeEvent.contentOffset.x / (cardWidth + 12)))}>
       <Card elevated style={{ width: cardWidth }}>
         <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Money coming in</Text>
         <Text style={[theme.type.display, { marginTop: 8 }]}>{formatMoney(totalOutstanding, 'NZD')}</Text>
@@ -111,13 +142,13 @@ export default function DashboardScreen() {
       <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>
       <Card>
         <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : 'Add your business details before sending an invoice.'}</Text></View></View>
-        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : 'Continue'} onPress={overdue.length ? openInvoices : () => navigation.navigate('More', { screen: 'BusinessSettings' })} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={() => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setTasksDismissed(true); }} /></View>
+        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : 'Continue'} onPress={overdue.length ? openInvoices : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={() => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setTasksDismissed(true); }} /></View>
       </Card>
     </> : <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" />}
 
     <View style={styles.sectionHead}>
       <Text style={theme.type.headline}>Needs action</Text>
-      <Pressable onPress={openInvoices} hitSlop={8} accessibilityRole="button" accessibilityLabel="See all invoices">
+      <Pressable onPress={openInvoices} accessibilityRole="button" accessibilityLabel="See all invoices" style={styles.seeAll}>
         <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>See all</Text>
       </Pressable>
     </View>
@@ -127,7 +158,7 @@ export default function DashboardScreen() {
       ) : workItems.map((invoice, index) => (
         <Pressable
           key={invoice.id}
-          onPress={() => navigation.navigate('Invoices', { screen: 'InvoiceDetail', params: { invoiceId: invoice.id } })}
+          onPress={() => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceDetail', params: { invoiceId: invoice.id } }))}
           accessibilityRole="button"
           accessibilityLabel={`Invoice ${invoice.invoiceNumber}`}
           style={({ pressed }) => [
@@ -167,6 +198,8 @@ const styles = StyleSheet.create({
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   taskActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, marginTop: 28 },
+  seeAll: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 4 },
+  errorBanner: { borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, minHeight: 44, justifyContent: 'center' },
   invoiceCard: { padding: 0, overflow: 'hidden' },
   emptyInvoices: { padding: 16 },
   invoiceRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 12 },

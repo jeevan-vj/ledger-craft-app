@@ -20,7 +20,6 @@ import BillDetailScreen from '@/screens/purchases/BillDetailScreen';
 import BillFormScreen from '@/screens/purchases/BillFormScreen';
 import SettingsScreen from '@/screens/settings/SettingsScreen';
 import BusinessSettingsScreen from '@/screens/settings/BusinessSettingsScreen';
-import { CircleIconButton } from '@/components/ui';
 
 const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -43,6 +42,7 @@ function InvoiceNavigator() {
     <InvoiceStack.Screen name="InvoiceCreate" component={InvoiceCreateScreen} options={{ ...form, title: 'New invoice' }} />
     <InvoiceStack.Screen name="InvoiceEdit" component={InvoiceCreateScreen} options={{ ...form, title: 'Edit invoice' }} />
     <InvoiceStack.Screen name="InvoiceDetail" component={InvoiceDetailScreen} options={{ ...detail, title: 'Invoice' }} />
+    <InvoiceStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
   </InvoiceStack.Navigator>;
 }
 function CustomerNavigator() {
@@ -53,7 +53,7 @@ function MoreNavigator() {
   const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
   return <MoreStack.Navigator screenOptions={list}>
     <MoreStack.Screen name="SettingsList" component={SettingsScreen} options={{ title: 'More', headerShown: false }} />
-    <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={({ navigation }) => ({ ...detail, title: 'Business', headerLeft: () => <CircleIconButton icon="arrow-left" label="Back" onPress={navigation.goBack} /> })} />
+    <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
     <MoreStack.Screen name="ExpenseList" component={ExpenseListScreen} options={{ title: 'Expenses' }} />
     <MoreStack.Screen name="ExpenseCreate" component={ExpenseCreateScreen} options={{ ...form, title: 'New expense' }} />
     <MoreStack.Screen name="ExpenseEdit" component={ExpenseEditScreen} options={{ ...form, title: 'Edit expense' }} />
@@ -70,8 +70,6 @@ export default function AppNavigator() {
     labeled hapticFeedbackEnabled
     tabBarActiveTintColor={theme.colors.accent}
     tabBarInactiveTintColor={theme.colors.textSecondary}
-    /* Native tabs cannot render an inset floating pill without replacing their platform implementation. */
-    tabBarStyle={{ backgroundColor: theme.colors.surface }}
     activeIndicatorColor={theme.colors.accentFill}
   >
     <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: tabIcon('house.fill', require('../../assets/tabs/home.png')) }} />

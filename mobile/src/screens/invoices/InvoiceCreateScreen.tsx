@@ -439,21 +439,22 @@ export default function InvoiceCreateScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       style={styles.container}
     >
       <ScrollView 
         style={styles.scrollView} 
         contentContainerStyle={styles.scrollContent}
         contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
       >
         {/* Progress Indicator */}
         <ProgressIndicator steps={progressSteps} />
         <ProfileCompletenessBanner
           profile={businessProfile}
-          onCompleteProfile={() => {
-            navigation.navigate('More', { screen: 'BusinessSettings' });
-          }}
+          onCompleteProfile={() => navigation.navigate('BusinessSettings')}
         />
 
         {/* Invoice Details Card */}
@@ -479,6 +480,8 @@ export default function InvoiceCreateScreen() {
               }}
               style={styles.customerButton}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={selectedCustomer ? `Customer, ${selectedCustomer.name}` : 'Select customer'}
             >
               {selectedCustomer ? (
                 <View style={styles.selectedCustomerContainer}>
@@ -647,7 +650,8 @@ export default function InvoiceCreateScreen() {
           initialTemplate={templateName}
           onClose={() => setShowPreview(false)}
           onCompleteProfile={() => {
-            navigation.navigate('More', { screen: 'BusinessSettings' });
+            setShowPreview(false);
+            navigation.navigate('BusinessSettings');
           }}
         />
       </Modal>
@@ -744,7 +748,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   customerAvatarText: {
     fontSize: 13,
     fontWeight: '700',
-    color: palette.accent,
+    color: palette.accentText,
   },
   customerInfo: {
     flex: 1,
@@ -770,14 +774,17 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     marginTop: 8,
   },
   lineItemAction: {
+    minHeight: 44,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: radius.pill,
     backgroundColor: palette.accentFill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   lineItemActionText: {
     fontSize: 14,
     fontWeight: '600',
-    color: palette.accent,
+    color: palette.accentText,
   },
 });

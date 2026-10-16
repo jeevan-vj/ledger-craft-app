@@ -4,16 +4,21 @@ import {
   View,
   Text,
   ScrollView,
-  TouchableOpacity,
+  Pressable,
   TextInput,
   ActivityIndicator,
-  SafeAreaView,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { itemService, Item, ItemCategory } from '@/services/itemService';
 import { Feather } from '@expo/vector-icons';
 import { FormInput } from '../ui/FormInput';
 import { FormSwitch } from '../ui/FormSwitch';
 import { ActionButton } from '../ui/ActionButton';
+import { useTheme } from '@/theme';
+import { control, radius, space } from '@/theme/tokens';
 
 interface ItemPickerProps {
   visible: boolean;
@@ -28,6 +33,9 @@ export function ItemPicker({
   onClose,
   selectedItemId,
 }: ItemPickerProps) {
+  const theme = useTheme();
+  const { colors: palette } = theme;
+  const styles = createStyles(theme);
   const [items, setItems] = useState<Item[]>([]);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [categories, setCategories] = useState<ItemCategory[]>([]);
@@ -36,6 +44,7 @@ export function ItemPicker({
   const [selectedType, setSelectedType] = useState<'all' | 'product' | 'service'>('all');
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [creating, setCreating] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   // Form state
   const [newItem, setNewItem] = useState({
@@ -86,6 +95,7 @@ export function ItemPicker({
   const loadData = async () => {
     try {
       setLoading(true);
+      setLoadError(null);
       const [itemsData, categoriesData] = await Promise.all([
         itemService.fetchItems(),
         itemService.fetchCategories(),
@@ -95,6 +105,7 @@ export function ItemPicker({
       setCategories(categoriesData);
     } catch (error) {
       console.error('Error loading items:', error);
+      setLoadError('Items could not be loaded.');
     } finally {
       setLoading(false);
     }
@@ -148,7 +159,7 @@ export function ItemPicker({
       setShowCreateForm(false);
     } catch (error) {
       console.error('Error creating item:', error);
-      alert('Failed to create item');
+      setErrors({ name: 'Could not create this item. Try again.' });
     } finally {
       setCreating(false);
     }
@@ -165,294 +176,327 @@ export function ItemPicker({
 
   if (!visible) return null;
 
+  const typeFilters: Array<{ id: 'all' | 'product' | 'service'; label: string }> = [
+    { id: 'all', label: 'All' },
+    { id: 'product', label: 'Products' },
+    { id: 'service', label: 'Services' },
+  ];
+
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet">
-      <SafeAreaView className="flex-1 bg-gray-50">
-        {/* Header */}
-        <View className="bg-white border-b border-gray-200 px-4 py-3">
-          <View className="flex-row items-center justify-between mb-3">
-            <Text className="text-xl font-bold">
-              {showCreateForm ? 'New Item' : 'Select Item'}
-            </Text>
-            <TouchableOpacity onPress={onClose} className="p-2">
-              <Text className="text-lime-700 font-semibold">Done</Text>
-            </TouchableOpacity>
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <SafeAreaView style={styles.safe} edges={['top', 'bottom']}>
+        <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+          <View style={styles.header}>
+            <View style={styles.headerRow}>
+              <Text style={styles.title}>{showCreateForm ? 'New item' : 'Select item'}</Text>
+              <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="Done" style={styles.done}>
+                <Text style={styles.doneLabel}>Done</Text>
+              </Pressable>
+            </View>
+            {!showCreateForm ? (
+              <>
+                <View style={styles.search}>
+                  <Feather name="search" size={16} color={palette.textTertiary} />
+                  <TextInput
+                    placeholder="Search items"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    style={styles.searchInput}
+                    placeholderTextColor={palette.textTertiary}
+                    accessibilityLabel="Search items"
+                  />
+                </View>
+                <View style={styles.filters}>
+                  {typeFilters.map((filter) => {
+                    const active = selectedType === filter.id;
+                    return (
+                      <Pressable
+                        key={filter.id}
+                        onPress={() => setSelectedType(filter.id)}
+                        accessibilityRole="button"
+                        accessibilityLabel={filter.label}
+                        accessibilityState={{ selected: active }}
+                        style={[styles.filter, active && styles.filterActive]}
+                      >
+                        <Text style={[styles.filterLabel, active && styles.filterLabelActive]}>{filter.label}</Text>
+                      </Pressable>
+                    );
+                  })}
+                </View>
+              </>
+            ) : null}
           </View>
 
-          {!showCreateForm && (
-            <>
-              {/* Search */}
-              <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-2 mb-3">
-                <Feather name="search" size={16} color="#94A3B8" />
-                <TextInput
-                  placeholder="Search items..."
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  className="flex-1 text-base"
-                  placeholderTextColor="#9CA3AF"
-                />
-              </View>
-
-              {/* Type Filter */}
-              <View className="flex-row gap-2">
-                <TouchableOpacity
-                  onPress={() => setSelectedType('all')}
-                  className={`flex-1 py-2 rounded-lg ${
-                    selectedType === 'all' ? 'bg-lime-700' : 'bg-gray-200'
-                  }`}
-                >
-                  <Text
-                    className={`text-center font-semibold ${
-                      selectedType === 'all' ? 'text-white' : 'text-gray-700'
-                    }`}
-                  >
-                    All
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setSelectedType('product')}
-                  className={`flex-1 py-2 rounded-lg ${
-                    selectedType === 'product' ? 'bg-lime-700' : 'bg-gray-200'
-                  }`}
-                >
-                  <Text
-                    className={`text-center font-semibold ${
-                      selectedType === 'product' ? 'text-white' : 'text-gray-700'
-                    }`}
-                  >
-                    Products
-                  </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => setSelectedType('service')}
-                  className={`flex-1 py-2 rounded-lg ${
-                    selectedType === 'service' ? 'bg-lime-700' : 'bg-gray-200'
-                  }`}
-                >
-                  <Text
-                    className={`text-center font-semibold ${
-                      selectedType === 'service' ? 'text-white' : 'text-gray-700'
-                    }`}
-                  >
-                    Services
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </>
-          )}
-        </View>
-
-        {/* Content */}
-        <ScrollView className="flex-1">
-          {showCreateForm ? (
-            // Create Form
-            <View className="p-4">
-              <View className="bg-white rounded-2xl p-4 mb-4">
-                <FormInput
-                  label="Item Name"
-                  value={newItem.name}
-                  onChangeText={(text) => {
-                    setNewItem({ ...newItem, name: text });
-                    setErrors({ ...errors, name: '' });
-                  }}
-                  error={errors.name}
-                  placeholder="Enter item name"
-                  required
-                />
-
-                <FormInput
-                  label="Description"
-                  value={newItem.description}
-                  onChangeText={(text) => setNewItem({ ...newItem, description: text })}
-                  placeholder="Item description (optional)"
-                />
-
-                {/* Type Selection */}
-                <View className="mb-4">
-                  <Text className="text-sm font-medium text-gray-700 mb-2">Type *</Text>
-                  <View className="flex-row gap-3">
-                    <TouchableOpacity
-                      onPress={() => setNewItem({ ...newItem, type: 'product' })}
-                      className={`flex-1 py-3 rounded-xl border-2 ${
-                        newItem.type === 'product'
-                          ? 'border-lime-700 bg-lime-50'
-                          : 'border-gray-300 bg-white'
-                      }`}
-                    >
-                      <Text className="text-center font-semibold">Product</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      onPress={() => setNewItem({ ...newItem, type: 'service' })}
-                      className={`flex-1 py-3 rounded-xl border-2 ${
-                        newItem.type === 'service'
-                          ? 'border-lime-700 bg-lime-50'
-                          : 'border-gray-300 bg-white'
-                      }`}
-                    >
-                      <Text className="text-center font-semibold">Service</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-
-                <FormSwitch
-                  label="Enable Sale Information"
-                  value={newItem.enableSaleInfo}
-                  onValueChange={(value) =>
-                    setNewItem({ ...newItem, enableSaleInfo: value })
-                  }
-                />
-
-                {newItem.enableSaleInfo && (
+          <ScrollView style={styles.flex} keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
+            {showCreateForm ? (
+              <View>
+                <View style={styles.formCard}>
                   <FormInput
-                    label="Sale Price"
-                    value={newItem.salePrice}
+                    label="Item Name"
+                    value={newItem.name}
                     onChangeText={(text) => {
-                      setNewItem({ ...newItem, salePrice: text });
-                      setErrors({ ...errors, salePrice: '' });
+                      setNewItem({ ...newItem, name: text });
+                      setErrors({ ...errors, name: '' });
                     }}
-                    error={errors.salePrice}
-                    placeholder="0.00"
-                    keyboardType="decimal-pad"
+                    error={errors.name}
+                    placeholder="Enter item name"
                     required
                   />
-                )}
-
-                <FormInput
-                  label="Unit"
-                  value={newItem.unit}
-                  onChangeText={(text) => setNewItem({ ...newItem, unit: text })}
-                  placeholder="unit, hour, kg, etc."
-                />
-              </View>
-
-              <View className="flex-row gap-3 mb-4">
-                <View className="flex-1">
-                  <ActionButton
-                    title="Cancel"
-                    variant="secondary"
-                    onPress={() => {
-                      setShowCreateForm(false);
-                      setNewItem({
-                        name: '',
-                        description: '',
-                        type: 'product',
-                        categoryId: '',
-                        salePrice: '',
-                        purchasePrice: '',
-                        taxRate: '',
-                        enableSaleInfo: true,
-                        enablePurchaseInfo: false,
-                        unit: 'unit',
-                      });
-                      setErrors({});
-                    }}
+                  <FormInput
+                    label="Description"
+                    value={newItem.description}
+                    onChangeText={(text) => setNewItem({ ...newItem, description: text })}
+                    placeholder="Item description (optional)"
                   />
-                </View>
-                <View className="flex-1">
-                  <ActionButton
-                    title="Create"
-                    variant="primary"
-                    onPress={handleCreateItem}
-                    loading={creating}
+                  <Text style={styles.fieldLabel}>Type</Text>
+                  <View style={styles.typeRow}>
+                    {(['product', 'service'] as const).map((type) => {
+                      const active = newItem.type === type;
+                      return (
+                        <Pressable
+                          key={type}
+                          onPress={() => setNewItem({ ...newItem, type })}
+                          accessibilityRole="button"
+                          accessibilityLabel={type}
+                          accessibilityState={{ selected: active }}
+                          style={[styles.typeButton, active && styles.typeButtonActive]}
+                        >
+                          <Text style={[styles.typeLabel, active && styles.typeLabelActive]}>{type === 'product' ? 'Product' : 'Service'}</Text>
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                  <FormSwitch
+                    label="Enable Sale Information"
+                    value={newItem.enableSaleInfo}
+                    onValueChange={(value) => setNewItem({ ...newItem, enableSaleInfo: value })}
                   />
-                </View>
-              </View>
-            </View>
-          ) : (
-            // Item List
-            <View className="p-4">
-              {/* Create New Button */}
-              <TouchableOpacity
-                onPress={() => setShowCreateForm(true)}
-                className="bg-lime-700 rounded-xl p-4 mb-4 flex-row items-center justify-center"
-                activeOpacity={0.7}
-              >
-                <Text className="text-white text-lg mr-2">+</Text>
-                <Text className="text-white font-semibold text-base">
-                  Create New Item
-                </Text>
-              </TouchableOpacity>
-
-              {loading ? (
-                <View className="py-12 items-center">
-                  <ActivityIndicator size="large" color="#163300" />
-                </View>
-              ) : filteredItems.length === 0 ? (
-                <View className="py-12 items-center">
-                  <Text className="text-gray-500 text-center mb-2">
-                    {searchQuery || selectedType !== 'all'
-                      ? 'No items found'
-                      : 'No items yet'}
-                  </Text>
-                  {!searchQuery && selectedType === 'all' && (
-                    <Text className="text-sm text-gray-400 text-center">
-                      Create your first item to get started
-                    </Text>
-                  )}
-                </View>
-              ) : (
-                <View className="gap-2">
-                  {filteredItems.map((item) => (
-                    <TouchableOpacity
-                      key={item.id}
-                      onPress={() => {
-                        onSelect(item);
-                        onClose();
+                  {newItem.enableSaleInfo ? (
+                    <FormInput
+                      label="Sale Price"
+                      value={newItem.salePrice}
+                      onChangeText={(text) => {
+                        setNewItem({ ...newItem, salePrice: text });
+                        setErrors({ ...errors, salePrice: '' });
                       }}
-                      className={`bg-white rounded-xl p-4 flex-row items-center ${
-                        selectedItemId === item.id
-                          ? 'border-2 border-lime-700'
-                          : 'border border-gray-200'
-                      }`}
-                      activeOpacity={0.7}
-                    >
-                      {/* Icon */}
-                      <View className="bg-gray-100 w-12 h-12 rounded-xl items-center justify-center mr-3">
-                        <Feather name={getItemIcon(item.type)} size={20} color="#163300" />
-                      </View>
-
-                      {/* Info */}
-                      <View className="flex-1">
-                        <Text className="font-semibold text-gray-900 mb-0.5">
-                          {item.name}
-                        </Text>
-                        <View className="flex-row items-center gap-2">
-                          <Text className="text-sm font-bold text-revolut-blue-700">
-                            {formatPrice(item.salePrice)}
-                          </Text>
-                          {item.category && (
-                            <View
-                              className="px-2 py-0.5 rounded"
-                              style={{ backgroundColor: item.category.color || '#E5E7EB' }}
-                            >
-                              <Text className="text-xs font-medium text-gray-700">
-                                {item.category.name}
-                              </Text>
-                            </View>
-                          )}
-                        </View>
-                        {item.description && (
-                          <Text className="text-xs text-gray-400 mt-0.5" numberOfLines={1}>
-                            {item.description}
-                          </Text>
-                        )}
-                      </View>
-
-                      {/* Check mark if selected */}
-                      {selectedItemId === item.id && (
-                        <View className="bg-lime-700 w-6 h-6 rounded-full items-center justify-center">
-                          <Feather name="check" size={12} color="#FFFFFF" />
-                        </View>
-                      )}
-                    </TouchableOpacity>
-                  ))}
+                      error={errors.salePrice}
+                      placeholder="0.00"
+                      keyboardType="decimal-pad"
+                      required
+                    />
+                  ) : null}
+                  <FormInput
+                    label="Unit"
+                    value={newItem.unit}
+                    onChangeText={(text) => setNewItem({ ...newItem, unit: text })}
+                    placeholder="unit, hour, kg, etc."
+                  />
                 </View>
-              )}
-            </View>
-          )}
-        </ScrollView>
+                <View style={styles.formActions}>
+                  <View style={styles.flex}>
+                    <ActionButton
+                      title="Cancel"
+                      variant="secondary"
+                      onPress={() => {
+                        setShowCreateForm(false);
+                        setNewItem({
+                          name: '',
+                          description: '',
+                          type: 'product',
+                          categoryId: '',
+                          salePrice: '',
+                          purchasePrice: '',
+                          taxRate: '',
+                          enableSaleInfo: true,
+                          enablePurchaseInfo: false,
+                          unit: 'unit',
+                        });
+                        setErrors({});
+                      }}
+                    />
+                  </View>
+                  <View style={styles.flex}>
+                    <ActionButton title="Create" variant="primary" onPress={handleCreateItem} loading={creating} />
+                  </View>
+                </View>
+              </View>
+            ) : (
+              <View>
+                <Pressable onPress={() => setShowCreateForm(true)} accessibilityRole="button" accessibilityLabel="Create new item" style={styles.createButton}>
+                  <Text style={styles.createLabel}>Create new item</Text>
+                </Pressable>
+                {loading ? (
+                  <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading items" style={styles.loader} />
+                ) : loadError ? (
+                  <View style={styles.empty}>
+                    <Text style={styles.emptyTitle}>{loadError}</Text>
+                    <Pressable onPress={loadData} accessibilityRole="button" accessibilityLabel="Try again" style={styles.retry}>
+                      <Text style={styles.retryLabel}>Try again</Text>
+                    </Pressable>
+                  </View>
+                ) : filteredItems.length === 0 ? (
+                  <View style={styles.empty}>
+                    <Text style={styles.emptyTitle}>{searchQuery || selectedType !== 'all' ? 'No items found' : 'No items yet'}</Text>
+                    {!searchQuery && selectedType === 'all' ? <Text style={styles.emptyBody}>Create your first item to get started</Text> : null}
+                  </View>
+                ) : (
+                  <View style={styles.list}>
+                    {filteredItems.map((item) => {
+                      const selected = selectedItemId === item.id;
+                      return (
+                        <Pressable
+                          key={item.id}
+                          onPress={() => {
+                            onSelect(item);
+                            onClose();
+                          }}
+                          accessibilityRole="button"
+                          accessibilityLabel={item.name}
+                          accessibilityState={{ selected }}
+                          style={[styles.row, selected && styles.rowSelected]}
+                        >
+                          <View style={styles.itemIcon}>
+                            <Feather name={getItemIcon(item.type)} size={18} color={palette.accentText} />
+                          </View>
+                          <View style={styles.flex}>
+                            <Text style={styles.name}>{item.name}</Text>
+                            <View style={styles.metaRow}>
+                              <Text style={styles.price}>{formatPrice(item.salePrice)}</Text>
+                              {item.category ? (
+                                <View style={styles.category}>
+                                  <View style={[styles.categoryDot, { backgroundColor: item.category.color || palette.accent }]} />
+                                  <Text style={styles.categoryName}>{item.category.name}</Text>
+                                </View>
+                              ) : null}
+                            </View>
+                            {item.description ? <Text style={styles.description} numberOfLines={1}>{item.description}</Text> : null}
+                          </View>
+                          {selected ? (
+                            <View style={styles.check}>
+                              <Feather name="check" size={14} color={palette.accentForeground} />
+                            </View>
+                          ) : null}
+                        </Pressable>
+                      );
+                    })}
+                  </View>
+                )}
+              </View>
+            )}
+          </ScrollView>
+        </KeyboardAvoidingView>
       </SafeAreaView>
     </Modal>
   );
 }
 
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
+  safe: { flex: 1, backgroundColor: palette.background },
+  flex: { flex: 1 },
+  header: {
+    backgroundColor: palette.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: palette.separator,
+    paddingHorizontal: space.lg,
+    paddingTop: space.md,
+    paddingBottom: space.md,
+    gap: space.md,
+  },
+  headerRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  title: { ...type.headline, fontSize: 20 },
+  done: { minHeight: control.touchTarget, minWidth: control.touchTarget, alignItems: 'flex-end', justifyContent: 'center' },
+  doneLabel: { color: palette.accentText, fontWeight: '700', fontSize: 17 },
+  search: {
+    minHeight: control.touchTarget,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: palette.fill,
+    borderRadius: radius.md,
+    paddingHorizontal: space.lg,
+    gap: space.sm,
+  },
+  searchInput: { flex: 1, color: palette.text, fontSize: 16, minHeight: control.touchTarget },
+  filters: { flexDirection: 'row', gap: space.sm },
+  filter: {
+    flex: 1,
+    minHeight: control.touchTarget,
+    borderRadius: radius.pill,
+    backgroundColor: palette.fill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: space.sm,
+  },
+  filterActive: { backgroundColor: palette.accent },
+  filterLabel: { color: palette.text, fontWeight: '700', fontSize: 14 },
+  filterLabelActive: { color: palette.accentForeground },
+  content: { padding: space.lg, paddingBottom: 32 },
+  formCard: { backgroundColor: palette.surface, borderRadius: radius.group, padding: space.lg, marginBottom: space.lg },
+  fieldLabel: { ...type.footnote, color: palette.text, fontWeight: '600', marginBottom: space.sm },
+  typeRow: { flexDirection: 'row', gap: space.md, marginBottom: space.lg },
+  typeButton: {
+    flex: 1,
+    minHeight: control.touchTarget,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: palette.border,
+    backgroundColor: palette.surface,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  typeButtonActive: { borderColor: palette.accent, backgroundColor: palette.accentFill },
+  typeLabel: { color: palette.text, fontWeight: '700' },
+  typeLabelActive: { color: palette.accentText },
+  formActions: { flexDirection: 'row', gap: space.md, marginBottom: space.lg },
+  createButton: {
+    minHeight: control.default,
+    backgroundColor: palette.accent,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: space.lg,
+    paddingHorizontal: space.lg,
+  },
+  createLabel: { color: palette.accentForeground, fontWeight: '700', fontSize: 16 },
+  loader: { marginTop: 48 },
+  empty: { alignItems: 'center', paddingVertical: 48 },
+  emptyTitle: { ...type.callout, textAlign: 'center', marginBottom: space.sm },
+  emptyBody: { ...type.subhead, textAlign: 'center' },
+  retry: { minHeight: control.touchTarget, justifyContent: 'center', paddingHorizontal: space.lg },
+  retryLabel: { color: palette.accentText, fontWeight: '700', fontSize: 16 },
+  list: { gap: space.sm },
+  row: {
+    minHeight: 64,
+    backgroundColor: palette.surface,
+    borderRadius: radius.md,
+    padding: space.lg,
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: palette.border,
+    gap: space.md,
+  },
+  rowSelected: { borderWidth: 2, borderColor: palette.accent },
+  itemIcon: {
+    width: 44,
+    height: 44,
+    borderRadius: radius.sm,
+    backgroundColor: palette.accentFill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  name: { ...type.callout, marginBottom: 2 },
+  metaRow: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
+  price: { color: palette.accentText, fontWeight: '700', fontSize: 14 },
+  category: { flexDirection: 'row', alignItems: 'center', gap: 6 },
+  categoryDot: { width: 8, height: 8, borderRadius: 4 },
+  categoryName: { ...type.footnote },
+  description: { ...type.footnote, marginTop: 2 },
+  check: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: palette.accent,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

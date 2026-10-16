@@ -1,7 +1,7 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
-import { COLORS } from '@/theme/navigation';
 import { control } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface NativeHeaderButtonProps {
   label: string;
@@ -20,9 +20,12 @@ export function NativeHeaderButton({
   destructive = false,
   accessibilityHint,
 }: NativeHeaderButtonProps) {
+  const { colors } = useTheme();
   const color = destructive
-    ? COLORS.danger
-    : COLORS.text;
+    ? colors.danger
+    : primary
+      ? colors.accentText
+      : colors.text;
 
   return (
     <Pressable
