@@ -1076,7 +1076,8 @@ npm run submit:android  # Submit to Google Play
 
 **Configuration**:
 - `mobile/app.config.js` - Expo configuration
-- `mobile/eas.json` - EAS build profiles
+- `mobile/eas.json` - EAS build profiles (`production.autoIncrement`, remote app version source, iOS `ascAppId`)
+- `.github/workflows/ios-testflight.yml` - iOS production EAS build and TestFlight auto-submit when `mobile/**` changes on `main`
 
 **Environment Variables**:
 - Set in EAS secrets or `.env` file
