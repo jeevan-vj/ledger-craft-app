@@ -151,8 +151,9 @@ describe('BankAccountDialog', () => {
     await user.click(accountTypeSelect);
     
     // Check that Credit Card option is available
-    expect(screen.getByText('Credit Card')).toBeInTheDocument();
-    await user.click(screen.getByText('Credit Card'));
+    const creditCardOption = screen.getByRole('option', { name: 'Credit Card' });
+    expect(creditCardOption).toBeInTheDocument();
+    await user.click(creditCardOption);
 
     // Verify the select was clicked (component behavior verified)
     expect(accountTypeSelect).toBeInTheDocument();

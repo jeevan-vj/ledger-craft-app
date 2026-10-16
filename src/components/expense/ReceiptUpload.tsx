@@ -329,6 +329,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                     size="sm"
                     onClick={removeReceipt}
                     disabled={disabled}
+                    aria-label="Remove receipt"
                     className="h-8 w-8 p-0 text-red-500 hover:text-red-700"
                   >
                     <X className="h-4 w-4" />
@@ -379,6 +380,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                       onClick={viewReceipt}
                       className="h-8 px-2"
                       title="View Receipt"
+                      aria-label="View receipt"
                     >
                       <Eye className="h-4 w-4" />
                     </Button>

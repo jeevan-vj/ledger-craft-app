@@ -23,11 +23,16 @@ vi.mock('@/integrations/supabase/client', () => ({
 }));
 
 // Mock business profile service
-vi.mock('@/services/supabaseService', () => ({
-  businessProfileService: {
-    getBusinessProfile: vi.fn(),
-  },
-}));
+vi.mock('@/services/supabaseService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/services/supabaseService')>();
+  return {
+    ...actual,
+    businessProfileService: {
+      ...actual.businessProfileService,
+      getBusinessProfile: vi.fn(),
+    },
+  };
+});
 
 describe('Auth Slice', () => {
   beforeEach(() => {
