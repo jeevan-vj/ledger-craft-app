@@ -15,9 +15,10 @@ import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
 import { shareInvoicePDF } from '@/utils/pdfUtils';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
+import { useTheme } from '@/theme';
 
 interface InvoicePreviewWithTemplatesProps {
   invoice: Invoice;
@@ -34,6 +35,9 @@ export default function InvoicePreviewWithTemplates({
   onClose,
   onCompleteProfile,
 }: InvoicePreviewWithTemplatesProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const [selectedTemplate, setSelectedTemplate] = useState<InvoiceTemplateId>(
     (invoice.templateName as InvoiceTemplateId | undefined) ?? initialTemplate,
@@ -188,7 +192,7 @@ export default function InvoicePreviewWithTemplates({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,

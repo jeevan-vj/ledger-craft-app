@@ -5,7 +5,8 @@ import {
   getMissingProfileFields,
   type ProfileCompletenessInput,
 } from '@/utils/profileCompleteness';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 let dismissedThisSession = false;
 
@@ -18,6 +19,9 @@ export function ProfileCompletenessBanner({
   profile,
   onCompleteProfile,
 }: ProfileCompletenessBannerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [dismissed, setDismissed] = useState(dismissedThisSession);
   const missing = getMissingProfileFields(profile);
 
@@ -52,7 +56,7 @@ export function ProfileCompletenessBanner({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   banner: {
     flexDirection: 'row',
     alignItems: 'flex-start',

@@ -27,16 +27,20 @@ import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusColor, getStatusLabel } from '@/utils/statusUtils';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
+import { useTheme } from '@/theme';
 
 type InvoiceDetailNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
 
 export default function InvoiceDetailScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
@@ -452,7 +456,7 @@ export default function InvoiceDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,

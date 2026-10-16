@@ -8,10 +8,11 @@ import { ModernButton } from '@/components/ui/ModernButton';
 import { ModernInput } from '@/components/ui/ModernInput';
 import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
-import { palette, space, type } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { createBillPaymentDraft } from '@/features/purchases/model/purchaseForms';
 import { localIsoDate } from '@/components/ui/datePickerModel';
+import { useTheme } from '@/theme';
 
 interface Props {
   bill: BillDto;
@@ -24,6 +25,9 @@ interface Props {
 }
 
 export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, onClose, onSubmit }: Props) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const initialDraft = createBillPaymentDraft(bill.balanceDue, localIsoDate(new Date()));
   const [bankAccountId, setBankAccountId] = useState(initialDraft.bankAccountId);
   const [amount, setAmount] = useState(initialDraft.amount);
@@ -96,7 +100,7 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.xxl, paddingBottom: 48 },
   heading: { marginBottom: space.xxl },

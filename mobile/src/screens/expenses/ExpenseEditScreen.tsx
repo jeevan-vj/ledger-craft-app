@@ -26,7 +26,8 @@ import { ReceiptScanner } from '@/components/expense/ReceiptScanner';
 import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
 import { Feather } from '@expo/vector-icons';
-import { palette } from '@/theme/tokens';
+import {  } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type ExpenseEditNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseEdit'>;
 type ExpenseEditRouteProp = RouteProp<AppTabParamList, 'ExpenseEdit'>;
@@ -40,6 +41,9 @@ const PAYMENT_METHODS: { label: string; value: PaymentMethod }[] = [
 ];
 
 export default function ExpenseEditScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<ExpenseEditNavigationProp>();
   const route = useRoute<ExpenseEditRouteProp>();
   const expenseId = route.params?.expenseId;
@@ -653,7 +657,7 @@ export default function ExpenseEditScreen() {
 }
 
 // Reuse styles from ExpenseCreateScreen
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F2F2F7',
@@ -943,4 +947,3 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
 });
-

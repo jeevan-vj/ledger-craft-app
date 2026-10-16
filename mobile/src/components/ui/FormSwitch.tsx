@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Switch, StyleSheet } from 'react-native';
-import { palette, space, type } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface FormSwitchProps {
   label: string;
@@ -10,6 +11,9 @@ interface FormSwitchProps {
 }
 
 export function FormSwitch({ label, value, onValueChange, description }: FormSwitchProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <View style={styles.row}>
       <View style={styles.copy}>
@@ -31,7 +35,7 @@ export function FormSwitch({ label, value, onValueChange, description }: FormSwi
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   row: {
     flexDirection: 'row',
     alignItems: 'center',

@@ -4,7 +4,7 @@ export const darkPalette = {
   background: '#121511', surface: '#1E211D', surfaceRaised: '#2A2D29',
   fill: '#292D28', fillMuted: '#242723', accent: '#9FE870', accentPressed: '#8FDC62',
   accentFill: '#1F3A13', accentForeground: '#163300', accentText: '#9FE870',
-  text: '#F2F5EE', textSecondary: '#A3A89F', textTertiary: '#777D74',
+  text: '#F2F5EE', textSecondary: '#A3A89F', textTertiary: '#858B82',
   separator: 'rgba(242, 245, 238, 0.10)', border: 'rgba(242, 245, 238, 0.12)',
   danger: '#FF6B63', dangerFill: '#3B201F', success: '#9FE870', successFill: '#1F3A13',
   warning: '#FFB84D', warningFill: '#3B2F1B', info: '#7BA7FF', infoFill: '#1E2A40', focus: '#9FE870',
@@ -21,8 +21,6 @@ export const lightPalette = {
 } as const;
 
 export type ThemePalette = typeof darkPalette | typeof lightPalette;
-/** Dark-first compatibility export. New components should consume useTheme(). */
-export const palette = darkPalette;
 
 export const space = { none: 0, xs: 4, sm: 8, md: 12, lg: 16, xl: 20, xxl: 24, screen: 20, section: 32 } as const;
 export const radius = { sm: 12, md: 16, lg: 20, xl: 24, group: 20, well: 24, pill: 999 } as const;
@@ -44,7 +42,6 @@ export function createTypography(colors: ThemePalette) {
   };
 }
 
-export const type = createTypography(palette);
 export const hairline = StyleSheet.hairlineWidth;
 export const groupedShadow = Platform.select({
   ios: { shadowColor: '#000000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.16, shadowRadius: 10 },

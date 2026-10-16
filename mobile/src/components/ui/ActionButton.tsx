@@ -6,7 +6,8 @@ import {
   TouchableOpacityProps,
   StyleSheet,
 } from 'react-native';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ActionButtonProps extends TouchableOpacityProps {
   title: string;
@@ -24,6 +25,9 @@ export function ActionButton({
   style,
   ...props 
 }: ActionButtonProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const variantStyles = {
     primary: styles.primary,
     secondary: styles.secondary,
@@ -74,7 +78,7 @@ export function ActionButton({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   base: {
     borderRadius: radius.pill,
     alignItems: 'center',

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { ModernInput } from '@/components/ui/ModernInput';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface TaxConfigCardProps {
   taxEnabled: boolean;
@@ -27,6 +28,9 @@ export function TaxConfigCard({
   onTaxRateChange,
   formatCurrency,
 }: TaxConfigCardProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [taxOption, setTaxOption] = useState<TaxOption>(
     !taxEnabled ? 'none' : taxRate === 15 ? 'gst' : 'custom'
   );
@@ -128,7 +132,7 @@ export function TaxConfigCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   card: {
     backgroundColor: palette.surface,
     borderRadius: radius.group,

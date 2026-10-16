@@ -11,8 +11,9 @@ import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import type { Invoice } from '@/types/invoice';
 import { STATUS_OPTIONS, getStatusColor, getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
-import { hairline, palette, radius } from '@/theme/tokens';
+import { hairline, radius } from '@/theme/tokens';
 import { IconWell } from '@/components/ui/IconWell';
+import { useTheme } from '@/theme';
 
 interface SwipeableInvoiceCardProps {
   invoice: Invoice;
@@ -42,6 +43,9 @@ export default function SwipeableInvoiceCard({
   isFirst = false,
   isLast = false,
 }: SwipeableInvoiceCardProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const translateX = useSharedValue(0);
   const isSwipedRef = useRef(false);
   const availableStatuses = STATUS_OPTIONS.filter((opt) => opt.value !== invoice.status);
@@ -168,7 +172,7 @@ export default function SwipeableInvoiceCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     position: 'relative',
     backgroundColor: palette.surface,

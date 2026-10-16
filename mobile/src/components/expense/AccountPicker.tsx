@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { Feather } from '@expo/vector-icons';
 import { accountService } from '@/services/accountService';
 import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
-import { palette } from '@/theme/tokens';
+import {  } from '@/theme/tokens';
 import type { Account } from '@/types/expense';
+import { useTheme } from '@/theme';
 
 interface AccountPickerProps {
   visible: boolean;
@@ -23,6 +24,8 @@ const getAccountTypeIcon = (type: string): keyof typeof Feather.glyphMap => {
 };
 
 export function AccountPicker({ visible, onSelect, onClose, selectedAccountId }: AccountPickerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');

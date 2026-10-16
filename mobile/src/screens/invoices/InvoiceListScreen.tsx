@@ -24,12 +24,16 @@ import SwipeableInvoiceCard from '@/components/invoice/SwipeableInvoiceCard';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { palette, space } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { useTheme } from '@/theme';
 
 type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceList'>;
 
 export default function InvoiceListScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceListNavigationProp>();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
@@ -277,7 +281,7 @@ export default function InvoiceListScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,

@@ -32,12 +32,16 @@ import { TaxConfigCard } from '@/components/invoice/TaxConfigCard';
 import { ProgressIndicator } from '@/components/invoice/ProgressIndicator';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { Feather } from '@expo/vector-icons';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type InvoiceCreateNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>;
 type InvoiceEditRouteProp = RouteProp<{ InvoiceEdit: { invoiceId?: string } }, 'InvoiceEdit'>;
 
 export default function InvoiceCreateScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceCreateNavigationProp>();
   const route = useRoute<InvoiceEditRouteProp>();
   
@@ -647,7 +651,7 @@ export default function InvoiceCreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,

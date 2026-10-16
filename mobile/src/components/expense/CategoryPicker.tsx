@@ -2,8 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { expenseCategoryService } from '@/services/expenseCategoryService';
 import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
 import type { ExpenseCategory } from '@/types/expense';
+import { useTheme } from '@/theme';
 
 interface CategoryPickerProps {
   visible: boolean;
@@ -13,6 +14,9 @@ interface CategoryPickerProps {
 }
 
 export function CategoryPicker({ visible, onSelect, onClose, selectedCategoryId }: CategoryPickerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [categories, setCategories] = useState<ExpenseCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,7 +84,7 @@ export function CategoryPicker({ visible, onSelect, onClose, selectedCategoryId 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   colorDot: {
     width: 16,
     height: 16,

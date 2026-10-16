@@ -54,10 +54,10 @@ function AnimatedLoadingScreen() {
   }));
 
   return (
-    <View style={styles.loadingContainer}>
+    <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}>
       <Animated.View style={[styles.logoContainer, animatedStyle]}>
-        <View style={styles.logo}>
-          <Animated.Text style={styles.logoText}>LC</Animated.Text>
+        <View style={[styles.logo, { backgroundColor: theme.colors.accent }]}>
+          <Animated.Text style={[styles.logoText, { color: theme.colors.accentForeground }]}>LC</Animated.Text>
         </View>
       </Animated.View>
       <ActivityIndicator
@@ -137,7 +137,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#121511',
   },
   logoContainer: {
     marginBottom: 32,
@@ -145,7 +144,6 @@ const styles = StyleSheet.create({
   logo: {
     width: 80,
     height: 80,
-    backgroundColor: '#9FE870',
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
@@ -153,7 +151,6 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 28,
     fontWeight: '700',
-    color: '#163300',
   },
   activityIndicator: {
     marginTop: 16,

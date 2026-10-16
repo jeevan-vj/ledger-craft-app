@@ -7,17 +7,19 @@ import { useAuth } from '@/store';
 import type { MoreStackParamList } from '@/navigation/types';
 import { Card, DashedSetupCard, ListRow } from '@/components/ui';
 import { useTheme } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsList'>;
 export default function SettingsScreen() {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const { signOut, user } = useAuth();
   const navigation = useNavigation<NavigationProp>();
   const name = user?.user_metadata?.full_name || 'LedgerCraft member';
   const icon = (name: React.ComponentProps<typeof Feather>['name']) => <Feather name={name} size={18} color={theme.colors.accentText} />;
   const confirmSignOut = () => Alert.alert('Sign out?', 'You can sign back in anytime.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign out', style: 'destructive', onPress: signOut }]);
 
-  return <ScrollView style={{ backgroundColor: theme.colors.background }} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+  return <ScrollView style={{ backgroundColor: theme.colors.background }} contentContainerStyle={[styles.content, { paddingTop: 24 + insets.top }]} showsVerticalScrollIndicator={false}>
     <View style={styles.profile}>
       <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={styles.avatarText}>{name.slice(0, 1).toUpperCase()}</Text></View>
       <Text style={[theme.type.display, styles.name]}>{name}</Text>

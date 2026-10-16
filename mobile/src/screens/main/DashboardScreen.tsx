@@ -11,11 +11,13 @@ import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
 import { Card, CircleIconButton, DashedSetupCard, PillButton } from '@/components/ui';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
 export default function DashboardScreen() {
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<DashboardNavigation>();
   const { user } = useAuth();
   const { width } = useWindowDimensions();
@@ -25,6 +27,7 @@ export default function DashboardScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [summaryPage, setSummaryPage] = useState(0);
   const [tasksDismissed, setTasksDismissed] = useState(false);
+  const [balanceVisible, setBalanceVisible] = useState(true);
 
   const load = useCallback(async () => {
     try { setInvoices(await invoiceService.fetchInvoices()); }
@@ -49,7 +52,7 @@ export default function DashboardScreen() {
 
   return <ScrollView
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={styles.content}
+    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top }]}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
     showsVerticalScrollIndicator={false}
   >
@@ -59,8 +62,8 @@ export default function DashboardScreen() {
     </View>
 
     <View style={styles.balanceRow}>
-      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Total balance</Text><Text style={[theme.type.money, styles.money]}>{formatMoney(totalOutstanding || totalPaid, 'NZD')}</Text></View>
-      <View style={styles.balanceActions}><CircleIconButton icon="eye" label="Show balance" /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
+      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Total balance</Text><Text style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Total balance ${formatMoney(totalOutstanding || totalPaid, 'NZD')}` : 'Total balance hidden'}>{balanceVisible ? formatMoney(totalOutstanding || totalPaid, 'NZD') : '••••••'}</Text></View>
+      <View style={styles.balanceActions}><CircleIconButton icon={balanceVisible ? 'eye-off' : 'eye'} label={balanceVisible ? 'Hide balance' : 'Show balance'} onPress={() => setBalanceVisible((visible) => !visible)} /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
     </View>
 
     <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.actions}>

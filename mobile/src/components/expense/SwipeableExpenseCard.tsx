@@ -10,8 +10,9 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import type { Expense } from '@/types/expense';
-import { hairline, palette, radius } from '@/theme/tokens';
+import { hairline, radius } from '@/theme/tokens';
 import { IconWell } from '@/components/ui/IconWell';
+import { useTheme } from '@/theme';
 
 interface SwipeableExpenseCardProps {
   expense: Expense;
@@ -32,7 +33,7 @@ const SPRING_CONFIG = {
   stiffness: 180,
 };
 
-function getStatusColor(status: string) {
+function getStatusColor(status: string, palette: ReturnType<typeof useTheme>['colors']) {
   switch (status) {
     case 'approved':
       return palette.success;
@@ -67,6 +68,9 @@ export default function SwipeableExpenseCard({
   isFirst = false,
   isLast = false,
 }: SwipeableExpenseCardProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const translateX = useSharedValue(0);
   const isSwipedRef = useRef(false);
 
@@ -139,7 +143,7 @@ export default function SwipeableExpenseCard({
     transform: [{ translateX: translateX.value }],
   }));
 
-  const statusColor = getStatusColor(expense.status);
+  const statusColor = getStatusColor(expense.status, palette);
   const subtitle = [expense.vendorName, formatDate(expense.expenseDate)]
     .filter(Boolean)
     .join(' · ');
@@ -214,7 +218,7 @@ export default function SwipeableExpenseCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     position: 'relative',
     backgroundColor: palette.surface,

@@ -19,7 +19,8 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { ModernInput } from '@/components/ui/ModernInput';
 import type { LineItem } from '@/types/invoice';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface CompactLineItemProps {
   item: LineItem;
@@ -40,6 +41,9 @@ export function CompactLineItem({
   canRemove,
   formatCurrency,
 }: CompactLineItemProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [showEditModal, setShowEditModal] = useState(false);
   const translateX = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -218,7 +222,7 @@ export function CompactLineItem({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     marginBottom: 2,
     position: 'relative',
@@ -416,5 +420,4 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
-
 

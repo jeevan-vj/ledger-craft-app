@@ -24,9 +24,10 @@ import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { purchasesApi, type BillLineInput, type BillWriteRequest } from '@/features/purchases/api/purchasesApi';
 import { isBillDateRangeValid, moveDueDateForward } from '@/features/purchases/model/purchaseForms';
 import type { PurchaseStackParamList } from '@/navigation/types';
-import { control, palette, radius, space, type } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { errorHaptic, successHaptic } from '@/utils/haptics';
+import { useTheme } from '@/theme';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'BillCreate'>;
 type Route = RouteProp<PurchaseStackParamList, 'BillCreate' | 'BillEdit'>;
@@ -39,6 +40,9 @@ const plusDays = (date: string, days: number) => {
 const emptyLine = (): BillLineInput => ({ description: '', quantity: '1', unitPrice: '', taxRate: '15', accountId: null });
 
 export default function BillFormScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const route = useRoute<Route>();
   const billId = route.name === 'BillEdit'
@@ -165,7 +169,7 @@ export default function BillFormScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.lg, paddingBottom: 48 },

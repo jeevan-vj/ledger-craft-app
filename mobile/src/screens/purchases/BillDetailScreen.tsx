@@ -11,14 +11,18 @@ import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type RecordBillPaymentRequest } from '@/features/purchases/api/purchasesApi';
 import type { PurchaseStackParamList } from '@/navigation/types';
-import { palette, space, type } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { errorHaptic, successHaptic } from '@/utils/haptics';
+import { useTheme } from '@/theme';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'BillDetail'>;
 type Route = RouteProp<PurchaseStackParamList, 'BillDetail'>;
 
 export default function BillDetailScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const { params } = useRoute<Route>();
   const queryClient = useQueryClient();
@@ -111,7 +115,7 @@ function formatDate(value: string) {
   return new Date(`${value}T00:00:00`).toLocaleDateString('en-NZ', { dateStyle: 'medium' });
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.lg, paddingBottom: 48 },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.background },

@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
-import { control, palette, radius, space, type } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -11,6 +12,9 @@ interface EmptyStateProps {
 }
 
 export function EmptyState({ icon, title, description, actionLabel, onAction }: EmptyStateProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <View style={styles.wrap}>
       {icon ? <View style={styles.icon}>{icon}</View> : null}
@@ -30,7 +34,7 @@ export function EmptyState({ icon, title, description, actionLabel, onAction }: 
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
     alignItems: 'center',
     justifyContent: 'center',

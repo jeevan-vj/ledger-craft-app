@@ -17,11 +17,15 @@ import { FormInput } from '@/components/ui/FormInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
-import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
 export default function BusinessSettingsScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -517,7 +521,7 @@ export default function BusinessSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
