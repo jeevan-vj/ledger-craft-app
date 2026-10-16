@@ -1,80 +1,44 @@
-import { DefaultTheme, Theme } from '@react-navigation/native';
+import { DarkTheme, DefaultTheme, Theme } from '@react-navigation/native';
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { Platform } from 'react-native';
-import { motion, palette } from '@/theme/tokens';
+import { darkPalette, motion, type ThemePalette } from '@/theme/tokens';
 
 export const COLORS = {
-  accent: palette.accent,
-  accentForeground: palette.accentForeground,
-  background: palette.background,
-  surface: palette.surface,
-  text: palette.text,
-  textSecondary: palette.textSecondary,
-  border: palette.separator,
-  danger: palette.danger,
-  success: palette.success,
-  warning: palette.warning,
+  accent: darkPalette.accent, accentForeground: darkPalette.accentForeground,
+  background: darkPalette.background, surface: darkPalette.surface, text: darkPalette.text,
+  textSecondary: darkPalette.textSecondary, border: darkPalette.separator,
+  danger: darkPalette.danger, success: darkPalette.success, warning: darkPalette.warning,
 } as const;
 
-export const appNavigationTheme: Theme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    primary: COLORS.accent,
-    background: COLORS.background,
-    card: COLORS.background,
-    text: COLORS.text,
-    border: 'transparent',
-    notification: COLORS.danger,
-  },
-};
+export function createNavigationTheme(colors: ThemePalette, isDark: boolean): Theme {
+  const base = isDark ? DarkTheme : DefaultTheme;
+  return { ...base, dark: isDark, colors: { ...base.colors, primary: colors.accent, background: colors.background, card: colors.surface, text: colors.text, border: colors.separator, notification: colors.danger } };
+}
 
-const iosGlassHeader =
-  Platform.OS === 'ios'
-    ? {}
-    : {
-        headerStyle: {
-          backgroundColor: COLORS.background,
-        },
-      };
+export function createHeaderOptions(colors: ThemePalette): NativeStackNavigationOptions {
+  return {
+    headerShown: true, headerShadowVisible: false, headerBackTitle: 'Back',
+    headerTintColor: colors.text, headerStyle: { backgroundColor: colors.background },
+    headerTitleStyle: { fontWeight: '700', color: colors.text },
+    headerLargeTitleStyle: { fontWeight: '800', color: colors.text },
+    contentStyle: { backgroundColor: colors.background }, animation: 'slide_from_right',
+    animationDuration: motion.standard, gestureEnabled: true,
+    fullScreenGestureEnabled: Platform.OS === 'ios',
+  };
+}
 
-export const nativeHeaderOptions: NativeStackNavigationOptions = {
-  headerShown: true,
-  headerShadowVisible: false,
-  headerBackTitle: 'Back',
-  headerTintColor: COLORS.text,
-  headerTitleStyle: {
-    fontWeight: '600',
-    color: COLORS.text,
-  },
-  headerLargeTitleStyle: {
-    fontWeight: '700',
-    color: COLORS.text,
-  },
-  ...iosGlassHeader,
-  contentStyle: {
-    backgroundColor: COLORS.background,
-  },
-  animation: 'slide_from_right',
-  animationDuration: motion.standard,
-  gestureEnabled: true,
-  fullScreenGestureEnabled: Platform.OS === 'ios',
-};
+export function createListHeaderOptions(colors: ThemePalette): NativeStackNavigationOptions {
+  return { ...createHeaderOptions(colors), headerLargeTitle: true };
+}
+export function createFormHeaderOptions(colors: ThemePalette): NativeStackNavigationOptions {
+  return { ...createHeaderOptions(colors), headerLargeTitle: false, presentation: Platform.OS === 'ios' ? 'modal' : 'card', animation: Platform.OS === 'ios' ? 'slide_from_bottom' : 'slide_from_right', gestureDirection: Platform.OS === 'ios' ? 'vertical' : 'horizontal' };
+}
+export function createDetailHeaderOptions(colors: ThemePalette): NativeStackNavigationOptions {
+  return { ...createHeaderOptions(colors), headerLargeTitle: false };
+}
 
-export const listHeaderOptions: NativeStackNavigationOptions = {
-  ...nativeHeaderOptions,
-  headerLargeTitle: true,
-};
-
-export const formHeaderOptions: NativeStackNavigationOptions = {
-  ...nativeHeaderOptions,
-  headerLargeTitle: false,
-  presentation: Platform.OS === 'ios' ? 'modal' : 'card',
-  animation: Platform.OS === 'ios' ? 'slide_from_bottom' : 'slide_from_right',
-  gestureDirection: Platform.OS === 'ios' ? 'vertical' : 'horizontal',
-};
-
-export const detailHeaderOptions: NativeStackNavigationOptions = {
-  ...nativeHeaderOptions,
-  headerLargeTitle: false,
-};
+export const appNavigationTheme = createNavigationTheme(darkPalette, true);
+export const nativeHeaderOptions = createHeaderOptions(darkPalette);
+export const listHeaderOptions = createListHeaderOptions(darkPalette);
+export const formHeaderOptions = createFormHeaderOptions(darkPalette);
+export const detailHeaderOptions = createDetailHeaderOptions(darkPalette);

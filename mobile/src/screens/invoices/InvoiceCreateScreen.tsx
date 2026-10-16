@@ -444,7 +444,7 @@ export default function InvoiceCreateScreen() {
         <ProfileCompletenessBanner
           profile={businessProfile}
           onCompleteProfile={() => {
-            navigation.getParent()?.navigate('Settings' as never);
+            (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
           }}
         />
 
@@ -639,7 +639,7 @@ export default function InvoiceCreateScreen() {
           initialTemplate={templateName}
           onClose={() => setShowPreview(false)}
           onCompleteProfile={() => {
-            navigation.getParent()?.navigate('Settings' as never);
+            (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
           }}
         />
       </Modal>

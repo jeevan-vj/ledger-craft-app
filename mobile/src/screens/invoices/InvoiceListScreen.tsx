@@ -217,13 +217,13 @@ export default function InvoiceListScreen() {
     <View style={styles.container}>
       {Platform.OS === 'android' && invoices.length > 0 && (
         <View style={styles.androidSearch}>
-          <Feather name="search" size={18} color="#64748B" />
+          <Feather name="search" size={18} color={palette.textSecondary} />
           <TextInput
             style={styles.androidSearchInput}
             placeholder="Search invoices"
             value={searchQuery}
             onChangeText={handleSearch}
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={palette.textTertiary}
           />
         </View>
       )}
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 4,
     backgroundColor: palette.fill,
-    borderRadius: 12,
+    borderRadius: 20,
     paddingHorizontal: 12,
     height: 44,
     gap: 8,

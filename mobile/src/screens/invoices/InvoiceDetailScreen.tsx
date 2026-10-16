@@ -366,7 +366,7 @@ export default function InvoiceDetailScreen() {
           <ProfileCompletenessBanner
             profile={businessProfile}
             onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
+              (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         </View>
@@ -427,7 +427,7 @@ export default function InvoiceDetailScreen() {
             initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
+              (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         )}
@@ -490,7 +490,7 @@ const styles = StyleSheet.create({
   },
   amountValue: {
     fontSize: 44,
-    fontWeight: '700',
+    fontWeight: '900',
     color: palette.text,
     letterSpacing: -1.4,
     fontVariant: ['tabular-nums'],
@@ -501,10 +501,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   card: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     borderRadius: radius.group,
     padding: space.lg,
     marginBottom: space.lg,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
   sectionTitle: {
     fontSize: 13,
@@ -598,7 +600,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottomBar: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     paddingHorizontal: space.screen,
     paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,

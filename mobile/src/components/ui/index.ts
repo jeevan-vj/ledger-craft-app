@@ -28,7 +28,11 @@ export { GroupedSection } from './GroupedSection';
 export { ListRow } from './ListRow';
 export { FilterPills } from './FilterPills';
 export { QuickAction } from './QuickAction';
+export { PillButton } from './PillButton';
+export { Card } from './Card';
+export { DashedSetupCard } from './DashedSetupCard';
+export { CircleIconButton } from './CircleIconButton';
+export { FloatingTabBar } from './FloatingTabBar';
 
 // Date/Time Components
 export { SmartDatePicker } from './SmartDatePicker';
-

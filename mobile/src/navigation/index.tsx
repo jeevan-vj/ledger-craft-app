@@ -22,14 +22,15 @@ import { RootStackParamList } from './types';
 import { useAuth, useStore } from '@/store';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import { appNavigationTheme } from '@/theme/navigation';
-import { palette } from '@/theme/tokens';
+import { createNavigationTheme } from '@/theme/navigation';
+import { useTheme } from '@/theme';
 import { rootNavigatorOptions } from '@/utils/navigationAnimations';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 // Animated loading component
 function AnimatedLoadingScreen() {
+  const theme = useTheme();
   const opacity = useSharedValue(0.4);
   const scale = useSharedValue(0.95);
 
@@ -61,7 +62,7 @@ function AnimatedLoadingScreen() {
       </Animated.View>
       <ActivityIndicator
         size="large"
-        color={palette.accentForeground}
+        color={theme.colors.accent}
         style={styles.activityIndicator}
       />
     </View>
@@ -69,6 +70,7 @@ function AnimatedLoadingScreen() {
 }
 
 export default function RootNavigator() {
+  const theme = useTheme();
   const { user, loading, hasCompletedOnboarding, onboardingChecked } = useAuth();
 
   useEffect(() => {
@@ -85,7 +87,7 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer theme={appNavigationTheme}>
+    <NavigationContainer theme={createNavigationTheme(theme.colors, theme.isDark)}>
       <Stack.Navigator
         screenOptions={{
           ...rootNavigatorOptions,
@@ -135,7 +137,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: palette.surface,
+    backgroundColor: '#121511',
   },
   logoContainer: {
     marginBottom: 32,
@@ -143,7 +145,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 80,
     height: 80,
-    backgroundColor: palette.accent,
+    backgroundColor: '#9FE870',
     borderRadius: 28,
     alignItems: 'center',
     justifyContent: 'center',
@@ -151,7 +153,7 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 28,
     fontWeight: '700',
-    color: palette.accentForeground,
+    color: '#163300',
   },
   activityIndicator: {
     marginTop: 16,

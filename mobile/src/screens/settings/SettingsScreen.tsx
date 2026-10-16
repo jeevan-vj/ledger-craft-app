@@ -1,147 +1,54 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet, ScrollView, Alert } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '@/store';
-import { SettingsStackParamList } from '@/navigation/types';
-import { GroupedSection } from '@/components/ui/GroupedSection';
-import { ListRow } from '@/components/ui/ListRow';
-import { palette, space } from '@/theme/tokens';
+import type { MoreStackParamList } from '@/navigation/types';
+import { Card, DashedSetupCard, ListRow } from '@/components/ui';
+import { useTheme } from '@/theme';
 
-type NavigationProp = NativeStackNavigationProp<SettingsStackParamList, 'SettingsList'>;
-
+type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsList'>;
 export default function SettingsScreen() {
+  const theme = useTheme();
   const { signOut, user } = useAuth();
   const navigation = useNavigation<NavigationProp>();
+  const name = user?.user_metadata?.full_name || 'LedgerCraft member';
+  const icon = (name: React.ComponentProps<typeof Feather>['name']) => <Feather name={name} size={18} color={theme.colors.accentText} />;
+  const confirmSignOut = () => Alert.alert('Sign out?', 'You can sign back in anytime.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign out', style: 'destructive', onPress: signOut }]);
 
-  const confirmSignOut = () => {
-    Alert.alert('Sign out?', 'You can sign back in anytime.', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign out', style: 'destructive', onPress: signOut },
-    ]);
-  };
+  return <ScrollView style={{ backgroundColor: theme.colors.background }} contentContainerStyle={styles.content} showsVerticalScrollIndicator={false}>
+    <View style={styles.profile}>
+      <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={styles.avatarText}>{name.slice(0, 1).toUpperCase()}</Text></View>
+      <Text style={[theme.type.display, styles.name]}>{name}</Text>
+      {user?.email ? <Text style={theme.type.subhead}>{user.email}</Text> : null}
+    </View>
 
-  return (
-    <ScrollView
-      style={styles.container}
-      contentInsetAdjustmentBehavior="automatic"
-      contentContainerStyle={styles.content}
-      showsVerticalScrollIndicator={false}
-    >
-      <View style={styles.profile}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>
-            {(user?.user_metadata?.full_name || user?.email || 'L')
-              .slice(0, 1)
-              .toUpperCase()}
-          </Text>
-        </View>
-        <Text style={styles.name}>{user?.user_metadata?.full_name || 'LedgerCraft'}</Text>
-        {user?.email ? <Text style={styles.email}>{user.email}</Text> : null}
-      </View>
+    <Text style={[theme.type.headline, styles.sectionTitle]}>Your account</Text>
+    <Card style={styles.sectionCard}>
+      <ListRow label="Business profile" subtitle="Details, GST and invoice numbering" icon={icon('briefcase')} onPress={() => navigation.navigate('BusinessSettings')} />
+      <View style={[styles.divider, { backgroundColor: theme.colors.separator }]} />
+      <ListRow label="Expenses" subtitle="Track purchases and receipts" icon={icon('credit-card')} onPress={() => navigation.navigate('ExpenseList')} />
+      <View style={[styles.divider, { backgroundColor: theme.colors.separator }]} />
+      <ListRow label="Purchases" subtitle="Vendors, bills and payments" icon={icon('shopping-bag')} onPress={() => navigation.navigate('PurchaseList')} />
+    </Card>
 
-      <GroupedSection title="Business">
-        <ListRow
-          label="Business"
-          subtitle="Profile, GST, and invoice numbering"
-          icon={<Feather name="briefcase" size={15} color={palette.accentForeground} />}
-          onPress={() => navigation.navigate('BusinessSettings')}
-        />
-        <ListRow
-          label="Account"
-          subtitle="Coming soon"
-          icon={<Feather name="user" size={15} color={palette.accentForeground} />}
-          disabled
-        />
-        <ListRow
-          label="Notifications"
-          subtitle="Coming soon"
-          icon={<Feather name="bell" size={15} color={palette.accentForeground} />}
-          disabled
-        />
-      </GroupedSection>
+    <Text style={[theme.type.headline, styles.sectionTitle]}>Settings</Text>
+    <Card style={styles.sectionCard}>
+      <ListRow label="Notifications" subtitle="Choose what needs your attention" icon={icon('bell')} showChevron={false} disabled />
+      <View style={[styles.divider, { backgroundColor: theme.colors.separator }]} />
+      <ListRow label="Security" subtitle="Password and trusted devices" icon={icon('shield')} showChevron={false} disabled />
+    </Card>
+    <DashedSetupCard title="Connect a bank account" description="Automatic transaction matching is not set up yet." icon="link" />
 
-      <GroupedSection>
-        <Pressable
-          onPress={confirmSignOut}
-          accessibilityRole="button"
-          accessibilityLabel="Sign out"
-          style={({ pressed }) => [styles.signOut, pressed && styles.signOutPressed]}
-        >
-          <Text style={styles.signOutText}>Sign out</Text>
-        </Pressable>
-      </GroupedSection>
-
-      <View style={styles.appInfo}>
-        <Text style={styles.appInfoText}>LedgerCraft</Text>
-        <Text style={styles.appInfoText}>Version 1.0.0</Text>
-      </View>
-    </ScrollView>
-  );
+    <Pressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></Pressable>
+    <Text style={[theme.type.caption, styles.version]}>LedgerCraft · Version 1.0.0</Text>
+  </ScrollView>;
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
-  content: {
-    paddingHorizontal: space.screen,
-    paddingTop: 8,
-    paddingBottom: 48,
-  },
-  profile: {
-    alignItems: 'center',
-    marginBottom: 28,
-    marginTop: 8,
-  },
-  avatar: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    backgroundColor: palette.accentFill,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginBottom: 10,
-  },
-  avatarText: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: palette.accentForeground,
-  },
-  name: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: palette.text,
-    letterSpacing: -0.3,
-  },
-  email: {
-    fontSize: 15,
-    color: palette.textSecondary,
-    marginTop: 4,
-  },
-  signOut: {
-    minHeight: 52,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: palette.surface,
-  },
-  signOutPressed: {
-    backgroundColor: palette.fillMuted,
-  },
-  signOutText: {
-    fontSize: 17,
-    fontWeight: '500',
-    color: palette.danger,
-  },
-  appInfo: {
-    alignItems: 'center',
-    paddingTop: 8,
-  },
-  appInfoText: {
-    fontSize: 13,
-    color: palette.textTertiary,
-    marginBottom: 2,
-  },
+  content: { paddingHorizontal: 20, paddingTop: 24, paddingBottom: 48 }, profile: { alignItems: 'center', marginBottom: 36 },
+  avatar: { width: 96, height: 96, borderRadius: 48, alignItems: 'center', justifyContent: 'center', marginBottom: 18 }, avatarText: { fontSize: 36, fontWeight: '900', color: '#163300' },
+  name: { textAlign: 'center', marginBottom: 4 }, sectionTitle: { marginBottom: 12, marginTop: 8 }, sectionCard: { padding: 0, overflow: 'hidden', marginBottom: 28 },
+  divider: { height: StyleSheet.hairlineWidth, marginLeft: 76 }, signOut: { minHeight: 52, borderRadius: 999, borderWidth: 1, alignItems: 'center', justifyContent: 'center', marginTop: 28 }, version: { textAlign: 'center', marginTop: 20 },
 });

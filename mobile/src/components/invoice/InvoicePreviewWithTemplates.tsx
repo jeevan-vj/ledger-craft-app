@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
     minHeight: 76,
     paddingHorizontal: space.screen,
     paddingBottom: space.md,
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -210,7 +210,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
     color: palette.text,
   },
   subtitle: {
