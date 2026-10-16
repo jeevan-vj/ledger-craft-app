@@ -10,10 +10,11 @@ import {
   Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { Feather } from '@expo/vector-icons';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { Invoice } from '@/types/invoice';
@@ -34,7 +35,10 @@ import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
 
-type InvoiceDetailNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>;
+type InvoiceDetailNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
+  NativeBottomTabNavigationProp<MainTabParamList>
+>;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
 
 export default function InvoiceDetailScreen() {
@@ -183,7 +187,7 @@ export default function InvoiceDetailScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+        <ActivityIndicator size="large" color={palette.accent} />
         <Text style={styles.loadingText}>Loading invoice</Text>
       </View>
     );
@@ -370,7 +374,7 @@ export default function InvoiceDetailScreen() {
           <ProfileCompletenessBanner
             profile={businessProfile}
             onCompleteProfile={() => {
-              (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
+              navigation.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         </View>
@@ -401,7 +405,7 @@ export default function InvoiceDetailScreen() {
             style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
           >
             {generatingPdf ? (
-              <ActivityIndicator size="small" color={palette.accentForeground} />
+              <ActivityIndicator size="small" color={palette.accentText} />
             ) : (
               <Text style={styles.secondaryLabel}>Share</Text>
             )}
@@ -431,7 +435,7 @@ export default function InvoiceDetailScreen() {
             initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
-              (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
+              navigation.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         )}
@@ -629,7 +633,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   secondaryLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   statusButton: {
     flexDirection: 'row',

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, LayoutAnimation, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import type { Invoice } from '@/types/invoice';
 import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
 import { Card, CircleIconButton, DashedSetupCard, PillButton } from '@/components/ui';
 import { formatMoney } from '@/utils/money';
+import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -41,6 +42,24 @@ export default function DashboardScreen() {
   const totalPaid = paid.reduce((sum, item) => sum + item.total, 0);
   const totalOutstanding = outstanding.reduce((sum, item) => sum + item.total, 0);
   const overdue = invoices.filter((item) => item.status === 'overdue');
+  const workItems = useMemo(() => {
+    const rank: Record<string, number> = { overdue: 0, draft: 1, sent: 2 };
+    return [...invoices]
+      .filter((invoice) => invoice.status === 'overdue' || invoice.status === 'draft' || invoice.status === 'sent')
+      .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9))
+      .slice(0, 6);
+  }, [invoices]);
+  const statusColor = (status: string) => {
+    if (status === 'overdue') return theme.colors.danger;
+    if (status === 'paid') return theme.colors.success;
+    if (status === 'sent') return theme.colors.accentText;
+    return theme.colors.textSecondary;
+  };
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
+  };
   const name = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
   const firstName = name.split(' ')[0];
 
@@ -95,6 +114,42 @@ export default function DashboardScreen() {
         <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : 'Continue'} onPress={overdue.length ? openInvoices : () => navigation.navigate('More', { screen: 'BusinessSettings' })} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={() => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setTasksDismissed(true); }} /></View>
       </Card>
     </> : <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" />}
+
+    <View style={styles.sectionHead}>
+      <Text style={theme.type.headline}>Needs action</Text>
+      <Pressable onPress={openInvoices} hitSlop={8} accessibilityRole="button" accessibilityLabel="See all invoices">
+        <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>See all</Text>
+      </Pressable>
+    </View>
+    <Card style={styles.invoiceCard}>
+      {workItems.length === 0 ? (
+        <Text style={[theme.type.subhead, styles.emptyInvoices]}>No invoices need action.</Text>
+      ) : workItems.map((invoice, index) => (
+        <Pressable
+          key={invoice.id}
+          onPress={() => navigation.navigate('Invoices', { screen: 'InvoiceDetail', params: { invoiceId: invoice.id } })}
+          accessibilityRole="button"
+          accessibilityLabel={`Invoice ${invoice.invoiceNumber}`}
+          style={({ pressed }) => [
+            styles.invoiceRow,
+            index !== workItems.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator },
+            pressed && { backgroundColor: theme.colors.fillMuted },
+          ]}
+        >
+          <View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}>
+            <Feather name={getStatusIcon(invoice.status)} size={16} color={statusColor(invoice.status)} />
+          </View>
+          <View style={styles.invoiceCopy}>
+            <Text style={theme.type.callout} numberOfLines={1}>{invoice.customer?.name || invoice.invoiceNumber}</Text>
+            <Text style={theme.type.footnote}>{invoice.invoiceNumber} · {formatDate(invoice.date)}</Text>
+          </View>
+          <View style={styles.invoiceAmount}>
+            <Text style={[theme.type.callout, styles.tabular]}>{formatMoney(invoice.total, invoice.currency || 'NZD')}</Text>
+            <Text style={[theme.type.footnote, { color: statusColor(invoice.status) }]}>{getStatusLabel(invoice.status)}</Text>
+          </View>
+        </Pressable>
+      ))}
+    </Card>
   </ScrollView>;
 }
 
@@ -111,4 +166,11 @@ const styles = StyleSheet.create({
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   taskActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, marginTop: 28 },
+  invoiceCard: { padding: 0, overflow: 'hidden' },
+  emptyInvoices: { padding: 16 },
+  invoiceRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
+  invoiceCopy: { flex: 1, minWidth: 0 },
+  invoiceAmount: { alignItems: 'flex-end' },
+  tabular: { fontVariant: ['tabular-nums'] },
 });

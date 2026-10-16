@@ -27,8 +27,8 @@ export default function CustomerListScreen() {
     keyExtractor={(item) => item.id}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
     renderItem={({ item, index }) => <View style={{ borderBottomWidth: index === customers.length - 1 ? 0 : StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator }}><ListRow label={item.name} subtitle={[item.email, item.phone].filter(Boolean).join(' · ') || 'No contact details'} icon={<Text style={{ color: theme.colors.accentText, fontWeight: '800' }}>{item.name.slice(0, 1).toUpperCase()}</Text>} showChevron={false} /></View>}
-    ListHeaderComponent={customers.length ? <Text style={[theme.type.subhead, { marginBottom: 12 }]}>People and businesses you invoice</Text> : null}
-    ListEmptyComponent={<DashedSetupCard icon={error ? 'wifi-off' : 'users'} title={error ? 'Unable to load customers' : 'No customers yet'} description={error || 'Customers you add while creating invoices will appear here.'} />}
+    ListHeaderComponent={customers.length ? <Text style={[theme.type.subhead, { marginBottom: 12 }]}>Customers from your invoices</Text> : null}
+    ListEmptyComponent={<DashedSetupCard icon={error ? 'wifi-off' : 'users'} title={error ? 'Unable to load customers' : 'No customers yet'} description={error || 'This is a list of customers added on invoices. Create an invoice to add one.'} />}
   />;
 }
 

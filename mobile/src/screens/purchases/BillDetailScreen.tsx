@@ -60,7 +60,7 @@ export default function BillDetailScreen() {
     });
   }, [bill.data?.billNumber, bill.data?.lifecycleStatus, navigation, params.billId]);
 
-  if (bill.data === undefined && bill.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accentForeground} /></View>;
+  if (bill.data === undefined && bill.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   if (!bill.data) return <View style={styles.center}><EmptyState title="Couldn’t load this bill" description={bill.error instanceof Error ? bill.error.message : 'Try again.'} actionLabel="Try again" onAction={() => bill.refetch()} /></View>;
   const item = bill.data;
   const mutationError = receive.error ?? voidBill.error;

@@ -292,13 +292,13 @@ export default function BusinessSettingsScreen() {
             />
           ) : (
             <View style={styles.logoPlaceholder}>
-              <Feather name="camera" size={24} color={palette.accentForeground} />
+              <Feather name="camera" size={24} color={palette.accentText} />
               <Text style={styles.logoPlaceholderSubtext}>Tap to upload</Text>
             </View>
           )}
         </TouchableOpacity>
         {imagePickerLoading && (
-          <ActivityIndicator style={styles.logoLoader} color={palette.accentForeground} />
+          <ActivityIndicator style={styles.logoLoader} color={palette.accent} />
         )}
       </View>
 
@@ -442,7 +442,7 @@ export default function BusinessSettingsScreen() {
   const renderAppearanceTab = () => (
     <View style={styles.tabContent}>
       <View style={styles.comingSoonContainer}>
-        <Feather name="sliders" size={32} color={palette.accentForeground} />
+        <Feather name="sliders" size={32} color={palette.accentText} />
         <Text style={styles.comingSoonTitle}>Theme Customization</Text>
         <Text style={styles.comingSoonText}>
           Custom theme selection coming soon! You'll be able to personalize your brand colors and appearance.
@@ -542,14 +542,14 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: palette.accentForeground,
+    borderBottomColor: palette.accent,
   },
   tabText: {
     ...type.subhead,
     fontWeight: '600',
   },
   tabTextActive: {
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   scrollView: {
     flex: 1,

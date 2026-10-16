@@ -65,7 +65,7 @@ export default function PurchaseListScreen() {
   }, [search, vendors.data]);
 
   if (activeQuery.data === undefined && activeQuery.isLoading) {
-    return <View style={styles.center}><ActivityIndicator size="large" color={palette.accentForeground} /></View>;
+    return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   }
 
   const error = activeQuery.error instanceof Error ? activeQuery.error.message : null;
@@ -98,7 +98,7 @@ export default function PurchaseListScreen() {
         keyExtractor={(item) => item.id}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}
-        refreshControl={<RefreshControl refreshing={activeQuery.isRefetching} onRefresh={() => activeQuery.refetch()} tintColor={palette.accentForeground} />}
+        refreshControl={<RefreshControl refreshing={activeQuery.isRefetching} onRefresh={() => activeQuery.refetch()} tintColor={palette.accent} colors={[palette.accent]} />}
         renderItem={({ item, index }) => mode === 'bills' ? (
           <BillRow
             bill={item as BillDto}
@@ -192,7 +192,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   pressed: { backgroundColor: palette.fillMuted },
   iconWell: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   vendorAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: palette.accentFill, alignItems: 'center', justifyContent: 'center' },
-  vendorInitial: { ...type.headline, color: palette.accentForeground },
+  vendorInitial: { ...type.headline, color: palette.accentText },
   rowCopy: { flex: 1, minWidth: 0 },
   rowTitle: { ...type.callout, color: palette.text, fontWeight: '600' },
   rowSubtitle: { ...type.footnote, marginTop: 2 },

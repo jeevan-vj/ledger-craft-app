@@ -181,7 +181,7 @@ export default function InvoicePreviewWithTemplates({
                 accessibilityLabel="Loading invoice preview"
                 accessibilityLiveRegion="polite"
               >
-                <ActivityIndicator size="large" color={palette.accentForeground} />
+                <ActivityIndicator size="large" color={palette.accent} />
                 <Text style={styles.loadingText}>Loading preview</Text>
               </View>
             ) : null}

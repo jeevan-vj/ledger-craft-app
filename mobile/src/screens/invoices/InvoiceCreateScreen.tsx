@@ -11,10 +11,11 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import * as Haptics from 'expo-haptics';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import type { LineItem, Invoice, Customer } from '@/types/invoice';
 import { ModernInput } from '@/components/ui/ModernInput';
@@ -35,7 +36,10 @@ import { Feather } from '@expo/vector-icons';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
-type InvoiceCreateNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>;
+type InvoiceCreateNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>,
+  NativeBottomTabNavigationProp<MainTabParamList>
+>;
 type InvoiceEditRouteProp = RouteProp<{ InvoiceEdit: { invoiceId?: string } }, 'InvoiceEdit'>;
 
 export default function InvoiceCreateScreen() {
@@ -448,7 +452,7 @@ export default function InvoiceCreateScreen() {
         <ProfileCompletenessBanner
           profile={businessProfile}
           onCompleteProfile={() => {
-            (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
+            navigation.navigate('More', { screen: 'BusinessSettings' });
           }}
         />
 
@@ -643,7 +647,7 @@ export default function InvoiceCreateScreen() {
           initialTemplate={templateName}
           onClose={() => setShowPreview(false)}
           onCompleteProfile={() => {
-            (navigation.getParent() as any)?.navigate('More', { screen: 'BusinessSettings' });
+            navigation.navigate('More', { screen: 'BusinessSettings' });
           }}
         />
       </Modal>

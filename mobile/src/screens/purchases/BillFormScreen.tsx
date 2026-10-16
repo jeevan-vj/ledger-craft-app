@@ -99,7 +99,7 @@ export default function BillFormScreen() {
 
   const updateLine = (index: number, patch: Partial<BillLineInput>) => setForm((current) => ({ ...current, lines: current.lines.map((line, i) => i === index ? { ...line, ...patch } : line) }));
 
-  if (billId && existing.data === undefined && existing.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accentForeground} /></View>;
+  if (billId && existing.data === undefined && existing.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   if (billId && existing.data === undefined && existing.isError) {
     return (
       <View style={styles.center}>
@@ -127,7 +127,7 @@ export default function BillFormScreen() {
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionTitle}>Line items</Text>
           <Pressable onPress={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })} accessibilityRole="button" style={styles.addButton}>
-            <Feather name="plus" size={17} color={palette.accentForeground} /><Text style={styles.addLabel}>Add line</Text>
+            <Feather name="plus" size={17} color={palette.accentText} /><Text style={styles.addLabel}>Add line</Text>
           </Pressable>
         </View>
         {form.lines.map((line, index) => {
@@ -176,7 +176,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   sectionHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: space.sm, marginBottom: space.md },
   sectionTitle: { ...type.headline },
   addButton: { minHeight: control.touchTarget, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: palette.accentFill },
-  addLabel: { ...type.subhead, color: palette.accentForeground, fontWeight: '600' },
+  addLabel: { ...type.subhead, color: palette.accentText, fontWeight: '600' },
   iconButton: { minWidth: control.touchTarget, minHeight: control.touchTarget, alignItems: 'center', justifyContent: 'center' },
   lineCard: { backgroundColor: palette.surface, borderRadius: radius.group, padding: space.lg, marginBottom: space.lg },
   lineHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },

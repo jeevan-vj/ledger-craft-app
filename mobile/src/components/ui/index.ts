@@ -32,7 +32,6 @@ export { PillButton } from './PillButton';
 export { Card } from './Card';
 export { DashedSetupCard } from './DashedSetupCard';
 export { CircleIconButton } from './CircleIconButton';
-export { FloatingTabBar } from './FloatingTabBar';
 
 // Date/Time Components
 export { SmartDatePicker } from './SmartDatePicker';
