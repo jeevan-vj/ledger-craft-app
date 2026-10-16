@@ -11,8 +11,9 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
 import { dateForPreset, localIsoDate, parseLocalDate } from './datePickerModel';
+import { useTheme } from '@/theme';
 
 interface SmartDatePickerProps {
   label: string;
@@ -43,6 +44,9 @@ export function SmartDatePicker({
   presetBaseDate,
   showPresets = true,
 }: SmartDatePickerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [showModal, setShowModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [tempDate, setTempDate] = useState(parseLocalDate(value));
@@ -215,7 +219,7 @@ export function SmartDatePicker({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     marginBottom: 16,
   },
@@ -337,4 +341,3 @@ const styles = StyleSheet.create({
     color: '#ffffff',
   },
 });
-

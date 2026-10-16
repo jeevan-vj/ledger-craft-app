@@ -21,7 +21,7 @@ These current files supersede legacy blue-mobile, glassmorphism, emoji, and Supa
 
 - Use React Native primitives only. Never introduce HTML elements into mobile screens.
 - Use `palette`, `space`, `radius`, `control`, `motion`, and typography tokens instead of hard-coded colors, spacing, radii, or durations.
-- Lime `#9FE870` is the primary action surface and forest `#163300` is its text. Never put white text on lime.
+- Lime `#9FE870` is the primary action surface and forest `#163300` is its text. Never put white text on lime. `accentForeground` is only for ink on lime. Spinners, labels, and icons on dark surfaces use `accent`, `accentText`, or `text` from `useTheme()`.
 - Reuse `ModernButton`, `ModernInput`, `GroupedSection`, `ListRow`, `IconWell`, `QuickAction`, `EmptyState`, and the compatibility `ActionButton` / `FormInput` primitives when their intent matches.
 - Preserve native navigation: iOS large titles, system back gestures, native modal presentation, safe areas, and Liquid Glass-compatible bars. Do not add an opaque `tabBarStyle` tint.
 - Use the grouped canvas and white list surfaces. Prefer native grouped rows and whitespace over floating web-style cards; never nest cards.

@@ -20,12 +20,16 @@ import { FilterPills } from '@/components/ui/FilterPills';
 import { expenseService } from '@/services/expenseService';
 import type { Expense } from '@/types/expense';
 import SwipeableExpenseCard from '@/components/expense/SwipeableExpenseCard';
-import { palette, space } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { useTheme } from '@/theme';
 
 type ExpenseListNavigationProp = NativeStackNavigationProp<ExpenseStackParamList, 'ExpenseList'>;
 
 export default function ExpenseListScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<ExpenseListNavigationProp>();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
@@ -182,7 +186,7 @@ export default function ExpenseListScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+        <ActivityIndicator size="large" color={palette.accent} />
         <Text style={styles.loadingText}>Loading expenses...</Text>
       </View>
     );
@@ -232,7 +236,7 @@ export default function ExpenseListScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -290,4 +294,3 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
-

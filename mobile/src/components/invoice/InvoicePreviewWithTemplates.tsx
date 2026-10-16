@@ -15,9 +15,10 @@ import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
 import { shareInvoicePDF } from '@/utils/pdfUtils';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
+import { useTheme } from '@/theme';
 
 interface InvoicePreviewWithTemplatesProps {
   invoice: Invoice;
@@ -34,6 +35,9 @@ export default function InvoicePreviewWithTemplates({
   onClose,
   onCompleteProfile,
 }: InvoicePreviewWithTemplatesProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const [selectedTemplate, setSelectedTemplate] = useState<InvoiceTemplateId>(
     (invoice.templateName as InvoiceTemplateId | undefined) ?? initialTemplate,
@@ -177,7 +181,7 @@ export default function InvoicePreviewWithTemplates({
                 accessibilityLabel="Loading invoice preview"
                 accessibilityLiveRegion="polite"
               >
-                <ActivityIndicator size="large" color={palette.accentForeground} />
+                <ActivityIndicator size="large" color={palette.accent} />
                 <Text style={styles.loadingText}>Loading preview</Text>
               </View>
             ) : null}
@@ -188,7 +192,7 @@ export default function InvoicePreviewWithTemplates({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -197,7 +201,7 @@ const styles = StyleSheet.create({
     minHeight: 76,
     paddingHorizontal: space.screen,
     paddingBottom: space.md,
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -210,7 +214,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '700',
+    fontWeight: '800',
     color: palette.text,
   },
   subtitle: {

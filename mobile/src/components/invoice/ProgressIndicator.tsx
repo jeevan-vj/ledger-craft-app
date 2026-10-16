@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { palette, space } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ProgressIndicatorProps {
   steps: {
@@ -10,6 +11,9 @@ interface ProgressIndicatorProps {
 }
 
 export function ProgressIndicator({ steps }: ProgressIndicatorProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const completedCount = steps.filter((s) => s.completed).length;
   const current = steps.find((s) => !s.completed)?.label ?? steps[steps.length - 1]?.label;
   const progress = steps.length === 0 ? 0 : completedCount / steps.length;
@@ -29,7 +33,7 @@ export function ProgressIndicator({ steps }: ProgressIndicatorProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     marginBottom: space.lg,
   },

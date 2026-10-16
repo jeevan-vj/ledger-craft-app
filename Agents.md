@@ -1,5 +1,14 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
+`codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
+pill/card/list/setup/icon primitives, and Home / Invoices / Customers / More
+native tabs. Home, invoice chrome, customer browsing, and profile/settings use
+the new visual language; Expenses and Purchases remain reachable from More.
+The native tab implementation is intentionally retained, so its bar is styled
+dark with lime selection rather than replaced by a custom floating tab bar.
+This work is not deployed and has not had simulator/device visual QA.
+
 **GST return workflow (deployed, 2026-10-03):** Web GST returns now
 persist the calculated IRD/reconciliation snapshot through Hono/SQLite, use a
 dedicated draft-to-filed action with the myIR confirmation reference, and export

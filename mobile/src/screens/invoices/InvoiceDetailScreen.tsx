@@ -10,10 +10,11 @@ import {
   Modal,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { Feather } from '@expo/vector-icons';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { Invoice } from '@/types/invoice';
@@ -27,16 +28,23 @@ import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusColor, getStatusLabel } from '@/utils/statusUtils';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
+import { useTheme } from '@/theme';
 
-type InvoiceDetailNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>;
+type InvoiceDetailNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
+  NativeBottomTabNavigationProp<MainTabParamList>
+>;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
 
 export default function InvoiceDetailScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
@@ -179,7 +187,7 @@ export default function InvoiceDetailScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+        <ActivityIndicator size="large" color={palette.accent} />
         <Text style={styles.loadingText}>Loading invoice</Text>
       </View>
     );
@@ -366,7 +374,7 @@ export default function InvoiceDetailScreen() {
           <ProfileCompletenessBanner
             profile={businessProfile}
             onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
+              navigation.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         </View>
@@ -397,7 +405,7 @@ export default function InvoiceDetailScreen() {
             style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
           >
             {generatingPdf ? (
-              <ActivityIndicator size="small" color={palette.accentForeground} />
+              <ActivityIndicator size="small" color={palette.accentText} />
             ) : (
               <Text style={styles.secondaryLabel}>Share</Text>
             )}
@@ -427,7 +435,7 @@ export default function InvoiceDetailScreen() {
             initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
+              navigation.navigate('More', { screen: 'BusinessSettings' });
             }}
           />
         )}
@@ -452,7 +460,7 @@ export default function InvoiceDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -490,7 +498,7 @@ const styles = StyleSheet.create({
   },
   amountValue: {
     fontSize: 44,
-    fontWeight: '700',
+    fontWeight: '900',
     color: palette.text,
     letterSpacing: -1.4,
     fontVariant: ['tabular-nums'],
@@ -501,10 +509,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   card: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     borderRadius: radius.group,
     padding: space.lg,
     marginBottom: space.lg,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
   sectionTitle: {
     fontSize: 13,
@@ -598,7 +608,7 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottomBar: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     paddingHorizontal: space.screen,
     paddingTop: 12,
     borderTopWidth: StyleSheet.hairlineWidth,
@@ -623,7 +633,7 @@ const styles = StyleSheet.create({
   secondaryLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   statusButton: {
     flexDirection: 'row',

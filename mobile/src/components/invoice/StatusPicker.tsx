@@ -12,7 +12,8 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { STATUS_OPTIONS } from '@/utils/statusUtils';
-import { hairline, palette, radius } from '@/theme/tokens';
+import { hairline, radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface StatusPickerProps {
   visible: boolean;
@@ -29,6 +30,9 @@ export default function StatusPicker({
   onSelect,
   onClose,
 }: StatusPickerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -169,7 +173,7 @@ export default function StatusPicker({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -267,4 +271,3 @@ const styles = StyleSheet.create({
     color: palette.text,
   },
 });
-

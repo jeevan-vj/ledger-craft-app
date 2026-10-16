@@ -17,11 +17,15 @@ import { FormInput } from '@/components/ui/FormInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
-import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
 export default function BusinessSettingsScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -288,13 +292,13 @@ export default function BusinessSettingsScreen() {
             />
           ) : (
             <View style={styles.logoPlaceholder}>
-              <Feather name="camera" size={24} color={palette.accentForeground} />
+              <Feather name="camera" size={24} color={palette.accentText} />
               <Text style={styles.logoPlaceholderSubtext}>Tap to upload</Text>
             </View>
           )}
         </TouchableOpacity>
         {imagePickerLoading && (
-          <ActivityIndicator style={styles.logoLoader} color={palette.accentForeground} />
+          <ActivityIndicator style={styles.logoLoader} color={palette.accent} />
         )}
       </View>
 
@@ -438,7 +442,7 @@ export default function BusinessSettingsScreen() {
   const renderAppearanceTab = () => (
     <View style={styles.tabContent}>
       <View style={styles.comingSoonContainer}>
-        <Feather name="sliders" size={32} color={palette.accentForeground} />
+        <Feather name="sliders" size={32} color={palette.accentText} />
         <Text style={styles.comingSoonTitle}>Theme Customization</Text>
         <Text style={styles.comingSoonText}>
           Custom theme selection coming soon! You'll be able to personalize your brand colors and appearance.
@@ -517,7 +521,7 @@ export default function BusinessSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -538,14 +542,14 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: palette.accentForeground,
+    borderBottomColor: palette.accent,
   },
   tabText: {
     ...type.subhead,
     fontWeight: '600',
   },
   tabTextActive: {
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   scrollView: {
     flex: 1,

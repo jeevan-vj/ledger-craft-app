@@ -16,11 +16,15 @@ import { AuthStackParamList } from '@/navigation/types';
 import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { authErrorMessage } from '@/features/auth/api/authApi';
-import { palette, radius, space, type } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type SignupScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
 export default function SignupScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<SignupScreenNavigationProp>();
   const { signUp } = useAuth();
   const [email, setEmail] = useState('');
@@ -152,7 +156,7 @@ export default function SignupScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: palette.surface,

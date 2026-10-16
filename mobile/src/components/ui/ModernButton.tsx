@@ -14,7 +14,8 @@ import Animated, {
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { SPRING_CONFIG, SCALE, OPACITY } from '@/utils/animations';
 import { lightImpactHaptic } from '@/utils/haptics';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ModernButtonProps {
   onPress: () => void;
@@ -41,6 +42,9 @@ export function ModernButton({
   iconPosition = 'left',
   style,
 }: ModernButtonProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const isDisabled = disabled || loading;
   const pressed = useSharedValue(false);
 
@@ -132,7 +136,7 @@ export function ModernButton({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   button: {
     borderRadius: radius.pill,
     overflow: 'hidden',

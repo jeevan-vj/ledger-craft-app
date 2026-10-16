@@ -1,5 +1,13 @@
 # LedgerCraft target architecture
 
+**Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
+`codex/mobile-wise-ui` uses a system-aware dark-first lime theme and Home /
+Invoices / Customers / More native tabs. Shared pill, card, list-row, setup-card
+and circular-icon primitives now drive the redesigned Home, customer, invoice
+chrome, and profile/settings surfaces. Expenses and Purchases remain available
+under More. The native tab bar is preserved and styled within its supported API;
+this branch is not deployed and visual device QA remains pending.
+
 **GST return workflow (deployed, 2026-10-03):** The GST wizard now
 stores its calculated IRD and reconciliation snapshot in the existing
 `tax_returns.return_data` column. Filing is a dedicated, atomic draft-to-

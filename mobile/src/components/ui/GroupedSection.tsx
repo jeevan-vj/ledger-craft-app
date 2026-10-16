@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { hairline, palette, radius, space, type } from '@/theme/tokens';
+import { hairline, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface GroupedSectionProps {
   title?: string;
@@ -10,6 +11,9 @@ interface GroupedSectionProps {
 }
 
 export function GroupedSection({ title, footer, children, style }: GroupedSectionProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const items = React.Children.toArray(children).filter(Boolean);
 
   return (
@@ -28,7 +32,7 @@ export function GroupedSection({ title, footer, children, style }: GroupedSectio
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
     marginBottom: space.xl,
   },
