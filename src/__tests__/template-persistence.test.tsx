@@ -1,11 +1,13 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import InvoiceForm from '@/components/invoice/InvoiceForm';
 import InvoiceViewPage from '@/pages/InvoiceViewPage';
 import PublicInvoice from '@/pages/PublicInvoice';
 import { Invoice, Customer, BusinessProfile } from '@/types/index';
+import { publicInvoiceService } from '@/services/supabaseService';
 
 // Mock all the dependencies
 const mockAppContext = {
@@ -36,7 +38,7 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useParams: () => ({ id: 'test-invoice-id' }),
+    useParams: () => ({ id: 'test-invoice-id', invoiceId: 'test-invoice-id' }),
     useNavigate: () => vi.fn(),
     useBlocker: () => ({ state: 'unblocked' }),
   };
@@ -54,10 +56,24 @@ vi.mock('@/utils/pdfUtils', () => ({
   generateInvoicePdf: vi.fn(),
 }));
 
-vi.mock('@/services/supabaseService', () => ({
-  invoiceService: {
-    getInvoice: vi.fn(),
-  },
+vi.mock('@/services/supabaseService', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/services/supabaseService')>();
+  return {
+    ...actual,
+    invoiceService: {
+      ...actual.invoiceService,
+      getInvoice: vi.fn(),
+    },
+  };
+});
+
+vi.mock('@/hooks/useAppData', () => ({
+  useAppData: () => ({
+    units: ['each', 'kg', 'g'],
+    itemCategories: [],
+    invoices: mockAppContext.invoices,
+    isLoadingInvoices: mockAppContext.isLoadingInvoices,
+  }),
 }));
 
 // Mock UI components
@@ -77,8 +93,8 @@ vi.mock('@/components/ui/tabs', () => ({
   TabsContent: ({ children, value }: { children: React.ReactNode; value: string }) => 
     <div data-testid={`tab-content-${value}`}>{children}</div>,
   TabsList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  TabsTrigger: ({ children, value }: { children: React.ReactNode; value: string }) => 
-    <button data-testid={`tab-trigger-${value}`}>{children}</button>,
+  TabsTrigger: ({ children, value, ...props }: { children: React.ReactNode; value: string }) => 
+    <button data-testid={`tab-trigger-${value}`} {...props}>{children}</button>,
 }));
 
 vi.mock('@/components/invoice/preview/InvoicePreview', () => ({
@@ -171,8 +187,27 @@ const createMockInvoice = (templateName?: string): Invoice => ({
   updatedAt: new Date().toISOString(),
 });
 
+function openInvoicePreview() {
+  fireEvent.click(screen.getByTestId('tab-trigger-preview'));
+}
+
+async function renderPublicInvoice(invoice: Invoice) {
+  vi.spyOn(publicInvoiceService, 'getPublicInvoice').mockResolvedValue({
+    invoice,
+    businessProfile: mockBusinessProfile,
+  });
+  render(
+    <Wrapper>
+      <PublicInvoice />
+    </Wrapper>
+  );
+  return screen.findByTestId('invoice-preview');
+}
+
 const Wrapper = ({ children }: { children: React.ReactNode }) => (
-  <BrowserRouter>{children}</BrowserRouter>
+  <BrowserRouter>
+    <TooltipProvider>{children}</TooltipProvider>
+  </BrowserRouter>
 );
 
 describe('Template Persistence Tests', () => {
@@ -181,7 +216,7 @@ describe('Template Persistence Tests', () => {
   });
 
   describe('InvoiceForm Template Initialization', () => {
-    it('should default to classic template in create mode', () => {
+    it('should default to classic template in create mode', async () => {
       const props = {
         mode: 'create' as const,
         customers: mockCustomers,
@@ -201,11 +236,12 @@ describe('Template Persistence Tests', () => {
         </Wrapper>
       );
 
-      const templateSelector = screen.getByTestId('template-selector');
+      openInvoicePreview();
+      const templateSelector = await screen.findByTestId('template-selector');
       expect(templateSelector).toHaveAttribute('data-selected', 'classic');
     });
 
-    it('should use saved template in edit mode - modern template', () => {
+    it('should use saved template in edit mode - modern template', async () => {
       const invoiceWithModernTemplate = createMockInvoice('modern');
       
       const props = {
@@ -226,12 +262,13 @@ describe('Template Persistence Tests', () => {
         </Wrapper>
       );
 
-      const templateSelector = screen.getByTestId('template-selector');
+      openInvoicePreview();
+      const templateSelector = await screen.findByTestId('template-selector');
       expect(templateSelector).toHaveAttribute('data-selected', 'modern');
       expect(templateSelector).toHaveTextContent('Current: modern');
     });
 
-    it('should use saved template in edit mode - corporate template', () => {
+    it('should use saved template in edit mode - corporate template', async () => {
       const invoiceWithCorporateTemplate = createMockInvoice('corporate');
       
       const props = {
@@ -252,12 +289,13 @@ describe('Template Persistence Tests', () => {
         </Wrapper>
       );
 
-      const templateSelector = screen.getByTestId('template-selector');
+      openInvoicePreview();
+      const templateSelector = await screen.findByTestId('template-selector');
       expect(templateSelector).toHaveAttribute('data-selected', 'corporate');
       expect(templateSelector).toHaveTextContent('Current: corporate');
     });
 
-    it('should default to classic when templateName is undefined in edit mode', () => {
+    it('should default to classic when templateName is undefined in edit mode', async () => {
       const invoiceWithoutTemplate = createMockInvoice(undefined);
       
       const props = {
@@ -278,7 +316,8 @@ describe('Template Persistence Tests', () => {
         </Wrapper>
       );
 
-      const templateSelector = screen.getByTestId('template-selector');
+      openInvoicePreview();
+      const templateSelector = await screen.findByTestId('template-selector');
       expect(templateSelector).toHaveAttribute('data-selected', 'classic');
     });
   });
@@ -362,53 +401,23 @@ describe('Template Persistence Tests', () => {
   });
 
   describe('PublicInvoice Template Usage', () => {
-    it('should use saved template for public invoice - modern template', () => {
+    it('should use saved template for public invoice - modern template', async () => {
       const invoiceWithModernTemplate = createMockInvoice('modern');
-
-      render(
-        <Wrapper>
-          <PublicInvoice 
-            invoice={invoiceWithModernTemplate} 
-            businessProfile={mockBusinessProfile}
-          />
-        </Wrapper>
-      );
-
-      const invoicePreview = screen.getByTestId('invoice-preview');
+      const invoicePreview = await renderPublicInvoice(invoiceWithModernTemplate);
       expect(invoicePreview).toHaveAttribute('data-template', 'modern');
       expect(invoicePreview).toHaveTextContent('Preview using template: modern');
     });
 
-    it('should use saved template for public invoice - corporate template', () => {
+    it('should use saved template for public invoice - corporate template', async () => {
       const invoiceWithCorporateTemplate = createMockInvoice('corporate');
-
-      render(
-        <Wrapper>
-          <PublicInvoice 
-            invoice={invoiceWithCorporateTemplate} 
-            businessProfile={mockBusinessProfile}
-          />
-        </Wrapper>
-      );
-
-      const invoicePreview = screen.getByTestId('invoice-preview');
+      const invoicePreview = await renderPublicInvoice(invoiceWithCorporateTemplate);
       expect(invoicePreview).toHaveAttribute('data-template', 'corporate');
       expect(invoicePreview).toHaveTextContent('Preview using template: corporate');
     });
 
-    it('should default to classic when templateName is undefined', () => {
+    it('should default to classic when templateName is undefined', async () => {
       const invoiceWithoutTemplate = createMockInvoice(undefined);
-
-      render(
-        <Wrapper>
-          <PublicInvoice 
-            invoice={invoiceWithoutTemplate} 
-            businessProfile={mockBusinessProfile}
-          />
-        </Wrapper>
-      );
-
-      const invoicePreview = screen.getByTestId('invoice-preview');
+      const invoicePreview = await renderPublicInvoice(invoiceWithoutTemplate);
       expect(invoicePreview).toHaveAttribute('data-template', 'classic');
       expect(invoicePreview).toHaveTextContent('Preview using template: classic');
     });
@@ -433,22 +442,13 @@ describe('Template Persistence Tests', () => {
       expect(invoicePreview).toHaveAttribute('data-template', 'classic');
     });
 
-    it('should handle invalid templateName gracefully', () => {
+    it('should handle invalid templateName gracefully', async () => {
       const invoiceWithInvalidTemplate = {
         ...createMockInvoice(),
         templateName: 'invalid-template' as any,
       };
 
-      render(
-        <Wrapper>
-          <PublicInvoice 
-            invoice={invoiceWithInvalidTemplate} 
-            businessProfile={mockBusinessProfile}
-          />
-        </Wrapper>
-      );
-
-      const invoicePreview = screen.getByTestId('invoice-preview');
+      const invoicePreview = await renderPublicInvoice(invoiceWithInvalidTemplate);
       expect(invoicePreview).toHaveAttribute('data-template', 'invalid-template');
     });
   });

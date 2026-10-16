@@ -3,12 +3,17 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import ExpenseCategories from '../ExpenseCategories';
-import { useAppContext } from '@/context/AppContext';
-import { mockExpenseCategories } from '@/test/fixtures/expenseFixtures';
+import { mockExpenseCategory } from '@/test/fixtures/expenseFixtures';
 
-// Mock the context
-vi.mock('@/context/AppContext', () => ({
-  useAppContext: vi.fn(),
+const mockExpenseCategories = [
+  mockExpenseCategory,
+  { ...mockExpenseCategory, id: 'cat-2', name: 'Travel' },
+];
+
+const { mockUseAppData } = vi.hoisted(() => ({ mockUseAppData: vi.fn() }));
+
+vi.mock('@/hooks/useAppData', () => ({
+  useAppData: () => mockUseAppData(),
 }));
 
 // Mock the toast hook
@@ -61,7 +66,7 @@ const mockContextValue = {
 describe('ExpenseCategories Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useAppContext).mockReturnValue({
+    mockUseAppData.mockReturnValue({
       ...mockContextValue,
       expenseCategories: mockExpenseCategories,
       isLoadingExpenseCategories: false,
@@ -84,7 +89,7 @@ describe('ExpenseCategories Page', () => {
   });
 
   it('shows loading skeletons when loading', () => {
-    vi.mocked(useAppContext).mockReturnValue({
+    mockUseAppData.mockReturnValue({
       ...mockContextValue,
       expenseCategories: [],
       isLoadingExpenseCategories: true,
@@ -107,7 +112,7 @@ describe('ExpenseCategories Page', () => {
   });
 
   it('shows empty state when no categories', () => {
-    vi.mocked(useAppContext).mockReturnValue({
+    mockUseAppData.mockReturnValue({
       ...mockContextValue,
       expenseCategories: [],
       isLoadingExpenseCategories: false,
@@ -115,8 +120,8 @@ describe('ExpenseCategories Page', () => {
 
     renderComponent();
     
-    expect(screen.getByText(/no categories/i)).toBeInTheDocument();
-    expect(screen.getByText(/get started/i)).toBeInTheDocument();
+    expect(screen.getByText('No expense categories yet')).toBeInTheDocument();
+    expect(screen.getByText(/create categories to organize/i)).toBeInTheDocument();
   });
 
   it('opens form drawer when New Category button clicked', () => {

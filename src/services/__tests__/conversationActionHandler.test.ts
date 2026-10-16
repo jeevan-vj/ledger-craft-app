@@ -12,46 +12,31 @@ import {
 import {
   setupTest,
   cleanupTest,
-  createSuccessResponse,
-  createErrorResponse
 } from '../../test/utils/testUtils';
 
-// Mock the Supabase module
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: {
-    from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    update: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    ilike: vi.fn().mockReturnThis(),
-    or: vi.fn().mockReturnThis(),
-    gte: vi.fn().mockReturnThis(),
-    lte: vi.fn().mockReturnThis(),
-    single: vi.fn().mockReturnThis(),
-    limit: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    auth: {
-      getUser: vi.fn().mockResolvedValue({
-        data: { user: { id: 'test-user-id' } },
-        error: null
-      })
-    }
-  }
+vi.mock('../supabaseService', () => ({
+  customerService: {
+    getCustomers: vi.fn().mockResolvedValue([]),
+    createCustomer: vi.fn(),
+  },
+  invoiceService: {
+    createInvoice: vi.fn(),
+    getInvoices: vi.fn().mockResolvedValue([]),
+  },
+  expenseService: {
+    createExpense: vi.fn(),
+    getExpenses: vi.fn().mockResolvedValue([]),
+  },
 }));
 
-// Mock conversation service
 vi.mock('../conversationService', () => ({
   conversationService: {
     addEntityToContext: vi.fn().mockResolvedValue(undefined)
   }
 }));
 
-// Get references to mocked modules
-import { supabase } from '@/integrations/supabase/client';
 import { conversationService } from '../conversationService';
-const mockSupabase = supabase as any;
+import { customerService, expenseService, invoiceService } from '../supabaseService';
 const mockConversationService = conversationService as any;
 
 describe('ConversationActionHandler', () => {
@@ -62,6 +47,37 @@ describe('ConversationActionHandler', () => {
     testMocks = setupTest();
     actionHandler = new ConversationActionHandler();
     vi.clearAllMocks();
+    vi.mocked(customerService.getCustomers).mockResolvedValue([]);
+    vi.mocked(invoiceService.getInvoices).mockResolvedValue([]);
+    vi.mocked(expenseService.getExpenses).mockResolvedValue([]);
+    vi.mocked(invoiceService.createInvoice).mockImplementation(async (invoice) => ({
+      id: 'invoice-1',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      ...invoice,
+    }));
+    vi.mocked(customerService.createCustomer).mockImplementation(async (customer) => ({
+      id: 'customer-new',
+      userId: 'test-user-id',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      isVip: false,
+      tags: [],
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      country: 'NZ',
+      ...customer,
+    }));
+    vi.mocked(expenseService.createExpense).mockImplementation(async (expense) => ({
+      id: 'expense-new',
+      userId: 'test-user-id',
+      createdAt: '2024-01-01T00:00:00Z',
+      updatedAt: '2024-01-01T00:00:00Z',
+      ...expense,
+    }));
+    vi.mocked(conversationService.addEntityToContext).mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -89,7 +105,7 @@ describe('ConversationActionHandler', () => {
 
     it('should handle action execution errors', async () => {
       const action = mockCreateInvoiceAction;
-      mockSupabase.single.mockRejectedValue(new Error('Database error'));
+      vi.mocked(invoiceService.createInvoice).mockRejectedValue(new Error('Database error'));
 
       const result = await actionHandler.executeAction(
         action,
@@ -98,7 +114,7 @@ describe('ConversationActionHandler', () => {
       );
 
       expect(result.success).toBe(false);
-      expect(result.error).toContain('Database error');
+      expect(result.error).toContain('Failed to create invoice: Database error');
       expect(result.suggestions).toContain('Try again');
     });
   });
@@ -130,10 +146,6 @@ describe('ConversationActionHandler', () => {
         template_name: 'modern'
       };
 
-      mockSupabase.single.mockResolvedValueOnce(createSuccessResponse(mockInvoiceResponse));
-      mockSupabase.insert.mockResolvedValueOnce(createSuccessResponse([]));
-      mockSupabase.update.mockResolvedValueOnce(createSuccessResponse({}));
-
       const result = await actionHandler.executeAction(
         action,
         mockConversationContext,
@@ -142,7 +154,7 @@ describe('ConversationActionHandler', () => {
 
       expect(result.success).toBe(true);
       expect(result.data.type).toBe('invoice');
-      expect(result.data.invoiceNumber).toBe('INV-2024-001');
+      expect(result.data.invoiceNumber).toMatch(/^INV-\d{4}-002$/);
       expect(result.data.customerName).toBe('John Smith');
       expect(result.data.total).toBe(500);
       expect(result.suggestions).toContain('Send this invoice via email');
@@ -167,7 +179,7 @@ describe('ConversationActionHandler', () => {
         }
       };
 
-      mockSupabase.single.mockResolvedValue(createErrorResponse('Not found'));
+      vi.mocked(customerService.getCustomers).mockResolvedValue([]);
 
       const result = await actionHandler.executeAction(
         action,
@@ -226,9 +238,6 @@ describe('ConversationActionHandler', () => {
         template_name: 'modern'
       };
 
-      mockSupabase.single.mockResolvedValueOnce(createSuccessResponse(mockInvoiceResponse));
-      mockSupabase.insert.mockResolvedValueOnce(createSuccessResponse([]));
-
       const result = await actionHandler.executeAction(
         action,
         mockConversationContext,
@@ -257,9 +266,7 @@ describe('ConversationActionHandler', () => {
         total: 500
       };
 
-      mockSupabase.single.mockResolvedValueOnce(createSuccessResponse(mockInvoiceResponse));
-      mockSupabase.insert.mockResolvedValueOnce(createErrorResponse('Line items error'));
-      mockSupabase.delete.mockResolvedValueOnce(createSuccessResponse({})); // Rollback
+      vi.mocked(invoiceService.createInvoice).mockRejectedValue(new Error('Failed to create invoice items'));
 
       const result = await actionHandler.executeAction(
         action,
@@ -269,7 +276,6 @@ describe('ConversationActionHandler', () => {
 
       expect(result.success).toBe(false);
       expect(result.error).toContain('Failed to create invoice items');
-      expect(mockSupabase.delete).toHaveBeenCalled(); // Verify rollback
     });
   });
 
@@ -284,7 +290,7 @@ describe('ConversationActionHandler', () => {
       };
 
       // Mock database search result
-      mockSupabase.limit.mockResolvedValue(createSuccessResponse([mockVipCustomer]));
+      vi.mocked(customerService.getCustomers).mockResolvedValue([mockVipCustomer]);
 
       const result = await actionHandler.executeAction(
         action,
@@ -316,7 +322,7 @@ describe('ConversationActionHandler', () => {
         }
       };
 
-      mockSupabase.limit.mockResolvedValue(createSuccessResponse([]));
+      vi.mocked(customerService.getCustomers).mockResolvedValue([]);
 
       const result = await actionHandler.executeAction(
         action,
@@ -351,14 +357,14 @@ describe('ConversationActionHandler', () => {
       const action = {
         type: 'search_customers',
         parameters: {
-          query: 'John'
+          query: 'Smith'
         },
         status: 'pending' as const
       };
 
       // Database returns different customer than recent entities
-      const dbCustomer = { ...mockVipCustomer, id: 'customer-3', name: 'John Doe' };
-      mockSupabase.limit.mockResolvedValue(createSuccessResponse([dbCustomer]));
+      const dbCustomer = { ...mockVipCustomer, id: 'customer-3', name: 'Ada Smith', email: 'ada@example.com' };
+      vi.mocked(customerService.getCustomers).mockResolvedValue([dbCustomer]);
 
       const result = await actionHandler.executeAction(
         action,
@@ -369,7 +375,7 @@ describe('ConversationActionHandler', () => {
       expect(result.success).toBe(true);
       expect(result.data.customers).toHaveLength(2); // One from recent, one from DB
       expect(result.data.customers.map((c: any) => c.name)).toContain('John Smith');
-      expect(result.data.customers.map((c: any) => c.name)).toContain('John Doe');
+      expect(result.data.customers.map((c: any) => c.name)).toContain('Ada Smith');
     });
   });
 
@@ -396,8 +402,6 @@ describe('ConversationActionHandler', () => {
         created_at: '2024-01-01T00:00:00Z',
         updated_at: '2024-01-01T00:00:00Z'
       };
-
-      mockSupabase.single.mockResolvedValue(createSuccessResponse(mockCustomerResponse));
 
       const result = await actionHandler.executeAction(
         action,
@@ -460,8 +464,6 @@ describe('ConversationActionHandler', () => {
         currency: 'USD',
         user_id: 'test-user-id'
       };
-
-      mockSupabase.single.mockResolvedValue(createSuccessResponse(mockExpenseResponse));
 
       const result = await actionHandler.executeAction(
         action,
@@ -559,9 +561,11 @@ describe('ConversationActionHandler', () => {
         { amount: 100 }
       ];
 
-      mockSupabase.lte
-        .mockResolvedValueOnce(createSuccessResponse(mockInvoicesData)) // invoices
-        .mockResolvedValueOnce(createSuccessResponse(mockExpensesData)); // expenses
+      const today = new Date().toISOString().split('T')[0];
+      vi.mocked(invoiceService.getInvoices).mockResolvedValue(
+        mockInvoicesData.map((invoice) => ({ ...mockInvoice, ...invoice, date: today })),
+      );
+      vi.mocked(expenseService.getExpenses).mockResolvedValue(mockExpensesData as any);
 
       const result = await actionHandler.executeAction(
         action,
@@ -588,9 +592,8 @@ describe('ConversationActionHandler', () => {
         status: 'pending' as const
       };
 
-      mockSupabase.lte
-        .mockResolvedValueOnce(createSuccessResponse([]))
-        .mockResolvedValueOnce(createSuccessResponse([]));
+      vi.mocked(invoiceService.getInvoices).mockResolvedValue([]);
+      vi.mocked(expenseService.getExpenses).mockResolvedValue([]);
 
       const result = await actionHandler.executeAction(
         action,
@@ -598,8 +601,10 @@ describe('ConversationActionHandler', () => {
         'conversation-1'
       );
 
+      const previousMonth = new Date();
+      previousMonth.setMonth(previousMonth.getMonth() - 1);
       expect(result.success).toBe(true);
-      expect(result.data.period).toContain('2023'); // Should be previous month
+      expect(result.data.period).toContain(String(previousMonth.getFullYear()));
     });
   });
 

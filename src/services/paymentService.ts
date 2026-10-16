@@ -37,6 +37,9 @@ const mapSupabaseReceiptToReceipt = (receipt: any): Receipt => ({
 export class PaymentService {
   // Create a new payment and automatically update invoice status
   async createPayment(paymentData: CreatePaymentRequest): Promise<Payment> {
+    if (!Number.isFinite(paymentData.amount) || paymentData.amount <= 0) {
+      throw new Error('Payment amount must be greater than zero');
+    }
     if (paymentsApiEnabled()) {
       const payment = await paymentsApi.create(toCreatePaymentRequest(paymentData));
       if (receiptsApiEnabled() && paymentData.generateReceipt !== false) {
@@ -486,7 +489,8 @@ export class PaymentService {
       'cash': 'Cash',
       'cheque': 'Cheque',
       'credit_card': 'Credit Card',
-      'online': 'Online Payment'
+      'online': 'Online Payment',
+      'eftpos': 'EFTPOS',
     };
     return methodMap[method] || method;
   }
