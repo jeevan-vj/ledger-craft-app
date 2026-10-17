@@ -46,7 +46,7 @@
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
-    "type-check": "tsc --noEmit",
+    "type-check": "tsc --noEmit -p tsconfig.app.json --pretty false && tsc --noEmit -p tsconfig.node.json --pretty false",
     "deploy:cloudflare": "node scripts/deploy-cloudflare.mjs",
     "deploy:check": "node scripts/deploy-cloudflare.mjs --check",
     "db:migrate": "pnpm --filter @ledgercraft/api db:migrate",

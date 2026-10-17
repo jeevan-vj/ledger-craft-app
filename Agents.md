@@ -1,5 +1,18 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Pull request CI:** `.github/workflows/ci.yml` runs on every pull request and on
+push to main. Web jobs use pnpm from `package.json` `packageManager` (no
+`pnpm/action-setup` `version` input), Node 22, and `pnpm install --frozen-lockfile`.
+They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
+`pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci` in
+`mobile/`, then ESLint (`eslint-config-expo` flat config), `tsc --noEmit`, Jest,
+and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
+mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
+diagnostics. A count gate fails the job only when the count rises past the
+baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
+still runs the Postgres API suite. The PR workflow does not start Postgres and
+does not deploy.
+
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
 pill/card/list/setup/icon primitives, and Home / Invoices / Customers / More
@@ -570,7 +583,7 @@ npm run build       # Build for production
 npm test            # Run unit tests (Vitest)
 npm run test:ui     # Test UI (Vitest)
 npm run test:e2e    # Run E2E tests (Playwright)
-npm run type-check  # TypeScript type checking
+npm run type-check  # tsc -p tsconfig.app.json and tsconfig.node.json
 npm run lint        # ESLint
 ```
 
@@ -580,6 +593,8 @@ cd mobile
 npm start           # Start Expo dev server
 npm run android     # Run on Android
 npm run ios         # Run on iOS
+npm run lint        # ESLint (eslint-config-expo flat config)
+npm run type-check  # tsc --noEmit
 npm test            # Run Jest tests
 npm run test:watch  # Tests in watch mode
 ```
