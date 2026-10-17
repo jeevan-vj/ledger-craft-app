@@ -1,12 +1,12 @@
 # AGENTS.md
 
-Operating brief for LedgerCraft. Longer notes: `Agents.md`. Spec: `TARGET_ARCHITECTURE.md`. Prove changes with `.cursor/skills/verify/SKILL.md`.
+Operating brief for LedgerCraft. Spec: `TARGET_ARCHITECTURE.md`. Deploy: `deploy/cloudflare.md`. Skills and the specialist roster: `docs/agent-operations.md`. Prove a change with `.cursor/skills/verify/SKILL.md`.
 
 ## Boundaries
 
-- Web: Vite + React in `src/`. `pnpm dev` serves **8080** and proxies `/api` to the API (`vite.config.ts`).
-- API: Hono in `api/` (`@ledgercraft/api`) with Better Auth at `/api/auth/*`. `pnpm dev:api` listens on **127.0.0.1:3001**. Local data is SQLite through `node:sqlite` (`api/src/db/local.ts`). Production is Cloudflare Pages plus the Hono Worker, with Identity and per-organisation Ledger SQLite Durable Objects (`deploy/cloudflare.md`).
-- Contracts: `packages/contracts` (`@ledgercraft/contracts`). Zod DTOs only. Do not send Drizzle types to clients.
+- Web: Vite + React in `src/`. `pnpm dev` serves **8080** and proxies `/api` to the API (`vite.config.ts`). Web UI stays Revolut-inspired.
+- API: Hono in `api/` (`@ledgercraft/api`) with Better Auth at `/api/auth/*`. `pnpm dev:api` listens on **127.0.0.1:3001**. Local data is SQLite through `node:sqlite` (`api/src/db/local.ts`). Production is Cloudflare Pages plus the Hono Worker, with Identity and per-organisation Ledger SQLite Durable Objects. Uploads are SQLite attachments capped at 1 MB. Reviewed `api/sqlite-migrations/*.sql` are checksum-tracked.
+- Contracts: `packages/contracts` (`@ledgercraft/contracts`). Zod DTOs only. Do not send Drizzle types to clients. API errors use `{ error: { code, message, requestId } }`.
 - Workspace: pnpm **11.19.0** (`package.json` `packageManager`). Members are `api` and `packages/contracts` (`pnpm-workspace.yaml`). The root package is the Vite app.
 - Mobile: Expo SDK **54** (`expo ~54.0.20`) in `mobile/`. It is not a workspace member. Install and scripts use npm (`mobile/package-lock.json`).
 - Supabase is retired. Do not add `@supabase/supabase-js`, client SQL, Storage, or Edge Functions. `.env.example` still shows Postgres URLs; `createDb` rejects any `DATABASE_URL` that is not a SQLite filename or `file:` URL.
@@ -14,7 +14,7 @@ Operating brief for LedgerCraft. Longer notes: `Agents.md`. Spec: `TARGET_ARCHIT
 
 ## Commands
 
-The API needs Node **24+**. `api/src/db/local.ts` calls `statement.columns()` and `statement.setReturnArrays()`. On Node 22 those methods are missing and `pnpm test:api` fails.
+API tests need Node **24**. Node 22 lacks `setReturnArrays` (and `statement.columns()`), so `pnpm test:api` fails on Node 22. `api/src/db/local.ts` calls both.
 
 Root:
 
@@ -58,10 +58,12 @@ Start the local stack with `.cursor/skills/verify/SKILL.md`. Do not use `pnpm de
 
 - Open draft PRs only. Prove the change with the commands above and, for UI, before/after screenshots from the verify skill.
 - Read `user_id` and `organisation_id` from the session, never from the request body.
+- Keep a UI redesign, a TanStack Router move, an `apps/` move, and a data cutover in separate changes.
 
 ## Don't
 
 - Merge, deploy, or run `pnpm deploy:cloudflare`, `eas build`, `npm run build:android`, or `npm run submit:android` unless that exact action was approved.
-- Commit secrets, `.env`, `deploy/secrets.local.json`, or personal screenshots.
+- Commit secrets, `.env`, `deploy/secrets.local.json`, or personal screenshots. Never rotate the signing secret implicitly.
 - Change the EAS project id, slug, or `@jeevan90/easybizinvoice-mobile` binding.
 - Replay `supabase/migrations` or `migrations/*.sql`, or start Postgres for this API.
+- Authorize product data with both Better Auth and a Supabase session, or add `VITE_OPENAI_*`.

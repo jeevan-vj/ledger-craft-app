@@ -129,9 +129,9 @@ Wrangler commands, migration behavior and verification evidence.
 
 **Reconstruction (2026-09-03):** the hosted project still exists (`viqckjmborlqaemavrzu`) but `public` has zero tables, `auth.users` is empty, storage is empty, and no app migrations are applied. Production rows and identities are unrecoverable unless a platform backup is found. Reconstruction is greenfield toward this document, not a forensic clone. Do not replay checked-in SQL in order. Derive compatibility columns from application TypeScript contracts (`src/types`, service mappers). Skip preserving old `auth.users` UUIDs.
 
-**W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
+**W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `docs/agent-operations.md`. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
 
-Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
+Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `docs/agent-operations.md`.
 
 The `mobile-app` source uses Hono and Better Auth with the SQLite deployment
 implementation described above. The earlier Pages upload from `main` is a
@@ -311,7 +311,7 @@ This keeps browser cookies first-party and removes most CORS configuration. Loca
 
 Better Auth owns `users`, `sessions`, `accounts`, and `verifications` in PostgreSQL. Configure Better Auth model names explicitly; avoid a quoted singular `user` table. The product already has `accounts` (chart of accounts). Better Auth's provider-account table **must** use a different name (e.g. `auth_accounts`).
 
-**Reconstruction:** hosted `auth.users` is empty — skip UUID preservation. Better Auth is staged in the API (`/api/auth/*`, `/api/me`). Do not cut clients off Supabase Auth until every protected path uses Hono. Pickup: `AGENTS.md` § Reconstruction agents.
+**Reconstruction:** hosted `auth.users` is empty — skip UUID preservation. Better Auth is staged in the API (`/api/auth/*`, `/api/me`). Do not cut clients off Supabase Auth until every protected path uses Hono. Pickup: `docs/agent-operations.md`.
 
 LedgerCraft data is owned by a business/organisation, not directly by one login:
 
