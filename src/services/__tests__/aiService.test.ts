@@ -18,7 +18,7 @@ import {
 describe('AIConversationService', () => {
   let aiService: AIConversationService;
   let testMocks: ReturnType<typeof setupTest>;
-  let originalEnv: typeof import.meta.env;
+  let originalEnv: ImportMetaEnv;
 
   beforeEach(() => {
     testMocks = setupTest();
