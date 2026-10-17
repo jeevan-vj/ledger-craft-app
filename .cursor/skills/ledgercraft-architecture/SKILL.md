@@ -5,7 +5,7 @@ description: Enforces LedgerCraft TARGET_ARCHITECTURE.md non-negotiables for Hon
 
 # LedgerCraft architecture
 
-Read `TARGET_ARCHITECTURE.md` before implementing. The reconstruction canvas and `AGENTS.md` roster describe *how* we work; this skill is *what must stay true*.
+Read `TARGET_ARCHITECTURE.md` before implementing. `docs/agent-operations.md` describes how we work; this skill is what must stay true.
 
 ## Required request path
 

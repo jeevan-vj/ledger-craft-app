@@ -15,7 +15,7 @@ Before editing, read:
 2. `mobile/src/theme/tokens.ts` for runtime tokens.
 3. `mobile/src/theme/navigation.ts`, `mobile/tailwind.config.js`, and relevant components in `mobile/src/components/ui/`.
 
-These current files supersede legacy blue-mobile, glassmorphism, emoji, and Supabase-era examples in `.cursor/rules/project-guide.mdc`. Preserve the product behavior and architecture in `Agents.md` and `TARGET_ARCHITECTURE.md`.
+These current files supersede legacy blue-mobile, glassmorphism, emoji, and Supabase-era examples in `.cursor/rules/project-guide.mdc`. Preserve the product behavior and architecture in `AGENTS.md` and `TARGET_ARCHITECTURE.md`.
 
 ## Build decisions
 

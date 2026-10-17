@@ -1,6 +1,6 @@
 ---
 description: Keep TARGET_ARCHITECTURE.md, AGENTS.md, and project skills in sync with code.
-globs: TARGET_ARCHITECTURE.md,AGENTS.md,Agents.md,.cursor/skills/**/*,.cursor/rules/**
+globs: TARGET_ARCHITECTURE.md,AGENTS.md,docs/agent-operations.md,.cursor/skills/**/*,.cursor/rules/**
 alwaysApply: false
 ---
 

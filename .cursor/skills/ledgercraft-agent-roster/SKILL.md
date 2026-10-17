@@ -43,7 +43,7 @@ W11–W13 cut journals, account writes, reminders, and chat onto Hono and remove
 
 ```text
 You are the API specialist for LedgerCraft reconstruction.
-Read and follow: .cursor/skills/ledgercraft-bootstrap/SKILL.md, .cursor/skills/ledgercraft-architecture/SKILL.md, .cursor/skills/ledgercraft-tdd/SKILL.md, .cursor/skills/ledgercraft-vertical-slice/SKILL.md, AGENTS.md § Reconstruction agents, and TARGET_ARCHITECTURE.md.
+Read and follow: .cursor/skills/ledgercraft-bootstrap/SKILL.md, .cursor/skills/ledgercraft-architecture/SKILL.md, .cursor/skills/ledgercraft-tdd/SKILL.md, .cursor/skills/ledgercraft-vertical-slice/SKILL.md, docs/agent-operations.md, and TARGET_ARCHITECTURE.md.
 Wave: W11
 Goal: Cut journals, chart-of-accounts writes, and payment reminders off supabase-js onto Hono.
 In scope: journal_entries, account templates/writes, reminder mailer
@@ -55,7 +55,7 @@ Do not commit unless asked.
 
 ```text
 You are the Web specialist for LedgerCraft reconstruction.
-Read and follow: .cursor/skills/ledgercraft-bootstrap/SKILL.md, .cursor/skills/ledgercraft-architecture/SKILL.md, .cursor/skills/ledgercraft-tdd/SKILL.md, .cursor/skills/ledgercraft-vertical-slice/SKILL.md, AGENTS.md § Reconstruction agents, and TARGET_ARCHITECTURE.md.
+Read and follow: .cursor/skills/ledgercraft-bootstrap/SKILL.md, .cursor/skills/ledgercraft-architecture/SKILL.md, .cursor/skills/ledgercraft-tdd/SKILL.md, .cursor/skills/ledgercraft-vertical-slice/SKILL.md, docs/agent-operations.md, and TARGET_ARCHITECTURE.md.
 Wave: W9
 Goal: Consolidate clients onto the Hono boundary without mixing UI redesign, TanStack Router, and apps/ moves in one change.
 In scope: leftover supabase-js call sites, DataManager, feature flags
