@@ -10,6 +10,7 @@ export const itemCategories = sqliteTable('item_categories', {
   userId: text('user_id').notNull().references(() => users.id),
   name: text('name').notNull(),
   color: text('color'),
+  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
@@ -31,6 +32,7 @@ export const items = sqliteTable('items', {
   enableSaleInfo: integer('enable_sale_info', { mode: 'boolean' }).notNull().default(false),
   enablePurchaseInfo: integer('enable_purchase_info', { mode: 'boolean' }).notNull().default(false),
   unit: text('unit').notNull().default('ea'),
+  isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [

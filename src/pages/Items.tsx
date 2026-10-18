@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useRef, useState } from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Button } from '@/components/ui/button';
-import { Plus, FolderOpen } from 'lucide-react';
+import { Download, FolderOpen, Plus, Trash, Upload } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ContentPanel } from '@/components/ui/ContentPanel';
@@ -19,12 +19,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { Switch } from '@/components/ui/switch';
+import { itemsApi } from '@/features/items/api/itemsApi';
+import { parseItemsCsv } from '@/features/items/model/itemCatalog';
 
 enum FilterType {
   ALL = 'all',
   PRODUCT = 'product',
   SERVICE = 'service',
 }
+
+type ActiveFilter = 'all' | 'active' | 'inactive';
 
 const Items = () => {
   const { 
@@ -34,7 +39,9 @@ const Items = () => {
     updateItem, 
     deleteItem,
     itemCategories,
-    createItemCategory
+    createItemCategory,
+    refreshItems,
+    businessProfile,
   } = useAppData();
   const { toast } = useToast();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -42,6 +49,9 @@ const Items = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState<FilterType>(FilterType.ALL);
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
+  const [activeFilter, setActiveFilter] = useState<ActiveFilter>('all');
+  const importRef = useRef<HTMLInputElement>(null);
+  const [selectedIds, setSelectedIds] = useState<string[]>([]);
 
   const filteredItems = items
     .filter(item => 
@@ -55,7 +65,36 @@ const Items = () => {
     .filter(item => {
       if (categoryFilter === 'all') return true;
       return item.categoryId === categoryFilter;
+    })
+    .filter(item => {
+      if (activeFilter === 'all') return true;
+      return activeFilter === 'active' ? item.isActive !== false : item.isActive === false;
     });
+
+  const runCatalogAction = async (action: () => Promise<unknown>, message: string) => {
+    try { await action(); await refreshItems(); setSelectedIds([]); toast({ title: 'Success', description: message }); }
+    catch (error) { toast({ title: 'Error', description: error instanceof Error ? error.message : 'Action failed', variant: 'destructive' }); }
+  };
+
+  const handleExport = async () => {
+    try {
+      const url = URL.createObjectURL(await itemsApi.exportCsv());
+      const anchor = document.createElement('a'); anchor.href = url; anchor.download = 'items.csv'; anchor.click();
+      URL.revokeObjectURL(url);
+    } catch (error) { toast({ title: 'Export failed', description: error instanceof Error ? error.message : 'Unable to export items', variant: 'destructive' }); }
+  };
+
+  const handleImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]; if (!file) return;
+    try {
+      const rows = parseItemsCsv(await file.text());
+      await itemsApi.importItems({ dryRun: true, rows });
+      const result = await itemsApi.importItems({ dryRun: false, rows });
+      await refreshItems();
+      toast({ title: 'Import complete', description: `${result.imported} item${result.imported === 1 ? '' : 's'} imported.` });
+    } catch (error) { toast({ title: 'Import failed', description: error instanceof Error ? error.message : 'Invalid CSV', variant: 'destructive' }); }
+    finally { event.target.value = ''; }
+  };
 
   const handleOpenDrawer = () => {
     setSelectedItem(null);
@@ -158,12 +197,15 @@ const Items = () => {
       <PageHeader
         title="Items"
         actions={
-          items.length > 0 ? (
+          items.length > 0 ? (<div className="flex flex-wrap gap-2">
+            <input ref={importRef} type="file" accept=".csv,text/csv" className="hidden" onChange={handleImport} />
+            <Button variant="outline" onClick={() => importRef.current?.click()}><Upload className="mr-2 h-4 w-4" />Import CSV</Button>
+            <Button variant="outline" onClick={handleExport}><Download className="mr-2 h-4 w-4" />Export CSV</Button>
             <Button onClick={handleOpenDrawer}>
               <Plus className="w-4 h-4 mr-2" />
               Add Item
             </Button>
-          ) : undefined
+          </div>) : undefined
         }
       />
 
@@ -185,7 +227,7 @@ const Items = () => {
 
       {items.length > 0 && (
       <>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
         <div className="space-y-2">
           <Label htmlFor="search">Search</Label>
           <Input
@@ -194,6 +236,13 @@ const Items = () => {
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by name or description"
           />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="activeFilter">Status</Label>
+          <Select value={activeFilter} onValueChange={(value) => setActiveFilter(value as ActiveFilter)}>
+            <SelectTrigger id="activeFilter"><SelectValue /></SelectTrigger>
+            <SelectContent><SelectItem value="all">All statuses</SelectItem><SelectItem value="active">Active</SelectItem><SelectItem value="inactive">Inactive</SelectItem></SelectContent>
+          </Select>
         </div>
         <div className="space-y-2">
           <Label htmlFor="filterType">Type</Label>
@@ -232,12 +281,39 @@ const Items = () => {
         </div>
       </div>
       
+      {selectedIds.length > 0 && <div className="flex flex-wrap items-center gap-2 rounded-xl border bg-card p-3">
+        <span className="mr-auto text-sm font-medium">{selectedIds.length} selected</span>
+        <Button variant="outline" size="sm" onClick={() => runCatalogAction(() => itemsApi.bulk({ action: 'activate', ids: selectedIds }), 'Selected items activated.')}>Activate</Button>
+        <Button variant="outline" size="sm" onClick={() => runCatalogAction(() => itemsApi.bulk({ action: 'deactivate', ids: selectedIds }), 'Selected items deactivated.')}>Deactivate</Button>
+        <Button variant="destructive" size="sm" onClick={() => runCatalogAction(() => itemsApi.bulk({ action: 'delete', ids: selectedIds }), 'Selected items deleted.')}>Delete</Button>
+      </div>}
       <ContentPanel padded={false}>
         <ItemsTable
           items={filteredItems}
           onEdit={handleEditItem}
           onDelete={handleDeleteItem}
+          onDuplicate={(id) => runCatalogAction(() => itemsApi.duplicate(id), 'Item duplicated.')}
+          onToggleActive={(item) => runCatalogAction(() => itemsApi.update(item.id, { isActive: item.isActive === false }), item.isActive === false ? 'Item activated.' : 'Item deactivated.')}
+          currency={businessProfile?.currency || 'NZD'}
+          selectedIds={selectedIds}
+          onSelectionChange={setSelectedIds}
         />
+      </ContentPanel>
+
+      <ContentPanel>
+        <div className="mb-4"><h2 className="font-semibold">Categories</h2><p className="text-sm text-muted-foreground">Rename, activate, or remove unused categories.</p></div>
+        <div className="space-y-3">
+          {itemCategories.map((category) => (
+            <div key={category.id} className="flex items-center gap-3 rounded-lg border p-3">
+              <Input aria-label={`Category name ${category.name}`} defaultValue={category.name}
+                onBlur={(event) => event.target.value.trim() !== category.name && runCatalogAction(() => itemsApi.updateCategory(category.id, { name: event.target.value }), 'Category renamed.')} />
+              <Switch aria-label={`Toggle ${category.name}`} checked={category.isActive !== false}
+                onCheckedChange={(checked) => runCatalogAction(() => itemsApi.updateCategory(category.id, { isActive: checked }), checked ? 'Category activated.' : 'Category deactivated.')} />
+              <Button aria-label={`Delete ${category.name}`} variant="ghost" size="icon"
+                onClick={() => runCatalogAction(() => itemsApi.removeCategory(category.id), 'Category deleted.')}><Trash className="h-4 w-4" /></Button>
+            </div>
+          ))}
+        </div>
       </ContentPanel>
       </>
       )}

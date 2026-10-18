@@ -58,6 +58,7 @@ describe('item routes', () => {
         expect(created.status).toBe(201);
         const item = itemSchema.parse(await created.json());
         expect(item.name).toBe('Brand identity');
+        expect(item.isActive).toBe(true);
 
         const categoryResponse = await app.request('/api/item-categories', {
           method: 'POST', headers: { ...originHeaders, Cookie: ownerB.cookie },
@@ -76,15 +77,88 @@ describe('item routes', () => {
         });
         expect(foreignUpdate.status).toBe(400);
 
+        const ownCategoryResponse = await app.request('/api/item-categories', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ name: 'Services', color: '#5B72EE' }),
+        });
+        const ownCategory = await ownCategoryResponse.json() as { id: string };
+        const categorizedResponse = await app.request(`/api/items/${item.id}`, {
+          method: 'PATCH', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ categoryId: ownCategory.id }),
+        });
+        expect(categorizedResponse.status).toBe(200);
+
+        const duplicate = await app.request(`/api/items/${item.id}/duplicate`, {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie }, body: '{}',
+        });
+        expect(duplicate.status).toBe(201);
+        expect(itemSchema.parse(await duplicate.json()).name).toBe('Brand identity (copy)');
+
+        const bulk = await app.request('/api/items/bulk', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ action: 'deactivate', ids: [item.id] }),
+        });
+        expect(bulk.status).toBe(200);
+
         const listA = itemListResponseSchema.parse(
           await (await app.request('/api/items', { headers: { Cookie: ownerA.cookie } })).json(),
         );
-        expect(listA.items.map((row) => row.name)).toEqual(['Brand identity']);
+        expect(listA.items.map((row) => row.name)).toEqual(['Brand identity', 'Brand identity (copy)']);
+        expect(listA.items.find((row) => row.id === item.id)?.category?.name).toBe('Services');
+        expect(listA.items.find((row) => row.id === item.id)?.isActive).toBe(false);
 
         const listB = itemListResponseSchema.parse(
           await (await app.request('/api/items', { headers: { Cookie: ownerB.cookie } })).json(),
         );
         expect(listB.items).toEqual([]);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
+  it('validates item money and supports category lifecycle plus import preview/apply', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Catalogue Owner');
+        const bad = await app.request('/api/items', {
+          method: 'POST', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: 'Bad', type: 'product', salePrice: '-1', taxRate: '101' }),
+        });
+        expect(bad.status).toBe(400);
+
+        const categoryResponse = await app.request('/api/item-categories', {
+          method: 'POST', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: 'Goods' }),
+        });
+        const category = await categoryResponse.json() as { id: string };
+        const updatedCategory = await app.request(`/api/item-categories/${category.id}`, {
+          method: 'PATCH', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: 'Products', isActive: false }),
+        });
+        expect(updatedCategory.status).toBe(200);
+
+        const preview = await app.request('/api/items/import', {
+          method: 'POST', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ dryRun: true, rows: [{ name: 'Imported service', type: 'service', salePrice: '90', taxRate: '15' }] }),
+        });
+        expect(preview.status).toBe(200);
+        expect((await preview.json() as { imported: number }).imported).toBe(0);
+
+        const applied = await app.request('/api/items/import', {
+          method: 'POST', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ dryRun: false, rows: [{ name: 'Imported service', type: 'service', salePrice: '90', taxRate: '15' }] }),
+        });
+        expect(applied.status).toBe(200);
+        expect((await applied.json() as { imported: number }).imported).toBe(1);
+
+        const deletedCategory = await app.request(`/api/item-categories/${category.id}`, {
+          method: 'DELETE', headers: { Cookie: owner.cookie },
+        });
+        expect(deletedCategory.status).toBe(204);
       } finally {
         await sql.end({ timeout: 5 });
       }

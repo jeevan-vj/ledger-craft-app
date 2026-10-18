@@ -22,6 +22,16 @@ The native tab implementation is intentionally retained, so its bar is styled
 dark with lime selection rather than replaced by a custom floating tab bar.
 This work is not deployed and has not had simulator/device visual QA.
 
+**Item catalogue parity (implemented, 2026-10-18):** Core item and category
+management now supports strict exact-decimal validation, hydrated categories,
+active/inactive lifecycle, duplication, atomic bulk actions, and canonical CSV
+preview/apply/export through Hono/SQLite migration
+`0005_item-catalogue-parity.sql`. Web item management includes status filtering,
+bulk controls, category lifecycle controls, profile-currency display, and
+responsive layouts. Invoice pickers expose only active sale-enabled items and
+apply item sale price and tax defaults; mobile adapters follow the same DTO and
+picker eligibility. Media and multi-tax catalogue extensions remain backlog.
+
 **GST return workflow (deployed, 2026-10-03):** Web GST returns now
 persist the calculated IRD/reconciliation snapshot through Hono/SQLite, use a
 dedicated draft-to-filed action with the myIR confirmation reference, and export
