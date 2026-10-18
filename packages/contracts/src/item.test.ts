@@ -1,5 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { createItemRequestSchema, itemListResponseSchema, itemSchema } from './item';
+import {
+  bulkItemRequestSchema,
+  createItemRequestSchema,
+  importItemsRequestSchema,
+  itemListResponseSchema,
+  itemSchema,
+} from './item';
 
 describe('item contracts', () => {
   const item = {
@@ -14,6 +20,8 @@ describe('item contracts', () => {
     enableSaleInfo: true,
     enablePurchaseInfo: false,
     unit: 'ea',
+    isActive: true,
+    category: null,
     createdAt: '2026-09-07T00:00:00.000Z',
     updatedAt: '2026-09-07T00:00:00.000Z',
   };
@@ -36,5 +44,17 @@ describe('item contracts', () => {
       items: [item],
       categories: [],
     });
+  });
+
+  it('rejects blank names, negative prices, and tax rates above 100', () => {
+    expect(createItemRequestSchema.safeParse({ name: '   ', type: 'product' }).success).toBe(false);
+    expect(createItemRequestSchema.safeParse({ name: 'Widget', type: 'product', salePrice: '-1' }).success).toBe(false);
+    expect(createItemRequestSchema.safeParse({ name: 'Widget', type: 'product', taxRate: '100.01' }).success).toBe(false);
+  });
+
+  it('accepts bounded bulk actions and import previews', () => {
+    const id = '33333333-3333-3333-3333-333333333333';
+    expect(bulkItemRequestSchema.parse({ action: 'deactivate', ids: [id] })).toEqual({ action: 'deactivate', ids: [id] });
+    expect(importItemsRequestSchema.parse({ dryRun: true, rows: [{ name: 'Widget', type: 'product', salePrice: '12.50' }] }).dryRun).toBe(true);
   });
 });

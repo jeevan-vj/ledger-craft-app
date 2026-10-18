@@ -12,6 +12,8 @@ export interface MobileItemDto {
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
+  isActive: boolean;
+  category: MobileItemCategoryDto | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -20,6 +22,7 @@ export interface MobileItemCategoryDto {
   id: string;
   name: string;
   color: string | null;
+  isActive: boolean;
   createdAt: string;
   updatedAt: string;
 }
@@ -46,6 +49,8 @@ export type CatalogItem = {
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
+  isActive?: boolean;
+  category?: CatalogCategory | null;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -54,6 +59,7 @@ export type CatalogCategory = {
   id: string;
   name: string;
   color?: string;
+  isActive?: boolean;
   createdAt?: string;
   updatedAt?: string;
 };
@@ -71,6 +77,8 @@ export function toItem(dto: MobileItemDto): CatalogItem {
     enableSaleInfo: dto.enableSaleInfo,
     enablePurchaseInfo: dto.enablePurchaseInfo,
     unit: dto.unit,
+    isActive: dto.isActive,
+    category: dto.category ? toCategory(dto.category) : null,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -81,6 +89,7 @@ export function toCategory(dto: MobileItemCategoryDto): CatalogCategory {
     id: dto.id,
     name: dto.name,
     color: dto.color ?? undefined,
+    isActive: dto.isActive,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -112,6 +121,7 @@ export const itemsApi = {
           enableSaleInfo: input.enableSaleInfo,
           enablePurchaseInfo: input.enablePurchaseInfo,
           unit: input.unit || 'unit',
+          isActive: input.isActive ?? true,
         }),
       }),
     );
@@ -132,6 +142,7 @@ export const itemsApi = {
     if (input.enableSaleInfo !== undefined) body.enableSaleInfo = input.enableSaleInfo;
     if (input.enablePurchaseInfo !== undefined) body.enablePurchaseInfo = input.enablePurchaseInfo;
     if (input.unit !== undefined) body.unit = input.unit;
+    if (input.isActive !== undefined) body.isActive = input.isActive;
 
     return toItem(
       await apiRequest<MobileItemDto>(`/api/items/${id}`, {
@@ -152,6 +163,7 @@ export const itemsApi = {
         body: JSON.stringify({
           name: input.name,
           color: input.color ?? null,
+          isActive: input.isActive ?? true,
         }),
       }),
     );

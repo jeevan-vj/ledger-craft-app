@@ -153,7 +153,7 @@ export interface AdditionalCharge {
   calculationType: 'fixed' | 'percentage';
   amount: number;
   description?: string;
-  isActive: boolean;
+  isActive?: boolean;
 }
 
 export const ADDITIONAL_CHARGE_PRESETS: Record<AdditionalChargeType, { label: string; icon: string; description: string }> = {
@@ -289,6 +289,7 @@ export interface ItemCategory {
   id: string;
   name: string;
   color?: string; // Hex color code for category color
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -300,13 +301,14 @@ export interface Item {
   description?: string | null;
   type: 'product' | 'service';
   categoryId?: string | null;
-  category?: ItemCategory;
+  category?: ItemCategory | null;
   salePrice?: number | null;
   purchasePrice?: number | null;
   taxRate?: number | null;
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
+  isActive: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

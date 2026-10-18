@@ -27,9 +27,11 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Item } from '@/types';
 import { formatCurrency } from '@/utils/invoiceUtils';
-import { Edit, MoreHorizontal, Package2, Sparkles, Trash } from 'lucide-react';
+import { Copy, Edit, MoreHorizontal, Package2, Power, Sparkles, Trash } from 'lucide-react';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { ItemFormValues } from './ItemForm';
 import ItemDrawer from './ItemDrawer';
@@ -38,15 +40,28 @@ interface ItemsTableProps {
   items: Item[];
   onEdit: (item: Item) => void;
   onDelete: (id: string) => void;
+  onDuplicate: (id: string) => void;
+  onToggleActive: (item: Item) => void;
+  currency?: string;
+  selectedIds?: string[];
+  onSelectionChange?: (ids: string[]) => void;
 }
 
 const ItemsTable: React.FC<ItemsTableProps> = ({
   items,
   onEdit,
   onDelete,
+  onDuplicate,
+  onToggleActive,
+  currency = 'NZD',
+  selectedIds = [],
+  onSelectionChange,
 }) => {
   const isMobile = useIsMobile();
   const [itemToDelete, setItemToDelete] = useState<Item | null>(null);
+  const toggleSelected = (id: string, checked: boolean) => onSelectionChange?.(
+    checked ? [...selectedIds, id] : selectedIds.filter((selected) => selected !== id),
+  );
 
   const handleDelete = (item: Item) => {
     setItemToDelete(item);
@@ -70,12 +85,17 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
           >
             <div className="flex justify-between items-center">
               <div className="flex items-center">
+                <Checkbox className="mr-3" aria-label={`Select ${item.name}`} checked={selectedIds.includes(item.id)}
+                  onCheckedChange={(checked) => toggleSelected(item.id, checked === true)} onClick={(event) => event.stopPropagation()} />
                 {item.type === 'product' ? (
                   <Package2 className="h-4 w-4 mr-2 text-muted-foreground" />
                 ) : (
                   <Sparkles className="h-4 w-4 mr-2 text-muted-foreground" />
                 )}
                 <h3 className="font-medium">{item.name}</h3>
+                <Badge className="ml-2" variant={item.isActive === false ? 'secondary' : 'outline'}>
+                  {item.isActive === false ? 'Inactive' : 'Active'}
+                </Badge>
               </div>
               <DropdownMenu>
                 <DropdownMenuTrigger asChild onClick={(e) => e.stopPropagation()}>
@@ -91,6 +111,12 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
                   }}>
                     <Edit className="mr-2 h-4 w-4" />
                     Edit
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onDuplicate(item.id); }}>
+                    <Copy className="mr-2 h-4 w-4" />Duplicate
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={(e) => { e.stopPropagation(); onToggleActive(item); }}>
+                    <Power className="mr-2 h-4 w-4" />{item.isActive === false ? 'Activate' : 'Deactivate'}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -111,7 +137,7 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
             </div>
             {item.enableSaleInfo && item.salePrice !== null && item.salePrice !== undefined && (
               <div className="text-sm mt-2">
-                Price: {formatCurrency(item.salePrice, 'USD')}
+                Price: {formatCurrency(item.salePrice, currency)}
               </div>
             )}
             {item.description && (
@@ -146,17 +172,22 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-12"><Checkbox aria-label="Select all items" checked={items.length > 0 && items.every((item) => selectedIds.includes(item.id))}
+              onCheckedChange={(checked) => onSelectionChange?.(checked ? items.map((item) => item.id) : [])} /></TableHead>
             <TableHead>Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Category</TableHead>
             <TableHead>Price</TableHead>
             <TableHead>Unit</TableHead>
+            <TableHead>Status</TableHead>
             <TableHead className="w-[100px]"></TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {items.map((item) => (
             <TableRow key={item.id}>
+              <TableCell><Checkbox aria-label={`Select ${item.name}`} checked={selectedIds.includes(item.id)}
+                onCheckedChange={(checked) => toggleSelected(item.id, checked === true)} /></TableCell>
               <TableCell className="font-medium">{item.name}</TableCell>
               <TableCell>
                 <div className="flex items-center">
@@ -176,10 +207,11 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
               <TableCell>{item.category?.name || 'Uncategorized'}</TableCell>
               <TableCell>
                 {item.enableSaleInfo && item.salePrice !== null && item.salePrice !== undefined
-                  ? formatCurrency(item.salePrice, 'USD')
+                  ? formatCurrency(item.salePrice, currency)
                   : '-'}
               </TableCell>
               <TableCell>{item.unit}</TableCell>
+              <TableCell><Badge variant={item.isActive === false ? 'secondary' : 'outline'}>{item.isActive === false ? 'Inactive' : 'Active'}</Badge></TableCell>
               <TableCell>
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
@@ -192,6 +224,12 @@ const ItemsTable: React.FC<ItemsTableProps> = ({
                     <DropdownMenuItem onClick={() => onEdit(item)}>
                       <Edit className="mr-2 h-4 w-4" />
                       Edit
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onDuplicate(item.id)}>
+                      <Copy className="mr-2 h-4 w-4" />Duplicate
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => onToggleActive(item)}>
+                      <Power className="mr-2 h-4 w-4" />{item.isActive === false ? 'Activate' : 'Deactivate'}
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem

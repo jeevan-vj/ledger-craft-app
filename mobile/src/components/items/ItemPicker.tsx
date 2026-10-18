@@ -71,7 +71,7 @@ export function ItemPicker({
   }, [visible]);
 
   useEffect(() => {
-    let filtered = items;
+    let filtered = items.filter((item) => item.isActive !== false && item.enableSaleInfo);
 
     // Filter by search query
     if (searchQuery.trim() !== '') {
@@ -101,7 +101,7 @@ export function ItemPicker({
         itemService.fetchCategories(),
       ]);
       setItems(itemsData);
-      setFilteredItems(itemsData);
+      setFilteredItems(itemsData.filter((item) => item.isActive !== false && item.enableSaleInfo));
       setCategories(categoriesData);
     } catch (error) {
       console.error('Error loading items:', error);

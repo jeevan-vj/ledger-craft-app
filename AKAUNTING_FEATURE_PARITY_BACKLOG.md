@@ -37,7 +37,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Capability | LedgerCraft status | Evidence and remaining gap |
 | --- | --- | --- |
 | Business dashboard | Partial | Dashboard and accounting pages exist; there is no saved dashboard/widget layout, payables widget, or date-filtered configurable dashboard comparable to Akaunting. |
-| Products and services | Partial | Items and item categories have API CRUD coverage. Bulk import/export, duplicate, enable/disable, media, and per-item multi-tax behavior are missing. |
+| Products and services | Partial | Core item/category CRUD now includes hydrated category detail, active state, duplicate, atomic bulk actions, canonical CSV preview/apply/export, strict price/tax validation, profile-currency display, and sale-safe invoice selection. Media and per-item multi-tax behavior remain open. |
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
 | Invoice payments and receipts | Available | Invoice-linked payments, partial/full status updates, and payment receipts exist. Account-ledger posting and split/connected banking workflows still need hardening under the banking task. |
@@ -57,7 +57,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Users and permissions | Missing | Membership roles exist in identity data and the web has presentation guards, but there is no invitation/user administration or server-enforced action permission matrix. Current tests describe authenticated users as owners. |
 | Customer portal | Missing | Token-scoped invoice viewing/download is available, but customers cannot authenticate to a portal, manage a profile, list invoices, or review payments. |
 | Attachments/uploads | Partial | Organisation-scoped object upload/list/delete exists with the 1 MB SQLite limit. Attachments are not consistently linked to invoices, bills, items, contacts, and transactions. |
-| Import/export | Partial | Bank transaction import exists. Akaunting-style import/export for items, customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports is missing. |
+| Import/export | Partial | Bank transaction import and canonical item CSV preview/apply/export exist. Akaunting-style import/export for customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports remains missing. |
 | Search, bulk actions, notifications | Missing | Individual screens have local filtering, but there is no cross-domain search, reusable server bulk-action model, or persistent notification centre. |
 | External API and API keys | Missing | The first-party clients use Hono APIs, but there is no customer-facing API-key lifecycle, scoped external API, webhook delivery, or public API documentation. |
 | Mobile coverage | Partial | Auth, dashboard, invoices, expenses, settings, and payment-critical purchase workflows exist. Most accounting, banking, reporting, team, and portal workflows are web-only or absent. |
