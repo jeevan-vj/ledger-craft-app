@@ -97,6 +97,7 @@ export interface BusinessProfile {
   id?: string;
   name: string;
   email: string;
+  currency?: string;
   phone?: string | null;
   address: string | null;
   city: string | null;
@@ -308,7 +309,7 @@ export interface Item {
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
-  isActive: boolean;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
