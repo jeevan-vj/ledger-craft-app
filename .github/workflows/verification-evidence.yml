@@ -1,0 +1,30 @@
+name: Verification evidence (experimental)
+on:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Verify changed areas
+        env:
+          VERIFY_BASE: ${{ github.event.pull_request.base.sha }}
+        run: node scripts/verification/cli.mjs standard
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: verification-evidence
+          path: artifacts/verification/
+          if-no-files-found: warn
