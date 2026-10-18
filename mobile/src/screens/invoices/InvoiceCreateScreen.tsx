@@ -40,17 +40,22 @@ type InvoiceCreateNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>,
   NativeBottomTabNavigationProp<MainTabParamList>
 >;
-type InvoiceEditRouteProp = RouteProp<{ InvoiceEdit: { invoiceId?: string } }, 'InvoiceEdit'>;
+type InvoiceFormRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceCreate' | 'InvoiceEdit'>;
 
 export default function InvoiceCreateScreen() {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceCreateNavigationProp>();
-  const route = useRoute<InvoiceEditRouteProp>();
+  const route = useRoute<InvoiceFormRouteProp>();
   
   // Check if editing existing invoice
-  const invoiceId = route.params?.invoiceId;
+  const invoiceId = route.name === 'InvoiceEdit'
+    ? (route.params as InvoiceStackParamList['InvoiceEdit']).invoiceId
+    : undefined;
+  const requestedCustomerId = route.name === 'InvoiceCreate'
+    ? (route.params as InvoiceStackParamList['InvoiceCreate'])?.customerId
+    : undefined;
   const isEditMode = !!invoiceId;
 
   // Form state
@@ -169,8 +174,10 @@ export default function InvoiceCreateScreen() {
           if (profile.defaultTaxRate) setTaxRate(profile.defaultTaxRate);
         }
         
-        if (customerList.length > 0) {
-          setCustomerId(customerList[0].id);
+        const initialCustomer = customerList.find((customer) => customer.id === requestedCustomerId) ?? customerList[0];
+        if (initialCustomer) {
+          setCustomerId(initialCustomer.id);
+          setSelectedCustomer(initialCustomer as CustomerType);
         }
       }
     } catch (error) {

@@ -17,11 +17,14 @@ export type HomeStackParamList = {
 
 export type CustomerStackParamList = {
   CustomerList: undefined;
+  CustomerCreate: undefined;
+  CustomerDetail: { customerId: string };
+  CustomerEdit: { customerId: string };
 };
 
 export type InvoiceStackParamList = {
   InvoiceList: undefined;
-  InvoiceCreate: undefined;
+  InvoiceCreate: { customerId?: string } | undefined;
   InvoiceEdit: { invoiceId: string };
   InvoiceDetail: { invoiceId: string };
   /** Contextual detour so Back returns to the invoice instead of the More tab. */

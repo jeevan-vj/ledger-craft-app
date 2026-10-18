@@ -12,6 +12,8 @@ import InvoiceListScreen from '@/screens/invoices/InvoiceListScreen';
 import InvoiceCreateScreen from '@/screens/invoices/InvoiceCreateScreen';
 import InvoiceDetailScreen from '@/screens/invoices/InvoiceDetailScreen';
 import CustomerListScreen from '@/screens/customers/CustomerListScreen';
+import CustomerDetailScreen from '@/screens/customers/CustomerDetailScreen';
+import CustomerFormScreen from '@/screens/customers/CustomerFormScreen';
 import ExpenseListScreen from '@/screens/expenses/ExpenseListScreen';
 import ExpenseCreateScreen from '@/screens/expenses/ExpenseCreateScreen';
 import ExpenseEditScreen from '@/screens/expenses/ExpenseEditScreen';
@@ -46,8 +48,13 @@ function InvoiceNavigator() {
   </InvoiceStack.Navigator>;
 }
 function CustomerNavigator() {
-  const { colors } = useTheme();
-  return <CustomerStack.Navigator screenOptions={createListHeaderOptions(colors)}><CustomerStack.Screen name="CustomerList" component={CustomerListScreen} options={{ title: 'Customers' }} /></CustomerStack.Navigator>;
+  const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
+  return <CustomerStack.Navigator screenOptions={list}>
+    <CustomerStack.Screen name="CustomerList" component={CustomerListScreen} options={{ title: 'Customers' }} />
+    <CustomerStack.Screen name="CustomerCreate" component={CustomerFormScreen} options={{ ...form, title: 'New customer' }} />
+    <CustomerStack.Screen name="CustomerDetail" component={CustomerDetailScreen} options={{ ...detail, title: 'Customer' }} />
+    <CustomerStack.Screen name="CustomerEdit" component={CustomerFormScreen} options={{ ...form, title: 'Edit customer' }} />
+  </CustomerStack.Navigator>;
 }
 function MoreNavigator() {
   const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
