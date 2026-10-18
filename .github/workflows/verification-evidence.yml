@@ -1,6 +1,7 @@
 name: Verification evidence (experimental)
+# Opt-in until isolated database and baseline-compatible gates are complete.
 on:
-  pull_request:
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:
@@ -17,14 +18,15 @@ jobs:
           node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
-      - name: Verify changed areas
+      - name: Verify changed areas (experimental)
         env:
-          VERIFY_BASE: ${{ github.event.pull_request.base.sha }}
-        run: node scripts/verification/cli.mjs standard
+          VERIFY_BASE: origin/main
+        run: node scripts/verification/cli.mjs fast
       - name: Upload evidence
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: verification-evidence
           path: artifacts/verification/
+          retention-days: 3
           if-no-files-found: warn
