@@ -1,5 +1,14 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile banking management (implemented locally, 2026-10-19):** The Expo More
+tab now provides bank-account list/filter, create, detail, edit, delete-attempt,
+active-state, exact opening/current balances, and per-account imported
+transaction history through the Hono bank API. Dirty forms are protected from
+dismissal. Strict TypeScript, all 20 mobile Jest suites (78 tests), lint with no
+errors, and iOS/Android production exports pass; authenticated device QA remains
+pending. Manual transactions, transfers, splits, attachments, and mobile import
+remain in AKP-02.
+
 **Mobile item catalogue (implemented locally, 2026-10-19):** The Expo More tab
 now provides item list/filter, create, detail, edit, delete-attempt, active-state,
 category selection, sales/purchase pricing, and tax-default workflows through
@@ -195,6 +204,7 @@ See `deploy/cloudflare.md` for commands and rollout/verification details.
 | `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Revolut-inspired web UI implementation and review |
 | `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Wise-inspired native UI implementation and review |
 | `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS iOS build, App Store Connect, TestFlight, and release handoff |
+| `.cursor/skills/ledgercraft-mobile-loop/SKILL.md` | Repeated pick, implement, verify, PR, and wait loop for mobile parity |
 | `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema from app types |
 | `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |
 | `.cursor/skills/ledgercraft-agent-roster/SKILL.md` | Task subagent prompts |

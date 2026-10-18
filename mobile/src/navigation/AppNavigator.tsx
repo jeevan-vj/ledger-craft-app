@@ -25,6 +25,9 @@ import BusinessSettingsScreen from '@/screens/settings/BusinessSettingsScreen';
 import ItemListScreen from '@/screens/items/ItemListScreen';
 import ItemFormScreen from '@/screens/items/ItemFormScreen';
 import ItemDetailScreen from '@/screens/items/ItemDetailScreen';
+import BankAccountListScreen from '@/screens/banking/BankAccountListScreen';
+import BankAccountFormScreen from '@/screens/banking/BankAccountFormScreen';
+import BankAccountDetailScreen from '@/screens/banking/BankAccountDetailScreen';
 
 const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -68,6 +71,10 @@ function MoreNavigator() {
     <MoreStack.Screen name="ItemCreate" component={ItemFormScreen} options={{ ...form, title: 'New item' }} />
     <MoreStack.Screen name="ItemEdit" component={ItemFormScreen} options={{ ...form, title: 'Edit item' }} />
     <MoreStack.Screen name="ItemDetail" component={ItemDetailScreen} options={{ ...detail, title: 'Item' }} />
+    <MoreStack.Screen name="BankAccountList" component={BankAccountListScreen} options={{ title: 'Bank accounts' }} />
+    <MoreStack.Screen name="BankAccountCreate" component={BankAccountFormScreen} options={{ ...form, title: 'New bank account' }} />
+    <MoreStack.Screen name="BankAccountEdit" component={BankAccountFormScreen} options={{ ...form, title: 'Edit bank account' }} />
+    <MoreStack.Screen name="BankAccountDetail" component={BankAccountDetailScreen} options={{ ...detail, title: 'Bank account' }} />
     <MoreStack.Screen name="ExpenseList" component={ExpenseListScreen} options={{ title: 'Expenses' }} />
     <MoreStack.Screen name="ExpenseCreate" component={ExpenseCreateScreen} options={{ ...form, title: 'New expense' }} />
     <MoreStack.Screen name="ExpenseEdit" component={ExpenseEditScreen} options={{ ...form, title: 'Edit expense' }} />

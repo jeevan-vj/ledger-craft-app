@@ -15,6 +15,16 @@ export const moreMenuSections = [
     ],
   },
   {
+    title: 'Banking',
+    rows: [
+      {
+        label: 'Bank accounts',
+        subtitle: 'Balances and imported transactions',
+        screen: 'BankAccountList',
+      },
+    ],
+  },
+  {
     title: 'Account',
     rows: [
       {
@@ -56,6 +66,7 @@ type CustomerDestination =
 type MoreDestination =
   | { name: 'BusinessSettings' }
   | { name: 'ItemList' }
+  | { name: 'BankAccountList' }
   | { name: 'ExpenseList' }
   | { name: 'PurchaseList' }
   | { name: 'ExpenseCreate' };

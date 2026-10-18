@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Mobile banking management (implemented locally, 2026-10-19):** Expo now
+provides bank-account list/filter, create, detail, edit, delete-attempt,
+active-state, exact opening/current balances, and per-account imported
+transaction history from More through Hono. Dirty bank-account forms are
+protected from dismissal. Strict TypeScript, 20 Jest suites (78 tests), lint
+with no errors, and iOS/Android production exports pass. Authenticated device QA
+remains open; manual transactions, transfers, splits, attachments, and mobile
+import remain in AKP-02.
+
 **Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
 item list/filter, create, detail, edit, delete-attempt, active-state, category,
 sales/purchase price, and tax-default workflows from More through Hono. Exact
