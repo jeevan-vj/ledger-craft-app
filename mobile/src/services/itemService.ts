@@ -5,6 +5,7 @@ export interface ItemCategory {
   id: string;
   name: string;
   color?: string;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -16,13 +17,14 @@ export interface Item {
   description?: string | null;
   type: 'product' | 'service';
   categoryId?: string | null;
-  category?: ItemCategory;
+  category?: ItemCategory | null;
   salePrice?: number | null;
   purchasePrice?: number | null;
   taxRate?: number | null;
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -57,6 +59,7 @@ function fromRow(item: {
     enableSaleInfo: item.enable_sale_info !== false,
     enablePurchaseInfo: item.enable_purchase_info || false,
     unit: item.unit || 'unit',
+    isActive: true,
     userId: item.user_id,
     createdAt: item.created_at,
     updatedAt: item.updated_at,

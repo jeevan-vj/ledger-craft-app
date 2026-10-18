@@ -11,8 +11,9 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { STATUS_OPTIONS } from '@/utils/statusUtils';
-import { hairline, palette, radius } from '@/theme/tokens';
+import { STATUS_OPTIONS, statusInk } from '@/utils/statusUtils';
+import { hairline, radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface StatusPickerProps {
   visible: boolean;
@@ -29,6 +30,9 @@ export default function StatusPicker({
   onSelect,
   onClose,
 }: StatusPickerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
@@ -136,9 +140,12 @@ export default function StatusPicker({
                   ]}
                   onPress={() => handleSelect(status.value)}
                   activeOpacity={0.7}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${status.label}. ${status.description}`}
+                  accessibilityState={{ selected: isSelected }}
                 >
                   <View style={[styles.optionLeft, { gap: 12 }]}>
-                    <Feather name={status.icon} size={20} color={status.color} />
+                    <Feather name={status.icon} size={20} color={statusInk(status.value, palette)} />
                     <View style={styles.optionTextContainer}>
                       <Text style={[styles.optionLabel, isSelected && styles.optionLabelSelected]}>
                         {status.label}
@@ -147,7 +154,7 @@ export default function StatusPicker({
                     </View>
                   </View>
                   <View style={styles.optionRight}>
-                    <View style={[styles.colorDot, { backgroundColor: status.color }]} />
+                    <View style={[styles.colorDot, { backgroundColor: statusInk(status.value, palette) }]} />
                     {isSelected && <Feather name="check" size={18} color={palette.accent} />}
                   </View>
                 </TouchableOpacity>
@@ -169,7 +176,7 @@ export default function StatusPicker({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -236,7 +243,7 @@ const styles = StyleSheet.create({
     marginBottom: 2,
   },
   optionLabelSelected: {
-    color: palette.accent,
+    color: palette.accentText,
   },
   optionDescription: {
     fontSize: 13,
@@ -267,4 +274,3 @@ const styles = StyleSheet.create({
     color: palette.text,
   },
 });
-

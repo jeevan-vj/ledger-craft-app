@@ -604,8 +604,6 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     updatedLineItem.description = selectedItem.name;
     if (selectedItem.enableSaleInfo && selectedItem.salePrice !== null && selectedItem.salePrice !== undefined) {
       updatedLineItem.rate = selectedItem.salePrice;
-    } else if (selectedItem.enablePurchaseInfo && selectedItem.purchasePrice !== null && selectedItem.purchasePrice !== undefined) {
-      updatedLineItem.rate = selectedItem.purchasePrice;
     } else {
       updatedLineItem.rate = 0; // Default rate if no price info is available
     }
@@ -619,6 +617,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     const updatedItems = [...items];
     updatedItems[index] = updatedLineItem;
     setItems(updatedItems);
+    if (selectedItem.taxRate != null) {
+      setIsTaxEnabled(selectedItem.taxRate > 0);
+      setTaxRate(selectedItem.taxRate);
+    }
   };
 
   // Handle creation of a new item - Now accepts the index

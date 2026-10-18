@@ -49,7 +49,7 @@ Use semantic utilities such as `bg-primary`, `text-muted-foreground`, and `borde
 
 ## Mobile: LedgerCraft Wise
 
-The mobile system is native-first, spacious, and direct. It uses a warm grouped canvas, white list surfaces, forest text, and lime action. Canonical runtime tokens live in `mobile/src/theme/tokens.ts`; navigation consumes the same values through `mobile/src/theme/navigation.ts`.
+The mobile system is native-first, spacious, and direct. It follows the system appearance: a dark canvas with light ink, or a warm grouped canvas with forest ink. Lime stays the action color in both. Canonical runtime tokens live in `mobile/src/theme/tokens.ts` (`darkPalette` and `lightPalette`); screens read them through `useTheme()`. Navigation consumes the active palette through `mobile/src/theme/navigation.ts`.
 
 ### Color roles
 
@@ -57,9 +57,10 @@ The mobile system is native-first, spacious, and direct. It uses a warm grouped 
 | --- | --- | --- |
 | Canvas | `palette.background` | iOS-style grouped background |
 | Surface | `palette.surface` | Lists, forms, and sheets |
-| Ink | `palette.text` | Forest primary text |
-| Action | `palette.accent` | Lime primary controls and selection |
-| Action ink | `palette.accentForeground` | Forest text on lime; never white |
+| Ink | `palette.text` | Primary text. Forest in light mode, off-white in dark mode |
+| Action | `palette.accent` | Lime primary controls, selection, and indicators on dark chrome |
+| Action ink | `palette.accentForeground` | Forest text on lime only; never white, and never on dark surfaces |
+| Emphasis | `palette.accentText` | Lime or forest emphasis for text and icons that sit on canvas, cards, or accent fill |
 | Fill | `palette.fill`, `palette.fillMuted` | Secondary controls and fields |
 | Separator | `palette.separator` | Hairline grouping only |
 | Status | `danger`, `success`, `warning` | Meaning only |

@@ -1,5 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ReceiptUpload from '../ReceiptUpload';
 import { storageService } from '@/services/storageService';
@@ -19,6 +20,13 @@ vi.mock('@/hooks/use-toast', () => ({
   }),
 }));
 
+vi.mock('@/services/openaiReceiptService', () => ({
+  openaiReceiptService: {
+    isAvailable: () => false,
+    scanReceipt: vi.fn(),
+  },
+}));
+
 describe('ReceiptUpload', () => {
   const mockOnReceiptChange = vi.fn();
   
@@ -30,6 +38,16 @@ describe('ReceiptUpload', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    Object.defineProperty(URL, 'createObjectURL', {
+      configurable: true,
+      writable: true,
+      value: vi.fn(() => 'blob:receipt-preview'),
+    });
+    Object.defineProperty(URL, 'revokeObjectURL', {
+      configurable: true,
+      writable: true,
+      value: vi.fn(),
+    });
   });
 
   it('renders upload interface by default', () => {
@@ -47,7 +65,8 @@ describe('ReceiptUpload', () => {
     render(<ReceiptUpload {...defaultProps} initialReceiptUrl={initialUrl} />);
     
     expect(screen.getByText('Receipt Attached')).toBeInTheDocument();
-    expect(screen.getByText('External URL')).toBeInTheDocument();
+    expect(screen.getByText('External Receipt')).toBeInTheDocument();
+    expect(screen.getByText('receipt.jpg')).toBeInTheDocument();
   });
 
   it('handles file upload successfully', async () => {
@@ -58,18 +77,12 @@ describe('ReceiptUpload', () => {
     
     render(<ReceiptUpload {...defaultProps} />);
     
-    const fileInput = screen.getByRole('button', { name: /upload file/i });
-    fireEvent.click(fileInput);
-    
-    // Simulate file selection (this is challenging to test directly)
-    const hiddenInput = document.querySelector('input[type="file"]') as HTMLInputElement;
-    if (hiddenInput) {
-      Object.defineProperty(hiddenInput, 'files', {
-        value: [mockFile],
-        writable: false,
-      });
-      fireEvent.change(hiddenInput);
-    }
+    const hiddenInput = document.querySelector('input[accept*="pdf"]') as HTMLInputElement;
+    Object.defineProperty(hiddenInput, 'files', {
+      configurable: true,
+      value: [mockFile],
+    });
+    fireEvent.change(hiddenInput);
     
     await waitFor(() => {
       expect(storageService.uploadReceipt).toHaveBeenCalledWith(mockFile);
@@ -117,25 +130,24 @@ describe('ReceiptUpload', () => {
     });
   });
 
-  it('switches between upload and manual URL tabs', () => {
+  it('switches between upload and manual URL tabs', async () => {
+    const user = userEvent.setup();
     render(<ReceiptUpload {...defaultProps} />);
     
-    // Should start on upload tab
     expect(screen.getByText('Take Photo')).toBeInTheDocument();
     
-    // Switch to manual URL tab
-    fireEvent.click(screen.getByText('Manual URL'));
+    await user.click(screen.getByRole('tab', { name: /manual url/i }));
     expect(screen.getByPlaceholderText('https://example.com/receipt.jpg')).toBeInTheDocument();
     
-    // Switch back to upload tab
-    fireEvent.click(screen.getByText('Upload/Camera'));
+    await user.click(screen.getByRole('tab', { name: /upload\/camera/i }));
     expect(screen.getByText('Take Photo')).toBeInTheDocument();
   });
 
-  it('handles manual URL input', () => {
+  it('handles manual URL input', async () => {
+    const user = userEvent.setup();
     render(<ReceiptUpload {...defaultProps} />);
     
-    fireEvent.click(screen.getByText('Manual URL'));
+    await user.click(screen.getByRole('tab', { name: /manual url/i }));
     
     const urlInput = screen.getByPlaceholderText('https://example.com/receipt.jpg');
     fireEvent.change(urlInput, { target: { value: 'https://example.com/my-receipt.pdf' } });
@@ -149,7 +161,7 @@ describe('ReceiptUpload', () => {
     
     expect(screen.getByText('Receipt Attached')).toBeInTheDocument();
     
-    const deleteButton = screen.getByRole('button', { name: '' }); // X button
+    const deleteButton = screen.getByRole('button', { name: /remove receipt/i });
     fireEvent.click(deleteButton);
     
     expect(mockOnReceiptChange).toHaveBeenCalledWith(null, null);
@@ -163,7 +175,7 @@ describe('ReceiptUpload', () => {
     const initialUrl = 'https://example.com/receipt.jpg';
     render(<ReceiptUpload {...defaultProps} initialReceiptUrl={initialUrl} />);
     
-    const viewButton = screen.getByRole('button', { name: '' }); // Eye button
+    const viewButton = screen.getByRole('button', { name: /view receipt/i });
     fireEvent.click(viewButton);
     
     expect(mockOpen).toHaveBeenCalledWith(initialUrl, '_blank');

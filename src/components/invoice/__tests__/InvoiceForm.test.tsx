@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { BrowserRouter } from 'react-router-dom';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { vi } from 'vitest';
 import InvoiceForm from '../InvoiceForm';
 import { Invoice, Customer, BusinessProfile } from '@/types/index';
@@ -41,15 +41,28 @@ vi.mock('@/utils/pdfUtils', () => ({
   generateInvoicePdf: vi.fn(),
 }));
 
+vi.mock('@/hooks/useAppData', () => ({
+  useAppData: () => ({ units: ['each', 'kg', 'g'], itemCategories: [] }),
+}));
+
 // Mock UI components
 vi.mock('@/components/ui/form', () => ({
-  Form: ({ children }: { children: React.ReactNode }) => <form>{children}</form>,
+  Form: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormControl: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormField: ({ children, render }: { children?: React.ReactNode; render?: any }) => 
     render ? render({ field: { value: '', onChange: vi.fn() } }) : <div>{children}</div>,
   FormItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormLabel: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
   FormMessage: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+
+vi.mock('@/components/ui/tabs', () => ({
+  Tabs: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  TabsTrigger: ({ children, ...props }: { children: React.ReactNode }) => (
+    <button type="button" {...props}>{children}</button>
+  ),
 }));
 
 const mockCustomers: Customer[] = [
@@ -103,8 +116,8 @@ const defaultProps = {
   customers: mockCustomers,
   businessProfile: mockBusinessProfile,
   isLoadingCustomers: false,
-  onSubmit: jest.fn(),
-  onCancel: jest.fn(),
+  onSubmit: vi.fn(),
+  onCancel: vi.fn(),
   availableItems: [],
   isLoadingItems: false,
   generatedInvoiceNumber: 'INV-001',
@@ -112,170 +125,121 @@ const defaultProps = {
 };
 
 const InvoiceFormWrapper = ({ children }: { children: React.ReactNode }) => (
-  <BrowserRouter>{children}</BrowserRouter>
+  <BrowserRouter>
+    <TooltipProvider>{children}</TooltipProvider>
+  </BrowserRouter>
 );
+
+const readyLineItem = {
+  id: '1',
+  description: 'Consulting',
+  quantity: 1,
+  unit: 'each',
+  rate: 100,
+  rateUnit: 'each',
+  total: 100,
+};
+
+const readyInvoice: Partial<Invoice> = {
+  invoiceNumber: 'INV-001',
+  customerId: '1',
+  date: new Date().toISOString(),
+  dueDate: new Date(Date.now() + 86_400_000).toISOString(),
+  items: [readyLineItem],
+  subtotal: 100,
+  taxAmount: 0,
+  total: 100,
+  status: 'draft',
+  currency: 'USD',
+  notes: 'Test notes',
+  terms: 'Test terms',
+};
+
+function clickSaveDraft() {
+  const form = document.querySelector('form[data-invoice-form]') as HTMLFormElement | null;
+  if (!form) throw new Error('Invoice form was not rendered');
+  form.requestSubmit();
+}
 
 describe('InvoiceForm Template Saving', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    localStorage.clear();
   });
 
   it('should include templateName in form submission for create mode', async () => {
     const mockOnSubmit = vi.fn();
-    const user = userEvent.setup();
 
     render(
       <InvoiceFormWrapper>
-        <InvoiceForm {...defaultProps} onSubmit={mockOnSubmit} />
+        <InvoiceForm {...defaultProps} initialValues={readyInvoice} onSubmit={mockOnSubmit} />
       </InvoiceFormWrapper>
     );
 
-    // Wait for form to be rendered
     await waitFor(() => {
-      expect(screen.getByRole('form')).toBeInTheDocument();
+      expect(document.querySelector('form[data-invoice-form]')).toBeTruthy();
     });
 
-    // Look for template selector buttons (they should be rendered)
-    const templateButtons = screen.getAllByRole('button');
-    const modernTemplateButton = templateButtons.find(button => 
-      button.textContent?.includes('Modern') || button.getAttribute('data-template') === 'modern'
-    );
+    fireEvent.click(screen.getAllByRole('button', { name: /^preview$/i })[0]);
+    fireEvent.click(await screen.findByText('Modern'));
+    clickSaveDraft();
 
-    if (modernTemplateButton) {
-      await user.click(modernTemplateButton);
-    }
-
-    // Fill out required form fields
-    const customerSelect = screen.getByRole('combobox');
-    if (customerSelect) {
-      await user.click(customerSelect);
-      const customerOption = screen.getByText('Test Customer');
-      await user.click(customerOption);
-    }
-
-    // Submit the form
-    const submitButton = screen.getByRole('button', { name: /save/i }) || 
-                        screen.getByRole('button', { name: /create/i });
-    
-    if (submitButton) {
-      await user.click(submitButton);
-    }
-
-    // Wait for submission
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalled();
     });
 
-    // Check if templateName was included in the submission
-    const submissionArgs = mockOnSubmit.mock.calls[0];
-    const formValues = submissionArgs[0];
-    
-    expect(formValues).toHaveProperty('templateName');
-    console.log('Form submission values:', formValues);
+    const formValues = mockOnSubmit.mock.calls[0][0];
+    expect(formValues).toHaveProperty('templateName', 'modern');
   });
 
   it('should include templateName in form submission for edit mode', async () => {
     const mockOnSubmit = vi.fn();
-    const user = userEvent.setup();
-
-    const mockInitialValues: Partial<Invoice> = {
-      id: '1',
-      invoiceNumber: 'INV-001',
-      customerId: '1',
-      date: new Date().toISOString(),
-      dueDate: new Date().toISOString(),
-      items: [],
-      subtotal: 0,
-      taxAmount: 0,
-      total: 0,
-      status: 'draft',
-      currency: 'USD',
-      notes: 'Test notes',
-      terms: 'Test terms',
-      templateName: 'classic',
-    };
 
     render(
       <InvoiceFormWrapper>
-        <InvoiceForm 
-          {...defaultProps} 
+        <InvoiceForm
+          {...defaultProps}
           mode="edit"
-          initialValues={mockInitialValues}
-          onSubmit={mockOnSubmit} 
+          initialValues={{ ...readyInvoice, id: '1', templateName: 'classic' }}
+          onSubmit={mockOnSubmit}
         />
       </InvoiceFormWrapper>
     );
 
-    // Wait for form to be rendered with initial values
     await waitFor(() => {
-      expect(screen.getByRole('form')).toBeInTheDocument();
+      expect(document.querySelector('form[data-invoice-form]')).toBeTruthy();
     });
 
-    // Change template selection
-    const templateButtons = screen.getAllByRole('button');
-    const corporateTemplateButton = templateButtons.find(button => 
-      button.textContent?.includes('Corporate') || button.getAttribute('data-template') === 'corporate'
-    );
+    fireEvent.click(screen.getAllByRole('button', { name: /^preview$/i })[0]);
+    fireEvent.click(await screen.findByText('Corporate'));
+    clickSaveDraft();
 
-    if (corporateTemplateButton) {
-      await user.click(corporateTemplateButton);
-    }
-
-    // Submit the form
-    const submitButton = screen.getByRole('button', { name: /save/i }) || 
-                        screen.getByRole('button', { name: /update/i });
-    
-    if (submitButton) {
-      await user.click(submitButton);
-    }
-
-    // Wait for submission
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalled();
     });
 
-    // Check if templateName was included in the submission
-    const submissionArgs = mockOnSubmit.mock.calls[0];
-    const formValues = submissionArgs[0];
-    
-    expect(formValues).toHaveProperty('templateName');
-    expect(formValues.templateName).toBe('corporate');
-    console.log('Edit form submission values:', formValues);
+    expect(mockOnSubmit.mock.calls[0][0].templateName).toBe('corporate');
   });
 
   it('should default to classic template when no template is specified', async () => {
     const mockOnSubmit = vi.fn();
-    const user = userEvent.setup();
 
     render(
       <InvoiceFormWrapper>
-        <InvoiceForm {...defaultProps} onSubmit={mockOnSubmit} />
+        <InvoiceForm {...defaultProps} initialValues={readyInvoice} onSubmit={mockOnSubmit} />
       </InvoiceFormWrapper>
     );
 
-    // Wait for form to be rendered
     await waitFor(() => {
-      expect(screen.getByRole('form')).toBeInTheDocument();
+      expect(document.querySelector('form[data-invoice-form]')).toBeTruthy();
     });
 
-    // Submit without changing template (should default to classic)
-    const submitButton = screen.getByRole('button', { name: /save/i }) || 
-                        screen.getByRole('button', { name: /create/i });
-    
-    if (submitButton) {
-      await user.click(submitButton);
-    }
+    clickSaveDraft();
 
-    // Wait for submission
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalled();
     });
 
-    // Check if templateName defaults to classic
-    const submissionArgs = mockOnSubmit.mock.calls[0];
-    const formValues = submissionArgs[0];
-    
-    expect(formValues).toHaveProperty('templateName');
-    expect(formValues.templateName).toBe('classic');
+    expect(mockOnSubmit.mock.calls[0][0].templateName).toBe('classic');
   });
 });

@@ -10,9 +10,10 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import type { Invoice } from '@/types/invoice';
-import { STATUS_OPTIONS, getStatusColor, getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
-import { hairline, palette, radius } from '@/theme/tokens';
+import { STATUS_OPTIONS, getStatusIcon, getStatusLabel, statusActionColors, statusInk } from '@/utils/statusUtils';
+import { hairline, radius } from '@/theme/tokens';
 import { IconWell } from '@/components/ui/IconWell';
+import { useTheme } from '@/theme';
 
 interface SwipeableInvoiceCardProps {
   invoice: Invoice;
@@ -42,6 +43,9 @@ export default function SwipeableInvoiceCard({
   isFirst = false,
   isLast = false,
 }: SwipeableInvoiceCardProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const translateX = useSharedValue(0);
   const isSwipedRef = useRef(false);
   const availableStatuses = STATUS_OPTIONS.filter((opt) => opt.value !== invoice.status);
@@ -108,7 +112,7 @@ export default function SwipeableInvoiceCard({
     transform: [{ translateX: translateX.value }],
   }));
 
-  const statusColor = getStatusColor(invoice.status);
+  const statusColor = statusInk(invoice.status, palette);
 
   return (
     <View
@@ -119,7 +123,9 @@ export default function SwipeableInvoiceCard({
       ]}
     >
       <View style={styles.actionsContainer}>
-        {availableStatuses.map((status) => (
+        {availableStatuses.map((status) => {
+          const action = statusActionColors(status.value, palette);
+          return (
           <GestureDetector
             key={status.value}
             gesture={Gesture.Tap().onEnd(() => {
@@ -127,12 +133,17 @@ export default function SwipeableInvoiceCard({
               runOnJS(handleStatusPress)(status.value);
             })}
           >
-            <View style={[styles.actionButton, { backgroundColor: status.color }]}>
-              <Feather name={status.icon} size={16} color={palette.surface} />
-              <Text style={styles.actionLabel}>{status.label}</Text>
+            <View
+              style={[styles.actionButton, { backgroundColor: action.background }]}
+              accessibilityRole="button"
+              accessibilityLabel={`Mark invoice ${status.label}`}
+            >
+              <Feather name={status.icon} size={16} color={action.foreground} />
+              <Text style={[styles.actionLabel, { color: action.foreground }]}>{status.label}</Text>
             </View>
           </GestureDetector>
-        ))}
+          );
+        })}
       </View>
 
       <GestureDetector gesture={composedGesture}>
@@ -168,7 +179,7 @@ export default function SwipeableInvoiceCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     position: 'relative',
     backgroundColor: palette.surface,

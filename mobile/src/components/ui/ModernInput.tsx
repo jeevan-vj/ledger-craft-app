@@ -10,7 +10,8 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ModernInputProps extends Omit<TextInputProps, 'onChange'> {
   label: string;
@@ -33,6 +34,9 @@ export function ModernInput({
   showPasswordToggle = false,
   ...props
 }: ModernInputProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [isFocused, setIsFocused] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const inputType = showPasswordToggle ? !showPassword : !secureTextEntry;
@@ -91,7 +95,7 @@ export function ModernInput({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     marginBottom: space.lg,
   },

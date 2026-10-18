@@ -1,4 +1,4 @@
-import type { CreateItemCategoryRequest, CreateItemRequest, ItemCategoryDto, ItemDto, UpdateItemRequest } from '@ledgercraft/contracts';
+import type { BulkItemRequest, CreateItemCategoryRequest, CreateItemRequest, ImportItemsRequest, ImportItemsResponse, ItemCategoryDto, ItemDto, UpdateItemCategoryRequest, UpdateItemRequest } from '@ledgercraft/contracts';
 import type { Item, ItemCategory } from '@/types';
 
 export function itemsApiEnabled(): boolean {
@@ -34,6 +34,8 @@ function toItem(dto: ItemDto): Item {
     enableSaleInfo: dto.enableSaleInfo,
     enablePurchaseInfo: dto.enablePurchaseInfo,
     unit: dto.unit,
+    isActive: dto.isActive,
+    category: dto.category ? toCategory(dto.category) : null,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -44,6 +46,7 @@ function toCategory(dto: ItemCategoryDto): ItemCategory {
     id: dto.id,
     name: dto.name,
     color: dto.color ?? undefined,
+    isActive: dto.isActive,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -63,6 +66,7 @@ export function toCreateItemRequest(
     enableSaleInfo: item.enableSaleInfo,
     enablePurchaseInfo: item.enablePurchaseInfo,
     unit: item.unit || 'ea',
+    isActive: item.isActive,
   };
 }
 
@@ -80,6 +84,7 @@ export function toUpdateItemRequest(
   if (item.enableSaleInfo !== undefined) input.enableSaleInfo = item.enableSaleInfo;
   if (item.enablePurchaseInfo !== undefined) input.enablePurchaseInfo = item.enablePurchaseInfo;
   if (item.unit !== undefined) input.unit = item.unit;
+  if (item.isActive !== undefined) input.isActive = item.isActive;
   return input;
 }
 
@@ -131,6 +136,24 @@ export const itemsApi = {
     await request<void>(`/api/items/${id}`, { method: 'DELETE' });
   },
 
+  async duplicate(id: string): Promise<Item> {
+    return toItem(await request<ItemDto>(`/api/items/${id}/duplicate`, { method: 'POST', body: '{}' }));
+  },
+
+  async bulk(input: BulkItemRequest): Promise<{ affected: number }> {
+    return request('/api/items/bulk', { method: 'POST', body: JSON.stringify(input) });
+  },
+
+  async importItems(input: ImportItemsRequest): Promise<ImportItemsResponse> {
+    return request('/api/items/import', { method: 'POST', body: JSON.stringify(input) });
+  },
+
+  async exportCsv(): Promise<Blob> {
+    const response = await fetch('/api/items/export', { credentials: 'include' });
+    if (!response.ok) throw new ItemsApiError(await parseError(response), response.status);
+    return response.blob();
+  },
+
   async createCategory(input: CreateItemCategoryRequest): Promise<ItemCategory> {
     return toCategory(
       await request<ItemCategoryDto>('/api/item-categories', {
@@ -138,5 +161,15 @@ export const itemsApi = {
         body: JSON.stringify(input),
       }),
     );
+  },
+
+  async updateCategory(id: string, input: UpdateItemCategoryRequest): Promise<ItemCategory> {
+    return toCategory(await request<ItemCategoryDto>(`/api/item-categories/${id}`, {
+      method: 'PATCH', body: JSON.stringify(input),
+    }));
+  },
+
+  async removeCategory(id: string): Promise<void> {
+    await request<void>(`/api/item-categories/${id}`, { method: 'DELETE' });
   },
 };

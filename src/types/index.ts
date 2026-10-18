@@ -97,6 +97,7 @@ export interface BusinessProfile {
   id?: string;
   name: string;
   email: string;
+  currency?: string;
   phone?: string | null;
   address: string | null;
   city: string | null;
@@ -289,6 +290,7 @@ export interface ItemCategory {
   id: string;
   name: string;
   color?: string; // Hex color code for category color
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -300,13 +302,14 @@ export interface Item {
   description?: string | null;
   type: 'product' | 'service';
   categoryId?: string | null;
-  category?: ItemCategory;
+  category?: ItemCategory | null;
   salePrice?: number | null;
   purchasePrice?: number | null;
   taxRate?: number | null;
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

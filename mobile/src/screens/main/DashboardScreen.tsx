@@ -1,323 +1,209 @@
-import React, { useState, useEffect, useLayoutEffect, useCallback } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  RefreshControl,
-  Pressable,
-  ActivityIndicator,
-  StyleSheet,
-} from 'react-native';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { ActivityIndicator, LayoutAnimation, Pressable, RefreshControl, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
-import { Feather } from '@expo/vector-icons';
 import { useAuth } from '@/store';
 import { invoiceService } from '@/services/invoiceService';
 import type { Invoice } from '@/types/invoice';
-import { EmptyState } from '@/components/ui/EmptyState';
-import { IconWell } from '@/components/ui/IconWell';
-import { BalanceCard } from '@/components/dashboard/BalanceCard';
-import { QuickAction } from '@/components/ui/QuickAction';
-import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
-import { getStatusColor, getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
-import { formatMoney } from '@/utils/money';
 import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
-import { palette, radius, space } from '@/theme/tokens';
+import { invoiceTabParams, moreTabParams } from '@/navigation/links';
+import { Card, CircleIconButton, DashedSetupCard, EmptyState, PillButton } from '@/components/ui';
+import { formatMoney } from '@/utils/money';
+import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
+import { useTheme } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-type DashboardNavigation = CompositeNavigationProp<
-  NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>,
-  NativeBottomTabNavigationProp<MainTabParamList>
->;
-
-function formatDate(dateString: string) {
-  return new Date(dateString).toLocaleDateString('en-NZ', {
-    day: 'numeric',
-    month: 'short',
-  });
-}
+type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
 export default function DashboardScreen() {
-  const { user } = useAuth();
+  const theme = useTheme();
+  const insets = useSafeAreaInsets();
   const navigation = useNavigation<DashboardNavigation>();
+  const { user } = useAuth();
+  const { width } = useWindowDimensions();
+  const cardWidth = Math.max(280, width - 40);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [summaryPage, setSummaryPage] = useState(0);
+  const [tasksDismissed, setTasksDismissed] = useState(false);
+  const [balanceVisible, setBalanceVisible] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const openCreate = useCallback(() => {
-    navigation.navigate('Invoices', { screen: 'InvoiceCreate' });
-  }, [navigation]);
-
-  const openExpense = useCallback(() => {
-    navigation.navigate('Expenses', { screen: 'ExpenseCreate' });
-  }, [navigation]);
-
-  useLayoutEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <NativeHeaderButton label="Invoice" onPress={openCreate} primary />
-      ),
-    });
-  }, [navigation, openCreate]);
-
-  const loadData = async () => {
+  const load = useCallback(async () => {
     try {
-      const data = await invoiceService.fetchInvoices();
-      setInvoices(data);
-    } catch (error) {
-      console.error('Error loading dashboard data:', error);
+      setInvoices(await invoiceService.fetchInvoices());
+      setError(null);
+    } catch (loadError) {
+      console.error('Error loading dashboard data:', loadError);
+      setError('Invoices could not be loaded.');
     } finally {
       setLoading(false);
       setRefreshing(false);
     }
-  };
-
-  useEffect(() => {
-    loadData();
   }, []);
+  useEffect(() => { load(); }, [load]);
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadData();
+  const paid = useMemo(() => invoices.filter((item) => item.status === 'paid'), [invoices]);
+  const outstanding = useMemo(() => invoices.filter((item) => item.status === 'sent' || item.status === 'overdue'), [invoices]);
+  const totalPaid = paid.reduce((sum, item) => sum + item.total, 0);
+  const totalOutstanding = outstanding.reduce((sum, item) => sum + item.total, 0);
+  const overdue = invoices.filter((item) => item.status === 'overdue');
+  const workItems = useMemo(() => {
+    const rank: Record<string, number> = { overdue: 0, draft: 1, sent: 2 };
+    return [...invoices]
+      .filter((invoice) => invoice.status === 'overdue' || invoice.status === 'draft' || invoice.status === 'sent')
+      .sort((a, b) => (rank[a.status] ?? 9) - (rank[b.status] ?? 9))
+      .slice(0, 6);
+  }, [invoices]);
+  const statusColor = (status: string) => {
+    if (status === 'overdue') return theme.colors.danger;
+    if (status === 'paid') return theme.colors.success;
+    if (status === 'sent') return theme.colors.accentText;
+    return theme.colors.textSecondary;
   };
+  const formatDate = (value: string) => {
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return value;
+    return date.toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
+  };
+  const name = user?.user_metadata?.full_name || user?.email?.split('@')[0] || 'there';
+  const firstName = name.split(' ')[0];
 
-  const paidInvoices = invoices.filter((i) => i.status === 'paid');
-  const totalEarnings = paidInvoices.reduce((sum, inv) => sum + inv.total, 0);
-  const pendingInvoices = invoices.filter((i) => i.status === 'sent' || i.status === 'overdue');
-  const pendingAmount = pendingInvoices.reduce((sum, inv) => sum + inv.total, 0);
-
-  const workItems = [...invoices]
-    .filter((inv) => inv.status === 'overdue' || inv.status === 'draft' || inv.status === 'sent')
-    .sort((a, b) => {
-      const rank = { overdue: 0, draft: 1, sent: 2 } as Record<string, number>;
-      return (rank[a.status] ?? 9) - (rank[b.status] ?? 9);
-    })
-    .slice(0, 6);
-
-  const greeting = (() => {
-    const hour = new Date().getHours();
-    if (hour < 12) return 'Good morning';
-    if (hour < 18) return 'Good afternoon';
-    return 'Good evening';
-  })();
-
-  const firstName = user?.user_metadata?.full_name?.split(' ')[0];
-  const greetingLine =
-    firstName && firstName.length > 1 ? `${greeting}, ${firstName}` : greeting;
+  const openInvoice = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
+  const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
+  const openExpense = () => navigation.navigate('More', moreTabParams({ name: 'ExpenseCreate' }));
+  const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
+  const retry = () => { setLoading(true); load(); };
 
   if (loading) {
     return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+      <View style={[styles.center, { backgroundColor: theme.colors.background }]}>
+        <ActivityIndicator size="large" color={theme.colors.accent} accessibilityLabel="Loading home" />
       </View>
     );
   }
 
-  return (
-    <View style={styles.screen}>
-      <ScrollView
-        style={styles.screen}
-        contentInsetAdjustmentBehavior="automatic"
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            tintColor={palette.accentForeground}
-          />
-        }
-      >
-        <View style={styles.content}>
-          <Text style={styles.greeting}>{greetingLine}</Text>
+  if (error && invoices.length === 0) {
+    return (
+      <View style={[styles.center, { backgroundColor: theme.colors.background, paddingTop: insets.top }]}>
+        <EmptyState title="Couldn't load home" description={error} actionLabel="Try again" onAction={retry} />
+      </View>
+    );
+  }
 
-          <BalanceCard
-            totalBalance={pendingAmount > 0 ? pendingAmount : totalEarnings}
-            paidBalance={totalEarnings}
-            pendingBalance={pendingAmount}
-            label={pendingAmount > 0 ? 'You are owed' : 'Paid this period'}
-          />
-
-          <View style={styles.actions}>
-            <QuickAction
-              label="Invoice"
-              primary
-              onPress={openCreate}
-              icon={<Feather name="plus" size={22} color={palette.accentForeground} />}
-            />
-            <QuickAction
-              label="Expense"
-              onPress={openExpense}
-              icon={<Feather name="credit-card" size={22} color={palette.accentForeground} />}
-            />
-            <QuickAction
-              label="See all"
-              onPress={() => navigation.navigate('Invoices', { screen: 'InvoiceList' })}
-              icon={<Feather name="file-text" size={22} color={palette.accentForeground} />}
-            />
-          </View>
-
-          <View style={styles.sectionHead}>
-            <Text style={styles.sectionTitle}>Needs action</Text>
-            <Pressable
-              onPress={() => navigation.navigate('Invoices', { screen: 'InvoiceList' })}
-              hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel="See all invoices"
-            >
-              <Text style={styles.seeAll}>See all</Text>
-            </Pressable>
-          </View>
-
-          {workItems.length === 0 ? (
-            <View style={styles.emptyCard}>
-              <EmptyState
-                title="You're clear"
-                description="Create an invoice when you're ready to get paid."
-                actionLabel="Create invoice"
-                onAction={openCreate}
-              />
-            </View>
-          ) : (
-            <View style={styles.group}>
-              {workItems.map((invoice, index) => {
-                const statusColor = getStatusColor(invoice.status);
-                return (
-                  <Pressable
-                    key={invoice.id}
-                    onPress={() =>
-                      navigation.navigate('Invoices', {
-                        screen: 'InvoiceDetail',
-                        params: { invoiceId: invoice.id },
-                      })
-                    }
-                    style={({ pressed }) => [
-                      styles.row,
-                      index !== workItems.length - 1 && styles.rowBorder,
-                      pressed && styles.rowPressed,
-                    ]}
-                    accessibilityRole="button"
-                    accessibilityLabel={`Invoice ${invoice.invoiceNumber}`}
-                  >
-                    <IconWell size={40} color={`${statusColor}22`}>
-                      <Feather name={getStatusIcon(invoice.status)} size={16} color={statusColor} />
-                    </IconWell>
-                    <View style={styles.rowCopy}>
-                      <Text style={styles.rowTitle}>{invoice.customer?.name || invoice.invoiceNumber}</Text>
-                      <Text style={styles.rowMeta}>
-                        {invoice.invoiceNumber} · {formatDate(invoice.date)}
-                      </Text>
-                    </View>
-                    <View style={styles.rowAmount}>
-                      <Text style={styles.amount}>
-                        {formatMoney(invoice.total, invoice.currency || 'NZD')}
-                      </Text>
-                      <Text style={[styles.status, { color: statusColor }]}>
-                        {getStatusLabel(invoice.status)}
-                      </Text>
-                    </View>
-                  </Pressable>
-                );
-              })}
-            </View>
-          )}
-        </View>
-      </ScrollView>
+  return <ScrollView
+    style={{ backgroundColor: theme.colors.background }}
+    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: 32 + insets.bottom }]}
+    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
+    showsVerticalScrollIndicator={false}
+  >
+    <View style={styles.topRow}>
+      <View><Text style={theme.type.subhead}>Good to see you</Text><Text style={[theme.type.title, { marginTop: 2 }]}>{firstName}</Text></View>
+      <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={styles.avatarText}>{name.slice(0, 1).toUpperCase()}</Text></View>
     </View>
-  );
+
+    <View style={styles.balanceRow}>
+      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Total balance</Text><Text style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Total balance ${formatMoney(totalOutstanding || totalPaid, 'NZD')}` : 'Total balance hidden'}>{balanceVisible ? formatMoney(totalOutstanding || totalPaid, 'NZD') : '••••••'}</Text></View>
+      <View style={styles.balanceActions}><CircleIconButton icon={balanceVisible ? 'eye-off' : 'eye'} label={balanceVisible ? 'Hide balance' : 'Show balance'} onPress={() => setBalanceVisible((visible) => !visible)} /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
+    </View>
+
+    <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.actions}>
+      <PillButton label="New invoice" icon={<Feather name="plus" size={17} color={theme.colors.accentForeground} />} onPress={openInvoice} />
+      <PillButton label="Record payment" variant="secondary" icon={<Feather name="check" size={17} color={theme.colors.accentText} />} onPress={openInvoices} />
+      <PillButton label="Request" variant="secondary" icon={<Feather name="send" size={17} color={theme.colors.accentText} />} onPress={openInvoice} />
+      <PillButton label="Scan receipt" variant="ghost" icon={<Feather name="camera" size={17} color={theme.colors.text} />} onPress={openExpense} />
+    </ScrollView>
+
+    {error ? (
+      <Pressable onPress={retry} accessibilityRole="button" accessibilityLabel="Retry loading invoices" style={[styles.errorBanner, { backgroundColor: theme.colors.dangerFill }]}>
+        <Text style={[theme.type.subhead, { color: theme.colors.danger }]}>{error} Tap to retry.</Text>
+      </Pressable>
+    ) : null}
+
+    <Text style={[theme.type.headline, styles.sectionTitle]}>Business summary</Text>
+    <ScrollView horizontal pagingEnabled snapToInterval={cardWidth + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }} accessibilityLabel={`Business summary, card ${summaryPage + 1} of 2`} onMomentumScrollEnd={(event) => setSummaryPage(Math.round(event.nativeEvent.contentOffset.x / (cardWidth + 12)))}>
+      <Card elevated style={{ width: cardWidth }}>
+        <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Money coming in</Text>
+        <Text style={[theme.type.display, { marginTop: 8 }]}>{formatMoney(totalOutstanding, 'NZD')}</Text>
+        <View style={styles.summaryFooter}><Text style={theme.type.footnote}>{outstanding.length} outstanding invoices</Text><Feather name="trending-up" size={20} color={theme.colors.accent} /></View>
+      </Card>
+      <Card elevated style={{ width: cardWidth }}>
+        <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Paid this period</Text>
+        <Text style={[theme.type.display, { marginTop: 8 }]}>{formatMoney(totalPaid, 'NZD')}</Text>
+        <View style={styles.summaryFooter}><Text style={theme.type.footnote}>{paid.length} paid invoices</Text><Feather name="check-circle" size={20} color={theme.colors.accent} /></View>
+      </Card>
+    </ScrollView>
+    <View style={styles.dots}>{[0, 1].map((page) => <View key={page} style={{ width: page === summaryPage ? 18 : 6, height: 6, borderRadius: 3, backgroundColor: page === summaryPage ? theme.colors.accent : theme.colors.border }} />)}</View>
+
+    {!tasksDismissed ? <>
+      <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>
+      <Card>
+        <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : 'Add your business details before sending an invoice.'}</Text></View></View>
+        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : 'Continue'} onPress={overdue.length ? openInvoices : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={() => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); setTasksDismissed(true); }} /></View>
+      </Card>
+    </> : <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" />}
+
+    <View style={styles.sectionHead}>
+      <Text style={theme.type.headline}>Needs action</Text>
+      <Pressable onPress={openInvoices} accessibilityRole="button" accessibilityLabel="See all invoices" style={styles.seeAll}>
+        <Text style={[theme.type.callout, { color: theme.colors.accentText }]}>See all</Text>
+      </Pressable>
+    </View>
+    <Card style={styles.invoiceCard}>
+      {workItems.length === 0 ? (
+        <Text style={[theme.type.subhead, styles.emptyInvoices]}>No invoices need action.</Text>
+      ) : workItems.map((invoice, index) => (
+        <Pressable
+          key={invoice.id}
+          onPress={() => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceDetail', params: { invoiceId: invoice.id } }))}
+          accessibilityRole="button"
+          accessibilityLabel={`Invoice ${invoice.invoiceNumber}`}
+          style={({ pressed }) => [
+            styles.invoiceRow,
+            index !== workItems.length - 1 && { borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator },
+            pressed && { backgroundColor: theme.colors.fillMuted },
+          ]}
+        >
+          <View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}>
+            <Feather name={getStatusIcon(invoice.status)} size={16} color={statusColor(invoice.status)} />
+          </View>
+          <View style={styles.invoiceCopy}>
+            <Text style={theme.type.callout} numberOfLines={1}>{invoice.customer?.name || invoice.invoiceNumber}</Text>
+            <Text style={theme.type.footnote}>{invoice.invoiceNumber} · {formatDate(invoice.date)}</Text>
+          </View>
+          <View style={styles.invoiceAmount}>
+            <Text style={[theme.type.callout, styles.tabular]}>{formatMoney(invoice.total, invoice.currency || 'NZD')}</Text>
+            <Text style={[theme.type.footnote, { color: statusColor(invoice.status) }]}>{getStatusLabel(invoice.status)}</Text>
+          </View>
+        </Pressable>
+      ))}
+    </Card>
+  </ScrollView>;
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
-  center: {
-    flex: 1,
-    backgroundColor: palette.background,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    paddingHorizontal: space.screen,
-    paddingTop: 8,
-    paddingBottom: 40,
-  },
-  greeting: {
-    fontSize: 15,
-    color: palette.textSecondary,
-    marginBottom: space.lg,
-  },
-  actions: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    gap: 28,
-    marginBottom: 28,
-  },
-  sectionHead: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: palette.textSecondary,
-    letterSpacing: -0.08,
-    textTransform: 'uppercase',
-  },
-  seeAll: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: palette.accentForeground,
-  },
-  emptyCard: {
-    backgroundColor: palette.surface,
-    borderRadius: radius.group,
-  },
-  group: {
-    backgroundColor: palette.surface,
-    borderRadius: radius.group,
-    overflow: 'hidden',
-  },
-  row: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-    gap: 12,
-  },
-  rowBorder: {
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: palette.separator,
-  },
-  rowPressed: {
-    backgroundColor: palette.fillMuted,
-  },
-  rowCopy: {
-    flex: 1,
-  },
-  rowTitle: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: palette.text,
-  },
-  rowMeta: {
-    fontSize: 13,
-    color: palette.textSecondary,
-    marginTop: 2,
-  },
-  rowAmount: {
-    alignItems: 'flex-end',
-  },
-  amount: {
-    fontSize: 17,
-    fontWeight: '600',
-    color: palette.text,
-    fontVariant: ['tabular-nums'],
-  },
-  status: {
-    fontSize: 12,
-    fontWeight: '600',
-    marginTop: 2,
-  },
+  center: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  content: { paddingHorizontal: 20, paddingTop: 20, paddingBottom: 48 },
+  topRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 36 },
+  avatar: { width: 52, height: 52, borderRadius: 26, alignItems: 'center', justifyContent: 'center' },
+  avatarText: { color: '#163300', fontSize: 19, fontWeight: '900' },
+  balanceRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
+  balanceActions: { flexDirection: 'row', gap: 8 }, money: { marginTop: 2, fontVariant: ['tabular-nums'] },
+  actions: { gap: 10, paddingRight: 20, marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
+  summaryFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26 },
+  dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
+  taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
+  taskActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
+  sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, marginTop: 28 },
+  seeAll: { minHeight: 44, justifyContent: 'center', paddingHorizontal: 4 },
+  errorBanner: { borderRadius: 16, paddingHorizontal: 16, paddingVertical: 12, marginBottom: 16, minHeight: 44, justifyContent: 'center' },
+  invoiceCard: { padding: 0, overflow: 'hidden' },
+  emptyInvoices: { padding: 16 },
+  invoiceRow: { minHeight: 72, flexDirection: 'row', alignItems: 'center', gap: 12, paddingHorizontal: 16, paddingVertical: 12 },
+  invoiceCopy: { flex: 1, minWidth: 0 },
+  invoiceAmount: { alignItems: 'flex-end' },
+  tabular: { fontVariant: ['tabular-nums'] },
 });

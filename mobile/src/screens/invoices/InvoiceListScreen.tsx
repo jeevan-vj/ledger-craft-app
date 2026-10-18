@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Pressable,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -24,12 +25,16 @@ import SwipeableInvoiceCard from '@/components/invoice/SwipeableInvoiceCard';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { EmptyState } from '@/components/ui/EmptyState';
-import { palette, space } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { useTheme } from '@/theme';
 
 type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceList'>;
 
 export default function InvoiceListScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceListNavigationProp>();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
@@ -41,6 +46,11 @@ export default function InvoiceListScreen() {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<Invoice | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const clearFilters = () => {
+    setSearchQuery('');
+    setFilter('all');
+    applyFilters(invoices, '', 'all');
+  };
 
   const loadInvoices = async () => {
     try {
@@ -208,7 +218,7 @@ export default function InvoiceListScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoices" />
       </View>
     );
   }
@@ -217,16 +227,22 @@ export default function InvoiceListScreen() {
     <View style={styles.container}>
       {Platform.OS === 'android' && invoices.length > 0 && (
         <View style={styles.androidSearch}>
-          <Feather name="search" size={18} color="#64748B" />
+          <Feather name="search" size={18} color={palette.textSecondary} />
           <TextInput
             style={styles.androidSearchInput}
             placeholder="Search invoices"
             value={searchQuery}
             onChangeText={handleSearch}
-            placeholderTextColor="#94A3B8"
+            placeholderTextColor={palette.textTertiary}
+            accessibilityLabel="Search invoices"
           />
         </View>
       )}
+      {loadError && invoices.length > 0 ? (
+        <Pressable onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Retry loading invoices" style={styles.errorBanner}>
+          <Text style={styles.errorBannerText}>{loadError} Tap to retry.</Text>
+        </Pressable>
+      ) : null}
       {renderFilterButtons()}
       <FlatList
         data={filteredInvoices}
@@ -235,7 +251,7 @@ export default function InvoiceListScreen() {
         contentContainerStyle={styles.listContent}
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accentForeground} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} colors={[palette.accent]} />
         }
         ListEmptyComponent={
           loadError ? (
@@ -253,10 +269,12 @@ export default function InvoiceListScreen() {
               onAction={() => navigation.navigate('InvoiceCreate')}
             />
           ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emptyText}>No invoices match your filters</Text>
-              <Text style={styles.emptySubtext}>Try a different search or status</Text>
-            </View>
+            <EmptyState
+              title="No invoices match"
+              description="Try a different search or status."
+              actionLabel="Show all"
+              onAction={clearFilters}
+            />
           )
         }
       />
@@ -277,7 +295,7 @@ export default function InvoiceListScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -295,7 +313,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
     marginBottom: 4,
     backgroundColor: palette.fill,
-    borderRadius: 12,
+    borderRadius: 20,
     paddingHorizontal: 12,
     height: 44,
     gap: 8,
@@ -324,5 +342,19 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: palette.textSecondary,
     textAlign: 'center',
+  },
+  errorBanner: {
+    marginHorizontal: space.screen,
+    marginTop: 8,
+    minHeight: 44,
+    borderRadius: 16,
+    backgroundColor: palette.dangerFill,
+    justifyContent: 'center',
+    paddingHorizontal: 16,
+  },
+  errorBannerText: {
+    color: palette.danger,
+    fontSize: 14,
+    fontWeight: '600',
   },
 });

@@ -43,17 +43,30 @@ export {
 } from './business-profile';
 
 export {
+  bulkItemRequestSchema,
+  bulkItemResponseSchema,
   createItemCategoryRequestSchema,
   createItemRequestSchema,
+  duplicateItemRequestSchema,
+  importItemsRequestSchema,
+  importItemsResponseSchema,
   itemCategorySchema,
   itemListResponseSchema,
   itemSchema,
+  updateItemCategoryRequestSchema,
   updateItemRequestSchema,
+  type BulkItemRequest,
+  type BulkItemResponse,
   type CreateItemCategoryRequest,
   type CreateItemRequest,
+  type DuplicateItemRequest,
+  type ImportItemRow,
+  type ImportItemsRequest,
+  type ImportItemsResponse,
   type ItemCategoryDto,
   type ItemDto,
   type ItemListResponse,
+  type UpdateItemCategoryRequest,
   type UpdateItemRequest,
 } from './item';
 

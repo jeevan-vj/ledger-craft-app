@@ -26,7 +26,7 @@ import { ReceiptScanner } from '@/components/expense/ReceiptScanner';
 import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
 import { Feather } from '@expo/vector-icons';
-import { palette } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type ExpenseEditNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseEdit'>;
 type ExpenseEditRouteProp = RouteProp<AppTabParamList, 'ExpenseEdit'>;
@@ -40,6 +40,9 @@ const PAYMENT_METHODS: { label: string; value: PaymentMethod }[] = [
 ];
 
 export default function ExpenseEditScreen() {
+  const theme = useTheme();
+  const { colors: palette } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<ExpenseEditNavigationProp>();
   const route = useRoute<ExpenseEditRouteProp>();
   const expenseId = route.params?.expenseId;
@@ -219,7 +222,7 @@ export default function ExpenseEditScreen() {
           <View
             style={[
               styles.colorIndicator,
-              { backgroundColor: selectedCategory.color || '#94a3b8' },
+              { backgroundColor: selectedCategory.color || palette.textTertiary },
             ]}
           />
           <Text style={styles.selectedItemText}>{selectedCategory.name}</Text>
@@ -233,7 +236,7 @@ export default function ExpenseEditScreen() {
     if (selectedAccount) {
       return (
         <View style={styles.selectedItemContainer}>
-          <Feather name="briefcase" size={16} color={palette.accentForeground} />
+          <Feather name="briefcase" size={16} color={palette.accentText} />
           <Text style={styles.selectedItemText}>{selectedAccount.name}</Text>
         </View>
       );
@@ -270,7 +273,7 @@ export default function ExpenseEditScreen() {
   if (loadingExpense) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#163300" />
+        <ActivityIndicator size="large" color={palette.accent} />
         <Text style={styles.loadingText}>Loading expense...</Text>
       </View>
     );
@@ -407,8 +410,8 @@ export default function ExpenseEditScreen() {
             <Switch
               value={taxEnabled}
               onValueChange={setTaxEnabled}
-              trackColor={{ false: '#e2e8f0', true: '#163300' }}
-              thumbColor="#ffffff"
+              trackColor={{ false: palette.fill, true: palette.accent }}
+              thumbColor={palette.text}
             />
           </View>
 
@@ -442,8 +445,8 @@ export default function ExpenseEditScreen() {
             <Switch
               value={isBillable}
               onValueChange={setIsBillable}
-              trackColor={{ false: '#e2e8f0', true: '#163300' }}
-              thumbColor="#ffffff"
+              trackColor={{ false: palette.fill, true: palette.accent }}
+              thumbColor={palette.text}
             />
           </View>
 
@@ -470,7 +473,7 @@ export default function ExpenseEditScreen() {
           {receiptUrl ? (
             <View style={styles.receiptContainer}>
               <View style={styles.receiptInfo}>
-                <Feather name="file-text" size={18} color={palette.accentForeground} />
+                <Feather name="file-text" size={18} color={palette.accentText} />
                 <Text style={styles.receiptText}>Receipt attached</Text>
               </View>
               <TouchableOpacity
@@ -485,7 +488,7 @@ export default function ExpenseEditScreen() {
               onPress={() => setShowReceiptScanner(true)}
               variant="outline"
               fullWidth
-              icon={<Feather name="camera" size={18} color={palette.accentForeground} />}
+              icon={<Feather name="camera" size={18} color={palette.text} />}
             >
               Scan Receipt with AI
             </ModernButton>
@@ -580,7 +583,7 @@ export default function ExpenseEditScreen() {
             >
               <Text style={styles.methodOptionText}>None</Text>
               {paymentMethod === null && (
-                <Feather name="check" size={16} color={palette.accentForeground} />
+                <Feather name="check" size={16} color={palette.accentText} />
               )}
             </TouchableOpacity>
             {PAYMENT_METHODS.map((method) => (
@@ -597,7 +600,7 @@ export default function ExpenseEditScreen() {
               >
                 <Text style={styles.methodOptionText}>{method.label}</Text>
                 {paymentMethod === method.value && (
-                  <Feather name="check" size={16} color={palette.accentForeground} />
+                  <Feather name="check" size={16} color={palette.accentText} />
                 )}
               </TouchableOpacity>
             ))}
@@ -653,26 +656,26 @@ export default function ExpenseEditScreen() {
 }
 
 // Reuse styles from ExpenseCreateScreen
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: palette.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.background,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   errorText: {
     marginTop: 8,
     fontSize: 14,
-    color: '#EF4444',
+    color: palette.danger,
     textAlign: 'center',
   },
   header: {
@@ -682,20 +685,20 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     paddingBottom: 16,
     paddingHorizontal: 24,
-    backgroundColor: '#1E2875',
+    backgroundColor: palette.surface,
   },
   backButton: {
     padding: 8,
   },
   backButtonText: {
     fontSize: 24,
-    color: '#FFFFFF',
+    color: palette.text,
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: palette.text,
   },
   headerSpacer: {
     width: 40,
@@ -708,7 +711,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -716,7 +719,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#636366',
+    color: palette.textSecondary,
     letterSpacing: -0.08,
     textTransform: 'uppercase',
     marginBottom: 16,
@@ -734,17 +737,17 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#64748B',
+    color: palette.textSecondary,
     marginBottom: 8,
   },
   required: {
-    color: '#EF4444',
+    color: palette.danger,
   },
   pickerButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F4F4F7',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 14,
   },
@@ -766,28 +769,28 @@ const styles = StyleSheet.create({
   selectedItemText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
   },
   placeholderText: {
     fontSize: 16,
-    color: '#94A3B8',
+    color: palette.textTertiary,
   },
   changeText: {
     fontSize: 14,
-    color: '#163300',
+    color: palette.accentText,
     fontWeight: '600',
   },
   customerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#163300',
+    backgroundColor: palette.accentFill,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   customerAvatarText: {
-    color: '#FFFFFF',
+    color: palette.accentText,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -796,7 +799,7 @@ const styles = StyleSheet.create({
   },
   customerEmail: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
     marginTop: 2,
   },
   switchRow: {
@@ -811,15 +814,15 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
     marginBottom: 4,
   },
   switchSubtext: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   taxInfo: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 16,
     marginTop: 8,
@@ -831,16 +834,16 @@ const styles = StyleSheet.create({
   },
   taxLabel: {
     fontSize: 14,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   taxValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E293B',
+    color: palette.text,
   },
   taxTotal: {
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: palette.separator,
     paddingTop: 8,
     marginTop: 8,
     marginBottom: 0,
@@ -848,22 +851,22 @@ const styles = StyleSheet.create({
   taxTotalLabel: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1E293B',
+    color: palette.text,
   },
   taxTotalValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#163300',
+    color: palette.accentText,
   },
   receiptContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: palette.separator,
   },
   receiptInfo: {
     flexDirection: 'row',
@@ -877,14 +880,14 @@ const styles = StyleSheet.create({
   receiptText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
   },
   removeReceiptButton: {
     padding: 8,
   },
   removeReceiptText: {
     fontSize: 14,
-    color: '#EF4444',
+    color: palette.danger,
     fontWeight: '600',
   },
   scanIcon: {
@@ -897,7 +900,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.background,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
@@ -907,12 +910,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: palette.separator,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1E293B',
+    color: palette.text,
   },
   modalCloseButton: {
     padding: 8,
@@ -920,7 +923,7 @@ const styles = StyleSheet.create({
   modalCloseText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#163300',
+    color: palette.accentText,
   },
   methodOption: {
     flexDirection: 'row',
@@ -928,19 +931,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: palette.separator,
   },
   methodOptionSelected: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.accentFill,
   },
   methodOptionText: {
     fontSize: 16,
-    color: '#1E293B',
+    color: palette.text,
   },
   methodOptionCheck: {
     fontSize: 16,
-    color: '#163300',
+    color: palette.accentText,
     fontWeight: '700',
   },
 });
-

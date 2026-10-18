@@ -1,6 +1,8 @@
 import React from 'react';
 import { ScrollView, Pressable, Text, StyleSheet, View } from 'react-native';
-import { palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { selectionHaptic } from '@/utils/haptics';
+import { useTheme } from '@/theme';
 
 interface FilterPillsProps<T extends string> {
   options: readonly T[];
@@ -15,6 +17,9 @@ export function FilterPills<T extends string>({
   onChange,
   labels,
 }: FilterPillsProps<T>) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <ScrollView
       horizontal
@@ -22,15 +27,18 @@ export function FilterPills<T extends string>({
       contentContainerStyle={styles.row}
       style={styles.scroller}
     >
-      <View style={styles.track}>
+      <View style={styles.track} accessibilityRole="tablist">
         {options.map((option) => {
           const active = option === value;
           const label = labels?.[option] ?? option.charAt(0).toUpperCase() + option.slice(1);
           return (
             <Pressable
               key={option}
-              onPress={() => onChange(option)}
-              accessibilityRole="button"
+              onPress={() => {
+                if (!active) selectionHaptic();
+                onChange(option);
+              }}
+              accessibilityRole="tab"
               accessibilityState={{ selected: active }}
               accessibilityLabel={label}
               style={({ pressed }) => [
@@ -48,7 +56,7 @@ export function FilterPills<T extends string>({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   scroller: {
     flexGrow: 0,
   },
@@ -65,7 +73,7 @@ const styles = StyleSheet.create({
     gap: 2,
   },
   pill: {
-    height: 32,
+    minHeight: control.touchTarget,
     paddingHorizontal: 14,
     borderRadius: radius.pill,
     backgroundColor: 'transparent',

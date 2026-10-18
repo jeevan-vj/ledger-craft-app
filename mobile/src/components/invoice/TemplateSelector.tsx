@@ -6,9 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import type { InvoiceTemplateId, InvoiceTemplate } from '@/types/invoiceTemplates';
+import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { INVOICE_TEMPLATES } from '@/types/invoiceTemplates';
+import { control } from '@/theme/tokens';
 
 interface TemplateSelectorProps {
   selectedTemplate: InvoiceTemplateId;
@@ -20,7 +22,7 @@ export default function TemplateSelector({
   onSelectTemplate,
 }: TemplateSelectorProps) {
   const handleSelect = (templateId: InvoiceTemplateId) => {
-    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
     onSelectTemplate(templateId);
   };
 
@@ -44,6 +46,9 @@ export default function TemplateSelector({
               ]}
               onPress={() => handleSelect(template.id)}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={`Use ${template.name} invoice template`}
+              accessibilityState={{ selected: isSelected }}
             >
               <Text style={styles.chipIcon}>PDF</Text>
               <Text
@@ -54,11 +59,11 @@ export default function TemplateSelector({
               >
                 {template.name}
               </Text>
-              {isSelected && (
+              {isSelected ? (
                 <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>Selected</Text>
+                  <Feather name="check" size={12} color="#ffffff" />
                 </View>
-              )}
+              ) : null}
             </TouchableOpacity>
           );
         })}
@@ -90,6 +95,7 @@ const styles = StyleSheet.create({
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
+    minHeight: control.touchTarget,
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
@@ -122,10 +128,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,
-  },
-  checkmarkText: {
-    color: '#ffffff',
-    fontSize: 12,
-    fontWeight: '700',
   },
 });

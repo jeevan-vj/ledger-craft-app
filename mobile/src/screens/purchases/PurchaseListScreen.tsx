@@ -19,22 +19,17 @@ import { FilterPills } from '@/components/ui/FilterPills';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type BillDto, type VendorDto } from '@/features/purchases/api/purchasesApi';
 import type { PurchaseStackParamList } from '@/navigation/types';
-import { hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { useTheme } from '@/theme';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
 type Mode = 'bills' | 'vendors';
 
-const statusColor: Record<BillDto['displayStatus'], string> = {
-  draft: palette.textSecondary,
-  received: palette.info,
-  overdue: palette.danger,
-  partial: palette.warning,
-  paid: palette.success,
-  void: palette.textTertiary,
-};
-
 export default function PurchaseListScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const [mode, setMode] = useState<Mode>('bills');
   const [search, setSearch] = useState('');
@@ -50,7 +45,7 @@ export default function PurchaseListScreen() {
         onChangeText: (event) => setSearch(event.nativeEvent.text),
       } : undefined,
       headerRight: () => mode === 'bills' ? (
-        <NativeHeaderButton label="New" primary onPress={() => navigation.navigate('BillCreate')} />
+        <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={() => navigation.navigate('BillCreate')} />
       ) : null,
     });
   }, [mode, navigation]);
@@ -70,7 +65,7 @@ export default function PurchaseListScreen() {
   }, [search, vendors.data]);
 
   if (activeQuery.data === undefined && activeQuery.isLoading) {
-    return <View style={styles.center}><ActivityIndicator size="large" color={palette.accentForeground} /></View>;
+    return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   }
 
   const error = activeQuery.error instanceof Error ? activeQuery.error.message : null;
@@ -87,12 +82,13 @@ export default function PurchaseListScreen() {
             placeholder={`Search ${mode}`}
             placeholderTextColor={palette.textTertiary}
             style={styles.searchInput}
+            accessibilityLabel={`Search ${mode}`}
           />
         </View>
       ) : null}
       <FilterPills options={['bills', 'vendors'] as const} value={mode} onChange={(next) => { setMode(next); setSearch(''); }} />
       {error && activeQuery.data !== undefined ? (
-        <Pressable style={styles.banner} onPress={() => activeQuery.refetch()} accessibilityRole="button">
+        <Pressable style={styles.banner} onPress={() => activeQuery.refetch()} accessibilityRole="button" accessibilityLabel="Refresh failed" accessibilityHint="Retries loading purchases">
           <Text style={styles.bannerText}>Couldn’t refresh. Showing saved data. Tap to retry.</Text>
         </Pressable>
       ) : null}
@@ -102,7 +98,7 @@ export default function PurchaseListScreen() {
         keyExtractor={(item) => item.id}
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={styles.content}
-        refreshControl={<RefreshControl refreshing={activeQuery.isRefetching} onRefresh={() => activeQuery.refetch()} tintColor={palette.accentForeground} />}
+        refreshControl={<RefreshControl refreshing={activeQuery.isRefetching} onRefresh={() => activeQuery.refetch()} tintColor={palette.accent} colors={[palette.accent]} />}
         renderItem={({ item, index }) => mode === 'bills' ? (
           <BillRow
             bill={item as BillDto}
@@ -127,11 +123,23 @@ export default function PurchaseListScreen() {
 }
 
 function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean; last: boolean; onPress: () => void }) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
+  const statusColor: Record<BillDto['displayStatus'], string> = {
+    draft: palette.textSecondary,
+    received: palette.info,
+    overdue: palette.danger,
+    partial: palette.warning,
+    paid: palette.success,
+    void: palette.textTertiary,
+  };
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(Number(bill.balanceDue), bill.currency)} due`}
+      accessibilityHint="Opens bill details"
       style={({ pressed }) => [styles.row, first && styles.first, last && styles.last, pressed && styles.pressed]}
     >
       <View style={[styles.iconWell, { backgroundColor: `${statusColor[bill.displayStatus]}18` }]}>
@@ -151,6 +159,9 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
 }
 
 function VendorRow({ vendor, first, last }: { vendor: VendorDto; first: boolean; last: boolean }) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <View style={[styles.row, first && styles.first, last && styles.last]} accessible accessibilityLabel={`${vendor.name}, ${vendor.isActive ? 'active' : 'inactive'} vendor`}>
       <View style={styles.vendorAvatar}><Text style={styles.vendorInitial}>{vendor.name.slice(0, 1).toUpperCase()}</Text></View>
@@ -167,11 +178,11 @@ function formatDate(value: string) {
   return new Date(`${value}T00:00:00`).toLocaleDateString('en-NZ', { day: 'numeric', month: 'short' });
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.sm, paddingBottom: 40, flexGrow: 1 },
-  search: { marginHorizontal: space.screen, marginTop: space.sm, height: 44, borderRadius: radius.md, backgroundColor: palette.fill, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, gap: space.sm },
+  search: { marginHorizontal: space.screen, marginTop: space.sm, minHeight: control.touchTarget, borderRadius: radius.md, backgroundColor: palette.fill, flexDirection: 'row', alignItems: 'center', paddingHorizontal: space.md, gap: space.sm },
   searchInput: { ...type.body, flex: 1 },
   banner: { marginHorizontal: space.screen, marginBottom: space.sm, padding: space.md, borderRadius: radius.md, backgroundColor: palette.warningFill },
   bannerText: { ...type.footnote, color: palette.text },
@@ -181,7 +192,7 @@ const styles = StyleSheet.create({
   pressed: { backgroundColor: palette.fillMuted },
   iconWell: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center' },
   vendorAvatar: { width: 40, height: 40, borderRadius: 20, backgroundColor: palette.accentFill, alignItems: 'center', justifyContent: 'center' },
-  vendorInitial: { ...type.headline, color: palette.accentForeground },
+  vendorInitial: { ...type.headline, color: palette.accentText },
   rowCopy: { flex: 1, minWidth: 0 },
   rowTitle: { ...type.callout, color: palette.text, fontWeight: '600' },
   rowSubtitle: { ...type.footnote, marginTop: 2 },

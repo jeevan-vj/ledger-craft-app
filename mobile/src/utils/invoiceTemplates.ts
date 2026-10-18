@@ -1,20 +1,181 @@
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
+import { formatMoney } from '@/utils/money';
 
 // Helper functions
-const formatCurrency = (amount: number, currency: string): string => {
-  const symbol = currency === 'NZD' ? '$' : currency;
-  return `${symbol}${amount.toFixed(2)}`;
+const HTML_ENTITIES: Record<string, string> = {
+  '&': '&amp;',
+  '<': '&lt;',
+  '>': '&gt;',
+  '"': '&quot;',
+  "'": '&#39;',
 };
 
-const formatDate = (dateString: string): string => {
-  const date = new Date(dateString);
+function escapeHtml(value: string | null | undefined): string {
+  return String(value ?? '').replace(/[&<>"']/g, (character) => HTML_ENTITIES[character]);
+}
+
+function optionalText<T extends string | null | undefined>(value: T): T {
+  if (value == null) return value;
+  return escapeHtml(value) as T;
+}
+
+function finiteNumber(value: unknown): number {
+  const number = typeof value === 'number' ? value : Number(value);
+  return Number.isFinite(number) ? number : 0;
+}
+
+function currencyCode(currency: string | null | undefined): string {
+  const code = (currency ?? '').trim().toUpperCase();
+  return /^[A-Z]{3}$/.test(code) ? code : '';
+}
+
+function safeLogoUrl(url: string | null | undefined): string | null | undefined {
+  if (url == null) return url;
+  const trimmed = url.trim();
+  if (!/^https?:\/\//i.test(trimmed)) return null;
+  return escapeHtml(trimmed);
+}
+
+function escapeInvoiceText(invoice: Invoice): Invoice {
+  return {
+    ...invoice,
+    invoiceNumber: escapeHtml(invoice.invoiceNumber),
+    customer: invoice.customer
+      ? {
+          ...invoice.customer,
+          name: escapeHtml(invoice.customer.name),
+          email: escapeHtml(invoice.customer.email),
+          phone: optionalText(invoice.customer.phone),
+          address: optionalText(invoice.customer.address),
+          city: optionalText(invoice.customer.city),
+          state: optionalText(invoice.customer.state),
+          zip: optionalText(invoice.customer.zip),
+          country: optionalText(invoice.customer.country),
+        }
+      : undefined,
+    items: invoice.items.map((item) => ({
+      ...item,
+      description: escapeHtml(item.description),
+      unit: escapeHtml(item.unit),
+      quantity: finiteNumber(item.quantity),
+    })),
+    additionalChargesList: invoice.additionalChargesList?.map((charge) => ({
+      ...charge,
+      name: escapeHtml(charge.name),
+    })),
+    notes: optionalText(invoice.notes),
+    terms: optionalText(invoice.terms),
+    currency: currencyCode(invoice.currency),
+    status: escapeHtml(invoice.status) as Invoice['status'],
+  };
+}
+
+function escapeBusinessProfileText(profile?: BusinessProfile): BusinessProfile | undefined {
+  if (!profile) return undefined;
+  return {
+    ...profile,
+    name: escapeHtml(profile.name),
+    email: escapeHtml(profile.email),
+    phone: optionalText(profile.phone),
+    address: optionalText(profile.address),
+    city: optionalText(profile.city),
+    state: optionalText(profile.state),
+    zip: optionalText(profile.zip),
+    country: optionalText(profile.country),
+    taxId: optionalText(profile.taxId),
+    logoUrl: safeLogoUrl(profile.logoUrl),
+    website: optionalText(profile.website),
+    defaultNotes: optionalText(profile.defaultNotes),
+    defaultTerms: optionalText(profile.defaultTerms),
+  };
+}
+
+const formatCurrency = (amount: number, currency: string): string => {
+  const code = currencyCode(currency);
+  const value = Number.isFinite(amount) ? amount : 0;
+  if (!code) {
+    return value.toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+  return formatMoney(value, code);
+};
+
+export function invoiceAmountDue(invoice: Pick<Invoice, 'balanceDue' | 'status' | 'total' | 'totalPaid'>): number {
+  if (Number.isFinite(invoice.balanceDue)) {
+    return Math.max(0, invoice.balanceDue ?? 0);
+  }
+  if (invoice.status === 'paid') {
+    return 0;
+  }
+  return Math.max(0, invoice.total - (invoice.totalPaid ?? 0));
+}
+
+function invoiceTaxLabel(invoice: Invoice): string {
+  const discount = invoice.discount ?? 0;
+  const taxBase = invoice.taxInclusive ? invoice.subtotal : invoice.subtotal - discount;
+  const taxRate = taxBase > 0 ? (invoice.taxAmount / taxBase) * 100 : 0;
+  const roundedRate = Math.round(taxRate * 100) / 100;
+  const label = invoice.currency.toUpperCase() === 'NZD' ? 'GST' : 'Tax';
+  return roundedRate > 0 ? `${label} (${roundedRate.toLocaleString('en-NZ')}%):` : `${label}:`;
+}
+
+function renderInvoiceTotals(invoice: Invoice): string {
+  const currency = invoice.currency || 'NZD';
+  const discount = invoice.discount ?? 0;
+  const additionalCharges = invoice.additionalChargesTotal ?? invoice.additionalCharges ?? 0;
+
+  return `
+    <div data-invoice-totals="true">
+      <div class="total-row">
+        <span class="total-label">Subtotal:</span>
+        <span class="total-value">${formatCurrency(invoice.subtotal, currency)}</span>
+      </div>
+      ${invoice.taxAmount > 0 ? `
+        <div class="total-row">
+          <span class="total-label">${invoiceTaxLabel(invoice)}</span>
+          <span class="total-value">${formatCurrency(invoice.taxAmount, currency)}</span>
+        </div>
+      ` : ''}
+      ${discount > 0 ? `
+        <div class="total-row">
+          <span class="total-label">Discount:</span>
+          <span class="total-value">-${formatCurrency(discount, currency)}</span>
+        </div>
+      ` : ''}
+      ${additionalCharges > 0 ? `
+        <div class="total-row">
+          <span class="total-label">Additional Charges:</span>
+          <span class="total-value">${formatCurrency(additionalCharges, currency)}</span>
+        </div>
+      ` : ''}
+      <div class="total-row">
+        <span class="total-label">Total:</span>
+        <span class="total-value">${formatCurrency(invoice.total, currency)}</span>
+      </div>
+      <div class="total-row grand-total">
+        <span class="total-label">Amount Due:</span>
+        <span class="total-value">${formatCurrency(invoiceAmountDue(invoice), currency)}</span>
+      </div>
+    </div>
+  `;
+}
+
+export function formatInvoiceDate(dateString: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(dateString ?? '').trim());
+  if (!match) return 'Invalid date';
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(year, month - 1, day);
+  if (date.getFullYear() !== year || date.getMonth() !== month - 1 || date.getDate() !== day) {
+    return 'Invalid date';
+  }
   return date.toLocaleDateString('en-NZ', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',
   });
-};
+}
 
 const getStatusColor = (status: string): string => {
   switch (status) {
@@ -27,7 +188,7 @@ const getStatusColor = (status: string): string => {
 };
 
 // Classic Template
-export function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   const companyAddress = [
     businessProfile?.address,
@@ -253,11 +414,11 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
             <div class="detail-column">
               <div class="date-row">
                 <span class="date-label">Date:</span>
-                <span class="date-value">${formatDate(invoice.date)}</span>
+                <span class="date-value">${formatInvoiceDate(invoice.date)}</span>
               </div>
               <div class="date-row">
                 <span class="date-label">Due Date:</span>
-                <span class="date-value">${formatDate(invoice.dueDate)}</span>
+                <span class="date-value">${formatInvoiceDate(invoice.dueDate)}</span>
               </div>
             </div>
           </div>
@@ -287,32 +448,7 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal:</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax:</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount:</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.additionalCharges && invoice.additionalCharges > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Additional Charges:</span>
-                <span class="total-value">${formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total:</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes ? `
@@ -339,7 +475,7 @@ export function generateClassicHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Modern Template
-export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -488,7 +624,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
             background: #f8fafc;
             padding: 20px;
             border-radius: 12px;
-            border-left: 4px solid #5B72EE;
+            border: 1px solid #e2e8f0;
             margin-bottom: 20px;
           }
           .notes-title, .terms-title {
@@ -534,8 +670,8 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
               
               <div class="info-block">
                 <h3>Invoice Details</h3>
-                <p><span class="highlight">Date:</span> ${formatDate(invoice.date)}</p>
-                <p><span class="highlight">Due:</span> ${formatDate(invoice.dueDate)}</p>
+                <p><span class="highlight">Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+                <p><span class="highlight">Due:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -565,32 +701,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.additionalCharges && invoice.additionalCharges > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Additional Charges:</span>
-                  <span class="total-value">${formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">Total:</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes ? `
@@ -614,7 +725,7 @@ export function generateModernHTML(invoice: Invoice, businessProfile?: BusinessP
 }
 
 // Minimal Template
-export function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -767,12 +878,12 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
             
             <div class="info-block">
               <h3>Date</h3>
-              <p>${formatDate(invoice.date)}</p>
+              <p>${formatInvoiceDate(invoice.date)}</p>
             </div>
             
             <div class="info-block">
               <h3>Due Date</h3>
-              <p>${formatDate(invoice.dueDate)}</p>
+              <p>${formatInvoiceDate(invoice.dueDate)}</p>
             </div>
           </div>
           
@@ -800,26 +911,7 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -841,7 +933,7 @@ export function generateMinimalHTML(invoice: Invoice, businessProfile?: Business
 }
 
 // Executive Template - Continued in next part due to length
-export function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1018,8 +1110,8 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
             
             <div class="info-block">
               <h3>Invoice Details</h3>
-              <p><span class="highlight">Invoice Date:</span> ${formatDate(invoice.date)}</p>
-              <p><span class="highlight">Due Date:</span> ${formatDate(invoice.dueDate)}</p>
+              <p><span class="highlight">Invoice Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+              <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
               <p><span class="highlight">Status:</span> ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</p>
             </div>
           </div>
@@ -1048,26 +1140,7 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
           </table>
           
           <div class="totals-section">
-            <div class="total-row">
-              <span class="total-label">Subtotal:</span>
-              <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-            </div>
-            ${invoice.taxAmount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Tax:</span>
-                <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            ${invoice.discount && invoice.discount > 0 ? `
-              <div class="total-row">
-                <span class="total-label">Discount:</span>
-                <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-              </div>
-            ` : ''}
-            <div class="total-row grand-total">
-              <span class="total-label">Total Due:</span>
-              <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-            </div>
+            ${renderInvoiceTotals(invoice)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -1089,7 +1162,7 @@ export function generateExecutiveHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Corporate Template
-export function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1298,8 +1371,8 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
               
               <div class="detail-block">
                 <h3>Invoice Information</h3>
-                <p><strong>Date Issued:</strong> ${formatDate(invoice.date)}</p>
-                <p><strong>Payment Due:</strong> ${formatDate(invoice.dueDate)}</p>
+                <p><strong>Date Issued:</strong> ${formatInvoiceDate(invoice.date)}</p>
+                <p><strong>Payment Due:</strong> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><strong>Currency:</strong> ${invoice.currency}</p>
               </div>
             </div>
@@ -1329,26 +1402,7 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">TOTAL DUE</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1371,7 +1425,7 @@ export function generateCorporateHTML(invoice: Invoice, businessProfile?: Busine
 }
 
 // Modern Pro Template
-export function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1570,7 +1624,6 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
             background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
             padding: 30px;
             border-radius: 16px;
-            border-left: 6px solid #5B72EE;
             margin-top: 30px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           }
@@ -1618,8 +1671,8 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
               
               <div class="info-card">
                 <h3>Invoice Details</h3>
-                <p><span class="highlight">Issue Date:</span> ${formatDate(invoice.date)}</p>
-                <p><span class="highlight">Due Date:</span> ${formatDate(invoice.dueDate)}</p>
+                <p><span class="highlight">Issue Date:</span> ${formatInvoiceDate(invoice.date)}</p>
+                <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -1649,26 +1702,7 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
             </table>
             
             <div class="totals-section">
-              <div class="total-row">
-                <span class="total-label">Subtotal:</span>
-                <span class="total-value">${formatCurrency(invoice.subtotal, invoice.currency)}</span>
-              </div>
-              ${invoice.taxAmount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Tax:</span>
-                  <span class="total-value">${formatCurrency(invoice.taxAmount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              ${invoice.discount && invoice.discount > 0 ? `
-                <div class="total-row">
-                  <span class="total-label">Discount:</span>
-                  <span class="total-value">-${formatCurrency(invoice.discount, invoice.currency)}</span>
-                </div>
-              ` : ''}
-              <div class="total-row grand-total">
-                <span class="total-label">TOTAL DUE</span>
-                <span class="total-value">${formatCurrency(invoice.total, invoice.currency)}</span>
-              </div>
+              ${renderInvoiceTotals(invoice)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1690,8 +1724,7 @@ export function generateModernProHTML(invoice: Invoice, businessProfile?: Busine
   `;
 }
 
-// Main dispatcher function
-export function getTemplateHTML(
+function getRawTemplateHTML(
   templateId: InvoiceTemplateId,
   invoice: Invoice,
   businessProfile?: BusinessProfile
@@ -1715,3 +1748,52 @@ export function getTemplateHTML(
   }
 }
 
+const A4_DOCUMENT_STYLES = `
+  @page { size: 595px 842px; margin: 0; }
+  html {
+    width: 595px;
+    min-height: 842px;
+    background: #ffffff;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    width: 595px;
+    min-height: 842px;
+    overflow-x: hidden;
+  }
+  .notes-text, .terms-text {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+`;
+
+/**
+ * The single invoice document generator used by both the on-device preview and
+ * Expo Print. Keeping the A4 viewport here makes the same HTML scale to the
+ * WebView width and render at the requested PDF page size.
+ */
+export function generateInvoiceHTML(
+  invoice: Invoice,
+  businessProfile?: BusinessProfile,
+  templateId: InvoiceTemplateId = 'classic',
+): string {
+  return getRawTemplateHTML(
+    templateId,
+    escapeInvoiceText(invoice),
+    escapeBusinessProfileText(businessProfile),
+  )
+    .replace(
+      /<meta\s+name="viewport"\s+content="[^"]*">/i,
+      '<meta name="viewport" content="width=595, initial-scale=1, maximum-scale=5, user-scalable=yes">',
+    )
+    .replace('<style>', `<style>${A4_DOCUMENT_STYLES}`);
+}
+
+/** @deprecated Use generateInvoiceHTML so preview and PDF cannot diverge. */
+export function getTemplateHTML(
+  templateId: InvoiceTemplateId,
+  invoice: Invoice,
+  businessProfile?: BusinessProfile,
+): string {
+  return generateInvoiceHTML(invoice, businessProfile, templateId);
+}

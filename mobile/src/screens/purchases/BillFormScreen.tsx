@@ -24,8 +24,10 @@ import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { purchasesApi, type BillLineInput, type BillWriteRequest } from '@/features/purchases/api/purchasesApi';
 import { isBillDateRangeValid, moveDueDateForward } from '@/features/purchases/model/purchaseForms';
 import type { PurchaseStackParamList } from '@/navigation/types';
-import { palette, radius, space, type } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { errorHaptic, successHaptic } from '@/utils/haptics';
+import { useTheme } from '@/theme';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'BillCreate'>;
 type Route = RouteProp<PurchaseStackParamList, 'BillCreate' | 'BillEdit'>;
@@ -38,6 +40,9 @@ const plusDays = (date: string, days: number) => {
 const emptyLine = (): BillLineInput => ({ description: '', quantity: '1', unitPrice: '', taxRate: '15', accountId: null });
 
 export default function BillFormScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const route = useRoute<Route>();
   const billId = route.name === 'BillEdit'
@@ -76,8 +81,10 @@ export default function BillFormScreen() {
     onSuccess: async (bill) => {
       await queryClient.invalidateQueries({ queryKey: ['purchases', 'bills'] });
       queryClient.setQueryData(['purchases', 'bill', bill.id], bill);
+      successHaptic();
       navigation.replace('BillDetail', { billId: bill.id });
     },
+    onError: errorHaptic,
   });
 
   const selectedVendor = vendors.data?.find((vendor) => vendor.id === form.vendorId);
@@ -92,7 +99,7 @@ export default function BillFormScreen() {
 
   const updateLine = (index: number, patch: Partial<BillLineInput>) => setForm((current) => ({ ...current, lines: current.lines.map((line, i) => i === index ? { ...line, ...patch } : line) }));
 
-  if (billId && existing.data === undefined && existing.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accentForeground} /></View>;
+  if (billId && existing.data === undefined && existing.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   if (billId && existing.data === undefined && existing.isError) {
     return (
       <View style={styles.center}>
@@ -110,7 +117,7 @@ export default function BillFormScreen() {
     <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
       <ScrollView contentInsetAdjustmentBehavior="automatic" keyboardShouldPersistTaps="handled" contentContainerStyle={styles.content}>
         <GroupedSection title="Supplier">
-          <ListRow label="Vendor" value={selectedVendor?.name} placeholder="Choose vendor" onPress={() => { setSearch(''); setVendorPicker(true); }} />
+          <ListRow label="Vendor" value={selectedVendor?.name} placeholder="Choose vendor" accessibilityHint="Opens the vendor picker" onPress={() => { setSearch(''); setVendorPicker(true); }} />
         </GroupedSection>
         <ModernInput label="Vendor reference (optional)" value={form.vendorReference ?? ''} onChangeText={(vendorReference) => setForm({ ...form, vendorReference: vendorReference || null })} />
         <SmartDatePicker label="Bill date" value={form.issueDate} showPresets={false} onChangeDate={(issueDate) => setForm({ ...form, issueDate, dueDate: moveDueDateForward(issueDate, form.dueDate) })} />
@@ -119,8 +126,8 @@ export default function BillFormScreen() {
 
         <View style={styles.sectionHeading}>
           <Text style={styles.sectionTitle}>Line items</Text>
-          <Pressable onPress={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })} accessibilityRole="button" style={styles.addButton}>
-            <Feather name="plus" size={17} color={palette.accentForeground} /><Text style={styles.addLabel}>Add line</Text>
+          <Pressable onPress={() => setForm({ ...form, lines: [...form.lines, emptyLine()] })} accessibilityRole="button" accessibilityLabel="Add line" style={styles.addButton}>
+            <Feather name="plus" size={17} color={palette.accentText} /><Text style={styles.addLabel}>Add line</Text>
           </Pressable>
         </View>
         {form.lines.map((line, index) => {
@@ -129,7 +136,7 @@ export default function BillFormScreen() {
             <View key={index} style={styles.lineCard}>
               <View style={styles.lineHeading}>
                 <Text style={styles.lineTitle}>Line {index + 1}</Text>
-                {form.lines.length > 1 ? <Pressable onPress={() => setForm({ ...form, lines: form.lines.filter((_, i) => i !== index) })} hitSlop={10} accessibilityRole="button" accessibilityLabel={`Remove line ${index + 1}`}><Feather name="trash-2" size={18} color={palette.danger} /></Pressable> : null}
+                {form.lines.length > 1 ? <Pressable onPress={() => setForm({ ...form, lines: form.lines.filter((_, i) => i !== index) })} style={styles.iconButton} accessibilityRole="button" accessibilityLabel={`Remove line ${index + 1}`} accessibilityHint="Removes this line item"><Feather name="trash-2" size={18} color={palette.danger} /></Pressable> : null}
               </View>
               <ModernInput label="Description" value={line.description} onChangeText={(description) => updateLine(index, { description })} placeholder="What was supplied" />
               <View style={styles.fieldRow}>
@@ -137,7 +144,7 @@ export default function BillFormScreen() {
                 <View style={styles.field}><ModernInput label="Unit price" value={line.unitPrice} onChangeText={(unitPrice) => updateLine(index, { unitPrice })} keyboardType="decimal-pad" /></View>
                 <View style={styles.smallField}><ModernInput label="GST %" value={line.taxRate} onChangeText={(taxRate) => updateLine(index, { taxRate })} keyboardType="decimal-pad" /></View>
               </View>
-              <GroupedSection><ListRow label="Account" value={account ? `${account.accountNumber ? `${account.accountNumber} · ` : ''}${account.name}` : undefined} placeholder="Choose expense or asset" onPress={() => { setSearch(''); setAccountLine(index); }} /></GroupedSection>
+              <GroupedSection><ListRow label="Account" value={account ? `${account.accountNumber ? `${account.accountNumber} · ` : ''}${account.name}` : undefined} placeholder="Choose expense or asset" accessibilityHint="Opens the account picker" onPress={() => { setSearch(''); setAccountLine(index); }} /></GroupedSection>
             </View>
           );
         })}
@@ -162,14 +169,15 @@ export default function BillFormScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: { flex: 1, backgroundColor: palette.background },
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.background },
   content: { paddingHorizontal: space.screen, paddingTop: space.lg, paddingBottom: 48 },
   sectionHeading: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: space.sm, marginBottom: space.md },
   sectionTitle: { ...type.headline },
-  addButton: { minHeight: 44, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: palette.accentFill },
-  addLabel: { ...type.subhead, color: palette.accentForeground, fontWeight: '600' },
+  addButton: { minHeight: control.touchTarget, flexDirection: 'row', alignItems: 'center', gap: 6, paddingHorizontal: space.md, borderRadius: radius.pill, backgroundColor: palette.accentFill },
+  addLabel: { ...type.subhead, color: palette.accentText, fontWeight: '600' },
+  iconButton: { minWidth: control.touchTarget, minHeight: control.touchTarget, alignItems: 'center', justifyContent: 'center' },
   lineCard: { backgroundColor: palette.surface, borderRadius: radius.group, padding: space.lg, marginBottom: space.lg },
   lineHeading: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: space.lg },
   lineTitle: { ...type.callout, color: palette.text, fontWeight: '700' },

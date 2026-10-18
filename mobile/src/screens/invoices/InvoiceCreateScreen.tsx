@@ -11,10 +11,11 @@ import {
   Modal,
   ActivityIndicator,
 } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import * as Haptics from 'expo-haptics';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import type { LineItem, Invoice, Customer } from '@/types/invoice';
 import { ModernInput } from '@/components/ui/ModernInput';
@@ -32,12 +33,19 @@ import { TaxConfigCard } from '@/components/invoice/TaxConfigCard';
 import { ProgressIndicator } from '@/components/invoice/ProgressIndicator';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { Feather } from '@expo/vector-icons';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
-type InvoiceCreateNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>;
+type InvoiceCreateNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>,
+  NativeBottomTabNavigationProp<MainTabParamList>
+>;
 type InvoiceEditRouteProp = RouteProp<{ InvoiceEdit: { invoiceId?: string } }, 'InvoiceEdit'>;
 
 export default function InvoiceCreateScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceCreateNavigationProp>();
   const route = useRoute<InvoiceEditRouteProp>();
   
@@ -431,21 +439,22 @@ export default function InvoiceCreateScreen() {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
       style={styles.container}
     >
       <ScrollView 
         style={styles.scrollView} 
         contentContainerStyle={styles.scrollContent}
         contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
         showsVerticalScrollIndicator={false}
       >
         {/* Progress Indicator */}
         <ProgressIndicator steps={progressSteps} />
         <ProfileCompletenessBanner
           profile={businessProfile}
-          onCompleteProfile={() => {
-            navigation.getParent()?.navigate('Settings' as never);
-          }}
+          onCompleteProfile={() => navigation.navigate('BusinessSettings')}
         />
 
         {/* Invoice Details Card */}
@@ -471,6 +480,8 @@ export default function InvoiceCreateScreen() {
               }}
               style={styles.customerButton}
               activeOpacity={0.7}
+              accessibilityRole="button"
+              accessibilityLabel={selectedCustomer ? `Customer, ${selectedCustomer.name}` : 'Select customer'}
             >
               {selectedCustomer ? (
                 <View style={styles.selectedCustomerContainer}>
@@ -639,7 +650,8 @@ export default function InvoiceCreateScreen() {
           initialTemplate={templateName}
           onClose={() => setShowPreview(false)}
           onCompleteProfile={() => {
-            navigation.getParent()?.navigate('Settings' as never);
+            setShowPreview(false);
+            navigation.navigate('BusinessSettings');
           }}
         />
       </Modal>
@@ -647,7 +659,7 @@ export default function InvoiceCreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -736,7 +748,7 @@ const styles = StyleSheet.create({
   customerAvatarText: {
     fontSize: 13,
     fontWeight: '700',
-    color: palette.accent,
+    color: palette.accentText,
   },
   customerInfo: {
     flex: 1,
@@ -762,14 +774,17 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   lineItemAction: {
+    minHeight: 44,
     paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingHorizontal: 14,
     borderRadius: radius.pill,
     backgroundColor: palette.accentFill,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   lineItemActionText: {
     fontSize: 14,
     fontWeight: '600',
-    color: palette.accent,
+    color: palette.accentText,
   },
 });

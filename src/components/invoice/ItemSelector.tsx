@@ -17,6 +17,8 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { useAppData } from '@/hooks/useAppData';
 import { itemService } from '@/services/supabaseService';
 import { DrawerFormLayout } from '@/components/ui/DrawerFormLayout';
+import { formatCurrency } from '@/utils/invoiceUtils';
+import { saleSelectableItems } from '@/features/items/model/itemCatalog';
 
 interface ItemSelectorProps {
   onItemSelect: (item: Item) => void;
@@ -36,7 +38,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
   const [searchTerm, setSearchTerm] = useState('');
   const [open, setOpen] = useState(false);
   const isMobile = useIsMobile();
-  const { itemCategories } = useAppData();
+  const { itemCategories, businessProfile } = useAppData();
   const [items, setItems] = useState<Item[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -60,7 +62,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
     fetchItems();
   }, [refetch]); // Refetch when the refetch function changes
 
-  const filteredItems = items.filter(item => 
+  const filteredItems = saleSelectableItems(items).filter(item =>
     item.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
     (item.description && item.description.toLowerCase().includes(searchTerm.toLowerCase())) ||
     (item.category?.name && item.category.name.toLowerCase().includes(searchTerm.toLowerCase()))
@@ -127,7 +129,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
                     <div>
                       <div className="font-medium">{item.name}</div>
                       <div className="text-sm text-muted-foreground flex gap-3">
-                        <span>{item.enableSaleInfo && item.salePrice ? `$${item.salePrice.toFixed(2)}` : ""}</span>
+                        <span>{item.salePrice != null ? formatCurrency(item.salePrice, businessProfile?.currency || 'NZD') : ''}</span>
                         {item.category?.name && <span>{item.category.name}</span>}
                       </div>
                     </div>
@@ -150,7 +152,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
                     <div>
                       <div className="font-medium">{item.name}</div>
                       <div className="text-sm text-muted-foreground flex gap-3">
-                        <span>{item.enableSaleInfo && item.salePrice ? `$${item.salePrice.toFixed(2)}` : ""}</span>
+                        <span>{item.salePrice != null ? formatCurrency(item.salePrice, businessProfile?.currency || 'NZD') : ''}</span>
                         {item.category?.name && <span>{item.category.name}</span>}
                       </div>
                     </div>
@@ -237,7 +239,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
                             <div>
                               <div className="font-medium">{item.name}</div>
                               <div className="text-sm text-muted-foreground flex gap-3">
-                                <span>{item.enableSaleInfo && item.salePrice ? `$${item.salePrice.toFixed(2)}` : ""}</span>
+                                <span>{item.salePrice != null ? formatCurrency(item.salePrice, businessProfile?.currency || 'NZD') : ''}</span>
                                 {item.category?.name && <span>{item.category.name}</span>}
                               </div>
                             </div>
@@ -260,7 +262,7 @@ const ItemSelector: React.FC<ItemSelectorProps> = ({
                             <div>
                               <div className="font-medium">{item.name}</div>
                               <div className="text-sm text-muted-foreground flex gap-3">
-                                <span>{item.enableSaleInfo && item.salePrice ? `$${item.salePrice.toFixed(2)}` : ""}</span>
+                                <span>{item.salePrice != null ? formatCurrency(item.salePrice, businessProfile?.currency || 'NZD') : ''}</span>
                                 {item.category?.name && <span>{item.category.name}</span>}
                               </div>
                             </div>

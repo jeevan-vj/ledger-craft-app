@@ -18,7 +18,8 @@ import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import { PAYMENT_METHOD_OPTIONS } from '@/utils/statusUtils';
 import { formatMoney } from '@/utils/money';
-import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface PaymentCaptureModalProps {
   visible: boolean;
@@ -33,6 +34,9 @@ export default function PaymentCaptureModal({
   onSubmit,
   onClose,
 }: PaymentCaptureModalProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
 
@@ -350,7 +354,7 @@ export default function PaymentCaptureModal({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,

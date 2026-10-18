@@ -4,7 +4,6 @@ import {
   ActivityIndicator,
   View,
   StyleSheet,
-  Platform,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -13,9 +12,10 @@ import Animated, {
   runOnJS,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import * as Haptics from 'expo-haptics';
 import { SPRING_CONFIG, SCALE, OPACITY } from '@/utils/animations';
-import { palette, radius } from '@/theme/tokens';
+import { lightImpactHaptic } from '@/utils/haptics';
+import { radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ModernButtonProps {
   onPress: () => void;
@@ -42,13 +42,14 @@ export function ModernButton({
   iconPosition = 'left',
   style,
 }: ModernButtonProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const isDisabled = disabled || loading;
   const pressed = useSharedValue(false);
 
   const triggerHaptic = useCallback(() => {
-    if (Platform.OS !== 'web') {
-      Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
-    }
+    lightImpactHaptic();
   }, []);
 
   const handlePress = useCallback(() => {
@@ -82,7 +83,7 @@ export function ModernButton({
   });
 
   const padding = {
-    sm: { paddingHorizontal: 14, height: 36 },
+    sm: { paddingHorizontal: 14, minHeight: theme.control.touchTarget },
     md: { paddingHorizontal: 20, height: 52 },
     lg: { paddingHorizontal: 24, height: 56 },
   };
@@ -93,6 +94,7 @@ export function ModernButton({
         accessible
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}
+        onAccessibilityTap={handlePress}
         style={[
           styles.button,
           variant === 'primary' && styles.primary,
@@ -134,7 +136,7 @@ export function ModernButton({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   button: {
     borderRadius: radius.pill,
     overflow: 'hidden',

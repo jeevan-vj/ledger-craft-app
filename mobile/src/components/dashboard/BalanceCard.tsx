@@ -1,7 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { palette, space, type } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { useTheme } from '@/theme';
 
 interface BalanceCardProps {
   totalBalance: number;
@@ -18,6 +19,9 @@ export function BalanceCard({
   currency = 'NZD',
   label = 'You are owed',
 }: BalanceCardProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <View style={styles.wrap}>
       <Text style={styles.label}>{label}</Text>
@@ -43,7 +47,7 @@ export function BalanceCard({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
     marginBottom: space.xxl,
   },

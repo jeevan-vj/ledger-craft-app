@@ -6,7 +6,8 @@ import {
   TouchableOpacityProps,
   StyleSheet,
 } from 'react-native';
-import { control, palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface ActionButtonProps extends TouchableOpacityProps {
   title: string;
@@ -24,6 +25,9 @@ export function ActionButton({
   style,
   ...props 
 }: ActionButtonProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const variantStyles = {
     primary: styles.primary,
     secondary: styles.secondary,
@@ -64,7 +68,7 @@ export function ActionButton({
       {...props}
     >
       {loading ? (
-        <ActivityIndicator color={variant === 'danger' ? '#FFFFFF' : palette.text} />
+        <ActivityIndicator color={variant === 'primary' ? palette.accentForeground : variant === 'danger' ? '#FFFFFF' : palette.text} />
       ) : (
         <Text style={[styles.label, textStyles[variant], textSizeStyles[size]]}>
           {title}
@@ -74,7 +78,7 @@ export function ActionButton({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   base: {
     borderRadius: radius.pill,
     alignItems: 'center',
@@ -87,7 +91,7 @@ const styles = StyleSheet.create({
   primaryText: { color: palette.accentForeground },
   secondaryText: { color: palette.text },
   dangerText: { color: '#FFFFFF' },
-  small: { minHeight: control.compact, paddingHorizontal: space.lg },
+  small: { minHeight: control.touchTarget, paddingHorizontal: space.lg },
   medium: { minHeight: control.default },
   large: { minHeight: control.prominent, paddingHorizontal: space.xxl },
   label: { fontWeight: '600', textAlign: 'center' },

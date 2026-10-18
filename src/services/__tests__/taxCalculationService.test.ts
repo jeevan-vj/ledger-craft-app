@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, jest } from '@jest/globals';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { taxCalculationService } from '../taxCalculationService';
 import { 
   TaxConfiguration, 
@@ -24,7 +24,7 @@ describe('TaxCalculationService', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('GST Calculations (Tax Inclusive)', () => {
@@ -233,7 +233,7 @@ describe('TaxCalculationService', () => {
       );
 
       // Assert
-      expect(result.totalSales).toBe(265.00); // 115 + 115 + 50 (includes GST where applicable)
+      expect(result.totalSales).toBe(280.00); // 115 inclusive + 115 exclusive-grossed + 50 zero-rated
       expect(result.gstOnSales).toBe(30.00); // 15 (from 115 inclusive) + 15 (from 100 exclusive) + 0
       expect(result.standardRated).toBe(215.00); // 115 + 100 (taxable sales)
       expect(result.zeroRated).toBe(50.00); // Export/zero-rated
@@ -254,7 +254,7 @@ describe('TaxCalculationService', () => {
       );
 
       // Assert
-      expect(result.totalPurchases).toBe(346.00); // 46 + 230 + 100
+      expect(result.totalPurchases).toBe(376.00); // 46 inclusive + 230 exclusive-grossed + 100 exempt
       expect(result.gstOnPurchases).toBe(36.00); // 6 + 30 + 0
       expect(result.standardRated).toBe(246.00); // 46 + 200 (claimable GST)
     });

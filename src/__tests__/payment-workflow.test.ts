@@ -1,9 +1,20 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
 import { paymentService } from '@/services/paymentService';
-import { invoiceService } from '@/services/supabaseService';
 import { CreatePaymentRequest } from '@/types/payment';
 import { Invoice, Customer } from '@/types';
+import type { MemorySupabase } from '@/test/memorySupabase';
+
+vi.mock('@/integrations/supabase/client', async () => {
+  const { createMemorySupabase } = await import('@/test/memorySupabase');
+  const memory = createMemorySupabase('test-user');
+  (globalThis as typeof globalThis & { __lcPaymentMemory?: MemorySupabase }).__lcPaymentMemory = memory;
+  return { supabase: memory.supabase };
+});
+
+function paymentMemory() {
+  return (globalThis as typeof globalThis & { __lcPaymentMemory: MemorySupabase }).__lcPaymentMemory;
+}
 
 /**
  * End-to-End Payment Workflow Tests
@@ -30,6 +41,7 @@ describe('Payment Workflow E2E Tests', () => {
       throw new Error('No authenticated user for testing');
     }
     testUserId = user.id;
+    paymentMemory().reset();
 
     // Create test customer
     testCustomer = {
@@ -70,6 +82,24 @@ describe('Payment Workflow E2E Tests', () => {
       notes: 'Test invoice for payment workflow',
       terms: 'Payment due within 30 days'
     };
+
+    paymentMemory().tables.customers = [{
+      id: testCustomer.id,
+      name: testCustomer.name,
+      email: testCustomer.email,
+    }];
+    paymentMemory().tables.invoices = [{
+      id: testInvoice.id,
+      user_id: testUserId,
+      customer_id: testCustomer.id,
+      invoice_number: testInvoice.invoiceNumber,
+      total: testInvoice.total,
+      subtotal: testInvoice.subtotal,
+      tax_amount: testInvoice.taxAmount,
+      total_paid: 0,
+      payment_status: 'unpaid',
+      status: 'sent',
+    }];
   });
 
   afterEach(async () => {
@@ -156,7 +186,7 @@ describe('Payment Workflow E2E Tests', () => {
 
       expect(updatedInvoice.payment_status).toBe('partially_paid');
       expect(updatedInvoice.total_paid).toBe(575.00);
-      expect(updatedInvoice.balance_due).toBe(575.00);
+      expect(updatedInvoice.total - updatedInvoice.total_paid).toBe(575.00);
 
       // Record second payment to complete
       const remainingPayment: CreatePaymentRequest = {
@@ -178,7 +208,7 @@ describe('Payment Workflow E2E Tests', () => {
 
       expect(finalInvoice.payment_status).toBe('paid');
       expect(finalInvoice.total_paid).toBe(1150.00);
-      expect(finalInvoice.balance_due).toBe(0);
+      expect(finalInvoice.total - finalInvoice.total_paid).toBe(0);
     });
   });
 
