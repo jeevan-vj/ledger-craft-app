@@ -133,9 +133,9 @@ export function ItemPicker({
         description: newItem.description || null,
         type: newItem.type,
         categoryId: newItem.categoryId || null,
-        salePrice: newItem.salePrice ? parseFloat(newItem.salePrice) : null,
-        purchasePrice: newItem.purchasePrice ? parseFloat(newItem.purchasePrice) : null,
-        taxRate: newItem.taxRate ? parseFloat(newItem.taxRate) : null,
+        salePrice: newItem.salePrice || null,
+        purchasePrice: newItem.purchasePrice || null,
+        taxRate: newItem.taxRate || null,
         enableSaleInfo: newItem.enableSaleInfo,
         enablePurchaseInfo: newItem.enablePurchaseInfo,
         unit: newItem.unit,
@@ -165,9 +165,9 @@ export function ItemPicker({
     }
   };
 
-  const formatPrice = (price?: number | null) => {
+  const formatPrice = (price?: string | number | null) => {
     if (price === null || price === undefined) return 'N/A';
-    return `$${price.toFixed(2)}`;
+    return `$${Number(price).toFixed(2)}`;
   };
 
   const getItemIcon = (type: string): keyof typeof Feather.glyphMap => {

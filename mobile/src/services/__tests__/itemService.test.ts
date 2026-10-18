@@ -25,11 +25,13 @@ describe('ItemService (Hono)', () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse(serviceDto, 201));
     const item = await itemService.createItem({
       name: serviceDto.name, description: null, type: 'service', categoryId: null,
-      salePrice: 150, purchasePrice: null, taxRate: 15,
+      salePrice: '150.00000001', purchasePrice: null, taxRate: '15',
       enableSaleInfo: true, enablePurchaseInfo: false, unit: 'hour',
     });
-    expect(item.salePrice).toBe(150);
+    expect(item.salePrice).toBe('150.00');
     expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/items', expect.objectContaining({ method: 'POST' }));
+    const request = (global.fetch as jest.Mock).mock.calls[0][1];
+    expect(JSON.parse(request.body)).toEqual(expect.objectContaining({ salePrice: '150.00000001', taxRate: '15' }));
   });
 
   it('lists and filters items through GET /api/items', async () => {
