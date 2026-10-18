@@ -1,4 +1,4 @@
-import type { InvoiceStackParamList, MoreStackParamList } from './types';
+import type { CustomerStackParamList, InvoiceStackParamList, MoreStackParamList } from './types';
 
 /** Home, invoices, customers, then everything else. Customers stay a tab. */
 export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;
@@ -38,6 +38,11 @@ type InvoiceDestination =
   | { name: 'InvoiceCreate' }
   | { name: 'InvoiceDetail'; params: { invoiceId: string } };
 
+type CustomerDestination =
+  | { name: 'CustomerList' }
+  | { name: 'CustomerCreate' }
+  | { name: 'CustomerDetail'; params: { customerId: string } };
+
 type MoreDestination =
   | { name: 'BusinessSettings' }
   | { name: 'ExpenseList' }
@@ -45,7 +50,7 @@ type MoreDestination =
   | { name: 'ExpenseCreate' };
 
 export type NestedRoute = {
-  name: keyof InvoiceStackParamList | keyof MoreStackParamList;
+  name: keyof CustomerStackParamList | keyof InvoiceStackParamList | keyof MoreStackParamList;
   params?: Record<string, unknown>;
 };
 
@@ -76,6 +81,17 @@ export function invoiceTabParams(destination: InvoiceDestination): { state: Nest
     state: stackAbove(
       'InvoiceList',
       destination.name === 'InvoiceDetail'
+        ? { name: destination.name, params: destination.params }
+        : { name: destination.name },
+    ),
+  };
+}
+
+export function customerTabParams(destination: CustomerDestination): { state: NestedStackState } {
+  return {
+    state: stackAbove(
+      'CustomerList',
+      destination.name === 'CustomerDetail'
         ? { name: destination.name, params: destination.params }
         : { name: destination.name },
     ),

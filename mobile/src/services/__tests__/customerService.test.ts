@@ -27,6 +27,7 @@ function jsonResponse(body: unknown, status = 200) {
 describe('CustomerService (Hono)', () => {
   beforeEach(() => {
     process.env.EXPO_PUBLIC_CUSTOMERS_API = 'true';
+    process.env.EXPO_PUBLIC_INVOICES_API = 'true';
     process.env.EXPO_PUBLIC_API_URL = 'http://127.0.0.1:3001';
     global.fetch = jest.fn();
   });
@@ -93,6 +94,39 @@ describe('CustomerService (Hono)', () => {
     expect(global.fetch).toHaveBeenCalledWith(
       `http://127.0.0.1:3001/api/customers/${dto.id}`,
       expect.objectContaining({ method: 'DELETE' }),
+    );
+  });
+
+  it('loads customer invoices through Hono and filters them by customer', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({
+      invoices: [
+        {
+          id: 'invoice-1', invoiceNumber: 'INV-1', customerId: dto.id,
+          date: '2026-10-01', dueDate: '2026-10-20', paymentTermDays: 20,
+          subtotal: '100.00', taxAmount: '15.00', discountType: 'fixed', discountPercent: null,
+          discount: null, additionalCharges: null, total: '115.00', totalPaid: '15.00',
+          balanceDue: '100.00', paymentStatus: 'partially_paid', taxInclusive: false,
+          status: 'sent', notes: null, terms: null, currency: 'NZD', customerName: dto.name,
+          items: [], createdAt: '2026-10-01T00:00:00.000Z', updatedAt: '2026-10-01T00:00:00.000Z',
+        },
+        {
+          id: 'invoice-2', invoiceNumber: 'INV-2', customerId: 'other-customer',
+          date: '2026-10-01', dueDate: '2026-10-20', paymentTermDays: 20,
+          subtotal: '20.00', taxAmount: '3.00', discountType: 'fixed', discountPercent: null,
+          discount: null, additionalCharges: null, total: '23.00', totalPaid: '0.00',
+          balanceDue: '23.00', paymentStatus: 'unpaid', taxInclusive: false,
+          status: 'sent', notes: null, terms: null, currency: 'NZD', customerName: 'Other',
+          items: [], createdAt: '2026-10-01T00:00:00.000Z', updatedAt: '2026-10-01T00:00:00.000Z',
+        },
+      ],
+    }));
+
+    const invoices = await customerService.fetchCustomerInvoices(dto.id);
+
+    expect(invoices.map((invoice) => invoice.id)).toEqual(['invoice-1']);
+    expect(global.fetch).toHaveBeenCalledWith(
+      'http://127.0.0.1:3001/api/invoices',
+      expect.objectContaining({ method: 'GET' }),
     );
   });
 });

@@ -10,6 +10,13 @@ inputs/date controls follow the current Wise system. Strict TypeScript, Jest,
 and iOS/Android production exports pass; authenticated native device QA remains
 pending. Missing parity domains remain in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
 
+**Mobile customer management (implemented locally, 2026-10-19):** The Expo
+Customers tab now supports direct create, detail, edit and delete attempts,
+customer-level invoice history and exact outstanding summaries, contact actions,
+and customer-prefilled invoice creation through the Hono APIs. Dirty forms are
+protected from dismissal. Strict TypeScript, all 17 mobile Jest suites (69
+tests), and lint with no errors pass; authenticated device QA remains pending.
+
 **Pull request CI:** `.github/workflows/ci.yml` runs on every pull request and on
 push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 `pnpm/action-setup` `version` input), Node 22, and `pnpm install --frozen-lockfile`.

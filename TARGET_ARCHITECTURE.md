@@ -9,6 +9,14 @@ action was removed and accessibility/token usage were tightened. Strict
 TypeScript, Jest, and iOS/Android production exports pass. Authenticated native
 device QA and the missing parity domains remain open.
 
+**Mobile customer management (implemented locally, 2026-10-19):** Expo now
+provides customer create/detail/edit/delete-attempt flows, customer invoice
+history and exact outstanding summaries, contact actions, and customer-prefilled
+invoice creation through Hono. Customer invoice lookup no longer relies on the
+retired Supabase stub when the Hono invoice API is enabled. Dirty customer forms
+are protected from dismissal. Strict TypeScript, 17 Jest suites (69 tests), and
+lint with no errors pass; authenticated native device QA remains open.
+
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` uses a system-aware dark-first lime theme and Home /
 Invoices / Customers / More native tabs. Shared pill, card, list-row, setup-card

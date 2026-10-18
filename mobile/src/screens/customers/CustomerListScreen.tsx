@@ -7,7 +7,6 @@ import { customerService, type Customer } from '@/services/customerService';
 import { EmptyState, ListRow } from '@/components/ui';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import type { CustomerStackParamList, MainTabParamList } from '@/navigation/types';
-import { invoiceTabParams } from '@/navigation/links';
 import { useTheme } from '@/theme';
 
 type CustomerNavigation = CompositeNavigationProp<
@@ -22,9 +21,7 @@ export default function CustomerListScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const openInvoice = useCallback(() => {
-    navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
-  }, [navigation]);
+  const openCustomer = useCallback(() => navigation.navigate('CustomerCreate'), [navigation]);
   const load = useCallback(async () => {
     try { setCustomers(await customerService.fetchCustomers()); setError(null); }
     catch { setError('Customers could not be loaded.'); }
@@ -35,14 +32,14 @@ export default function CustomerListScreen() {
     navigation.setOptions({
       headerRight: () => (
         <NativeHeaderButton
-          label="Invoice"
+          label="New"
           primary
-          accessibilityHint="Creates an invoice, which is how a customer is added"
-          onPress={openInvoice}
+          accessibilityHint="Creates a customer"
+          onPress={openCustomer}
         />
       ),
     });
-  }, [navigation, openInvoice]);
+  }, [navigation, openCustomer]);
 
   if (loading) {
     return (
@@ -63,7 +60,7 @@ export default function CustomerListScreen() {
         accessibilityLabel={`${item.name}${item.email ? `, ${item.email}` : ''}`}
         style={{ borderBottomWidth: index === customers.length - 1 ? 0 : StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator }}
       >
-        <ListRow label={item.name} subtitle={[item.email, item.phone].filter(Boolean).join(' · ') || 'No contact details'} icon={<Text style={{ color: theme.colors.accentText, fontWeight: '800' }}>{item.name.slice(0, 1).toUpperCase()}</Text>} showChevron={false} />
+        <ListRow label={item.name} subtitle={[item.email, item.phone].filter(Boolean).join(' · ') || 'No contact details'} icon={<Text style={{ color: theme.colors.accentText, fontWeight: '800' }}>{item.name.slice(0, 1).toUpperCase()}</Text>} accessibilityHint="Opens customer details" onPress={() => navigation.navigate('CustomerDetail', { customerId: item.id })} />
       </View>
     )}
     ListHeaderComponent={
@@ -71,14 +68,14 @@ export default function CustomerListScreen() {
         <Pressable onPress={() => { setRefreshing(true); load(); }} accessibilityRole="button" accessibilityLabel="Try again" style={styles.retry}>
           <Text style={[theme.type.subhead, { color: theme.colors.danger, fontWeight: '700' }]}>{error} Tap to retry.</Text>
         </Pressable>
-      ) : customers.length ? <Text style={[theme.type.subhead, { marginBottom: 12 }]}>Customers from your invoices</Text> : null
+      ) : customers.length ? <Text style={[theme.type.subhead, { marginBottom: 12 }]}>People and businesses you invoice</Text> : null
     }
     ListEmptyComponent={
       <EmptyState
         title={error ? 'Unable to load customers' : 'No customers yet'}
-        description={error || 'Customers are added when you create an invoice.'}
-        actionLabel={error ? 'Try again' : 'Create invoice'}
-        onAction={error ? () => { setRefreshing(true); load(); } : openInvoice}
+        description={error || 'Add a customer, then create their first invoice.'}
+        actionLabel={error ? 'Try again' : 'Add customer'}
+        onAction={error ? () => { setRefreshing(true); load(); } : openCustomer}
       />
     }
   />;

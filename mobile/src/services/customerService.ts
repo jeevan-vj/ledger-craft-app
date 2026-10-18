@@ -1,4 +1,6 @@
 import { customersApi, customersApiEnabled } from '../features/customers/api/customersApi';
+import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import type { Invoice } from '@/types/invoice';
 import { supabase } from './supabaseClient';
 
 export interface Customer {
@@ -249,8 +251,12 @@ export class CustomerService {
     }
   }
 
-  async fetchCustomerInvoices(customerId: string): Promise<any[]> {
+  async fetchCustomerInvoices(customerId: string): Promise<Invoice[]> {
     try {
+      if (invoicesApiEnabled()) {
+        return (await invoicesApi.list()).filter((invoice) => invoice.customerId === customerId);
+      }
+
       const { data, error } = await supabase
         .from('invoices')
         .select('*')
