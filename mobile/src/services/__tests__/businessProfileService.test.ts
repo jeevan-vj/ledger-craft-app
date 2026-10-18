@@ -1,106 +1,47 @@
 import { businessProfileService } from '@/services/businessProfileService';
-import { getAuthenticatedSupabaseClient, cleanupTestData, TEST_USER } from '@/__tests__/setup/testEnv';
-import { mockOnboardingData, mockBusinessTheme } from '@/__tests__/fixtures/onboarding.fixtures';
+import { mockBusinessTheme, mockOnboardingData } from '@/__tests__/fixtures/onboarding.fixtures';
 
-describe('BusinessProfileService', () => {
-  let supabase: Awaited<ReturnType<typeof getAuthenticatedSupabaseClient>>;
+const dto = {
+  id: 'profile-1', name: 'LedgerCraft Studio', email: 'owner@example.com', phone: null,
+  address: null, city: null, state: null, zip: null, country: 'NZ', taxId: null,
+  logoUrl: null, website: null, defaultTaxRate: '15', defaultTerms: null,
+  paymentTermDays: 20, defaultNotes: null, bankInfo: null, theme: mockBusinessTheme,
+  invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1,
+  createdAt: '2026-10-18T00:00:00.000Z', updatedAt: '2026-10-18T00:00:00.000Z',
+};
 
-  beforeAll(async () => {
-    process.env.EXPO_PUBLIC_BUSINESS_API = 'false';
-    supabase = await getAuthenticatedSupabaseClient();
+function jsonResponse(body: unknown, status = 200) {
+  return { ok: status >= 200 && status < 300, status, headers: { get: () => null }, json: async () => body };
+}
+
+describe('BusinessProfileService (Hono)', () => {
+  beforeEach(() => {
+    process.env.EXPO_PUBLIC_BUSINESS_API = 'true';
+    process.env.EXPO_PUBLIC_API_URL = 'http://127.0.0.1:3001';
+    global.fetch = jest.fn();
+  });
+  afterEach(() => jest.resetAllMocks());
+
+  it('creates a profile through PUT /api/business-profile', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse(dto));
+    const profile = await businessProfileService.createBusinessProfile({ ...mockOnboardingData, businessName: dto.name, businessEmail: dto.email, logoUri: undefined });
+    expect(profile).toEqual(expect.objectContaining({ name: dto.name, defaultTaxRate: 15, theme: mockBusinessTheme }));
+    expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/business-profile', expect.objectContaining({ method: 'PUT' }));
   });
 
-  afterEach(async () => {
-    // Clean up test business profile
-    if (TEST_USER.userId) {
-      await cleanupTestData.deleteBusinessProfile(supabase, TEST_USER.userId);
-    }
+  it('gets the current profile and maps 404 to null', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(dto))
+      .mockResolvedValueOnce(jsonResponse({ message: 'Not found' }, 404));
+    await expect(businessProfileService.getBusinessProfile()).resolves.toEqual(expect.objectContaining({ id: dto.id }));
+    await expect(businessProfileService.getBusinessProfile()).resolves.toBeNull();
   });
 
-  describe('createBusinessProfile', () => {
-    it('should create a business profile with valid data', async () => {
-      const testData = {
-        ...mockOnboardingData,
-        businessName: `TEST_${Date.now()}_Business`,
-        logoUri: undefined, // No logo for this test
-      };
-
-      const profile = await businessProfileService.createBusinessProfile(testData);
-
-      expect(profile).toBeDefined();
-      expect(profile.businessName).toBe(testData.businessName);
-      expect(profile.businessEmail).toBe(testData.businessEmail);
-      expect(profile.country).toBe(testData.country);
-      expect(profile.invoiceNumberFormat).toBe(testData.invoiceNumberFormat);
-      expect(profile.defaultTaxRate).toBe(testData.defaultTaxRate);
-    });
-
-    it('should handle logo upload failure gracefully', async () => {
-      const testData = {
-        ...mockOnboardingData,
-        businessName: `TEST_${Date.now()}_LogoFail`,
-        logoUri: 'file:///non-existent-image.jpg',
-      };
-
-      // Should not throw error, logo upload failure is optional
-      const profile = await businessProfileService.createBusinessProfile(testData);
-
-      expect(profile).toBeDefined();
-      expect(profile.businessName).toBe(testData.businessName);
-      expect(profile.logoUrl).toBeNull(); // Logo should be null on failure
-    });
-
-    it('should store theme colors correctly', async () => {
-      const testData = {
-        ...mockOnboardingData,
-        businessName: `TEST_${Date.now()}_Theme`,
-        theme: mockBusinessTheme,
-      };
-
-      const profile = await businessProfileService.createBusinessProfile(testData);
-
-      expect(profile).toBeDefined();
-      expect(profile.primaryColor).toBe(mockBusinessTheme.primary);
-      expect(profile.secondaryColor).toBe(mockBusinessTheme.secondary);
-      expect(profile.accentColor).toBe(mockBusinessTheme.accent);
-    });
-  });
-
-  describe('getBusinessProfile', () => {
-    it('should return business profile for authenticated user', async () => {
-      // First create a profile
-      const testData = {
-        ...mockOnboardingData,
-        businessName: `TEST_${Date.now()}_GetProfile`,
-      };
-      await businessProfileService.createBusinessProfile(testData);
-
-      // Then retrieve it
-      const profile = await businessProfileService.getBusinessProfile();
-
-      expect(profile).toBeDefined();
-      expect(profile).not.toBeNull();
-      expect(profile?.businessName).toBe(testData.businessName);
-    });
-
-    it('should return null if no profile exists', async () => {
-      // Ensure no profile exists
-      const profile = await businessProfileService.getBusinessProfile();
-
-      // Should return null for user without profile
-      expect(profile).toBeNull();
-    });
-  });
-
-  describe('uploadLogo', () => {
-    it('should return null when bucket does not exist', async () => {
-      const testUri = 'file:///test-image.jpg';
-      
-      const result = await businessProfileService.uploadLogo(testUri, TEST_USER.userId);
-
-      // Should gracefully return null instead of throwing
-      expect(result).toBeNull();
-    });
+  it('updates the profile without losing existing required fields', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(dto))
+      .mockResolvedValueOnce(jsonResponse({ ...dto, name: 'Updated Studio' }));
+    await expect(businessProfileService.updateBusinessProfile({ businessName: 'Updated Studio' }))
+      .resolves.toEqual(expect.objectContaining({ name: 'Updated Studio' }));
   });
 });
-

@@ -37,7 +37,10 @@ function query() {
   return chain;
 }
 
-export const supabase = {
+// Compatibility-only stub for legacy code paths. The production client uses the
+// typed Hono APIs; keeping this boundary dynamic avoids pretending a removed
+// hosted database schema is still available.
+export const supabase: any = {
   from: () => query(),
   auth: {
     getSession: async () => ({ data: { session: null }, error: null }),

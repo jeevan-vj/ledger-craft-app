@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Mobile hardening (verified locally, 2026-10-18):** Expo distinguishes failed
+loads from genuine empty states, protects unsaved bill edits, exposes invoice
+and expense actions without requiring swipe gestures, preserves exact purchase
+decimals through display, draft totals, and payment validation, and reconnects
+React Query to native app focus and network state. The unavailable Google login
+action was removed and accessibility/token usage were tightened. Strict
+TypeScript, Jest, and iOS/Android production exports pass. Authenticated native
+device QA and the missing parity domains remain open.
+
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` uses a system-aware dark-first lime theme and Home /
 Invoices / Customers / More native tabs. Shared pill, card, list-row, setup-card

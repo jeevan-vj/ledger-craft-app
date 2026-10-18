@@ -38,7 +38,7 @@ interface AnimatedPressableProps {
   /** Custom style for the container */
   style?: StyleProp<ViewStyle>;
   /** Additional animated style */
-  animatedContainerStyle?: StyleProp<Animated.AnimateStyle<StyleProp<ViewStyle>>>;
+  animatedContainerStyle?: StyleProp<ViewStyle>;
   /** Whether to animate opacity as well (default: false) */
   animateOpacity?: boolean;
   /** Accessibility label */

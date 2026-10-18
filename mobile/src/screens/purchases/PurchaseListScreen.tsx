@@ -138,7 +138,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
-      accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(Number(bill.balanceDue), bill.currency)} due`}
+      accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(bill.balanceDue, bill.currency)} due`}
       accessibilityHint="Opens bill details"
       style={({ pressed }) => [styles.row, first && styles.first, last && styles.last, pressed && styles.pressed]}
     >
@@ -150,7 +150,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
         <Text style={styles.rowSubtitle} numberOfLines={1}>{bill.billNumber} · due {formatDate(bill.dueDate)}</Text>
       </View>
       <View style={styles.amountCopy}>
-        <Text style={styles.amount}>{formatMoney(Number(bill.balanceDue), bill.currency)}</Text>
+        <Text style={styles.amount}>{formatMoney(bill.balanceDue, bill.currency)}</Text>
         <Text style={[styles.status, { color: statusColor[bill.displayStatus] }]}>{bill.displayStatus}</Text>
       </View>
       <Feather name="chevron-right" size={18} color={palette.textTertiary} />

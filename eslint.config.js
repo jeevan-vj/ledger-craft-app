@@ -25,5 +25,13 @@ export default tseslint.config(
       ],
       "@typescript-eslint/no-unused-vars": "off",
     },
+  },
+  {
+    files: ["mobile/src/services/supabaseClient.ts"],
+    rules: {
+      // This isolated compatibility stub intentionally models legacy query
+      // chains dynamically; production data access uses typed Hono APIs.
+      "@typescript-eslint/no-explicit-any": "off",
+    },
   }
 );

@@ -113,7 +113,15 @@ export default function ExpenseEditScreen() {
       // Set selected items
       setSelectedCategory(expense.category || null);
       setSelectedAccount(expense.account || null);
-      setSelectedCustomer(expense.customer || null);
+      setSelectedCustomer(expense.customer ? {
+        ...expense.customer,
+        email: expense.customer.email ?? '',
+        address: expense.customer.address ?? null,
+        city: expense.customer.city ?? null,
+        state: expense.customer.state ?? null,
+        zip: expense.customer.zip ?? null,
+        country: expense.customer.country ?? 'New Zealand',
+      } : null);
       setReceiptUrl(expense.receiptUrl || null);
     } catch (error) {
       console.error('Error loading expense:', error);

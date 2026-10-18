@@ -88,12 +88,12 @@ vi.mock('@/components/ui/form', () => ({
 }));
 
 vi.mock('@/components/ui/tabs', () => ({
-  Tabs: ({ children, value }: { children: React.ReactNode; value?: string }) => 
+  Tabs: ({ children, value }: { children: React.ReactNode; value?: string }) =>
     <div data-testid="tabs" data-value={value}>{children}</div>,
-  TabsContent: ({ children, value }: { children: React.ReactNode; value: string }) => 
+  TabsContent: ({ children, value }: { children: React.ReactNode; value: string }) =>
     <div data-testid={`tab-content-${value}`}>{children}</div>,
   TabsList: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  TabsTrigger: ({ children, value, ...props }: { children: React.ReactNode; value: string }) => 
+  TabsTrigger: ({ children, value, ...props }: { children: React.ReactNode; value: string }) =>
     <button data-testid={`tab-trigger-${value}`} {...props}>{children}</button>,
 }));
 

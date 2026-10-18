@@ -1,5 +1,15 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile hardening (verified locally, 2026-10-18):** The Expo client reports
+dashboard and expense loading failures honestly, protects dirty bill forms from
+accidental dismissal, exposes invoice/expense row actions to assistive
+technology, preserves exact purchase amounts through formatting, draft totals,
+and payment validation, and follows React Native connectivity/app-focus query
+lifecycle. The unavailable Google sign-in action is not advertised and core
+inputs/date controls follow the current Wise system. Strict TypeScript, Jest,
+and iOS/Android production exports pass; authenticated native device QA remains
+pending. Missing parity domains remain in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+
 **Pull request CI:** `.github/workflows/ci.yml` runs on every pull request and on
 push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 `pnpm/action-setup` `version` input), Node 22, and `pnpm install --frozen-lockfile`.

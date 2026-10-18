@@ -6,8 +6,8 @@ import { AuthSlice, createAuthSlice } from '@/store/authSlice';
 
 // Mock store factory
 export const createMockStore = (initialState: Partial<AuthSlice> = {}) => {
-  return create<AuthSlice>()((set, get) => ({
-    ...createAuthSlice(set, get),
+  return create<AuthSlice>()((set, get, api) => ({
+    ...createAuthSlice(set, get, api),
     ...initialState,
   }));
 };

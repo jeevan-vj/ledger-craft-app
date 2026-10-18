@@ -115,6 +115,10 @@ export function SmartDatePicker({
       <Text style={styles.label}>{label}</Text>
       <TouchableOpacity
         style={styles.button}
+        accessibilityRole="button"
+        accessibilityLabel={label}
+        accessibilityValue={{ text: formatDate(value) }}
+        accessibilityHint="Opens date options"
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setTempDate(parseLocalDate(value));
@@ -144,6 +148,8 @@ export function SmartDatePicker({
               <Text style={styles.modalTitle}>Select {label.toLowerCase()}</Text>
               <TouchableOpacity
                 onPress={() => setShowModal(false)}
+                accessibilityRole="button"
+                accessibilityLabel="Close date options"
                 hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
               >
                 <Text style={styles.closeButton}>Close</Text>
@@ -155,6 +161,8 @@ export function SmartDatePicker({
                 <TouchableOpacity
                   key={preset.label}
                   style={styles.presetButton}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${preset.label}, ${preset.days === 0 ? 'today' : `${preset.days} days from now`}`}
                   onPress={() => handlePresetSelect(preset.days)}
                   activeOpacity={0.7}
                 >
@@ -172,6 +180,8 @@ export function SmartDatePicker({
 
               <TouchableOpacity
                 style={[styles.presetButton, styles.customButton]}
+                accessibilityRole="button"
+                accessibilityLabel="Choose a custom date"
                 onPress={handleCustomDate}
                 activeOpacity={0.7}
               >
@@ -196,7 +206,12 @@ export function SmartDatePicker({
                   minimumDate={minimumDate}
                   style={styles.iosPicker}
                 />
-                <TouchableOpacity style={styles.iosConfirmButton} onPress={handleIOSConfirm}>
+                <TouchableOpacity
+                  style={styles.iosConfirmButton}
+                  onPress={handleIOSConfirm}
+                  accessibilityRole="button"
+                  accessibilityLabel="Confirm selected date"
+                >
                   <Text style={styles.iosConfirmText}>Confirm</Text>
                 </TouchableOpacity>
               </View>
@@ -276,12 +291,12 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     paddingTop: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    borderBottomColor: palette.separator,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#0f172a',
+    color: palette.text,
   },
   closeButton: {
     fontSize: 17,
@@ -321,7 +336,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   iosPickerContainer: {
     borderTopWidth: 1,
-    borderTopColor: '#f1f5f9',
+    borderTopColor: palette.separator,
     paddingBottom: Platform.OS === 'ios' ? 20 : 0,
   },
   iosPicker: {
@@ -338,6 +353,6 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   iosConfirmText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: palette.accentForeground,
   },
 });

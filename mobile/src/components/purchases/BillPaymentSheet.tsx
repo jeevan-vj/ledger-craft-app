@@ -10,7 +10,7 @@ import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
-import { createBillPaymentDraft } from '@/features/purchases/model/purchaseForms';
+import { createBillPaymentDraft, isPaymentAmountValid } from '@/features/purchases/model/purchaseForms';
 import { localIsoDate } from '@/components/ui/datePickerModel';
 import { useTheme } from '@/theme';
 
@@ -49,7 +49,7 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
   const selected = bankAccounts.find((account) => account.id === bankAccountId);
   const filtered = useMemo(() => bankAccounts.filter((account) =>
     !search || `${account.accountName} ${account.bankName}`.toLowerCase().includes(search.toLowerCase())), [bankAccounts, search]);
-  const validAmount = Number(amount) > 0 && Number(amount) <= Number(bill.balanceDue);
+  const validAmount = isPaymentAmountValid(amount, bill.balanceDue);
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -58,7 +58,7 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
           <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
             <View style={styles.heading}>
               <Text style={styles.title}>Record payment</Text>
-              <Text style={styles.subtitle}>{bill.billNumber} · {formatMoney(Number(bill.balanceDue), bill.currency)} remaining</Text>
+              <Text style={styles.subtitle}>{bill.billNumber} · {formatMoney(bill.balanceDue, bill.currency)} remaining</Text>
             </View>
             <GroupedSection title="Payment account">
               <ListRow label="Paid from" value={selected?.accountName} placeholder="Choose account" accessibilityHint="Opens the payment account picker" onPress={() => setPickerVisible(true)} />

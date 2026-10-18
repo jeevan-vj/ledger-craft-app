@@ -321,7 +321,7 @@ export default function ExpenseCreateScreen() {
               value={taxEnabled}
               onValueChange={setTaxEnabled}
               trackColor={{ false: palette.fill, true: palette.accent }}
-              thumbColor="#ffffff"
+              thumbColor={taxEnabled ? palette.accentForeground : palette.surface}
             />
           </View>
 
@@ -356,7 +356,7 @@ export default function ExpenseCreateScreen() {
               value={isBillable}
               onValueChange={setIsBillable}
               trackColor={{ false: palette.fill, true: palette.accent }}
-              thumbColor="#ffffff"
+              thumbColor={isBillable ? palette.accentForeground : palette.surface}
             />
           </View>
 

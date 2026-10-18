@@ -68,15 +68,20 @@ jest.mock('expo-linking', () => ({
   createURL: jest.fn((path) => `exp://127.0.0.1:8081/${path}`),
 }));
 
+jest.mock('@expo/vector-icons', () => ({
+  Feather: 'Feather',
+}));
+
+jest.mock('expo-haptics', () => ({
+  impactAsync: jest.fn(() => Promise.resolve()),
+  notificationAsync: jest.fn(() => Promise.resolve()),
+  ImpactFeedbackStyle: { Light: 'light', Medium: 'medium' },
+  NotificationFeedbackType: { Success: 'success' },
+}));
+
 // Mock React Native Alert
 jest.mock('react-native/Libraries/Alert/Alert', () => ({
   alert: jest.fn(),
-}));
-
-// Mock React Native Platform
-jest.mock('react-native/Libraries/Utilities/Platform', () => ({
-  OS: 'ios',
-  select: jest.fn((obj) => obj.ios || obj.default),
 }));
 
 // Silence console warnings in tests

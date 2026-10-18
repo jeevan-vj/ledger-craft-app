@@ -15,10 +15,11 @@ if (!kind || !file || !Number.isInteger(max) || max < 0) {
   process.exit(2);
 }
 
-const raw = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
+const exists = fs.existsSync(file);
+const raw = exists ? fs.readFileSync(file, 'utf8') : '';
 const text = raw.replace(/\u001b\[[0-9;]*m/g, '');
 
-if (!text.trim()) {
+if (!exists || (!text.trim() && kind !== 'tsc')) {
   console.error(`No ${kind} log at ${file}. The check did not produce output.`);
   process.exit(1);
 }
