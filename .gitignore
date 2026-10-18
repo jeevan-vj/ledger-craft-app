@@ -49,3 +49,6 @@ deploy/*.local.env
 .data/
 
 .pnpm-store/
+
+# Generated verification evidence (never commit logs)
+artifacts/verification/
