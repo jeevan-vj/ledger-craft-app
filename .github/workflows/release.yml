@@ -1,0 +1,132 @@
+name: Release to Cloudflare
+
+# Mirrors CleanTrack (jeevan-vj/timesheet) release.yml: on push to main, verify, then
+# deploy with wrangler in the "production" environment. Same checks as
+# `pnpm deploy:check` (scripts/deploy-cloudflare.mjs), then the same wrangler
+# commands that script uses for the API Worker and Pages site.
+#
+# BETTER_AUTH_SECRET is NOT handled here: it already exists as a Worker secret and
+# `wrangler deploy` without --secrets-file preserves it. Never rotate it from CI.
+# The synthetic-account smoke test (scripts/verify-cloudflare.mjs) is not run here
+# because it creates test data in production; only read-only checks run.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ledgercraft-production
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Lint (non-blocking until pre-existing errors are fixed)
+        continue-on-error: true
+        run: pnpm lint
+      - name: Typecheck web against the current baseline
+        shell: bash
+        run: |
+          set +e
+          : > "$RUNNER_TEMP/web-tsc.txt"
+          pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
+          pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
+          set -e
+          cat "$RUNNER_TEMP/web-tsc.txt"
+          node .github/scripts/ci-baseline-gate.mjs tsc "$RUNNER_TEMP/web-tsc.txt" 728
+      # Local-only checks + Worker dry run; makes no cloud changes.
+      - run: pnpm run deploy:check
+
+  deploy:
+    needs: verify
+    if: github.repository == 'jeevan-vj/ledger-craft-app' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: ${{ vars.PRODUCTION_URL || 'https://easybiz.iamjeevan.com' }}
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      PRODUCTION_URL: ${{ vars.PRODUCTION_URL || 'https://easybiz.iamjeevan.com' }}
+      API_URL: https://ledgercraft-api.jeevan90wijerathna.workers.dev
+      WORKER_CONFIG: deploy/api/wrangler.jsonc
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile --ignore-scripts
+      - name: Bundle SQLite migrations
+        run: node scripts/generate-sqlite-migrations.mjs
+      - name: Build web (production API flags, as deploy-cloudflare.mjs)
+        shell: bash
+        env:
+          NODE_ENV: production
+          VITE_OPENAI_API_KEY: ''
+          VITE_RESEND_API_KEY: ''
+        run: |
+          for n in CUSTOMERS BUSINESS ITEMS INVOICES EXPENSES PAYMENTS ACCOUNTS BANK RECONCILIATION TAX STORAGE RECEIPTS AI CONVERSATIONS JOURNALS; do
+            export "VITE_${n}_API=true"
+          done
+          pnpm build
+      - name: Check Cloudflare access and existing signing secret
+        shell: bash
+        run: |
+          set -euo pipefail
+          pnpm exec wrangler pages project list > /dev/null
+          pnpm exec wrangler secret list --config "$WORKER_CONFIG" > "$RUNNER_TEMP/secrets.json"
+          node -e "const s=require(process.argv[1]); if(!s.some(x=>x.name==='BETTER_AUTH_SECRET')){console.error('BETTER_AUTH_SECRET missing on Worker; refusing to deploy from CI');process.exit(1)}" "$RUNNER_TEMP/secrets.json"
+      - name: Deploy API Worker (preserves existing secrets)
+        run: >-
+          pnpm exec wrangler deploy
+          --config "$WORKER_CONFIG"
+          --tag "$GITHUB_SHA"
+          --message "GitHub Actions release $GITHUB_SHA"
+      - name: Verify API readiness
+        shell: bash
+        run: |
+          expected="$(ls api/sqlite-migrations/*.sql | sort | tail -1 | xargs basename)"
+          for i in $(seq 1 20); do
+            if curl -fsS "$API_URL/api/healthz" | grep -q '"ok"' \
+              && curl -fsSI "$API_URL/api/readyz" | grep -qi "x-ledgercraft-migration: $expected" \
+              && [ "$(curl -s -o /dev/null -w '%{http_code}' "$API_URL/api/me")" = 401 ]; then
+              echo "API ready ($expected)"; exit 0; fi
+            sleep 3
+          done
+          echo "API readiness check failed"; exit 1
+      - name: Deploy Pages site
+        run: pnpm exec wrangler pages deploy dist --project-name ledger-craft-app --branch main --commit-hash "$GITHUB_SHA"
+      - name: Verify published build
+        shell: bash
+        run: |
+          hash="$(node -p "require('./dist/version.json').hash")"
+          for site in "$PRODUCTION_URL" https://ledger-craft-app.pages.dev; do
+            ok=
+            for i in $(seq 1 20); do
+              if [ "$(curl -fsS -H 'Cache-Control: no-cache' "$site/version.json" | node -p 'JSON.parse(require("fs").readFileSync(0)).hash')" = "$hash" ] \
+                && curl -fsS "$site/login" | grep -q '<div id="root">' \
+                && [ "$(curl -s -o /dev/null -w '%{http_code}' "$site/api/me")" = 401 ]; then ok=1; break; fi
+              sleep 3
+            done
+            [ -n "$ok" ] || { echo "Verification failed for $site"; exit 1; }
+            echo "Verified $site at build $hash"
+          done
