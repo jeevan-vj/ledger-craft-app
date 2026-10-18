@@ -24,6 +24,7 @@ function toReceipt(dto: PaymentReceiptDto): Receipt {
     generatedAt: dto.generatedAt,
     emailSentAt: dto.emailSentAt ?? undefined,
     isEmailed: dto.isEmailed,
+    receiptData: null,
     createdAt: dto.createdAt,
   };
 }

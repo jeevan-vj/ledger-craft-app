@@ -188,7 +188,7 @@ export default function AppNavigator() {
         component={PurchaseNavigator}
         options={{
           title: 'Purchases',
-          tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/expenses.png')),
+          tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/purchases.png')),
         }}
       />
       <Tab.Screen

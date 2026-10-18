@@ -110,7 +110,15 @@ export default function ExpenseEditScreen() {
       // Set selected items
       setSelectedCategory(expense.category || null);
       setSelectedAccount(expense.account || null);
-      setSelectedCustomer(expense.customer || null);
+      setSelectedCustomer(expense.customer ? {
+        ...expense.customer,
+        email: expense.customer.email ?? '',
+        address: expense.customer.address ?? null,
+        city: expense.customer.city ?? null,
+        state: expense.customer.state ?? null,
+        zip: expense.customer.zip ?? null,
+        country: expense.customer.country ?? 'New Zealand',
+      } : null);
       setReceiptUrl(expense.receiptUrl || null);
     } catch (error) {
       console.error('Error loading expense:', error);
@@ -270,7 +278,7 @@ export default function ExpenseEditScreen() {
   if (loadingExpense) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color="#163300" />
+        <ActivityIndicator size="large" color={palette.accentForeground} />
         <Text style={styles.loadingText}>Loading expense...</Text>
       </View>
     );
@@ -407,8 +415,8 @@ export default function ExpenseEditScreen() {
             <Switch
               value={taxEnabled}
               onValueChange={setTaxEnabled}
-              trackColor={{ false: '#e2e8f0', true: '#163300' }}
-              thumbColor="#ffffff"
+              trackColor={{ false: palette.fill, true: palette.accent }}
+              thumbColor={isBillable ? palette.accentForeground : palette.surface}
             />
           </View>
 
@@ -442,8 +450,8 @@ export default function ExpenseEditScreen() {
             <Switch
               value={isBillable}
               onValueChange={setIsBillable}
-              trackColor={{ false: '#e2e8f0', true: '#163300' }}
-              thumbColor="#ffffff"
+              trackColor={{ false: palette.fill, true: palette.accent }}
+              thumbColor={taxEnabled ? palette.accentForeground : palette.surface}
             />
           </View>
 
@@ -656,23 +664,23 @@ export default function ExpenseEditScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
+    backgroundColor: palette.background,
   },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.background,
   },
   loadingText: {
     marginTop: 16,
     fontSize: 16,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   errorText: {
     marginTop: 8,
     fontSize: 14,
-    color: '#EF4444',
+    color: palette.danger,
     textAlign: 'center',
   },
   header: {
@@ -682,20 +690,20 @@ const styles = StyleSheet.create({
     paddingTop: 48,
     paddingBottom: 16,
     paddingHorizontal: 24,
-    backgroundColor: '#1E2875',
+    backgroundColor: palette.surface,
   },
   backButton: {
     padding: 8,
   },
   backButtonText: {
     fontSize: 24,
-    color: '#FFFFFF',
+    color: palette.text,
     fontWeight: '600',
   },
   headerTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: palette.text,
   },
   headerSpacer: {
     width: 40,
@@ -708,7 +716,7 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
   },
   card: {
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.surface,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -716,7 +724,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 13,
     fontWeight: '500',
-    color: '#636366',
+    color: palette.textSecondary,
     letterSpacing: -0.08,
     textTransform: 'uppercase',
     marginBottom: 16,
@@ -734,17 +742,17 @@ const styles = StyleSheet.create({
   fieldLabel: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#64748B',
+    color: palette.textSecondary,
     marginBottom: 8,
   },
   required: {
-    color: '#EF4444',
+    color: palette.danger,
   },
   pickerButton: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F4F4F7',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 14,
   },
@@ -766,28 +774,28 @@ const styles = StyleSheet.create({
   selectedItemText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
   },
   placeholderText: {
     fontSize: 16,
-    color: '#94A3B8',
+    color: palette.textTertiary,
   },
   changeText: {
     fontSize: 14,
-    color: '#163300',
+    color: palette.focus,
     fontWeight: '600',
   },
   customerAvatar: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#163300',
+    backgroundColor: palette.accent,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
   },
   customerAvatarText: {
-    color: '#FFFFFF',
+    color: palette.accentForeground,
     fontSize: 16,
     fontWeight: '700',
   },
@@ -796,7 +804,7 @@ const styles = StyleSheet.create({
   },
   customerEmail: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
     marginTop: 2,
   },
   switchRow: {
@@ -811,15 +819,15 @@ const styles = StyleSheet.create({
   switchLabel: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
     marginBottom: 4,
   },
   switchSubtext: {
     fontSize: 12,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   taxInfo: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 16,
     marginTop: 8,
@@ -831,16 +839,16 @@ const styles = StyleSheet.create({
   },
   taxLabel: {
     fontSize: 14,
-    color: '#64748B',
+    color: palette.textSecondary,
   },
   taxValue: {
     fontSize: 14,
     fontWeight: '600',
-    color: '#1E293B',
+    color: palette.text,
   },
   taxTotal: {
     borderTopWidth: 1,
-    borderTopColor: '#E2E8F0',
+    borderTopColor: palette.separator,
     paddingTop: 8,
     marginTop: 8,
     marginBottom: 0,
@@ -848,22 +856,22 @@ const styles = StyleSheet.create({
   taxTotalLabel: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#1E293B',
+    color: palette.text,
   },
   taxTotalValue: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#163300',
+    color: palette.focus,
   },
   receiptContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     padding: 16,
     borderWidth: 1,
-    borderColor: '#E2E8F0',
+    borderColor: palette.separator,
   },
   receiptInfo: {
     flexDirection: 'row',
@@ -877,14 +885,14 @@ const styles = StyleSheet.create({
   receiptText: {
     fontSize: 16,
     fontWeight: '500',
-    color: '#1E293B',
+    color: palette.text,
   },
   removeReceiptButton: {
     padding: 8,
   },
   removeReceiptText: {
     fontSize: 14,
-    color: '#EF4444',
+    color: palette.danger,
     fontWeight: '600',
   },
   scanIcon: {
@@ -897,7 +905,7 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: palette.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
   },
@@ -907,12 +915,12 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
+    borderBottomColor: palette.separator,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#1E293B',
+    color: palette.text,
   },
   modalCloseButton: {
     padding: 8,
@@ -920,7 +928,7 @@ const styles = StyleSheet.create({
   modalCloseText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#163300',
+    color: palette.focus,
   },
   methodOption: {
     flexDirection: 'row',
@@ -928,18 +936,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
+    borderBottomColor: palette.separator,
   },
   methodOptionSelected: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
   },
   methodOptionText: {
     fontSize: 16,
-    color: '#1E293B',
+    color: palette.text,
   },
   methodOptionCheck: {
     fontSize: 16,
-    color: '#163300',
+    color: palette.focus,
     fontWeight: '700',
   },
 });

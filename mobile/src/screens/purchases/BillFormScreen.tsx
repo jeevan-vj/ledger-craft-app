@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
+  Alert,
   KeyboardAvoidingView,
   Platform,
   Pressable,
@@ -11,7 +12,7 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import { useNavigation, usePreventRemove, useRoute, type NavigationAction, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FormSwitch } from '@/components/ui/FormSwitch';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -22,7 +23,12 @@ import { ModernInput } from '@/components/ui/ModernInput';
 import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { purchasesApi, type BillLineInput, type BillWriteRequest } from '@/features/purchases/api/purchasesApi';
-import { isBillDateRangeValid, moveDueDateForward } from '@/features/purchases/model/purchaseForms';
+import {
+  calculateBillDraftTotals,
+  hasBillFormChanged,
+  isBillDateRangeValid,
+  moveDueDateForward,
+} from '@/features/purchases/model/purchaseForms';
 import type { PurchaseStackParamList } from '@/navigation/types';
 import { palette, radius, space, type } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
@@ -36,6 +42,9 @@ const plusDays = (date: string, days: number) => {
   return value.toISOString().slice(0, 10);
 };
 const emptyLine = (): BillLineInput => ({ description: '', quantity: '1', unitPrice: '', taxRate: '15', accountId: null });
+const emptyBill = (): BillWriteRequest => ({
+  vendorId: '', vendorReference: null, issueDate: today(), dueDate: plusDays(today(), 20), currency: 'NZD', taxInclusive: true, notes: null, lines: [emptyLine()],
+});
 
 export default function BillFormScreen() {
   const navigation = useNavigation<Navigation>();
@@ -47,16 +56,17 @@ export default function BillFormScreen() {
   const vendors = useQuery({ queryKey: ['purchases', 'vendors'], queryFn: purchasesApi.listVendors });
   const accounts = useQuery({ queryKey: ['purchases', 'accounts'], queryFn: purchasesApi.listAccounts });
   const existing = useQuery({ queryKey: ['purchases', 'bill', billId], queryFn: () => purchasesApi.getBill(billId!), enabled: Boolean(billId) });
-  const [form, setForm] = useState<BillWriteRequest>({
-    vendorId: '', vendorReference: null, issueDate: today(), dueDate: plusDays(today(), 20), currency: 'NZD', taxInclusive: true, notes: null, lines: [emptyLine()],
-  });
+  const [initialForm, setInitialForm] = useState<BillWriteRequest>(() => emptyBill());
+  const [form, setForm] = useState<BillWriteRequest>(() => initialForm);
+  const [savedBillId, setSavedBillId] = useState<string | null>(null);
+  const [pendingNavigation, setPendingNavigation] = useState<NavigationAction | null>(null);
   const [vendorPicker, setVendorPicker] = useState(false);
   const [accountLine, setAccountLine] = useState<number | null>(null);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (!existing.data) return;
-    setForm({
+    const loadedForm: BillWriteRequest = {
       vendorId: existing.data.vendorId,
       vendorReference: existing.data.vendorReference,
       issueDate: existing.data.issueDate,
@@ -65,8 +75,12 @@ export default function BillFormScreen() {
       taxInclusive: existing.data.taxInclusive,
       notes: existing.data.notes,
       lines: existing.data.lines.map(({ description, quantity, unitPrice, taxRate, accountId }) => ({ description, quantity, unitPrice, taxRate, accountId })),
-    });
+    };
+    setForm(loadedForm);
+    setInitialForm(loadedForm);
   }, [existing.data]);
+
+  const isDirty = hasBillFormChanged(form, initialForm);
 
   const save = useMutation({
     mutationFn: () => {
@@ -76,18 +90,45 @@ export default function BillFormScreen() {
     onSuccess: async (bill) => {
       await queryClient.invalidateQueries({ queryKey: ['purchases', 'bills'] });
       queryClient.setQueryData(['purchases', 'bill', bill.id], bill);
-      navigation.replace('BillDetail', { billId: bill.id });
+      setInitialForm(form);
+      setSavedBillId(bill.id);
     },
+  });
+
+  useEffect(() => {
+    if (savedBillId && !isDirty) navigation.replace('BillDetail', { billId: savedBillId });
+  }, [isDirty, navigation, savedBillId]);
+
+  useEffect(() => {
+    if (!pendingNavigation || isDirty) return;
+    navigation.dispatch(pendingNavigation);
+    setPendingNavigation(null);
+  }, [isDirty, navigation, pendingNavigation]);
+
+  usePreventRemove(isDirty, ({ data }) => {
+    Alert.alert(
+      'Discard bill changes?',
+      'Your unsaved changes will be lost.',
+      [
+        { text: 'Keep editing', style: 'cancel' },
+        {
+          text: 'Discard',
+          style: 'destructive',
+          onPress: () => {
+            setForm(initialForm);
+            setPendingNavigation(data.action);
+          },
+        },
+      ],
+    );
   });
 
   const selectedVendor = vendors.data?.find((vendor) => vendor.id === form.vendorId);
   const eligibleAccounts = (accounts.data ?? []).filter((account) => account.isActive && (account.type === 'expense' || ['expense', 'asset'].includes(account.accountClass ?? '')));
-  const totals = useMemo(() => form.lines.reduce((sum, line) => {
-    const base = (Number(line.quantity) || 0) * (Number(line.unitPrice) || 0);
-    const rate = Number(line.taxRate) || 0;
-    const tax = form.taxInclusive ? (rate ? base * rate / (100 + rate) : 0) : base * rate / 100;
-    return { subtotal: sum.subtotal + (form.taxInclusive ? base - tax : base), tax: sum.tax + tax, total: sum.total + (form.taxInclusive ? base : base + tax) };
-  }, { subtotal: 0, tax: 0, total: 0 }), [form.lines, form.taxInclusive]);
+  const totals = useMemo(
+    () => calculateBillDraftTotals(form.lines, form.taxInclusive ?? true),
+    [form.lines, form.taxInclusive],
+  );
   const valid = Boolean(form.vendorId && isBillDateRangeValid(form.issueDate, form.dueDate) && form.lines.length && form.lines.every((line) => line.description.trim() && Number(line.quantity) > 0 && Number(line.unitPrice) >= 0 && line.accountId));
 
   const updateLine = (index: number, patch: Partial<BillLineInput>) => setForm((current) => ({ ...current, lines: current.lines.map((line, i) => i === index ? { ...line, ...patch } : line) }));

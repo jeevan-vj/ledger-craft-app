@@ -1,5 +1,17 @@
 # LedgerCraft target architecture
 
+**Mobile hardening (verified locally, 2026-10-18):** Expo now distinguishes
+failed loads from genuine zero/empty states, protects unsaved bill edits, makes
+invoice and expense actions available without swipe gestures, keeps exact
+purchase decimals through display and draft calculations, and reconnects React
+Query to native app-focus and network state. The unavailable Google login action
+was removed, accessibility and Wise token usage were tightened, and the installed
+name and Purchases icon now match LedgerCraft. All 13 mobile Jest suites (45
+tests), strict TypeScript, and iOS/Android production exports pass. This is not a
+claim that the parity backlog is complete: authenticated native device QA plus
+banking, reporting, team, portal, recurring, and other missing domains remain
+open in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+
 **GST return workflow (deployed, 2026-10-03):** The GST wizard now
 stores its calculated IRD and reconciliation snapshot in the existing
 `tax_returns.return_data` column. Filing is a dedicated, atomic draft-to-

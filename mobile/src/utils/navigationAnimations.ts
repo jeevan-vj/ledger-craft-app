@@ -6,8 +6,7 @@
  */
 
 import { NativeStackNavigationOptions } from '@react-navigation/native-stack';
-import { StackCardInterpolationProps, StackCardStyleInterpolator } from '@react-navigation/stack';
-import { Animated, Easing, Platform } from 'react-native';
+import { Platform } from 'react-native';
 
 // ============================================
 // TIMING CONFIGURATIONS
@@ -34,7 +33,6 @@ export const defaultScreenOptions: NativeStackNavigationOptions = {
   gestureEnabled: true,
   gestureDirection: 'horizontal',
   fullScreenGestureEnabled: true,
-  customAnimationOnGesture: true,
   presentation: 'card',
 };
 
@@ -51,7 +49,7 @@ export const modalScreenOptions: NativeStackNavigationOptions = {
   presentation: 'modal',
   // iOS-specific for modal
   ...(Platform.OS === 'ios' && {
-    sheetAllowedDetents: 'all',
+    sheetAllowedDetents: [1],
     sheetGrabberVisible: true,
     sheetCornerRadius: 24,
   }),
@@ -94,7 +92,6 @@ export const formSheetOptions: NativeStackNavigationOptions = {
   gestureEnabled: true,
   ...(Platform.OS === 'ios' && {
     sheetAllowedDetents: [0.5, 0.75, 1],
-    sheetLargestUndimmedDetent: 'medium',
     sheetGrabberVisible: true,
     sheetCornerRadius: 24,
   }),

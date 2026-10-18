@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { Pressable, View, Text, StyleSheet, Platform, type AccessibilityActionEvent } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -153,32 +153,44 @@ export default function SwipeableExpenseCard({
       ]}
     >
       <View style={styles.actionsContainer}>
-        <GestureDetector
-          gesture={Gesture.Tap().onEnd(() => {
-            'worklet';
-            runOnJS(onEditAction)();
-          })}
+        <Pressable
+          onPress={onEditAction}
+          accessibilityRole="button"
+          accessibilityLabel="Edit expense"
+          style={[styles.actionButton, { backgroundColor: palette.accent }]}
         >
-          <View style={[styles.actionButton, { backgroundColor: palette.accent }]}>
             <Feather name="edit-2" size={16} color={palette.accentForeground} />
             <Text style={[styles.actionLabel, { color: palette.accentForeground }]}>Edit</Text>
-          </View>
-        </GestureDetector>
-        <GestureDetector
-          gesture={Gesture.Tap().onEnd(() => {
-            'worklet';
-            runOnJS(onDeleteAction)();
-          })}
+        </Pressable>
+        <Pressable
+          onPress={onDeleteAction}
+          accessibilityRole="button"
+          accessibilityLabel="Delete expense"
+          style={[styles.actionButton, { backgroundColor: palette.danger }]}
         >
-          <View style={[styles.actionButton, { backgroundColor: palette.danger }]}>
             <Feather name="trash-2" size={16} color={palette.surface} />
             <Text style={styles.actionLabel}>Delete</Text>
-          </View>
-        </GestureDetector>
+        </Pressable>
       </View>
 
       <GestureDetector gesture={composedGesture}>
         <Animated.View
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={`${expense.description}, ${formatCurrency(expense.amount || 0, expense.currency || 'NZD')}, ${getStatusLabel(expense.status)}`}
+          accessibilityHint="Opens expense details"
+          accessibilityState={{ disabled }}
+          accessibilityActions={[
+            { name: 'activate', label: 'Open expense' },
+            { name: 'edit', label: 'Edit expense' },
+            { name: 'delete', label: 'Delete expense' },
+          ]}
+          onAccessibilityAction={(event: AccessibilityActionEvent) => {
+            const action = event.nativeEvent.actionName;
+            if (action === 'activate') handlePress();
+            if (action === 'edit') onEditAction();
+            if (action === 'delete') onDeleteAction();
+          }}
           style={[
             styles.row,
             cardAnimatedStyle,
@@ -237,6 +249,7 @@ const styles = StyleSheet.create({
   },
   actionButton: {
     width: ACTION_BUTTON_WIDTH,
+    minHeight: 48,
     justifyContent: 'center',
     alignItems: 'center',
     gap: 4,

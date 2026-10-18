@@ -41,6 +41,8 @@ export function CustomerPicker({
     phone: '',
     address: '',
     city: '',
+    state: '',
+    zip: '',
     country: 'New Zealand',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -109,6 +111,8 @@ export function CustomerPicker({
         phone: '',
         address: '',
         city: '',
+        state: '',
+        zip: '',
         country: 'New Zealand',
       });
       setErrors({});
@@ -242,6 +246,8 @@ export function CustomerPicker({
                         phone: '',
                         address: '',
                         city: '',
+                        state: '',
+                        zip: '',
                         country: 'New Zealand',
                       });
                       setErrors({});

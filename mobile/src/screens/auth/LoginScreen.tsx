@@ -22,7 +22,7 @@ type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, '
 
 export default function LoginScreen() {
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -65,13 +65,6 @@ export default function LoginScreen() {
 
     if (error) {
       Alert.alert('Login Failed', authErrorMessage(error));
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    const { error } = await signInWithGoogle();
-    if (error) {
-      Alert.alert('Google Sign In Failed', authErrorMessage(error));
     }
   };
 
@@ -127,10 +120,6 @@ export default function LoginScreen() {
             {loading ? 'Signing in...' : 'Continue'}
           </ModernButton>
         </View>
-
-        <ModernButton onPress={handleGoogleSignIn} variant="secondary" fullWidth>
-          Google
-        </ModernButton>
 
         <Pressable
           onPress={() => navigation.navigate('Signup')}

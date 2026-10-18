@@ -1,5 +1,17 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile hardening (verified locally, 2026-10-18):** The Expo client now reports
+dashboard and expense loading failures honestly, protects dirty bill forms from
+accidental dismissal, exposes invoice/expense row actions to assistive
+technology, preserves exact purchase amounts through formatting and draft-total
+calculation, and follows React Native connectivity/app-focus query lifecycle.
+The unavailable Google sign-in action is no longer advertised; core inputs,
+date controls, expense styling, installed branding, and the Purchases tab icon
+match the current Wise-inspired system. All 13 mobile Jest suites (45 tests),
+strict TypeScript, and iOS/Android production exports pass. Authenticated native
+device QA remains pending; missing banking, reporting, team, portal, recurring,
+and other parity domains remain tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+
 **GST return workflow (deployed, 2026-10-03):** Web GST returns now
 persist the calculated IRD/reconciliation snapshot through Hono/SQLite, use a
 dedicated draft-to-filed action with the myIR confirmation reference, and export

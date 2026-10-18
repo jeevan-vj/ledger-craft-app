@@ -43,6 +43,7 @@ export default function DashboardScreen() {
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const openCreate = useCallback(() => {
     navigation.navigate('Invoices', { screen: 'InvoiceCreate' });
@@ -64,8 +65,10 @@ export default function DashboardScreen() {
     try {
       const data = await invoiceService.fetchInvoices();
       setInvoices(data);
+      setLoadError(null);
     } catch (error) {
       console.error('Error loading dashboard data:', error);
+      setLoadError(error instanceof Error ? error.message : 'Could not load your dashboard.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -129,12 +132,23 @@ export default function DashboardScreen() {
         <View style={styles.content}>
           <Text style={styles.greeting}>{greetingLine}</Text>
 
-          <BalanceCard
+          {loadError && invoices.length === 0 ? (
+            <View style={styles.emptyCard}>
+              <EmptyState
+                title="Couldn’t load your dashboard"
+                description="Your financial data may still be available. Check your connection and try again."
+                actionLabel="Try again"
+                onAction={loadData}
+              />
+            </View>
+          ) : null}
+
+          {!loadError || invoices.length > 0 ? <BalanceCard
             totalBalance={pendingAmount > 0 ? pendingAmount : totalEarnings}
             paidBalance={totalEarnings}
             pendingBalance={pendingAmount}
             label={pendingAmount > 0 ? 'You are owed' : 'Paid this period'}
-          />
+          /> : null}
 
           <View style={styles.actions}>
             <QuickAction
@@ -155,7 +169,7 @@ export default function DashboardScreen() {
             />
           </View>
 
-          <View style={styles.sectionHead}>
+          {(!loadError || invoices.length > 0) ? <View style={styles.sectionHead}>
             <Text style={styles.sectionTitle}>Needs action</Text>
             <Pressable
               onPress={() => navigation.navigate('Invoices', { screen: 'InvoiceList' })}
@@ -165,9 +179,9 @@ export default function DashboardScreen() {
             >
               <Text style={styles.seeAll}>See all</Text>
             </Pressable>
-          </View>
+          </View> : null}
 
-          {workItems.length === 0 ? (
+          {(!loadError || invoices.length > 0) && (workItems.length === 0 ? (
             <View style={styles.emptyCard}>
               <EmptyState
                 title="You're clear"
@@ -218,7 +232,7 @@ export default function DashboardScreen() {
                 );
               })}
             </View>
-          )}
+          ))}
         </View>
       </ScrollView>
     </View>

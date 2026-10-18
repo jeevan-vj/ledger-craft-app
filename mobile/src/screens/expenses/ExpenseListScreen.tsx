@@ -9,6 +9,7 @@ import {
   Alert,
   ActivityIndicator,
   Platform,
+  Pressable,
 } from 'react-native';
 import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -33,15 +34,17 @@ export default function ExpenseListScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'pending' | 'approved' | 'rejected'>('all');
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const loadExpenses = async () => {
     try {
       const data = await expenseService.fetchExpenses();
       setExpenses(data);
+      setLoadError(null);
       applyFilters(data, searchQuery, filter);
     } catch (error) {
       console.error('Error loading expenses:', error);
-      Alert.alert('Error', 'Failed to load expenses. Please try again.');
+      setLoadError(error instanceof Error ? error.message : 'Failed to load expenses.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -203,6 +206,11 @@ export default function ExpenseListScreen() {
         </View>
       )}
       {renderFilterButtons()}
+      {loadError && expenses.length > 0 ? (
+        <Pressable style={styles.errorBanner} onPress={onRefresh} accessibilityRole="button" accessibilityLabel="Retry loading expenses">
+          <Text style={styles.errorBannerText}>Couldn’t refresh. Showing saved expenses. Tap to retry.</Text>
+        </Pressable>
+      ) : null}
       <FlatList
         data={filteredExpenses}
         keyExtractor={(item) => item.id}
@@ -213,7 +221,14 @@ export default function ExpenseListScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} />
         }
         ListEmptyComponent={
-          expenses.length === 0 ? (
+          loadError ? (
+            <EmptyState
+              title="Couldn't load expenses"
+              description="Your expenses may still be available. Check your connection and try again."
+              actionLabel="Try again"
+              onAction={onRefresh}
+            />
+          ) : expenses.length === 0 ? (
             <EmptyState
               title="No expenses yet"
               description="Log a receipt or add one by hand."
@@ -269,6 +284,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: space.screen,
     paddingTop: 8,
     paddingBottom: 32,
+  },
+  errorBanner: {
+    marginHorizontal: space.screen,
+    marginBottom: space.sm,
+    padding: space.md,
+    backgroundColor: palette.warningFill,
+    borderRadius: 12,
+  },
+  errorBannerText: {
+    fontSize: 13,
+    color: palette.text,
   },
   emptyContainer: {
     padding: 48,

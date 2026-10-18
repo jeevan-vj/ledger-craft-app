@@ -54,6 +54,9 @@ export function ModernInput({
         ]}
       >
         <TextInput
+          accessibilityLabel={props.accessibilityLabel ?? label}
+          accessibilityHint={error || props.accessibilityHint}
+          accessibilityState={{ disabled: Boolean(props.editable === false) }}
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -77,6 +80,9 @@ export function ModernInput({
             }}
             hitSlop={8}
             style={styles.passwordToggle}
+            accessibilityRole="button"
+            accessibilityLabel={showPassword ? 'Hide password' : 'Show password'}
+            accessibilityState={{ expanded: showPassword }}
           >
             <Feather
               name={showPassword ? 'eye-off' : 'eye'}
@@ -86,7 +92,7 @@ export function ModernInput({
           </Pressable>
         ) : null}
       </View>
-      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+      {error ? <Text style={styles.errorText} accessibilityLiveRegion="polite">{error}</Text> : null}
     </View>
   );
 }
@@ -125,7 +131,10 @@ const styles = StyleSheet.create({
     color: palette.text,
   },
   passwordToggle: {
-    paddingHorizontal: space.md,
+    width: 44,
+    minHeight: 44,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   errorText: {
     color: palette.danger,

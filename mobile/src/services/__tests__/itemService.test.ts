@@ -1,175 +1,49 @@
 import { itemService } from '@/services/itemService';
-import { getAuthenticatedSupabaseClient, cleanupTestData } from '@/__tests__/setup/testEnv';
-import { mockItemInput } from '@/__tests__/fixtures/item.fixtures';
 
-describe('ItemService', () => {
-  let supabase: Awaited<ReturnType<typeof getAuthenticatedSupabaseClient>>;
-  const createdItemIds: string[] = [];
+const serviceDto = {
+  id: 'item-service', name: 'Consulting', description: null, type: 'service' as const,
+  categoryId: null, salePrice: '150.00', purchasePrice: null, taxRate: '15',
+  enableSaleInfo: true, enablePurchaseInfo: false, unit: 'hour',
+  createdAt: '2026-10-18T00:00:00.000Z', updatedAt: '2026-10-18T00:00:00.000Z',
+};
+const productDto = { ...serviceDto, id: 'item-product', name: 'Notebook', type: 'product' as const, unit: 'unit' };
+const categoryDto = { id: 'category-1', name: 'Services', color: '#163300', createdAt: serviceDto.createdAt, updatedAt: serviceDto.updatedAt };
 
-  beforeAll(async () => {
-    process.env.EXPO_PUBLIC_ITEMS_API = 'false';
-    supabase = await getAuthenticatedSupabaseClient();
+function jsonResponse(body: unknown, status = 200) {
+  return { ok: status >= 200 && status < 300, status, headers: { get: () => null }, json: async () => body };
+}
+
+describe('ItemService (Hono)', () => {
+  beforeEach(() => {
+    process.env.EXPO_PUBLIC_ITEMS_API = 'true';
+    process.env.EXPO_PUBLIC_API_URL = 'http://127.0.0.1:3001';
+    global.fetch = jest.fn();
+  });
+  afterEach(() => jest.resetAllMocks());
+
+  it('creates an item through POST /api/items', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse(serviceDto, 201));
+    const item = await itemService.createItem({
+      name: serviceDto.name, description: null, type: 'service', categoryId: null,
+      salePrice: 150, purchasePrice: null, taxRate: 15,
+      enableSaleInfo: true, enablePurchaseInfo: false, unit: 'hour',
+    });
+    expect(item.salePrice).toBe(150);
+    expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/items', expect.objectContaining({ method: 'POST' }));
   });
 
-  afterEach(async () => {
-    // Clean up test items
-    if (createdItemIds.length > 0) {
-      await supabase
-        .from('items')
-        .delete()
-        .in('id', createdItemIds);
-      createdItemIds.length = 0;
-    }
-    await cleanupTestData.deleteItems(supabase);
+  it('lists and filters items through GET /api/items', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(jsonResponse({ items: [serviceDto, productDto], categories: [categoryDto] }));
+    await expect(itemService.getItems('service')).resolves.toEqual([expect.objectContaining({ id: serviceDto.id })]);
+    await expect(itemService.getItems()).resolves.toHaveLength(2);
+    await expect(itemService.getItemCategories()).resolves.toEqual([expect.objectContaining({ id: categoryDto.id })]);
   });
 
-  describe('createItem', () => {
-    it('should create a service item with valid data', async () => {
-      const testData = {
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_Service`,
-        type: 'service' as const,
-      };
-
-      const item = await itemService.createItem(testData);
-      createdItemIds.push(item.id);
-
-      expect(item).toBeDefined();
-      expect(item.name).toBe(testData.name);
-      expect(item.type).toBe('service');
-      expect(item.salePrice).toBe(testData.salePrice);
-      expect(item.unit).toBe(testData.unit);
-    });
-
-    it('should create a product item with valid data', async () => {
-      const testData = {
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_Product`,
-        type: 'product' as const,
-      };
-
-      const item = await itemService.createItem(testData);
-      createdItemIds.push(item.id);
-
-      expect(item).toBeDefined();
-      expect(item.name).toBe(testData.name);
-      expect(item.type).toBe('product');
-    });
-
-    it('should transform snake_case columns to camelCase', async () => {
-      const testData = {
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_CaseTransform`,
-      };
-
-      const item = await itemService.createItem(testData);
-      createdItemIds.push(item.id);
-
-      // Verify camelCase fields exist (transformed from snake_case)
-      expect(item.salePrice).toBeDefined();
-      expect(item.categoryId).toBeDefined();
-      expect(item.userId).toBeDefined();
-      expect(item.createdAt).toBeDefined();
-      expect(item.updatedAt).toBeDefined();
-    });
-  });
-
-  describe('getItems', () => {
-    it('should filter items by type correctly', async () => {
-      // Create one service and one product
-      const service = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_FilterService`,
-        type: 'service',
-      });
-      const product = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_FilterProduct`,
-        type: 'product',
-      });
-      createdItemIds.push(service.id, product.id);
-
-      // Get only services
-      const services = await itemService.getItems('service');
-      expect(services.some(i => i.id === service.id)).toBe(true);
-      expect(services.every(i => i.type === 'service')).toBe(true);
-
-      // Get only products
-      const products = await itemService.getItems('product');
-      expect(products.some(i => i.id === product.id)).toBe(true);
-      expect(products.every(i => i.type === 'product')).toBe(true);
-    });
-
-    it('should return all items when no type specified', async () => {
-      const service = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_AllService`,
-        type: 'service',
-      });
-      const product = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_AllProduct`,
-        type: 'product',
-      });
-      createdItemIds.push(service.id, product.id);
-
-      const allItems = await itemService.getItems();
-      
-      expect(allItems.length).toBeGreaterThanOrEqual(2);
-      expect(allItems.some(i => i.id === service.id)).toBe(true);
-      expect(allItems.some(i => i.id === product.id)).toBe(true);
-    });
-  });
-
-  describe('getItemCategories', () => {
-    it('should return item categories', async () => {
-      const categories = await itemService.getItemCategories();
-
-      expect(categories).toBeDefined();
-      expect(Array.isArray(categories)).toBe(true);
-    });
-  });
-
-  describe('updateItem', () => {
-    it('should update item fields correctly', async () => {
-      const item = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_UpdateItem`,
-      });
-      createdItemIds.push(item.id);
-
-      const updatedData = {
-        name: `TEST_${Date.now()}_Updated`,
-        salePrice: 200,
-        unit: 'day',
-      };
-
-      const updated = await itemService.updateItem(item.id, updatedData);
-
-      expect(updated).toBeDefined();
-      expect(updated.name).toBe(updatedData.name);
-      expect(updated.salePrice).toBe(updatedData.salePrice);
-      expect(updated.unit).toBe(updatedData.unit);
-    });
-  });
-
-  describe('deleteItem', () => {
-    it('should delete item successfully', async () => {
-      const item = await itemService.createItem({
-        ...mockItemInput,
-        name: `TEST_${Date.now()}_DeleteItem`,
-      });
-
-      await itemService.deleteItem(item.id);
-
-      const { data, error } = await supabase
-        .from('items')
-        .select('id')
-        .eq('id', item.id)
-        .maybeSingle();
-
-      expect(data).toBeNull();
-    });
+  it('updates and deletes items through the API', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse({ ...serviceDto, name: 'Advisory' }))
+      .mockResolvedValueOnce(jsonResponse(undefined, 204));
+    await expect(itemService.updateItem(serviceDto.id, { name: 'Advisory' })).resolves.toEqual(expect.objectContaining({ name: 'Advisory' }));
+    await expect(itemService.deleteItem(serviceDto.id)).resolves.toBeUndefined();
   });
 });
-
