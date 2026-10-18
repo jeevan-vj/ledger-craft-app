@@ -37,6 +37,7 @@ current architecture.
 | Mobile hardening | **Verified locally (2026-10-19).** Honest load failures, dirty-bill navigation protection, accessible swipe actions and inputs, exact purchase formatting/totals/payment validation, and React Native query lifecycle are integrated with the Wise dark theme and Home / Invoices / Customers / More navigation. All 17 Jest suites (69 tests), strict TypeScript, lint with no errors, and iOS/Android production exports pass. Authenticated native device QA and the missing parity domains remain pending. |
 | Mobile customers | **Implemented locally (2026-10-19).** Native create/detail/edit/delete-attempt flows, invoice history and exact outstanding summaries, contact actions, customer-prefilled invoice creation, and dirty-form protection use Hono. Strict TypeScript, 17 Jest suites (69 tests), and lint with no errors pass; authenticated device QA remains pending. |
 | Mobile items | **Implemented locally (2026-10-19).** Native item list/filter, create/detail/edit/delete-attempt, active-state, category and price/tax-default workflows use Hono. Exact decimal text is preserved through item form/API requests. Strict TypeScript, 18 Jest suites (72 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA remains pending. |
+| Mobile banking | **Implemented locally (2026-10-19).** Native bank-account list/filter, create/detail/edit/delete-attempt, active-state, exact balance fields, and imported transaction history use Hono. Strict TypeScript, 20 Jest suites (78 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA and the remaining AKP-02 workflows are pending. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
 
@@ -104,6 +105,7 @@ Do not move `src/` → `apps/web` or `mobile/` → `apps/mobile` until every pro
 | `ledgercraft-verify-ui` | Browser clicks, screenshots, invoice PDF |
 | `ledgercraft-web-ui` | Web React/Tailwind design and visual QA |
 | `ledgercraft-mobile-ui` | Expo/React Native design and device QA |
+| `ledgercraft-mobile-loop` | Repeated mobile backlog selection, implementation, verification, PR, and wait cycle |
 | `ledgercraft-schema-rebuild` | Tables, Drizzle, RLS, compatibility schema |
 | `ledgercraft-vertical-slice` | Cutting over one domain to Hono |
 | `ledgercraft-agent-roster` | Launching Task subagents |

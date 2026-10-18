@@ -15,6 +15,7 @@ type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsLis
 const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['name']> = {
   BusinessSettings: 'briefcase',
   ItemList: 'tag',
+  BankAccountList: 'dollar-sign',
   ExpenseList: 'credit-card',
   PurchaseList: 'shopping-bag',
 };

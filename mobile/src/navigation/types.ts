@@ -51,12 +51,19 @@ export type ItemStackParamList = {
   ItemDetail: { itemId: string };
 };
 
+export type BankingStackParamList = {
+  BankAccountList: undefined;
+  BankAccountCreate: undefined;
+  BankAccountDetail: { bankAccountId: string };
+  BankAccountEdit: { bankAccountId: string };
+};
+
 export type SettingsStackParamList = {
   SettingsList: undefined;
   BusinessSettings: undefined;
 };
 
-export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList & ItemStackParamList;
+export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList & ItemStackParamList & BankingStackParamList;
 
 export type MainTabParamList = {
   Dashboard: NavigatorScreenParams<HomeStackParamList>;
@@ -70,5 +77,6 @@ export type AppTabParamList = InvoiceStackParamList &
   ExpenseStackParamList &
   PurchaseStackParamList &
   ItemStackParamList &
+  BankingStackParamList &
   SettingsStackParamList &
   HomeStackParamList;
