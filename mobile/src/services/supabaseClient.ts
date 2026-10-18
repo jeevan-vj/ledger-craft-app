@@ -38,8 +38,9 @@ function query() {
 }
 
 // Compatibility-only stub for legacy code paths. The production client uses the
-// typed Hono APIs; keeping this boundary dynamic avoids pretending an removed
+// typed Hono APIs; keeping this boundary dynamic avoids pretending a removed
 // hosted database schema is still available.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- legacy query chains are intentionally untyped at this isolated compatibility boundary
 export const supabase: any = {
   from: () => query(),
   auth: {
