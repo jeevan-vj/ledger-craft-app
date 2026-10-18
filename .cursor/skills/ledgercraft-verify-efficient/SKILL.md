@@ -1,19 +1,10 @@
 ---
 name: ledgercraft-verify-efficient
-description: Select change-aware LedgerCraft checks and return compact machine-readable verification evidence without flooding agent context.
+description: Compatibility entrypoint for LedgerCraft verification; delegates to the canonical application skill.
 ---
 
-# Token-efficient LedgerCraft verification
+# LedgerCraft verification
 
-Use after a coding change. This complements, never replaces, `ledgercraft-verify`, `ledgercraft-verify-ui`, and `ledgercraft-tdd`.
+Read `.agents/skills/verify-ledgercraft/SKILL.md` first. This is the canonical application-level orchestration workflow with doctor checks, feature references, behavioral evidence and cleanup. The `.cursor/skills/verify-*/SKILL.md` entries are individual deterministic engineering gates.
 
-1. Run `node scripts/verification/cli.mjs fast` during iteration.
-2. Run `node scripts/verification/cli.mjs standard` before handoff.
-3. For PRs, fetch the base ref and run `VERIFY_BASE=origin/main node scripts/verification/cli.mjs pr`.
-4. Read only `artifacts/verification/summary.json` first. Open the named failed check log only when investigating.
-5. Never interpret `BLOCKED` as PASS. Accounting, authentication and database changes require explicit domain evidence, including isolated database and cross-organisation tests.
-6. Never claim full UI proof from component tests. Use `ledgercraft-verify-ui` and Playwright for changed user journeys.
-7. Never conceal known baseline failures; compare exact diagnostics before waiving anything. Existing CI is still authoritative.
-8. Report status, changed areas, checks run, failures, missing evidence and commit SHA. Do not paste full passing logs.
-
-The runner is deliberately conservative and currently an experimental first step. See `scripts/verification/README.md` for limitations.
+Do not independently duplicate verification logic here. Use the shared CLI, retain failure artifacts, and never mark blocked or unexecuted checks as passed.
