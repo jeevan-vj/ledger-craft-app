@@ -22,7 +22,13 @@ function rows(csv: string): string[][] {
 
 const optional = (value: string) => value.trim() || undefined;
 const nullable = (value: string) => value.trim() || null;
-const bool = (value: string, fallback: boolean) => value.trim() ? value.trim().toLowerCase() === 'true' : fallback;
+function bool(value: string, fallback: boolean): boolean {
+  const normalized = value.trim().toLowerCase();
+  if (!normalized) return fallback;
+  if (normalized === 'true') return true;
+  if (normalized === 'false') return false;
+  throw new Error(`Expected true or false, received "${value}"`);
+}
 
 export function parseItemsCsv(csv: string): ImportItemRow[] {
   const [header, ...data] = rows(csv);

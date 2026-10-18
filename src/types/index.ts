@@ -153,7 +153,7 @@ export interface AdditionalCharge {
   calculationType: 'fixed' | 'percentage';
   amount: number;
   description?: string;
-  isActive?: boolean;
+  isActive: boolean;
 }
 
 export const ADDITIONAL_CHARGE_PRESETS: Record<AdditionalChargeType, { label: string; icon: string; description: string }> = {

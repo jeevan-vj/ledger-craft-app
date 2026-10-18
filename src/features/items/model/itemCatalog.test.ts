@@ -19,4 +19,9 @@ describe('item catalogue helpers', () => {
     ];
     expect(saleSelectableItems(items).map((item) => item.name)).toEqual(['Sale']);
   });
+
+  it('rejects invalid CSV boolean values instead of silently disabling fields', () => {
+    const csv = 'id,name,description,type,categoryId,salePrice,purchasePrice,taxRate,enableSaleInfo,enablePurchaseInfo,unit,isActive\n,Consulting,,service,,120,,15,yes,false,hour,true';
+    expect(() => parseItemsCsv(csv)).toThrow('Expected true or false');
+  });
 });
