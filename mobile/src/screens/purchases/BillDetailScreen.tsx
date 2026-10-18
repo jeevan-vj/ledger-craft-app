@@ -74,8 +74,8 @@ export default function BillDetailScreen() {
     <ScrollView style={styles.container} contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
       <View style={styles.hero}>
         <Text style={styles.vendor}>{item.vendorName}</Text>
-        <Text style={styles.total} selectable>{formatMoney(Number(item.total), item.currency)}</Text>
-        <Text style={styles.meta}>{item.displayStatus.toUpperCase()} · {formatMoney(Number(item.balanceDue), item.currency)} due</Text>
+        <Text style={styles.total} selectable>{formatMoney(item.total, item.currency)}</Text>
+        <Text style={styles.meta}>{item.displayStatus.toUpperCase()} · {formatMoney(item.balanceDue, item.currency)} due</Text>
       </View>
       <GroupedSection title="Bill details">
         <ListRow label="Bill number" value={item.billNumber} showChevron={false} />
@@ -84,13 +84,13 @@ export default function BillDetailScreen() {
         <ListRow label="Due date" value={formatDate(item.dueDate)} showChevron={false} />
       </GroupedSection>
       <GroupedSection title="Line items">
-        {item.lines.map((line) => <ListRow key={line.id} label={line.description} subtitle={line.accountName ?? 'No account selected'} value={formatMoney(Number(line.total), item.currency)} showChevron={false} />)}
+        {item.lines.map((line) => <ListRow key={line.id} label={line.description} subtitle={line.accountName ?? 'No account selected'} value={formatMoney(line.total, item.currency)} showChevron={false} />)}
       </GroupedSection>
       <GroupedSection title="Totals">
-        <ListRow label="Subtotal" value={formatMoney(Number(item.subtotal), item.currency)} showChevron={false} />
-        <ListRow label="GST" value={formatMoney(Number(item.taxAmount), item.currency)} showChevron={false} />
-        <ListRow label="Paid" value={formatMoney(Number(item.totalPaid), item.currency)} showChevron={false} />
-        <ListRow label="Balance due" value={formatMoney(Number(item.balanceDue), item.currency)} showChevron={false} />
+        <ListRow label="Subtotal" value={formatMoney(item.subtotal, item.currency)} showChevron={false} />
+        <ListRow label="GST" value={formatMoney(item.taxAmount, item.currency)} showChevron={false} />
+        <ListRow label="Paid" value={formatMoney(item.totalPaid, item.currency)} showChevron={false} />
+        <ListRow label="Balance due" value={formatMoney(item.balanceDue, item.currency)} showChevron={false} />
       </GroupedSection>
       {mutationError instanceof Error ? <Text style={styles.error} selectable>{mutationError.message}</Text> : null}
       <View style={styles.actions}>

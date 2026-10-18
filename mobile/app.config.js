@@ -1,6 +1,6 @@
 module.exports = {
   expo: {
-    name: 'EasyBizInvoice',
+    name: 'LedgerCraft',
     slug: 'easybizinvoice-mobile',
     version: '1.0.0',
     orientation: 'portrait',
@@ -37,8 +37,6 @@ module.exports = {
     plugins: ['expo-secure-store', 'react-native-bottom-tabs'],
     scheme: 'easybizinvoice',
     extra: {
-      supabaseUrl: process.env.EXPO_PUBLIC_SUPABASE_URL,
-      supabaseAnonKey: process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY,
       eas: {
         projectId: '7148323b-502c-447e-96c3-a5c1704c40c9',
       },

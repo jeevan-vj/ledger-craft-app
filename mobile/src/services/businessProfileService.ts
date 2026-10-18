@@ -169,7 +169,7 @@ class BusinessProfileService {
 
   // Update business profile
   async updateBusinessProfile(
-    updates: BusinessProfileUpdate | Partial<OnboardingData>
+    updates: BusinessProfileUpdate & Partial<OnboardingData>
   ): Promise<BusinessProfile> {
     try {
       if (businessProfileApiEnabled()) {
@@ -356,13 +356,13 @@ class BusinessProfileService {
     let theme: BusinessTheme | undefined;
     if (data.primary_color || data.secondary_color || data.accent_color) {
       theme = {
+        name: 'Custom',
         primary: data.primary_color || '#163300',
         secondary: data.secondary_color || '#4A5FD8',
         accent: data.accent_color || '#00D4FF',
+        surface: '#FFFFFF',
         text: '#1E293B',
         textLight: '#64748B',
-        background: '#F8FAFC',
-        surface: '#FFFFFF',
       };
     }
 

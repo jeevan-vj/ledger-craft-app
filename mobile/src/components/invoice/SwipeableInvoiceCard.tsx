@@ -1,5 +1,5 @@
 import React, { useRef, useCallback } from 'react';
-import { View, Text, StyleSheet, Platform } from 'react-native';
+import { Pressable, View, Text, StyleSheet, Platform, type AccessibilityActionEvent } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -126,28 +126,37 @@ export default function SwipeableInvoiceCard({
         {availableStatuses.map((status) => {
           const action = statusActionColors(status.value, palette);
           return (
-          <GestureDetector
+          <Pressable
             key={status.value}
-            gesture={Gesture.Tap().onEnd(() => {
-              'worklet';
-              runOnJS(handleStatusPress)(status.value);
-            })}
+            onPress={() => handleStatusPress(status.value)}
+            style={[styles.actionButton, { backgroundColor: action.background }]}
+            accessibilityRole="button"
+            accessibilityLabel={`Mark invoice ${status.label}`}
           >
-            <View
-              style={[styles.actionButton, { backgroundColor: action.background }]}
-              accessibilityRole="button"
-              accessibilityLabel={`Mark invoice ${status.label}`}
-            >
               <Feather name={status.icon} size={16} color={action.foreground} />
               <Text style={[styles.actionLabel, { color: action.foreground }]}>{status.label}</Text>
-            </View>
-          </GestureDetector>
+          </Pressable>
           );
         })}
       </View>
 
       <GestureDetector gesture={composedGesture}>
         <Animated.View
+          accessible
+          accessibilityRole="button"
+          accessibilityLabel={`${invoice.customer?.name || 'No customer'}, invoice ${invoice.invoiceNumber}, ${formatCurrency(invoice.total || 0, invoice.currency || 'NZD')}, ${getStatusLabel(invoice.status)}`}
+          accessibilityHint="Opens invoice details"
+          accessibilityState={{ disabled }}
+          accessibilityActions={[
+            { name: 'activate', label: 'Open invoice' },
+            ...availableStatuses.map((status) => ({ name: `status-${status.value}`, label: `Mark ${status.label.toLowerCase()}` })),
+          ]}
+          onAccessibilityAction={(event: AccessibilityActionEvent) => {
+            const actionName = event.nativeEvent.actionName;
+            if (actionName === 'activate') handleCardPress();
+            const status = availableStatuses.find((option) => actionName === `status-${option.value}`);
+            if (status) handleStatusPress(status.value);
+          }}
           style={[
             styles.row,
             cardSwipeStyle,
@@ -202,6 +211,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   actionButton: {
     width: ACTION_BUTTON_WIDTH,
+    minHeight: 48,
     justifyContent: 'center',
     alignItems: 'center',
     gap: 4,

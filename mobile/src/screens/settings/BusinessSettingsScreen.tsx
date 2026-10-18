@@ -450,7 +450,7 @@ export default function BusinessSettingsScreen() {
         <Feather name="sliders" size={32} color={palette.accentText} />
         <Text style={styles.comingSoonTitle}>Theme Customization</Text>
         <Text style={styles.comingSoonText}>
-          Custom theme selection coming soon! You'll be able to personalize your brand colors and appearance.
+          Custom theme selection coming soon! You’ll be able to personalize your brand colors and appearance.
         </Text>
         {profile?.theme && (
           <View style={styles.currentThemeContainer}>

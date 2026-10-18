@@ -1,4 +1,5 @@
 import { receiptsApi, receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
+import { paymentsApi, paymentsApiEnabled } from '@/features/payments/api/paymentsApi';
 import { supabase } from './supabaseClient';
 import type { Payment, Receipt, CreatePaymentRequest } from '@/types/payment';
 
