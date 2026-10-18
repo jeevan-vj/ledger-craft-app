@@ -18,9 +18,9 @@ export interface Item {
   type: 'product' | 'service';
   categoryId?: string | null;
   category?: ItemCategory | null;
-  salePrice?: number | null;
-  purchasePrice?: number | null;
-  taxRate?: number | null;
+  salePrice?: string | number | null;
+  purchasePrice?: string | number | null;
+  taxRate?: string | number | null;
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;

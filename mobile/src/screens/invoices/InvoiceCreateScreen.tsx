@@ -253,9 +253,9 @@ export default function InvoiceCreateScreen() {
       updated[currentLineItemIndex] = {
         ...currentItem,
         description: item.name,
-        rate: item.salePrice || 0,
+        rate: Number(item.salePrice || 0),
         unit: item.unit || 'each',
-        total: currentItem.quantity * (item.salePrice || 0),
+        total: currentItem.quantity * Number(item.salePrice || 0),
       };
       
       setLineItems(updated);

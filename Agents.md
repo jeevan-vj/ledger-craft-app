@@ -1,5 +1,14 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile item catalogue (implemented locally, 2026-10-19):** The Expo More tab
+now provides item list/filter, create, detail, edit, delete-attempt, active-state,
+category selection, sales/purchase pricing, and tax-default workflows through
+the Hono item API. Item form/API boundaries preserve exact decimal text, while
+the legacy numeric invoice line editor converts only when an item is selected.
+Dirty forms are protected from dismissal. Strict TypeScript, all 18 mobile Jest
+suites (72 tests), lint with no errors, and iOS/Android production exports pass;
+authenticated device QA remains pending.
+
 **Mobile hardening (verified locally, 2026-10-18):** The Expo client reports
 dashboard and expense loading failures honestly, protects dirty bill forms from
 accidental dismissal, exposes invoice/expense row actions to assistive

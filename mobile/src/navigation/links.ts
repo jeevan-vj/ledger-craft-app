@@ -5,6 +5,16 @@ export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;
 
 export const moreMenuSections = [
   {
+    title: 'Sales',
+    rows: [
+      {
+        label: 'Items',
+        subtitle: 'Products, services and prices',
+        screen: 'ItemList',
+      },
+    ],
+  },
+  {
     title: 'Account',
     rows: [
       {
@@ -45,6 +55,7 @@ type CustomerDestination =
 
 type MoreDestination =
   | { name: 'BusinessSettings' }
+  | { name: 'ItemList' }
   | { name: 'ExpenseList' }
   | { name: 'PurchaseList' }
   | { name: 'ExpenseCreate' };

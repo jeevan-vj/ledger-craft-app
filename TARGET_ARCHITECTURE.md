@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
+item list/filter, create, detail, edit, delete-attempt, active-state, category,
+sales/purchase price, and tax-default workflows from More through Hono. Exact
+decimal text is retained through item forms and API requests; conversion to a
+number occurs only when populating the existing numeric invoice line editor.
+Dirty item forms are protected from dismissal. Strict TypeScript, 18 Jest
+suites (72 tests), lint with no errors, and iOS/Android production exports pass;
+authenticated device QA remains open.
+
 **Mobile hardening (verified locally, 2026-10-18):** Expo distinguishes failed
 loads from genuine empty states, protects unsaved bill edits, exposes invoice
 and expense actions without requiring swipe gestures, preserves exact purchase

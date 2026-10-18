@@ -43,9 +43,9 @@ export type CatalogItem = {
   description?: string | null;
   type: 'product' | 'service';
   categoryId?: string | null;
-  salePrice?: number | null;
-  purchasePrice?: number | null;
-  taxRate?: number | null;
+  salePrice?: string | number | null;
+  purchasePrice?: string | number | null;
+  taxRate?: string | number | null;
   enableSaleInfo: boolean;
   enablePurchaseInfo: boolean;
   unit: string;
@@ -71,9 +71,9 @@ export function toItem(dto: MobileItemDto): CatalogItem {
     description: dto.description,
     type: dto.type,
     categoryId: dto.categoryId,
-    salePrice: dto.salePrice == null ? null : Number(dto.salePrice),
-    purchasePrice: dto.purchasePrice == null ? null : Number(dto.purchasePrice),
-    taxRate: dto.taxRate == null ? null : Number(dto.taxRate),
+    salePrice: dto.salePrice,
+    purchasePrice: dto.purchasePrice,
+    taxRate: dto.taxRate,
     enableSaleInfo: dto.enableSaleInfo,
     enablePurchaseInfo: dto.enablePurchaseInfo,
     unit: dto.unit,
