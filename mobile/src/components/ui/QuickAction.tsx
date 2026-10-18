@@ -1,7 +1,8 @@
 import React from 'react';
 import { Pressable, Text, StyleSheet } from 'react-native';
-import { palette, space, type } from '@/theme/tokens';
+import { space } from '@/theme/tokens';
 import { IconWell } from './IconWell';
+import { useTheme } from '@/theme';
 
 interface QuickActionProps {
   icon: React.ReactNode;
@@ -11,6 +12,9 @@ interface QuickActionProps {
 }
 
 export function QuickAction({ icon, label, onPress, primary = false }: QuickActionProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <Pressable
       onPress={onPress}
@@ -26,7 +30,7 @@ export function QuickAction({ icon, label, onPress, primary = false }: QuickActi
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
     alignItems: 'center',
     minWidth: 72,

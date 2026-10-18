@@ -3,6 +3,7 @@ import {
   createBillPaymentDraft,
   hasBillFormChanged,
   isBillDateRangeValid,
+  isPaymentAmountValid,
   moveDueDateForward,
 } from './purchaseForms';
 
@@ -46,5 +47,10 @@ describe('purchase form state', () => {
     expect(calculateBillDraftTotals([
       { description: 'Micro items', quantity: '3', unitPrice: '0.10', taxRate: '15', accountId: 'account-1' },
     ], false)).toEqual({ subtotal: '0.30', tax: '0.05', total: '0.35' });
+  });
+
+  it('validates payment amounts without converting exact decimals to numbers', () => {
+    expect(isPaymentAmountValid('9007199254740993.24', '9007199254740993.25')).toBe(true);
+    expect(isPaymentAmountValid('9007199254740993.26', '9007199254740993.25')).toBe(false);
   });
 });

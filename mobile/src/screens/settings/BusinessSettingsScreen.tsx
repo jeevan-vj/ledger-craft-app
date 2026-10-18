@@ -17,11 +17,17 @@ import { FormInput } from '@/components/ui/FormInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
-import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
 export default function BusinessSettingsScreen() {
+  const insets = useSafeAreaInsets();
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -233,6 +239,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('profile')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Profile"
         accessibilityState={{ selected: activeTab === 'profile' }}
       >
         <Text style={[styles.tabText, activeTab === 'profile' && styles.tabTextActive]}>
@@ -244,6 +251,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('preferences')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Preferences"
         accessibilityState={{ selected: activeTab === 'preferences' }}
       >
         <Text style={[styles.tabText, activeTab === 'preferences' && styles.tabTextActive]}>
@@ -255,6 +263,7 @@ export default function BusinessSettingsScreen() {
         onPress={() => setActiveTab('appearance')}
         activeOpacity={0.7}
         accessibilityRole="tab"
+        accessibilityLabel="Appearance"
         accessibilityState={{ selected: activeTab === 'appearance' }}
       >
         <Text style={[styles.tabText, activeTab === 'appearance' && styles.tabTextActive]}>
@@ -288,13 +297,13 @@ export default function BusinessSettingsScreen() {
             />
           ) : (
             <View style={styles.logoPlaceholder}>
-              <Feather name="camera" size={24} color={palette.accentForeground} />
+              <Feather name="camera" size={24} color={palette.accentText} />
               <Text style={styles.logoPlaceholderSubtext}>Tap to upload</Text>
             </View>
           )}
         </TouchableOpacity>
         {imagePickerLoading && (
-          <ActivityIndicator style={styles.logoLoader} color={palette.accentForeground} />
+          <ActivityIndicator style={styles.logoLoader} color={palette.accent} />
         )}
       </View>
 
@@ -438,10 +447,10 @@ export default function BusinessSettingsScreen() {
   const renderAppearanceTab = () => (
     <View style={styles.tabContent}>
       <View style={styles.comingSoonContainer}>
-        <Feather name="sliders" size={32} color={palette.accentForeground} />
+        <Feather name="sliders" size={32} color={palette.accentText} />
         <Text style={styles.comingSoonTitle}>Theme Customization</Text>
         <Text style={styles.comingSoonText}>
-          Custom theme selection coming soon! You'll be able to personalize your brand colors and appearance.
+          Custom theme selection coming soon! You’ll be able to personalize your brand colors and appearance.
         </Text>
         {profile?.theme && (
           <View style={styles.currentThemeContainer}>
@@ -474,10 +483,11 @@ export default function BusinessSettingsScreen() {
     <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
     >
       {renderTabButtons()}
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive" contentContainerStyle={{ paddingBottom: insets.bottom }}>
         {activeTab === 'profile' && renderProfileTab()}
         {activeTab === 'preferences' && renderPreferencesTab()}
         {activeTab === 'appearance' && renderAppearanceTab()}
@@ -485,13 +495,14 @@ export default function BusinessSettingsScreen() {
 
       {/* Save Button */}
       {activeTab !== 'appearance' && (
-        <View style={styles.bottomContainer}>
+        <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
           <TouchableOpacity
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
             activeOpacity={0.7}
             disabled={saving}
             accessibilityRole="button"
+            accessibilityLabel="Save business profile"
             accessibilityState={{ disabled: saving, busy: saving }}
           >
             {saving ? (
@@ -517,7 +528,7 @@ export default function BusinessSettingsScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -538,14 +549,14 @@ const styles = StyleSheet.create({
     borderBottomColor: 'transparent',
   },
   tabActive: {
-    borderBottomColor: palette.accentForeground,
+    borderBottomColor: palette.accent,
   },
   tabText: {
     ...type.subhead,
     fontWeight: '600',
   },
   tabTextActive: {
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   scrollView: {
     flex: 1,

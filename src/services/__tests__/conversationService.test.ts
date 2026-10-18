@@ -19,22 +19,8 @@ import {
   expectToBeValidUUID
 } from '../../test/utils/testUtils';
 
-// Create mock supabase with proper chaining
-const createMockSupabaseClient = () => {
-  const mockChain = {
-    from: vi.fn().mockReturnThis(),
-    select: vi.fn().mockReturnThis(),
-    insert: vi.fn().mockReturnThis(),
-    update: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-    eq: vi.fn().mockReturnThis(),
-    single: vi.fn().mockReturnThis(),
-    limit: vi.fn().mockReturnThis(),
-    order: vi.fn().mockReturnThis(),
-    ilike: vi.fn().mockReturnThis(),
-    or: vi.fn().mockReturnThis(),
-    gte: vi.fn().mockReturnThis(),
-    lte: vi.fn().mockReturnThis(),
+vi.mock('@/integrations/supabase/client', () => {
+  const mockChain: Record<string, unknown> = {
     auth: {
       getUser: vi.fn().mockResolvedValue({
         data: { user: { id: 'test-user-id' } },
@@ -42,13 +28,14 @@ const createMockSupabaseClient = () => {
       })
     }
   };
-  return mockChain;
-};
-
-// Mock the Supabase module
-vi.mock('@/integrations/supabase/client', () => ({
-  supabase: createMockSupabaseClient()
-}));
+  for (const method of [
+    'from', 'select', 'insert', 'update', 'delete', 'eq', 'single', 'limit',
+    'order', 'ilike', 'or', 'gte', 'lte',
+  ]) {
+    mockChain[method] = vi.fn().mockReturnValue(mockChain);
+  }
+  return { supabase: mockChain };
+});
 
 // Get reference to mocked supabase
 import { supabase } from '@/integrations/supabase/client';
@@ -62,6 +49,14 @@ describe('ConversationService', () => {
     testMocks = setupTest();
     conversationService = new ConversationService();
     vi.clearAllMocks();
+    for (const method of ['from', 'select', 'insert', 'update', 'delete', 'eq', 'order', 'limit', 'ilike', 'or', 'gte', 'lte']) {
+      mockSupabase[method].mockReturnValue(mockSupabase);
+    }
+    mockSupabase.single.mockResolvedValue({ data: null, error: null });
+    mockSupabase.auth.getUser.mockResolvedValue({
+      data: { user: { id: '22222222-2222-4222-8222-222222222222' } },
+      error: null,
+    });
   });
 
   afterEach(() => {
@@ -71,8 +66,8 @@ describe('ConversationService', () => {
   describe('createConversation', () => {
     it('should create a new conversation with default context', async () => {
       const mockResponse = {
-        id: 'conversation-1',
-        user_id: 'user-1',
+        id: '11111111-1111-4111-8111-111111111111',
+        user_id: '22222222-2222-4222-8222-222222222222',
         title: null,
         context: mockConversationContext,
         status: 'active',
@@ -100,7 +95,7 @@ describe('ConversationService', () => {
       });
 
       expectValidConversation(result);
-      expect(result.userId).toBe('user-1');
+      expect(result.userId).toBe('22222222-2222-4222-8222-222222222222');
       expect(result.status).toBe('active');
     });
 
@@ -114,8 +109,8 @@ describe('ConversationService', () => {
       };
 
       const mockResponse = {
-        id: 'conversation-1',
-        user_id: 'user-1',
+        id: '11111111-1111-4111-8111-111111111111',
+        user_id: '22222222-2222-4222-8222-222222222222',
         title: null,
         context: customContext,
         status: 'active',
@@ -123,7 +118,7 @@ describe('ConversationService', () => {
         updated_at: '2024-01-01T00:00:00Z'
       };
 
-      mockSupabase.insert.mockResolvedValue(createSuccessResponse(mockResponse));
+      mockSupabase.single.mockResolvedValue(createSuccessResponse(mockResponse));
 
       const result = await conversationService.createConversation('user-1', customContext);
 
@@ -137,7 +132,7 @@ describe('ConversationService', () => {
     });
 
     it('should handle database errors when creating conversation', async () => {
-      mockSupabase.insert.mockResolvedValue(createErrorResponse('Database error'));
+      mockSupabase.single.mockResolvedValue(createErrorResponse('Database error'));
 
       await expect(
         conversationService.createConversation('user-1')
@@ -148,8 +143,8 @@ describe('ConversationService', () => {
   describe('getConversation', () => {
     it('should retrieve conversation with messages', async () => {
       const mockConversationData = {
-        id: 'conversation-1',
-        user_id: 'user-1',
+        id: '11111111-1111-4111-8111-111111111111',
+        user_id: '22222222-2222-4222-8222-222222222222',
         title: 'Test Conversation',
         context: mockConversationContext,
         status: 'active',
@@ -157,8 +152,8 @@ describe('ConversationService', () => {
         updated_at: '2024-01-01T00:00:00Z',
         conversation_messages: [
           {
-            id: 'message-1',
-            conversation_id: 'conversation-1',
+            id: '33333333-3333-4333-8333-333333333333',
+            conversation_id: '11111111-1111-4111-8111-111111111111',
             role: 'user',
             content: 'Hello',
             metadata: null,
@@ -167,7 +162,7 @@ describe('ConversationService', () => {
         ]
       };
 
-      mockSupabase.eq.mockResolvedValue(createSuccessResponse(mockConversationData));
+      mockSupabase.single.mockResolvedValue(createSuccessResponse(mockConversationData));
 
       const result = await conversationService.getConversation('conversation-1');
 
@@ -184,7 +179,7 @@ describe('ConversationService', () => {
     });
 
     it('should return null for non-existent conversation', async () => {
-      mockSupabase.eq.mockResolvedValue(createErrorResponse('PGRST116'));
+      mockSupabase.single.mockResolvedValue({ data: null, error: { message: 'not found', code: 'PGRST116' } });
 
       const result = await conversationService.getConversation('non-existent-id');
 
@@ -192,7 +187,7 @@ describe('ConversationService', () => {
     });
 
     it('should handle database errors when getting conversation', async () => {
-      mockSupabase.eq.mockResolvedValue(createErrorResponse('Database error'));
+      mockSupabase.single.mockResolvedValue(createErrorResponse('Database error'));
 
       await expect(
         conversationService.getConversation('conversation-1')
@@ -204,8 +199,8 @@ describe('ConversationService', () => {
     it('should retrieve user conversations with default limit', async () => {
       const mockConversations = [
         {
-          id: 'conversation-1',
-          user_id: 'user-1',
+          id: '11111111-1111-4111-8111-111111111111',
+          user_id: '22222222-2222-4222-8222-222222222222',
           title: 'Conversation 1',
           context: mockConversationContext,
           status: 'active',
@@ -214,8 +209,8 @@ describe('ConversationService', () => {
           conversation_messages: []
         },
         {
-          id: 'conversation-2',
-          user_id: 'user-1',
+          id: '44444444-4444-4444-8444-444444444444',
+          user_id: '22222222-2222-4222-8222-222222222222',
           title: 'Conversation 2',
           context: mockConversationContext,
           status: 'completed',
@@ -236,7 +231,7 @@ describe('ConversationService', () => {
       expect(result).toHaveLength(2);
       result.forEach(conversation => {
         expectValidConversation(conversation);
-        expect(conversation.userId).toBe('user-1');
+        expect(conversation.userId).toBe('22222222-2222-4222-8222-222222222222');
       });
     });
 
@@ -252,15 +247,15 @@ describe('ConversationService', () => {
   describe('addMessage', () => {
     it('should add a message to conversation', async () => {
       const mockMessageData = {
-        id: 'message-1',
-        conversation_id: 'conversation-1',
+        id: '33333333-3333-4333-8333-333333333333',
+        conversation_id: '11111111-1111-4111-8111-111111111111',
         role: 'user',
         content: 'Test message',
         metadata: { intent: 'test' },
         created_at: '2024-01-01T00:00:00Z'
       };
 
-      mockSupabase.insert.mockResolvedValue(createSuccessResponse(mockMessageData));
+      mockSupabase.single.mockResolvedValue(createSuccessResponse(mockMessageData));
 
       const result = await conversationService.addMessage(
         'conversation-1',
@@ -283,7 +278,7 @@ describe('ConversationService', () => {
     });
 
     it('should handle database errors when adding message', async () => {
-      mockSupabase.insert.mockResolvedValue(createErrorResponse('Database error'));
+      mockSupabase.single.mockResolvedValue(createErrorResponse('Database error'));
 
       await expect(
         conversationService.addMessage('conversation-1', 'user', 'Test message')
@@ -301,10 +296,10 @@ describe('ConversationService', () => {
         }
       };
 
-      // Mock getting current context
-      mockSupabase.eq.mockResolvedValueOnce(createSuccessResponse({ context: currentContext }));
-      // Mock updating context
-      mockSupabase.eq.mockResolvedValueOnce(createSuccessResponse({}));
+      // First eq stays on the chain so .single() can run; the update eq resolves.
+      mockSupabase.single.mockResolvedValueOnce(createSuccessResponse({ context: currentContext }));
+      mockSupabase.eq.mockReturnValueOnce(mockSupabase);
+      mockSupabase.eq.mockResolvedValueOnce({ data: null, error: null });
 
       await conversationService.updateConversationContext('conversation-1', updateContext);
 

@@ -1,5 +1,7 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { supabase } from '@/integrations/supabase/client';
+
+vi.mock('@/integrations/supabase/client', async () => vi.importActual('@/integrations/supabase/client'));
 
 // Test to verify database schema and template handling
 describe('Database Template Field Tests', () => {

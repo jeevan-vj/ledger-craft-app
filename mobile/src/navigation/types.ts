@@ -15,11 +15,17 @@ export type HomeStackParamList = {
   DashboardHome: undefined;
 };
 
+export type CustomerStackParamList = {
+  CustomerList: undefined;
+};
+
 export type InvoiceStackParamList = {
   InvoiceList: undefined;
   InvoiceCreate: undefined;
   InvoiceEdit: { invoiceId: string };
   InvoiceDetail: { invoiceId: string };
+  /** Contextual detour so Back returns to the invoice instead of the More tab. */
+  BusinessSettings: undefined;
 };
 
 export type ExpenseStackParamList = {
@@ -40,12 +46,13 @@ export type SettingsStackParamList = {
   BusinessSettings: undefined;
 };
 
+export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList;
+
 export type MainTabParamList = {
   Dashboard: NavigatorScreenParams<HomeStackParamList>;
   Invoices: NavigatorScreenParams<InvoiceStackParamList>;
-  Expenses: NavigatorScreenParams<ExpenseStackParamList>;
-  Purchases: NavigatorScreenParams<PurchaseStackParamList>;
-  Settings: NavigatorScreenParams<SettingsStackParamList>;
+  Customers: NavigatorScreenParams<CustomerStackParamList>;
+  More: NavigatorScreenParams<MoreStackParamList>;
 };
 
 /** @deprecated Use nested stack param lists. Kept for existing screen imports. */

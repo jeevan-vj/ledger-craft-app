@@ -26,7 +26,8 @@ import { CustomerPicker } from '@/components/customers/CustomerPicker';
 import { ReceiptScanner } from '@/components/expense/ReceiptScanner';
 import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type ExpenseCreateNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseCreate'>;
 
@@ -39,6 +40,9 @@ const PAYMENT_METHODS: { label: string; value: PaymentMethod }[] = [
 ];
 
 export default function ExpenseCreateScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<ExpenseCreateNavigationProp>();
   
   // Form state
@@ -562,7 +566,7 @@ export default function ExpenseCreateScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -829,4 +833,3 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
 });
-

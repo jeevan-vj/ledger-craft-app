@@ -4,25 +4,14 @@ import { createNativeBottomTabNavigator } from '@bottom-tabs/react-navigation';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { SFSymbol } from 'sf-symbols-typescript';
 import type { AppleIcon } from 'react-native-bottom-tabs';
-import {
-  HomeStackParamList,
-  InvoiceStackParamList,
-  ExpenseStackParamList,
-  PurchaseStackParamList,
-  SettingsStackParamList,
-  MainTabParamList,
-} from './types';
-import {
-  COLORS,
-  listHeaderOptions,
-  formHeaderOptions,
-  detailHeaderOptions,
-} from '@/theme/navigation';
-
+import type { CustomerStackParamList, HomeStackParamList, InvoiceStackParamList, MainTabParamList, MoreStackParamList } from './types';
+import { createDetailHeaderOptions, createFormHeaderOptions, createListHeaderOptions } from '@/theme/navigation';
+import { useTheme } from '@/theme';
 import DashboardScreen from '@/screens/main/DashboardScreen';
 import InvoiceListScreen from '@/screens/invoices/InvoiceListScreen';
 import InvoiceCreateScreen from '@/screens/invoices/InvoiceCreateScreen';
 import InvoiceDetailScreen from '@/screens/invoices/InvoiceDetailScreen';
+import CustomerListScreen from '@/screens/customers/CustomerListScreen';
 import ExpenseListScreen from '@/screens/expenses/ExpenseListScreen';
 import ExpenseCreateScreen from '@/screens/expenses/ExpenseCreateScreen';
 import ExpenseEditScreen from '@/screens/expenses/ExpenseEditScreen';
@@ -35,170 +24,57 @@ import BusinessSettingsScreen from '@/screens/settings/BusinessSettingsScreen';
 const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
 const InvoiceStack = createNativeStackNavigator<InvoiceStackParamList>();
-const ExpenseStack = createNativeStackNavigator<ExpenseStackParamList>();
-const PurchaseStack = createNativeStackNavigator<PurchaseStackParamList>();
-const SettingsStackNav = createNativeStackNavigator<SettingsStackParamList>();
+const CustomerStack = createNativeStackNavigator<CustomerStackParamList>();
+const MoreStack = createNativeStackNavigator<MoreStackParamList>();
 
 function tabIcon(sfSymbol: SFSymbol, androidAsset: ImageSourcePropType) {
-  return (): ImageSourcePropType | AppleIcon =>
-    Platform.OS === 'ios' ? { sfSymbol } : androidAsset;
+  return (): ImageSourcePropType | AppleIcon => Platform.OS === 'ios' ? { sfSymbol } : androidAsset;
 }
 
 function HomeNavigator() {
-  return (
-    <HomeStack.Navigator screenOptions={listHeaderOptions}>
-      <HomeStack.Screen
-        name="DashboardHome"
-        component={DashboardScreen}
-        options={{ title: 'Home' }}
-      />
-    </HomeStack.Navigator>
-  );
+  const { colors } = useTheme();
+  return <HomeStack.Navigator screenOptions={createListHeaderOptions(colors)}><HomeStack.Screen name="DashboardHome" component={DashboardScreen} options={{ headerShown: false }} /></HomeStack.Navigator>;
 }
-
 function InvoiceNavigator() {
-  return (
-    <InvoiceStack.Navigator screenOptions={listHeaderOptions}>
-      <InvoiceStack.Screen
-        name="InvoiceList"
-        component={InvoiceListScreen}
-        options={{ title: 'Invoices' }}
-      />
-      <InvoiceStack.Screen
-        name="InvoiceCreate"
-        component={InvoiceCreateScreen}
-        options={{
-          ...formHeaderOptions,
-          title: 'New invoice',
-        }}
-      />
-      <InvoiceStack.Screen
-        name="InvoiceEdit"
-        component={InvoiceCreateScreen}
-        options={{
-          ...formHeaderOptions,
-          title: 'Edit invoice',
-        }}
-      />
-      <InvoiceStack.Screen
-        name="InvoiceDetail"
-        component={InvoiceDetailScreen}
-        options={{
-          ...detailHeaderOptions,
-          title: 'Invoice',
-        }}
-      />
-    </InvoiceStack.Navigator>
-  );
+  const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
+  return <InvoiceStack.Navigator screenOptions={list}>
+    <InvoiceStack.Screen name="InvoiceList" component={InvoiceListScreen} options={{ title: 'Invoices' }} />
+    <InvoiceStack.Screen name="InvoiceCreate" component={InvoiceCreateScreen} options={{ ...form, title: 'New invoice' }} />
+    <InvoiceStack.Screen name="InvoiceEdit" component={InvoiceCreateScreen} options={{ ...form, title: 'Edit invoice' }} />
+    <InvoiceStack.Screen name="InvoiceDetail" component={InvoiceDetailScreen} options={{ ...detail, title: 'Invoice' }} />
+    <InvoiceStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
+  </InvoiceStack.Navigator>;
 }
-
-function ExpenseNavigator() {
-  return (
-    <ExpenseStack.Navigator screenOptions={listHeaderOptions}>
-      <ExpenseStack.Screen
-        name="ExpenseList"
-        component={ExpenseListScreen}
-        options={{ title: 'Expenses' }}
-      />
-      <ExpenseStack.Screen
-        name="ExpenseCreate"
-        component={ExpenseCreateScreen}
-        options={{
-          ...formHeaderOptions,
-          title: 'New expense',
-        }}
-      />
-      <ExpenseStack.Screen
-        name="ExpenseEdit"
-        component={ExpenseEditScreen}
-        options={{
-          ...formHeaderOptions,
-          title: 'Edit expense',
-        }}
-      />
-    </ExpenseStack.Navigator>
-  );
+function CustomerNavigator() {
+  const { colors } = useTheme();
+  return <CustomerStack.Navigator screenOptions={createListHeaderOptions(colors)}><CustomerStack.Screen name="CustomerList" component={CustomerListScreen} options={{ title: 'Customers' }} /></CustomerStack.Navigator>;
 }
-
-function PurchaseNavigator() {
-  return (
-    <PurchaseStack.Navigator screenOptions={listHeaderOptions}>
-      <PurchaseStack.Screen name="PurchaseList" component={PurchaseListScreen} options={{ title: 'Purchases' }} />
-      <PurchaseStack.Screen name="BillCreate" component={BillFormScreen} options={{ ...formHeaderOptions, title: 'New bill' }} />
-      <PurchaseStack.Screen name="BillEdit" component={BillFormScreen} options={{ ...formHeaderOptions, title: 'Edit bill' }} />
-      <PurchaseStack.Screen name="BillDetail" component={BillDetailScreen} options={{ ...detailHeaderOptions, title: 'Bill' }} />
-    </PurchaseStack.Navigator>
-  );
-}
-
-function SettingsNavigator() {
-  return (
-    <SettingsStackNav.Navigator screenOptions={listHeaderOptions}>
-      <SettingsStackNav.Screen
-        name="SettingsList"
-        component={SettingsScreen}
-        options={{ title: 'Settings' }}
-      />
-      <SettingsStackNav.Screen
-        name="BusinessSettings"
-        component={BusinessSettingsScreen}
-        options={{
-          ...detailHeaderOptions,
-          title: 'Business',
-        }}
-      />
-    </SettingsStackNav.Navigator>
-  );
+function MoreNavigator() {
+  const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
+  return <MoreStack.Navigator screenOptions={list}>
+    <MoreStack.Screen name="SettingsList" component={SettingsScreen} options={{ title: 'More', headerShown: false }} />
+    <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
+    <MoreStack.Screen name="ExpenseList" component={ExpenseListScreen} options={{ title: 'Expenses' }} />
+    <MoreStack.Screen name="ExpenseCreate" component={ExpenseCreateScreen} options={{ ...form, title: 'New expense' }} />
+    <MoreStack.Screen name="ExpenseEdit" component={ExpenseEditScreen} options={{ ...form, title: 'Edit expense' }} />
+    <MoreStack.Screen name="PurchaseList" component={PurchaseListScreen} options={{ title: 'Purchases' }} />
+    <MoreStack.Screen name="BillCreate" component={BillFormScreen} options={{ ...form, title: 'New bill' }} />
+    <MoreStack.Screen name="BillEdit" component={BillFormScreen} options={{ ...form, title: 'Edit bill' }} />
+    <MoreStack.Screen name="BillDetail" component={BillDetailScreen} options={{ ...detail, title: 'Bill' }} />
+  </MoreStack.Navigator>;
 }
 
 export default function AppNavigator() {
-  return (
-    <Tab.Navigator
-      labeled
-      hapticFeedbackEnabled
-      tabBarActiveTintColor={COLORS.accentForeground}
-      tabBarInactiveTintColor={COLORS.textSecondary}
-    >
-      <Tab.Screen
-        name="Dashboard"
-        component={HomeNavigator}
-        options={{
-          title: 'Home',
-          tabBarIcon: tabIcon('house.fill', require('../../assets/tabs/home.png')),
-        }}
-      />
-      <Tab.Screen
-        name="Invoices"
-        component={InvoiceNavigator}
-        options={{
-          title: 'Invoices',
-          tabBarIcon: tabIcon('doc.text.fill', require('../../assets/tabs/invoices.png')),
-        }}
-      />
-      <Tab.Screen
-        name="Expenses"
-        component={ExpenseNavigator}
-        options={{
-          title: 'Expenses',
-          tabBarIcon: tabIcon('dollarsign.circle.fill', require('../../assets/tabs/expenses.png')),
-        }}
-      />
-      <Tab.Screen
-        name="Purchases"
-        component={PurchaseNavigator}
-        options={{
-          title: 'Purchases',
-          tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/purchases.png')),
-        }}
-      />
-      <Tab.Screen
-        name="Settings"
-        component={SettingsNavigator}
-        options={{
-          title: 'Settings',
-          tabBarIcon: tabIcon('gearshape.fill', require('../../assets/tabs/settings.png')),
-        }}
-      />
-    </Tab.Navigator>
-  );
+  const theme = useTheme();
+  return <Tab.Navigator
+    labeled hapticFeedbackEnabled
+    tabBarActiveTintColor={theme.colors.accent}
+    tabBarInactiveTintColor={theme.colors.textSecondary}
+    activeIndicatorColor={theme.colors.accentFill}
+  >
+    <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: tabIcon('house.fill', require('../../assets/tabs/home.png')) }} />
+    <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: tabIcon('doc.text.fill', require('../../assets/tabs/invoices.png')) }} />
+    <Tab.Screen name="Customers" component={CustomerNavigator} options={{ title: 'Customers', tabBarIcon: tabIcon('person.2.fill', require('../../assets/tabs/customers.png')) }} />
+    <Tab.Screen name="More" component={MoreNavigator} options={{ title: 'More', tabBarIcon: tabIcon('ellipsis.circle.fill', require('../../assets/tabs/settings.png')) }} />
+  </Tab.Navigator>;
 }

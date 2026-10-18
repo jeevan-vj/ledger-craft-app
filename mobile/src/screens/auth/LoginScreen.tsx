@@ -16,11 +16,15 @@ import { AuthStackParamList } from '@/navigation/types';
 import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { authErrorMessage } from '@/features/auth/api/authApi';
-import { palette, radius, space, type } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 type LoginScreenNavigationProp = NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 
 export default function LoginScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<LoginScreenNavigationProp>();
   const { signIn } = useAuth();
   const [email, setEmail] = useState('');
@@ -128,7 +132,7 @@ export default function LoginScreen() {
           style={styles.footerLink}
         >
           <Text style={styles.footer}>
-            Don't have an account? <Text style={styles.footerAction}>Sign up</Text>
+            Don’t have an account? <Text style={styles.footerAction}>Sign up</Text>
           </Text>
         </Pressable>
       </ScrollView>
@@ -136,7 +140,7 @@ export default function LoginScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   screen: {
     flex: 1,
     backgroundColor: palette.surface,

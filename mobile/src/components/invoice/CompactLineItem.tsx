@@ -19,7 +19,8 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { ModernInput } from '@/components/ui/ModernInput';
 import type { LineItem } from '@/types/invoice';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface CompactLineItemProps {
   item: LineItem;
@@ -40,6 +41,9 @@ export function CompactLineItem({
   canRemove,
   formatCurrency,
 }: CompactLineItemProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [showEditModal, setShowEditModal] = useState(false);
   const translateX = useSharedValue(0);
   const opacity = useSharedValue(1);
@@ -145,7 +149,9 @@ export function CompactLineItem({
               <Text style={styles.modalTitle}>Edit Line Item</Text>
               <TouchableOpacity
                 onPress={() => setShowEditModal(false)}
-                hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                accessibilityRole="button"
+                accessibilityLabel="Close line item editor"
+                style={styles.closeHit}
               >
                 <Text style={styles.closeButton}>Close</Text>
               </TouchableOpacity>
@@ -156,6 +162,8 @@ export function CompactLineItem({
                 style={styles.itemSelectorButton}
                 onPress={handleItemSelect}
                 activeOpacity={0.7}
+                accessibilityRole="button"
+                accessibilityLabel={item.description ? `Catalog item, ${item.description}` : 'Select from catalog'}
               >
                 <Text style={styles.itemSelectorLabel}>
                   {item.description || 'Select from catalog'}
@@ -207,6 +215,8 @@ export function CompactLineItem({
                 style={styles.doneButton}
                 onPress={() => setShowEditModal(false)}
                 activeOpacity={0.8}
+                accessibilityRole="button"
+                accessibilityLabel="Done editing line item"
               >
                 <Text style={styles.doneButtonText}>Done</Text>
               </TouchableOpacity>
@@ -218,7 +228,7 @@ export function CompactLineItem({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     marginBottom: 2,
     position: 'relative',
@@ -240,7 +250,7 @@ const styles = StyleSheet.create({
   handleBar: {
     width: 3,
     height: 12,
-    backgroundColor: '#cbd5e1',
+    backgroundColor: palette.separator,
     borderRadius: 2,
   },
   content: {
@@ -276,7 +286,7 @@ const styles = StyleSheet.create({
   editLabel: {
     fontSize: 13,
     fontWeight: '500',
-    color: palette.accent,
+    color: palette.accentText,
   },
   deleteButton: {
     position: 'absolute',
@@ -300,7 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
-    backgroundColor: '#ffffff',
+    backgroundColor: palette.surface,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     maxHeight: '85%',
@@ -324,17 +334,23 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#f1f5f9',
+    borderBottomColor: palette.separator,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#0f172a',
+    color: palette.text,
+  },
+  closeHit: {
+    minHeight: 44,
+    minWidth: 44,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
   },
   closeButton: {
     fontSize: 17,
-    color: palette.accent,
-    fontWeight: '500',
+    color: palette.accentText,
+    fontWeight: '600',
   },
   modalBody: {
     paddingHorizontal: 20,
@@ -342,9 +358,10 @@ const styles = StyleSheet.create({
     paddingBottom: Platform.OS === 'ios' ? 40 : 20,
   },
   itemSelectorButton: {
-    backgroundColor: '#F8FAFC',
+    backgroundColor: palette.fillMuted,
     borderWidth: 1,
-    borderColor: '#cbd5e1',
+    borderColor: palette.border,
+    minHeight: 48,
     borderRadius: 12,
     padding: 16,
     marginBottom: 16,
@@ -354,12 +371,12 @@ const styles = StyleSheet.create({
   },
   itemSelectorLabel: {
     fontSize: 15,
-    color: '#334155',
+    color: palette.text,
     fontWeight: '500',
   },
   itemSelectorIcon: {
     fontSize: 20,
-    color: '#94a3b8',
+    color: palette.textTertiary,
     fontWeight: '300',
   },
   row: {
@@ -378,7 +395,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingVertical: 16,
     paddingHorizontal: 16,
-    backgroundColor: '#f8fafc',
+    backgroundColor: palette.fillMuted,
     borderRadius: 12,
     marginTop: 8,
     marginBottom: 16,
@@ -386,12 +403,12 @@ const styles = StyleSheet.create({
   totalLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#64748b',
+    color: palette.textSecondary,
   },
   totalValue: {
     fontSize: 20,
     fontWeight: '700',
-    color: '#163300',
+    color: palette.text,
   },
   doneButton: {
     backgroundColor: palette.accent,
@@ -413,8 +430,7 @@ const styles = StyleSheet.create({
   doneButtonText: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#ffffff',
+    color: palette.accentForeground,
   },
 });
-
 

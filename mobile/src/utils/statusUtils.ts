@@ -46,6 +46,47 @@ export const getStatusColor = (status: string): string => {
   return option?.color || '#6b7280';
 };
 
+export interface StatusPalette {
+  textSecondary: string;
+  danger: string;
+  success: string;
+  accent: string;
+  accentText: string;
+  accentForeground: string;
+  text: string;
+  surface: string;
+}
+
+/** Ink for status text and icons sitting on the canvas. Sent stays forest in light and lime in dark. */
+export function statusInk(
+  status: string,
+  colors: Pick<StatusPalette, 'textSecondary' | 'danger' | 'success' | 'accentText'>,
+): string {
+  if (status === 'overdue') return colors.danger;
+  if (status === 'paid') return colors.success;
+  if (status === 'sent') return colors.accentText;
+  return colors.textSecondary;
+}
+
+/**
+ * Fill and ink for a status action. Lime fills always use forest ink.
+ * Paid is lime in dark mode and a darker green in light mode.
+ */
+export function statusActionColors(
+  status: string,
+  colors: Pick<StatusPalette, 'danger' | 'success' | 'accent' | 'accentForeground' | 'text' | 'textSecondary' | 'surface'>,
+): { background: string; foreground: string } {
+  if (status === 'sent') {
+    return { background: colors.accent, foreground: colors.accentForeground };
+  }
+  if (status === 'paid') {
+    const onLime = colors.success.toLowerCase() === colors.accent.toLowerCase();
+    return { background: colors.success, foreground: onLime ? colors.accentForeground : '#FFFFFF' };
+  }
+  if (status === 'overdue') return { background: colors.danger, foreground: '#FFFFFF' };
+  return { background: colors.textSecondary, foreground: colors.surface };
+}
+
 export const getStatusIcon = (status: string): StatusIconName => {
   const option = STATUS_OPTIONS.find((opt) => opt.value === status);
   return option?.icon || 'circle';

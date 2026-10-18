@@ -45,12 +45,13 @@ const itemFormSchema = z.object({
   description: z.string().nullable().optional(),
   type: z.enum(['product', 'service']).default('product'),
   categoryId: z.string().nullable().optional(),
-  salePrice: z.number().nullable().optional(),
-  purchasePrice: z.number().nullable().optional(),
-  taxRate: z.number().nullable().optional(),
+  salePrice: z.number().min(0).nullable().optional(),
+  purchasePrice: z.number().min(0).nullable().optional(),
+  taxRate: z.number().min(0).max(100).nullable().optional(),
   enableSaleInfo: z.boolean().default(true),
   enablePurchaseInfo: z.boolean().default(false),
   unit: z.string().default('each'),
+  isActive: z.boolean().default(true),
 });
 
 export function ItemForm({ initialData, onSubmit, isLoading = false, categories, onCreateCategory }: ItemFormProps) {
@@ -76,6 +77,7 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
       enableSaleInfo: initialData?.enableSaleInfo ?? true,
       enablePurchaseInfo: initialData?.enablePurchaseInfo ?? false,
       unit: initialData?.unit || 'each',
+      isActive: initialData?.isActive ?? true,
     },
   });
 
@@ -96,6 +98,7 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
         enableSaleInfo: saleInfoEnabled,
         enablePurchaseInfo: purchaseInfoEnabled,
         unit: initialData?.unit || 'each',
+        isActive: initialData?.isActive ?? true,
       });
       
       setShowSaleInfo(saleInfoEnabled);
@@ -112,6 +115,7 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
         enableSaleInfo: true,
         enablePurchaseInfo: false,
         unit: 'each',
+        isActive: true,
       });
       setShowSaleInfo(true);
       setShowPurchaseInfo(false);
@@ -182,6 +186,7 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
       enableSaleInfo: showSaleInfo,
       enablePurchaseInfo: showPurchaseInfo,
       unit: values.unit,
+      isActive: values.isActive,
     };
 
     // Only include id, createdAt, updatedAt if we have an existing item
@@ -349,7 +354,7 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {(effectiveCategories || []).map((category) => (
+                      {(effectiveCategories || []).filter((category) => category.isActive !== false).map((category) => (
                         <SelectItem key={category.id} value={category.id}>
                           {category.name}
                         </SelectItem>
@@ -412,6 +417,20 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
                   />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="flex items-center justify-between rounded-lg border p-3">
+                <div>
+                  <FormLabel>Active</FormLabel>
+                  <p className="text-sm text-muted-foreground">Available for new transactions.</p>
+                </div>
+                <FormControl><Switch checked={field.value} onCheckedChange={field.onChange} /></FormControl>
               </FormItem>
             )}
           />

@@ -11,7 +11,9 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
-import { control, hairline, palette, radius, space, type } from '@/theme/tokens';
+import { control, hairline, radius, space } from '@/theme/tokens';
+import { selectionHaptic } from '@/utils/haptics';
+import { useTheme } from '@/theme';
 
 interface SelectionSheetProps {
   visible: boolean;
@@ -48,6 +50,9 @@ export function SelectionSheet({
   emptyDescription,
   children,
 }: SelectionSheetProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
       <SafeAreaView style={styles.safeArea} edges={['bottom']}>
@@ -75,6 +80,7 @@ export function SelectionSheet({
               autoCorrect={false}
               returnKeyType="search"
               clearButtonMode="while-editing"
+              accessibilityLabel={searchPlaceholder}
             />
           </View>
         </View>
@@ -106,14 +112,23 @@ export function SelectionSheet({
 }
 
 export function SelectionRow({ title, subtitle, selected, onPress, leading }: SelectionRowProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
+  const handlePress = () => {
+    if (!selected) selectionHaptic();
+    onPress();
+  };
+
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={handlePress}
       style={styles.row}
       activeOpacity={0.65}
       accessibilityRole="button"
       accessibilityState={{ selected }}
       accessibilityLabel={subtitle ? `${title}, ${subtitle}` : title}
+      accessibilityHint="Selects this option"
     >
       {leading ? <View style={styles.leading}>{leading}</View> : null}
       <View style={styles.rowCopy}>
@@ -129,7 +144,7 @@ export function SelectionRow({ title, subtitle, selected, onPress, leading }: Se
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   safeArea: { flex: 1, backgroundColor: palette.background },
   header: {
     backgroundColor: palette.surface,

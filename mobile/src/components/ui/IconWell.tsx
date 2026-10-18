@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, type ViewStyle } from 'react-native';
-import { palette, radius } from '@/theme/tokens';
+import { radius } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface IconWellProps {
   children: React.ReactNode;
@@ -17,6 +18,9 @@ export function IconWell({
   color,
   style,
 }: IconWellProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   return (
     <View
       style={[
@@ -35,7 +39,7 @@ export function IconWell({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   well: {
     alignItems: 'center',
     justifyContent: 'center',

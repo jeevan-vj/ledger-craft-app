@@ -1,16 +1,46 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
-**Mobile hardening (verified locally, 2026-10-18):** The Expo client now reports
+**Mobile hardening (verified locally, 2026-10-18):** The Expo client reports
 dashboard and expense loading failures honestly, protects dirty bill forms from
 accidental dismissal, exposes invoice/expense row actions to assistive
-technology, preserves exact purchase amounts through formatting and draft-total
-calculation, and follows React Native connectivity/app-focus query lifecycle.
-The unavailable Google sign-in action is no longer advertised; core inputs,
-date controls, expense styling, installed branding, and the Purchases tab icon
-match the current Wise-inspired system. All 13 mobile Jest suites (45 tests),
-strict TypeScript, and iOS/Android production exports pass. Authenticated native
-device QA remains pending; missing banking, reporting, team, portal, recurring,
-and other parity domains remain tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+technology, preserves exact purchase amounts through formatting, draft totals,
+and payment validation, and follows React Native connectivity/app-focus query
+lifecycle. The unavailable Google sign-in action is not advertised and core
+inputs/date controls follow the current Wise system. Strict TypeScript, Jest,
+and iOS/Android production exports pass; authenticated native device QA remains
+pending. Missing parity domains remain in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+
+**Pull request CI:** `.github/workflows/ci.yml` runs on every pull request and on
+push to main. Web jobs use pnpm from `package.json` `packageManager` (no
+`pnpm/action-setup` `version` input), Node 22, and `pnpm install --frozen-lockfile`.
+They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
+`pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci` in
+`mobile/`, then ESLint (`eslint-config-expo` flat config), `tsc --noEmit`, Jest,
+and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
+mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
+diagnostics. A count gate fails the job only when the count rises past the
+baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
+still runs the Postgres API suite. The PR workflow does not start Postgres and
+does not deploy.
+
+**Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
+`codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
+pill/card/list/setup/icon primitives, and Home / Invoices / Customers / More
+native tabs. Home, invoice chrome, customer browsing, and profile/settings use
+the new visual language; Expenses and Purchases remain reachable from More.
+The native tab implementation is intentionally retained, so its bar is styled
+dark with lime selection rather than replaced by a custom floating tab bar.
+This work is not deployed and has not had simulator/device visual QA.
+
+**Item catalogue parity (implemented, 2026-10-18):** Core item and category
+management now supports strict exact-decimal validation, hydrated categories,
+active/inactive lifecycle, duplication, atomic bulk actions, and canonical CSV
+preview/apply/export through Hono/SQLite migration
+`0005_item-catalogue-parity.sql`. Web item management includes status filtering,
+bulk controls, category lifecycle controls, profile-currency display, and
+responsive layouts. Invoice pickers expose only active sale-enabled items and
+apply item sale price and tax defaults; mobile adapters follow the same DTO and
+picker eligibility. Media and multi-tax catalogue extensions remain backlog.
 
 **GST return workflow (deployed, 2026-10-03):** Web GST returns now
 persist the calculated IRD/reconciliation snapshot through Hono/SQLite, use a
@@ -573,7 +603,7 @@ npm run build       # Build for production
 npm test            # Run unit tests (Vitest)
 npm run test:ui     # Test UI (Vitest)
 npm run test:e2e    # Run E2E tests (Playwright)
-npm run type-check  # TypeScript type checking
+npm run type-check  # tsc -p tsconfig.app.json and tsconfig.node.json
 npm run lint        # ESLint
 ```
 
@@ -583,6 +613,8 @@ cd mobile
 npm start           # Start Expo dev server
 npm run android     # Run on Android
 npm run ios         # Run on iOS
+npm run lint        # ESLint (eslint-config-expo flat config)
+npm run type-check  # tsc --noEmit
 npm test            # Run Jest tests
 npm run test:watch  # Tests in watch mode
 ```

@@ -1,0 +1,87 @@
+import type { InvoiceStackParamList, MoreStackParamList } from './types';
+
+/** Home, invoices, customers, then everything else. Customers stay a tab. */
+export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;
+
+export const moreMenuSections = [
+  {
+    title: 'Account',
+    rows: [
+      {
+        label: 'Business profile',
+        subtitle: 'Details, GST and invoice numbering',
+        screen: 'BusinessSettings',
+      },
+    ],
+  },
+  {
+    title: 'Money out',
+    rows: [
+      {
+        label: 'Expenses',
+        subtitle: 'Track purchases and receipts',
+        screen: 'ExpenseList',
+      },
+      {
+        label: 'Purchases',
+        subtitle: 'Vendors, bills and payments',
+        screen: 'PurchaseList',
+      },
+    ],
+  },
+] as const;
+
+export type MoreMenuScreen = (typeof moreMenuSections)[number]['rows'][number]['screen'];
+
+type InvoiceDestination =
+  | { name: 'InvoiceList' }
+  | { name: 'InvoiceCreate' }
+  | { name: 'InvoiceDetail'; params: { invoiceId: string } };
+
+type MoreDestination =
+  | { name: 'BusinessSettings' }
+  | { name: 'ExpenseList' }
+  | { name: 'PurchaseList' }
+  | { name: 'ExpenseCreate' };
+
+export type NestedRoute = {
+  name: keyof InvoiceStackParamList | keyof MoreStackParamList;
+  params?: Record<string, unknown>;
+};
+
+export type NestedStackState = {
+  index: number;
+  routes: NestedRoute[];
+};
+
+/**
+ * Puts the list under the destination so Back returns to it.
+ * Cross-tab `navigate` otherwise lands on a screen with nowhere to go back to.
+ */
+export function stackAbove(
+  rootName: NestedRoute['name'],
+  destination: { name: NestedRoute['name']; params?: Record<string, unknown> },
+): NestedStackState {
+  if (destination.name === rootName) {
+    return { index: 0, routes: [{ name: rootName }] };
+  }
+  const route: NestedRoute = destination.params
+    ? { name: destination.name, params: destination.params }
+    : { name: destination.name };
+  return { index: 1, routes: [{ name: rootName }, route] };
+}
+
+export function invoiceTabParams(destination: InvoiceDestination): { state: NestedStackState } {
+  return {
+    state: stackAbove(
+      'InvoiceList',
+      destination.name === 'InvoiceDetail'
+        ? { name: destination.name, params: destination.params }
+        : { name: destination.name },
+    ),
+  };
+}
+
+export function moreTabParams(destination: MoreDestination): { state: NestedStackState } {
+  return { state: stackAbove('SettingsList', destination) };
+}

@@ -9,33 +9,47 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
-import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { Feather } from '@expo/vector-icons';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import type { BusinessProfile } from '@/types/invoice';
+import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
-import { shareInvoicePDF, downloadInvoicePDF } from '@/utils/pdfUtils';
+import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
-import { getStatusColor, getStatusLabel } from '@/utils/statusUtils';
+import { getStatusLabel, statusInk } from '@/utils/statusUtils';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { palette, radius, space } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
+import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
+import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
+import { useTheme } from '@/theme';
 
-type InvoiceDetailNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>;
+type InvoiceDetailNavigationProp = CompositeNavigationProp<
+  NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
+  NativeBottomTabNavigationProp<MainTabParamList>
+>;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
 
 export default function InvoiceDetailScreen() {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
+  const insets = useSafeAreaInsets();
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
@@ -45,6 +59,7 @@ export default function InvoiceDetailScreen() {
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   useEffect(() => {
     loadData();
@@ -53,11 +68,21 @@ export default function InvoiceDetailScreen() {
   useLayoutEffect(() => {
     navigation.setOptions({
       title: invoice?.invoiceNumber || 'Invoice',
+      headerRight: invoice
+        ? () => (
+            <NativeHeaderButton
+              label="Preview"
+              primary
+              onPress={() => setShowPreview(true)}
+            />
+          )
+        : undefined,
     });
-  }, [navigation, invoice?.invoiceNumber]);
+  }, [navigation, invoice]);
 
   const loadData = async () => {
     try {
+      setLoadError(null);
       const [invoiceData, profileData] = await Promise.all([
         invoiceService.fetchInvoiceById(invoiceId),
         businessProfileService.getBusinessProfile().catch((error) => {
@@ -67,11 +92,10 @@ export default function InvoiceDetailScreen() {
       ]);
       setInvoice(invoiceData);
       setBusinessProfile(profileData);
+      if (!invoiceData) setLoadError(null);
     } catch (error) {
       console.error('Error loading data:', error);
-      Alert.alert('Error', 'Failed to load invoice', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      setLoadError('This invoice could not be loaded.');
     } finally {
       setLoading(false);
     }
@@ -83,22 +107,11 @@ export default function InvoiceDetailScreen() {
       setInvoice(data);
     } catch (error) {
       console.error('Error loading invoice:', error);
-      Alert.alert('Error', 'Failed to load invoice', [
-        { text: 'OK', onPress: () => navigation.goBack() },
-      ]);
+      Alert.alert('Error', 'Failed to refresh this invoice.');
     }
   };
 
   const formatCurrency = (amount: number, currency: string) => formatMoney(amount, currency);
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-NZ', {
-      day: 'numeric',
-      month: 'long',
-      year: 'numeric',
-    });
-  };
 
   const handleEdit = () => {
     navigation.navigate('InvoiceEdit', { invoiceId });
@@ -150,30 +163,22 @@ export default function InvoiceDetailScreen() {
     setPaymentModalVisible(true);
   };
 
-  const handleDownloadPDF = async () => {
-    if (!invoice) return;
-
-    try {
-      setGeneratingPdf(true);
-      await downloadInvoicePDF(invoice);
-      Alert.alert('Success', 'PDF saved to your device');
-    } catch (error) {
-      console.error('Error downloading PDF:', error);
-      Alert.alert('Error', 'Failed to generate PDF');
-    } finally {
-      setGeneratingPdf(false);
-    }
-  };
-
   const handleSharePDF = async () => {
     if (!invoice) return;
 
     try {
       setGeneratingPdf(true);
-      await shareInvoicePDF(invoice);
+      await shareInvoicePDF(
+        invoice,
+        businessProfile || undefined,
+        (invoice.templateName as InvoiceTemplateId | undefined) || 'classic',
+      );
     } catch (error) {
       console.error('Error sharing PDF:', error);
-      Alert.alert('Error', 'Failed to share PDF');
+      Alert.alert(
+        'Unable to share PDF',
+        error instanceof Error ? error.message : 'Failed to share PDF',
+      );
     } finally {
       setGeneratingPdf(false);
     }
@@ -182,19 +187,26 @@ export default function InvoiceDetailScreen() {
   if (loading) {
     return (
       <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accentForeground} />
+        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoice" />
         <Text style={styles.loadingText}>Loading invoice</Text>
       </View>
     );
   }
 
-  if (!invoice) {
+  if (loadError || !invoice) {
     return (
       <View style={styles.centerContainer}>
-        <Text style={styles.errorText}>Invoice not found</Text>
+        <EmptyState
+          title={loadError ? "Couldn't open this invoice" : 'Invoice not found'}
+          description={loadError ?? 'It may have been deleted.'}
+          actionLabel={loadError ? 'Try again' : 'Go back'}
+          onAction={loadError ? () => { setLoading(true); loadData(); } : () => navigation.goBack()}
+        />
       </View>
     );
   }
+
+  const ink = statusInk(invoice.status, palette);
 
   return (
     <View style={styles.container}>
@@ -211,7 +223,7 @@ export default function InvoiceDetailScreen() {
           <Text style={styles.heroMeta}>
             {invoice.invoiceNumber}
             {' · '}
-            <Text style={{ color: getStatusColor(invoice.status) }}>
+            <Text style={{ color: ink }}>
               {getStatusLabel(invoice.status)}
             </Text>
           </Text>
@@ -226,7 +238,7 @@ export default function InvoiceDetailScreen() {
             accessibilityRole="button"
             accessibilityLabel="Change invoice status"
           >
-            <View style={[styles.statusDot, { backgroundColor: getStatusColor(invoice.status) }]} />
+            <View style={[styles.statusDot, { backgroundColor: ink }]} />
             <Text style={styles.statusButtonValue}>{getStatusLabel(invoice.status)}</Text>
             <Feather name="chevron-right" size={18} color={palette.textTertiary} />
           </Pressable>
@@ -278,11 +290,11 @@ export default function InvoiceDetailScreen() {
           <Text style={styles.sectionTitle}>Invoice Details</Text>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Date</Text>
-            <Text style={styles.detailValue}>{invoice.date ? formatDate(invoice.date) : 'N/A'}</Text>
+            <Text style={styles.detailValue}>{invoice.date ? formatInvoiceDate(invoice.date) : 'N/A'}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Due</Text>
-            <Text style={styles.detailValue}>{invoice.dueDate ? formatDate(invoice.dueDate) : 'N/A'}</Text>
+            <Text style={styles.detailValue}>{invoice.dueDate ? formatInvoiceDate(invoice.dueDate) : 'N/A'}</Text>
           </View>
           <View style={styles.detailRow}>
             <Text style={styles.detailLabel}>Currency</Text>
@@ -315,7 +327,9 @@ export default function InvoiceDetailScreen() {
           </View>
           {(invoice.taxAmount || 0) > 0 && (
             <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Tax</Text>
+              <Text style={styles.summaryLabel}>
+                {invoice.currency?.toUpperCase() === 'NZD' ? 'GST' : 'Tax'}
+              </Text>
               <Text style={styles.summaryValue}>{formatCurrency(invoice.taxAmount || 0, invoice.currency)}</Text>
             </View>
           )}
@@ -333,9 +347,15 @@ export default function InvoiceDetailScreen() {
               </Text>
             </View>
           )}
+          <View style={styles.summaryRow}>
+            <Text style={styles.summaryLabel}>Total</Text>
+            <Text style={styles.summaryValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
+          </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
+            <Text style={styles.totalLabel}>Amount due</Text>
+            <Text style={styles.totalValue}>
+              {formatCurrency(invoiceAmountDue(invoice), invoice.currency || 'NZD')}
+            </Text>
           </View>
         </View>
 
@@ -360,29 +380,28 @@ export default function InvoiceDetailScreen() {
         <View style={{ paddingBottom: 8 }}>
           <ProfileCompletenessBanner
             profile={businessProfile}
-            onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
-            }}
+            onCompleteProfile={() => navigation.navigate('BusinessSettings')}
           />
         </View>
         <View style={{ height: 100 }} />
       </ScrollView>
 
-      <View style={styles.bottomBar}>
+      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+        <ModernButton
+          onPress={() => setShowPreview(true)}
+          variant="primary"
+          size="lg"
+          fullWidth
+          icon={<Feather name="eye" size={19} color={palette.accentForeground} />}
+        >
+          Preview invoice
+        </ModernButton>
         {invoice.status !== 'paid' ? (
-          <ModernButton onPress={handleMarkAsPaid} variant="primary" size="lg" fullWidth>
+          <ModernButton onPress={handleMarkAsPaid} variant="secondary" size="lg" fullWidth>
             Record payment
           </ModernButton>
         ) : null}
         <View style={styles.secondaryRow}>
-          <Pressable
-            onPress={() => setShowPreview(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Preview"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            <Text style={styles.secondaryLabel}>Preview</Text>
-          </Pressable>
           <Pressable
             onPress={handleSharePDF}
             disabled={generatingPdf}
@@ -391,7 +410,7 @@ export default function InvoiceDetailScreen() {
             style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
           >
             {generatingPdf ? (
-              <ActivityIndicator size="small" color={palette.accentForeground} />
+              <ActivityIndicator size="small" color={palette.accentText} />
             ) : (
               <Text style={styles.secondaryLabel}>Share</Text>
             )}
@@ -418,10 +437,11 @@ export default function InvoiceDetailScreen() {
           <InvoicePreviewWithTemplates
             invoice={invoice}
             businessProfile={businessProfile || undefined}
-            initialTemplate={(invoice.templateName as any) || 'classic'}
+            initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
-              navigation.getParent()?.navigate('Settings' as never);
+              setShowPreview(false);
+              navigation.navigate('BusinessSettings');
             }}
           />
         )}
@@ -446,7 +466,7 @@ export default function InvoiceDetailScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: palette.background,
@@ -484,7 +504,7 @@ const styles = StyleSheet.create({
   },
   amountValue: {
     fontSize: 44,
-    fontWeight: '700',
+    fontWeight: '900',
     color: palette.text,
     letterSpacing: -1.4,
     fontVariant: ['tabular-nums'],
@@ -495,10 +515,12 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   card: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     borderRadius: radius.group,
     padding: space.lg,
     marginBottom: space.lg,
+    borderWidth: 1,
+    borderColor: palette.border,
   },
   sectionTitle: {
     fontSize: 13,
@@ -592,10 +614,9 @@ const styles = StyleSheet.create({
     lineHeight: 22,
   },
   bottomBar: {
-    backgroundColor: palette.surface,
+    backgroundColor: palette.surfaceRaised,
     paddingHorizontal: space.screen,
     paddingTop: 12,
-    paddingBottom: 28,
     borderTopWidth: StyleSheet.hairlineWidth,
     borderTopColor: palette.separator,
     gap: 8,
@@ -606,8 +627,10 @@ const styles = StyleSheet.create({
     paddingTop: 4,
   },
   secondaryAction: {
-    minHeight: 44,
+    minHeight: control.touchTarget,
+    minWidth: control.touchTarget,
     justifyContent: 'center',
+    alignItems: 'center',
     paddingHorizontal: 12,
   },
   secondaryPressed: {
@@ -616,7 +639,7 @@ const styles = StyleSheet.create({
   secondaryLabel: {
     fontSize: 16,
     fontWeight: '600',
-    color: palette.accentForeground,
+    color: palette.accentText,
   },
   statusButton: {
     flexDirection: 'row',
@@ -647,4 +670,3 @@ const styles = StyleSheet.create({
     color: palette.textSecondary,
   },
 });
-

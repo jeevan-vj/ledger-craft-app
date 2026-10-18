@@ -1,16 +1,21 @@
 # LedgerCraft target architecture
 
-**Mobile hardening (verified locally, 2026-10-18):** Expo now distinguishes
-failed loads from genuine zero/empty states, protects unsaved bill edits, makes
-invoice and expense actions available without swipe gestures, keeps exact
-purchase decimals through display and draft calculations, and reconnects React
-Query to native app-focus and network state. The unavailable Google login action
-was removed, accessibility and Wise token usage were tightened, and the installed
-name and Purchases icon now match LedgerCraft. All 13 mobile Jest suites (45
-tests), strict TypeScript, and iOS/Android production exports pass. This is not a
-claim that the parity backlog is complete: authenticated native device QA plus
-banking, reporting, team, portal, recurring, and other missing domains remain
-open in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
+**Mobile hardening (verified locally, 2026-10-18):** Expo distinguishes failed
+loads from genuine empty states, protects unsaved bill edits, exposes invoice
+and expense actions without requiring swipe gestures, preserves exact purchase
+decimals through display, draft totals, and payment validation, and reconnects
+React Query to native app focus and network state. The unavailable Google login
+action was removed and accessibility/token usage were tightened. Strict
+TypeScript, Jest, and iOS/Android production exports pass. Authenticated native
+device QA and the missing parity domains remain open.
+
+**Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
+`codex/mobile-wise-ui` uses a system-aware dark-first lime theme and Home /
+Invoices / Customers / More native tabs. Shared pill, card, list-row, setup-card
+and circular-icon primitives now drive the redesigned Home, customer, invoice
+chrome, and profile/settings surfaces. Expenses and Purchases remain available
+under More. The native tab bar is preserved and styled within its supported API;
+this branch is not deployed and visual device QA remains pending.
 
 **GST return workflow (deployed, 2026-10-03):** The GST wizard now
 stores its calculated IRD and reconciliation snapshot in the existing

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TextInputProps, StyleSheet } from 'react-native';
-import { control, palette, radius, space, type } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface FormInputProps extends TextInputProps {
   label: string;
@@ -17,6 +18,9 @@ export function FormInput({
   onBlur,
   ...props
 }: FormInputProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [focused, setFocused] = useState(false);
 
   return (
@@ -44,7 +48,7 @@ export function FormInput({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: { marginBottom: space.lg },
   label: {
     ...type.footnote,

@@ -5,7 +5,8 @@ import {
   getMissingProfileFields,
   type ProfileCompletenessInput,
 } from '@/utils/profileCompleteness';
-import { palette, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 let dismissedThisSession = false;
 
@@ -18,6 +19,9 @@ export function ProfileCompletenessBanner({
   profile,
   onCompleteProfile,
 }: ProfileCompletenessBannerProps) {
+  const theme = useTheme();
+  const { colors: palette, type } = theme;
+  const styles = createStyles(theme);
   const [dismissed, setDismissed] = useState(dismissedThisSession);
   const missing = getMissingProfileFields(profile);
 
@@ -36,15 +40,22 @@ export function ProfileCompletenessBanner({
         <Text style={styles.title}>Add {describeMissingFields(missing)} before you send</Text>
         <Text style={styles.subtitle}>Optional, but invoices look complete with it.</Text>
         {onCompleteProfile ? (
-          <Pressable onPress={onCompleteProfile} hitSlop={8}>
-            <Text style={styles.link}>Update in Settings</Text>
+          <Pressable
+            onPress={onCompleteProfile}
+            accessibilityRole="button"
+            accessibilityLabel="Update business profile"
+            style={styles.linkHit}
+          >
+            <Text style={styles.link}>Update business profile</Text>
           </Pressable>
         ) : null}
       </View>
       <Pressable
         onPress={handleDismiss}
-        hitSlop={8}
+        accessibilityRole="button"
+        accessibilityLabel="Skip business profile reminder"
         testID="profile-completeness-dismiss"
+        style={styles.linkHit}
       >
         <Text style={styles.dismiss}>Skip</Text>
       </Pressable>
@@ -52,7 +63,7 @@ export function ProfileCompletenessBanner({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   banner: {
     flexDirection: 'row',
     alignItems: 'flex-start',
@@ -76,11 +87,16 @@ const styles = StyleSheet.create({
     color: palette.textSecondary,
     marginTop: 3,
   },
+  linkHit: {
+    minHeight: 44,
+    justifyContent: 'center',
+    alignSelf: 'flex-start',
+    marginTop: 4,
+  },
   link: {
-    marginTop: 8,
-    fontSize: 13,
-    fontWeight: '600',
-    color: palette.accent,
+    fontSize: 15,
+    fontWeight: '700',
+    color: palette.accentText,
   },
   dismiss: {
     fontSize: 13,

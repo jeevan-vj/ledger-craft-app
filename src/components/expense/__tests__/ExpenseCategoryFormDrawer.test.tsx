@@ -103,7 +103,7 @@ describe('ExpenseCategoryFormDrawer', () => {
   it('selects predefined color when clicked', async () => {
     render(<ExpenseCategoryFormDrawer {...defaultProps} />);
     
-    const colorInput = screen.getByLabelText(/color/i) as HTMLInputElement;
+    const colorInput = screen.getByPlaceholderText('#FF6B35') as HTMLInputElement;
     const firstColorButton = screen.getAllByRole('button').find(button =>
       button.title === '#FF6B35'
     );
@@ -130,8 +130,8 @@ describe('ExpenseCategoryFormDrawer', () => {
 
     render(<ExpenseCategoryFormDrawer {...defaultProps} initialValues={initialValues} />);
     
-    const colorPreview = screen.getByRole('generic');
-    expect(colorPreview).toHaveStyle({ backgroundColor: '#FF6B35' });
+    const colorPreview = document.querySelector('.w-8.h-8.rounded.border');
+    expect(colorPreview).toHaveStyle({ backgroundColor: 'rgb(255, 107, 53)' });
   });
 
   it('closes drawer when cancel button clicked', () => {
