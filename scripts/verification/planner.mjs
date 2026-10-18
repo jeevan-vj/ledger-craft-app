@@ -1,10 +1,10 @@
 // Pure verification planning. Never execute commands here.
 export const catalog={
- 'verify-build':{command:['pnpm','type-check'],areas:['web']},
+ 'verify-build':{command:['node','scripts/verification/check-build.mjs'],areas:['web']},
  'verify-tests':{command:['pnpm','test:run'],areas:['web']},
  'verify-lint':{command:['pnpm','lint'],areas:['web']},
  'verify-api':{command:['pnpm','test:contracts'],areas:['api','contracts']},
- 'verify-ui':{command:['pnpm','test:e2e','--','--project=chromium'],areas:['ui']},
+ 'verify-ui':{command:['pnpm','exec','playwright','test','--project=chromium'],areas:['ui']},
  'verify-database':{command:['pnpm','test:api'],areas:['database','api']},
  'verify-security':{command:['pnpm','exec','git','--version'],areas:['security'],placeholder:true},
  'verify-pr':{aggregate:true,areas:[]},
