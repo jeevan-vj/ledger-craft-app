@@ -10,7 +10,7 @@ import type {
 import type { Expense, ExpenseCategory, ExpenseStatus, PaymentMethod } from '@/types';
 
 export function expensesApiEnabled(): boolean {
-  return import.meta.env.VITE_EXPENSES_API === 'true';
+  return import.meta.env.VITE_EXPENSES_API !== 'false';
 }
 
 export class ExpensesApiError extends Error {

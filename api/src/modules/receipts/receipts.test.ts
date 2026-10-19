@@ -112,6 +112,18 @@ describe('receipt routes', () => {
         const receipt = paymentReceiptSchema.parse(await created.json());
         expect(receipt.paymentId).toBe(payment.id);
         expect(receipt.receiptNumber).toMatch(/^REC-\d{6}-\d{4}$/);
+        expect(receipt.receiptData).toMatchObject({
+          paymentId: payment.id,
+          invoiceId: expect.any(String),
+          invoiceNumber: expect.any(String),
+          customerName: 'North Harbour Cafe',
+          customerEmail: 'hello@nhcafe.nz',
+          amountPaid: expect.any(String),
+          invoiceDate: expect.any(String),
+          invoiceDueDate: expect.any(String),
+          currency: 'NZD',
+          balanceDue: '0.00',
+        });
 
         const listed = await app.request('/api/receipts', { headers: { Cookie: ownerA.cookie } });
         expect(listed.status).toBe(200);

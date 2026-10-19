@@ -190,6 +190,10 @@ export interface Invoice {
   additionalChargesList?: AdditionalCharge[]; // New structured charges
   additionalChargesTotal?: number; // Calculated total of all additional charges
   total: number;
+  totalPaid?: number;
+  balanceDue?: number;
+  paymentStatus?: 'unpaid' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
+  taxInclusive?: boolean;
   status: InvoiceStatus;
   notes?: string | null;
   terms?: string | null;

@@ -14,6 +14,7 @@ function toDto(row: typeof receipts.$inferSelect): PaymentReceiptDto {
     generatedAt: row.generatedAt.toISOString(),
     emailSentAt: row.emailSentAt ? row.emailSentAt.toISOString() : null,
     isEmailed: row.isEmailed,
+    receiptData: row.receiptData,
     createdAt: row.createdAt.toISOString(),
   });
 }

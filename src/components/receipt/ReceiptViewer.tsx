@@ -29,7 +29,6 @@ import { Receipt, ReceiptData } from '@/types/payment';
 interface ReceiptViewerProps {
   receipt: Receipt;
   onDownload: () => void;
-  onResendEmail: () => void;
   onPrint: () => void;
   isLoading?: boolean;
 }
@@ -37,7 +36,6 @@ interface ReceiptViewerProps {
 export function ReceiptViewer({
   receipt,
   onDownload,
-  onResendEmail,
   onPrint,
   isLoading = false
 }: ReceiptViewerProps) {
@@ -69,7 +67,7 @@ export function ReceiptViewer({
 
   // Provide default business info if missing
   const businessInfo = business || {
-    name: 'Your Business Name',
+    name: 'Business details unavailable',
     email: '',
     phone: '',
     address: '',
@@ -164,9 +162,9 @@ export function ReceiptViewer({
                     <Printer className="mr-2 h-4 w-4" />
                     Print Receipt
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={onResendEmail}>
+                  <DropdownMenuItem disabled>
                     <Mail className="mr-2 h-4 w-4" />
-                    Resend Email
+                    Email unavailable
                   </DropdownMenuItem>
                   <DropdownMenuItem onClick={handleShare}>
                     <ExternalLink className="mr-2 h-4 w-4" />
@@ -385,7 +383,7 @@ function FullReceiptView({ receiptData }: { receiptData: ReceiptData }) {
 
   // Provide default business info if missing
   const businessInfo = business || {
-    name: 'Your Business Name',
+    name: 'Business details unavailable',
     email: '',
     phone: '',
     address: '',

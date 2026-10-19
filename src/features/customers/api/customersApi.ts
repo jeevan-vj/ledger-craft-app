@@ -2,7 +2,7 @@ import type { CreateCustomerRequest, CustomerDto, UpdateCustomerRequest } from '
 import type { Customer } from '@/types';
 
 export function customersApiEnabled(): boolean {
-  return import.meta.env.VITE_CUSTOMERS_API === 'true';
+  return import.meta.env.VITE_CUSTOMERS_API !== 'false';
 }
 
 export function toCreateCustomerRequest(
