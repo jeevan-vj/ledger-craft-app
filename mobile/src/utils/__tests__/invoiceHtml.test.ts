@@ -42,7 +42,9 @@ describe('generateInvoiceHTML', () => {
     const html = generateInvoiceHTML(invoice, undefined, 'classic');
 
     expect(html).toMatch(/^\s*<!DOCTYPE html>/i);
-    expect(html).toContain('name="viewport" content="width=595, initial-scale=1');
+    expect(html).toContain('name="viewport" content="width=595');
+    expect(html).not.toContain('width=595, initial-scale=1');
+    expect(html).toContain('shrink-to-fit=yes');
     expect(html).toContain('@page { size: 595px 842px; margin: 0; }');
     expect(html).toContain('Subtotal:');
     expect(html).toContain('$100.00');

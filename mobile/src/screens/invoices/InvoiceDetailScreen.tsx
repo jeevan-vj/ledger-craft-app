@@ -9,7 +9,6 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
@@ -35,6 +34,7 @@ import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
@@ -49,7 +49,7 @@ export default function InvoiceDetailScreen() {
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
-  const insets = useSafeAreaInsets();
+  const { tabBarClearance } = useTabScreenInsets();
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
@@ -60,6 +60,7 @@ export default function InvoiceDetailScreen() {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [bottomBarHeight, setBottomBarHeight] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -212,7 +213,7 @@ export default function InvoiceDetailScreen() {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomBarHeight + space.lg }]}
         contentInsetAdjustmentBehavior="automatic"
       >
         <View style={styles.hero}>
@@ -383,10 +384,12 @@ export default function InvoiceDetailScreen() {
             onCompleteProfile={() => navigation.navigate('BusinessSettings')}
           />
         </View>
-        <View style={{ height: 100 }} />
       </ScrollView>
 
-      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
+      <View
+        onLayout={(event) => setBottomBarHeight(event.nativeEvent.layout.height)}
+        style={[styles.bottomBar, { paddingBottom: tabBarClearance + space.sm }]}
+      >
         <ModernButton
           onPress={() => setShowPreview(true)}
           variant="primary"

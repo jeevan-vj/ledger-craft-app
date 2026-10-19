@@ -1,5 +1,15 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile layout safety (verified locally, 2026-10-19):** The Expo root now owns
+safe-area metrics, tab-hosted screens reserve the measured native tab-bar
+height, large-title lists use automatic content insets, and invoice detail
+actions measure their footer instead of relying on magic spacers. Mobile A4
+invoice previews retain print dimensions while fitting narrow WebViews, and the
+template selector uses the Wise semantic theme. Strict TypeScript, all 21 Jest
+suites (81 tests), lint with no errors, and iOS/Android production exports pass.
+Native visual QA remains pending because no local iOS simulator runtime is
+installed and EAS Simulator is unavailable for the account.
+
 **Mobile banking management (implemented locally, 2026-10-19):** The Expo More
 tab now provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
