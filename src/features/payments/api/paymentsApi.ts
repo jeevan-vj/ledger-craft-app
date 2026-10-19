@@ -10,11 +10,11 @@ import type { Account, AccountType } from '@/types';
 import type { CreatePaymentRequest as ClientPaymentRequest, Payment } from '@/types/payment';
 
 export function paymentsApiEnabled(): boolean {
-  return import.meta.env.VITE_PAYMENTS_API === 'true';
+  return import.meta.env.VITE_PAYMENTS_API !== 'false';
 }
 
 export function accountsApiEnabled(): boolean {
-  return import.meta.env.VITE_ACCOUNTS_API === 'true';
+  return import.meta.env.VITE_ACCOUNTS_API !== 'false';
 }
 
 export class PaymentsApiError extends Error {
@@ -31,6 +31,7 @@ function toPayment(dto: PaymentDto): Payment {
   return {
     id: dto.id,
     invoiceId: dto.invoiceId,
+    invoiceNumber: dto.invoiceNumber ?? undefined,
     userId: '',
     paymentMethod: dto.paymentMethod,
     amount: Number(dto.amount),

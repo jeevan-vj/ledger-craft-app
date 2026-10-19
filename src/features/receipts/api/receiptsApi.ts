@@ -1,8 +1,8 @@
-import type { CreatePaymentReceiptRequest, PaymentReceiptDto } from '@ledgercraft/contracts';
+import type { CreatePaymentReceiptRequest, PaymentReceiptDataDto, PaymentReceiptDto } from '@ledgercraft/contracts';
 import type { Receipt } from '@/types/payment';
 
 export function receiptsApiEnabled(): boolean {
-  return import.meta.env.VITE_RECEIPTS_API === 'true';
+  return import.meta.env.VITE_RECEIPTS_API !== 'false';
 }
 
 export class ReceiptsApiError extends Error {
@@ -16,6 +16,7 @@ export class ReceiptsApiError extends Error {
 }
 
 function toReceipt(dto: PaymentReceiptDto): Receipt {
+  const data = dto.receiptData;
   return {
     id: dto.id,
     paymentId: dto.paymentId,
@@ -24,7 +25,61 @@ function toReceipt(dto: PaymentReceiptDto): Receipt {
     generatedAt: dto.generatedAt,
     emailSentAt: dto.emailSentAt ?? undefined,
     isEmailed: dto.isEmailed,
+    receiptData: toReceiptData(data, dto.receiptNumber, dto.createdAt),
     createdAt: dto.createdAt,
+  };
+}
+
+function toReceiptData(data: PaymentReceiptDataDto, receiptNumber: string, createdAt: string) {
+  const amountPaid = Number(data.amountPaid);
+  return {
+    payment: {
+      id: data.paymentId,
+      invoiceId: data.invoiceId,
+      invoiceNumber: data.invoiceNumber,
+      userId: '',
+      paymentMethod: data.paymentMethod,
+      amount: amountPaid,
+      paymentDate: data.paymentDate,
+      status: 'completed' as const,
+      createdAt,
+      updatedAt: createdAt,
+    },
+    invoice: {
+      id: data.invoiceId,
+      invoiceNumber: data.invoiceNumber,
+      customerId: '',
+      date: data.invoiceDate ?? data.paymentDate,
+      dueDate: data.invoiceDueDate ?? '',
+      items: [],
+      subtotal: Number(data.invoiceTotal),
+      taxAmount: 0,
+      total: Number(data.invoiceTotal),
+      totalPaid: Number(data.totalPaid),
+      balanceDue: Number(data.balanceDue),
+      paymentStatus: Number(data.balanceDue) === 0 ? 'paid' as const : 'partially_paid' as const,
+      taxInclusive: false,
+      status: Number(data.balanceDue) === 0 ? 'paid' as const : 'sent' as const,
+      currency: data.currency,
+    },
+    customer: {
+      id: '',
+      name: data.customerName,
+      email: data.customerEmail ?? '',
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      country: 'NZ',
+      phone: null,
+      isVip: false,
+      tags: [],
+    },
+    receiptNumber,
+    paymentDate: data.paymentDate,
+    amountPaid,
+    paymentMethod: data.paymentMethod.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    balanceAfterPayment: Number(data.balanceDue),
   };
 }
 

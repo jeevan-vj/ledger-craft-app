@@ -77,7 +77,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
       {/* Invoice Summary */}
-      <Card className="border-l-4 border-l-blue-500">
+      <Card>
         <CardHeader className="pb-3">
           <CardTitle className="flex items-center gap-2 text-lg">
             <Receipt className="h-5 w-5" />
@@ -87,14 +87,12 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
         <CardContent className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <Label className="text-muted-foreground">Customer</Label>
-            <p className="font-medium">{invoice.customer?.name || invoice.customerName || 'Unknown Customer'}</p>
+            <p className="font-medium">{invoice.customer?.name || 'Unknown Customer'}</p>
           </div>
           <div>
             <Label className="text-muted-foreground">Invoice Date</Label>
             <p className="font-medium">
-              {invoice.issueDate ? format(new Date(invoice.issueDate), 'dd MMM yyyy') : 
-               invoice.createdAt ? format(new Date(invoice.createdAt), 'dd MMM yyyy') : 
-               'N/A'}
+              {invoice.date ? format(new Date(invoice.date), 'dd MMM yyyy') : 'N/A'}
             </p>
           </div>
           <div>
@@ -288,7 +286,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
             <div className="space-y-0.5">
               <Label className="text-base">Generate Receipt</Label>
               <p className="text-sm text-muted-foreground">
-                Automatically create and email receipt to customer
+                Automatically create a receipt for this payment
               </p>
             </div>
             <Switch

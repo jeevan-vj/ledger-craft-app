@@ -12,9 +12,10 @@ import { Receipt } from '@/types/payment';
 import { format } from 'date-fns';
 import { BreadcrumbNavigation } from '@/components/common/BreadcrumbNavigation';
 import { paymentService } from '@/services/paymentService';
+import { downloadReceiptPdf } from '@/features/receipts/receiptPdf';
 
 export default function ReceiptViewPage() {
-  const { receiptId } = useParams<{ receiptId: string }>();
+  const { id: receiptId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -56,11 +57,11 @@ export default function ReceiptViewPage() {
 
   const handleDownload = async () => {
     try {
-      // Simulate download
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      if (!receipt) throw new Error('Receipt not found');
+      downloadReceiptPdf(receipt);
       toast({
-        title: "Success",
-        description: "Receipt downloaded successfully"
+        title: "Receipt downloaded",
+        description: `${receipt.receiptNumber}.pdf was created.`
       });
     } catch (error) {
       toast({
@@ -73,32 +74,6 @@ export default function ReceiptViewPage() {
 
   const handlePrint = () => {
     window.print();
-  };
-
-  const handleResendEmail = async () => {
-    if (!receipt) return;
-
-    try {
-      await paymentService.markReceiptAsEmailed(receipt.id);
-      
-      // Update receipt state
-      setReceipt(prev => prev ? {
-        ...prev,
-        isEmailed: true,
-        emailSentAt: new Date().toISOString()
-      } : null);
-      
-      toast({
-        title: "Success",
-        description: "Receipt email sent successfully"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send receipt email",
-        variant: "destructive"
-      });
-    }
   };
 
   const handleShare = async () => {
@@ -253,7 +228,7 @@ export default function ReceiptViewPage() {
     if (receipt.isEmailed && receipt.emailSentAt) {
       return `Sent ${format(new Date(receipt.emailSentAt), 'dd MMM yyyy HH:mm')}`;
     }
-    return 'Not sent';
+    return 'Delivery unavailable';
   };
 
   return (
@@ -307,11 +282,12 @@ export default function ReceiptViewPage() {
           
           {receipt.receiptData?.customer.email && (
             <Button
-              onClick={handleResendEmail}
-              disabled={!receipt.receiptData?.customer.email}
+              disabled
+              aria-label="Email delivery unavailable"
+              title="Email delivery is unavailable on the current deployment"
             >
               <Mail className="mr-2 h-4 w-4" />
-              {receipt.isEmailed ? 'Resend' : 'Send'} Email
+              Email unavailable
             </Button>
           )}
         </div>
@@ -323,7 +299,7 @@ export default function ReceiptViewPage() {
           {getEmailStatusIcon()}
           <AlertDescription>
             Email status: {getEmailStatusText()}
-            {receipt.receiptData?.customer.email && (
+            {receipt.isEmailed && receipt.receiptData?.customer.email && (
               <span className="ml-2">to {receipt.receiptData.customer.email}</span>
             )}
           </AlertDescription>
@@ -411,7 +387,6 @@ export default function ReceiptViewPage() {
         <ReceiptViewer
           receipt={receipt}
           onDownload={handleDownload}
-          onResendEmail={handleResendEmail}
           onPrint={handlePrint}
           isLoading={isLoading}
         />
