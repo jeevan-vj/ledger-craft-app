@@ -1,5 +1,17 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
+detail now exposes separate share-link, download/export PDF, and share-PDF
+workflows backed by the existing tokenized Hono snapshot. Shared HTTPS/app
+links route to an unauthenticated native invoice view when supported and retain
+the public web fallback with Open/Get app actions. iOS Associated Domains and
+the AASA file are configured with the build-5 Team ID. Android intent routing
+is configured; production `assetlinks.json` and signed-device verification are
+blocked on the first Android signing credential. Strict TypeScript, all 22
+mobile Jest suites (86 tests), lint with no errors, iOS/Android production
+exports, the focused web test, and a Vite production build pass. Authenticated
+sender and signed-device deep-link QA remain pending.
+
 **Mobile banking management (implemented locally, 2026-10-19):** The Expo More
 tab now provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported

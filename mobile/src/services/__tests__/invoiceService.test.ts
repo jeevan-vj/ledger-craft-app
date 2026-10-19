@@ -121,4 +121,68 @@ describe('InvoiceService (Hono)', () => {
       expect.objectContaining({ method: 'GET' }),
     );
   });
+
+  it('creates a public share snapshot and maps the unauthenticated snapshot', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(
+        jsonResponse({ shareToken: 'org-1_token-1', expiresAt: null, isActive: true }, 201),
+      )
+      .mockResolvedValueOnce(
+        jsonResponse({
+          invoice: invoiceDto,
+          templateName: 'classic',
+          businessProfile: {
+            id: '44444444-4444-4444-4444-444444444444',
+            name: 'LedgerCraft Studio',
+            email: 'hello@example.com',
+            phone: null,
+            address: null,
+            city: null,
+            state: null,
+            zip: null,
+            country: 'NZ',
+            taxId: null,
+            logoUrl: null,
+            website: null,
+            defaultTaxRate: '15',
+            defaultTerms: null,
+            paymentTermDays: 30,
+            defaultNotes: null,
+            bankInfo: null,
+            bankAccountName: 'LedgerCraft Studio',
+            bankAccountNumber: '12-3456-7890123-00',
+            theme: null,
+            invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+            invoiceNumberSequence: 2,
+            createdAt: '2026-10-01T00:00:00.000Z',
+            updatedAt: '2026-10-01T00:00:00.000Z',
+          },
+        }),
+      );
+
+    const share = await invoiceService.createShareLink(invoiceDto.id, 'classic');
+    const snapshot = await invoiceService.fetchSharedInvoice(share.shareToken);
+
+    expect(share.shareToken).toBe('org-1_token-1');
+    expect(snapshot?.invoice.invoiceNumber).toBe('INV-2026-0001');
+    expect(snapshot?.businessProfile.bankAccountNumber).toBe('12-3456-7890123-00');
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
+      `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}/share`,
+      expect.objectContaining({ method: 'POST' }),
+    );
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      'http://127.0.0.1:3001/api/public/invoices/org-1_token-1',
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('returns null for an invalid or expired public share token', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(
+      jsonResponse({ error: { message: 'Invoice not found' } }, 404),
+    );
+
+    await expect(invoiceService.fetchSharedInvoice('expired-token')).resolves.toBeNull();
+  });
 });

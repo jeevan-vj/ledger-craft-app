@@ -26,6 +26,8 @@ export interface BusinessProfile {
   defaultTerms?: string;
   defaultNotes?: string;
   bankInfo?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
   logoUrl?: string;
   theme?: BusinessTheme;
   createdAt: string;

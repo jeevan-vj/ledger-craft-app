@@ -1,6 +1,7 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import * as Sharing from 'expo-sharing';
+import { Platform } from 'react-native';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
@@ -8,7 +9,7 @@ import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
 const A4_WIDTH = 595;
 const A4_HEIGHT = 842;
 
-function invoiceFileName(invoiceNumber: string): string {
+export function invoiceFileName(invoiceNumber: string): string {
   const safeNumber = invoiceNumber
     .trim()
     .replace(/[^a-z0-9]+/gi, '-')
@@ -101,6 +102,34 @@ export async function downloadInvoicePDF(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
-): Promise<string> {
-  return generateInvoicePDF(invoice, businessProfile, templateId);
+): Promise<string | null> {
+  const uri = await generateInvoicePDF(invoice, businessProfile, templateId);
+  const fileName = invoiceFileName(invoice.invoiceNumber);
+
+  if (Platform.OS === 'android' && FileSystem.StorageAccessFramework) {
+    const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();
+    if (!permission.granted) return null;
+    const base64 = await FileSystem.readAsStringAsync(uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    const destination = await FileSystem.StorageAccessFramework.createFileAsync(
+      permission.directoryUri,
+      fileName,
+      'application/pdf',
+    );
+    await FileSystem.writeAsStringAsync(destination, base64, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+    return destination;
+  }
+
+  if (!(await Sharing.isAvailableAsync())) {
+    throw new Error('Saving is not available on this device');
+  }
+  await Sharing.shareAsync(uri, {
+    mimeType: 'application/pdf',
+    dialogTitle: `Save ${invoice.invoiceNumber} PDF`,
+    UTI: 'com.adobe.pdf',
+  });
+  return uri;
 }

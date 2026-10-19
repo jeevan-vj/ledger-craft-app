@@ -8,6 +8,7 @@ export const darkPalette = {
   separator: 'rgba(242, 245, 238, 0.10)', border: 'rgba(242, 245, 238, 0.12)',
   danger: '#FF6B63', dangerFill: '#3B201F', success: '#9FE870', successFill: '#1F3A13',
   warning: '#FFB84D', warningFill: '#3B2F1B', info: '#7BA7FF', infoFill: '#1E2A40', focus: '#9FE870',
+  scrim: 'rgba(0, 0, 0, 0.56)',
 } as const;
 
 export const lightPalette = {
@@ -18,6 +19,7 @@ export const lightPalette = {
   separator: 'rgba(22, 51, 0, 0.12)', border: 'rgba(22, 51, 0, 0.14)',
   danger: '#D92D20', dangerFill: '#FFF2F1', success: '#2E7D32', successFill: '#ECF9EF',
   warning: '#B76000', warningFill: '#FFF7E8', info: '#2367D1', infoFill: '#EEF4FF', focus: '#4D7C0F',
+  scrim: 'rgba(0, 0, 0, 0.32)',
 } as const;
 
 export type ThemePalette = typeof darkPalette | typeof lightPalette;

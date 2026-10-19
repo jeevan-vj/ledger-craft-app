@@ -1,5 +1,19 @@
 # LedgerCraft target architecture
 
+**Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
+detail now separates public-link sharing, PDF download/export, and PDF file
+sharing. Public links use the existing immutable Hono/SQLite snapshot and can
+open an unauthenticated native invoice route through the app scheme or the
+production HTTPS path; the web fallback remains available and now offers
+Open/Get app actions with theme-correct recipient states. iOS Associated
+Domains and the production AASA file use the Team ID verified from TestFlight
+build 5. Android intent routing is configured, but EAS has no Android signing
+credential yet, so a production `assetlinks.json` and Android device link
+verification remain pending. Mobile strict TypeScript, all 22 Jest suites (86
+tests), lint with no errors, and iOS/Android production exports pass. The
+focused web shared-invoice test and Vite production build pass; authenticated
+sender and signed-device deep-link QA remain open.
+
 **Mobile banking management (implemented locally, 2026-10-19):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported

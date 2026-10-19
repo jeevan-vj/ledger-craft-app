@@ -15,6 +15,7 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.easybizinvoice.app',
+      associatedDomains: ['applinks:easybiz.iamjeevan.com'],
       config: {
         usesNonExemptEncryption: false,
       },
@@ -26,6 +27,20 @@ module.exports = {
       },
       package: 'com.easybizinvoice.app',
       versionCode: 1,
+      intentFilters: [
+        {
+          action: 'VIEW',
+          autoVerify: true,
+          data: [
+            {
+              scheme: 'https',
+              host: 'easybiz.iamjeevan.com',
+              pathPrefix: '/shared/invoice/',
+            },
+          ],
+          category: ['BROWSABLE', 'DEFAULT'],
+        },
+      ],
       permissions: [
         'CAMERA',
         'READ_MEDIA_IMAGES',
