@@ -25,6 +25,8 @@ import AppNavigator from './AppNavigator';
 import { createNavigationTheme } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import { rootNavigatorOptions } from '@/utils/navigationAnimations';
+import { mobileLinking } from './links';
+import PublicInvoiceScreen from '@/screens/invoices/PublicInvoiceScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -87,8 +89,12 @@ export default function RootNavigator() {
   }
 
   return (
-    <NavigationContainer theme={createNavigationTheme(theme.colors, theme.isDark)}>
+    <NavigationContainer
+      theme={createNavigationTheme(theme.colors, theme.isDark)}
+      linking={mobileLinking}
+    >
       <Stack.Navigator
+        initialRouteName={user && hasCompletedOnboarding ? 'Main' : 'Auth'}
         screenOptions={{
           ...rootNavigatorOptions,
           // Smooth fade between Auth and Main stacks
@@ -97,6 +103,11 @@ export default function RootNavigator() {
           gestureEnabled: false,
         }}
       >
+        <Stack.Screen
+          name="PublicInvoice"
+          component={PublicInvoiceScreen}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
+        />
         {!user ? (
           <Stack.Screen
             name="Auth"

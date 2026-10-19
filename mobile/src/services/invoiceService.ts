@@ -1,8 +1,24 @@
-import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import {
+  invoicesApi,
+  invoicesApiEnabled,
+  type MobileSharedInvoiceSnapshot,
+  type MobileShareInvoiceResponse,
+} from '@/features/invoices/api/invoicesApi';
 import { supabase } from './supabaseClient';
 import type { Invoice, LineItem, Customer } from '@/types/invoice';
 
 export class InvoiceService {
+  async createShareLink(
+    invoiceId: string,
+    templateName = 'classic',
+  ): Promise<MobileShareInvoiceResponse> {
+    return invoicesApi.share(invoiceId, templateName);
+  }
+
+  async fetchSharedInvoice(token: string): Promise<MobileSharedInvoiceSnapshot | null> {
+    return invoicesApi.getShared(token);
+  }
+
   // Fetch all invoices for the current user
   async fetchInvoices(): Promise<Invoice[]> {
     try {

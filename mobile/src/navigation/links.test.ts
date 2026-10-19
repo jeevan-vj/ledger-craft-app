@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { customerTabParams, invoiceTabParams, mainTabs, moreMenuSections, moreTabParams, stackAbove } from './links';
+import { customerTabParams, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
 
 describe('mobile navigation links', () => {
   it('keeps customers as a tab and expenses and purchases under More', () => {
@@ -51,5 +51,13 @@ describe('mobile navigation links', () => {
       'CustomerList',
       'CustomerCreate',
     ]);
+  });
+
+  it('routes HTTPS and app-scheme public invoice links without authentication', () => {
+    expect(mobileLinking.prefixes).toContain('https://easybiz.iamjeevan.com');
+    expect(mobileLinking.prefixes).toContain('easybizinvoice://');
+    expect(mobileLinking.config?.screens).toMatchObject({
+      PublicInvoice: 'shared/invoice/:shareToken',
+    });
   });
 });

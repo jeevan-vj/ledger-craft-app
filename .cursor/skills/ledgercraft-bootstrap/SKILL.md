@@ -16,6 +16,7 @@ current architecture.
 
 | Fact | Detail |
 | --- | --- |
+| Mobile invoice sharing | **Implemented locally (2026-10-19).** Expo separates public-link sharing, PDF download/export and PDF sharing; public tokens have an unauthenticated native route plus web fallback. iOS Associated Domains/AASA use the build-5 Team ID. Android intent routing is configured, while production `assetlinks.json` and signed-device QA await the first Android signing credential. Strict TypeScript, 23 Jest suites (89 tests), lint with no errors and iOS/Android exports pass. |
 | Live `public` schema | Empty. `auth.users` = 0. Storage empty. Data gone. |
 | Identity cutover | Skip UUID preservation. No users to import. |
 | W0 | Done (skills, rules, docs). |

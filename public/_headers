@@ -12,3 +12,7 @@
 
 /shared/invoice/*
   Cache-Control: no-store
+
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=300

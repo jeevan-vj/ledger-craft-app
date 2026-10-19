@@ -20,6 +20,8 @@ export interface MobileBusinessProfileDto {
   paymentTermDays: number;
   defaultNotes: string | null;
   bankInfo: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   theme: BusinessTheme | null;
   invoiceNumberFormat: string | null;
   invoiceNumberSequence: number | null;
@@ -51,6 +53,8 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     defaultTerms: dto.defaultTerms ?? undefined,
     defaultNotes: dto.defaultNotes ?? undefined,
     bankInfo: dto.bankInfo ?? undefined,
+    bankAccountName: dto.bankAccountName ?? undefined,
+    bankAccountNumber: dto.bankAccountNumber ?? undefined,
     logoUrl: dto.logoUrl ?? undefined,
     theme: dto.theme ?? undefined,
     createdAt: dto.createdAt,

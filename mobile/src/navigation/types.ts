@@ -3,6 +3,7 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
+  PublicInvoice: { shareToken: string };
 };
 
 export type AuthStackParamList = {

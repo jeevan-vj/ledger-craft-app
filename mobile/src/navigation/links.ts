@@ -1,4 +1,14 @@
-import type { CustomerStackParamList, InvoiceStackParamList, MoreStackParamList } from './types';
+import type { LinkingOptions } from '@react-navigation/native';
+import type { CustomerStackParamList, InvoiceStackParamList, MoreStackParamList, RootStackParamList } from './types';
+
+export const mobileLinking: LinkingOptions<RootStackParamList> = {
+  prefixes: ['https://easybiz.iamjeevan.com', 'easybizinvoice://'],
+  config: {
+    screens: {
+      PublicInvoice: 'shared/invoice/:shareToken',
+    },
+  },
+};
 
 /** Home, invoices, customers, then everything else. Customers stay a tab. */
 export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;

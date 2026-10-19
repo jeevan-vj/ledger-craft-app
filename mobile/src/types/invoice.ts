@@ -48,6 +48,9 @@ export interface BusinessProfile {
   defaultNotes?: string | null;
   defaultTerms?: string | null;
   currency?: string;
+  bankInfo?: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   userId: string;
 }
 

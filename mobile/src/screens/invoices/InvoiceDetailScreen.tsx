@@ -16,12 +16,10 @@ import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
-import type { Invoice } from '@/types/invoice';
+import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
-import type { BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
-import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
@@ -34,6 +32,7 @@ import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
+import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
@@ -55,7 +54,7 @@ export default function InvoiceDetailScreen() {
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
-  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [shareActionsVisible, setShareActionsVisible] = useState(false);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
@@ -162,27 +161,6 @@ export default function InvoiceDetailScreen() {
 
   const handleMarkAsPaid = () => {
     setPaymentModalVisible(true);
-  };
-
-  const handleSharePDF = async () => {
-    if (!invoice) return;
-
-    try {
-      setGeneratingPdf(true);
-      await shareInvoicePDF(
-        invoice,
-        businessProfile || undefined,
-        (invoice.templateName as InvoiceTemplateId | undefined) || 'classic',
-      );
-    } catch (error) {
-      console.error('Error sharing PDF:', error);
-      Alert.alert(
-        'Unable to share PDF',
-        error instanceof Error ? error.message : 'Failed to share PDF',
-      );
-    } finally {
-      setGeneratingPdf(false);
-    }
   };
 
   if (loading) {
@@ -406,17 +384,12 @@ export default function InvoiceDetailScreen() {
         ) : null}
         <View style={styles.secondaryRow}>
           <Pressable
-            onPress={handleSharePDF}
-            disabled={generatingPdf}
+            onPress={() => setShareActionsVisible(true)}
             accessibilityRole="button"
-            accessibilityLabel="Share"
+            accessibilityLabel="Share or download invoice"
             style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
           >
-            {generatingPdf ? (
-              <ActivityIndicator size="small" color={palette.accentText} />
-            ) : (
-              <Text style={styles.secondaryLabel}>Share</Text>
-            )}
+            <Text style={styles.secondaryLabel}>Share</Text>
           </Pressable>
           <Pressable
             onPress={handleEdit}
@@ -464,6 +437,13 @@ export default function InvoiceDetailScreen() {
         invoice={invoice}
         onSubmit={handlePaymentSubmit}
         onClose={() => setPaymentModalVisible(false)}
+      />
+
+      <InvoiceShareActions
+        visible={shareActionsVisible}
+        invoice={invoice}
+        businessProfile={businessProfile || undefined}
+        onClose={() => setShareActionsVisible(false)}
       />
     </View>
   );
