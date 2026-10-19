@@ -2,10 +2,14 @@ import type {
   BankAccountDto,
   BankAccountListResponse,
   BankTransactionDto,
+  BankTransferDto,
+  CreateBankTransactionRequest,
+  CreateBankTransferRequest,
   CreateBankAccountRequest,
   ImportBankTransactionsRequest,
   ImportBankTransactionsResponse,
   UpdateBankAccountRequest,
+  UpdateBankTransactionRequest,
 } from '@ledgercraft/contracts';
 import type { BankAccount, BankTransaction } from '@/types/bankTransaction';
 
@@ -167,9 +171,42 @@ export const bankApi = {
     return body.transactions.map(toBankTransaction);
   },
 
+  async listTransactionDtos(filters?: { bankAccountId?: string; from?: string; to?: string }): Promise<BankTransactionDto[]> {
+    const params = new URLSearchParams();
+    if (filters?.bankAccountId) params.set('bankAccountId', filters.bankAccountId);
+    if (filters?.from) params.set('from', filters.from);
+    if (filters?.to) params.set('to', filters.to);
+    const query = params.toString();
+    return (await request<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query ? `?${query}` : ''}`)).transactions;
+  },
+
   async importTransactions(input: ImportBankTransactionsRequest): Promise<ImportBankTransactionsResponse> {
     return request<ImportBankTransactionsResponse>('/api/bank-transactions/import', {
       method: 'POST',
+      body: JSON.stringify(input),
+    });
+  },
+
+  getTransaction(id: string): Promise<BankTransactionDto> {
+    return request<BankTransactionDto>(`/api/bank-transactions/${id}`);
+  },
+
+  createTransaction(input: CreateBankTransactionRequest): Promise<BankTransactionDto> {
+    return request<BankTransactionDto>('/api/bank-transactions', { method: 'POST', body: JSON.stringify(input) });
+  },
+
+  updateTransaction(id: string, input: UpdateBankTransactionRequest): Promise<BankTransactionDto> {
+    return request<BankTransactionDto>(`/api/bank-transactions/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+  },
+
+  async removeTransaction(id: string): Promise<void> {
+    await request<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
+  },
+
+  createTransfer(input: CreateBankTransferRequest, idempotencyKey: string): Promise<BankTransferDto> {
+    return request<BankTransferDto>('/api/bank-transfers', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
       body: JSON.stringify(input),
     });
   },

@@ -44,9 +44,9 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Expo vendor/bill browsing and payment-critical flows are implemented locally pending device QA/deployment. Attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
 | Expenses | Available | Expense and category CRUD, tax amounts, account/customer links, receipt reference, and web/mobile entry flows exist. Approval policy, claims, reimbursements, and recurring expenses are extensions/gaps. |
 | Payment/bank accounts | Partial | Bank-account CRUD and accounting accounts exist. Expo account list/filter/create/detail/edit/delete-attempt and exact balance fields are implemented locally. Default payment account, account statements/performance, bulk enable/disable, and a unified posting model are incomplete. |
-| Banking transactions | Partial | List and file import exist; Expo shows per-account imported transaction history. Manual income/expense CRUD, duplicate/export/PDF, split transactions, document connections, category/payment-method parity, and mobile import are missing. |
-| Transfers | Missing | No first-class transfer entity or atomic source/destination account workflow exists. |
-| Reconciliation | Available | Sessions, matches, confirmation, adjustments, completion, and history exist. It cannot yet reconcile against bills or the missing transfer/manual-transaction workflows. |
+| Banking transactions | Partial | List/import plus exact-decimal manual income/expense create, update, delete and web/mobile activity now exist. Duplicate/export/PDF, split transactions, document connections, attachments, and mobile import remain missing. |
+| Transfers | Partial | First-class idempotent same-currency transfers atomically post equal and opposite reconciled legs and reject same-account, cross-currency, inactive-account, and cross-organisation requests. Exchange-rate transfers and richer lifecycle/reporting remain missing. |
+| Reconciliation | Available | Sessions, matches, confirmation, adjustments, completion, and history exist. Paired transfer legs are marked reconciled and excluded from manual mutation; bill/document allocation coverage remains open. |
 | Recurring activity | Missing | No persisted schedule/execution engine for invoices, bills, income, expenses, or transfers exists. |
 | Chart of accounts and journals | Available | Account initialization/write and manual journal CRUD exist with exact values and organisation scoping. General-ledger/report authority remains client-heavy. |
 | Financial reports | Partial | P&L, balance sheet, cash flow, trial balance, receivables, and payables UI calculations exist. Reports are not server-authoritative, saved, pinnable, configurable by cash/accrual basis, or consistently printable/exportable. |
@@ -60,7 +60,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Import/export | Partial | Bank transaction import and canonical item CSV preview/apply/export exist. Akaunting-style import/export for customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports remains missing. |
 | Search, bulk actions, notifications | Missing | Individual screens have local filtering, but there is no cross-domain search, reusable server bulk-action model, or persistent notification centre. |
 | External API and API keys | Missing | The first-party clients use Hono APIs, but there is no customer-facing API-key lifecycle, scoped external API, webhook delivery, or public API documentation. |
-| Mobile coverage | Partial | Auth, dashboard, invoices, customers, items, expenses, settings, payment-critical purchase workflows, bank-account management, and imported transaction history exist. Most accounting, transfers, reconciliation, reporting, team, and portal workflows are web-only or absent. |
+| Mobile coverage | Partial | Auth, dashboard, invoices, customers, items, expenses, settings, payment-critical purchase workflows, bank-account management, manual transactions, transfers, and banking history exist. Most accounting, reconciliation, reporting, team, and portal workflows are web-only or absent. |
 
 Conclusion: LedgerCraft has a strong sales, expense, NZ tax, and reconciliation foundation, but it does **not** currently contain every Akaunting core feature.
 
@@ -107,13 +107,16 @@ Acceptance criteria:
 
 Expected outcome: users can record and manage income, expenses, and transfers without relying on imported statements.
 
-Status (2026-10-19): **partial.** Expo bank-account list/filter, create, detail,
-edit, delete-attempt, active-state, exact balance fields, and per-account imported
-transaction history are implemented locally through the existing Hono API.
-Strict TypeScript, 20 mobile Jest suites (78 tests), lint with no errors, and
-iOS/Android production exports pass. Authenticated device QA and the remaining
-manual transaction, transfer, split, attachment, import, print/export, and
-concurrency scope remain open.
+Status (2026-10-19): **partial.** Exact-decimal manual income/expense create,
+update and delete now adjust account balances atomically. First-class idempotent
+same-currency transfers atomically post equal and opposite reconciled legs and
+reject same-account, cross-currency, inactive-account, and cross-organisation
+requests. Web and Expo forms/activity history are implemented. Contract/API/
+client tests, migration verification, strict mobile TypeScript, mobile lint with
+no errors, web/mobile builds, iOS/Android production exports, concurrent-write
+coverage, and an authenticated browser flow pass. Authenticated native device
+QA plus split allocation, attachments, document connections, duplicate,
+print/PDF, CSV export, and mobile statement import remain open.
 
 Acceptance criteria:
 

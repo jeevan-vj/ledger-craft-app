@@ -1,13 +1,23 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Manual banking and transfers (implemented locally, 2026-10-19):** Hono and
+SQLite now support exact-decimal manual income/expense create, update and delete
+with atomic balance adjustments, plus idempotent same-currency transfers that
+commit equal and opposite reconciled legs. Web and Expo provide transaction and
+transfer forms and activity history. Contract/API/client tests, migration
+verification, strict mobile TypeScript, mobile lint with no errors, web/mobile
+builds, iOS/Android production exports, and an authenticated browser flow pass.
+Native device QA remains open; transaction attachments, splits, document
+allocations, duplicate, print/PDF, CSV export, and mobile statement import remain
+in AKP-02.
+
 **Mobile banking management (implemented locally, 2026-10-19):** The Expo More
 tab now provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
 transaction history through the Hono bank API. Dirty forms are protected from
-dismissal. Strict TypeScript, all 20 mobile Jest suites (78 tests), lint with no
+dismissal. Strict TypeScript, all 21 mobile Jest suites (81 tests), lint with no
 errors, and iOS/Android production exports pass; authenticated device QA remains
-pending. Manual transactions, transfers, splits, attachments, and mobile import
-remain in AKP-02.
+pending. The remaining AKP-02 scope is tracked above.
 
 **Mobile item catalogue (implemented locally, 2026-10-19):** The Expo More tab
 now provides item list/filter, create, detail, edit, delete-attempt, active-state,

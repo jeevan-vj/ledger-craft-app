@@ -59,4 +59,13 @@ describe('bankingApi', () => {
       expect.objectContaining({ method: 'DELETE' }),
     );
   });
+
+  it('posts exact transfers with an idempotency key', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ id: 'transfer-1' }, 201));
+    const payload = { sourceAccountId: 'bank-1', destinationAccountId: 'bank-2', transactionDate: '2026-10-19', amount: '9007199254740993.01' };
+    await bankingApi.createTransfer(payload, 'mobile-transfer-1');
+    expect(global.fetch).toHaveBeenCalledWith('https://api.example.test/api/bank-transfers', expect.objectContaining({
+      method: 'POST', body: JSON.stringify(payload), headers: expect.objectContaining({ 'Idempotency-Key': 'mobile-transfer-1' }),
+    }));
+  });
 });

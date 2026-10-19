@@ -37,14 +37,15 @@ current architecture.
 | Mobile hardening | **Verified locally (2026-10-19).** Honest load failures, dirty-bill navigation protection, accessible swipe actions and inputs, exact purchase formatting/totals/payment validation, and React Native query lifecycle are integrated with the Wise dark theme and Home / Invoices / Customers / More navigation. All 17 Jest suites (69 tests), strict TypeScript, lint with no errors, and iOS/Android production exports pass. Authenticated native device QA and the missing parity domains remain pending. |
 | Mobile customers | **Implemented locally (2026-10-19).** Native create/detail/edit/delete-attempt flows, invoice history and exact outstanding summaries, contact actions, customer-prefilled invoice creation, and dirty-form protection use Hono. Strict TypeScript, 17 Jest suites (69 tests), and lint with no errors pass; authenticated device QA remains pending. |
 | Mobile items | **Implemented locally (2026-10-19).** Native item list/filter, create/detail/edit/delete-attempt, active-state, category and price/tax-default workflows use Hono. Exact decimal text is preserved through item form/API requests. Strict TypeScript, 18 Jest suites (72 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA remains pending. |
-| Mobile banking | **Implemented locally (2026-10-19).** Native bank-account list/filter, create/detail/edit/delete-attempt, active-state, exact balance fields, and imported transaction history use Hono. Strict TypeScript, 20 Jest suites (78 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA and the remaining AKP-02 workflows are pending. |
+| Mobile banking | **Implemented locally (2026-10-19).** Native bank-account list/filter, create/detail/edit/delete-attempt, active-state, exact balance fields, and imported transaction history use Hono. Strict TypeScript, 21 Jest suites (81 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA and the remaining AKP-02 workflows are pending. |
+| Manual banking/transfers | **Implemented locally (2026-10-19).** Exact-decimal manual income/expense CRUD adjusts balances atomically; idempotent same-currency transfers create equal/opposite reconciled legs. Web and Expo forms/activity, migration verification, contract/API/client tests, builds/exports, and an authenticated browser flow pass. Native device QA plus AKP-02 attachments, splits, allocations, duplicate, print/PDF, CSV export, and mobile import remain pending. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
 
 ## Pickup
 
 1. Read `AGENTS.md`, `TARGET_ARCHITECTURE.md`, and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
-2. Continue the dependency-ordered AKP tasks; finish the remaining AKP-01 scope or begin AKP-02 only as a separate verified slice.
+2. Continue the dependency-ordered AKP tasks; finish the remaining AKP-01 scope or continue the remaining AKP-02 work as a separate verified slice.
 3. For EAS iOS builds, TestFlight, or App Store Connect work, read `ledgercraft-mobile-release` before acting.
 4. Commit, push, or deploy only when the user asks.
 
