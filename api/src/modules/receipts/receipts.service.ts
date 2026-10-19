@@ -65,6 +65,8 @@ export async function createReceiptForUser(
         customerEmail: customer?.email ?? null,
         amountPaid: payment.amount,
         paymentDate: payment.paymentDate,
+        invoiceDate: invoice.date,
+        invoiceDueDate: invoice.dueDate,
         paymentMethod: payment.paymentMethod,
         currency: invoice.currency,
         invoiceTotal: invoice.total,

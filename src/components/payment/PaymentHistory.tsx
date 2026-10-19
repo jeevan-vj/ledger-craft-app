@@ -21,11 +21,12 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Payment, EnhancedInvoice } from '@/types/payment';
+import { Payment } from '@/types/payment';
+import type { Invoice } from '@/types';
 
 interface PaymentHistoryProps {
   payments: Payment[];
-  invoices: EnhancedInvoice[];
+  invoices: Invoice[];
   isLoading?: boolean;
   onViewReceipt: (paymentId: string) => void;
   onDownloadReceipt: (paymentId: string) => void;
@@ -223,7 +224,7 @@ export function PaymentHistory({
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-2">
-                            <span>#{invoice?.invoiceNumber || 'N/A'}</span>
+                            <span>#{invoice?.invoiceNumber || payment.invoiceNumber || 'N/A'}</span>
                             {invoice && (
                               <Button
                                 variant="ghost"

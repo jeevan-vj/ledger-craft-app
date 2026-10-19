@@ -16,7 +16,7 @@ current architecture.
 
 | Fact | Detail |
 | --- | --- |
-| Mobile invoice sharing | **Implemented locally (2026-10-19).** Expo separates public-link sharing, PDF download/export and PDF sharing; public tokens have an unauthenticated native route plus web fallback. iOS Associated Domains/AASA use the build-5 Team ID. Android intent routing is configured, while production `assetlinks.json` and signed-device QA await the first Android signing credential. Strict TypeScript, 22 Jest suites (86 tests), lint with no errors and iOS/Android exports pass. |
+| Mobile invoice sharing | **Implemented locally (2026-10-19).** Expo separates public-link sharing, PDF download/export and PDF sharing; public tokens have an unauthenticated native route plus web fallback. iOS Associated Domains/AASA use the build-5 Team ID. Android intent routing is configured, while production `assetlinks.json` and signed-device QA await the first Android signing credential. Strict TypeScript, 23 Jest suites (89 tests), lint with no errors and iOS/Android exports pass. |
 | Live `public` schema | Empty. `auth.users` = 0. Storage empty. Data gone. |
 | Identity cutover | Skip UUID preservation. No users to import. |
 | W0 | Done (skills, rules, docs). |
@@ -39,6 +39,7 @@ current architecture.
 | Mobile customers | **Implemented locally (2026-10-19).** Native create/detail/edit/delete-attempt flows, invoice history and exact outstanding summaries, contact actions, customer-prefilled invoice creation, and dirty-form protection use Hono. Strict TypeScript, 17 Jest suites (69 tests), and lint with no errors pass; authenticated device QA remains pending. |
 | Mobile items | **Implemented locally (2026-10-19).** Native item list/filter, create/detail/edit/delete-attempt, active-state, category and price/tax-default workflows use Hono. Exact decimal text is preserved through item form/API requests. Strict TypeScript, 18 Jest suites (72 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA remains pending. |
 | Mobile banking | **Implemented locally (2026-10-19).** Native bank-account list/filter, create/detail/edit/delete-attempt, active-state, exact balance fields, and imported transaction history use Hono. Strict TypeScript, 20 Jest suites (78 tests), lint with no errors, and iOS/Android production exports pass; authenticated device QA and the remaining AKP-02 workflows are pending. |
+| Mobile layout safety | **Verified locally (2026-10-19).** One root safe-area provider, automatic large-title list insets, shared measured native-tab clearance, a measured invoice-detail action footer, fit-to-width A4 WebView metadata, and a semantic-theme template selector are in place. Strict TypeScript, all 21 Jest suites (81 tests), lint with no errors, and iOS/Android production exports pass. Native visual QA remains pending because no local iOS simulator runtime is installed and EAS Simulator is unavailable for the account. |
 | Git | `origin/mobile-app` includes W4 customers. Working tree also has web Better Auth plus Hono through W13. |
 | Clients | Web and mobile email login/signup → Better Auth (`/api/auth/*`). Product CRUD including journals, account writes, reminders, receipt-scan, and chat → Hono. `@supabase/supabase-js` is not installed. |
 

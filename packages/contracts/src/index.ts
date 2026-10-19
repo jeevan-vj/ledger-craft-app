@@ -201,9 +201,11 @@ export {
 
 export {
   createPaymentReceiptRequestSchema,
+  paymentReceiptDataSchema,
   paymentReceiptListResponseSchema,
   paymentReceiptSchema,
   type CreatePaymentReceiptRequest,
+  type PaymentReceiptDataDto,
   type PaymentReceiptDto,
   type PaymentReceiptListResponse,
 } from './receipt';

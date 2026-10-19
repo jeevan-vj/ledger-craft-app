@@ -24,6 +24,7 @@ import SwipeableExpenseCard from '@/components/expense/SwipeableExpenseCard';
 import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type ExpenseListNavigationProp = NativeStackNavigationProp<ExpenseStackParamList, 'ExpenseList'>;
 
@@ -31,6 +32,7 @@ export default function ExpenseListScreen() {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<ExpenseListNavigationProp>();
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [filteredExpenses, setFilteredExpenses] = useState<Expense[]>([]);
@@ -220,7 +222,7 @@ export default function ExpenseListScreen() {
         data={filteredExpenses}
         keyExtractor={(item) => item.id}
         renderItem={renderExpenseCard}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: bottomPadding }]}
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} />

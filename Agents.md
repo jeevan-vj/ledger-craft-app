@@ -7,10 +7,20 @@ links route to an unauthenticated native invoice view when supported and retain
 the public web fallback with Open/Get app actions. iOS Associated Domains and
 the AASA file are configured with the build-5 Team ID. Android intent routing
 is configured; production `assetlinks.json` and signed-device verification are
-blocked on the first Android signing credential. Strict TypeScript, all 22
-mobile Jest suites (86 tests), lint with no errors, iOS/Android production
+blocked on the first Android signing credential. Strict TypeScript, all 23
+mobile Jest suites (89 tests), lint with no errors, iOS/Android production
 exports, the focused web test, and a Vite production build pass. Authenticated
 sender and signed-device deep-link QA remain pending.
+
+**Mobile layout safety (verified locally, 2026-10-19):** The Expo root now owns
+safe-area metrics, tab-hosted screens reserve the measured native tab-bar
+height, large-title lists use automatic content insets, and invoice detail
+actions measure their footer instead of relying on magic spacers. Mobile A4
+invoice previews retain print dimensions while fitting narrow WebViews, and the
+template selector uses the Wise semantic theme. Strict TypeScript, all 21 Jest
+suites (81 tests), lint with no errors, and iOS/Android production exports pass.
+Native visual QA remains pending because no local iOS simulator runtime is
+installed and EAS Simulator is unavailable for the account.
 
 **Mobile banking management (implemented locally, 2026-10-19):** The Expo More
 tab now provides bank-account list/filter, create, detail, edit, delete-attempt,

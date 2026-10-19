@@ -4,6 +4,7 @@ import { Invoice, Customer, BusinessProfile, Account } from './index';
 export interface Payment {
   id: string;
   invoiceId: string;
+  invoiceNumber?: string;
   userId: string;
   paymentMethod: 'bank_transfer' | 'cash' | 'cheque' | 'credit_card' | 'online';
   amount: number;
@@ -31,7 +32,7 @@ export interface ReceiptData {
   payment: Payment;
   invoice: Invoice;
   customer: Customer;
-  business: BusinessProfile;
+  business?: BusinessProfile;
   receiptNumber: string;
   paymentDate: string;
   amountPaid: number;

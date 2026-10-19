@@ -8,6 +8,7 @@ import { EmptyState, ListRow } from '@/components/ui';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import type { CustomerStackParamList, MainTabParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type CustomerNavigation = CompositeNavigationProp<
   NativeStackNavigationProp<CustomerStackParamList, 'CustomerList'>,
@@ -16,6 +17,7 @@ type CustomerNavigation = CompositeNavigationProp<
 
 export default function CustomerListScreen() {
   const theme = useTheme();
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<CustomerNavigation>();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
@@ -50,7 +52,8 @@ export default function CustomerListScreen() {
   }
   return <FlatList
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={styles.content}
+    contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}
+    contentInsetAdjustmentBehavior="automatic"
     data={customers}
     keyExtractor={(item) => item.id}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}

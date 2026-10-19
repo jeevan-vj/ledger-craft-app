@@ -14,9 +14,10 @@ import { BreadcrumbNavigation } from '@/components/common/BreadcrumbNavigation';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { paymentService } from '@/services/paymentService';
 import { useAppData } from '@/hooks/useAppData';
+import { downloadReceiptPdf } from '@/features/receipts/receiptPdf';
 
 export default function PaymentDetailPage() {
-  const { paymentId } = useParams<{ paymentId: string }>();
+  const { id: paymentId } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { toast } = useToast();
   const { getInvoice } = useAppData();
@@ -105,40 +106,15 @@ export default function PaymentDetailPage() {
     if (!receipt) return;
     
     try {
-      // TODO: Implement actual receipt download/PDF generation
+      downloadReceiptPdf(receipt);
       toast({
-        title: "Download started",
-        description: "Receipt download functionality will be implemented soon"
+        title: "Receipt downloaded",
+        description: `${receipt.receiptNumber}.pdf was created.`
       });
     } catch (error) {
       toast({
         title: "Error",
         description: "Failed to download receipt",
-        variant: "destructive"
-      });
-    }
-  };
-
-  const handleResendReceipt = async () => {
-    if (!receipt) return;
-    
-    try {
-      await paymentService.markReceiptAsEmailed(receipt.id);
-      
-      setReceipt(prev => prev ? {
-        ...prev,
-        isEmailed: true,
-        emailSentAt: new Date().toISOString()
-      } : null);
-      
-      toast({
-        title: "Success",
-        description: "Receipt email sent successfully"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send receipt email",
         variant: "destructive"
       });
     }
@@ -526,10 +502,12 @@ export default function PaymentDetailPage() {
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={handleResendReceipt}
+                    disabled
+                    aria-label="Email delivery unavailable"
+                    title="Email delivery is unavailable on the current deployment"
                   >
                     <Mail className="mr-2 h-4 w-4" />
-                    {receipt.isEmailed ? 'Resend' : 'Send'} Email
+                    Email unavailable
                   </Button>
                 )}
               </div>

@@ -1784,7 +1784,7 @@ export function generateInvoiceHTML(
   )
     .replace(
       /<meta\s+name="viewport"\s+content="[^"]*">/i,
-      '<meta name="viewport" content="width=595, initial-scale=1, maximum-scale=5, user-scalable=yes">',
+      '<meta name="viewport" content="width=595, shrink-to-fit=yes, maximum-scale=5, user-scalable=yes">',
     )
     .replace('<style>', `<style>${A4_DOCUMENT_STYLES}`);
 }

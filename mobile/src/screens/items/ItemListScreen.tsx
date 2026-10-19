@@ -9,12 +9,14 @@ import type { MoreStackParamList } from '@/navigation/types';
 import { itemService, type Item } from '@/services/itemService';
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type Navigation = NativeStackNavigationProp<MoreStackParamList, 'ItemList'>;
 type Filter = 'all' | 'product' | 'service' | 'inactive';
 
 export default function ItemListScreen() {
   const theme = useTheme();
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<Navigation>();
   const [items, setItems] = useState<Item[]>([]);
   const [filter, setFilter] = useState<Filter>('all');
@@ -39,7 +41,8 @@ export default function ItemListScreen() {
   if (loading) return <View style={[styles.center, { backgroundColor: theme.colors.background }]}><ActivityIndicator color={theme.colors.accent} accessibilityLabel="Loading items" /></View>;
   return <FlatList
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={styles.content}
+    contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}
+    contentInsetAdjustmentBehavior="automatic"
     data={visible}
     keyExtractor={(item) => item.id}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
