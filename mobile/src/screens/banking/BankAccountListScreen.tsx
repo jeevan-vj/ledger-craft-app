@@ -10,12 +10,14 @@ import { bankingApi } from '@/features/banking/api/bankingApi';
 import type { MoreStackParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type Navigation = NativeStackNavigationProp<MoreStackParamList, 'BankAccountList'>;
 type Filter = 'active' | 'all' | 'inactive';
 
 export default function BankAccountListScreen() {
   const theme = useTheme();
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<Navigation>();
   const [filter, setFilter] = useState<Filter>('active');
   const query = useQuery({ queryKey: ['banking', 'accounts'], queryFn: bankingApi.listAccounts });
@@ -29,7 +31,8 @@ export default function BankAccountListScreen() {
   if (query.isLoading) return <View style={[styles.center, { backgroundColor: theme.colors.background }]}><ActivityIndicator color={theme.colors.accent} accessibilityLabel="Loading bank accounts" /></View>;
   return <FlatList
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={styles.content}
+    contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}
+    contentInsetAdjustmentBehavior="automatic"
     data={accounts}
     keyExtractor={(account) => account.id}
     refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={query.refetch} tintColor={theme.colors.accent} />}

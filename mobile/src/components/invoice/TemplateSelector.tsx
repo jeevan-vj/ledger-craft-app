@@ -10,7 +10,8 @@ import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { INVOICE_TEMPLATES } from '@/types/invoiceTemplates';
-import { control } from '@/theme/tokens';
+import { control, radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
 
 interface TemplateSelectorProps {
   selectedTemplate: InvoiceTemplateId;
@@ -21,6 +22,8 @@ export default function TemplateSelector({
   selectedTemplate,
   onSelectTemplate,
 }: TemplateSelectorProps) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const handleSelect = (templateId: InvoiceTemplateId) => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light).catch(() => undefined);
     onSelectTemplate(templateId);
@@ -32,6 +35,7 @@ export default function TemplateSelector({
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
+        contentInsetAdjustmentBehavior="never"
         contentContainerStyle={styles.scrollContent}
       >
         {INVOICE_TEMPLATES.map((template) => {
@@ -61,7 +65,7 @@ export default function TemplateSelector({
               </Text>
               {isSelected ? (
                 <View style={styles.checkmark}>
-                  <Feather name="check" size={12} color="#ffffff" />
+                  <Feather name="check" size={12} color={theme.colors.accentForeground} />
                 </View>
               ) : null}
             </TouchableOpacity>
@@ -72,41 +76,38 @@ export default function TemplateSelector({
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: '#ffffff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e2e8f0',
+    paddingVertical: space.md,
+    backgroundColor: palette.surface,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: palette.separator,
   },
   title: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: '#64748b',
-    marginBottom: 10,
+    ...type.section,
+    marginBottom: space.sm,
+    marginHorizontal: space.lg,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
   },
   scrollContent: {
-    gap: 10,
-    paddingRight: 16,
+    gap: space.sm,
+    paddingHorizontal: space.lg,
   },
   chip: {
     flexDirection: 'row',
     alignItems: 'center',
     minHeight: control.touchTarget,
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 20,
-    backgroundColor: '#f8fafc',
-    borderWidth: 2,
-    borderColor: '#e2e8f0',
-    gap: 8,
+    paddingHorizontal: space.lg,
+    paddingVertical: space.sm,
+    borderRadius: radius.pill,
+    backgroundColor: palette.fillMuted,
+    borderWidth: 1,
+    borderColor: palette.border,
+    gap: space.sm,
   },
   chipSelected: {
-    backgroundColor: '#EEF2FF',
-    borderColor: '#163300',
+    backgroundColor: palette.accentFill,
+    borderColor: palette.accentText,
   },
   chipIcon: {
     fontSize: 18,
@@ -114,17 +115,17 @@ const styles = StyleSheet.create({
   chipText: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#475569',
+    color: palette.textSecondary,
   },
   chipTextSelected: {
-    color: '#163300',
+    color: palette.accentText,
     fontWeight: '700',
   },
   checkmark: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#163300',
+    backgroundColor: palette.accent,
     alignItems: 'center',
     justifyContent: 'center',
     marginLeft: 4,

@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Mobile layout safety (verified locally, 2026-10-19):** Expo now has one
+root-owned safe-area provider, shared measured native-tab clearance for tab
+scenes, automatic large-title list insets, and a measured invoice-detail action
+footer. A4 invoice HTML keeps its 595 × 842 print canvas without forcing a
+desktop initial scale in mobile WebViews, and the template selector follows the
+Wise semantic theme. Strict TypeScript, all 21 Jest suites (81 tests), lint with
+no errors, and iOS/Android production exports pass. Native visual QA remains
+open because no local iOS simulator runtime is installed and EAS Simulator is
+unavailable for the account.
+
 **Mobile banking management (implemented locally, 2026-10-19):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported

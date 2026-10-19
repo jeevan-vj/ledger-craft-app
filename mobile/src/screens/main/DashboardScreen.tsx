@@ -13,13 +13,13 @@ import { Card, CircleIconButton, DashedSetupCard, EmptyState, PillButton } from 
 import { formatMoney } from '@/utils/money';
 import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
 export default function DashboardScreen() {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
+  const { safeArea: insets, bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<DashboardNavigation>();
   const { user } = useAuth();
   const { width } = useWindowDimensions();
@@ -96,7 +96,7 @@ export default function DashboardScreen() {
 
   return <ScrollView
     style={{ backgroundColor: theme.colors.background }}
-    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: 32 + insets.bottom }]}
+    contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: bottomPadding }]}
     refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
     showsVerticalScrollIndicator={false}
   >

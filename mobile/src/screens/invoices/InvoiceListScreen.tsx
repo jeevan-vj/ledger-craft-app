@@ -28,6 +28,7 @@ import { EmptyState } from '@/components/ui/EmptyState';
 import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceList'>;
 
@@ -35,6 +36,7 @@ export default function InvoiceListScreen() {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<InvoiceListNavigationProp>();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
@@ -248,7 +250,7 @@ export default function InvoiceListScreen() {
         data={filteredInvoices}
         keyExtractor={(item) => item.id}
         renderItem={renderInvoiceCard}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent, { paddingBottom: bottomPadding }]}
         contentInsetAdjustmentBehavior="automatic"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} colors={[palette.accent]} />
