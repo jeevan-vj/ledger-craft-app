@@ -22,7 +22,7 @@ interface ModernInputProps extends Omit<TextInputProps, 'onChange'> {
   showPasswordToggle?: boolean;
 }
 
-export function ModernInput({
+export const ModernInput = React.forwardRef<TextInput, ModernInputProps>(function ModernInput({
   label,
   value,
   onChangeText,
@@ -33,7 +33,7 @@ export function ModernInput({
   keyboardType = 'default',
   showPasswordToggle = false,
   ...props
-}: ModernInputProps) {
+}: ModernInputProps, ref) {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -58,6 +58,7 @@ export function ModernInput({
         ]}
       >
         <TextInput
+          ref={ref}
           accessibilityLabel={props.accessibilityLabel ?? label}
           accessibilityHint={error || props.accessibilityHint}
           accessibilityState={{ disabled: Boolean(props.editable === false) }}
@@ -99,7 +100,7 @@ export function ModernInput({
       {error ? <Text style={styles.errorText} accessibilityLiveRegion="polite">{error}</Text> : null}
     </View>
   );
-}
+});
 
 const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
   container: {

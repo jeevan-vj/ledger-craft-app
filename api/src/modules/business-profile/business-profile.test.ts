@@ -52,6 +52,7 @@ describe('business profile routes', () => {
             email: 'hello@kauristudio.nz',
             country: 'NZ',
             defaultTaxRate: '15',
+            gstRegistrationStatus: 'registered',
             bankAccountName: 'Kauri Studio Ltd',
             bankAccountNumber: '01-0123-0000123-00',
           }),
@@ -59,6 +60,7 @@ describe('business profile routes', () => {
         expect(saved.status).toBe(200);
         const profile = businessProfileSchema.parse(await saved.json());
         expect(profile.name).toBe('Kauri Studio Ltd');
+        expect(profile.gstRegistrationStatus).toBe('registered');
         expect(profile).toMatchObject({ bankAccountName: 'Kauri Studio Ltd', bankAccountNumber: '01-0123-0000123-00' });
         const loaded = await app.request('/api/business-profile', { headers: { Cookie: ownerA.cookie } });
         expect(await loaded.json()).toMatchObject({ bankAccountName: 'Kauri Studio Ltd', bankAccountNumber: '01-0123-0000123-00' });

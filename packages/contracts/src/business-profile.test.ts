@@ -16,6 +16,7 @@ describe('business profile contracts', () => {
     logoUrl: null,
     website: null,
     defaultTaxRate: '15.0000',
+    gstRegistrationStatus: 'registered',
     defaultTerms: null,
     paymentTermDays: 30,
     defaultNotes: null,
@@ -48,6 +49,20 @@ describe('business profile contracts', () => {
       paymentTermDays: 14,
     });
     expect(parsed.paymentTermDays).toBe(14);
+  });
+
+  it('accepts an explicit GST registration status and rejects unknown values', () => {
+    expect(upsertBusinessProfileRequestSchema.parse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      gstRegistrationStatus: 'not_registered',
+    }).gstRegistrationStatus).toBe('not_registered');
+
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      gstRegistrationStatus: 'sometimes',
+    }).success).toBe(false);
   });
 });
 

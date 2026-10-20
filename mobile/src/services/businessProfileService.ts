@@ -16,6 +16,7 @@ export interface BusinessProfile {
   invoiceNumberFormat: string;
   invoiceNumberSequence: number;
   defaultTaxRate?: number;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   address?: string;
   city?: string;
   state?: string;
@@ -46,6 +47,7 @@ export interface BusinessProfileUpdate {
   state?: string;
   zip?: string;
   defaultTaxRate?: number;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultTerms?: string;
   defaultNotes?: string;
   invoiceNumberFormat?: string;
@@ -74,6 +76,8 @@ class BusinessProfileService {
           country: data.country,
           invoiceNumberFormat: data.invoiceNumberFormat,
           defaultTaxRate: data.defaultTaxRate ?? null,
+          gstRegistrationStatus: data.gstRegistrationStatus,
+          phone: data.phone ?? null,
           address: data.address ?? null,
           city: data.city ?? null,
           state: data.state ?? null,
@@ -113,6 +117,8 @@ class BusinessProfileService {
         invoice_number_format: data.invoiceNumberFormat,
         invoice_number_sequence: 0,
         default_tax_rate: data.defaultTaxRate,
+        gst_registration_status: data.gstRegistrationStatus,
+        phone: data.phone,
         address: data.address,
         city: data.city,
         state: data.state,
@@ -205,6 +211,7 @@ class BusinessProfileService {
           invoiceNumberFormat: updates.invoiceNumberFormat ?? current?.invoiceNumberFormat ?? null,
           invoiceNumberSequence: updates.invoiceNumberSequence ?? current?.invoiceNumberSequence ?? undefined,
           defaultTaxRate: updates.defaultTaxRate ?? current?.defaultTaxRate ?? null,
+          gstRegistrationStatus: updates.gstRegistrationStatus ?? current?.gstRegistrationStatus ?? 'unknown',
           defaultTerms: updates.defaultTerms ?? current?.defaultTerms ?? null,
           defaultNotes: updates.defaultNotes ?? current?.defaultNotes ?? null,
           logoUrl,
@@ -250,6 +257,7 @@ class BusinessProfileService {
       if (updates.invoiceNumberFormat !== undefined) updateData.invoice_number_format = updates.invoiceNumberFormat;
       if (updates.invoiceNumberSequence !== undefined) updateData.invoice_number_sequence = updates.invoiceNumberSequence;
       if (updates.defaultTaxRate !== undefined) updateData.default_tax_rate = updates.defaultTaxRate;
+      if (updates.gstRegistrationStatus !== undefined) updateData.gst_registration_status = updates.gstRegistrationStatus;
       
       // Preferences
       if (updates.defaultTerms !== undefined) updateData.default_terms = updates.defaultTerms;
@@ -377,6 +385,7 @@ class BusinessProfileService {
       invoiceNumberFormat: data.invoice_number_format,
       invoiceNumberSequence: data.invoice_number_sequence,
       defaultTaxRate: data.default_tax_rate,
+      gstRegistrationStatus: data.gst_registration_status ?? 'unknown',
       address: data.address,
       city: data.city,
       state: data.state,

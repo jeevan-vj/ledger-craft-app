@@ -20,6 +20,9 @@ export const businessProfiles = sqliteTable('business_profiles', {
   logoUrl: text('logo_url'),
   website: text('website'),
   defaultTaxRate: text('default_tax_rate'),
+  gstRegistrationStatus: text('gst_registration_status', {
+    enum: ['unknown', 'registered', 'not_registered'],
+  }).notNull().default('unknown'),
   defaultTerms: text('default_terms'),
   paymentTermDays: integer('payment_term_days').notNull().default(30),
   defaultNotes: text('default_notes'),
@@ -33,6 +36,7 @@ export const businessProfiles = sqliteTable('business_profiles', {
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
   check('business_profiles_payment_term_days_check', sql`payment_term_days >= 0 AND payment_term_days <= 365`),
+  check('business_profiles_gst_registration_status_check', sql`gst_registration_status IN ('unknown', 'registered', 'not_registered')`),
   uniqueIndex('business_profiles_org_id_uidx').on(table.organisationId, table.id),
   index('business_profiles_org_idx').on(table.organisationId),
   uniqueIndex('business_profiles_organisationId_uidx').on(table.organisationId),

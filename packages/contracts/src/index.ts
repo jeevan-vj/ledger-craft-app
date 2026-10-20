@@ -37,6 +37,7 @@ export {
 
 export {
   businessProfileSchema,
+  gstRegistrationStatusSchema,
   upsertBusinessProfileRequestSchema,
   type BusinessProfileDto,
   type UpsertBusinessProfileRequest,
