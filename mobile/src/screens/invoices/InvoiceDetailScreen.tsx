@@ -26,13 +26,13 @@ import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusLabel, statusInk } from '@/utils/statusUtils';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { control, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
-import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
 import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
+import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
@@ -364,43 +364,15 @@ export default function InvoiceDetailScreen() {
         </View>
       </ScrollView>
 
-      <View
-        onLayout={(event) => setBottomBarHeight(event.nativeEvent.layout.height)}
-        style={[styles.bottomBar, { paddingBottom: tabBarClearance + space.sm }]}
-      >
-        <ModernButton
-          onPress={() => setShowPreview(true)}
-          variant="primary"
-          size="lg"
-          fullWidth
-          icon={<Feather name="eye" size={19} color={palette.accentForeground} />}
-        >
-          Preview invoice
-        </ModernButton>
-        {invoice.status !== 'paid' ? (
-          <ModernButton onPress={handleMarkAsPaid} variant="secondary" size="lg" fullWidth>
-            Record payment
-          </ModernButton>
-        ) : null}
-        <View style={styles.secondaryRow}>
-          <Pressable
-            onPress={() => setShareActionsVisible(true)}
-            accessibilityRole="button"
-            accessibilityLabel="Share or download invoice"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            <Text style={styles.secondaryLabel}>Share</Text>
-          </Pressable>
-          <Pressable
-            onPress={handleEdit}
-            accessibilityRole="button"
-            accessibilityLabel="Edit"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            <Text style={styles.secondaryLabel}>Edit</Text>
-          </Pressable>
-        </View>
-      </View>
+      <InvoiceDetailActions
+        isPaid={invoice.status === 'paid'}
+        bottomInset={tabBarClearance}
+        onPreview={() => setShowPreview(true)}
+        onRecordPayment={handleMarkAsPaid}
+        onShare={() => setShareActionsVisible(true)}
+        onEdit={handleEdit}
+        onHeightChange={setBottomBarHeight}
+      />
 
       {/* Preview Modal */}
       <Modal
@@ -595,34 +567,6 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 15,
     color: palette.text,
     lineHeight: 22,
-  },
-  bottomBar: {
-    backgroundColor: palette.surfaceRaised,
-    paddingHorizontal: space.screen,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: palette.separator,
-    gap: 8,
-  },
-  secondaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 4,
-  },
-  secondaryAction: {
-    minHeight: control.touchTarget,
-    minWidth: control.touchTarget,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-  },
-  secondaryPressed: {
-    opacity: 0.6,
-  },
-  secondaryLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: palette.accentText,
   },
   statusButton: {
     flexDirection: 'row',
