@@ -107,6 +107,22 @@ jobs:
       - name: Unit tests
         run: pnpm test:run
 
+  # Node's built-in test runner only. No pnpm install: the readiness checker
+  # and its tests use node:test, node:fs, and fetch. Runs on pull requests
+  # and on pushes to main, same as the jobs above.
+  release-readiness:
+    name: Release readiness script
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: API readiness checker
+        run: node --test .github/scripts/verify-api-readiness.test.mjs
+
   web-build:
     name: Web build
     runs-on: ubuntu-latest
