@@ -106,8 +106,12 @@ jobs:
       # up on /api/readyz only after that restart. The checker waits up to 5
       # minutes, logs every attempt, and still requires healthz, the newest
       # migration header, and /api/me 401.
+      # setup-node above is Node 24 (fetch, Headers, AbortController).
+      # API_URL is the deploy job env, the same variable the previous curl loop used.
       - name: Verify API readiness
         shell: bash
+        env:
+          API_URL: ${{ env.API_URL }}
         run: node .github/scripts/verify-api-readiness.mjs api/sqlite-migrations
       - name: Deploy Pages site
         run: pnpm exec wrangler pages deploy dist --project-name ledger-craft-app --branch main --commit-hash "$GITHUB_SHA"
