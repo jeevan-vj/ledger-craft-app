@@ -101,18 +101,14 @@ jobs:
           --config "$WORKER_CONFIG"
           --tag "$GITHUB_SHA"
           --message "GitHub Actions release $GITHUB_SHA"
+      # Identity keeps serving the previous bundle until Cloudflare restarts
+      # that Durable Object (seconds to minutes). A new SQLite migration shows
+      # up on /api/readyz only after that restart. The checker waits up to 5
+      # minutes, logs every attempt, and still requires healthz, the newest
+      # migration header, and /api/me 401.
       - name: Verify API readiness
         shell: bash
-        run: |
-          expected="$(ls api/sqlite-migrations/*.sql | sort | tail -1 | xargs basename)"
-          for i in $(seq 1 20); do
-            if curl -fsS "$API_URL/api/healthz" | grep -q '"ok"' \
-              && curl -fsSI "$API_URL/api/readyz" | grep -qi "x-ledgercraft-migration: $expected" \
-              && [ "$(curl -s -o /dev/null -w '%{http_code}' "$API_URL/api/me")" = 401 ]; then
-              echo "API ready ($expected)"; exit 0; fi
-            sleep 3
-          done
-          echo "API readiness check failed"; exit 1
+        run: node .github/scripts/verify-api-readiness.mjs api/sqlite-migrations
       - name: Deploy Pages site
         run: pnpm exec wrangler pages deploy dist --project-name ledger-craft-app --branch main --commit-hash "$GITHUB_SHA"
       - name: Verify published build
