@@ -1,5 +1,10 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
+uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
+seamless dark splash screen. The existing iOS bundle ID, EAS project, Apple
+team, Associated Domains capability, and App Store Connect app remain unchanged.
+
 **Mobile onboarding core (implemented locally, 2026-10-21):** First launch now
 uses an original LedgerCraft value carousel, progressive account signup, and a
 resumable business setup for name, country, and explicit GST registration.
