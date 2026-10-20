@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Mobile onboarding core (implemented locally, 2026-10-21):** Expo first launch
+now includes an original LedgerCraft value carousel, progressive account
+signup, and resumable business setup for name, country, and explicit GST
+registration. Profile existence is the auth/onboarding gate; safe drafts use
+SecureStore without persisting passwords. Hono/SQLite persists GST status via
+`0006_business-gst-registration.sql`. Strict mobile TypeScript, all 21 Jest
+suites (83 tests), all 29 API suites (78 tests), all 18 contract suites (57
+tests), lint with no errors, and iOS/Android production exports pass.
+Authenticated device QA remains open.
+
 **Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
 detail now separates public-link sharing, PDF download/export, and PDF file
 sharing. Public links use the existing immutable Hono/SQLite snapshot and can
