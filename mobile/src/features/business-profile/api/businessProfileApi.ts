@@ -16,6 +16,7 @@ export interface MobileBusinessProfileDto {
   logoUrl: string | null;
   website: string | null;
   defaultTaxRate: string | null;
+  gstRegistrationStatus: 'unknown' | 'registered' | 'not_registered';
   defaultTerms: string | null;
   paymentTermDays: number;
   defaultNotes: string | null;
@@ -43,6 +44,7 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     invoiceNumberFormat: dto.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
     invoiceNumberSequence: dto.invoiceNumberSequence ?? 1,
     defaultTaxRate: dto.defaultTaxRate == null ? undefined : Number(dto.defaultTaxRate),
+    gstRegistrationStatus: dto.gstRegistrationStatus,
     address: dto.address ?? undefined,
     city: dto.city ?? undefined,
     state: dto.state ?? undefined,

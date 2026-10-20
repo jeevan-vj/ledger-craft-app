@@ -5,6 +5,7 @@ const dto = {
   id: 'profile-1', name: 'LedgerCraft Studio', email: 'owner@example.com', phone: null,
   address: null, city: null, state: null, zip: null, country: 'NZ', taxId: null,
   logoUrl: null, website: null, defaultTaxRate: '15', defaultTerms: null,
+  gstRegistrationStatus: 'registered' as const,
   paymentTermDays: 20, defaultNotes: null, bankInfo: null, theme: mockBusinessTheme,
   invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1,
   createdAt: '2026-10-18T00:00:00.000Z', updatedAt: '2026-10-18T00:00:00.000Z',

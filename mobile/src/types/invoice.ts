@@ -45,6 +45,7 @@ export interface BusinessProfile {
   logoUrl?: string | null;
   website?: string | null;
   defaultTaxRate?: number | null;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultNotes?: string | null;
   defaultTerms?: string | null;
   currency?: string;

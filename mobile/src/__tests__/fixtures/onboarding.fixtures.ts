@@ -8,6 +8,7 @@ export const mockOnboardingData: OnboardingData = {
   country: 'New Zealand',
   invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
   defaultTaxRate: 15,
+  gstRegistrationStatus: 'registered',
   address: '123 Test Street',
   city: 'Auckland',
   state: 'Auckland',

@@ -108,6 +108,7 @@ export interface BusinessProfile {
   logoUrl?: string | null;  // Ensure consistent camelCase naming
   website?: string | null;
   defaultTaxRate?: number | null;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   bankInfo?: string | null;
