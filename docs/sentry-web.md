@@ -1,8 +1,10 @@
 # Web error monitoring
 
-The Vite app reports browser errors to Sentry when `VITE_SENTRY_DSN` is present at build time. With no DSN, the SDK is not started. Local development, unit tests, and CI stay quiet until the project exists.
+The Vite app reports browser errors to Sentry when `VITE_SENTRY_DSN` is present at build time. With no DSN, the SDK is left out of the production bundle. Local development, unit tests, and CI stay quiet until the project exists.
 
-Session Replay is off. `@sentry/react` 11 uses `dataCollection` instead of `sendDefaultPii`; the app turns off automatic user details, cookies, HTTP headers, request and response bodies, and stack-frame variables. The signed-in user is stored by id only. A `beforeSend` / `beforeBreadcrumb` scrubber also removes form-input values and replaces share tokens in `/shared/invoice/:token` URLs with `[redacted]`. Performance tracing samples about 10% of pageloads unless `VITE_SENTRY_TRACES_SAMPLE_RATE` says otherwise.
+The SDK is a separate chunk. It loads after the first paint, and it is not module-preloaded, so it is not part of the first JavaScript download. Errors and the signed-in user id that happen before it loads are queued and sent when it starts. The error screen can appear before a Sentry event id exists; Reload still works.
+
+Session Replay, Feedback, and performance tracing are off. That keeps the added download near 30 kB gzip instead of about 65 kB on the main chunk. Route crashes still use the React Router `errorElement` and the same fallback screen. `@sentry/react` 11 uses `dataCollection` instead of `sendDefaultPii`; the app turns off automatic user details, cookies, HTTP headers, request and response bodies, and stack-frame variables. The signed-in user is stored by id only. A `beforeSend` / `beforeBreadcrumb` scrubber also removes form-input values and replaces share tokens in `/shared/invoice/:token` URLs with `[redacted]`.
 
 API failures keep the Hono envelope's `requestId` on the thrown error. When that error is reported, Sentry stores it as the `requestId` tag so the browser event can be matched to the API log.
 
@@ -12,8 +14,7 @@ Create a Sentry project for the browser app. The project slug is `ledgercraft-we
 
 | Name | Where | Purpose |
 | --- | --- | --- |
-| `VITE_SENTRY_DSN` | Repository variable | Public DSN inlined by Vite. Empty means Sentry stays off. |
-| `VITE_SENTRY_TRACES_SAMPLE_RATE` | Repository variable, optional | Number from 0 to 1. Defaults to `0.1`. |
+| `VITE_SENTRY_DSN` | Repository variable | Public DSN inlined by Vite. Empty means the SDK is omitted from the build. |
 | `SENTRY_ORG` | Repository variable | Sentry organization slug. Required only when uploading source maps. |
 | `SENTRY_PROJECT` | Repository variable, optional | Defaults to `ledgercraft-web`. |
 | `SENTRY_AUTH_TOKEN` | Production environment secret | Auth token used to upload source maps. Not a Vite variable. |

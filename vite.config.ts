@@ -4,6 +4,7 @@ import path from "path";
 import { readFileSync } from "node:fs";
 const buildVersion = JSON.parse(readFileSync(new URL("./public/version.json", import.meta.url), "utf8"));
 import { componentTagger } from "lovable-tagger";
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
@@ -29,6 +30,21 @@ export default defineConfig(({ mode }) => ({
   },
   build: {
     sourcemap: mode === "production" ? "hidden" : false,
+    modulePreload: {
+      resolveDependencies(_filename, deps) {
+        return deps.filter((dep) => !dep.includes("sentry-"));
+      },
+    },
+    rollupOptions: {
+      output: {
+        chunkFileNames(chunk) {
+          if (chunk.facadeModuleId?.includes("/src/lib/sentry/client")) {
+            return "assets/sentry-[hash].js";
+          }
+          return "assets/[name]-[hash].js";
+        },
+      },
+    },
   },
   plugins: [
     react(),
@@ -98,7 +114,23 @@ export default defineConfig(({ mode }) => ({
         enabled: false,
       },
     }),
-  ].filter(Boolean),
+    // Size flags only. Source-map upload stays in the release workflow so a
+    // missing token cannot fail `pnpm build`, and maps are not deleted here.
+    mode === 'production' &&
+      sentryVitePlugin({
+        telemetry: false,
+        silent: true,
+        sourcemaps: { disable: true },
+        release: { name: '', create: false, inject: false, finalize: false },
+        bundleSizeOptimizations: {
+          excludeDebugStatements: true,
+          excludeTracing: true,
+          excludeReplayIframe: true,
+          excludeReplayShadowDom: true,
+          excludeReplayWorker: true,
+        },
+      }),
+  ].flat().filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),

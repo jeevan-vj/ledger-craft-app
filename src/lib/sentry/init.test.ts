@@ -9,8 +9,6 @@ vi.mock('@sentry/react', () => ({
     callback({ setTag: vi.fn(), setContext: vi.fn() }),
   ),
   addBreadcrumb: vi.fn(),
-  reactRouterBrowserTracingIntegration: vi.fn(() => ({ name: 'ReactRouterBrowserTracing' })),
-  wrapCreateBrowserRouter: vi.fn((createRouter: unknown) => createRouter),
 }));
 
 import * as Sentry from '@sentry/react';
@@ -38,14 +36,18 @@ describe('initSentry', () => {
     expect(Sentry.captureException).not.toHaveBeenCalled();
   });
 
-  it('starts with privacy defaults and a low sample rate', async () => {
-    const { initSentry, isSentryEnabled, setSentryUser } = await loadInit();
+  it('starts with privacy defaults after the SDK loads', async () => {
+    const { initSentry, isSentryEnabled, setSentryUser, captureAppError } = await loadInit();
+    const early = Object.assign(new Error('early'), { requestId: 'req_early' });
 
-    initSentry({
+    const starting = initSentry({
       dsn: 'https://public@example.ingest.sentry.io/1',
       release: 'abc123',
       environment: 'production',
     });
+    setSentryUser('user_1');
+    captureAppError(early);
+    await starting;
 
     expect(isSentryEnabled()).toBe(true);
     expect(Sentry.init).toHaveBeenCalledOnce();
@@ -57,7 +59,7 @@ describe('initSentry', () => {
       httpBodies: [],
       stackFrameVariables: false,
     });
-    expect(options.tracesSampleRate).toBe(0.1);
+    expect(options.tracesSampleRate).toBeUndefined();
     expect(options.release).toBe('abc123');
     expect(options.environment).toBe('production');
     const scrubbed = options.beforeSend?.(
@@ -84,30 +86,12 @@ describe('initSentry', () => {
     const defaults = [{ name: 'GlobalHandlers' }, { name: 'Replay' }, { name: 'Breadcrumbs' }];
     const installed =
       typeof options.integrations === 'function' ? options.integrations(defaults) : options.integrations;
-    expect(installed?.map((integration) => integration.name)).toEqual([
-      'GlobalHandlers',
-      'Breadcrumbs',
-      'ReactRouterBrowserTracing',
-    ]);
+    expect(installed?.map((integration) => integration.name)).toEqual(['GlobalHandlers', 'Breadcrumbs']);
 
-    setSentryUser('user_1');
     expect(Sentry.setUser).toHaveBeenCalledWith({ id: 'user_1' });
+    expect(Sentry.captureException).toHaveBeenCalledWith(early);
     setSentryUser(null);
     expect(Sentry.setUser).toHaveBeenLastCalledWith(null);
   });
 
-  it('uses a configured traces sample rate and ignores values outside 0 to 1', async () => {
-    const { initSentry, readTracesSampleRate } = await loadInit();
-    expect(readTracesSampleRate('0.25')).toBe(0.25);
-    expect(readTracesSampleRate('0')).toBe(0);
-    expect(readTracesSampleRate('')).toBe(0.1);
-    expect(readTracesSampleRate('2')).toBe(0.1);
-    expect(readTracesSampleRate('nope')).toBe(0.1);
-
-    initSentry({
-      dsn: 'https://public@example.ingest.sentry.io/1',
-      tracesSampleRate: '0.25',
-    });
-    expect(vi.mocked(Sentry.init).mock.calls[0][0].tracesSampleRate).toBe(0.25);
-  });
 });

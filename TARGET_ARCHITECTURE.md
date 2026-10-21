@@ -782,7 +782,7 @@ Minimum operational signals:
 
 Add OpenTelemetry when cross-service tracing is useful; it is not required to create the first API route.
 
-The web client reports browser errors to Sentry when `VITE_SENTRY_DSN` is set at build time. Session Replay is off, `sendDefaultPii` is off, and the user is identified by id only. Share tokens in public invoice URLs are redacted. API `requestId` values are kept on web API errors and sent as a Sentry tag. Production source maps are uploaded for the git SHA when `SENTRY_AUTH_TOKEN` is present, then removed from `dist` before Cloudflare Pages deploy. Setup and verification live in `docs/sentry-web.md`.
+The web client reports browser errors to Sentry when `VITE_SENTRY_DSN` is set at build time. The SDK loads after first paint and is omitted from the bundle when the DSN is unset. Session Replay, Feedback, and performance tracing are off. `sendDefaultPii` is off (SDK 11 uses `dataCollection`), and the user is identified by id only. Share tokens in public invoice URLs are redacted. API `requestId` values are kept on web API errors and sent as a Sentry tag. Production source maps are uploaded for the git SHA when `SENTRY_AUTH_TOKEN` is present, then removed from `dist` before Cloudflare Pages deploy. Setup and verification live in `docs/sentry-web.md`.
 
 Expose:
 

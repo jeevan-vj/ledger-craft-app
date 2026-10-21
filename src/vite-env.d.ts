@@ -6,7 +6,6 @@ interface ImportMetaEnv {
   readonly VITE_BUILD_TIME?: string
   readonly VITE_SENTRY_DSN?: string
   readonly VITE_SENTRY_RELEASE?: string
-  readonly VITE_SENTRY_TRACES_SAMPLE_RATE?: string
   readonly VITE_CUSTOMERS_API?: string
   readonly VITE_BUSINESS_API?: string
   readonly VITE_ITEMS_API?: string

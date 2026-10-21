@@ -1,23 +1,14 @@
-import * as Sentry from '@sentry/react';
+import { createBrowserRouter, type RouteObject } from 'react-router-dom';
 import {
-  createBrowserRouter,
-  createRoutesFromChildren,
-  matchRoutes,
-  useLocation,
-  useNavigationType,
-  type RouteObject,
-} from 'react-router-dom';
-import { requestIdOf } from '@/lib/sentry/requestId';
-import { scrubSentryBreadcrumb, scrubSentryEvent } from '@/lib/sentry/scrub';
-
-type SentryState = 'idle' | 'ready' | 'disabled';
-
-let state: SentryState = 'idle';
+  rememberUser,
+  reportOrQueue,
+  sentryState,
+  setSentryState,
+} from '@/lib/sentry/buffer';
 
 export type SentryStart = {
   dsn?: string;
   release?: string;
-  tracesSampleRate?: string;
   environment?: string;
 };
 
@@ -25,94 +16,91 @@ function envValue(value: string | undefined): string {
   return value?.trim() ?? '';
 }
 
-export function readTracesSampleRate(raw: string | undefined): number {
-  const value = raw?.trim() ?? '';
-  if (!value) return 0.1;
-  const parsed = Number(value);
-  if (!Number.isFinite(parsed) || parsed < 0 || parsed > 1) return 0.1;
-  return parsed;
+let loadPromise: Promise<void> | undefined;
+
+function bundledClient(): Promise<typeof import('./client') | null> {
+  // Keep these checks separate. Vite drops the import() when the branch is statically false,
+  // so a production build without VITE_SENTRY_DSN does not emit the SDK chunk.
+  if (import.meta.env.VITE_SENTRY_DSN) {
+    return import('./client');
+  }
+  if (import.meta.env.MODE === 'test') {
+    return import('./client');
+  }
+  return Promise.resolve(null);
 }
 
-function releaseName(start?: SentryStart): string | undefined {
-  const configured = start?.release ?? envValue(import.meta.env.VITE_SENTRY_RELEASE);
-  const release = configured || envValue(import.meta.env.VITE_BUILD_HASH) || envValue(import.meta.env.VITE_APP_VERSION);
-  const trimmed = release.trim();
-  return trimmed || undefined;
+function afterFirstPaint(): Promise<void> {
+  if (import.meta.env.MODE === 'test') return Promise.resolve();
+  return new Promise((resolve) => {
+    const idle = window.requestIdleCallback?.bind(window);
+    if (idle) {
+      idle(() => resolve(), { timeout: 2000 });
+      return;
+    }
+    window.setTimeout(resolve, 1);
+  });
+}
+
+function installEarlyHandlers(): () => void {
+  if (typeof window === 'undefined') return () => undefined;
+  const onError = (event: Event) => {
+    const errorEvent = event as ErrorEvent;
+    reportOrQueue(errorEvent.error ?? errorEvent.message);
+  };
+  const onRejection = (event: PromiseRejectionEvent) => {
+    reportOrQueue(event.reason);
+  };
+  window.addEventListener('error', onError);
+  window.addEventListener('unhandledrejection', onRejection);
+  return () => {
+    window.removeEventListener('error', onError);
+    window.removeEventListener('unhandledrejection', onRejection);
+  };
 }
 
 export function isSentryEnabled(): boolean {
-  return state === 'ready';
+  return sentryState() === 'ready';
 }
 
-export function initSentry(start?: SentryStart): void {
-  if (state !== 'idle') return;
+export function initSentry(start?: SentryStart): Promise<void> {
+  if (sentryState() === 'disabled') return Promise.resolve();
+  if (loadPromise) return loadPromise;
   const dsn = (start?.dsn ?? envValue(import.meta.env.VITE_SENTRY_DSN)).trim();
   if (!dsn) {
-    state = 'disabled';
-    return;
+    setSentryState('disabled');
+    return Promise.resolve();
   }
 
-  const release = releaseName(start);
-  Sentry.init({
-    dsn,
-    environment: start?.environment ?? import.meta.env.MODE,
-    release,
-    // @sentry/react 11 replaced sendDefaultPii with dataCollection. These switches
-    // keep automatic user details, cookies, headers, bodies, and local variables off.
-    dataCollection: {
-      userInfo: false,
-      cookies: false,
-      httpHeaders: false,
-      httpBodies: [],
-      urlQueryParams: { deny: ['token', 'shareToken', 'share_token', 'email'] },
-      stackFrameVariables: false,
-      genAI: { inputs: false, outputs: false },
-      databaseQueryData: false,
-      queues: false,
-      graphQL: { document: false, variables: false },
-    },
-    tracesSampleRate: readTracesSampleRate(start?.tracesSampleRate ?? import.meta.env.VITE_SENTRY_TRACES_SAMPLE_RATE),
-    tracePropagationTargets: ['localhost', /^\//],
-    integrations: (defaults) => [
-      ...defaults.filter((integration) => !/replay/i.test(integration.name)),
-      Sentry.reactRouterBrowserTracingIntegration({
-        useLocation,
-        useNavigationType,
-        createRoutesFromChildren,
-        matchRoutes,
-      }),
-    ],
-    beforeSend: scrubSentryEvent,
-    beforeSendTransaction: (event) => scrubSentryEvent(event as unknown as Parameters<typeof scrubSentryEvent>[0]),
-    beforeBreadcrumb: scrubSentryBreadcrumb,
-  });
-  Sentry.setTag('app.version', envValue(import.meta.env.VITE_APP_VERSION) || 'unknown');
-  Sentry.setTag('build.hash', envValue(import.meta.env.VITE_BUILD_HASH) || 'unknown');
-  state = 'ready';
+  setSentryState('loading');
+  const detach = installEarlyHandlers();
+  loadPromise = afterFirstPaint()
+    .then(() => bundledClient())
+    .then((client) => {
+      detach();
+      if (!client) {
+        setSentryState('disabled');
+        return;
+      }
+      client.startSentry({ ...start, dsn });
+      setSentryState('ready');
+    })
+    .catch((error: unknown) => {
+      detach();
+      setSentryState('disabled');
+      console.error('Sentry failed to start', error);
+    });
+  return loadPromise;
 }
 
 export function setSentryUser(userId: string | null): void {
-  if (!isSentryEnabled()) return;
-  if (userId) {
-    Sentry.setUser({ id: userId });
-    return;
-  }
-  Sentry.setUser(null);
+  rememberUser(userId);
 }
 
 export function captureAppError(error: unknown, componentStack?: string | null): string | undefined {
-  if (!isSentryEnabled()) return undefined;
-  return Sentry.withScope((scope) => {
-    const requestId = requestIdOf(error);
-    if (requestId) scope.setTag('requestId', requestId);
-    if (componentStack) scope.setContext('react', { componentStack });
-    return Sentry.captureException(error);
-  });
+  return reportOrQueue(error, componentStack);
 }
 
 export function createSentryBrowserRouter(routes: RouteObject[]) {
-  const createRouter = isSentryEnabled()
-    ? Sentry.wrapCreateBrowserRouter(createBrowserRouter)
-    : createBrowserRouter;
-  return createRouter(routes);
+  return createBrowserRouter(routes);
 }

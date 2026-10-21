@@ -3,7 +3,7 @@ import { Outlet, RouteObject } from "react-router-dom";
 import { RouteErrorFallback } from "@/components/errors/AppErrorFallback";
 import { createSentryBrowserRouter, initSentry } from "@/lib/sentry/init";
 
-initSentry();
+void initSentry();
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Spinner } from "@/components/ui/spinner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

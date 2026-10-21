@@ -4,7 +4,7 @@ import { initSentry } from '@/lib/sentry/init'
 import App from './App.tsx'
 import './index.css'
 
-initSentry()
+void initSentry()
 
 createRoot(document.getElementById("root")!).render(
   <AppErrorBoundary>
