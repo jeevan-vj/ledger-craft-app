@@ -96,9 +96,10 @@ They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
 and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
 mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
 diagnostics. A count gate fails the job only when the count rises past the
-baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
-still runs the Postgres API suite. The PR workflow does not start Postgres and
-does not deploy.
+baseline recorded in the workflow. The API & contracts job uses the same pnpm
+install and cache on Node 24, and runs `pnpm test:api`, `pnpm test:contracts`,
+and `pnpm type-check:api`. The workflow does not start Postgres and does not
+deploy.
 
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
