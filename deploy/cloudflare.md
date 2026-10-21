@@ -16,6 +16,10 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
+## Web error monitoring
+
+Browser errors go to Sentry only when the production build was given `VITE_SENTRY_DSN`. The SDK is a separate chunk that loads after the first paint. Replay, Feedback, and performance tracing are off. The release workflow uploads hidden source maps for the git SHA when the production environment secret `SENTRY_AUTH_TOKEN` exists, then deletes `dist/**/*.map` before `wrangler pages deploy`. Missing token skips the upload and the site still deploys. The service worker does not precache maps. Details and the setup checklist are in `docs/sentry-web.md`.
+
 **Latest release (2026-10-03): GST return workflow deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com

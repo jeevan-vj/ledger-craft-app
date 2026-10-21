@@ -2,6 +2,7 @@ packages:
   - 'api'
   - 'packages/contracts'
 allowBuilds:
+  '@sentry/cli': false
   '@swc/core': true
   core-js: false
   esbuild: true
