@@ -1,4 +1,3 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   CreateExpenseCategoryRequest,
   CreateExpenseRequest,
@@ -8,6 +7,7 @@ import type {
   UpdateExpenseCategoryRequest,
   UpdateExpenseRequest,
 } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Expense, ExpenseCategory, ExpenseStatus, PaymentMethod } from '@/types';
 
 export function expensesApiEnabled(): boolean {
@@ -15,12 +15,16 @@ export function expensesApiEnabled(): boolean {
 }
 
 export class ExpensesApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ExpensesApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -152,10 +156,6 @@ export function toCreateExpenseCategoryRequest(
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -169,7 +169,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new ExpensesApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new ExpensesApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

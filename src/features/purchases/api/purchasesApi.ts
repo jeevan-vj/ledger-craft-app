@@ -1,4 +1,3 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   AccountListResponse,
   BankAccountListResponse,
@@ -12,11 +11,15 @@ import type {
   UpdateVendorRequest,
   VendorDto,
 } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 
 export class PurchasesApiError extends Error {
-  constructor(message: string, readonly status: number) {
+  readonly requestId?: string;
+
+  constructor(message: string, readonly status: number, requestId?: string) {
     super(message);
     this.name = 'PurchasesApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -28,8 +31,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    const presented = await presentResponseError(response);
-    throw new PurchasesApiError(presented.message, response.status);
+    const failure = await readApiFailure(response);
+    throw new PurchasesApiError(failure.message, failure.status, failure.requestId);
   }
   return response.json() as Promise<T>;
 }

@@ -1,5 +1,5 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type { BulkItemRequest, CreateItemCategoryRequest, CreateItemRequest, ImportItemsRequest, ImportItemsResponse, ItemCategoryDto, ItemDto, UpdateItemCategoryRequest, UpdateItemRequest } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Item, ItemCategory } from '@/types';
 
 export function itemsApiEnabled(): boolean {
@@ -7,12 +7,16 @@ export function itemsApiEnabled(): boolean {
 }
 
 export class ItemsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ItemsApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -89,10 +93,6 @@ export function toUpdateItemRequest(
   return input;
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -104,7 +104,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    throw new ItemsApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new ItemsApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }
@@ -146,7 +147,10 @@ export const itemsApi = {
 
   async exportCsv(): Promise<Blob> {
     const response = await fetch('/api/items/export', { credentials: 'include' });
-    if (!response.ok) throw new ItemsApiError(await parseError(response), response.status);
+    if (!response.ok) {
+      const failure = await readApiFailure(response);
+      throw new ItemsApiError(failure.message, failure.status, failure.requestId);
+    }
     return response.blob();
   },
 

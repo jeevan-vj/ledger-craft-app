@@ -1,5 +1,5 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type { CreatePaymentReceiptRequest, PaymentReceiptDataDto, PaymentReceiptDto } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Receipt } from '@/types/payment';
 
 export function receiptsApiEnabled(): boolean {
@@ -7,12 +7,16 @@ export function receiptsApiEnabled(): boolean {
 }
 
 export class ReceiptsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ReceiptsApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -84,10 +88,6 @@ function toReceiptData(data: PaymentReceiptDataDto, receiptNumber: string, creat
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -98,7 +98,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (response.status === 204) return undefined as T;
-  if (!response.ok) throw new ReceiptsApiError(await parseError(response), response.status);
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new ReceiptsApiError(failure.message, failure.status, failure.requestId);
+  }
   return (await response.json()) as T;
 }
 
