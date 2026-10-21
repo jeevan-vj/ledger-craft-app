@@ -66,6 +66,11 @@ async function allocateQuoteNumber(
   return { profile, quoteNumber };
 }
 
+function roundRate(value: string | null | undefined, fallback: string): string {
+  const source = value == null || value === '' ? fallback : value;
+  return roundMoney(source);
+}
+
 function priced(
   input: {
     items: CreateQuoteRequest['items'];
@@ -79,8 +84,12 @@ function priced(
   },
   defaultTaxRate: string,
 ): { totals: ComputedInvoiceTotals; taxRate: string } {
-  const totals = computeInvoiceTotals(input, defaultTaxRate);
-  return { totals, taxRate: roundMoney(input.taxRate ?? defaultTaxRate) };
+  const taxRate = roundRate(input.taxRate, defaultTaxRate);
+  const discountPercent = input.discountType === 'percent'
+    ? roundMoney(input.discountPercent ?? 0)
+    : input.discountPercent;
+  const totals = computeInvoiceTotals({ ...input, taxRate, discountPercent }, defaultTaxRate);
+  return { totals, taxRate };
 }
 
 function assertExpiry(date: string, expiryDate: string): void {

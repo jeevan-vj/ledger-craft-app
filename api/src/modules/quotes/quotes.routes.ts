@@ -20,7 +20,7 @@ import * as quotesService from './quotes.service';
 import { QuoteAlreadyRespondedError, respondToPublicQuote, getPublicSharedQuote, createShareForUser } from './quotes.share';
 
 const fallbackMailer = createLoggingInvoiceMailer();
-const RESPOND_BODY_LIMIT = 4096;
+const RESPOND_BODY_LIMIT_BYTES = 4096;
 
 function optionalQuery(value: string | undefined): string | undefined {
   const trimmed = value?.trim();
@@ -35,10 +35,53 @@ async function readOptionalJson(c: { req: { json: () => Promise<unknown> } }): P
   }
 }
 
-async function readRespondBody(c: { req: { text: () => Promise<string> } }): Promise<unknown> {
-  const raw = await c.req.text();
-  if (raw.length > RESPOND_BODY_LIMIT) {
-    throw apiError(400, 'VALIDATION_ERROR', 'Response is too large');
+async function readAtMost(body: ReadableStream<Uint8Array> | null, limit: number): Promise<Uint8Array | null> {
+  if (!body) return new Uint8Array();
+  const reader = body.getReader();
+  const chunks: Uint8Array[] = [];
+  let received = 0;
+  try {
+    for (;;) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      if (received + value.byteLength > limit) {
+        await reader.cancel();
+        return null;
+      }
+      chunks.push(value);
+      received += value.byteLength;
+    }
+  } finally {
+    try {
+      reader.releaseLock();
+    } catch {
+      // cancel() may already have released the reader.
+    }
+  }
+  const bytes = new Uint8Array(received);
+  let offset = 0;
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return bytes;
+}
+
+export async function readRespondBody(request: Request): Promise<unknown> {
+  const declared = request.headers.get('content-length');
+  if (declared != null && declared.trim() !== '') {
+    const length = Number(declared);
+    if (Number.isFinite(length) && length > RESPOND_BODY_LIMIT_BYTES) {
+      throw apiError(400, 'VALIDATION_ERROR', 'Response is too large');
+    }
+  }
+  const bytes = await readAtMost(request.body, RESPOND_BODY_LIMIT_BYTES);
+  if (!bytes) throw apiError(400, 'VALIDATION_ERROR', 'Response is too large');
+  let raw: string;
+  try {
+    raw = new TextDecoder('utf-8', { fatal: true, ignoreBOM: true }).decode(bytes);
+  } catch {
+    throw apiError(400, 'VALIDATION_ERROR', 'Response must be JSON');
   }
   if (!raw.trim()) throw apiError(400, 'VALIDATION_ERROR', 'Enter the name of the person responding');
   try {
@@ -78,9 +121,9 @@ export function quoteRoutes() {
     });
 
     routes.post(`${prefix}/public/quotes/:token/respond`, async (c) => {
+      const input = respondToQuoteRequestSchema.parse(await readRespondBody(c.req.raw));
       const db = c.get('db');
       if (!db) throw new HTTPException(503, { message: 'Database unavailable' });
-      const input = respondToQuoteRequestSchema.parse(await readRespondBody(c));
       try {
         return c.json(await respondToPublicQuote(db, c.req.param('token'), input));
       } catch (error) {

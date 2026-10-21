@@ -281,11 +281,20 @@ describe('quote routes', () => {
         const shared = (await share.json()) as { shareToken: string; revision: number };
         expect(shared.shareToken).toMatch(/^[0-9a-f-]{36}_[0-9a-f-]{36}$/);
 
+        const renamed = await app.request(`/api/customers/${customer.id}`, {
+          method: 'PATCH', headers, body: JSON.stringify({ name: 'Renamed Cafe' }),
+        });
+        expect(renamed.status).toBe(200);
+
         const viewed = await app.request(`/api/public/quotes/${shared.shareToken}`);
         expect(viewed.status).toBe(200);
-        const publicBody = await viewed.json() as { status: string; expiryDate: string; templateName: string; businessProfile: { name: string }; quote: { status: string } };
+        const publicBody = await viewed.json() as { status: string; expiryDate: string; templateName: string; businessProfile: { name: string }; quote: { status: string; customerName: string | null; total: string } };
         expect(publicBody.status).toBe('viewed');
         expect(publicBody.quote.status).toBe('viewed');
+        expect(publicBody.quote.customerName).toBe('North Harbour Cafe');
+        const ownerQuote = quoteSchema.parse(await (await app.request(`/api/quotes/${live.id}`, { headers })).json());
+        expect(ownerQuote.customerName).toBe('Renamed Cafe');
+        expect(publicBody.quote.total).toBe(ownerQuote.total);
         expect(publicBody.expiryDate).toBe('2099-01-01');
         expect(publicBody.templateName).toBe('classic');
         expect(publicBody.businessProfile.name).toBe('Kauri Studio Ltd');
@@ -318,9 +327,10 @@ describe('quote routes', () => {
         const declinedShare = (await (await app.request(`/api/quotes/${declined.id}/share`, { method: 'POST', headers, body: '{}' })).json()) as { shareToken: string };
         await app.request(`/api/public/quotes/${declinedShare.shareToken}`);
         const decline = await app.request(`/api/public/quotes/${declinedShare.shareToken}/respond`, {
-          method: 'POST', headers: originHeaders, body: JSON.stringify({ action: 'decline', name: 'Alex Ngata' }),
+          method: 'POST', headers: originHeaders, body: JSON.stringify({ action: 'decline', name: 'José Ngata', note: 'Merci' }),
         });
         expect(decline.status).toBe(200);
+        expect(await decline.json()).toMatchObject({ action: 'decline', name: 'José Ngata', note: 'Merci' });
         const revised = quoteSchema.parse(await (await app.request(`/api/quotes/${declined.id}/revise`, { method: 'POST', headers })).json());
         expect(revised.status).toBe('draft');
         expect(revised.revision).toBe(2);
@@ -361,6 +371,121 @@ describe('quote routes', () => {
         expect(copy.quoteNumber).not.toBe(live.quoteNumber);
         expect(copy.date).toBe(aucklandToday());
         expect(copy.total).toBe(live.total);
+      } finally {
+        await close.end({ timeout: 5 });
+      }
+    });
+  });
+
+  it('rejects an oversized public response by byte length', async () => {
+    const app = createApp();
+    const tooManyChars = await app.request('/api/public/quotes/not-a-token/respond', {
+      method: 'POST',
+      headers: originHeaders,
+      body: 'é'.repeat(4096),
+    });
+    expect(tooManyChars.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await tooManyChars.json()).error.message).toBe('Response is too large');
+
+    const withinBytes = await app.request('/api/public/quotes/not-a-token/respond', {
+      method: 'POST',
+      headers: originHeaders,
+      body: 'é'.repeat(2048),
+    });
+    expect(withinBytes.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await withinBytes.json()).error.message).toBe('Response must be JSON');
+
+    let pulled = 0;
+    const chunked = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        pulled += 1;
+        controller.enqueue(new Uint8Array(1000));
+        if (pulled > 20) controller.error(new Error('read past the cap'));
+      },
+    });
+    const streamed = await app.request(new Request('http://localhost/api/public/quotes/not-a-token/respond', {
+      method: 'POST',
+      headers: originHeaders,
+      body: chunked,
+      duplex: 'half',
+    } as RequestInit));
+    expect(streamed.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await streamed.json()).error.message).toBe('Response is too large');
+    expect(pulled).toBeLessThanOrEqual(6);
+
+    let declaredPulls = 0;
+    const declaredBody = new ReadableStream<Uint8Array>({
+      pull(controller) {
+        declaredPulls += 1;
+        controller.enqueue(new Uint8Array(100));
+        controller.close();
+      },
+    });
+    const declared = await app.request(new Request('http://localhost/api/public/quotes/not-a-token/respond', {
+      method: 'POST',
+      headers: { ...originHeaders, 'Content-Length': '8192' },
+      body: declaredBody,
+      duplex: 'half',
+    } as RequestInit));
+    expect(declared.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await declared.json()).error.message).toBe('Response is too large');
+    // Undici prefetches one chunk when the Request is constructed. The handler
+    // rejects from Content-Length and does not read that chunk or pull another.
+    expect(declaredPulls).toBeLessThanOrEqual(1);
+  });
+
+  it('converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql: close } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Fraction Owner');
+        const customer = await seedCustomerAndProfile(app, owner.cookie);
+        const headers = { ...originHeaders, Cookie: owner.cookie };
+        const created = quoteSchema.parse(await (await app.request('/api/quotes', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            customerId: customer.id,
+            date: '2026-10-22',
+            expiryDate: '2099-01-01',
+            taxInclusive: false,
+            taxRate: '12.345',
+            discountType: 'percent',
+            discountPercent: '7.777',
+            items: [{ description: 'Labour', quantity: '1', rate: '100' }],
+          }),
+        })).json());
+        expect(created.taxRate).toBe('12.35');
+        expect(created.discountPercent).toBe('7.78');
+        expect(created.subtotal).toBe('100.00');
+        expect(created.discount).toBe('7.78');
+        expect(created.taxAmount).toBe('11.39');
+        expect(created.total).toBe('103.61');
+
+        await app.request('/api/business-profile', {
+          method: 'PUT',
+          headers,
+          body: JSON.stringify({
+            name: 'Kauri Studio Ltd',
+            email: 'hello@kauristudio.nz',
+            defaultTaxRate: '0',
+            paymentTermDays: 14,
+          }),
+        });
+        await app.request(`/api/quotes/${created.id}/mark-sent`, { method: 'POST', headers });
+        await app.request(`/api/quotes/${created.id}/status`, {
+          method: 'POST', headers, body: JSON.stringify({ status: 'accepted', name: 'Owner' }),
+        });
+        const converted = await app.request(`/api/quotes/${created.id}/convert`, { method: 'POST', headers });
+        expect(converted.status).toBe(200);
+        const body = await converted.json() as { invoice: { subtotal: string; taxAmount: string; discount: string | null; total: string; sourceQuoteId?: string } };
+        expect(body.invoice.subtotal).toBe(created.subtotal);
+        expect(body.invoice.taxAmount).toBe(created.taxAmount);
+        expect(body.invoice.discount).toBe(created.discount);
+        expect(body.invoice.total).toBe(created.total);
+        expect(body.invoice.sourceQuoteId).toBe(created.id);
       } finally {
         await close.end({ timeout: 5 });
       }

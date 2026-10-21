@@ -9,6 +9,7 @@ import type {
 import {
   publicQuoteResponseSchema,
   publicSharedQuoteSchema,
+  quoteSchema,
   shareQuoteResponseSchema,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
@@ -104,19 +105,34 @@ export async function createShareForUser(
   });
 }
 
-function present(quote: QuoteDto, templateData: { templateName?: string; businessProfile?: unknown }): PublicSharedQuote {
+function present(
+  live: QuoteDto,
+  share: { quoteData: unknown; templateData: unknown },
+): PublicSharedQuote {
+  const snapshot = quoteSchema.parse(share.quoteData);
+  const templateData = (share.templateData ?? {}) as { templateName?: string; businessProfile?: unknown };
+  const quote = {
+    ...snapshot,
+    status: live.status,
+    expiryDate: live.expiryDate,
+    sentAt: live.sentAt,
+    publicViewedAt: live.publicViewedAt,
+    respondedAt: live.respondedAt,
+    respondedByName: live.respondedByName,
+    responseNote: live.responseNote,
+    acceptedRevision: live.acceptedRevision,
+    convertedInvoiceId: live.convertedInvoiceId,
+    convertedInvoiceNumber: live.convertedInvoiceNumber,
+  };
   return publicSharedQuoteSchema.parse({
-    quote: {
-      ...quote,
-      status: quote.status,
-    },
-    templateName: templateData.templateName ?? quote.templateName ?? 'classic',
+    quote,
+    templateName: templateData.templateName ?? snapshot.templateName ?? 'classic',
     businessProfile: templateData.businessProfile,
-    status: quote.status,
-    expiryDate: quote.expiryDate,
-    respondedByName: quote.respondedByName,
-    responseNote: quote.responseNote,
-    respondedAt: quote.respondedAt,
+    status: live.status,
+    expiryDate: live.expiryDate,
+    respondedByName: live.respondedByName,
+    responseNote: live.responseNote,
+    respondedAt: live.respondedAt,
   });
 }
 
@@ -131,8 +147,7 @@ export async function getPublicSharedQuote(db: Database, token: string): Promise
         publicViewedAt: quote.publicViewedAt ? new Date(quote.publicViewedAt) : new Date(),
       })) ?? quote;
     }
-    const templateData = (share.templateData ?? {}) as { templateName?: string; businessProfile?: unknown };
-    return present(live, templateData);
+    return present(live, share);
   });
 }
 

@@ -110,8 +110,21 @@ export async function getInvoice(
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));
   if (!row) return undefined;
   const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
-  const sources = await sourceQuotesByInvoice(tx, organisationId);
-  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, sources.get(row.invoice.id));
+  const source = await sourceQuoteForInvoice(tx, organisationId, row.invoice.id);
+  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, source);
+}
+
+async function sourceQuoteForInvoice(
+  tx: Database,
+  organisationId: string,
+  invoiceId: string,
+): Promise<{ id: string; quoteNumber: string } | undefined> {
+  const [row] = await tx
+    .select({ id: quotes.id, quoteNumber: quotes.quoteNumber })
+    .from(quotes)
+    .where(and(eq(quotes.organisationId, organisationId), eq(quotes.convertedInvoiceId, invoiceId)))
+    .limit(1);
+  return row;
 }
 
 export async function insertInvoice(
