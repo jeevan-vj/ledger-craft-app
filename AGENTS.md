@@ -83,7 +83,7 @@ pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
 
 ## CI
 
-`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Mobile uses Node 20, `npm ci`, ESLint, `tsc --noEmit`, Jest, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Web lint, web typecheck, mobile lint, mobile typecheck, and mobile Jest compare counts with baselines in that workflow. The count gate fails when the count rises. A separate job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
+`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Web lint and web typecheck still compare counts with baselines in that workflow; the count gate fails when the count rises. Mobile uses Node 20 and `npm ci`. `npm run lint`, `npx tsc --noEmit`, and `npm test -- --ci --watchAll=false` fail the job directly. The mobile count gate is gone. The iOS export is `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. A separate job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
 `.github/workflows/release.yml` deploys on push to `main` with Node 24. It preserves the existing Worker `BETTER_AUTH_SECRET`.
 
