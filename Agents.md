@@ -118,9 +118,10 @@ when the count rises past the baseline recorded in the workflow. Mobile lint,
 `tsc --noEmit`, and Jest are hard checks: measured 2026-10-21 they report 0
 ESLint errors, 0 TypeScript errors, and 0 Jest failures, and the mobile job
 fails when any of those commands exits non-zero. ESLint warnings do not fail
-the job. `Build and Test` (`.github/workflows/deploy-only.yml`)
-still runs the Postgres API suite. The PR workflow does not start Postgres and
-does not deploy.
+the job. The API & contracts job uses the same pnpm
+install and cache on Node 24, and runs `pnpm test:api`, `pnpm test:contracts`,
+and `pnpm type-check:api`. The workflow does not start Postgres and does not
+deploy.
 
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
