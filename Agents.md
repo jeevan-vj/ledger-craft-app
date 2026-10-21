@@ -1,6 +1,6 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
-**Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0 when `EXPO_PUBLIC_SENTRY_DSN` is set. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the `SENTRY_AUTH_TOKEN` secret is present. Setup steps are in `mobile/SENTRY.md`.
+**Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
 
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
@@ -320,7 +320,7 @@ Orchestrator (parent chat) sequences waves. Do not mix UI redesign, TanStack Rou
 - **State Management**: Zustand 5.0+
 - **Backend**: Supabase (shared with web)
 - **Testing**: Jest with React Native Testing Library
-- **Crash reporting**: `@sentry/react-native` 7.2.0. Inactive until `EXPO_PUBLIC_SENTRY_DSN` is set. See `mobile/SENTRY.md`.
+- **Crash reporting**: `@sentry/react-native` 7.2.0. Preview and production EAS profiles set the DSN. Local runs, Jest, CI, and development profiles leave it unset. See `mobile/SENTRY.md`.
 - **Build & Deployment**: EAS Build (Expo Application Services)
 
 ### Backend & Infrastructure
@@ -1183,8 +1183,8 @@ npm run submit:android  # Submit to Google Play
 - Set in EAS secrets or `.env` file
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
-- `EXPO_PUBLIC_SENTRY_DSN` (client DSN; leave unset locally)
-- `SENTRY_ORG` and `SENTRY_AUTH_TOKEN` (EAS only; token uploads source maps)
+- `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (set on the preview and production profiles in `mobile/eas.json`; leave the DSN unset locally, in Jest, and in CI)
+- `SENTRY_AUTH_TOKEN` (optional EAS secret; uploads source maps; builds succeed without it)
 - `SENTRY_PROJECT=ledgercraft-mobile` (already set in `mobile/eas.json`)
 
 **Store Requirements**:

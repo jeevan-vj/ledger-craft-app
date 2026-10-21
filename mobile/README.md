@@ -34,5 +34,5 @@ npm run android
 
 Copy the Expo values from the repo `.env.example` into `mobile/.env`.
 
-Crash reporting is off until `EXPO_PUBLIC_SENTRY_DSN` is set. The EAS token and organization steps are in `SENTRY.md`.
+Crash reporting stays off for local runs. Preview and production EAS builds already include the DSN. The optional source-map token is in `SENTRY.md`.
 

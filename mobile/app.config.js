@@ -55,7 +55,7 @@ module.exports = {
       [
         '@sentry/react-native/expo',
         {
-          url: 'https://sentry.io/',
+          url: 'https://us.sentry.io/',
           organization: process.env.SENTRY_ORG,
           project: process.env.SENTRY_PROJECT || 'ledgercraft-mobile',
         },

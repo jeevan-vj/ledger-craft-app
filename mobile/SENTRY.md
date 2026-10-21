@@ -1,12 +1,23 @@
 # Mobile crash reporting
 
 The Expo app reports native crashes and JavaScript errors to Sentry with
-`@sentry/react-native` 7.2.0, the release Expo SDK 54 installs. Nothing is sent
-until `EXPO_PUBLIC_SENTRY_DSN` is set. Local development, Jest, and the iOS
-`expo export` in CI stay quiet without a DSN or an auth token.
+`@sentry/react-native` 7.2.0, the release Expo SDK 54 installs.
 
-The Sentry project slug is `ledgercraft-mobile`. The organization slug is
-whatever org you create the project in.
+The Sentry organization is `ledgercraft` in the US region. The project slug is
+`ledgercraft-mobile`. Preview and production builds in `eas.json` already set
+the public client DSN (`EXPO_PUBLIC_SENTRY_DSN`) and `SENTRY_ORG=ledgercraft`,
+so those builds report without anyone running `eas env:create` for the DSN.
+The DSN is a public client key. It is not an auth token.
+
+These stay off, with no DSN inlined:
+
+- `development` and `development-device` EAS profiles
+- Local `expo start` and a local `.env`
+- Jest
+- CI `npx expo export`
+
+`app.config.js` points the Expo plugin at `https://us.sentry.io/` so a later
+source-map upload reaches the US organization.
 
 ## What gets recorded
 
@@ -31,56 +42,43 @@ Tracing is sampled at 10%. Release and dist follow the installed app:
 `com.easybizinvoice.app@<version>+<build>`, with dist set to the build number.
 On a real build those values come from the native version and build number.
 
-## One-time Sentry setup
+## Optional source map upload
 
-1. In Sentry, create a project named `ledgercraft-mobile` and choose React Native.
-2. Copy the client DSN.
-3. Create an auth token at [Sentry auth tokens](https://sentry.io/settings/account/api/auth-tokens/)
-   with the `project:releases` and `org:read` scopes. This token uploads source
-   maps and debug symbols. It is not the DSN, and it must not be committed.
+Preview and production builds compile and report crashes without
+`SENTRY_AUTH_TOKEN`. That token is only for uploading source maps and debug
+symbols. Create one at
+[Sentry auth tokens](https://us.sentry.io/settings/account/api/auth-tokens/)
+with the `project:releases` and `org:read` scopes. Do not commit it.
 
-From `mobile/`, store them as EAS environment variables. Use the Expo account
-that owns project `7148323b-502c-447e-96c3-a5c1704c40c9`.
+From `mobile/`, on the Expo account that owns project
+`7148323b-502c-447e-96c3-a5c1704c40c9`:
 
 ```bash
-cd mobile
-eas env:create --name EXPO_PUBLIC_SENTRY_DSN --value "<dsn>" --visibility plaintext --environment preview --environment production
-eas env:create --name SENTRY_ORG --value "<org-slug>" --visibility plaintext --environment preview --environment production
 eas env:create --name SENTRY_AUTH_TOKEN --value "<token>" --visibility secret --environment preview --environment production
 ```
 
-`SENTRY_PROJECT=ledgercraft-mobile` is already set on the EAS build profiles in
-`eas.json`. Add the same `SENTRY_ORG` and `SENTRY_AUTH_TOKEN` variables to the
-`development` environment if you want symbol uploads from development-client
-builds.
-
-For a local release build, put the DSN in `mobile/.env` (this file is gitignored):
-
-```bash
-EXPO_PUBLIC_SENTRY_DSN=https://<public-key>@o<org-id>.ingest.sentry.io/<project-id>
-```
-
-Do not put `SENTRY_AUTH_TOKEN` in `mobile/.env` if that file is shared. Expo
-also reads it from the environment during an EAS or local native build.
+`SENTRY_PROJECT=ledgercraft-mobile` is already set on every EAS build profile.
+Leave `EXPO_PUBLIC_SENTRY_DSN` unset in `mobile/.env`.
 
 ## Source maps
 
 `app.config.js` includes the `@sentry/react-native/expo` plugin.
 `metro.config.js` uses `getSentryExpoConfig`, then NativeWind's
 `withNativeWind`, so bundles get a Sentry debug id. During an EAS build the
-plugin uploads source maps and iOS/Android debug symbols.
+plugin uploads source maps and iOS/Android debug symbols when the token above
+is present.
 
-The upload runs only when `SENTRY_AUTH_TOKEN` is present. A preview or
-production build without that token still compiles: the iOS build phase and
-the Android Gradle hook skip the upload. CI sets `SENTRY_DISABLE_AUTO_UPLOAD=true`
-on `npx expo export --platform ios` so that step never tries to upload.
+A preview or production build without that token still compiles: the iOS
+build phase and the Android Gradle hook skip the upload. CI sets
+`SENTRY_DISABLE_AUTO_UPLOAD=true` on `npx expo export --platform ios` so that
+step never tries to upload.
 
 `app.json` is not the config Expo uses. Plugins live in `app.config.js`.
 
 ## Check a preview build
 
-Expo Go cannot prove native crashes or symbolicated release stacks. Use an
-internal preview build after the three environment variables above exist:
+Expo Go cannot prove native crashes or symbolicated release stacks. The
+preview profile already includes the DSN:
 
 ```bash
 cd mobile
@@ -97,7 +95,9 @@ Sentry.captureException(new Error('Sentry preview test'));
 
 Confirm the issue arrives in the `ledgercraft-mobile` project, the release
 looks like `com.easybizinvoice.app@1.0.0+<build>`, and the stack points at
-your source file rather than a minified bundle. Then try a native crash from
+your source file rather than a minified bundle. Without `SENTRY_AUTH_TOKEN`
+the event still arrives, and the stack stays minified until that optional
+secret is added and a new build uploads symbols. Then try a native crash from
 a second temporary button and reinstall afterwards, because the app will close:
 
 ```tsx
