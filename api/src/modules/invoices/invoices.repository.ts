@@ -2,10 +2,11 @@ import {
   invoiceSchema,
   type InvoiceDto,
 } from '@ledgercraft/contracts';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, isNotNull } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { customers } from '../../db/schema/customers';
 import { invoices, lineItems } from '../../db/schema/invoices';
+import { quotes } from '../../db/schema/quotes';
 import { roundMoney } from './money';
 import type { ComputedInvoiceTotals } from './totals';
 
@@ -26,6 +27,7 @@ function toDto(
   row: typeof invoices.$inferSelect,
   lines: Array<ReturnType<typeof toLineDto>>,
   customerName: string | null,
+  sourceQuote?: { id: string; quoteNumber: string },
 ): InvoiceDto {
   return invoiceSchema.parse({
     id: row.id,
@@ -54,9 +56,29 @@ function toDto(
     currency: row.currency,
     customerName,
     items: lines,
+    ...(sourceQuote ? { sourceQuoteId: sourceQuote.id, sourceQuoteNumber: sourceQuote.quoteNumber } : {}),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
+}
+
+async function sourceQuotesByInvoice(
+  tx: Database,
+  organisationId: string,
+): Promise<Map<string, { id: string; quoteNumber: string }>> {
+  const rows = await tx
+    .select({
+      invoiceId: quotes.convertedInvoiceId,
+      id: quotes.id,
+      quoteNumber: quotes.quoteNumber,
+    })
+    .from(quotes)
+    .where(and(eq(quotes.organisationId, organisationId), isNotNull(quotes.convertedInvoiceId)));
+  const sources = new Map<string, { id: string; quoteNumber: string }>();
+  for (const row of rows) {
+    if (row.invoiceId) sources.set(row.invoiceId, { id: row.id, quoteNumber: row.quoteNumber });
+  }
+  return sources;
 }
 
 export async function listInvoices(tx: Database, organisationId: string): Promise<InvoiceDto[]> {
@@ -66,11 +88,12 @@ export async function listInvoices(tx: Database, organisationId: string): Promis
     .leftJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
     .where(eq(invoices.organisationId, organisationId))
     .orderBy(desc(invoices.date), desc(invoices.createdAt));
+  const sources = await sourceQuotesByInvoice(tx, organisationId);
 
   const result: InvoiceDto[] = [];
   for (const row of rows) {
     const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
-    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null));
+    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, sources.get(row.invoice.id)));
   }
   return result;
 }
@@ -87,7 +110,21 @@ export async function getInvoice(
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));
   if (!row) return undefined;
   const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
-  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null);
+  const source = await sourceQuoteForInvoice(tx, organisationId, row.invoice.id);
+  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, source);
+}
+
+async function sourceQuoteForInvoice(
+  tx: Database,
+  organisationId: string,
+  invoiceId: string,
+): Promise<{ id: string; quoteNumber: string } | undefined> {
+  const [row] = await tx
+    .select({ id: quotes.id, quoteNumber: quotes.quoteNumber })
+    .from(quotes)
+    .where(and(eq(quotes.organisationId, organisationId), eq(quotes.convertedInvoiceId, invoiceId)))
+    .limit(1);
+  return row;
 }
 
 export async function insertInvoice(

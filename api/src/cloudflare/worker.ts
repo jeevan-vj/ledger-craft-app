@@ -11,6 +11,7 @@ import { reportUnhandledError, setErrorReporter, type ErrorReport } from '../obs
 import { toRouteTemplate } from '../observability/scrub';
 import { isSentryDebugRouteEnabled, SENTRY_DEBUG_PATH, sentrySdkOptions } from '../observability/sentry-options';
 import { createSentryReporter, tagActiveRequest } from '../observability/sentry-reporter';
+import { publicLedgerOrganisationId } from './public-routes';
 import { durableDatabase, durableObjectStore, migrateStorage } from './storage';
 
 setErrorReporter(createSentryReporter());
@@ -110,7 +111,7 @@ class LedgerBase extends DurableObject<Env> {
           await db.insert(organisations).values(identity.organisation).onConflictDoNothing();
           await db.insert(organisationMemberships).values({id:identity.membership.id, userId:identity.user.id, organisationId:identity.organisation.id, role:identity.membership.role}).onConflictDoNothing();
         });
-      } else if (!/^\/api\/public\/invoices\/[0-9a-f-]{36}_[0-9a-f-]{36}$/.test(path)) {
+      } else if (!publicLedgerOrganisationId(path)) {
         return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
       }
       const sessionAuth = identity ? { api: {getSession: async () => ({user:identity.user})} } as unknown as Auth : undefined;
@@ -142,8 +143,8 @@ const worker = {
       if (isSentryDebugRouteEnabled(env) && path === SENTRY_DEBUG_PATH) {
         throw new Error('Sentry verification error');
       }
-      const publicShare = path.match(/^\/api\/public\/invoices\/([0-9a-f-]{36})_[0-9a-f-]{36}$/);
-      if (publicShare?.[1]) return await env.LEDGERS.getByName(publicShare[1]).dispatch(bound.request);
+      const publicOrganisationId = publicLedgerOrganisationId(path);
+      if (publicOrganisationId) return await env.LEDGERS.getByName(publicOrganisationId).dispatch(bound.request);
       if (path.startsWith('/api/')) return await env.IDENTITY.getByName('identity-v1').dispatch(bound.request);
       return failureResponse(404, 'NOT_FOUND', 'Not found', bound.requestId);
     } catch (error) {
