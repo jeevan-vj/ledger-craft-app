@@ -4,29 +4,34 @@ import * as Sharing from 'expo-sharing';
 import { Platform } from 'react-native';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
-import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
+import { generateInvoiceHTML, type DocumentLabels } from '@/utils/invoiceTemplates';
 
 const A4_WIDTH = 595;
 const A4_HEIGHT = 842;
 
-export function invoiceFileName(invoiceNumber: string): string {
+export interface DocumentFileOptions {
+  labels?: DocumentLabels;
+  filePrefix?: string;
+}
+
+export function invoiceFileName(invoiceNumber: string, filePrefix = 'Invoice'): string {
   const safeNumber = invoiceNumber
     .trim()
     .replace(/[^a-z0-9]+/gi, '-')
     .replace(/^-+|-+$/g, '');
-  return `Invoice-${safeNumber || 'Draft'}.pdf`;
+  return `${filePrefix}-${safeNumber || 'Draft'}.pdf`;
 }
 
 function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
-async function moveToNamedDocument(uri: string, invoice: Invoice): Promise<string> {
+async function moveToNamedDocument(uri: string, invoice: Invoice, filePrefix = 'Invoice'): Promise<string> {
   if (!FileSystem.documentDirectory) {
     return uri;
   }
 
-  const destination = `${FileSystem.documentDirectory}${invoiceFileName(invoice.invoiceNumber)}`;
+  const destination = `${FileSystem.documentDirectory}${invoiceFileName(invoice.invoiceNumber, filePrefix)}`;
   const existing = await FileSystem.getInfoAsync(destination);
   if (existing.exists) {
     await FileSystem.deleteAsync(destination, { idempotent: true });
@@ -40,15 +45,16 @@ export async function generateInvoicePDF(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
+  options?: DocumentFileOptions,
 ): Promise<string> {
   try {
     const { uri } = await Print.printToFileAsync({
-      html: generateInvoiceHTML(invoice, businessProfile, templateId),
+      html: generateInvoiceHTML(invoice, businessProfile, templateId, options?.labels),
       width: A4_WIDTH,
       height: A4_HEIGHT,
       base64: false,
     });
-    return await moveToNamedDocument(uri, invoice);
+    return await moveToNamedDocument(uri, invoice, options?.filePrefix);
   } catch (error) {
     throw new Error(`Could not generate the invoice PDF: ${errorMessage(error)}`);
   }
@@ -58,10 +64,11 @@ export async function printInvoicePDF(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
+  options?: DocumentFileOptions,
 ): Promise<void> {
   try {
     await Print.printAsync({
-      html: generateInvoiceHTML(invoice, businessProfile, templateId),
+      html: generateInvoiceHTML(invoice, businessProfile, templateId, options?.labels),
       width: A4_WIDTH,
       height: A4_HEIGHT,
     });
@@ -74,13 +81,14 @@ export async function shareInvoicePDF(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
+  options?: DocumentFileOptions,
 ): Promise<void> {
   try {
     if (!(await Sharing.isAvailableAsync())) {
       throw new Error('Sharing is not available on this device');
     }
 
-    const uri = await generateInvoicePDF(invoice, businessProfile, templateId);
+    const uri = await generateInvoicePDF(invoice, businessProfile, templateId, options);
     await Sharing.shareAsync(uri, {
       mimeType: 'application/pdf',
       dialogTitle: `Share ${invoice.invoiceNumber}`,
@@ -102,9 +110,10 @@ export async function downloadInvoicePDF(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
+  options?: DocumentFileOptions,
 ): Promise<string | null> {
-  const uri = await generateInvoicePDF(invoice, businessProfile, templateId);
-  const fileName = invoiceFileName(invoice.invoiceNumber);
+  const uri = await generateInvoicePDF(invoice, businessProfile, templateId, options);
+  const fileName = invoiceFileName(invoice.invoiceNumber, options?.filePrefix);
 
   if (Platform.OS === 'android' && FileSystem.StorageAccessFramework) {
     const permission = await FileSystem.StorageAccessFramework.requestDirectoryPermissionsAsync();

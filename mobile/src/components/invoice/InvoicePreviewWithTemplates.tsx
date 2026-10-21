@@ -12,7 +12,7 @@ import { WebView } from 'react-native-webview';
 import type { WebViewErrorEvent, WebViewHttpErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
-import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
+import { generateInvoiceHTML, type DocumentLabels } from '@/utils/invoiceTemplates';
 import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { control, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
@@ -24,6 +24,8 @@ interface InvoicePreviewWithTemplatesProps {
   invoice: Invoice;
   businessProfile?: BusinessProfile;
   initialTemplate?: InvoiceTemplateId;
+  labels?: DocumentLabels;
+  filePrefix?: string;
   onClose?: () => void;
   onCompleteProfile?: () => void;
 }
@@ -32,6 +34,8 @@ export default function InvoicePreviewWithTemplates({
   invoice,
   businessProfile,
   initialTemplate = 'classic',
+  labels,
+  filePrefix,
   onClose,
   onCompleteProfile,
 }: InvoicePreviewWithTemplatesProps) {
@@ -47,8 +51,8 @@ export default function InvoicePreviewWithTemplates({
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const html = useMemo(
-    () => generateInvoiceHTML(invoice, businessProfile, selectedTemplate),
-    [businessProfile, invoice, selectedTemplate],
+    () => generateInvoiceHTML(invoice, businessProfile, selectedTemplate, labels),
+    [businessProfile, invoice, labels, selectedTemplate],
   );
 
   const selectTemplate = (templateId: InvoiceTemplateId) => {
@@ -72,7 +76,7 @@ export default function InvoicePreviewWithTemplates({
   const sharePDF = async () => {
     try {
       setIsSharing(true);
-      await shareInvoicePDF(invoice, businessProfile, selectedTemplate);
+      await shareInvoicePDF(invoice, businessProfile, selectedTemplate, { labels, filePrefix });
     } catch (shareError) {
       Alert.alert(
         'Unable to share PDF',
