@@ -23,7 +23,7 @@ Read, in order:
 3. **Red** — add a failing test for the transport or form/domain rule before production code.
 4. **Green** — implement through the existing authenticated API client, TanStack Query, React Navigation, and mobile design primitives. Keep exact money as decimal text across API/form boundaries.
 5. **Verify** — run focused tests, strict TypeScript, the full mobile Jest suite, lint, and iOS/Android production exports. Perform authenticated native QA only when a safe test session is available; otherwise name it as pending.
-6. **Sync** — update present-tense status in `TARGET_ARCHITECTURE.md`, `Agents.md`, bootstrap, and the parity backlog when capability status changed.
+6. **Sync** — update present-tense status in `TARGET_ARCHITECTURE.md`, `AGENTS.md`, bootstrap, and the parity backlog when capability status changed.
 7. **Review** — inspect the complete diff against the intended base. Fix correctness, accessibility, error/empty/loading states, and any new lint warnings.
 8. **PR** — only when the initiating user or automation prompt authorizes GitHub writes: commit, push the feature branch, open one PR, attach it to the task, and report verification plus remaining gaps.
 9. **Wait** — do not pick another feature until that PR is merged or explicitly abandoned. On later runs, repair actionable CI/review failures before new work.

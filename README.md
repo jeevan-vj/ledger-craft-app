@@ -1,311 +1,141 @@
-# EasyBizInvoice - Effortless Invoicing & Business Management
+# EasyBizInvoice
 
-A modern PWA for invoicing and business management, built with React, TypeScript, and Supabase.
+EasyBizInvoice (repository `ledger-craft-app`) is the invoicing and business-management app. The web client is a Vite PWA on Cloudflare Pages. The API is Hono with Better Auth, deployed as a Cloudflare Worker that stores data in SQLite-backed Durable Objects. The Expo app lives in `mobile/`.
 
-## Key Features
+Production site: https://easybiz.iamjeevan.com
 
-- 💰 **Expense Tracking**: Comprehensive expense management and categorization
-- 🧾 **Invoice Generation**: Create, edit, and share professional invoices
-- 🏦 **Bank Account Management**: Multi-account support with transaction imports
-- 📊 **CSV Transaction Import**: Upload and process bank statements automatically
-- 📱 **PWA Support**: Works offline with app installation capability
-- 🔐 **Secure Authentication**: User management with Supabase Auth
-- 📈 **Financial Reporting**: Generate reports for tax and business purposes
-- 🎯 **Smart Categorization**: Automatic transaction categorization
-- 🔄 **Real-time Sync**: Live data synchronization across devices
+Pages project `ledger-craft-app` also serves https://ledger-craft-app.pages.dev. The Worker is `ledgercraft-api` at https://ledgercraft-api.jeevan90wijerathna.workers.dev. The Pages Function `functions/api/[[path]].ts` proxies `/api/*` to that Worker.
 
-## Quick Start
+## Stack
 
-```bash
-# Install dependencies
-npm install
+| Piece | What the repo uses |
+| --- | --- |
+| Web | React 18, TypeScript, Vite 5, Tailwind CSS, React Router, TanStack Query, `vite-plugin-pwa`. Source is `src/`. |
+| API | Hono, Better Auth, Drizzle, Zod. Package `@ledgercraft/api` in `api/`. Local development uses Node's SQLite driver (`api/src/db/local.ts`). Production uses one Identity Durable Object for auth and one Ledger Durable Object per organisation (`deploy/api/wrangler.jsonc`). |
+| Contracts | `@ledgercraft/contracts` in `packages/contracts` (Zod DTOs). The web app depends on it with `workspace:*`. |
+| Mobile | Expo SDK 54 (`expo` `~54.0.20`), React Native 0.81.5, `@sentry/react-native` `~7.2.0`, in `mobile/`. Installed display name `easybizinvoice`. |
+| Workspace | pnpm `11.19.0` (`package.json` `packageManager`). `pnpm-workspace.yaml` includes `api` and `packages/contracts`. `mobile/` is outside the workspace and uses npm. |
 
-# Start development server
-npm run dev
+Reviewed SQLite SQL is in `api/sqlite-migrations/`. Deployment details, including what the free Cloudflare plan does and does not include, are in `deploy/cloudflare.md`. `docs/CLOUDFLARE_DEPLOYMENT.md` points at that runbook.
 
-# Run unit tests
-npm test
+## Monitoring
 
-# Run E2E tests (requires dev server running)
-npx playwright test
-```
+Web browser errors go to Sentry when `VITE_SENTRY_DSN` is set at build time. Setup, source maps, and the verification checklist are in `docs/sentry-web.md`. The SDK is `@sentry/react`. With no DSN, the production bundle omits it.
 
-## Project info
+The API Worker reports unhandled errors with `@sentry/cloudflare` when `SENTRY_ENVIRONMENT` is `production`. The public DSN is `SENTRY_DSN` in `deploy/api/wrangler.jsonc`. Organisation `ledgercraft`, project `ledgercraft-api`. The behaviour, scrubbing rules, and the one-off debug route are in `deploy/cloudflare.md` under "Error monitoring (Sentry)".
 
-**URL**: https://easybizinvoice.com
+The Expo app reports native crashes and JavaScript errors with `@sentry/react-native`. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (project `ledgercraft-mobile`). Local Expo, Jest, CI, and the development profiles leave the DSN unset. EAS uploads source maps only when the optional `SENTRY_AUTH_TOKEN` secret is present. Setup is in [`mobile/SENTRY.md`](mobile/SENTRY.md).
 
-## How can I edit this code?
+Cloudflare Worker observability is also enabled in `deploy/api/wrangler.jsonc`.
 
-There are several ways of editing your application.
+## Install
 
-**Use Lovable**
+Web CI uses Node 22. Mobile CI uses Node 20. `pnpm deploy:check`, `pnpm deploy:cloudflare`, and `.github/workflows/release.yml` require Node.js 24 or newer.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/7aac0ff4-53ad-4885-a53b-af239ec30b67) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-- Supabase (Backend & Database)
-- Playwright (E2E Testing)
-- Vitest (Unit Testing)
-
-## Testing
-
-This project includes comprehensive testing coverage with both unit tests and end-to-end (E2E) tests.
-
-### Unit Tests
-
-Unit tests are built with **Vitest** and **React Testing Library** for component and service testing.
-
-#### Running Unit Tests
+From the repository root, with the pnpm version pinned in `package.json`:
 
 ```bash
-# Run all unit tests
-npm test
-
-# Run tests in watch mode
-npm run test:watch
-
-# Run tests with coverage report
-npm run test:coverage
-
-# Run specific test file
-npm test -- bankAccountService.test.ts
-
-# Run tests matching a pattern
-npm test -- --run src/components/bank-account/
+pnpm install --frozen-lockfile
 ```
 
-#### Unit Test Coverage
-
-- ✅ **Service Layer**: Bank account management, CSV parsing, transaction import
-- ✅ **Components**: Bank account dialog, file upload zone
-- ✅ **Utilities**: CSV column mapping, transaction categorization
-- ✅ **Validation**: Form validation, data validation
-
-### End-to-End (E2E) Tests
-
-E2E tests are built with **Playwright** and test the complete user workflows with real database interactions.
-
-#### Prerequisites for E2E Tests
-
-1. **Running Development Server**: Ensure the app is running on `http://localhost:8081`
-2. **Environment Variables**: Set up required environment variables for test authentication
-3. **User Credentials**: Tests use real authentication with provided credentials
-4. **Supabase Access**: Tests interact with the actual Supabase database
-
-#### Environment Setup for E2E Tests
-
-Create a `.env.local` file with the following variables:
+The workspace lockfile is `pnpm-lock.yaml`. `mobile/package-lock.json` is the npm lockfile for the Expo app.
 
 ```bash
-# E2E Testing Configuration
-E2E_TEST_EMAIL=your_test_user_email@example.com
-E2E_TEST_PASSWORD=your_test_user_password
-```
-
-**Note**: Use a dedicated test user account. Do not use production user credentials.
-
-#### Running E2E Tests
-
-```bash
-# Install Playwright browsers (first time only)
-npx playwright install
-
-# Run all E2E tests
-npx playwright test
-
-# Run specific test suite
-npx playwright test transaction-import-simple.spec.ts
-
-# Run with browser UI visible (headed mode)
-npx playwright test --headed
-
-# Run specific test by name
-npx playwright test -g "Complete transaction import workflow"
-
-# Run tests in a specific browser
-npx playwright test --project=chromium
-npx playwright test --project=firefox
-npx playwright test --project=webkit
-
-# Run tests with debugging
-npx playwright test --debug
-
-# Generate test report
-npx playwright show-report
-```
-
-#### E2E Test Coverage
-
-**Transaction Import Workflow:**
-- ✅ User authentication and login
-- ✅ Bank account creation and validation
-- ✅ Navigation between pages
-- ✅ CSV file upload and processing
-- ✅ Column mapping and data preview
-- ✅ Transaction import and completion
-- ✅ Data persistence verification
-- ✅ Error handling and validation
-
-**Test Scenarios:**
-1. **Complete Import Flow**: Full workflow from login to transaction import
-2. **Validation Testing**: Form validation and error handling
-3. **File Upload Testing**: Invalid file handling and user feedback
-
-#### E2E Test Files
-
-- `tests/e2e/transaction-import-simple.spec.ts` - Main transaction import tests
-- `tests/e2e/debug-login.spec.ts` - Login flow debugging
-- `tests/e2e/auth-utils.ts` - Authentication utilities (for mocked tests)
-
-#### Sample Test Data
-
-Tests use realistic CSV transaction data:
-```csv
-Date,Description,Amount,Balance
-15/01/2024,"EFTPOS PURCHASE 123 NEW WORLD AUCKLAND",-45.67,1234.56
-16/01/2024,"SALARY PAYMENT - ACME CORP",2500.00,3734.56
-17/01/2024,"AUTOMATIC PAYMENT - POWER COMPANY",-120.50,3614.06
-```
-
-### Test Configuration
-
-#### Playwright Configuration
-
-- **Base URL**: `http://localhost:8081`
-- **Browsers**: Chromium, Firefox, WebKit, Mobile Chrome, Mobile Safari
-- **Timeout**: 120 seconds per test
-- **Retries**: 2 retries on CI, 0 locally
-- **Screenshots**: On failure only
-- **Videos**: Retained on failure
-
-#### Vitest Configuration
-
-- **Environment**: jsdom
-- **Setup Files**: `src/test/setup.ts`
-- **Coverage**: Text, JSON, and HTML reports
-- **Global**: True (no need to import test functions)
-
-### Running Tests in CI/CD
-
-Tests can be integrated into CI/CD pipelines:
-
-```bash
-# Install dependencies
+cd mobile
 npm ci
+```
 
-# Install Playwright browsers
-npx playwright install --with-deps
+## Run the web app and API
 
-# Run unit tests
+`pnpm db:migrate` applies `api/sqlite-migrations/` to the local SQLite file only. `api/src/env.ts` uses `DATABASE_URL`, or `.data/ledgercraft.sqlite` when that variable is unset. Pass an absolute path so the API and the migrator open the same file:
+
+```bash
+DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm db:migrate
+DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm dev:api
+pnpm dev
+```
+
+`pnpm dev:api` listens on `127.0.0.1:3001` (`API_PORT` overrides the port). `pnpm dev` starts Vite on port 8080 and proxies `/api` to `127.0.0.1:3001` (`vite.config.ts`).
+
+`.env.example` still lists Postgres URLs on port 55432. Those match `pnpm db:up` and `scripts/dev.sh`. The Node API opens SQLite, so a Postgres `DATABASE_URL` is the wrong file for `pnpm dev:api`. `pnpm dev:stack` and `pnpm start` both run `scripts/dev.sh`, which starts that Docker Postgres stack and then the API and Vite.
+
+To exercise the Worker and Durable Objects locally:
+
+```bash
+pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
+```
+
+A development Better Auth secret belongs in Wrangler's local secret file. `deploy/cloudflare.md` describes that setup. Production `BETTER_AUTH_SECRET` stays on the Worker.
+
+## Run the mobile app
+
+```bash
+cd mobile
+npm start
+npm run ios
+npm run android
+```
+
+`EXPO_PUBLIC_API_URL` defaults to `http://127.0.0.1:3001` in `mobile/src/features/auth/api/http.ts`. Android emulator and device hosts are noted in `.env.example`.
+
+Business Settings → Appearance edits the invoice palette. It offers the same six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Invalid hex is rejected. Save calls `updateBusinessProfile({ theme })` with the contract colours only.
+
+Invoice preview and PDF HTML use that saved theme. `resolveInvoiceTheme` (`mobile/src/utils/invoiceTheme.ts`) fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. The classic, modern, minimal, executive, corporate, and modern pro templates use those tokens. Text on a brand fill switches to dark ink when white would be unreadable.
+
+## Test
+
+Web and shared packages, from the repository root:
+
+```bash
+pnpm test:run
+pnpm test:api
+pnpm test:contracts
+pnpm type-check
+pnpm type-check:api
+pnpm lint
+pnpm test:e2e
+```
+
+`pnpm test` starts Vitest in watch mode. `pnpm test:e2e` runs Playwright with `baseURL` `http://localhost:8080` (`playwright.config.ts`). `pnpm verify:w1` runs contract tests, API tests, and the API plus contracts typecheck. `verify:w2` through `verify:w13` in `package.json` alias that same command.
+
+Mobile, from `mobile/`:
+
+```bash
 npm test
-
-# Start development server in background
-npm run dev &
-
-# Wait for server to be ready
-npx wait-on http://localhost:8081
-
-# Run E2E tests
-npx playwright test
-
-# Stop development server
-pkill -f "npm run dev"
+npm run lint
+npm run type-check
 ```
 
-### Test Data Management
+Pull-request CI (`.github/workflows/ci.yml`) installs with `pnpm install --frozen-lockfile` on Node 22 and runs web lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test -- --ci --watchAll=false`, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Mobile lint, typecheck, and Jest fail the job directly. Web lint and web typecheck still compare error counts with baselines in that workflow. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
-- **Unit Tests**: Use mocked data and services
-- **E2E Tests**: Create and clean up test data automatically
-- **Database**: E2E tests use real Supabase database with cleanup procedures
+## Deploy
 
-### Debugging Tests
+Local validation, then a real release. Both require Node.js 24 or newer and an authenticated Wrangler session. `pnpm deploy:check` does not change production.
 
-#### Unit Tests
 ```bash
-# Debug specific test
-npm test -- --run --reporter=verbose bankAccountService.test.ts
-
-# Debug with browser tools (for UI components)
-npm test -- --run --inspect-brk
+pnpm install --frozen-lockfile
+pnpm run deploy:check
+pnpm run deploy:cloudflare
+pnpm run deploy:help
 ```
 
-#### E2E Tests
+`pnpm deploy:cloudflare` checks the repo, deploys the Worker, publishes Pages, and runs the live checks described in `deploy/cloudflare.md`. It preserves an existing `BETTER_AUTH_SECRET`.
+
+Schema changes start in `api/src/db/schema/`, then:
+
 ```bash
-# Debug mode with step-by-step execution
-npx playwright test --debug
-
-# Headed mode to see browser actions
-npx playwright test --headed --slowMo=1000
-
-# Generate trace for failed tests
-npx playwright test --trace=on-failure
-
-# View trace files
-npx playwright show-trace trace.zip
+pnpm db:generate --name describe_the_change
 ```
 
-### Test Best Practices
+Review the new SQL in `api/sqlite-migrations/` and leave already-deployed files unchanged. `pnpm db:migrate` applies that SQL to local SQLite. Production Durable Objects apply the bundled files when each object next starts.
 
-1. **Isolation**: Each test should be independent and clean up after itself
-2. **Real Data**: E2E tests use real authentication and database interactions
-3. **Error Handling**: Tests verify both success and failure scenarios
-4. **User Experience**: Tests follow actual user workflows
-5. **Performance**: Tests include timeout and performance considerations
+`.github/workflows/release.yml` deploys the Worker and Pages after the `CI` workflow succeeds on a push to `main`, using that run's head SHA. It uploads Sentry source maps when `SENTRY_AUTH_TOKEN` is set and checks API readiness. Manual `workflow_dispatch` from `main` remains. See `docs/sentry-web.md` and the Sentry section of `deploy/cloudflare.md`.
 
-## How can I deploy this project?
+Android store builds from `mobile/`:
 
-Simply open [Lovable](https://lovable.dev/projects/7aac0ff4-53ad-4885-a53b-af239ec30b67) and click on Share -> Publish.
+```bash
+npm run build:android
+npm run submit:android
+```
 
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+Preview and development profiles are `npm run build:android:preview` and `npm run build:android:development`. iOS release steps are in `.cursor/skills/ledgercraft-mobile-release/SKILL.md`.
