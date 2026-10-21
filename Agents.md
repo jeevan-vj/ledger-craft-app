@@ -1,5 +1,13 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile invoice themes (implemented locally, 2026-10-21):** Invoice preview
+and PDF HTML read the loaded business profile `theme`. Missing or invalid
+tokens fall back through `resolveInvoiceTheme` to the mobile default palette,
+including background `#F5F6F3`. Classic, modern, minimal, executive, corporate,
+and modern pro templates paint with those tokens, and text on a brand fill
+switches to dark ink when white would be unreadable. Money and GST totals are
+unchanged.
+
 **Mobile invoice theme editor (implemented locally, 2026-10-21):** Business Settings → Appearance edits the invoice palette. It offers the same six web presets and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Save persists `updateBusinessProfile({ theme })` using contract colours only. Strict TypeScript, all 36 Jest suites (138 tests), and lint with no errors pass.
 
 **Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.

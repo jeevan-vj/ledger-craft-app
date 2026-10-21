@@ -1,5 +1,12 @@
 # LedgerCraft target architecture
 
+**Mobile invoice themes (implemented locally, 2026-10-21):** Expo invoice
+preview and PDF HTML use the business profile theme. `resolveInvoiceTheme`
+fills missing colours from the mobile default palette, whose background is
+`#F5F6F3`. The six print templates use the same colour roles as the web
+templates for a given theme, with readable ink on brand fills. Totals math is
+unchanged.
+
 **Mobile invoice theme editor (implemented locally, 2026-10-21):** Business
 Settings → Appearance replaces the coming-soon placeholder with the six web
 invoice presets (blue, purple, green, red, pink, slate) and hex fields for
