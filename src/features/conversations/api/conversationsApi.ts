@@ -5,27 +5,23 @@ import type {
   CreateConversationRequest,
   UpdateConversationRequest,
 } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 
 export function conversationsApiEnabled(): boolean {
   return import.meta.env.VITE_CONVERSATIONS_API === 'true';
 }
 
 export class ConversationsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ConversationsApiError';
-  }
-}
-
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
+    this.requestId = requestId;
   }
 }
 
@@ -39,7 +35,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (response.status === 204) return undefined as T;
-  if (!response.ok) throw new ConversationsApiError(await parseError(response), response.status);
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new ConversationsApiError(failure.message, failure.status, failure.requestId);
+  }
   return (await response.json()) as T;
 }
 

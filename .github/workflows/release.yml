@@ -83,11 +83,23 @@ jobs:
           NODE_ENV: production
           VITE_OPENAI_API_KEY: ''
           VITE_RESEND_API_KEY: ''
+          VITE_SENTRY_DSN: ${{ vars.VITE_SENTRY_DSN }}
+          VITE_SENTRY_TRACES_SAMPLE_RATE: ${{ vars.VITE_SENTRY_TRACES_SAMPLE_RATE }}
+          VITE_SENTRY_RELEASE: ${{ github.sha }}
         run: |
           for n in CUSTOMERS BUSINESS ITEMS INVOICES EXPENSES PAYMENTS ACCOUNTS BANK RECONCILIATION TAX STORAGE RECEIPTS AI CONVERSATIONS JOURNALS; do
             export "VITE_${n}_API=true"
           done
           pnpm build
+      - name: Upload web source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT || 'ledgercraft-web' }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: node scripts/upload-web-sourcemaps.mjs
+      - name: Remove source maps from the published web bundle
+        run: node scripts/delete-sourcemaps.mjs dist
       - name: Check Cloudflare access and existing signing secret
         shell: bash
         run: |

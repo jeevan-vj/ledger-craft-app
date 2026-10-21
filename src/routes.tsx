@@ -1,5 +1,9 @@
 import React, { lazy, Suspense } from "react";
-import { createBrowserRouter, Outlet, RouteObject } from "react-router-dom";
+import { Outlet, RouteObject } from "react-router-dom";
+import { RouteErrorFallback } from "@/components/errors/AppErrorFallback";
+import { createSentryBrowserRouter, initSentry } from "@/lib/sentry/init";
+
+initSentry();
 import { AppLayout } from "@/components/layout/AppLayout";
 import { Spinner } from "@/components/ui/spinner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -88,6 +92,7 @@ const Root = () => {
 const appRoutes: RouteObject[] = [
   {
     element: <Root />,
+    errorElement: <RouteErrorFallback />,
     children: [
       {
         path: "/login",
@@ -123,6 +128,7 @@ const appRoutes: RouteObject[] = [
       },
       {
         path: "/",
+        errorElement: <RouteErrorFallback />,
         element: (
           <ProtectedRoute>
             <SuspenseWrapper>
@@ -236,10 +242,12 @@ const appRoutes: RouteObject[] = [
       {
         path: "/public/invoice/:invoiceId",
         element: <SuspenseWrapper><PublicInvoice /></SuspenseWrapper>,
+        errorElement: <RouteErrorFallback />,
       },
       {
         path: "/shared/invoice/:shareToken",
         element: <SuspenseWrapper><SharedInvoice /></SuspenseWrapper>,
+        errorElement: <RouteErrorFallback />,
       },
       {
         path: "*",
@@ -249,4 +257,4 @@ const appRoutes: RouteObject[] = [
   }
 ];
 
-export const router = createBrowserRouter(appRoutes);
+export const router = createSentryBrowserRouter(appRoutes);

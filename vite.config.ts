@@ -27,6 +27,9 @@ export default defineConfig(({ mode }) => ({
     __VERSION_POLLING_ENABLED__: mode === 'production',
     __FOCUS_CHECKS_ENABLED__: mode === 'production',
   },
+  build: {
+    sourcemap: mode === "production" ? "hidden" : false,
+  },
   plugins: [
     react(),
     mode === 'development' &&
@@ -35,6 +38,7 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       workbox: {
         // Aggressive cache busting strategies
+        globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js', '**/*.map'],
         skipWaiting: true,
         clientsClaim: true,
         runtimeCaching: [

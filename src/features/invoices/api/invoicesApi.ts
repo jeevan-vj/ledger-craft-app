@@ -8,6 +8,7 @@ import type {
   UpdateInvoiceRequest,
 } from '@ledgercraft/contracts';
 import type { Invoice, LineItem } from '@/types';
+import { readApiFailure } from '@/lib/api/readApiError';
 import { toProfile } from '@/features/business-profile/api/businessProfileApi';
 
 export function invoicesApiEnabled(): boolean {
@@ -15,13 +16,17 @@ export function invoicesApiEnabled(): boolean {
 }
 
 export class InvoicesApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
     readonly code?: string,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'InvoicesApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -125,15 +130,6 @@ export function toCreateInvoiceRequest(
   };
 }
 
-async function parseError(response: Response): Promise<{ message: string; code?: string }> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string; code?: string } };
-    return { message: body.error?.message ?? response.statusText, code: body.error?.code };
-  } catch {
-    return { message: response.statusText };
-  }
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -145,8 +141,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    const parsed = await parseError(response);
-    throw new InvoicesApiError(parsed.message, response.status, parsed.code);
+    const failure = await readApiFailure(response);
+    throw new InvoicesApiError(failure.message, failure.status, failure.code, failure.requestId);
   }
   return (await response.json()) as T;
 }

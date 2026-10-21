@@ -1,4 +1,5 @@
 import type { ReceiptScanResultDto } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { ReceiptScanResult } from '@/types/receipt';
 
 export function aiApiEnabled(): boolean {
@@ -6,21 +7,16 @@ export function aiApiEnabled(): boolean {
 }
 
 export class ReceiptScanApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ReceiptScanApiError';
-  }
-}
-
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
+    this.requestId = requestId;
   }
 }
 
@@ -32,7 +28,8 @@ export async function scanReceiptImage(imageBase64: string, contentType?: string
     body: JSON.stringify({ imageBase64, contentType }),
   });
   if (!response.ok) {
-    throw new ReceiptScanApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new ReceiptScanApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as ReceiptScanResultDto;
 }

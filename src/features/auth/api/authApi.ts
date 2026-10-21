@@ -1,24 +1,17 @@
 import { meResponseSchema, type MeResponse } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 
 export class AuthApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'AuthApiError';
-  }
-}
-
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as {
-      error?: { message?: string };
-      message?: string;
-    };
-    return body.error?.message ?? body.message ?? response.statusText;
-  } catch {
-    return response.statusText;
+    this.requestId = requestId;
   }
 }
 
@@ -32,7 +25,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (!response.ok) {
-    throw new AuthApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new AuthApiError(failure.message, failure.status, failure.requestId);
   }
   if (response.status === 204) {
     return undefined as T;
@@ -50,7 +44,8 @@ export async function getMe(): Promise<MeResponse | null> {
     return null;
   }
   if (!response.ok) {
-    throw new AuthApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new AuthApiError(failure.message, failure.status, failure.requestId);
   }
   return meResponseSchema.parse(await response.json());
 }

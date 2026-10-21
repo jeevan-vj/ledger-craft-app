@@ -59,6 +59,22 @@ describe('authApi', () => {
     await expect(getMe()).resolves.toBeNull();
   });
 
+  it('keeps the API request id when sign-in fails', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      jsonResponse(
+        { error: { code: 'UNAUTHORIZED', message: 'Invalid email or password', requestId: 'req_signin' } },
+        401,
+      ),
+    );
+
+    await expect(signInEmail({ email: 'a@example.com', password: 'password123' })).rejects.toMatchObject({
+      name: 'AuthApiError',
+      message: 'Invalid email or password',
+      status: 401,
+      requestId: 'req_signin',
+    });
+  });
+
   it('signs out through /api/auth/sign-out', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({}));
 
