@@ -1,13 +1,14 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
+
 **Mobile home actions (fixed locally, 2026-10-21):** The Expo Home screen uses
 four equal quick-action tiles: new invoice, record payment, add expense, and
 add customer. Record payment opens the invoice list, which already captures a
 payment when an invoice is marked paid. `AppPressable` opts style callbacks out
 of NativeWind's Pressable wrapper, which otherwise drops them. Dismissing the
-setup task persists in SecureStore. Strict TypeScript and all 29 mobile Jest
-suites (108 tests) pass, and mobile lint reports no errors. Native Home
-screenshots were not captured here.
+setup task persists in SecureStore. Native Home screenshots were not captured
+here.
 
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
@@ -25,7 +26,7 @@ theme, which omitted `background`, by filling `#F5F6F3`. New builds send
 Validation and server failures use plain language plus a support reference when
 the response includes a request id. Web API errors use the same wording. A
 rejected upsert does not leave a business profile. Strict mobile TypeScript,
-all 29 Jest suites (108 tests), lint with no errors (90 existing warnings),
+all 35 Jest suites (132 tests), lint with no errors (90 existing warnings),
 all 29 API suites (79 tests), and all 18 contract suites (58 tests) pass.
 Authenticated device QA and a production Worker deploy of this finish-setup
 fix remain pending.
@@ -341,6 +342,7 @@ Orchestrator (parent chat) sequences waves. Do not mix UI redesign, TanStack Rou
 - **State Management**: Zustand 5.0+
 - **Backend**: Supabase (shared with web)
 - **Testing**: Jest with React Native Testing Library
+- **Crash reporting**: `@sentry/react-native` 7.2.0. Preview and production EAS profiles set the DSN. Local runs, Jest, CI, and development profiles leave it unset. See `mobile/SENTRY.md`.
 - **Build & Deployment**: EAS Build (Expo Application Services)
 
 ### Backend & Infrastructure
@@ -1203,6 +1205,9 @@ npm run submit:android  # Submit to Google Play
 - Set in EAS secrets or `.env` file
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (set on the preview and production profiles in `mobile/eas.json`; leave the DSN unset locally, in Jest, and in CI)
+- `SENTRY_AUTH_TOKEN` (optional EAS secret; uploads source maps; builds succeed without it)
+- `SENTRY_PROJECT=ledgercraft-mobile` (already set in `mobile/eas.json`)
 
 **Store Requirements**:
 - See `mobile/PLAY_STORE_CHECKLIST.md` for complete checklist

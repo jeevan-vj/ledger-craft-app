@@ -9,7 +9,7 @@
 
 import React, { useEffect } from 'react';
 import { View, ActivityIndicator, StyleSheet } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Animated, {
   useSharedValue,
@@ -26,6 +26,7 @@ import { createNavigationTheme } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import { rootNavigatorOptions } from '@/utils/navigationAnimations';
 import { mobileLinking } from './links';
+import { registerNavigationContainer, setSentryUser } from '@/observability/sentry';
 import PublicInvoiceScreen from '@/screens/invoices/PublicInvoiceScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -73,6 +74,7 @@ function AnimatedLoadingScreen() {
 
 export default function RootNavigator() {
   const theme = useTheme();
+  const navigationRef = useNavigationContainerRef<RootStackParamList>();
   const { user, loading, hasCompletedOnboarding, onboardingChecked } = useAuth();
 
   useEffect(() => {
@@ -83,6 +85,10 @@ export default function RootNavigator() {
     });
   }, []);
 
+  useEffect(() => {
+    setSentryUser(user?.id ?? null);
+  }, [user?.id]);
+
   // Show animated loading screen while checking auth
   if (loading || !onboardingChecked) {
     return <AnimatedLoadingScreen />;
@@ -90,8 +96,12 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer
+      ref={navigationRef}
       theme={createNavigationTheme(theme.colors, theme.isDark)}
       linking={mobileLinking}
+      onReady={() => {
+        registerNavigationContainer(navigationRef);
+      }}
     >
       <Stack.Navigator
         initialRouteName={user && hasCompletedOnboarding ? 'Main' : 'Auth'}
