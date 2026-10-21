@@ -15,6 +15,8 @@ describe('route templates', () => {
   it('replaces a public invoice share token with a route parameter', () => {
     expect(toRouteTemplate(sharePath)).toBe('/api/public/invoices/:token');
     expect(toRouteTemplate(`https://easybiz.example${sharePath}?download=1`)).toBe('/api/public/invoices/:token');
+    expect(toRouteTemplate(`/api/public/quotes/${orgId}_${shareToken}`)).toBe('/api/public/quotes/:token');
+    expect(toRouteTemplate(`/api/public/quotes/${orgId}_${shareToken}/respond`)).toBe('/api/public/quotes/:token/respond');
   });
 
   it('parameterises id segments and leaves stable auth paths', () => {

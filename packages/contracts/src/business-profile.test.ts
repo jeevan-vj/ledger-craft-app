@@ -24,6 +24,10 @@ describe('business profile contracts', () => {
     theme: null,
     invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
     invoiceNumberSequence: 1,
+    quoteNumberFormat: 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: 1,
+    quoteValidityDays: 30,
+    defaultQuoteKind: 'quote' as const,
     createdAt: '2026-09-07T00:00:00.000Z',
     updatedAt: '2026-09-07T00:00:00.000Z',
   };
@@ -111,6 +115,38 @@ describe('business profile contracts', () => {
       gstRegistrationStatus: 'not_registered',
       defaultTaxRate: '0',
     });
+  });
+
+  it('fills quote settings on older profile snapshots and accepts edits', () => {
+    const { quoteNumberFormat, quoteNumberSequence, quoteValidityDays, defaultQuoteKind, ...legacy } = profile;
+    const parsed = businessProfileSchema.parse(legacy);
+    expect(parsed.quoteNumberFormat).toBe(quoteNumberFormat);
+    expect(parsed.quoteNumberSequence).toBe(quoteNumberSequence);
+    expect(parsed.quoteValidityDays).toBe(quoteValidityDays);
+    expect(parsed.defaultQuoteKind).toBe(defaultQuoteKind);
+
+    expect(upsertBusinessProfileRequestSchema.parse({
+      name: profile.name,
+      email: profile.email,
+      quoteNumberFormat: 'EST-{YYYY}-{SEQ}',
+      quoteNumberSequence: 12,
+      quoteValidityDays: 14,
+      defaultQuoteKind: 'estimate',
+    })).toMatchObject({
+      quoteNumberFormat: 'EST-{YYYY}-{SEQ}',
+      quoteValidityDays: 14,
+      defaultQuoteKind: 'estimate',
+    });
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: profile.name,
+      email: profile.email,
+      quoteValidityDays: 0,
+    }).success).toBe(false);
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: profile.name,
+      email: profile.email,
+      defaultQuoteKind: 'proposal',
+    }).success).toBe(false);
   });
 });
 

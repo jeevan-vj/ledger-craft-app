@@ -1,6 +1,6 @@
 const ID_36 = '[0-9a-f-]{36}';
 const SHARE_PAIR = new RegExp(`(${ID_36})_(${ID_36})`, 'gi');
-const SHARE_PATH = new RegExp(`/api/public/invoices/${ID_36}_${ID_36}`, 'gi');
+const SHARE_PATH = new RegExp(`/api/public/(invoices|quotes)/${ID_36}_${ID_36}`, 'gi');
 
 const SENSITIVE_KEYS = new Set([
   'authorization',
@@ -111,7 +111,7 @@ export function toRouteTemplate(value: string): string {
     path = value;
   }
   path = path.split(/[?#]/, 1)[0] ?? path;
-  path = path.replace(SHARE_PATH, '/api/public/invoices/:token');
+  path = path.replace(SHARE_PATH, '/api/public/$1/:token');
   const segments = path.split('/').map((segment) => {
     if (segment.startsWith(':')) return segment;
     if (/^[0-9a-f-]{36}$/i.test(segment)) return ':id';

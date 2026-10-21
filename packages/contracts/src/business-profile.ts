@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
+export const quoteKindSchema = z.enum(['quote', 'estimate']);
 export const gstRegistrationStatusSchema = z.enum([
   'unknown',
   'registered',
@@ -46,6 +47,10 @@ export const businessProfileSchema = z.object({
   theme: themeSchema,
   invoiceNumberFormat: z.string().nullable(),
   invoiceNumberSequence: z.number().int().nullable(),
+  quoteNumberFormat: z.string().min(1).default('QUO-{YYYY}-{SEQ}'),
+  quoteNumberSequence: z.number().int().default(1),
+  quoteValidityDays: z.number().int().min(1).max(365).default(30),
+  defaultQuoteKind: quoteKindSchema.default('quote'),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -74,6 +79,10 @@ export const upsertBusinessProfileRequestSchema = z
     theme: themeSchema.optional(),
     invoiceNumberFormat: z.string().nullable().optional(),
     invoiceNumberSequence: z.number().int().optional(),
+    quoteNumberFormat: z.string().min(1).max(40).optional(),
+    quoteNumberSequence: z.number().int().min(1).optional(),
+    quoteValidityDays: z.number().int().min(1).max(365).optional(),
+    defaultQuoteKind: quoteKindSchema.optional(),
   })
   .strict();
 

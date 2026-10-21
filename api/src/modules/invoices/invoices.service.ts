@@ -22,14 +22,10 @@ import {
 import { postInvoiceJournal } from './invoices.journal';
 import * as invoicesRepo from './invoices.repository';
 import type { InvoiceMailer } from './mailer';
+import { formatInvoiceNumber } from './numbering';
 import { computeInvoiceTotals } from './totals';
 
-function formatInvoiceNumber(format: string, sequence: number, date: Date): string {
-  return format
-    .replaceAll('{YYYY}', String(date.getFullYear()))
-    .replaceAll('{MM}', String(date.getMonth() + 1).padStart(2, '0'))
-    .replaceAll('{SEQ}', String(sequence).padStart(4, '0'));
-}
+export { formatInvoiceNumber };
 
 function assertDueDateNotBeforeInvoiceDate(date: string, dueDate: string): void {
   if (dueDate < date) {
@@ -66,6 +62,60 @@ export async function peekNextInvoiceNumber(db: Database, userId: string): Promi
   });
 }
 
+export async function createInvoiceInTx(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: CreateInvoiceRequest,
+): Promise<InvoiceDto> {
+  const customer = await customersRepo.getCustomer(tx, ctx.organisationId, input.customerId);
+  if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
+
+  const profile = await profileRepo.ensureBusinessProfile(tx, ctx);
+  if (!profile) {
+    throw new HTTPException(400, { message: 'Set up your business profile first' });
+  }
+
+  assertDueDateNotBeforeInvoiceDate(input.date, input.dueDate);
+
+  const nextSequence = profile.invoiceNumberSequence ?? 1;
+  const invoiceNumber = formatInvoiceNumber(
+    profile.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
+    nextSequence,
+    new Date(input.date),
+  );
+  await profileRepo.bumpInvoiceSequence(tx, profile.id, nextSequence + 1);
+
+  const paymentTermDays = input.paymentTermDays ?? profile.paymentTermDays ?? 30;
+  // Client dueDate is authoritative. A mismatch against date + paymentTermDays is an override, not rewritten.
+
+  const defaultTaxRate = profile.defaultTaxRate ?? '0';
+  const totals = computeInvoiceTotals(input, defaultTaxRate);
+  const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
+  const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
+    customerId: input.customerId,
+    invoiceNumber,
+    date: input.date,
+    dueDate: input.dueDate,
+    paymentTermDays,
+    notes: input.notes ?? null,
+    terms: input.terms ?? null,
+    currency: input.currency ?? 'NZD',
+    status,
+    totals,
+  });
+
+  await postInvoiceJournal(tx, ctx, {
+    invoiceId: invoice.id,
+    invoiceNumber: invoice.invoiceNumber,
+    date: invoice.date,
+    subtotal: invoice.subtotal,
+    taxAmount: invoice.taxAmount,
+    total: invoice.total,
+  });
+
+  return invoice;
+}
+
 export async function createInvoiceForUser(
   db: Database,
   userId: string,
@@ -81,56 +131,10 @@ export async function createInvoiceForUser(
       }
     }
 
-    const customer = await customersRepo.getCustomer(tx, ctx.organisationId, input.customerId);
-    if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
-
-    const profile = await profileRepo.ensureBusinessProfile(tx, ctx);
-    if (!profile) {
-      throw new HTTPException(400, { message: 'Set up your business profile first' });
-    }
-
-    assertDueDateNotBeforeInvoiceDate(input.date, input.dueDate);
-
-    const nextSequence = profile.invoiceNumberSequence ?? 1;
-    const invoiceNumber = formatInvoiceNumber(
-      profile.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
-      nextSequence,
-      new Date(input.date),
-    );
-    await profileRepo.bumpInvoiceSequence(tx, profile.id, nextSequence + 1);
-
-    const paymentTermDays = input.paymentTermDays ?? profile.paymentTermDays ?? 30;
-    // Client dueDate is authoritative. A mismatch against date + paymentTermDays is an override, not rewritten.
-
-    const defaultTaxRate = profile.defaultTaxRate ?? '0';
-    const totals = computeInvoiceTotals(input, defaultTaxRate);
-    const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
-    const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
-      customerId: input.customerId,
-      invoiceNumber,
-      date: input.date,
-      dueDate: input.dueDate,
-      paymentTermDays,
-      notes: input.notes ?? null,
-      terms: input.terms ?? null,
-      currency: input.currency ?? 'NZD',
-      status,
-      totals,
-    });
-
-    await postInvoiceJournal(tx, ctx, {
-      invoiceId: invoice.id,
-      invoiceNumber: invoice.invoiceNumber,
-      date: invoice.date,
-      subtotal: invoice.subtotal,
-      taxAmount: invoice.taxAmount,
-      total: invoice.total,
-    });
-
+    const invoice = await createInvoiceInTx(tx, ctx, input);
     if (idempotency) {
       await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: invoice });
     }
-
     return invoice;
   });
 }
