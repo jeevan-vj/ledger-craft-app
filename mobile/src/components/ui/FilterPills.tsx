@@ -1,5 +1,6 @@
 import React from 'react';
-import { ScrollView, Pressable, Text, StyleSheet, View } from 'react-native';
+import { ScrollView, Text, StyleSheet, View } from 'react-native';
+import { AppPressable } from './AppPressable';
 import { control, radius, space } from '@/theme/tokens';
 import { selectionHaptic } from '@/utils/haptics';
 import { useTheme } from '@/theme';
@@ -32,7 +33,7 @@ export function FilterPills<T extends string>({
           const active = option === value;
           const label = labels?.[option] ?? option.charAt(0).toUpperCase() + option.slice(1);
           return (
-            <Pressable
+            <AppPressable
               key={option}
               onPress={() => {
                 if (!active) selectionHaptic();
@@ -48,7 +49,7 @@ export function FilterPills<T extends string>({
               ]}
             >
               <Text style={[styles.label, active && styles.labelActive]}>{label}</Text>
-            </Pressable>
+            </AppPressable>
           );
         })}
       </View>

@@ -80,6 +80,7 @@ The mobile system is native-first, spacious, and direct. It follows the system a
 - `ModernButton` is the expressive primary button; `ActionButton` is the compact compatibility primitive. Both use lime with forest text.
 - `ModernInput` and `FormInput` share muted resting fills, surface focus, and explicit errors.
 - `GroupedSection`, `ListRow`, `IconWell`, `QuickAction`, and `EmptyState` form the native content grammar.
+- `AppPressable` is the pressable for a `style` callback. NativeWind's JSX runtime otherwise replaces that callback with an empty object, so the background, padding, radius, and pressed opacity never appear. It keeps the callback, accessibility props, and press feedback.
 - `SelectionSheet` and `SelectionRow` are the standard searchable picker pattern: page-sheet presentation, one grouped list, 44pt minimum controls, accessible selected state, and forest checks on lime.
 
 ## Contribution rules

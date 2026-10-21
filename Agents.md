@@ -1,5 +1,14 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile home actions (fixed locally, 2026-10-21):** The Expo Home screen uses
+four equal quick-action tiles: new invoice, record payment, add expense, and
+add customer. Record payment opens the invoice list, which already captures a
+payment when an invoice is marked paid. `AppPressable` opts style callbacks out
+of NativeWind's Pressable wrapper, which otherwise drops them. Dismissing the
+setup task persists in SecureStore. Strict TypeScript and all 29 mobile Jest
+suites (108 tests) pass, and mobile lint reports no errors. Native Home
+screenshots were not captured here.
+
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
 seamless dark splash screen. The existing iOS bundle ID, EAS project, Apple
@@ -12,11 +21,11 @@ Passwords are never persisted in drafts. Profile existence is the onboarding
 gate, and GST status is stored through Hono/SQLite migration
 `0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
 theme, which omitted `background`, by filling `#F5F6F3`. New builds send
-`background`. Connection copy is only for requests that never reach the API. Validation and
-server failures use plain language plus a support reference when the response
-includes a request id. Web API errors use the same wording.
-A rejected upsert does not leave a business profile. Strict mobile TypeScript,
-all 27 Jest suites (102 tests), lint with no errors (90 existing warnings),
+`background`. Connection copy is only for requests that never reach the API.
+Validation and server failures use plain language plus a support reference when
+the response includes a request id. Web API errors use the same wording. A
+rejected upsert does not leave a business profile. Strict mobile TypeScript,
+all 29 Jest suites (108 tests), lint with no errors (90 existing warnings),
 all 29 API suites (79 tests), and all 18 contract suites (58 tests) pass.
 Authenticated device QA and a production Worker deploy of this finish-setup
 fix remain pending.
