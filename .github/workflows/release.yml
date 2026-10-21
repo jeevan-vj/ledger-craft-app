@@ -115,7 +115,20 @@ jobs:
           pnpm exec wrangler deploy
           --config "$WORKER_CONFIG"
           --tag "$GITHUB_SHA"
+          --var "SENTRY_RELEASE:$GITHUB_SHA"
+          --var "SENTRY_ENVIRONMENT:production"
+          --outdir .wrangler/api-sourcemaps
           --message "GitHub Actions release $GITHUB_SHA"
+      # SENTRY_AUTH_TOKEN is the production environment secret. SENTRY_ORG is the
+      # repository variable. The API project slug is fixed here so a web-app
+      # SENTRY_PROJECT variable cannot redirect these maps.
+      - name: Upload API source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ledgercraft-api
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: node scripts/upload-api-sourcemaps.mjs .wrangler/api-sourcemaps
       # Identity keeps serving the previous bundle until Cloudflare restarts
       # that Durable Object (seconds to minutes). A new SQLite migration shows
       # up on /api/readyz only after that restart. The checker waits up to 5

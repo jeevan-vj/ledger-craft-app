@@ -121,7 +121,7 @@ jobs:
         with:
           node-version: 22
       - name: API readiness checker
-        run: node --test .github/scripts/verify-api-readiness.test.mjs
+        run: node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs
       - name: Web source map upload checker
         run: node --test scripts/upload-web-sourcemaps.test.mjs
 

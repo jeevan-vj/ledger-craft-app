@@ -1,12 +1,23 @@
 import { createErrorEnvelope } from '@ledgercraft/contracts';
 import type { ErrorHandler, NotFoundHandler } from 'hono';
 import { HTTPException } from 'hono/http-exception';
+import { routePath } from 'hono/route';
 import { ZodError } from 'zod';
 import { errorCodeFromCause } from '../http-error';
+import { reportUnhandledError } from '../observability/report';
+import { routeTemplateFrom } from '../observability/scrub';
 import type { AppEnv } from '../types';
 
 function requestIdFrom(c: { get: (key: 'requestId') => string | undefined }): string {
   return c.get('requestId') ?? 'req_unknown';
+}
+
+function matchedRoute(c: Parameters<ErrorHandler<AppEnv>>[1]): string {
+  try {
+    return routeTemplateFrom(routePath(c), c.req.path);
+  } catch {
+    return routeTemplateFrom(undefined, c.req.path);
+  }
 }
 
 export const errorHandler: ErrorHandler<AppEnv> = (error, c) => {
@@ -41,13 +52,12 @@ export const errorHandler: ErrorHandler<AppEnv> = (error, c) => {
     return c.json(createErrorEnvelope(code, error.message, requestId), status);
   }
 
-  console.error(
-    JSON.stringify({
-      msg: 'unhandled_error',
-      requestId,
-      name: error.name,
-    }),
-  );
+  reportUnhandledError(error, {
+    source: 'hono',
+    requestId,
+    route: matchedRoute(c),
+    userId: c.get('actorUserId'),
+  });
 
   return c.json(
     createErrorEnvelope('INTERNAL_ERROR', 'An unexpected error occurred', requestId),
