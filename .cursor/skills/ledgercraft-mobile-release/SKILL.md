@@ -55,9 +55,18 @@ Use the newest suitable build unless the user explicitly selects an older one.
 - `mobile/app.config.js` owns the dynamic Expo config and contains the EAS
   project ID, bundle identifier, `easybizinvoice` scheme, and non-exempt-
   encryption declaration.
-- `mobile/eas.json` uses the `production` profile with `autoIncrement: true` and
-  local app-version sourcing. Inspect both `app.config.js` and `app.json` before
-  changing a version or build number because EAS may update `app.json`.
+- `mobile/eas.json` uses the `production` profile with `autoIncrement: true`
+  and `cli.appVersionSource` set to `remote`. Developer-facing build numbers
+  live on EAS. `submit.production.ios.ascAppId` is `6818787287`. The
+  user-facing `version` still comes from `app.config.js`.
+- `.github/workflows/ios-testflight.yml` schedules an iOS production build
+  with `--no-wait --auto-submit` on pushes to `main` that touch `mobile/**`,
+  and on `workflow_dispatch`. Do not dispatch it unless a release was
+  requested. It needs the `EXPO_TOKEN` repository secret and an App Store
+  Connect API key stored in EAS credentials. Before the first run, initialize
+  the remote iOS build number at the last uploaded build (`2`) with
+  `eas build:version:set` so autoincrement does not reuse an earlier number.
+  `app.config.js` does not declare `ios.buildNumber`.
 - EAS production environment variables must include:
   - `EXPO_PUBLIC_API_URL=https://ledgercraft-api.jeevan90wijerathna.workers.dev`
   - `EXPO_PUBLIC_APP_ORIGIN=easybizinvoice://`
