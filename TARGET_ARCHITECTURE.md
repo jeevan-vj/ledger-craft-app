@@ -11,10 +11,14 @@ now includes an original LedgerCraft value carousel, progressive account
 signup, and resumable business setup for name, country, and explicit GST
 registration. Profile existence is the auth/onboarding gate; safe drafts use
 SecureStore without persisting passwords. Hono/SQLite persists GST status via
-`0006_business-gst-registration.sql`. Strict mobile TypeScript, all 21 Jest
-suites (83 tests), all 29 API suites (78 tests), all 18 contract suites (57
-tests), lint with no errors, and iOS/Android production exports pass.
-Authenticated device QA remains open.
+`0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
+theme, which omitted `background`, by filling `#F5F6F3` and ignoring unknown
+theme keys. New builds send `background`. The finish alert uses connection copy
+only when the request never reaches the API. A rejected upsert does not leave a
+business profile. Strict mobile TypeScript, all 27 Jest suites (100 tests),
+all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
+no errors pass. Authenticated device QA and a production Worker deploy of this
+finish-setup fix remain open.
 
 **Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
 detail now separates public-link sharing, PDF download/export, and PDF file

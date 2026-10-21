@@ -26,6 +26,7 @@ import {
   businessTaxDefaults,
   type GstRegistrationStatus,
 } from '@/features/onboarding/onboardingModel';
+import { setupFailureAlert } from '@/features/onboarding/setupFailure';
 import { onboardingStorage } from '@/features/onboarding/onboardingStorage';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
@@ -123,7 +124,9 @@ export default function OnboardingScreen() {
       setOnboardingStatus(true, true);
     } catch (caught) {
       console.error('Error completing onboarding:', caught);
-      Alert.alert('Couldn’t finish setup', 'Check your connection and try again. Your answers are still here.');
+      const failure = setupFailureAlert(caught);
+      setError(failure.message);
+      Alert.alert(failure.title, failure.message);
     } finally {
       setIsLoading(false);
     }

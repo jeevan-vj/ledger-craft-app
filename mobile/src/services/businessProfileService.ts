@@ -373,6 +373,7 @@ class BusinessProfileService {
         surface: '#FFFFFF',
         text: '#1E293B',
         textLight: '#64748B',
+        background: '#F5F6F3',
       };
     }
 
