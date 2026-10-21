@@ -1,4 +1,3 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   BankAccountDto,
   BankAccountListResponse,
@@ -8,6 +7,7 @@ import type {
   ImportBankTransactionsResponse,
   UpdateBankAccountRequest,
 } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { BankAccount, BankTransaction } from '@/types/bankTransaction';
 
 export function bankApiEnabled(): boolean {
@@ -15,12 +15,16 @@ export function bankApiEnabled(): boolean {
 }
 
 export class BankApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'BankApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -94,10 +98,6 @@ export function toUpdateBankAccountRequest(
   return input;
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -111,7 +111,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new BankApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new BankApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

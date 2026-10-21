@@ -1,4 +1,3 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   AccountDto,
   CreateAccountRequest,
@@ -8,6 +7,7 @@ import type {
   UpdateAccountRequest,
 } from '@ledgercraft/contracts';
 import type { Account, AccountType } from '@/types';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { CreatePaymentRequest as ClientPaymentRequest, Payment } from '@/types/payment';
 
 export function paymentsApiEnabled(): boolean {
@@ -19,12 +19,16 @@ export function accountsApiEnabled(): boolean {
 }
 
 export class PaymentsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'PaymentsApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -63,10 +67,6 @@ function toAccount(dto: AccountDto): Account {
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -80,7 +80,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new PaymentsApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new PaymentsApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

@@ -1,4 +1,4 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { ObjectDto, ObjectKind, UploadObjectRequest } from '@ledgercraft/contracts';
 
 export function storageApiEnabled(): boolean {
@@ -6,17 +6,17 @@ export function storageApiEnabled(): boolean {
 }
 
 export class ObjectsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ObjectsApiError';
+    this.requestId = requestId;
   }
-}
-
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -29,7 +29,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (response.status === 204) return undefined as T;
-  if (!response.ok) throw new ObjectsApiError(await parseError(response), response.status);
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new ObjectsApiError(failure.message, failure.status, failure.requestId);
+  }
   return (await response.json()) as T;
 }
 

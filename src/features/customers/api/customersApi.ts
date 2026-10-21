@@ -1,5 +1,5 @@
 import type { CreateCustomerRequest, CustomerDto, UpdateCustomerRequest } from '@ledgercraft/contracts';
-import { presentResponseError } from '@/lib/apiErrorCopy';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Customer } from '@/types';
 
 export function customersApiEnabled(): boolean {
@@ -41,12 +41,16 @@ export function toUpdateCustomerRequest(
 }
 
 export class CustomersApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'CustomersApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -68,10 +72,6 @@ function toCustomer(dto: CustomerDto): Customer {
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -85,7 +85,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new CustomersApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new CustomersApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

@@ -6,6 +6,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { useNavigate } from 'react-router-dom';
 import type { MeResponse } from '@ledgercraft/contracts';
 import { AuthApiError, getMe, signInEmail, signOutSession, signUpEmail } from '@/features/auth/api/authApi';
+import { setSentryUser } from '@/lib/sentry/init';
 
 export type AuthUser = {
   id: string;
@@ -62,11 +63,13 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const applySession = useCallback((me: MeResponse | null) => {
     if (!me) {
+      setSentryUser(null);
       setUser(null);
       setHasCompletedOnboarding(false);
       setOnboardingChecked(true);
       return;
     }
+    setSentryUser(me.user.id);
     setUser(toAuthUser(me));
     // Business profile is still on supabase-js. A Better Auth session is enough to enter the app.
     setHasCompletedOnboarding(true);

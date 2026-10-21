@@ -1,5 +1,5 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type { BusinessProfileDto, UpsertBusinessProfileRequest } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { BusinessProfile } from '@/types';
 
 export function businessProfileApiEnabled(): boolean {
@@ -7,12 +7,16 @@ export function businessProfileApiEnabled(): boolean {
 }
 
 export class BusinessProfileApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'BusinessProfileApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -81,10 +85,6 @@ export function toUpsertBusinessProfileRequest(
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -96,7 +96,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    throw new BusinessProfileApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new BusinessProfileApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

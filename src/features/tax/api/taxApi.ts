@@ -1,4 +1,3 @@
-import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   CreateTaxReturnRequest,
   FileTaxReturnRequest,
@@ -11,6 +10,7 @@ import type {
 import { expensesApi, expensesApiEnabled } from '@/features/expenses/api/expensesApi';
 import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
 import { paymentsApi, paymentsApiEnabled } from '@/features/payments/api/paymentsApi';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Payment, TaxConfiguration, TaxReturn } from '@/types/payment';
 import { toPeriodExpense, toPeriodInvoice, type PeriodExpense, type PeriodInvoice } from './periodRows';
 
@@ -19,12 +19,16 @@ export function taxApiEnabled(): boolean {
 }
 
 export class TaxApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'TaxApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -67,10 +71,6 @@ export function toTaxReturn(dto: TaxReturnDto): TaxReturn {
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  return (await presentResponseError(response)).message;
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -84,7 +84,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new TaxApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new TaxApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }
