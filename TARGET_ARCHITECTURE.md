@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Mobile crash reporting (wired, 2026-10-21):** The Expo client uses
+`@sentry/react-native` 7.2.0. It stays disabled without `EXPO_PUBLIC_SENTRY_DSN`.
+Session Replay is off, the Sentry user is an id, share tokens are redacted, and
+server errors are tagged with the API `requestId`. EAS uploads source maps for
+project `ledgercraft-mobile` only when `SENTRY_AUTH_TOKEN` is set. Local mobile
+Jest is 31 suites (117 tests), strict TypeScript and ESLint have no errors, and
+the iOS export bundles without a Sentry token. A native crash and symbolicated
+stack still need a preview build. See `mobile/SENTRY.md`.
+
 **Mobile branding (implemented locally, 2026-10-21):** Expo resolves the
 installed display name as `easybizinvoice`. Its iOS icon is an opaque,
 full-bleed 1024 px asset and its splash screen uses seamless dark brand artwork.

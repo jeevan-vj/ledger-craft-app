@@ -32,5 +32,7 @@ npm run android
 
 ## Environment Variables
 
-Copy `.env.example` to `.env` and fill in your Supabase credentials (already configured).
+Copy the Expo values from the repo `.env.example` into `mobile/.env`.
+
+Crash reporting is off until `EXPO_PUBLIC_SENTRY_DSN` is set. The EAS token and organization steps are in `SENTRY.md`.
 

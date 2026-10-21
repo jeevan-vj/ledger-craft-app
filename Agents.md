@@ -1,5 +1,7 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0 when `EXPO_PUBLIC_SENTRY_DSN` is set. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the `SENTRY_AUTH_TOKEN` secret is present. Setup steps are in `mobile/SENTRY.md`.
+
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
 seamless dark splash screen. The existing iOS bundle ID, EAS project, Apple
@@ -318,6 +320,7 @@ Orchestrator (parent chat) sequences waves. Do not mix UI redesign, TanStack Rou
 - **State Management**: Zustand 5.0+
 - **Backend**: Supabase (shared with web)
 - **Testing**: Jest with React Native Testing Library
+- **Crash reporting**: `@sentry/react-native` 7.2.0. Inactive until `EXPO_PUBLIC_SENTRY_DSN` is set. See `mobile/SENTRY.md`.
 - **Build & Deployment**: EAS Build (Expo Application Services)
 
 ### Backend & Infrastructure
@@ -1180,6 +1183,9 @@ npm run submit:android  # Submit to Google Play
 - Set in EAS secrets or `.env` file
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_SENTRY_DSN` (client DSN; leave unset locally)
+- `SENTRY_ORG` and `SENTRY_AUTH_TOKEN` (EAS only; token uploads source maps)
+- `SENTRY_PROJECT=ledgercraft-mobile` (already set in `mobile/eas.json`)
 
 **Store Requirements**:
 - See `mobile/PLAY_STORE_CHECKLIST.md` for complete checklist
