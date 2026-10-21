@@ -72,6 +72,12 @@ and customer-prefilled invoice creation through the Hono APIs. Dirty forms are
 protected from dismissal. Strict TypeScript, all 17 mobile Jest suites (69
 tests), and lint with no errors pass; authenticated device QA remains pending.
 
+**API error monitoring:** The Hono Worker reports unhandled errors through
+`@sentry/cloudflare` (worker fetch, Identity, Ledger, Hono `onError`, and
+`/api/auth/*`). `SENTRY_DSN` is a Worker secret and is a no-op when unset.
+Release uploads source maps only when the `SENTRY_AUTH_TOKEN` GitHub secret
+exists. Setup and the debug route are in `deploy/cloudflare.md`.
+
 **Pull request CI:** `.github/workflows/ci.yml` runs on every pull request and on
 push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 `pnpm/action-setup` `version` input), Node 22, and `pnpm install --frozen-lockfile`.

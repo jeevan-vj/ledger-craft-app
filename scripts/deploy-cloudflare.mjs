@@ -102,13 +102,18 @@ try {
       }
       if(!preserveRemote) writeFileSync(secretPath,JSON.stringify({BETTER_AUTH_SECRET:randomBytes(48).toString('base64url')}),{mode:0o600});
     }
+    const shaResult=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
+    if(shaResult.status!==0 || !shaResult.stdout.trim()) throw new Error('Could not read the git SHA for the Sentry release.');
+    const sha=shaResult.stdout.trim();
+    const releaseArgs=['--tag',sha,'--var',`SENTRY_RELEASE:${sha}`,'--outdir','.wrangler/api-sourcemaps','--message',`LedgerCraft release ${sha}`];
     if(preserveRemote) {
-      wrangler('deploy','--config',config);
+      wrangler('deploy','--config',config,...releaseArgs);
     } else {
       const secrets=JSON.parse(readFileSync(secretPath,'utf8'));
       if(typeof secrets.BETTER_AUTH_SECRET!=='string' || secrets.BETTER_AUTH_SECRET.length<32 || Object.keys(secrets).some(k=>k!=='BETTER_AUTH_SECRET')) throw new Error('Invalid deployment secret file');
-      wrangler('deploy','--config',config,'--secrets-file',secretPath);
+      wrangler('deploy','--config',config,'--secrets-file',secretPath,...releaseArgs);
     }
+    run('node',['scripts/upload-api-sourcemaps.mjs','.wrangler/api-sourcemaps']);
     await verifyPublished(api);
     wrangler('pages','deploy','dist','--project-name','ledger-craft-app','--branch','main');
     await verifyPublished(site,JSON.parse(readFileSync('dist/version.json','utf8')));

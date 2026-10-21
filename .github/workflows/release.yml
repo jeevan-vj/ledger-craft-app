@@ -100,7 +100,18 @@ jobs:
           pnpm exec wrangler deploy
           --config "$WORKER_CONFIG"
           --tag "$GITHUB_SHA"
+          --var "SENTRY_RELEASE:$GITHUB_SHA"
+          --outdir .wrangler/api-sourcemaps
           --message "GitHub Actions release $GITHUB_SHA"
+      # Source maps are uploaded only when Jeevan has created the Sentry auth token.
+      # A missing token skips this step. A token without SENTRY_ORG fails the release.
+      - name: Upload API source maps to Sentry
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ vars.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT }}
+          SENTRY_RELEASE: ${{ github.sha }}
+        run: node scripts/upload-api-sourcemaps.mjs .wrangler/api-sourcemaps
       # Identity keeps serving the previous bundle until Cloudflare restarts
       # that Durable Object (seconds to minutes). A new SQLite migration shows
       # up on /api/readyz only after that restart. The checker waits up to 5
