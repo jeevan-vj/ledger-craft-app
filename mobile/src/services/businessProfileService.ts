@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { toContractTheme } from '@/features/business-profile/theme';
 import { OnboardingData, BusinessTheme } from '@/types/onboarding';
 import { decode } from 'base64-arraybuffer';
 import { objectsApi, storageApiEnabled } from '@/features/storage/api/objectsApi';
@@ -83,7 +84,7 @@ class BusinessProfileService {
           state: data.state ?? null,
           zip: data.zip ?? null,
           logoUrl,
-          theme: data.theme,
+          theme: toContractTheme(data.theme),
         });
       }
 
@@ -215,7 +216,11 @@ class BusinessProfileService {
           defaultTerms: updates.defaultTerms ?? current?.defaultTerms ?? null,
           defaultNotes: updates.defaultNotes ?? current?.defaultNotes ?? null,
           logoUrl,
-          theme: updates.theme ?? current?.theme ?? null,
+          theme: updates.theme
+            ? toContractTheme(updates.theme)
+            : current?.theme
+              ? toContractTheme(current.theme)
+              : null,
         });
       }
 
@@ -365,16 +370,11 @@ class BusinessProfileService {
     // Reconstruct theme if color data exists
     let theme: BusinessTheme | undefined;
     if (data.primary_color || data.secondary_color || data.accent_color) {
-      theme = {
-        name: 'Custom',
-        primary: data.primary_color || '#163300',
-        secondary: data.secondary_color || '#4A5FD8',
-        accent: data.accent_color || '#00D4FF',
-        surface: '#FFFFFF',
-        text: '#1E293B',
-        textLight: '#64748B',
-        background: '#F5F6F3',
-      };
+      theme = toContractTheme({
+        primary: data.primary_color,
+        secondary: data.secondary_color,
+        accent: data.accent_color,
+      });
     }
 
     const profile = {

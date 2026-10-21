@@ -13,6 +13,8 @@ import {
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { businessProfileService, BusinessProfile, BusinessProfileUpdate } from '@/services/businessProfileService';
+import { ThemeEditor } from '@/components/business/ThemeEditor';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { FormInput } from '@/components/ui/FormInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
 import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
@@ -20,6 +22,13 @@ import { Feather } from '@expo/vector-icons';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import {
+  normalizeBusinessTheme,
+  themeFieldError,
+  toContractTheme,
+  type BusinessTheme,
+} from '@/features/business-profile/theme';
+import { DEFAULT_THEME } from '@/types/onboarding';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
@@ -31,7 +40,6 @@ export default function BusinessSettingsScreen() {
   const [activeTab, setActiveTab] = useState<TabType>('profile');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
-  const [profile, setProfile] = useState<BusinessProfile | null>(null);
   
   // Form state
   const [businessName, setBusinessName] = useState('');
@@ -51,6 +59,9 @@ export default function BusinessSettingsScreen() {
   const [defaultNotes, setDefaultNotes] = useState('');
   const [logoUri, setLogoUri] = useState<string | null>(null);
   const [newLogoUri, setNewLogoUri] = useState<string | null>(null);
+  const [invoiceTheme, setInvoiceTheme] = useState<BusinessTheme>(DEFAULT_THEME);
+  const [savingTheme, setSavingTheme] = useState(false);
+  const [themeStatus, setThemeStatus] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
   
   // UI state
   const [showCountryPicker, setShowCountryPicker] = useState(false);
@@ -67,7 +78,6 @@ export default function BusinessSettingsScreen() {
       console.log('📸 Loaded profile data:', data);
       console.log('📸 Logo URL from database:', data?.logoUrl);
       if (data) {
-        setProfile(data);
         populateForm(data);
       }
     } catch (error) {
@@ -97,6 +107,7 @@ export default function BusinessSettingsScreen() {
     const logoUrl = data.logoUrl || null;
     console.log('📸 Setting logoUri to:', logoUrl);
     setLogoUri(logoUrl);
+    setInvoiceTheme(normalizeBusinessTheme(data.theme));
   };
 
   const validateForm = (): boolean => {
@@ -160,6 +171,35 @@ export default function BusinessSettingsScreen() {
       Alert.alert('Error', 'Failed to update business profile');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleThemeChange = (next: BusinessTheme) => {
+    setInvoiceTheme(next);
+    setThemeStatus(null);
+  };
+
+  const handleSaveTheme = async () => {
+    const invalid = (Object.keys(invoiceTheme) as (keyof BusinessTheme)[]).some((key) => themeFieldError(invoiceTheme[key]));
+    if (invalid) {
+      setThemeStatus({ tone: 'error', message: 'Fix the highlighted colours before saving.' });
+      Alert.alert('Check colours', 'Enter a hex colour like #3B82F6 for each field.');
+      return;
+    }
+
+    try {
+      setSavingTheme(true);
+      setThemeStatus(null);
+      await businessProfileService.updateBusinessProfile({ theme: toContractTheme(invoiceTheme) });
+      setThemeStatus({ tone: 'success', message: 'Invoice theme saved.' });
+      Alert.alert('Theme saved', 'Your invoice colours were updated.');
+    } catch (error) {
+      console.error('Error saving invoice theme:', error);
+      const message = 'Couldn’t save the invoice theme. Try again.';
+      setThemeStatus({ tone: 'error', message });
+      Alert.alert('Couldn’t save theme', message);
+    } finally {
+      setSavingTheme(false);
     }
   };
 
@@ -446,32 +486,7 @@ export default function BusinessSettingsScreen() {
 
   const renderAppearanceTab = () => (
     <View style={styles.tabContent}>
-      <View style={styles.comingSoonContainer}>
-        <Feather name="sliders" size={32} color={palette.accentText} />
-        <Text style={styles.comingSoonTitle}>Theme Customization</Text>
-        <Text style={styles.comingSoonText}>
-          Custom theme selection coming soon! You’ll be able to personalize your brand colors and appearance.
-        </Text>
-        {profile?.theme && (
-          <View style={styles.currentThemeContainer}>
-            <Text style={styles.currentThemeLabel}>Current Theme Colors:</Text>
-            <View style={styles.colorRow}>
-              <View style={styles.colorSwatch}>
-                <View style={[styles.colorBox, { backgroundColor: profile.theme.primary }]} />
-                <Text style={styles.colorLabel}>Primary</Text>
-              </View>
-              <View style={styles.colorSwatch}>
-                <View style={[styles.colorBox, { backgroundColor: profile.theme.secondary }]} />
-                <Text style={styles.colorLabel}>Secondary</Text>
-              </View>
-              <View style={styles.colorSwatch}>
-                <View style={[styles.colorBox, { backgroundColor: profile.theme.accent }]} />
-                <Text style={styles.colorLabel}>Accent</Text>
-              </View>
-            </View>
-          </View>
-        )}
-      </View>
+      <ThemeEditor value={invoiceTheme} onChange={handleThemeChange} status={themeStatus} />
     </View>
   );
 
@@ -493,9 +508,28 @@ export default function BusinessSettingsScreen() {
         {activeTab === 'appearance' && renderAppearanceTab()}
       </ScrollView>
 
-      {/* Save Button */}
-      {activeTab !== 'appearance' && (
-        <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+      <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
+        {activeTab === 'appearance' ? (
+          <AppPressable
+            style={({ pressed }) => [
+              styles.saveButton,
+              savingTheme && styles.saveButtonDisabled,
+              pressed && !savingTheme && styles.saveButtonPressed,
+            ]}
+            onPress={handleSaveTheme}
+            disabled={savingTheme}
+            accessibilityRole="button"
+            accessibilityLabel="Save theme"
+            accessibilityHint="Saves invoice colours to your business profile"
+            accessibilityState={{ disabled: savingTheme, busy: savingTheme }}
+          >
+            {savingTheme ? (
+              <ActivityIndicator color={palette.accentForeground} />
+            ) : (
+              <Text style={styles.saveButtonText}>Save theme</Text>
+            )}
+          </AppPressable>
+        ) : (
           <TouchableOpacity
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
@@ -511,8 +545,8 @@ export default function BusinessSettingsScreen() {
               <Text style={styles.saveButtonText}>Save</Text>
             )}
           </TouchableOpacity>
-        </View>
-      )}
+        )}
+      </View>
 
       {/* Country Picker Modal */}
       <CountryPicker
@@ -646,59 +680,6 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     marginBottom: 16,
     lineHeight: 18,
   },
-  comingSoonContainer: {
-    alignItems: 'center',
-    paddingVertical: 60,
-  },
-  comingSoonIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
-  comingSoonTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: palette.text,
-    marginBottom: 8,
-  },
-  comingSoonText: {
-    fontSize: 14,
-    color: palette.textSecondary,
-    textAlign: 'center',
-    lineHeight: 20,
-    paddingHorizontal: 32,
-  },
-  currentThemeContainer: {
-    marginTop: 32,
-    padding: 20,
-    backgroundColor: palette.surface,
-    borderRadius: radius.group,
-    width: '100%',
-  },
-  currentThemeLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: palette.text,
-    marginBottom: 12,
-  },
-  colorRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-  },
-  colorSwatch: {
-    alignItems: 'center',
-  },
-  colorBox: {
-    width: 48,
-    height: 48,
-    borderRadius: radius.pill,
-    marginBottom: 8,
-    borderWidth: 1,
-    borderColor: palette.separator,
-  },
-  colorLabel: {
-    fontSize: 12,
-    color: palette.textSecondary,
-  },
   bottomContainer: {
     backgroundColor: palette.surface,
     borderTopWidth: hairline,
@@ -715,6 +696,10 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   saveButtonDisabled: {
     opacity: 0.5,
+  },
+  saveButtonPressed: {
+    opacity: 0.78,
+    transform: [{ scale: 0.97 }],
   },
   saveButtonText: {
     fontSize: 16,
