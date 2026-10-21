@@ -1,7 +1,6 @@
 name: CI
 
-# Pull requests and pushes to main. Separate from "Build and Test"
-# (.github/workflows/deploy-only.yml), which still runs the Postgres API suite.
+# Pull requests and pushes to main.
 # This workflow does not start Postgres, deploy, or read production secrets.
 on:
   pull_request:
@@ -106,6 +105,24 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - name: Unit tests
         run: pnpm test:run
+
+  # Node 24 matches the API runtime in release.yml. pnpm version comes from
+  # package.json packageManager; do not pass a version input to action-setup.
+  api-contracts:
+    name: API & contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: API tests, contracts, and typecheck
+        run: pnpm test:api && pnpm test:contracts && pnpm type-check:api
 
   # Node's built-in test runner only. No pnpm install: the readiness checker
   # and its tests use node:test, node:fs, and fetch. Runs on pull requests

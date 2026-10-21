@@ -106,7 +106,7 @@ npm run lint
 npm run type-check
 ```
 
-Pull-request CI (`.github/workflows/ci.yml`) installs with `pnpm install --frozen-lockfile` on Node 22 and runs web lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test -- --ci --watchAll=false`, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Mobile lint, typecheck, and Jest fail the job directly. Web lint and web typecheck still compare error counts with baselines in that workflow. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
+Pull-request CI (`.github/workflows/ci.yml`) installs with `pnpm install --frozen-lockfile` on Node 22 and runs web lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test -- --ci --watchAll=false`, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Mobile lint, typecheck, and Jest fail the job directly. Web lint and web typecheck still compare error counts with baselines in that workflow. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
 ## Deploy
 
