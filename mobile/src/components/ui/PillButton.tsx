@@ -1,7 +1,8 @@
 import React from 'react';
-import { ActivityIndicator, Pressable, StyleProp, Text, ViewStyle } from 'react-native';
+import { ActivityIndicator, StyleProp, Text, ViewStyle } from 'react-native';
 import { lightImpactHaptic } from '@/utils/haptics';
 import { useTheme } from '@/theme';
+import { AppPressable } from './AppPressable';
 
 interface PillButtonProps {
   label: string;
@@ -19,7 +20,7 @@ export function PillButton({ label, onPress, variant = 'primary', icon, disabled
   const backgroundColor = variant === 'primary' ? colors.accent : variant === 'secondary' ? colors.accentFill : 'transparent';
   const color = variant === 'primary' ? colors.accentForeground : variant === 'secondary' ? colors.accentText : colors.text;
   return (
-    <Pressable
+    <AppPressable
       accessibilityRole="button"
       accessibilityLabel={label}
       accessibilityState={{ disabled: !!(disabled || loading), busy: !!loading }}
@@ -38,6 +39,6 @@ export function PillButton({ label, onPress, variant = 'primary', icon, disabled
       }, style]}
     >
       {loading ? <ActivityIndicator color={color} /> : <>{icon}<Text style={{ color, fontSize: 15, fontWeight: '800' }}>{label}</Text></>}
-    </Pressable>
+    </AppPressable>
   );
 }

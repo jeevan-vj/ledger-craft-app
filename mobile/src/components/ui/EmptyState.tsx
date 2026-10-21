@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { AppPressable } from './AppPressable';
 import { control, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -21,14 +22,14 @@ export function EmptyState({ icon, title, description, actionLabel, onAction }: 
       <Text style={styles.title}>{title}</Text>
       {description ? <Text style={styles.description}>{description}</Text> : null}
       {actionLabel && onAction ? (
-        <Pressable
+        <AppPressable
           onPress={onAction}
           accessibilityRole="button"
           accessibilityLabel={actionLabel}
           style={({ pressed }) => [styles.button, pressed && styles.pressed]}
         >
           <Text style={styles.buttonLabel}>{actionLabel}</Text>
-        </Pressable>
+        </AppPressable>
       ) : null}
     </View>
   );

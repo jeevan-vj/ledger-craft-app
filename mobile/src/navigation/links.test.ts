@@ -1,5 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
-import { customerTabParams, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
+import { customerTabParams, homeQuickActionLink, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
 
 describe('mobile navigation links', () => {
   it('keeps customers as a tab and expenses and purchases under More', () => {
@@ -51,6 +51,25 @@ describe('mobile navigation links', () => {
       'CustomerList',
       'CustomerCreate',
     ]);
+  });
+
+  it('sends each home quick action to its own screen', () => {
+    expect(homeQuickActionLink('newInvoice')).toEqual({
+      tab: 'Invoices',
+      params: invoiceTabParams({ name: 'InvoiceCreate' }),
+    });
+    expect(homeQuickActionLink('recordPayment')).toEqual({
+      tab: 'Invoices',
+      params: invoiceTabParams({ name: 'InvoiceList' }),
+    });
+    expect(homeQuickActionLink('addExpense')).toEqual({
+      tab: 'More',
+      params: moreTabParams({ name: 'ExpenseCreate' }),
+    });
+    expect(homeQuickActionLink('addCustomer')).toEqual({
+      tab: 'Customers',
+      params: customerTabParams({ name: 'CustomerCreate' }),
+    });
   });
 
   it('routes HTTPS and app-scheme public invoice links without authentication', () => {

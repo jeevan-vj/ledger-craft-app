@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Mobile home actions (fixed locally, 2026-10-21):** Expo Home uses four
+equal quick-action tiles: new invoice, record payment, add expense, and add
+customer. Record payment opens the invoice list, where marking an invoice paid
+already captures the payment. Style callbacks on `Pressable` go through
+`AppPressable`, because NativeWind v4's JSX runtime replaces those callbacks
+with an empty style. Dismissing the setup task is stored in SecureStore.
+Strict mobile TypeScript and all 28 Jest suites (102 tests) pass, and mobile
+lint reports no errors. Native Home screenshots were not captured: this
+environment has no iOS simulator, and Home requires a signed-in session.
+
 **Mobile branding (implemented locally, 2026-10-21):** Expo resolves the
 installed display name as `easybizinvoice`. Its iOS icon is an opaque,
 full-bleed 1024 px asset and its splash screen uses seamless dark brand artwork.
