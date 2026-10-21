@@ -1,5 +1,7 @@
 import { describe, expect, it } from '@jest/globals';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
+import { DEFAULT_THEME } from '@/types/onboarding';
+import { resolveInvoiceTheme } from '../invoiceTheme';
 import { generateInvoiceHTML } from '../invoiceTemplates';
 
 const invoice: Invoice = {
@@ -225,5 +227,138 @@ describe('generateInvoiceHTML', () => {
     expect(html).not.toContain('logo.png" onerror=');
     expect(html).toContain('&lt;img src=x onerror=&quot;globalThis.pwned=true&quot;&gt; O&#39;Reilly &amp; Co');
     expect(html).toContain('src="https://example.com/logo.png&quot; onerror=&quot;globalThis.pwned=true"');
+  });
+});
+
+const templates = ['classic', 'modern', 'minimal', 'executive', 'corporate', 'modernpro'] as const;
+
+const configuredTheme = {
+  primary: '#AA11BB',
+  secondary: '#22CCDD',
+  accent: '#DD8800',
+  text: '#101828',
+  textLight: '#667085',
+  background: '#F4E1C1',
+  surface: '#FFFEF8',
+};
+
+function profileWith(theme?: BusinessProfile['theme']): BusinessProfile {
+  return {
+    id: 'profile-1',
+    userId: 'user-1',
+    name: 'Harbour Studio',
+    email: 'owner@example.com',
+    theme,
+  };
+}
+
+describe('resolveInvoiceTheme', () => {
+  it('uses the shared default theme, including background #F5F6F3, when theme is missing', () => {
+    expect(resolveInvoiceTheme(undefined)).toEqual({
+      primary: DEFAULT_THEME.primary,
+      secondary: DEFAULT_THEME.secondary,
+      accent: DEFAULT_THEME.accent,
+      text: DEFAULT_THEME.text,
+      textLight: DEFAULT_THEME.textLight,
+      background: '#F5F6F3',
+      surface: DEFAULT_THEME.surface,
+    });
+    expect(resolveInvoiceTheme(null).background).toBe('#F5F6F3');
+    expect(resolveInvoiceTheme({}).background).toBe('#F5F6F3');
+  });
+
+  it('keeps valid colours and fills the rest from the default theme', () => {
+    expect(resolveInvoiceTheme({
+      primary: ' #112233 ',
+      secondary: 'blue',
+      background: '',
+      accent: null,
+    })).toEqual({
+      primary: '#112233',
+      secondary: DEFAULT_THEME.secondary,
+      accent: DEFAULT_THEME.accent,
+      text: DEFAULT_THEME.text,
+      textLight: DEFAULT_THEME.textLight,
+      background: '#F5F6F3',
+      surface: DEFAULT_THEME.surface,
+    });
+  });
+
+  it('ignores colours that could break out of the stylesheet', () => {
+    const theme = resolveInvoiceTheme({
+      primary: '#fff;}</style><script>',
+      surface: 'var(--inv-primary)',
+    });
+    expect(theme.primary).toBe(DEFAULT_THEME.primary);
+    expect(theme.surface).toBe(DEFAULT_THEME.surface);
+  });
+});
+
+describe('invoice HTML theme colours', () => {
+  it.each(templates)('paints the %s template with the business theme', (templateId) => {
+    const html = generateInvoiceHTML(invoice, profileWith(configuredTheme), templateId);
+
+    for (const color of Object.values(configuredTheme)) {
+      expect(html).toContain(color);
+    }
+    expect(html).toContain('var(--inv-primary)');
+    expect(html).toContain('var(--inv-secondary)');
+    expect(html).toContain('var(--inv-accent)');
+    expect(html).toContain('var(--inv-text)');
+    expect(html).toContain('var(--inv-text-light)');
+    expect(html).toContain('var(--inv-background)');
+    expect(html).toContain('var(--inv-surface)');
+    expect(html).not.toContain('#5B72EE');
+    expect(html).not.toContain('#4A5FD8');
+    expect(html).not.toContain('#33415C');
+    expect(html).not.toContain('#8b5cf6');
+    expect(html).not.toContain('#00D4FF');
+    expect(html).not.toContain('#F5F6F3');
+    expect(html).toContain('-$10.00');
+    expect(html).toContain('$75.00');
+  });
+
+  it('falls back to the shared default colours when the profile has no theme', () => {
+    const html = generateInvoiceHTML(invoice, profileWith(undefined), 'modern');
+
+    expect(html).toContain('#F5F6F3');
+    expect(html).toContain(DEFAULT_THEME.primary);
+    expect(html).toContain(DEFAULT_THEME.secondary);
+    expect(html).toContain(DEFAULT_THEME.accent);
+    expect(html).toContain(DEFAULT_THEME.text);
+    expect(html).toContain(DEFAULT_THEME.surface);
+    expect(html).not.toContain('#5B72EE');
+  });
+
+  it('fills a partial theme without dropping the colours that were set', () => {
+    const html = generateInvoiceHTML(
+      invoice,
+      profileWith({ primary: '#112233' }),
+      'corporate',
+    );
+
+    expect(html).toContain('#112233');
+    expect(html).toContain('#F5F6F3');
+    expect(html).toContain(DEFAULT_THEME.secondary);
+    expect(html).toContain(DEFAULT_THEME.text);
+    expect(html).not.toContain('#5B72EE');
+  });
+
+  it('uses dark ink on a light brand fill and white ink on a dark one', () => {
+    const light = generateInvoiceHTML(
+      invoice,
+      profileWith({ ...configuredTheme, primary: '#9FE870', secondary: '#F5F6F3' }),
+      'modern',
+    );
+    expect(light).toContain('--inv-on-primary: #111827');
+    expect(light).toContain('--inv-on-gradient: #111827');
+
+    const dark = generateInvoiceHTML(
+      invoice,
+      profileWith({ ...configuredTheme, primary: '#163300', secondary: '#163300' }),
+      'modern',
+    );
+    expect(dark).toContain('--inv-on-primary: #FFFFFF');
+    expect(dark).toContain('--inv-on-gradient: #FFFFFF');
   });
 });

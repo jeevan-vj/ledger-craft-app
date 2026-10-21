@@ -1,5 +1,13 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile invoice themes (implemented locally, 2026-10-21):** Invoice preview
+and PDF HTML read the loaded business profile `theme`. Missing or invalid
+tokens fall back through `resolveInvoiceTheme` to the mobile default palette,
+including background `#F5F6F3`. Classic, modern, minimal, executive, corporate,
+and modern pro templates paint with those tokens, and text on a brand fill
+switches to dark ink when white would be unreadable. Money and GST totals are
+unchanged.
+
 **Mobile invoice theme editor (implemented locally, 2026-10-21):** Business Settings → Appearance edits the invoice palette. It offers the same six web presets and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Save persists `updateBusinessProfile({ theme })` using contract colours only. Strict TypeScript, all 36 Jest suites (138 tests), and lint with no errors pass.
 
 **Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
@@ -110,11 +118,12 @@ when the count rises past the baseline recorded in the workflow. Mobile lint,
 `tsc --noEmit`, and Jest are hard checks: measured 2026-10-21 they report 0
 ESLint errors, 0 TypeScript errors, and 0 Jest failures, and the mobile job
 fails when any of those commands exits non-zero. ESLint warnings do not fail
-the job. `Build and Test` (`.github/workflows/deploy-only.yml`)
-still runs the Postgres API suite. The PR workflow does not start Postgres and
-does not deploy. Production deploy is `.github/workflows/release.yml`. It runs
+the job. The API & contracts job uses the same pnpm
+install and cache on Node 24, and runs `pnpm test:api`, `pnpm test:contracts`,
+and `pnpm type-check:api`. The workflow does not start Postgres and does not
+deploy. Production deploy is `.github/workflows/release.yml`. It runs
 after that CI workflow succeeds on a push to `main`. A success conclusion
-covers every job in the workflow, including jobs added later. The release
+covers every job in the workflow, including API & contracts. The release
 checks out the CI head SHA, then runs the existing verify job and the
 production deploy. Manual `workflow_dispatch` from `main` remains. CI does not
 receive production secrets.
