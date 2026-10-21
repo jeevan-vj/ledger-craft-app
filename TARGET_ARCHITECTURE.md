@@ -1,5 +1,16 @@
 # LedgerCraft target architecture
 
+**Mobile invoice theme editor (implemented locally, 2026-10-21):** Business
+Settings → Appearance replaces the coming-soon placeholder with the six web
+invoice presets (blue, purple, green, red, pink, slate) and hex fields for
+primary, secondary, accent, text, light text, background, and surface. A live
+preview updates with the draft. Invalid hex is rejected before save. Save calls
+`updateBusinessProfile({ theme })` with the contract colours only, so `name` is
+not sent. Onboarding still starts from the installed professional palette,
+including `background`. Strict mobile TypeScript, all 36 Jest suites (138 tests),
+and lint with no errors pass. The editor was rendered in Chrome through Expo
+web; there is no iOS simulator in this environment.
+
 **Mobile crash reporting (wired, 2026-10-21):** The Expo client uses
 `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json`
 set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (US project
