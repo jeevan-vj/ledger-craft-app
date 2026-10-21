@@ -1,0 +1,62 @@
+name: Feature or spec
+description: Problem, acceptance criteria, test plan, likely files, and risk.
+title: "Spec: "
+labels:
+  - type:feature
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Intake for the software factory. Label names and the high-risk rules are in [docs/PIPELINE.md](https://github.com/jeevan-vj/ledger-craft-app/blob/main/docs/PIPELINE.md).
+
+        Add `area:*`, `priority:p0`–`priority:p3`, and `size:*` after you open this. Mark `spec-ready` when an agent can build from the checklist without guessing.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: Who is blocked, and what they need to be able to do.
+      placeholder: A bookkeeper cannot record a part payment against an open invoice.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: Checklist. Each line is something the build has to satisfy.
+      value: |
+        - [ ]
+        - [ ]
+        - [ ]
+    validations:
+      required: true
+  - type: textarea
+    id: test_plan
+    attributes:
+      label: Test plan
+      description: Commands, HTTP calls, or UI steps that prove the checklist.
+      placeholder: |
+        - pnpm test:api
+        - Create a draft invoice and record a payment for half the total
+    validations:
+      required: true
+  - type: textarea
+    id: likely_files
+    attributes:
+      label: Likely files
+      description: Paths an agent should start from. Write "unknown" when you do not know yet.
+      placeholder: |
+        - api/src/modules/payments/payments.service.ts
+        - src/pages/InvoiceViewPage.tsx
+    validations:
+      required: true
+  - type: dropdown
+    id: risk
+    attributes:
+      label: Risk
+      description: Pick the highest rule this work can touch. The full list is in docs/PIPELINE.md.
+      options:
+        - Low. No high-risk rule applies.
+        - Medium. Product behaviour changes, and no high-risk rule applies.
+        - High. Migrations (api/sqlite-migrations or Drizzle), money/GST/invoice/quote calculation, Better Auth, .github/workflows or release config, secrets, or a major dependency bump.
+    validations:
+      required: true
