@@ -9,6 +9,18 @@
       ],
       "@/shared/*": [
         "./shared/*"
+      ],
+      "hono/http-exception": [
+        "./src/shims/hono-http-exception.ts"
+      ],
+      "hono/utils/http-status": [
+        "./src/shims/hono-http-status.ts"
+      ],
+      "@ledgercraft/contracts": [
+        "../packages/contracts/src/index.ts"
+      ],
+      "zod": [
+        "./node_modules/zod"
       ]
     },
     "skipLibCheck": true,

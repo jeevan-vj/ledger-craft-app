@@ -31,6 +31,12 @@ jest.mock('@/services/invoiceService', () => ({
   },
 }));
 
+jest.mock('@/features/quotes/api/quotesApi', () => ({
+  quotesApi: {
+    list: jest.fn().mockResolvedValue({ quotes: [], counts: {} }),
+  },
+}));
+
 function flatStyle(style: unknown): ViewStyle {
   return StyleSheet.flatten(style as ViewStyle) ?? {};
 }
@@ -46,12 +52,16 @@ describe('Home quick actions', () => {
     });
   });
 
-  it('renders four actions that open distinct screens', async () => {
+  it('renders home actions that open distinct screens', async () => {
     const { findByRole } = render(<DashboardScreen />);
 
     expect(await findByRole('button', { name: 'New invoice' })).toHaveProp(
       'accessibilityHint',
       'Creates a new invoice',
+    );
+    expect(await findByRole('button', { name: 'New quote' })).toHaveProp(
+      'accessibilityHint',
+      'Creates a quote or estimate',
     );
     expect(await findByRole('button', { name: 'Record payment' })).toHaveProp(
       'accessibilityHint',
@@ -67,6 +77,7 @@ describe('Home quick actions', () => {
     );
 
     fireEvent.press(await findByRole('button', { name: 'New invoice' }));
+    fireEvent.press(await findByRole('button', { name: 'New quote' }));
     fireEvent.press(await findByRole('button', { name: 'Record payment' }));
     fireEvent.press(await findByRole('button', { name: 'Add expense' }));
     fireEvent.press(await findByRole('button', { name: 'Add customer' }));
@@ -78,15 +89,25 @@ describe('Home quick actions', () => {
       },
     });
     expect(mockNavigate).toHaveBeenNthCalledWith(2, 'Invoices', {
+      state: {
+        index: 2,
+        routes: [
+          { name: 'InvoiceList' },
+          { name: 'QuoteList' },
+          { name: 'QuoteCreate' },
+        ],
+      },
+    });
+    expect(mockNavigate).toHaveBeenNthCalledWith(3, 'Invoices', {
       state: { index: 0, routes: [{ name: 'InvoiceList' }] },
     });
-    expect(mockNavigate).toHaveBeenNthCalledWith(3, 'More', {
+    expect(mockNavigate).toHaveBeenNthCalledWith(4, 'More', {
       state: {
         index: 1,
         routes: [{ name: 'SettingsList' }, { name: 'ExpenseCreate' }],
       },
     });
-    expect(mockNavigate).toHaveBeenNthCalledWith(4, 'Customers', {
+    expect(mockNavigate).toHaveBeenNthCalledWith(5, 'Customers', {
       state: {
         index: 1,
         routes: [{ name: 'CustomerList' }, { name: 'CustomerCreate' }],

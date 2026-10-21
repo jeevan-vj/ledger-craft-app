@@ -42,7 +42,6 @@ const createStyles = ({ colors: palette, type, control: controlTokens }: ReturnT
     flexShrink: 1,
     flexBasis: 0,
     alignItems: 'center',
-    minWidth: controlTokens.touchTarget,
     minHeight: controlTokens.touchTarget,
   },
   pressed: {

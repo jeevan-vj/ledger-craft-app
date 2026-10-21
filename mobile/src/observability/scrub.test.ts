@@ -15,6 +15,21 @@ describe('sentry scrubber', () => {
     expect(api).not.toContain('22222222');
   });
 
+  it('redacts quote share tokens in public links, API paths, and deep links', () => {
+    const web = redactSecrets('https://easybiz.iamjeevan.com/shared/quote/org_quote-token');
+    const api = redactSecrets(
+      'https://easybiz.iamjeevan.com/api/public/quotes/11111111-1111-1111-1111-111111111111_33333333-3333-3333-3333-333333333333/respond',
+    );
+    const app = redactSecrets('easybizinvoice://shared/quote/quote-token?shareToken=query-secret');
+
+    expect(web).toBe('https://easybiz.iamjeevan.com/shared/quote/[redacted]');
+    expect(api).toBe('https://easybiz.iamjeevan.com/api/public/quotes/[redacted]/respond');
+    expect(app).toBe('easybizinvoice://shared/quote/[redacted]?shareToken=[redacted]');
+    expect(web).not.toContain('org_quote-token');
+    expect(api).not.toContain('33333333');
+    expect(app).not.toContain('quote-token');
+  });
+
   it('strips request bodies, cookies, and auth headers, and keeps only the user id', () => {
     const event = scrubSentryEvent({
       user: { id: 'user_1', email: 'owner@example.com', username: 'owner', ip_address: '203.0.113.8' },

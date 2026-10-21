@@ -12,7 +12,7 @@ import { WebView } from 'react-native-webview';
 import type { WebViewErrorEvent, WebViewHttpErrorEvent } from 'react-native-webview/lib/WebViewTypes';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
-import { generateInvoiceHTML } from '@/utils/invoiceTemplates';
+import { generateInvoiceHTML, type DocumentLabels } from '@/utils/invoiceTemplates';
 import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { control, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
@@ -24,7 +24,10 @@ interface InvoicePreviewWithTemplatesProps {
   invoice: Invoice;
   businessProfile?: BusinessProfile;
   initialTemplate?: InvoiceTemplateId;
+  labels?: DocumentLabels;
+  filePrefix?: string;
   onClose?: () => void;
+  onTemplateChange?: (templateId: InvoiceTemplateId) => void;
   onCompleteProfile?: () => void;
 }
 
@@ -32,7 +35,10 @@ export default function InvoicePreviewWithTemplates({
   invoice,
   businessProfile,
   initialTemplate = 'classic',
+  labels,
+  filePrefix,
   onClose,
+  onTemplateChange,
   onCompleteProfile,
 }: InvoicePreviewWithTemplatesProps) {
   const theme = useTheme();
@@ -47,19 +53,25 @@ export default function InvoicePreviewWithTemplates({
   const [error, setError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
   const html = useMemo(
-    () => generateInvoiceHTML(invoice, businessProfile, selectedTemplate),
-    [businessProfile, invoice, selectedTemplate],
+    () => generateInvoiceHTML(invoice, businessProfile, selectedTemplate, labels),
+    [businessProfile, invoice, labels, selectedTemplate],
   );
 
+  const documentName = filePrefix?.trim() || 'Invoice';
   const selectTemplate = (templateId: InvoiceTemplateId) => {
     setSelectedTemplate(templateId);
+    onTemplateChange?.(templateId);
     setError(null);
     setIsLoading(true);
+  };
+  const close = () => {
+    onTemplateChange?.(selectedTemplate);
+    onClose?.();
   };
 
   const showWebViewError = (event: WebViewErrorEvent | WebViewHttpErrorEvent) => {
     const description = 'description' in event.nativeEvent ? event.nativeEvent.description : undefined;
-    setError(description || 'The invoice preview could not be loaded.');
+    setError(description || `The ${documentName.toLowerCase()} preview could not be loaded.`);
     setIsLoading(false);
   };
 
@@ -72,7 +84,7 @@ export default function InvoicePreviewWithTemplates({
   const sharePDF = async () => {
     try {
       setIsSharing(true);
-      await shareInvoicePDF(invoice, businessProfile, selectedTemplate);
+      await shareInvoicePDF(invoice, businessProfile, selectedTemplate, { labels, filePrefix });
     } catch (shareError) {
       Alert.alert(
         'Unable to share PDF',
@@ -87,7 +99,7 @@ export default function InvoicePreviewWithTemplates({
     <View style={[styles.container, { paddingBottom: insets.bottom }]}>
       <View style={[styles.header, { paddingTop: Math.max(insets.top, space.md) }]}>
         <View style={styles.titleGroup}>
-          <Text style={styles.title}>Invoice preview</Text>
+          <Text style={styles.title}>{documentName} preview</Text>
           <Text style={styles.subtitle}>{invoice.invoiceNumber}</Text>
         </View>
         <View style={styles.headerActions}>
@@ -95,7 +107,7 @@ export default function InvoicePreviewWithTemplates({
             onPress={sharePDF}
             disabled={isSharing}
             accessibilityRole="button"
-            accessibilityLabel={`Share invoice ${invoice.invoiceNumber} as PDF`}
+            accessibilityLabel={`Share ${documentName} ${invoice.invoiceNumber} as PDF`}
             accessibilityState={{ busy: isSharing, disabled: isSharing }}
             style={({ pressed }) => [
               styles.headerButton,
@@ -115,9 +127,9 @@ export default function InvoicePreviewWithTemplates({
           </AppPressable>
           {onClose ? (
             <AppPressable
-              onPress={onClose}
+              onPress={close}
               accessibilityRole="button"
-              accessibilityLabel="Close invoice preview"
+              accessibilityLabel={`Close ${documentName} preview`}
               hitSlop={8}
               style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}
             >
@@ -172,7 +184,7 @@ export default function InvoicePreviewWithTemplates({
               showsHorizontalScrollIndicator={false}
               showsVerticalScrollIndicator
               setSupportMultipleWindows={false}
-              accessibilityLabel={`${selectedTemplate} template preview for invoice ${invoice.invoiceNumber}`}
+              accessibilityLabel={`${selectedTemplate} template preview for ${documentName} ${invoice.invoiceNumber}`}
             />
             {isLoading ? (
               <View

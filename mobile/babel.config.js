@@ -12,6 +12,9 @@ module.exports = function (api) {
           root: ['./src'],
           alias: {
             '@': './src',
+            'hono/http-exception': './src/shims/hono-http-exception.ts',
+            'hono/utils/http-status': './src/shims/hono-http-status.ts',
+            '@ledgercraft/contracts': '../packages/contracts/src/index.ts',
           },
         },
       ],

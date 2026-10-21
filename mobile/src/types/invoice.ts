@@ -93,6 +93,8 @@ export interface Invoice {
   terms?: string | null;
   currency: string;
   templateName?: string;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

@@ -26,6 +26,10 @@ export interface MobileBusinessProfileDto {
   theme: BusinessTheme | null;
   invoiceNumberFormat: string | null;
   invoiceNumberSequence: number | null;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   createdAt: string;
   updatedAt: string;
 }
@@ -43,6 +47,10 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     country: dto.country,
     invoiceNumberFormat: dto.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
     invoiceNumberSequence: dto.invoiceNumberSequence ?? 1,
+    quoteNumberFormat: dto.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: dto.quoteNumberSequence ?? 1,
+    quoteValidityDays: dto.quoteValidityDays ?? 30,
+    defaultQuoteKind: dto.defaultQuoteKind ?? 'quote',
     defaultTaxRate: dto.defaultTaxRate == null ? undefined : Number(dto.defaultTaxRate),
     gstRegistrationStatus: dto.gstRegistrationStatus,
     address: dto.address ?? undefined,

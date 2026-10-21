@@ -29,6 +29,7 @@ import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
+import { SalesDocumentSwitch } from '@/components/quotes/SalesDocumentSwitch';
 
 type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceList'>;
 
@@ -219,14 +220,18 @@ export default function InvoiceListScreen() {
 
   if (loading) {
     return (
-      <View style={styles.centerContainer}>
-        <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoices" />
+      <View style={styles.container}>
+        <SalesDocumentSwitch value="invoices" />
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading invoices" />
+        </View>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
+      <SalesDocumentSwitch value="invoices" />
       {Platform.OS === 'android' && invoices.length > 0 && (
         <View style={styles.androidSearch}>
           <Feather name="search" size={18} color={palette.textSecondary} />

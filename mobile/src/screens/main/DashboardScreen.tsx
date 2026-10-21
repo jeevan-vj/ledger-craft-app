@@ -6,6 +6,9 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { useAuth } from '@/store';
 import { invoiceService } from '@/services/invoiceService';
+import { quotesApi } from '@/features/quotes/api/quotesApi';
+import { summarizeQuotes } from '@/features/quotes/quoteModel';
+import type { Quote } from '@/types/quote';
 import type { Invoice } from '@/types/invoice';
 import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
 import { homeQuickActionLink, invoiceTabParams, moreTabParams, type HomeQuickActionId } from '@/navigation/links';
@@ -28,6 +31,7 @@ type HomeQuickActionTile = {
 
 const quickActions: readonly HomeQuickActionTile[] = [
   { id: 'newInvoice', label: 'New invoice', hint: 'Creates a new invoice', icon: 'plus', primary: true },
+  { id: 'newQuote', label: 'New quote', hint: 'Creates a quote or estimate', icon: 'file-text' },
   { id: 'recordPayment', label: 'Record payment', hint: 'Opens invoices to record a payment', icon: 'check' },
   { id: 'addExpense', label: 'Add expense', hint: 'Creates a new expense', icon: 'file-plus' },
   { id: 'addCustomer', label: 'Add customer', hint: 'Creates a new customer', icon: 'user-plus' },
@@ -41,6 +45,8 @@ export default function DashboardScreen() {
   const { width } = useWindowDimensions();
   const cardWidth = Math.max(280, width - 40);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [quotes, setQuotes] = useState<Quote[]>([]);
+  const [quoteError, setQuoteError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [summaryPage, setSummaryPage] = useState(0);
@@ -55,6 +61,13 @@ export default function DashboardScreen() {
     } catch (loadError) {
       console.error('Error loading dashboard data:', loadError);
       setError('Invoices could not be loaded.');
+    }
+    try {
+      setQuotes((await quotesApi.list()).quotes);
+      setQuoteError(null);
+    } catch (loadError) {
+      console.error('Error loading quotes:', loadError);
+      setQuoteError('Quotes could not be loaded.');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -80,6 +93,7 @@ export default function DashboardScreen() {
   const totalPaid = paid.reduce((sum, item) => sum + item.total, 0);
   const totalOutstanding = outstanding.reduce((sum, item) => sum + item.total, 0);
   const overdue = invoices.filter((item) => item.status === 'overdue');
+  const quoteSummary = useMemo(() => summarizeQuotes(quotes), [quotes]);
   const workItems = useMemo(() => {
     const rank: Record<string, number> = { overdue: 0, draft: 1, sent: 2 };
     return [...invoices]
@@ -106,6 +120,7 @@ export default function DashboardScreen() {
     navigation.navigate(link.tab, link.params);
   };
   const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
+  const openQuotes = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'QuoteList' }));
   const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
   const dismissTasks = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -183,6 +198,20 @@ export default function DashboardScreen() {
     </ScrollView>
     <View style={styles.dots}>{[0, 1].map((page) => <View key={page} style={{ width: page === summaryPage ? 18 : 6, height: 6, borderRadius: 3, backgroundColor: page === summaryPage ? theme.colors.accent : theme.colors.border }} />)}</View>
 
+    <Text style={[theme.type.headline, styles.sectionTitle]}>Quotes</Text>
+    <AppPressable onPress={openQuotes} accessibilityRole="button" accessibilityLabel="Open quotes" style={({ pressed }) => [pressed && { opacity: 0.7 }]}>
+      <Card>
+        <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Open quotes</Text>
+        <Text style={[theme.type.display, { marginTop: 8 }]}>{quoteSummary.openCount}</Text>
+        <Text style={[theme.type.footnote, { marginTop: 4 }]}>{formatMoney(quoteSummary.openValue, quoteSummary.currency)} still open</Text>
+        <View style={styles.summaryFooter}>
+          <Text style={theme.type.footnote}>{quoteSummary.acceptedCount} accepted, not invoiced</Text>
+          <Feather name="file-text" size={20} color={theme.colors.accent} />
+        </View>
+        {quoteError ? <Text style={[theme.type.footnote, { color: theme.colors.danger, marginTop: 8 }]}>{quoteError}</Text> : null}
+      </Card>
+    </AppPressable>
+
     {tasksDismissed === false ? <>
       <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>
       <Card>
@@ -237,7 +266,7 @@ const styles = StyleSheet.create({
   avatarText: { fontSize: 19, fontWeight: '900' },
   balanceRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
   balanceActions: { flexDirection: 'row', gap: 8 }, money: { marginTop: 2, fontVariant: ['tabular-nums'] },
-  actions: { flexDirection: 'row', alignItems: 'flex-start', marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
+  actions: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start', marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
   summaryFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
