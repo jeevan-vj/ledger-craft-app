@@ -129,7 +129,7 @@ pnpm db:generate --name describe_the_change
 
 Review the new SQL in `api/sqlite-migrations/` and leave already-deployed files unchanged. `pnpm db:migrate` applies that SQL to local SQLite. Production Durable Objects apply the bundled files when each object next starts.
 
-Pushes to `main` also run `.github/workflows/release.yml`, which builds the web app, deploys the Worker and Pages, uploads Sentry source maps when `SENTRY_AUTH_TOKEN` is set, and checks API readiness. See `docs/sentry-web.md` and the Sentry section of `deploy/cloudflare.md`.
+`.github/workflows/release.yml` deploys the Worker and Pages after the `CI` workflow succeeds on a push to `main`, using that run's head SHA. It uploads Sentry source maps when `SENTRY_AUTH_TOKEN` is set and checks API readiness. Manual `workflow_dispatch` from `main` remains. See `docs/sentry-web.md` and the Sentry section of `deploy/cloudflare.md`.
 
 Android store builds from `mobile/`:
 

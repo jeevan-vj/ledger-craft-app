@@ -259,7 +259,9 @@ and anonymous-access rejection, then deploys Pages. It verifies the published
 frontend build marker and routes, and runs the authenticated smoke script.
 A local lock prevents concurrent releases from the same checkout. If invoking
 from multiple machines, coordinate releases outside that local lock. No GitHub
-workflow is installed by this script.
+workflow is installed by this script. GitHub production deploys are
+`.github/workflows/release.yml`: that workflow runs after CI succeeds on a push
+to `main`, and `workflow_dispatch` from `main` remains available.
 
 Production entry points:
 
