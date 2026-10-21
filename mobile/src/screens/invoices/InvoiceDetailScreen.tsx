@@ -24,6 +24,7 @@ import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusLabel, statusInk } from '@/utils/statusUtils';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { radius, space } from '@/theme/tokens';
@@ -279,6 +280,17 @@ export default function InvoiceDetailScreen() {
             <Text style={styles.detailLabel}>Currency</Text>
             <Text style={styles.detailValue}>{invoice.currency || 'NZD'}</Text>
           </View>
+          {invoice.sourceQuoteId && invoice.sourceQuoteNumber ? (
+            <AppPressable
+              accessibilityRole="button"
+              accessibilityLabel={`Converted from ${invoice.sourceQuoteNumber}`}
+              onPress={() => navigation.navigate('QuoteDetail', { quoteId: invoice.sourceQuoteId! })}
+              style={({ pressed }) => [styles.detailRow, pressed && { opacity: 0.7 }]}
+            >
+              <Text style={styles.detailLabel}>Source</Text>
+              <Text style={[styles.detailValue, { color: palette.accentText }]}>Converted from {invoice.sourceQuoteNumber}</Text>
+            </AppPressable>
+          ) : null}
         </View>
 
         {/* Line Items Card */}

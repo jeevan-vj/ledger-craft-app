@@ -16,6 +16,10 @@ export interface BusinessProfile {
   country: string;
   invoiceNumberFormat: string;
   invoiceNumberSequence: number;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   defaultTaxRate?: number;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   address?: string;
@@ -53,6 +57,10 @@ export interface BusinessProfileUpdate {
   defaultNotes?: string;
   invoiceNumberFormat?: string;
   invoiceNumberSequence?: number;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   logoUri?: string;
   theme?: BusinessTheme;
 }
@@ -211,6 +219,10 @@ class BusinessProfileService {
           zip: updates.zip ?? current?.zip ?? null,
           invoiceNumberFormat: updates.invoiceNumberFormat ?? current?.invoiceNumberFormat ?? null,
           invoiceNumberSequence: updates.invoiceNumberSequence ?? current?.invoiceNumberSequence ?? undefined,
+          quoteNumberFormat: updates.quoteNumberFormat ?? current?.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
+          quoteNumberSequence: updates.quoteNumberSequence ?? current?.quoteNumberSequence ?? 1,
+          quoteValidityDays: updates.quoteValidityDays ?? current?.quoteValidityDays ?? 30,
+          defaultQuoteKind: updates.defaultQuoteKind ?? current?.defaultQuoteKind ?? 'quote',
           defaultTaxRate: updates.defaultTaxRate ?? current?.defaultTaxRate ?? null,
           gstRegistrationStatus: updates.gstRegistrationStatus ?? current?.gstRegistrationStatus ?? 'unknown',
           defaultTerms: updates.defaultTerms ?? current?.defaultTerms ?? null,

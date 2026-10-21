@@ -29,6 +29,8 @@ import {
   type BusinessTheme,
 } from '@/features/business-profile/theme';
 import { DEFAULT_THEME } from '@/types/onboarding';
+import { quoteSettingsError } from '@/features/quotes/quoteModel';
+import type { QuoteKind } from '@/types/quote';
 
 type TabType = 'profile' | 'preferences' | 'appearance';
 
@@ -55,6 +57,10 @@ export default function BusinessSettingsScreen() {
   const [defaultTaxRate, setDefaultTaxRate] = useState('');
   const [invoiceNumberFormat, setInvoiceNumberFormat] = useState('INV-{YYYY}-{SEQ}');
   const [invoiceNumberSequence, setInvoiceNumberSequence] = useState('1');
+  const [quoteNumberFormat, setQuoteNumberFormat] = useState('QUO-{YYYY}-{SEQ}');
+  const [quoteNumberSequence, setQuoteNumberSequence] = useState('1');
+  const [quoteValidityDays, setQuoteValidityDays] = useState('30');
+  const [defaultQuoteKind, setDefaultQuoteKind] = useState<QuoteKind>('quote');
   const [defaultTerms, setDefaultTerms] = useState('');
   const [defaultNotes, setDefaultNotes] = useState('');
   const [logoUri, setLogoUri] = useState<string | null>(null);
@@ -102,6 +108,10 @@ export default function BusinessSettingsScreen() {
     setDefaultTaxRate(data.defaultTaxRate?.toString() || '');
     setInvoiceNumberFormat(data.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}');
     setInvoiceNumberSequence(data.invoiceNumberSequence?.toString() || '1');
+    setQuoteNumberFormat(data.quoteNumberFormat || 'QUO-{YYYY}-{SEQ}');
+    setQuoteNumberSequence(data.quoteNumberSequence?.toString() || '1');
+    setQuoteValidityDays(data.quoteValidityDays?.toString() || '30');
+    setDefaultQuoteKind(data.defaultQuoteKind || 'quote');
     setDefaultTerms(data.defaultTerms || '');
     setDefaultNotes(data.defaultNotes || '');
     const logoUrl = data.logoUrl || null;
@@ -132,6 +142,15 @@ export default function BusinessSettingsScreen() {
       Alert.alert('Validation Error', 'Sequence number must be a valid number greater than or equal to 1');
       return false;
     }
+    const quoteError = quoteSettingsError({
+      format: quoteNumberFormat,
+      sequence: quoteNumberSequence,
+      validity: quoteValidityDays,
+    });
+    if (quoteError) {
+      Alert.alert('Validation Error', quoteError);
+      return false;
+    }
     return true;
   };
 
@@ -157,6 +176,10 @@ export default function BusinessSettingsScreen() {
         defaultTaxRate: defaultTaxRate ? parseFloat(defaultTaxRate) : undefined,
         invoiceNumberFormat: invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
         invoiceNumberSequence: invoiceNumberSequence ? parseInt(invoiceNumberSequence) : 1,
+        quoteNumberFormat: quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
+        quoteNumberSequence: quoteNumberSequence ? parseInt(quoteNumberSequence) : 1,
+        quoteValidityDays: quoteValidityDays ? parseInt(quoteValidityDays) : 30,
+        defaultQuoteKind,
         defaultTerms: defaultTerms || undefined,
         defaultNotes: defaultNotes || undefined,
         logoUri: newLogoUri || undefined,
@@ -460,6 +483,54 @@ export default function BusinessSettingsScreen() {
         placeholder="1"
         keyboardType="number-pad"
       />
+      <FormInput
+        label="Quote number format"
+        value={quoteNumberFormat}
+        onChangeText={setQuoteNumberFormat}
+        placeholder="QUO-{YYYY}-{SEQ}"
+        autoCapitalize="characters"
+      />
+      <Text style={styles.helperText}>
+        Quotes and estimates share one series. Example: QUO-{'{YYYY}'}-{'{SEQ}'} → QUO-2026-0001
+      </Text>
+      <FormInput
+        label="Next quote number"
+        value={quoteNumberSequence}
+        onChangeText={setQuoteNumberSequence}
+        placeholder="1"
+        keyboardType="number-pad"
+      />
+      <FormInput
+        label="Quote validity (days)"
+        value={quoteValidityDays}
+        onChangeText={setQuoteValidityDays}
+        placeholder="30"
+        keyboardType="number-pad"
+      />
+      <Text style={styles.helperText}>Default document</Text>
+      <View style={styles.row}>
+        {(['quote', 'estimate'] as const).map((option) => {
+          const selected = defaultQuoteKind === option;
+          return (
+            <AppPressable
+              key={option}
+              accessibilityRole="button"
+              accessibilityLabel={option === 'quote' ? 'Default to quote' : 'Default to estimate'}
+              accessibilityState={{ selected }}
+              onPress={() => setDefaultQuoteKind(option)}
+              style={({ pressed }) => [
+                styles.kindOption,
+                selected && styles.kindOptionSelected,
+                pressed && { opacity: 0.7 },
+              ]}
+            >
+              <Text style={[styles.kindLabel, selected && { color: palette.accentForeground }]}>
+                {option === 'quote' ? 'Quote' : 'Estimate'}
+              </Text>
+            </AppPressable>
+          );
+        })}
+      </View>
     </View>
   );
 
@@ -672,6 +743,21 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   halfWidth: {
     flex: 1,
+  },
+  kindOption: {
+    flex: 1,
+    minHeight: control.default,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: radius.md,
+    backgroundColor: palette.fillMuted,
+  },
+  kindOptionSelected: {
+    backgroundColor: palette.accent,
+  },
+  kindLabel: {
+    ...type.callout,
+    color: palette.text,
   },
   helperText: {
     fontSize: 12,

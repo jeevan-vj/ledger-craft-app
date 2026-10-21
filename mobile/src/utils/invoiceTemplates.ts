@@ -3,6 +3,52 @@ import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { invoiceDocumentCss, resolveInvoiceTheme } from '@/utils/invoiceTheme';
 import { formatMoney } from '@/utils/money';
 
+/** Wording for an invoice or a quote/estimate. Invoice defaults match the existing templates. */
+export interface DocumentLabels {
+  title: string;
+  titleUpper: string;
+  detailsHeading: string;
+  informationHeading: string;
+  dueLabel: string;
+  dueShort: string;
+  dueHeading: string;
+  issuedDateLabel: string;
+  paymentDueLabel: string;
+  issueDateLabel: string;
+  showPayment: boolean;
+}
+
+export const invoiceDocumentLabels: DocumentLabels = {
+  title: 'Invoice',
+  titleUpper: 'INVOICE',
+  detailsHeading: 'Invoice Details',
+  informationHeading: 'Invoice Information',
+  dueLabel: 'Due Date',
+  dueShort: 'Due',
+  dueHeading: 'Due Date',
+  issuedDateLabel: 'Invoice Date',
+  paymentDueLabel: 'Payment Due',
+  issueDateLabel: 'Issue Date',
+  showPayment: true,
+};
+
+export function quoteDocumentLabels(kind: 'quote' | 'estimate'): DocumentLabels {
+  const title = kind === 'estimate' ? 'ESTIMATE' : 'QUOTE';
+  return {
+    title,
+    titleUpper: title,
+    detailsHeading: 'Details',
+    informationHeading: 'Details',
+    dueLabel: 'Valid until',
+    dueShort: 'Valid until',
+    dueHeading: 'Valid until',
+    issuedDateLabel: 'Date',
+    paymentDueLabel: 'Valid until',
+    issueDateLabel: 'Date',
+    showPayment: false,
+  };
+}
+
 // Helper functions
 const HTML_ENTITIES: Record<string, string> = {
   '&': '&amp;',
@@ -120,7 +166,7 @@ function invoiceTaxLabel(invoice: Invoice): string {
   return roundedRate > 0 ? `${label} (${roundedRate.toLocaleString('en-NZ')}%):` : `${label}:`;
 }
 
-function renderInvoiceTotals(invoice: Invoice): string {
+function renderInvoiceTotals(invoice: Invoice, labels: DocumentLabels = invoiceDocumentLabels): string {
   const currency = invoice.currency || 'NZD';
   const discount = invoice.discount ?? 0;
   const additionalCharges = invoice.additionalChargesTotal ?? invoice.additionalCharges ?? 0;
@@ -153,10 +199,10 @@ function renderInvoiceTotals(invoice: Invoice): string {
         <span class="total-label">Total:</span>
         <span class="total-value">${formatCurrency(invoice.total, currency)}</span>
       </div>
-      <div class="total-row grand-total">
+      ${labels.showPayment ? `<div class="total-row grand-total">
         <span class="total-label">Amount Due:</span>
         <span class="total-value">${formatCurrency(invoiceAmountDue(invoice), currency)}</span>
-      </div>
+      </div>` : ''}
     </div>
   `;
 }
@@ -197,7 +243,7 @@ function statusInk(status: string): string {
 }
 
 // Classic Template
-function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   const companyAddress = [
     businessProfile?.address,
@@ -215,7 +261,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -396,7 +442,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
               ${companyEmail ? `<p>${companyEmail}</p>` : ''}
             </div>
             <div class="invoice-info">
-              <div class="invoice-label">Invoice</div>
+              <div class="invoice-label">${labels.title}</div>
               <div class="invoice-number">${invoice.invoiceNumber}</div>
               <div class="status-badge">${invoice.status}</div>
             </div>
@@ -426,7 +472,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
                 <span class="date-value">${formatInvoiceDate(invoice.date)}</span>
               </div>
               <div class="date-row">
-                <span class="date-label">Due Date:</span>
+                <span class="date-label">${labels.dueLabel}:</span>
                 <span class="date-value">${formatInvoiceDate(invoice.dueDate)}</span>
               </div>
             </div>
@@ -457,7 +503,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           </table>
           
           <div class="totals-section">
-            ${renderInvoiceTotals(invoice)}
+            ${renderInvoiceTotals(invoice, labels)}
           </div>
           
           ${invoice.notes ? `
@@ -469,7 +515,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           
           ${invoice.terms ? `
             <div class="terms-section">
-              <div class="terms-title">Payment Terms:</div>
+              <div class="terms-title">${labels.showPayment ? 'Payment Terms:' : 'Terms:'}</div>
               <div class="terms-text">${invoice.terms}</div>
             </div>
           ` : ''}
@@ -484,7 +530,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
 }
 
 // Modern Template
-function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -493,7 +539,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -659,7 +705,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
                 <div class="company-name">${companyName}</div>
               </div>
               <div>
-                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-title">${labels.titleUpper}</div>
                 <div class="invoice-number">#${invoice.invoiceNumber}</div>
                 <div class="status-badge">${invoice.status}</div>
               </div>
@@ -679,9 +725,9 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
               </div>
               
               <div class="info-block">
-                <h3>Invoice Details</h3>
+                <h3>${labels.detailsHeading}</h3>
                 <p><span class="highlight">Date:</span> ${formatInvoiceDate(invoice.date)}</p>
-                <p><span class="highlight">Due:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
+                <p><span class="highlight">${labels.dueShort}:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -711,7 +757,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             </table>
             
             <div class="totals-section">
-              ${renderInvoiceTotals(invoice)}
+              ${renderInvoiceTotals(invoice, labels)}
             </div>
             
             ${invoice.notes ? `
@@ -723,7 +769,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             
             ${invoice.terms ? `
               <div class="terms-section">
-                <div class="terms-title">Payment Terms</div>
+                <div class="terms-title">${labels.showPayment ? 'Payment Terms' : 'Terms'}</div>
                 <div class="terms-text">${invoice.terms}</div>
               </div>
             ` : ''}
@@ -735,7 +781,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
 }
 
 // Minimal Template
-function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -744,7 +790,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -867,7 +913,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
       <body>
         <div class="invoice-container">
           <div class="header">
-            <div class="invoice-title">Invoice</div>
+            <div class="invoice-title">${labels.title}</div>
             <div class="invoice-number">${invoice.invoiceNumber}</div>
           </div>
           
@@ -892,7 +938,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
             </div>
             
             <div class="info-block">
-              <h3>Due Date</h3>
+              <h3>${labels.dueHeading}</h3>
               <p>${formatInvoiceDate(invoice.dueDate)}</p>
             </div>
           </div>
@@ -921,7 +967,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
           </table>
           
           <div class="totals-section">
-            ${renderInvoiceTotals(invoice)}
+            ${renderInvoiceTotals(invoice, labels)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -943,7 +989,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
 }
 
 // Executive Template - Continued in next part due to length
-function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -952,7 +998,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -1103,7 +1149,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
         <div class="invoice-container">
           <div class="header">
             <div class="company-name">${companyName}</div>
-            <div class="invoice-title">Invoice</div>
+            <div class="invoice-title">${labels.title}</div>
             <div class="invoice-number">${invoice.invoiceNumber}</div>
           </div>
           
@@ -1119,9 +1165,9 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             </div>
             
             <div class="info-block">
-              <h3>Invoice Details</h3>
-              <p><span class="highlight">Invoice Date:</span> ${formatInvoiceDate(invoice.date)}</p>
-              <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
+              <h3>${labels.detailsHeading}</h3>
+              <p><span class="highlight">${labels.issuedDateLabel}:</span> ${formatInvoiceDate(invoice.date)}</p>
+              <p><span class="highlight">${labels.dueLabel}:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
               <p><span class="highlight">Status:</span> ${invoice.status.charAt(0).toUpperCase() + invoice.status.slice(1)}</p>
             </div>
           </div>
@@ -1150,7 +1196,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
           </table>
           
           <div class="totals-section">
-            ${renderInvoiceTotals(invoice)}
+            ${renderInvoiceTotals(invoice, labels)}
           </div>
           
           ${invoice.notes || invoice.terms ? `
@@ -1172,7 +1218,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
 }
 
 // Corporate Template
-function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1181,7 +1227,7 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -1361,7 +1407,7 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
                 ${businessProfile?.address ? `<p>${businessProfile.address}</p>` : ''}
               </div>
               <div class="invoice-section">
-                <div class="invoice-label">INVOICE</div>
+                <div class="invoice-label">${labels.titleUpper}</div>
                 <div class="invoice-number">${invoice.invoiceNumber}</div>
                 <div class="status-badge">${invoice.status}</div>
               </div>
@@ -1381,9 +1427,9 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
               </div>
               
               <div class="detail-block">
-                <h3>Invoice Information</h3>
+                <h3>${labels.informationHeading}</h3>
                 <p><strong>Date Issued:</strong> ${formatInvoiceDate(invoice.date)}</p>
-                <p><strong>Payment Due:</strong> ${formatInvoiceDate(invoice.dueDate)}</p>
+                <p><strong>${labels.paymentDueLabel}:</strong> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><strong>Currency:</strong> ${invoice.currency}</p>
               </div>
             </div>
@@ -1413,7 +1459,7 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
             </table>
             
             <div class="totals-section">
-              ${renderInvoiceTotals(invoice)}
+              ${renderInvoiceTotals(invoice, labels)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1423,7 +1469,7 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
                   <div class="notes-text">${invoice.notes}</div>
                 ` : ''}
                 ${invoice.terms ? `
-                  <div class="notes-title" style="margin-top: 20px;">Payment Terms</div>
+                  <div class="notes-title" style="margin-top: 20px;">${labels.showPayment ? 'Payment Terms' : 'Terms'}</div>
                   <div class="notes-text">${invoice.terms}</div>
                 ` : ''}
               </div>
@@ -1436,7 +1482,7 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
 }
 
 // Modern Pro Template
-function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
+function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfile, labels: DocumentLabels = invoiceDocumentLabels): string {
   const companyName = businessProfile?.name || 'Your Business Name';
   
   return `
@@ -1445,7 +1491,7 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Invoice ${invoice.invoiceNumber}</title>
+        <title>${labels.title} ${invoice.invoiceNumber}</title>
         <style>
           * { margin: 0; padding: 0; box-sizing: border-box; }
           body {
@@ -1661,7 +1707,7 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
                 ${businessProfile?.email ? `<div class="company-info">${businessProfile.email}</div>` : ''}
               </div>
               <div class="invoice-badge">
-                <div class="invoice-title">INVOICE</div>
+                <div class="invoice-title">${labels.titleUpper}</div>
                 <div class="invoice-number">${invoice.invoiceNumber}</div>
                 <div class="status-badge">${invoice.status}</div>
               </div>
@@ -1681,9 +1727,9 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
               </div>
               
               <div class="info-card">
-                <h3>Invoice Details</h3>
-                <p><span class="highlight">Issue Date:</span> ${formatInvoiceDate(invoice.date)}</p>
-                <p><span class="highlight">Due Date:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
+                <h3>${labels.detailsHeading}</h3>
+                <p><span class="highlight">${labels.issueDateLabel}:</span> ${formatInvoiceDate(invoice.date)}</p>
+                <p><span class="highlight">${labels.dueLabel}:</span> ${formatInvoiceDate(invoice.dueDate)}</p>
                 <p><span class="highlight">Currency:</span> ${invoice.currency}</p>
               </div>
             </div>
@@ -1713,7 +1759,7 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             </table>
             
             <div class="totals-section">
-              ${renderInvoiceTotals(invoice)}
+              ${renderInvoiceTotals(invoice, labels)}
             </div>
             
             ${invoice.notes || invoice.terms ? `
@@ -1738,24 +1784,24 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
 function getRawTemplateHTML(
   templateId: InvoiceTemplateId,
   invoice: Invoice,
-  businessProfile?: BusinessProfile
+  businessProfile: BusinessProfile | undefined,
+  labels: DocumentLabels,
 ): string {
   switch (templateId) {
     case 'classic':
-      return generateClassicHTML(invoice, businessProfile);
+      return generateClassicHTML(invoice, businessProfile, labels);
     case 'modern':
-      return generateModernHTML(invoice, businessProfile);
+      return generateModernHTML(invoice, businessProfile, labels);
     case 'minimal':
-      return generateMinimalHTML(invoice, businessProfile);
+      return generateMinimalHTML(invoice, businessProfile, labels);
     case 'executive':
-      return generateExecutiveHTML(invoice, businessProfile);
+      return generateExecutiveHTML(invoice, businessProfile, labels);
     case 'corporate':
-      return generateCorporateHTML(invoice, businessProfile);
+      return generateCorporateHTML(invoice, businessProfile, labels);
     case 'modernpro':
-      return generateModernProHTML(invoice, businessProfile);
+      return generateModernProHTML(invoice, businessProfile, labels);
     default:
-      // Fallback to classic
-      return generateClassicHTML(invoice, businessProfile);
+      return generateClassicHTML(invoice, businessProfile, labels);
   }
 }
 
@@ -1769,12 +1815,14 @@ export function generateInvoiceHTML(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
+  labels: DocumentLabels = invoiceDocumentLabels,
 ): string {
   const themeCss = invoiceDocumentCss(resolveInvoiceTheme(businessProfile?.theme));
   return getRawTemplateHTML(
     templateId,
     escapeInvoiceText(invoice),
     escapeBusinessProfileText(businessProfile),
+    labels,
   )
     .replace(
       /<meta\s+name="viewport"\s+content="[^"]*">/i,
@@ -1788,6 +1836,7 @@ export function getTemplateHTML(
   templateId: InvoiceTemplateId,
   invoice: Invoice,
   businessProfile?: BusinessProfile,
+  labels: DocumentLabels = invoiceDocumentLabels,
 ): string {
-  return generateInvoiceHTML(invoice, businessProfile, templateId);
+  return generateInvoiceHTML(invoice, businessProfile, templateId, labels);
 }

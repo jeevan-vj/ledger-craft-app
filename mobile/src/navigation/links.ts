@@ -6,6 +6,17 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
   config: {
     screens: {
       PublicInvoice: 'shared/invoice/:shareToken',
+      PublicQuote: 'shared/quote/:shareToken',
+      Main: {
+        screens: {
+          Invoices: {
+            screens: {
+              QuoteDetail: 'quotes/:quoteId',
+              InvoiceDetail: 'invoices/:invoiceId',
+            },
+          },
+        },
+      },
     },
   },
 };
@@ -39,7 +50,7 @@ export const moreMenuSections = [
     rows: [
       {
         label: 'Business profile',
-        subtitle: 'Details, GST and invoice numbering',
+        subtitle: 'Details, GST, invoices and quotes',
         screen: 'BusinessSettings',
       },
     ],
@@ -65,8 +76,11 @@ export type MoreMenuScreen = (typeof moreMenuSections)[number]['rows'][number]['
 
 type InvoiceDestination =
   | { name: 'InvoiceList' }
-  | { name: 'InvoiceCreate' }
-  | { name: 'InvoiceDetail'; params: { invoiceId: string } };
+  | { name: 'InvoiceCreate'; params?: { customerId?: string } }
+  | { name: 'InvoiceDetail'; params: { invoiceId: string } }
+  | { name: 'QuoteList' }
+  | { name: 'QuoteCreate'; params?: { customerId?: string } }
+  | { name: 'QuoteDetail'; params: { quoteId: string } };
 
 type CustomerDestination =
   | { name: 'CustomerList' }
@@ -109,12 +123,14 @@ export function stackAbove(
 }
 
 export function invoiceTabParams(destination: InvoiceDestination): { state: NestedStackState } {
+  if (destination.name === 'InvoiceList') {
+    return { state: stackAbove('InvoiceList', { name: 'InvoiceList' }) };
+  }
+  const params = 'params' in destination ? destination.params : undefined;
   return {
     state: stackAbove(
       'InvoiceList',
-      destination.name === 'InvoiceDetail'
-        ? { name: destination.name, params: destination.params }
-        : { name: destination.name },
+      params ? { name: destination.name, params } : { name: destination.name },
     ),
   };
 }
@@ -134,7 +150,7 @@ export function moreTabParams(destination: MoreDestination): { state: NestedStac
   return { state: stackAbove('SettingsList', destination) };
 }
 
-export type HomeQuickActionId = 'newInvoice' | 'recordPayment' | 'addExpense' | 'addCustomer';
+export type HomeQuickActionId = 'newInvoice' | 'newQuote' | 'recordPayment' | 'addExpense' | 'addCustomer';
 
 export type HomeQuickActionLink = {
   tab: 'Invoices' | 'Customers' | 'More';
@@ -150,6 +166,20 @@ export function homeQuickActionLink(action: HomeQuickActionId): HomeQuickActionL
   switch (action) {
     case 'newInvoice':
       return { tab: 'Invoices', params: invoiceTabParams({ name: 'InvoiceCreate' }) };
+    case 'newQuote':
+      return {
+        tab: 'Invoices',
+        params: {
+          state: {
+            index: 2,
+            routes: [
+              { name: 'InvoiceList' },
+              { name: 'QuoteList' },
+              { name: 'QuoteCreate' },
+            ],
+          },
+        },
+      };
     case 'recordPayment':
       return { tab: 'Invoices', params: invoiceTabParams({ name: 'InvoiceList' }) };
     case 'addExpense':

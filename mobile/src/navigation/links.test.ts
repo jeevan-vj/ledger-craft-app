@@ -1,4 +1,5 @@
 import { describe, expect, it } from '@jest/globals';
+import { getStateFromPath } from '@react-navigation/native';
 import { customerTabParams, homeQuickActionLink, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
 
 describe('mobile navigation links', () => {
@@ -58,6 +59,19 @@ describe('mobile navigation links', () => {
       tab: 'Invoices',
       params: invoiceTabParams({ name: 'InvoiceCreate' }),
     });
+    expect(homeQuickActionLink('newQuote')).toEqual({
+      tab: 'Invoices',
+      params: {
+        state: {
+          index: 2,
+          routes: [
+            { name: 'InvoiceList' },
+            { name: 'QuoteList' },
+            { name: 'QuoteCreate' },
+          ],
+        },
+      },
+    });
     expect(homeQuickActionLink('recordPayment')).toEqual({
       tab: 'Invoices',
       params: invoiceTabParams({ name: 'InvoiceList' }),
@@ -77,6 +91,19 @@ describe('mobile navigation links', () => {
     expect(mobileLinking.prefixes).toContain('easybizinvoice://');
     expect(mobileLinking.config?.screens).toMatchObject({
       PublicInvoice: 'shared/invoice/:shareToken',
+      PublicQuote: 'shared/quote/:shareToken',
     });
+  });
+
+  it('resolves a public quote, quote detail, and the converted invoice', () => {
+    const publicQuote = getStateFromPath('shared/quote/org_token', mobileLinking.config);
+    const quote = getStateFromPath('quotes/quote-1', mobileLinking.config);
+    const invoice = getStateFromPath('invoices/invoice-1', mobileLinking.config);
+    expect(JSON.stringify(publicQuote)).toContain('PublicQuote');
+    expect(JSON.stringify(publicQuote)).toContain('org_token');
+    expect(JSON.stringify(quote)).toContain('QuoteDetail');
+    expect(JSON.stringify(quote)).toContain('quote-1');
+    expect(JSON.stringify(invoice)).toContain('InvoiceDetail');
+    expect(JSON.stringify(invoice)).toContain('invoice-1');
   });
 });

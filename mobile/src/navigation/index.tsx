@@ -28,6 +28,7 @@ import { rootNavigatorOptions } from '@/utils/navigationAnimations';
 import { mobileLinking } from './links';
 import { registerNavigationContainer, setSentryUser } from '@/observability/sentry';
 import PublicInvoiceScreen from '@/screens/invoices/PublicInvoiceScreen';
+import PublicQuoteScreen from '@/screens/quotes/PublicQuoteScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -116,6 +117,11 @@ export default function RootNavigator() {
         <Stack.Screen
           name="PublicInvoice"
           component={PublicInvoiceScreen}
+          options={{ headerShown: false, animation: 'slide_from_right' }}
+        />
+        <Stack.Screen
+          name="PublicQuote"
+          component={PublicQuoteScreen}
           options={{ headerShown: false, animation: 'slide_from_right' }}
         />
         {!user ? (

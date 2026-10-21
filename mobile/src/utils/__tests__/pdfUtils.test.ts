@@ -2,7 +2,7 @@ import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import type { Invoice } from '@/types/invoice';
-import { downloadInvoicePDF, invoiceFileName } from '../pdfUtils';
+import { downloadInvoicePDF, generateInvoicePDF, invoiceFileName } from '../pdfUtils';
 
 jest.mock('expo-print', () => ({
   printToFileAsync: jest.fn(),
@@ -53,6 +53,14 @@ describe('mobile invoice PDF saving', () => {
   it('creates a stable filesystem-safe invoice filename', () => {
     expect(invoiceFileName('INV/2026 0042')).toBe('Invoice-INV-2026-0042.pdf');
     expect(invoiceFileName('   ')).toBe('Invoice-Draft.pdf');
+  });
+
+  it('names a quote PDF failure as a quote and keeps invoice failures as invoices', async () => {
+    jest.mocked(Print.printToFileAsync).mockRejectedValue(new Error('disk full'));
+    await expect(generateInvoicePDF(invoice)).rejects.toThrow('Could not generate the invoice PDF: disk full');
+    await expect(generateInvoicePDF(invoice, undefined, 'modern', { filePrefix: 'Quote' })).rejects.toThrow(
+      'Could not generate the quote PDF: disk full',
+    );
   });
 
   it('writes the generated PDF to a selected Android directory', async () => {

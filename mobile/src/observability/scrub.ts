@@ -55,7 +55,7 @@ function isShareQueryKey(key: string): boolean {
 
 export function redactSecrets(value: string): string {
   return value
-    .replace(/(\/(?:shared\/invoice|api\/public\/invoices)\/)([^/?#\s"'<>]+)/gi, `$1${REDACTED}`)
+    .replace(/(\/(?:shared\/(?:invoice|quote)|api\/public\/(?:invoices|quotes))\/)([^/?#\s"'<>]+)/gi, `$1${REDACTED}`)
     .replace(/([?&](?:shareToken|share_token)=)([^&#\s"'<>]+)/gi, `$1${REDACTED}`)
     .replace(/\bBearer\s+[A-Za-z0-9\-._~+/]+=*/gi, 'Bearer [redacted]');
 }
