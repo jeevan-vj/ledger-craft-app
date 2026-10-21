@@ -1,12 +1,12 @@
 import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '@/store';
 import type { MoreStackParamList } from '@/navigation/types';
 import { moreMenuSections, type MoreMenuScreen } from '@/navigation/links';
-import { Card, DashedSetupCard, ListRow } from '@/components/ui';
+import { Card, DashedSetupCard, ListRow, AppPressable } from '@/components/ui';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
@@ -62,7 +62,7 @@ export default function SettingsScreen() {
       accessibilityLabel="Connect a bank account. Automatic transaction matching is not set up yet."
     />
 
-    <Pressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></Pressable>
+    <AppPressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></AppPressable>
     <Text style={[theme.type.caption, styles.version]}>LedgerCraft · Version 1.0.0</Text>
   </ScrollView>;
 }

@@ -1,7 +1,8 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { IconWell } from '@/components/ui/IconWell';
 import { captureRenderError } from '@/observability/sentry';
 import { useTheme } from '@/theme';
@@ -67,14 +68,14 @@ function CrashFallback({ onRetry }: { onRetry: () => void }) {
       <Text style={[styles.body, theme.type.subhead]}>
         This screen ran into a problem. You can try again. If it keeps happening, force-quit the app and open it again.
       </Text>
-      <Pressable
+      <AppPressable
         accessibilityRole="button"
         accessibilityLabel="Try again"
         onPress={onRetry}
         style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
       >
         <Text style={styles.buttonLabel}>Try again</Text>
-      </Pressable>
+      </AppPressable>
     </View>
   );
 }

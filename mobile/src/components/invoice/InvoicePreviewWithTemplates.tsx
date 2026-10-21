@@ -2,7 +2,6 @@ import React, { useMemo, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
-  Pressable,
   StyleSheet,
   Text,
   View,
@@ -18,6 +17,7 @@ import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { control, radius, space } from '@/theme/tokens';
 import TemplateSelector from './TemplateSelector';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { useTheme } from '@/theme';
 
 interface InvoicePreviewWithTemplatesProps {
@@ -91,7 +91,7 @@ export default function InvoicePreviewWithTemplates({
           <Text style={styles.subtitle}>{invoice.invoiceNumber}</Text>
         </View>
         <View style={styles.headerActions}>
-          <Pressable
+          <AppPressable
             onPress={sharePDF}
             disabled={isSharing}
             accessibilityRole="button"
@@ -112,9 +112,9 @@ export default function InvoicePreviewWithTemplates({
                 <Text style={styles.shareLabel}>Share</Text>
               </>
             )}
-          </Pressable>
+          </AppPressable>
           {onClose ? (
-            <Pressable
+            <AppPressable
               onPress={onClose}
               accessibilityRole="button"
               accessibilityLabel="Close invoice preview"
@@ -122,7 +122,7 @@ export default function InvoicePreviewWithTemplates({
               style={({ pressed }) => [styles.headerButton, pressed && styles.pressed]}
             >
               <Feather name="x" size={22} color={palette.text} />
-            </Pressable>
+            </AppPressable>
           ) : null}
         </View>
       </View>
@@ -142,14 +142,14 @@ export default function InvoicePreviewWithTemplates({
             <Feather name="alert-circle" size={36} color={palette.danger} />
             <Text selectable style={styles.stateTitle}>Preview unavailable</Text>
             <Text selectable style={styles.stateMessage}>{error}</Text>
-            <Pressable
+            <AppPressable
               onPress={retry}
               accessibilityRole="button"
               accessibilityLabel="Retry loading invoice preview"
               style={({ pressed }) => [styles.retryButton, pressed && styles.pressed]}
             >
               <Text style={styles.retryLabel}>Try again</Text>
-            </Pressable>
+            </AppPressable>
           </View>
         ) : (
           <>

@@ -2,6 +2,14 @@
 
 **Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
 
+**Mobile home actions (fixed locally, 2026-10-21):** The Expo Home screen uses
+four equal quick-action tiles: new invoice, record payment, add expense, and
+add customer. Record payment opens the invoice list, which already captures a
+payment when an invoice is marked paid. `AppPressable` opts style callbacks out
+of NativeWind's Pressable wrapper, which otherwise drops them. Dismissing the
+setup task persists in SecureStore. Native Home screenshots were not captured
+here.
+
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
 seamless dark splash screen. The existing iOS bundle ID, EAS project, Apple
@@ -12,10 +20,16 @@ uses an original LedgerCraft value carousel, progressive account signup, and a
 resumable business setup for name, country, and explicit GST registration.
 Passwords are never persisted in drafts. Profile existence is the onboarding
 gate, and GST status is stored through Hono/SQLite migration
-`0006_business-gst-registration.sql`. Strict mobile TypeScript, all 21 Jest
-suites (83 tests), lint with no errors (93 existing warnings), all 29 API suites
-(78 tests), all 18 contract suites (57 tests), and iOS/Android production
-exports pass. Authenticated device QA remains pending.
+`0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
+theme, which omitted `background`, by filling `#F5F6F3`. New builds send
+`background`. Connection copy is only for requests that never reach the API.
+Validation and server failures use plain language plus a support reference when
+the response includes a request id. Web API errors use the same wording. A
+rejected upsert does not leave a business profile. Strict mobile TypeScript,
+all 35 Jest suites (132 tests), lint with no errors (90 existing warnings),
+all 29 API suites (79 tests), and all 18 contract suites (58 tests) pass.
+Authenticated device QA and a production Worker deploy of this finish-setup
+fix remain pending.
 
 **Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
 detail now exposes separate share-link, download/export PDF, and share-PDF

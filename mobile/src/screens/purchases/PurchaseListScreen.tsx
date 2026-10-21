@@ -14,6 +14,7 @@ import { Feather } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
@@ -137,7 +138,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
     void: palette.textTertiary,
   };
   return (
-    <Pressable
+    <AppPressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(bill.balanceDue, bill.currency)} due`}
@@ -156,7 +157,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
         <Text style={[styles.status, { color: statusColor[bill.displayStatus] }]}>{bill.displayStatus}</Text>
       </View>
       <Feather name="chevron-right" size={18} color={palette.textTertiary} />
-    </Pressable>
+    </AppPressable>
   );
 }
 

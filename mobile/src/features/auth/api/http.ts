@@ -3,15 +3,18 @@ import { shouldReportApiStatus } from '@/observability/sentryOptions';
 import { clearCookies, getCookieHeader, rememberSessionToken, rememberSetCookie } from './cookieJar';
 
 export class AuthApiError extends Error {
+  readonly code?: string;
   readonly requestId?: string;
 
   constructor(
     message: string,
     readonly status: number,
+    code?: string,
     requestId?: string,
   ) {
     super(message);
     this.name = 'AuthApiError';
+    this.code = code;
     this.requestId = requestId;
   }
 }
@@ -31,16 +34,22 @@ function friendlyStatus(status: number): string {
   return `Request failed (${status})`;
 }
 
-export async function readApiError(response: Response): Promise<{ message: string; requestId?: string }> {
+export async function parseError(response: Response): Promise<{
+  message: string;
+  code?: string;
+  requestId?: string;
+}> {
   try {
     const body = (await response.json()) as {
-      error?: { message?: string; requestId?: string };
+      error?: { message?: string; code?: string; requestId?: string };
       message?: string;
       requestId?: string;
     };
     const requestId = body.error?.requestId ?? body.requestId;
+    const code = body.error?.code;
     return {
       message: body.error?.message ?? body.message ?? friendlyStatus(response.status),
+      code: typeof code === 'string' && code.trim() ? code : undefined,
       requestId: typeof requestId === 'string' && requestId.trim() ? requestId.trim() : undefined,
     };
   } catch {
@@ -48,14 +57,9 @@ export async function readApiError(response: Response): Promise<{ message: strin
   }
 }
 
-export async function parseError(response: Response): Promise<string> {
-  const parsed = await readApiError(response);
-  return parsed.message;
-}
-
 export async function rejectFailedResponse(response: Response): Promise<never> {
-  const parsed = await readApiError(response);
-  const error = new AuthApiError(parsed.message, response.status, parsed.requestId);
+  const parsed = await parseError(response);
+  const error = new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
   if (shouldReportApiStatus(response.status)) {
     captureApiError(error, response.status, parsed.requestId);
   }

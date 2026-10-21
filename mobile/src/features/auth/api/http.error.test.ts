@@ -1,5 +1,5 @@
 import { captureApiError } from '@/observability/sentry';
-import { AuthApiError, readApiError, rejectFailedResponse } from './http';
+import { AuthApiError, parseError, rejectFailedResponse } from './http';
 
 jest.mock('@/observability/sentry', () => ({
   captureApiError: jest.fn(),
@@ -18,11 +18,15 @@ describe('API error request ids', () => {
   });
 
   it('reads the server request id without keeping the response body', async () => {
-    const parsed = await readApiError(jsonResponse({
-      error: { message: 'Invoice failed', requestId: ' req_123 ', detail: 'raw body' },
+    const parsed = await parseError(jsonResponse({
+      error: { message: 'Invoice failed', code: 'VALIDATION_ERROR', requestId: ' req_123 ', detail: 'raw body' },
     }, 500));
 
-    expect(parsed).toEqual({ message: 'Invoice failed', requestId: 'req_123' });
+    expect(parsed).toEqual({
+      message: 'Invoice failed',
+      code: 'VALIDATION_ERROR',
+      requestId: 'req_123',
+    });
     expect(parsed).not.toHaveProperty('detail');
   });
 

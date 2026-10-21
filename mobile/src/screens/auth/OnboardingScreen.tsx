@@ -15,6 +15,7 @@ import { Feather } from '@expo/vector-icons';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { ModernInput } from '@/components/ui/ModernInput';
 import CountryPicker from '@/components/onboarding/CountryPicker';
+import { AuthApiError } from '@/features/auth/api/http';
 import { businessProfileService } from '@/services/businessProfileService';
 import { useAuth } from '@/store';
 import { DEFAULT_THEME, type OnboardingData } from '@/types/onboarding';
@@ -26,6 +27,7 @@ import {
   businessTaxDefaults,
   type GstRegistrationStatus,
 } from '@/features/onboarding/onboardingModel';
+import { setupFailureAlert } from '@/features/onboarding/setupFailure';
 import { onboardingStorage } from '@/features/onboarding/onboardingStorage';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
@@ -122,8 +124,19 @@ export default function OnboardingScreen() {
       ]).catch(() => undefined);
       setOnboardingStatus(true, true);
     } catch (caught) {
-      console.error('Error completing onboarding:', caught);
-      Alert.alert('Couldn’t finish setup', 'Check your connection and try again. Your answers are still here.');
+      if (caught instanceof AuthApiError) {
+        console.error('Error completing onboarding:', {
+          message: caught.message,
+          status: caught.status,
+          code: caught.code,
+          requestId: caught.requestId,
+        });
+      } else {
+        console.error('Error completing onboarding:', caught);
+      }
+      const failure = setupFailureAlert(caught);
+      setError(failure.message);
+      Alert.alert(failure.title, failure.message);
     } finally {
       setIsLoading(false);
     }

@@ -28,6 +28,33 @@ describe('BusinessProfileService (Hono)', () => {
     const profile = await businessProfileService.createBusinessProfile({ ...mockOnboardingData, businessName: dto.name, businessEmail: dto.email, logoUri: undefined });
     expect(profile).toEqual(expect.objectContaining({ name: dto.name, defaultTaxRate: 15, theme: mockBusinessTheme }));
     expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/business-profile', expect.objectContaining({ method: 'PUT' }));
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body as string);
+    expect(body).toEqual(expect.objectContaining({
+      name: dto.name,
+      email: dto.email,
+      gstRegistrationStatus: 'registered',
+      defaultTaxRate: '15',
+      theme: expect.objectContaining({
+        primary: '#163300',
+        background: '#F5F6F3',
+      }),
+    }));
+  });
+
+  it('sends a not-registered GST choice as a zero tax rate string', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({ ...dto, gstRegistrationStatus: 'not_registered', defaultTaxRate: '0' }));
+    await businessProfileService.createBusinessProfile({
+      ...mockOnboardingData,
+      businessName: dto.name,
+      businessEmail: dto.email,
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: 0,
+      logoUri: undefined,
+    });
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body as string);
+    expect(body.gstRegistrationStatus).toBe('not_registered');
+    expect(body.defaultTaxRate).toBe('0');
+    expect(body.theme.background).toBe('#F5F6F3');
   });
 
   it('gets the current profile and maps 404 to null', async () => {
