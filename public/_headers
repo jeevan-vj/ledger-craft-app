@@ -12,6 +12,11 @@
 
 /shared/invoice/*
   Cache-Control: no-store
+  Referrer-Policy: no-referrer
+
+/shared/quote/*
+  Cache-Control: no-store
+  Referrer-Policy: no-referrer
 
 /.well-known/apple-app-site-association
   Content-Type: application/json

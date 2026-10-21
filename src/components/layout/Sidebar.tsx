@@ -51,6 +51,7 @@ interface SidebarProps {
 const NAV_ITEMS: NavItem[] = [
   { name: 'Home', path: '/', icon: LayoutDashboard },
   { name: 'Invoices', path: '/invoices', icon: Receipt, permission: 'invoices:read' },
+  { name: 'Quotes', path: '/quotes', icon: FileText, permission: 'invoices:read' },
   { name: 'Customers', path: '/customers', icon: Users, permission: 'customers:read' },
   { name: 'Items', path: '/items', icon: FolderOpen },
   {

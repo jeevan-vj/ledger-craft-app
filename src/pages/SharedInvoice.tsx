@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, AlertCircle, Loader2, Smartphone } from 'lucide-react';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { Invoice, BusinessProfile } from '@/types';
+import { applyNoReferrerPolicy } from '@/lib/referrerPolicy';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -30,6 +31,8 @@ const SharedInvoice: React.FC = () => {
   const installUrl = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent)
     ? 'https://play.google.com/store/apps/details?id=com.easybizinvoice.app'
     : 'https://apps.apple.com/app/id6818787287';
+
+  useLayoutEffect(() => applyNoReferrerPolicy(), []);
 
   useEffect(() => {
     let cancelled = false;

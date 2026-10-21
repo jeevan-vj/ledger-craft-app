@@ -92,6 +92,8 @@ function toInvoice(dto: InvoiceDto): Invoice {
     currency: dto.currency,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
+    sourceQuoteId: dto.sourceQuoteId,
+    sourceQuoteNumber: dto.sourceQuoteNumber,
   };
 }
 

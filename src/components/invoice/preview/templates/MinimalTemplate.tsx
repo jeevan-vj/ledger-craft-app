@@ -1,4 +1,5 @@
 import { BankPaymentDetails } from '../BankPaymentDetails';
+import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +19,7 @@ interface MinimalTemplateProps {
   tax: number;
   businessLogo?: string;
   theme?: BusinessTheme;
+  labels?: DocumentLabels;
 }
 
 const MinimalTemplate = ({ 
@@ -32,8 +34,10 @@ const MinimalTemplate = ({
   taxRate,
   tax,
   businessLogo,
-  theme = DEFAULT_BUSINESS_THEME
+  theme = DEFAULT_BUSINESS_THEME,
+  labels,
 }: MinimalTemplateProps) => {
+  const copy = resolveDocumentLabels(labels);
   const isMobile = useIsMobile();
   
   React.useEffect(() => {
@@ -64,8 +68,13 @@ const MinimalTemplate = ({
                 />
               </div>
             )}
-            <h1 className="text-xl sm:text-2xl font-light tracking-wide" style={{ color: theme.text }}>INVOICE</h1>
+            <h1 className="text-xl sm:text-2xl font-light tracking-wide" style={{ color: theme.text }}>{copy.title}</h1>
             <p className="mt-1 sm:mt-2 text-sm sm:text-base" style={{ color: theme.primary }}>#{invoice.invoiceNumber}</p>
+            {copy.title === 'INVOICE' ? null : (
+              <p className="mt-1 text-xs sm:text-sm" style={{ color: theme.textLight }}>
+                {copy.dueLabel}: {new Date(invoice.dueDate).toLocaleDateString()}
+              </p>
+            )}
           </div>
 
           {/* Company and Client Info */}
@@ -186,7 +195,7 @@ const MinimalTemplate = ({
             </div>
           </div>
 
-          <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+          {copy.showPayment ? <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} /> : null}
           {/* Notes */}
           {invoice.notes && (
             <div className="mt-8 sm:mt-12 pt-4 sm:pt-6 border-t text-xs sm:text-sm notes-section" style={{ borderColor: theme.textLight + '30' }}>

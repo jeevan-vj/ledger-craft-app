@@ -16,6 +16,12 @@ export default defineConfig(({ mode }) => ({
       "/api": {
         target: "http://127.0.0.1:3001",
         changeOrigin: true,
+        // Quote preview imports the API totals helper. Its file lives under api/src,
+        // so the browser asks for /api/src/... and that must stay a Vite module.
+        bypass(req) {
+          const url = req.url ?? "";
+          if (url.startsWith("/api/src/") || url.includes(".ts")) return url;
+        },
       },
     },
   },

@@ -121,6 +121,10 @@ export interface BusinessProfile {
   invoiceNumberFormat?: string | null;
   invoiceNumberSequence?: number | null;
   paymentTermDays?: number;
+  quoteNumberFormat?: string | null;
+  quoteNumberSequence?: number | null;
+  quoteValidityDays?: number | null;
+  defaultQuoteKind?: 'quote' | 'estimate';
 }
 
 export interface LineItem {
@@ -204,6 +208,8 @@ export interface Invoice {
   createdAt?: string;
   updatedAt?: string;
   public_viewed_at?: string | null;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
 }
 
 // Helper interfaces for Supabase compatibility

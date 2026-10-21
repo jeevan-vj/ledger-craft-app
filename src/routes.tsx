@@ -15,6 +15,7 @@ import { AuthProvider } from "./context/StableAuthContext";
 import { Toaster } from "./components/ui/toaster";
 import { Toaster as Sonner } from "./components/ui/sonner";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import { CreateQuote, EditQuote, QuoteViewPage, Quotes, SharedQuote } from "@/routes/quotePages";
 import { PermissionGuard } from "@/components/auth/PermissionGuard";
 //import AccountsPage from './pages/Accounts';
 
@@ -145,6 +146,10 @@ const appRoutes: RouteObject[] = [
           { path: "invoices/create", element: <CreateInvoice /> },
           { path: "invoices/:id/edit", element: <EditInvoice /> },
           { path: "invoices/:id", element: <InvoiceViewPage /> },
+          { path: "quotes", element: <Quotes /> },
+          { path: "quotes/new", element: <CreateQuote /> },
+          { path: "quotes/:id/edit", element: <EditQuote /> },
+          { path: "quotes/:id", element: <QuoteViewPage /> },
           { path: "customers", element: <Customers /> },
           { path: "items", element: <Items /> },
           { path: "settings", element: <Settings /> },
@@ -247,6 +252,11 @@ const appRoutes: RouteObject[] = [
       {
         path: "/shared/invoice/:shareToken",
         element: <SuspenseWrapper><SharedInvoice /></SuspenseWrapper>,
+        errorElement: <RouteErrorFallback />,
+      },
+      {
+        path: "/shared/quote/:shareToken",
+        element: <SuspenseWrapper><SharedQuote /></SuspenseWrapper>,
         errorElement: <RouteErrorFallback />,
       },
       {

@@ -23,6 +23,8 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { useAppData } from '@/hooks/useAppData';
+import { acceptedNotInvoicedCount, openQuoteSummary } from '@/features/quotes/filters';
+import { useQuotesQuery } from '@/features/quotes/hooks/useQuotes';
 import { formatCurrency } from '@/utils/invoiceUtils';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ActionRow } from '@/components/ui/ActionRow';
@@ -43,6 +45,7 @@ const Dashboard = () => {
     expenses,
     isLoadingExpenses,
   } = useAppData();
+  const quotesQuery = useQuotesQuery();
 
   const isLoadingStats = isLoadingInvoices || isLoadingCustomers || isLoadingExpenses;
   const [activityTab, setActivityTab] = useState<ActivityTab>('invoices');
@@ -111,6 +114,9 @@ const Dashboard = () => {
   const pendingInvoices = invoices
     .filter((invoice) => invoice.status === 'sent' || invoice.status === 'overdue')
     .slice(0, 5);
+  const quoteRows = quotesQuery.data?.quotes ?? [];
+  const openQuotes = openQuoteSummary(quoteRows);
+  const acceptedQuotes = acceptedNotInvoicedCount(quoteRows);
 
   if (isLoadingStats) {
     return (
@@ -311,6 +317,39 @@ const Dashboard = () => {
           </div>
         </ContentPanel>
       </div>
+
+      <ContentPanel>
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <h2 className="text-lg font-semibold">Quotes</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Open quotes are drafts, sent, or viewed. Accepted quotes are waiting to be invoiced.</p>
+          </div>
+          <Button variant="outline" asChild>
+            <Link to="/quotes">View quotes</Link>
+          </Button>
+        </div>
+        {quotesQuery.isLoading ? (
+          <div className="mt-6 h-16 animate-pulse rounded-xl bg-muted" aria-label="Loading quotes" />
+        ) : quotesQuery.isError ? (
+          <p className="mt-6 text-sm text-muted-foreground">Quotes could not be loaded.</p>
+        ) : (
+          <dl className="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+            <div>
+              <dt className="text-sm text-muted-foreground">Open quotes</dt>
+              <dd className="mt-1 text-2xl font-bold tabular-nums">
+                {openQuotes.count}
+                <span className="ml-2 text-base font-medium text-muted-foreground">
+                  {formatCurrency(openQuotes.value, quoteRows.find((quote) => quote.status === 'draft' || quote.status === 'sent' || quote.status === 'viewed')?.currency || 'NZD')}
+                </span>
+              </dd>
+            </div>
+            <div>
+              <dt className="text-sm text-muted-foreground">Accepted, not invoiced</dt>
+              <dd className="mt-1 text-2xl font-bold tabular-nums">{acceptedQuotes}</dd>
+            </div>
+          </dl>
+        )}
+      </ContentPanel>
 
       <ContentPanel>
         <h2 className="text-lg font-semibold">At a glance</h2>

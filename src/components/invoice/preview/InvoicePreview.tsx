@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import { Download, Maximize2, Minimize2, ZoomIn, ZoomOut, Printer, ArrowLeft, Save } from 'lucide-react';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
+import { resolveDocumentLabels, type DocumentLabels } from './documentLabels';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { useAppData } from '@/hooks/useAppData';
@@ -25,6 +26,7 @@ interface InvoicePreviewProps {
   saveButtonText?: string;
   isSaving?: boolean;
   hasUnsavedChanges?: boolean;
+  documentLabels?: DocumentLabels;
 }
 
 const InvoicePreview = ({ 
@@ -35,8 +37,10 @@ const InvoicePreview = ({
   onSave,
   saveButtonText = "Save Invoice",
   isSaving = false,
-  hasUnsavedChanges = false
+  hasUnsavedChanges = false,
+  documentLabels,
 }: InvoicePreviewProps) => {
+  const labels = resolveDocumentLabels(documentLabels);
   const contentRef = useRef<HTMLDivElement>(null);
   const templateRef = useRef<HTMLDivElement>(null);
   const isMobile = useIsMobile();
@@ -74,6 +78,7 @@ const InvoicePreview = ({
     tax: invoice.taxAmount,
     businessLogo: effectiveBusinessProfile?.logoUrl || '',
     theme: effectiveBusinessProfile?.theme || DEFAULT_BUSINESS_THEME,
+    labels,
   };
 
   const handleDownloadPdf = async () => {
@@ -93,12 +98,15 @@ const InvoicePreview = ({
           invoice, 
           templateRef.current, 
           selectedTemplate, 
-          effectiveBusinessProfile?.logoUrl
+          effectiveBusinessProfile?.logoUrl,
+          labels.title === 'INVOICE'
+            ? undefined
+            : { fileName: `Quote-${invoice.invoiceNumber}.pdf`, subject: labels.title },
         );
         
         toast({
           title: "Success",
-          description: "Invoice PDF has been downloaded"
+          description: labels.title === 'INVOICE' ? "Invoice PDF has been downloaded" : "PDF downloaded",
         });
       } catch (error) {
         console.error('Error generating PDF:', error);
