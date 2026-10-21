@@ -28,6 +28,7 @@ export { GroupedSection } from './GroupedSection';
 export { ListRow } from './ListRow';
 export { FilterPills } from './FilterPills';
 export { QuickAction } from './QuickAction';
+export { AppPressable } from './AppPressable';
 export { PillButton } from './PillButton';
 export { Card } from './Card';
 export { DashedSetupCard } from './DashedSetupCard';

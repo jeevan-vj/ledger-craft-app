@@ -24,8 +24,15 @@ export const errorHandler: ErrorHandler<AppEnv> = (error, c) => {
   const requestId = requestIdFrom(c);
 
   if (error instanceof ZodError) {
+    const detail = error.issues
+      .slice(0, 3)
+      .map((issue) => {
+        const path = issue.path.map(String).join('.');
+        return path ? `${path}: ${issue.message}` : issue.message;
+      })
+      .join('; ');
     return c.json(
-      createErrorEnvelope('VALIDATION_ERROR', 'Request validation failed', requestId),
+      createErrorEnvelope('VALIDATION_ERROR', detail || 'Request validation failed', requestId),
       400,
     );
   }

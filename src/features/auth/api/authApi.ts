@@ -1,4 +1,5 @@
 import { meResponseSchema, type MeResponse } from '@ledgercraft/contracts';
+import { friendlyApiText } from '@/lib/apiErrorCopy';
 
 export class AuthApiError extends Error {
   constructor(
@@ -13,10 +14,23 @@ export class AuthApiError extends Error {
 async function parseError(response: Response): Promise<string> {
   try {
     const body = (await response.json()) as {
-      error?: { message?: string };
+      error?: { message?: string; code?: string; requestId?: string };
       message?: string;
     };
-    return body.error?.message ?? body.message ?? response.statusText;
+    const message = body.error?.message ?? body.message ?? response.statusText;
+    if (!body.error?.code) return message;
+    console.error('API request failed', {
+      status: response.status,
+      code: body.error.code,
+      requestId: body.error.requestId,
+      message,
+    });
+    return friendlyApiText({
+      status: response.status,
+      code: body.error.code,
+      message,
+      requestId: body.error.requestId,
+    });
   } catch {
     return response.statusText;
   }

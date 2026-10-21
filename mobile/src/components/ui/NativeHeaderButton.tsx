@@ -1,5 +1,6 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
+import { AppPressable } from './AppPressable';
 import { control } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -28,7 +29,7 @@ export function NativeHeaderButton({
       : colors.text;
 
   return (
-    <Pressable
+    <AppPressable
       onPress={onPress}
       disabled={disabled}
       hitSlop={8}
@@ -51,7 +52,7 @@ export function NativeHeaderButton({
       >
         {label}
       </Text>
-    </Pressable>
+    </AppPressable>
   );
 }
 

@@ -1,3 +1,4 @@
+import { presentResponseError } from '@/lib/apiErrorCopy';
 import type { ReceiptScanResultDto } from '@ledgercraft/contracts';
 import type { ReceiptScanResult } from '@/types/receipt';
 
@@ -16,12 +17,7 @@ export class ReceiptScanApiError extends Error {
 }
 
 async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
+  return (await presentResponseError(response)).message;
 }
 
 export async function scanReceiptImage(imageBase64: string, contentType?: string): Promise<ReceiptScanResult> {

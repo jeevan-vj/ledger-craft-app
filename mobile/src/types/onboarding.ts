@@ -6,6 +6,7 @@ export interface BusinessTheme {
   surface: string;
   text: string;
   textLight: string;
+  background: string;
 }
 
 export interface OnboardingData {
@@ -40,6 +41,7 @@ export const DEFAULT_THEME: BusinessTheme = {
   surface: '#FFFFFF',
   text: '#1E293B',
   textLight: '#64748B',
+  background: '#F5F6F3',
 };
 
 export const PRESET_THEMES: Record<string, BusinessTheme> = {
