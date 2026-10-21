@@ -1,13 +1,6 @@
-export interface BusinessTheme {
-  name: string;
-  primary: string;
-  secondary: string;
-  accent: string;
-  surface: string;
-  text: string;
-  textLight: string;
-  background: string;
-}
+import type { BusinessTheme } from '@/features/business-profile/theme';
+
+export type { BusinessTheme };
 
 export interface OnboardingData {
   businessName: string;
@@ -33,20 +26,7 @@ export interface OnboardingStepProps {
   isLoading?: boolean;
 }
 
-export const DEFAULT_THEME: BusinessTheme = {
-  name: 'Professional',
-  primary: '#163300',
-  secondary: '#3B4DE6',
-  accent: '#4F63D7',
-  surface: '#FFFFFF',
-  text: '#1E293B',
-  textLight: '#64748B',
-  background: '#F5F6F3',
-};
-
-export const PRESET_THEMES: Record<string, BusinessTheme> = {
-  professional: DEFAULT_THEME,
-};
+export { DEFAULT_THEME, PRESET_THEMES } from '@/features/business-profile/theme';
 
 export const INVOICE_FORMATS = [
   {

@@ -7,6 +7,9 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
+      "env": {
+        "SENTRY_PROJECT": "ledgercraft-mobile"
+      },
       "android": {
         "buildType": "apk",
         "gradleCommand": ":app:assembleDebug"
@@ -17,6 +20,11 @@
     },
     "preview": {
       "distribution": "internal",
+      "env": {
+        "EXPO_PUBLIC_SENTRY_DSN": "https://413f0f85e322945820964b612fb820f2@o4512292098342912.ingest.us.sentry.io/4512292104044544",
+        "SENTRY_ORG": "ledgercraft",
+        "SENTRY_PROJECT": "ledgercraft-mobile"
+      },
       "android": {
         "buildType": "apk"
       }
@@ -25,11 +33,19 @@
       "android": {
         "buildType": "app-bundle"
       },
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "EXPO_PUBLIC_SENTRY_DSN": "https://413f0f85e322945820964b612fb820f2@o4512292098342912.ingest.us.sentry.io/4512292104044544",
+        "SENTRY_ORG": "ledgercraft",
+        "SENTRY_PROJECT": "ledgercraft-mobile"
+      }
     },
     "development-device": {
       "developmentClient": true,
-      "distribution": "internal"
+      "distribution": "internal",
+      "env": {
+        "SENTRY_PROJECT": "ledgercraft-mobile"
+      }
     }
   },
   "submit": {
