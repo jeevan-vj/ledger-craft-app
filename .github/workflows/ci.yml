@@ -202,6 +202,9 @@ jobs:
       - name: Export iOS bundle
         env:
           EXPO_NO_TELEMETRY: '1'
+          # EAS builds upload source maps only when SENTRY_AUTH_TOKEN is set.
+          # This export must stay a local bundle.
+          SENTRY_DISABLE_AUTO_UPLOAD: 'true'
         run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/expo-ios"
 
       - name: Baseline gates

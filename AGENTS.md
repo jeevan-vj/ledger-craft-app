@@ -14,7 +14,7 @@ Web and mobile email login and signup use Better Auth (`/api/auth/*`). Product r
 
 Shared Zod DTOs live in `packages/contracts`. Web imports them as `@ledgercraft/contracts`.
 
-`mobile/` is Expo SDK 54 and is not in `pnpm-workspace.yaml`. CI installs it with `npm ci` and `mobile/package-lock.json`.
+`mobile/` is Expo SDK 54 and is not in `pnpm-workspace.yaml`. CI installs it with `npm ci` and `mobile/package-lock.json`. Crash reporting uses `@sentry/react-native` `~7.2.0`. See `mobile/SENTRY.md`.
 
 Web UI follows `DESIGN.md` and `.cursor/skills/ledgercraft-web-ui/SKILL.md`. Mobile UI follows `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` (Wise lime/forest, native iOS chrome). `.cursor/rules/project-guide.mdc` still contains older Supabase and Revolut examples; the files named above supersede those examples.
 
@@ -30,6 +30,7 @@ functions/api/[[path]].ts    Pages /api proxy
 deploy/api/wrangler.jsonc    Worker + Durable Objects
 deploy/cloudflare.md         release runbook
 docs/sentry-web.md           web Sentry setup
+mobile/SENTRY.md             Expo crash reporting
 ```
 
 Leave `src/` and `mobile/` where they are until a change is only about moving them. Do not combine a TanStack Router migration, an `apps/` move, a UI redesign, and a data cutover.
@@ -80,7 +81,7 @@ pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
 
 ## CI
 
-`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Mobile uses Node 20, `npm ci`, ESLint, `tsc --noEmit`, Jest, and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint, mobile typecheck, and mobile Jest compare counts with baselines in that workflow. The count gate fails when the count rises. A separate job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
+`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Mobile uses Node 20, `npm ci`, ESLint, `tsc --noEmit`, Jest, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Web lint, web typecheck, mobile lint, mobile typecheck, and mobile Jest compare counts with baselines in that workflow. The count gate fails when the count rises. A separate job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
 `.github/workflows/release.yml` deploys on push to `main` with Node 24. It preserves the existing Worker `BETTER_AUTH_SECRET`.
 
@@ -90,7 +91,7 @@ Web: `docs/sentry-web.md`. Browser events require `VITE_SENTRY_DSN` at build tim
 
 API: `deploy/cloudflare.md` section "Error monitoring (Sentry)". `@sentry/cloudflare` sends Worker events only when `SENTRY_ENVIRONMENT` is `production`. The public DSN is the `SENTRY_DSN` var in `deploy/api/wrangler.jsonc`. Project slug `ledgercraft-api`, org `ledgercraft`.
 
-`mobile/SENTRY.md` is absent. The Expo app has no Sentry dependency.
+Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and JavaScript errors. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (project `ledgercraft-mobile`). Development profiles, local Expo, Jest, and CI leave the DSN unset. EAS uploads source maps only when the optional `SENTRY_AUTH_TOKEN` secret is present.
 
 ## Data rules
 

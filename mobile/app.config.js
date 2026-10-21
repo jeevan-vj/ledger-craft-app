@@ -49,7 +49,19 @@ module.exports = {
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
     },
-    plugins: ['expo-secure-store', 'react-native-bottom-tabs'],
+    plugins: [
+      'expo-secure-store',
+      'react-native-bottom-tabs',
+      [
+        '@sentry/react-native/expo',
+        {
+          url: 'https://us.sentry.io/',
+          organization: process.env.SENTRY_ORG,
+          project: process.env.SENTRY_PROJECT || 'ledgercraft-mobile',
+        },
+      ],
+      './plugins/withSentryUploadGate',
+    ],
     scheme: 'easybizinvoice',
     extra: {
       eas: {

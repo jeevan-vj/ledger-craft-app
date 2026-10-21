@@ -1,3 +1,5 @@
+import { captureApiError } from '@/observability/sentry';
+import { shouldReportApiStatus } from '@/observability/sentryOptions';
 import { clearCookies, getCookieHeader, rememberSessionToken, rememberSetCookie } from './cookieJar';
 
 export class AuthApiError extends Error {
@@ -41,15 +43,27 @@ export async function parseError(response: Response): Promise<{
     const body = (await response.json()) as {
       error?: { message?: string; code?: string; requestId?: string };
       message?: string;
+      requestId?: string;
     };
+    const requestId = body.error?.requestId ?? body.requestId;
+    const code = body.error?.code;
     return {
       message: body.error?.message ?? body.message ?? friendlyStatus(response.status),
-      code: body.error?.code,
-      requestId: body.error?.requestId,
+      code: typeof code === 'string' && code.trim() ? code : undefined,
+      requestId: typeof requestId === 'string' && requestId.trim() ? requestId.trim() : undefined,
     };
   } catch {
     return { message: friendlyStatus(response.status) };
   }
+}
+
+export async function rejectFailedResponse(response: Response): Promise<never> {
+  const parsed = await parseError(response);
+  const error = new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
+  if (shouldReportApiStatus(response.status)) {
+    captureApiError(error, response.status, parsed.requestId);
+  }
+  throw error;
 }
 
 function mergeHeaders(init?: RequestInit): Record<string, string> {
@@ -79,10 +93,12 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
       headers,
     });
   } catch {
-    throw new AuthApiError(
+    const error = new AuthApiError(
       "Can't reach the API. Start it with pnpm dev:api (port 3001).",
       0,
     );
+    captureApiError(error, 0);
+    throw error;
   }
 
   await rememberSetCookie(response.headers);
@@ -99,8 +115,7 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     return undefined as T;
   }
   if (!response.ok) {
-    const parsed = await parseError(response);
-    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
+    await rejectFailedResponse(response);
   }
   try {
     return (await response.json()) as T;

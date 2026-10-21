@@ -13,7 +13,7 @@ Pages project `ledger-craft-app` also serves https://ledger-craft-app.pages.dev.
 | Web | React 18, TypeScript, Vite 5, Tailwind CSS, React Router, TanStack Query, `vite-plugin-pwa`. Source is `src/`. |
 | API | Hono, Better Auth, Drizzle, Zod. Package `@ledgercraft/api` in `api/`. Local development uses Node's SQLite driver (`api/src/db/local.ts`). Production uses one Identity Durable Object for auth and one Ledger Durable Object per organisation (`deploy/api/wrangler.jsonc`). |
 | Contracts | `@ledgercraft/contracts` in `packages/contracts` (Zod DTOs). The web app depends on it with `workspace:*`. |
-| Mobile | Expo SDK 54 (`expo` `~54.0.20`), React Native 0.81.5, in `mobile/`. Installed display name `easybizinvoice`. |
+| Mobile | Expo SDK 54 (`expo` `~54.0.20`), React Native 0.81.5, `@sentry/react-native` `~7.2.0`, in `mobile/`. Installed display name `easybizinvoice`. |
 | Workspace | pnpm `11.19.0` (`package.json` `packageManager`). `pnpm-workspace.yaml` includes `api` and `packages/contracts`. `mobile/` is outside the workspace and uses npm. |
 
 Reviewed SQLite SQL is in `api/sqlite-migrations/`. Deployment details, including what the free Cloudflare plan does and does not include, are in `deploy/cloudflare.md`. `docs/CLOUDFLARE_DEPLOYMENT.md` points at that runbook.
@@ -24,7 +24,7 @@ Web browser errors go to Sentry when `VITE_SENTRY_DSN` is set at build time. Set
 
 The API Worker reports unhandled errors with `@sentry/cloudflare` when `SENTRY_ENVIRONMENT` is `production`. The public DSN is `SENTRY_DSN` in `deploy/api/wrangler.jsonc`. Organisation `ledgercraft`, project `ledgercraft-api`. The behaviour, scrubbing rules, and the one-off debug route are in `deploy/cloudflare.md` under "Error monitoring (Sentry)".
 
-`mobile/SENTRY.md` is not in this repository. The Expo app does not depend on a Sentry SDK.
+The Expo app reports native crashes and JavaScript errors with `@sentry/react-native`. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (project `ledgercraft-mobile`). Local Expo, Jest, CI, and the development profiles leave the DSN unset. EAS uploads source maps only when the optional `SENTRY_AUTH_TOKEN` secret is present. Setup is in [`mobile/SENTRY.md`](mobile/SENTRY.md).
 
 Cloudflare Worker observability is also enabled in `deploy/api/wrangler.jsonc`.
 
@@ -102,7 +102,7 @@ npm run lint
 npm run type-check
 ```
 
-Pull-request CI (`.github/workflows/ci.yml`) installs with `pnpm install --frozen-lockfile` on Node 22 and runs web lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test -- --ci --watchAll=false`, and `npx expo export --platform ios`. Lint, typecheck, and mobile Jest compare error counts with baselines in that workflow. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
+Pull-request CI (`.github/workflows/ci.yml`) installs with `pnpm install --frozen-lockfile` on Node 22 and runs web lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci`, `npm run lint`, `npx tsc --noEmit`, `npm test -- --ci --watchAll=false`, and `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. Lint, typecheck, and mobile Jest compare error counts with baselines in that workflow. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
 ## Deploy
 
