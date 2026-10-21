@@ -42,7 +42,8 @@ export async function getMe(): Promise<MeResponse | null> {
     return null;
   }
   if (!response.ok) {
-    throw new AuthApiError(await parseError(response), response.status);
+    const parsed = await parseError(response);
+    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
   }
   return meResponseSchema.parse(await response.json());
 }

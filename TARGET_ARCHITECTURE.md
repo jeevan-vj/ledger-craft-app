@@ -6,7 +6,7 @@ customer. Record payment opens the invoice list, where marking an invoice paid
 already captures the payment. Style callbacks on `Pressable` go through
 `AppPressable`, because NativeWind v4's JSX runtime replaces those callbacks
 with an empty style. Dismissing the setup task is stored in SecureStore.
-Strict mobile TypeScript and all 28 Jest suites (102 tests) pass, and mobile
+Strict mobile TypeScript and all 29 Jest suites (108 tests) pass, and mobile
 lint reports no errors. Native Home screenshots were not captured: this
 environment has no iOS simulator, and Home requires a signed-in session.
 
@@ -21,10 +21,16 @@ now includes an original LedgerCraft value carousel, progressive account
 signup, and resumable business setup for name, country, and explicit GST
 registration. Profile existence is the auth/onboarding gate; safe drafts use
 SecureStore without persisting passwords. Hono/SQLite persists GST status via
-`0006_business-gst-registration.sql`. Strict mobile TypeScript, all 21 Jest
-suites (83 tests), all 29 API suites (78 tests), all 18 contract suites (57
-tests), lint with no errors, and iOS/Android production exports pass.
-Authenticated device QA remains open.
+`0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
+theme, which omitted `background`, by filling `#F5F6F3` and ignoring unknown
+theme keys. New builds send `background`. The finish alert uses connection copy
+only when the request never reaches the API. Validation and server failures use
+plain language, and a returned request id is shown as a support reference. Web
+API errors use the same wording, so schema diagnostics stay in the console. A
+rejected upsert does not leave a business profile. Strict mobile TypeScript, all 29 Jest suites (108 tests),
+all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
+no errors pass. Authenticated device QA and a production Worker deploy of this
+finish-setup fix remain open.
 
 **Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
 detail now separates public-link sharing, PDF download/export, and PDF file
