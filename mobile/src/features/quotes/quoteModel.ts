@@ -1,6 +1,18 @@
+import { AuthApiError } from '@/features/auth/api/http';
 import type { Invoice, LineItem } from '@/types/invoice';
+import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import type { Quote, QuoteKind, QuoteStatus } from '@/types/quote';
 import { randomId } from '@/utils/id';
+import { roundMoney } from '../../../../api/src/modules/invoices/money';
+
+const QUOTE_TEMPLATES: readonly InvoiceTemplateId[] = [
+  'classic',
+  'modern',
+  'minimal',
+  'executive',
+  'corporate',
+  'modernpro',
+];
 
 export type QuoteAction =
   | 'edit'
@@ -157,9 +169,12 @@ export function mutationFailureMessage(error: unknown, online: boolean): string 
 export function createSingleFlight(createKey: () => string = randomId) {
   let inFlight = false;
   let key: string | null = null;
+  let fingerprint = '';
   return {
-    claim(): string | null {
+    claim(nextFingerprint = ''): string | null {
       if (inFlight) return null;
+      if (key !== null && nextFingerprint !== fingerprint) key = null;
+      fingerprint = nextFingerprint;
       inFlight = true;
       key ??= createKey();
       return key;
@@ -171,8 +186,33 @@ export function createSingleFlight(createKey: () => string = randomId) {
 }
 
 export function decimalText(value: number): string {
-  if (!Number.isFinite(value)) return '0';
-  return String(value);
+  if (!Number.isFinite(value)) return '0.00';
+  return roundMoney(value);
+}
+
+export function needsAcceptBeforeConvert(status: QuoteStatus): boolean {
+  return status === 'sent' || status === 'viewed';
+}
+
+export function isInvalidQuoteTransition(error: unknown): boolean {
+  return error instanceof AuthApiError && error.status === 409 && error.code === 'INVALID_QUOTE_TRANSITION';
+}
+
+export function isQuoteAlreadyResponded(error: unknown): boolean {
+  return error instanceof AuthApiError && error.status === 409 && error.code === 'QUOTE_ALREADY_RESPONDED';
+}
+
+export function quoteConvertFollowUp(quote: {
+  status: QuoteStatus;
+  convertedInvoiceId: string | null;
+}): 'convert' | 'open' | 'stop' {
+  if (quote.convertedInvoiceId || quote.status === 'converted') return 'open';
+  if (quote.status === 'accepted') return 'convert';
+  return 'stop';
+}
+
+export function quoteTemplateId(value: string | null | undefined): InvoiceTemplateId {
+  return QUOTE_TEMPLATES.includes(value as InvoiceTemplateId) ? (value as InvoiceTemplateId) : 'classic';
 }
 
 export function quoteToPreviewInvoice(quote: Quote, items?: LineItem[]): Invoice {

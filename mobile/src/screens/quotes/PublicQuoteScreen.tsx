@@ -16,9 +16,8 @@ import { Feather } from '@expo/vector-icons';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { quotesApi } from '@/features/quotes/api/quotesApi';
-import { quoteKindLabel, quoteStatusLabel, quoteToPreviewInvoice } from '@/features/quotes/quoteModel';
+import { isQuoteAlreadyResponded, quoteKindLabel, quoteStatusLabel, quoteTemplateId, quoteToPreviewInvoice } from '@/features/quotes/quoteModel';
 import type { RootStackParamList } from '@/navigation/types';
-import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { space } from '@/theme/tokens';
 import { generateInvoiceHTML, quoteDocumentLabels } from '@/utils/invoiceTemplates';
 import { downloadInvoicePDF } from '@/utils/pdfUtils';
@@ -44,7 +43,7 @@ export default function PublicQuoteScreen() {
 
   const quote = snapshot.data?.quote;
   const kind = quote?.kind ?? 'quote';
-  const template = (snapshot.data?.templateName ?? quote?.templateName ?? 'classic') as InvoiceTemplateId;
+  const template = quoteTemplateId(snapshot.data?.templateName ?? quote?.templateName);
   const html = useMemo(() => {
     if (!quote || !snapshot.data) return '';
     return generateInvoiceHTML(
@@ -67,6 +66,10 @@ export default function PublicQuoteScreen() {
       await quotesApi.respond(token, { action, name: trimmed, note: note.trim() || undefined });
       await queryClient.invalidateQueries({ queryKey: ['quotes', 'public', token] });
     } catch (error) {
+      if (isQuoteAlreadyResponded(error)) {
+        await queryClient.invalidateQueries({ queryKey: ['quotes', 'public', token] });
+        return;
+      }
       Alert.alert(
         'Could not send response',
         error instanceof Error ? error.message : 'Check the link and try again.',

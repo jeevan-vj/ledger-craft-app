@@ -266,7 +266,7 @@ const styles = StyleSheet.create({
   avatarText: { fontSize: 19, fontWeight: '900' },
   balanceRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
   balanceActions: { flexDirection: 'row', gap: 8 }, money: { marginTop: 2, fontVariant: ['tabular-nums'] },
-  actions: { flexDirection: 'row', flexWrap: 'wrap', alignItems: 'flex-start', marginBottom: 34, rowGap: 16 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
+  actions: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start', marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
   summaryFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },

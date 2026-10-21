@@ -38,6 +38,8 @@ export interface MobileInvoiceDto {
   terms: string | null;
   currency: string;
   customerName: string | null;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
   items: Array<{
     id: string;
     description: string;
@@ -120,6 +122,8 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,
+    sourceQuoteId: dto.sourceQuoteId,
+    sourceQuoteNumber: dto.sourceQuoteNumber,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };

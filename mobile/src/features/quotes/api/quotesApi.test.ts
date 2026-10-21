@@ -77,7 +77,7 @@ describe('quotesApi', () => {
       templateName: 'classic',
       taxInclusive: false,
       taxRate: '15',
-      items: [{ description: 'Design', quantity: '1', unit: 'ea', rate: '100', rateUnit: 'ea' }],
+      items: [{ description: 'Design', quantity: '1.00', unit: 'ea', rate: '100.00', rateUnit: 'ea' }],
     });
     expect(body).not.toHaveProperty('subtotal');
     expect(body).not.toHaveProperty('taxAmount');

@@ -26,6 +26,11 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+function documentNoun(options?: DocumentFileOptions): string {
+  const prefix = options?.filePrefix?.trim();
+  return prefix ? prefix.toLowerCase() : 'invoice';
+}
+
 async function moveToNamedDocument(uri: string, invoice: Invoice, filePrefix = 'Invoice'): Promise<string> {
   if (!FileSystem.documentDirectory) {
     return uri;
@@ -56,7 +61,7 @@ export async function generateInvoicePDF(
     });
     return await moveToNamedDocument(uri, invoice, options?.filePrefix);
   } catch (error) {
-    throw new Error(`Could not generate the invoice PDF: ${errorMessage(error)}`);
+    throw new Error(`Could not generate the ${documentNoun(options)} PDF: ${errorMessage(error)}`);
   }
 }
 
@@ -73,7 +78,7 @@ export async function printInvoicePDF(
       height: A4_HEIGHT,
     });
   } catch (error) {
-    throw new Error(`Could not print the invoice: ${errorMessage(error)}`);
+    throw new Error(`Could not print the ${documentNoun(options)}: ${errorMessage(error)}`);
   }
 }
 
@@ -89,20 +94,21 @@ export async function shareInvoicePDF(
     }
 
     const uri = await generateInvoicePDF(invoice, businessProfile, templateId, options);
+    const noun = documentNoun(options);
     await Sharing.shareAsync(uri, {
       mimeType: 'application/pdf',
-      dialogTitle: `Share ${invoice.invoiceNumber}`,
+      dialogTitle: noun === 'invoice' ? `Share ${invoice.invoiceNumber}` : `Share ${options?.filePrefix} ${invoice.invoiceNumber}`,
       UTI: 'com.adobe.pdf',
     });
   } catch (error) {
     if (
       error instanceof Error &&
       (error.message === 'Sharing is not available on this device' ||
-        error.message.startsWith('Could not generate the invoice PDF'))
+        error.message.startsWith('Could not generate the '))
     ) {
       throw error;
     }
-    throw new Error(`Could not share the invoice PDF: ${errorMessage(error)}`);
+    throw new Error(`Could not share the ${documentNoun(options)} PDF: ${errorMessage(error)}`);
   }
 }
 
@@ -137,7 +143,9 @@ export async function downloadInvoicePDF(
   }
   await Sharing.shareAsync(uri, {
     mimeType: 'application/pdf',
-    dialogTitle: `Save ${invoice.invoiceNumber} PDF`,
+    dialogTitle: documentNoun(options) === 'invoice'
+      ? `Save ${invoice.invoiceNumber} PDF`
+      : `Save ${options?.filePrefix} ${invoice.invoiceNumber} PDF`,
     UTI: 'com.adobe.pdf',
   });
   return uri;

@@ -38,12 +38,10 @@ export function QuickAction({ icon, label, onPress, primary = false, accessibili
 
 const createStyles = ({ colors: palette, type, control: controlTokens }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
-    flexGrow: 0,
+    flexGrow: 1,
     flexShrink: 1,
-    flexBasis: '25%',
-    maxWidth: '25%',
+    flexBasis: 0,
     alignItems: 'center',
-    minWidth: controlTokens.touchTarget,
     minHeight: controlTokens.touchTarget,
   },
   pressed: {

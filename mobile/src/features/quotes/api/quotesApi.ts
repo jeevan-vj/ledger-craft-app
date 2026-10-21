@@ -5,7 +5,7 @@ import {
 } from '@/features/business-profile/api/businessProfileApi';
 import { decimalText } from '@/features/quotes/quoteModel';
 import type { BusinessProfile, LineItem } from '@/types/invoice';
-import type { Quote, QuoteKind, QuoteListResult, QuoteStatus } from '@/types/quote';
+import type { Quote, QuoteCharge, QuoteKind, QuoteListResult, QuoteStatus } from '@/types/quote';
 
 export interface QuoteWriteInput {
   customerId: string;
@@ -18,6 +18,11 @@ export interface QuoteWriteInput {
   templateName?: string | null;
   taxInclusive: boolean;
   taxRate: string;
+  discountType?: 'fixed' | 'percent';
+  discountPercent?: string | null;
+  discount?: string | null;
+  additionalCharges?: string | null;
+  additionalChargesList?: QuoteCharge[];
   items: LineItem[];
 }
 
@@ -65,6 +70,11 @@ function toBody(input: QuoteWriteInput): Record<string, unknown> {
     templateName: input.templateName ?? null,
     taxInclusive: input.taxInclusive,
     taxRate: input.taxRate,
+    ...(input.discountType ? { discountType: input.discountType } : {}),
+    ...(input.discountPercent !== undefined ? { discountPercent: input.discountPercent } : {}),
+    ...(input.discount !== undefined ? { discount: input.discount } : {}),
+    ...(input.additionalCharges !== undefined ? { additionalCharges: input.additionalCharges } : {}),
+    ...(input.additionalChargesList !== undefined ? { additionalChargesList: input.additionalChargesList } : {}),
     items: input.items.map((item) => ({
       description: item.description.trim(),
       quantity: decimalText(item.quantity),

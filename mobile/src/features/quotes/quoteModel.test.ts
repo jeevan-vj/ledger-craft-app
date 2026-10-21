@@ -1,9 +1,13 @@
 import {
   availableQuoteActions,
   createSingleFlight,
+  decimalText,
   mutationFailureMessage,
+  needsAcceptBeforeConvert,
+  quoteConvertFollowUp,
   quoteDraftError,
   quoteSettingsError,
+  quoteTemplateId,
   summarizeQuotes,
 } from './quoteModel';
 import type { QuoteStatus } from '@/types/quote';
@@ -76,5 +80,35 @@ describe('convert double-tap guard', () => {
     expect(guard.claim()).toBeNull();
     guard.release();
     expect(guard.claim()).toBe('convert-key');
+  });
+
+  it('mints a new create key when the draft changes and keeps it when the draft does not', () => {
+    const guard = createSingleFlight(() => `key-${Math.random()}`);
+    const first = guard.claim('customer-1|100');
+    expect(guard.claim('customer-1|100')).toBeNull();
+    guard.release();
+    expect(guard.claim('customer-1|100')).toBe(first);
+    guard.release();
+    expect(guard.claim('customer-1|250')).not.toBe(first);
+  });
+});
+
+describe('quote totals text and convert recovery', () => {
+  it('rounds binary float quantities before they are sent', () => {
+    expect(decimalText(0.1 + 0.2)).toBe('0.30');
+    expect(decimalText(1)).toBe('1.00');
+    expect(decimalText(Number.NaN)).toBe('0.00');
+  });
+
+  it('retries convert after an accept transition conflict, and opens an existing invoice', () => {
+    expect(needsAcceptBeforeConvert('sent')).toBe(true);
+    expect(needsAcceptBeforeConvert('viewed')).toBe(true);
+    expect(needsAcceptBeforeConvert('accepted')).toBe(false);
+    expect(quoteConvertFollowUp({ status: 'accepted', convertedInvoiceId: null })).toBe('convert');
+    expect(quoteConvertFollowUp({ status: 'sent', convertedInvoiceId: null })).toBe('stop');
+    expect(quoteConvertFollowUp({ status: 'converted', convertedInvoiceId: 'invoice-1' })).toBe('open');
+    expect(quoteTemplateId('modern')).toBe('modern');
+    expect(quoteTemplateId(null)).toBe('classic');
+    expect(quoteTemplateId('unknown')).toBe('classic');
   });
 });

@@ -9,6 +9,16 @@ export type QuoteStatus =
 
 export type QuoteKind = 'quote' | 'estimate';
 
+export interface QuoteCharge {
+  id: string;
+  type: 'delivery' | 'handling' | 'rush' | 'service' | 'processing' | 'international' | 'setup' | 'administrative' | 'custom';
+  label: string;
+  calculationType: 'fixed' | 'percentage';
+  amount: string;
+  description?: string;
+  isActive: boolean;
+}
+
 export interface QuoteLine {
   id: string;
   description: string;
@@ -37,6 +47,7 @@ export interface Quote {
   discountPercent: string | null;
   discount: string | null;
   additionalCharges: string | null;
+  additionalChargesList?: QuoteCharge[];
   additionalChargesTotal?: string;
   total: string;
   notes: string | null;

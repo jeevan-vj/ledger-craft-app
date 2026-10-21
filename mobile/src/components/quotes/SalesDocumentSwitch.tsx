@@ -43,7 +43,7 @@ export function SalesDocumentSwitch({ value }: { value: Value }) {
   );
 }
 
-const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
+const createStyles = ({ colors: palette, type, control: controlTokens }: ReturnType<typeof useTheme>) => StyleSheet.create({
   track: {
     flexDirection: 'row',
     marginHorizontal: space.screen,
@@ -55,7 +55,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   option: {
     flex: 1,
-    minHeight: 40,
+    minHeight: controlTokens.touchTarget,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: radius.pill,

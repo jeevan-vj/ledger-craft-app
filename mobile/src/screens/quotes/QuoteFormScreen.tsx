@@ -33,15 +33,17 @@ import {
   mutationFailureMessage,
   quoteDraftError,
   quoteKindLabel,
+  quoteTemplateId,
   quoteToPreviewInvoice,
   todayIsoDate,
 } from '@/features/quotes/quoteModel';
+import { previewQuoteTotals } from '@/features/quotes/quoteTotals';
 import type { InvoiceStackParamList } from '@/navigation/types';
 import { businessProfileService } from '@/services/businessProfileService';
 import type { Customer } from '@/services/customerService';
 import type { Item } from '@/services/itemService';
 import type { LineItem } from '@/types/invoice';
-import type { QuoteKind } from '@/types/quote';
+import type { QuoteCharge, QuoteKind } from '@/types/quote';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { quoteDocumentLabels } from '@/utils/invoiceTemplates';
 import { formatMoney } from '@/utils/money';
@@ -84,8 +86,11 @@ export default function QuoteFormScreen() {
   const [lineItems, setLineItems] = useState<LineItem[]>([blankLine()]);
   const [taxEnabled, setTaxEnabled] = useState(true);
   const [taxRate, setTaxRate] = useState(15);
-  const [taxInclusive, setTaxInclusive] = useState(false);
-  const taxTouched = useRef(false);
+  const [taxInclusive, setTaxInclusive] = useState(true);
+  const [discountType, setDiscountType] = useState<'fixed' | 'percent'>('fixed');
+  const [discountValue, setDiscountValue] = useState('');
+  const [extraCharges, setExtraCharges] = useState('');
+  const [chargesList, setChargesList] = useState<QuoteCharge[] | undefined>(undefined);
   const [quoteNumber, setQuoteNumber] = useState('');
   const [showCustomerPicker, setShowCustomerPicker] = useState(false);
   const [showItemPicker, setShowItemPicker] = useState(false);
@@ -122,10 +127,14 @@ export default function QuoteFormScreen() {
       setNotes(quote.notes ?? '');
       setTerms(quote.terms ?? '');
       setCurrency(quote.currency || 'NZD');
-      setTemplateName((quote.templateName as InvoiceTemplateId | null) ?? 'classic');
+      setTemplateName(quoteTemplateId(quote.templateName));
       setTaxInclusive(quote.taxInclusive);
       setTaxRate(Number(quote.taxRate) || 0);
       setTaxEnabled(Number(quote.taxRate) > 0);
+      setDiscountType(quote.discountType ?? 'fixed');
+      setDiscountValue(quote.discountType === 'percent' ? (quote.discountPercent ?? '') : (quote.discount ?? ''));
+      setExtraCharges(quote.additionalCharges ?? '');
+      setChargesList(quote.additionalChargesList);
       setQuoteNumber(quote.quoteNumber);
       setLineItems(quote.items.length ? quote.items.map((item) => ({
         id: item.id,
@@ -146,6 +155,7 @@ export default function QuoteFormScreen() {
     setKind(profile?.defaultQuoteKind ?? 'quote');
     setTaxRate(profile?.defaultTaxRate ?? 15);
     setTaxEnabled((profile?.defaultTaxRate ?? 15) > 0);
+    setTaxInclusive(true);
     setNotes(profile?.defaultNotes ?? '');
     setTerms(profile?.defaultTerms ?? '');
     setQuoteNumber(numberQuery.data ?? '');
@@ -157,10 +167,21 @@ export default function QuoteFormScreen() {
     hydrated.current = true;
   }, [customersQuery.data, customersQuery.isFetched, numberQuery.data, numberQuery.isFetched, profileQuery.data, profileQuery.isFetched, quoteId, quoteQuery.data, requestedCustomerId]);
 
-  const previewSubtotal = lineItems.reduce((sum, item) => sum + item.total, 0);
-  const previewTax = taxEnabled ? (previewSubtotal * taxRate) / 100 : 0;
-  const previewTotal = previewSubtotal + previewTax;
-  const formatCurrency = (amount: number) => formatMoney(amount, currency);
+  const preview = useMemo(() => previewQuoteTotals({
+    items: lineItems,
+    taxInclusive,
+    taxEnabled,
+    taxRate,
+    discountType,
+    discountValue,
+    additionalCharges: chargesList ? '' : extraCharges,
+    additionalChargesList: chargesList,
+    defaultTaxRate: profileQuery.data?.defaultTaxRate ?? 0,
+  }), [chargesList, discountType, discountValue, extraCharges, lineItems, profileQuery.data?.defaultTaxRate, taxEnabled, taxInclusive, taxRate]);
+  const previewSubtotal = Number(preview.subtotal);
+  const previewTax = Number(preview.taxAmount);
+  const previewTotal = Number(preview.total);
+  const formatCurrency = (amount: number | string) => formatMoney(amount, currency);
   const label = quoteKindLabel(kind);
 
   const updateLine = (index: number, field: keyof LineItem, value: string | number) => {
@@ -181,18 +202,23 @@ export default function QuoteFormScreen() {
     terms: terms.trim() ? terms.trim() : null,
     currency,
     templateName,
-    taxInclusive: taxTouched.current ? false : taxInclusive,
+    taxInclusive,
     taxRate: taxEnabled ? decimalText(taxRate) : '0',
+    discountType,
+    discountPercent: discountType === 'percent' ? (discountValue.trim() || '0') : null,
+    discount: discountType === 'fixed' ? (discountValue.trim() || null) : null,
+    additionalCharges: chargesList ? (extraCharges.trim() || null) : (extraCharges.trim() || null),
+    additionalChargesList: chargesList,
     items: lineItems.filter((item) => item.description.trim()),
   });
 
   const save = async () => {
-    const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems });
+    const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems }) ?? preview.error;
     if (error) {
       Alert.alert('Check the quote', error);
       return;
     }
-    const key = saveFlight.current.claim();
+    const key = saveFlight.current.claim(quoteId ? '' : JSON.stringify(buildInput()));
     if (!key) return;
     setSaving(true);
     try {
@@ -222,7 +248,7 @@ export default function QuoteFormScreen() {
       headerRight: () => (
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
           <NativeHeaderButton label="Preview" onPress={() => {
-            const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems });
+            const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems }) ?? preview.error;
             if (error) Alert.alert('Check the quote', error);
             else setShowPreview(true);
           }} />
@@ -230,7 +256,7 @@ export default function QuoteFormScreen() {
         </View>
       ),
     });
-  }, [customerId, date, expiryDate, label, lineItems, navigation, quoteId, saving]);
+  }, [customerId, date, expiryDate, label, lineItems, navigation, preview.error, quoteId, saving]);
 
   const previewInvoice = useMemo(() => quoteToPreviewInvoice({
     id: quoteId ?? 'preview',
@@ -241,15 +267,15 @@ export default function QuoteFormScreen() {
     customerName,
     date,
     expiryDate,
-    subtotal: decimalText(previewSubtotal),
-    taxAmount: decimalText(previewTax),
-    taxRate: decimalText(taxRate),
-    taxInclusive,
-    discountType: 'fixed',
-    discountPercent: null,
-    discount: null,
-    additionalCharges: null,
-    total: decimalText(previewTotal),
+    subtotal: preview.subtotal,
+    taxAmount: preview.taxAmount,
+    taxRate: taxEnabled ? decimalText(taxRate) : '0',
+    taxInclusive: preview.taxInclusive,
+    discountType,
+    discountPercent: discountType === 'percent' ? (discountValue.trim() || '0') : null,
+    discount: preview.discount,
+    additionalCharges: preview.additionalCharges,
+    total: preview.total,
     notes,
     terms,
     currency,
@@ -266,7 +292,17 @@ export default function QuoteFormScreen() {
     items: [],
     createdAt: '',
     updatedAt: '',
-  }, lineItems), [currency, customerId, customerName, date, expiryDate, kind, lineItems, notes, previewSubtotal, previewTax, previewTotal, quoteId, quoteNumber, taxInclusive, taxRate, templateName, terms]);
+  }, (() => {
+    let pricedIndex = 0;
+    return lineItems.map((item) => {
+      if (!item.description.trim()) return item;
+      const priced = preview.lines[pricedIndex];
+      pricedIndex += 1;
+      return priced
+        ? { ...item, quantity: Number(priced.quantity), rate: Number(priced.rate), total: Number(priced.total), tax: Number(priced.tax) }
+        : item;
+    });
+  })()), [currency, customerId, customerName, date, discountType, discountValue, expiryDate, kind, lineItems, notes, preview, quoteId, quoteNumber, taxEnabled, taxRate, templateName, terms]);
 
   if ((quoteId && quoteQuery.isLoading) || (!quoteId && customersQuery.isLoading && !customersQuery.data)) {
     return (
@@ -370,10 +406,75 @@ export default function QuoteFormScreen() {
           taxAmount={previewTax}
           total={previewTotal}
           formatCurrency={formatCurrency}
-          onTaxEnabledChange={(enabled) => { taxTouched.current = true; setTaxEnabled(enabled); if (!enabled) setTaxInclusive(false); }}
-          onTaxRateChange={(rate) => { taxTouched.current = true; setTaxRate(rate); }}
+          onTaxEnabledChange={setTaxEnabled}
+          onTaxRateChange={setTaxRate}
         />
-        <Text style={styles.helper}>This preview adds the line amounts. The saved GST and total come back from the server and are shown on the quote.</Text>
+        <AppPressable
+          accessibilityRole="switch"
+          accessibilityLabel="Prices include GST"
+          accessibilityState={{ checked: taxInclusive }}
+          onPress={() => setTaxInclusive((current) => !current)}
+          style={({ pressed }) => [styles.selector, pressed && styles.pressed]}
+        >
+          <Feather name={taxInclusive ? 'check-circle' : 'circle'} size={18} color={palette.accentText} />
+          <Text style={styles.selectorText}>{taxInclusive ? 'Prices include GST' : 'Prices exclude GST'}</Text>
+        </AppPressable>
+        <Text style={styles.section}>Discount and extra charges</Text>
+        <View style={styles.kindRow}>
+          {(['fixed', 'percent'] as const).map((option) => {
+            const selected = discountType === option;
+            const optionLabel = option === 'fixed' ? 'Fixed discount' : 'Percent discount';
+            return (
+              <AppPressable
+                key={option}
+                accessibilityRole="button"
+                accessibilityLabel={optionLabel}
+                accessibilityState={{ selected }}
+                onPress={() => setDiscountType(option)}
+                style={({ pressed }) => [styles.kind, selected && styles.kindSelected, pressed && styles.pressed]}
+              >
+                <Text style={[styles.kindLabel, selected && styles.kindLabelSelected]}>{option === 'fixed' ? 'Amount' : 'Percent'}</Text>
+              </AppPressable>
+            );
+          })}
+        </View>
+        <ModernInput
+          label={discountType === 'percent' ? 'Discount percent' : 'Discount'}
+          value={discountValue}
+          onChangeText={setDiscountValue}
+          placeholder={discountType === 'percent' ? '0' : '0.00'}
+          keyboardType="decimal-pad"
+        />
+        {chargesList?.length ? (
+          <View style={styles.charges}>
+            {chargesList.filter((charge) => charge.isActive).map((charge) => (
+              <Text key={charge.id} style={styles.helper}>
+                {charge.label} · {charge.calculationType === 'percentage' ? `${charge.amount}%` : formatCurrency(charge.amount)}
+              </Text>
+            ))}
+            <AppPressable
+              accessibilityRole="button"
+              accessibilityLabel="Replace extra charges"
+              onPress={() => { setChargesList(undefined); setExtraCharges(''); }}
+              style={({ pressed }) => [styles.selector, pressed && styles.pressed]}
+            >
+              <Text style={styles.selectorText}>Replace extra charges</Text>
+            </AppPressable>
+          </View>
+        ) : (
+          <ModernInput
+            label="Extra charges"
+            value={extraCharges}
+            onChangeText={setExtraCharges}
+            placeholder="0.00"
+            keyboardType="decimal-pad"
+          />
+        )}
+        <Text style={styles.helper}>
+          {preview.error ?? `Preview total ${formatCurrency(preview.total)}. Saving uses this same total.`}
+          {preview.discount ? ` Discount ${formatCurrency(preview.discount)}.` : ''}
+          {preview.additionalCharges ? ` Extra charges ${formatCurrency(preview.additionalCharges)}.` : ''}
+        </Text>
 
         <ModernInput label="Notes" value={notes} onChangeText={setNotes} placeholder="Optional note for the customer" multiline />
         <ModernInput label="Terms" value={terms} onChangeText={setTerms} placeholder="Optional terms" multiline />
@@ -412,6 +513,7 @@ export default function QuoteFormScreen() {
           initialTemplate={templateName}
           labels={quoteDocumentLabels(kind)}
           filePrefix={label}
+          onTemplateChange={setTemplateName}
           onClose={() => setShowPreview(false)}
         />
       </Modal>
@@ -431,6 +533,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   kindLabelSelected: { color: palette.accentForeground },
   pressed: { opacity: 0.7 },
   helper: { ...type.footnote, marginBottom: space.md },
+  charges: { marginBottom: space.md },
   selector: { minHeight: 52, flexDirection: 'row', alignItems: 'center', gap: 10, paddingHorizontal: space.lg, borderRadius: 16, backgroundColor: palette.surface, marginBottom: space.md },
   selectorText: { ...type.body, flex: 1 },
   placeholder: { color: palette.textTertiary },

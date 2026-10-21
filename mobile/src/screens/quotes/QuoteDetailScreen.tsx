@@ -25,9 +25,13 @@ import {
   QUOTE_EMAIL_UNAVAILABLE,
   availableQuoteActions,
   createSingleFlight,
+  isInvalidQuoteTransition,
   mutationFailureMessage,
+  needsAcceptBeforeConvert,
+  quoteConvertFollowUp,
   quoteKindLabel,
   quoteStatusLabel,
+  quoteTemplateId,
   quoteToPreviewInvoice,
 } from '@/features/quotes/quoteModel';
 import { buildPublicQuoteUrl, buildQuoteShareMessage } from '@/features/quotes/quoteSharing';
@@ -104,12 +108,29 @@ export default function QuoteDetailScreen() {
     setBusy('convert');
     try {
       let current = quote;
-      if (current.status === 'sent' || current.status === 'viewed') {
-        current = await quotesApi.setStatus(current.id, {
-          status: 'accepted',
-          name: acceptedName?.trim() || undefined,
-          note: acceptedNote?.trim() || undefined,
-        });
+      if (needsAcceptBeforeConvert(current.status)) {
+        try {
+          current = await quotesApi.setStatus(current.id, {
+            status: 'accepted',
+            name: acceptedName?.trim() || undefined,
+            note: acceptedNote?.trim() || undefined,
+          });
+        } catch (error) {
+          if (!isInvalidQuoteTransition(error)) throw error;
+          current = await quotesApi.get(quote.id);
+          const followUp = quoteConvertFollowUp(current);
+          if (followUp === 'stop') throw error;
+          if (followUp === 'open' && current.convertedInvoiceId) {
+            await refresh();
+            navigation.navigate('InvoiceDetail', { invoiceId: current.convertedInvoiceId });
+            return;
+          }
+        }
+      }
+      if (current.convertedInvoiceId) {
+        await refresh();
+        navigation.navigate('InvoiceDetail', { invoiceId: current.convertedInvoiceId });
+        return;
       }
       const result = await quotesApi.convert(current.id, key);
       await refresh();
@@ -209,7 +230,7 @@ export default function QuoteDetailScreen() {
             navigation.navigate('QuoteDetail', { quoteId: copy.id });
           })}>Duplicate</ModernButton>
           <ModernButton fullWidth variant="outline" disabled={busy !== null} onPress={() => run('pdf', async () => {
-            await downloadInvoicePDF(quoteToPreviewInvoice(quote), profileQuery.data ?? undefined, 'classic', {
+            await downloadInvoicePDF(quoteToPreviewInvoice(quote), profileQuery.data ?? undefined, quoteTemplateId(quote.templateName), {
               labels: quoteDocumentLabels(quote.kind),
               filePrefix: label,
             });
