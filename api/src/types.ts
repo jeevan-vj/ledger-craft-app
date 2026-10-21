@@ -8,6 +8,7 @@ import type { ObjectStore } from './modules/storage/object-store';
 export type AppEnv = {
   Variables: {
     requestId: string;
+    actorUserId?: string;
     checkDatabase?: () => Promise<boolean>;
     auth?: Auth;
     db?: Database;
@@ -19,6 +20,7 @@ export type AppEnv = {
 };
 
 export type AppDependencies = {
+  actorUserId?: string;
   checkDatabase?: () => Promise<boolean>;
   auth?: Auth;
   db?: Database;
