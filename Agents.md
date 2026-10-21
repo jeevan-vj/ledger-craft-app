@@ -1,13 +1,16 @@
 # Agents.md - LLM Guide for LedgerCraft Project
 
+**Mobile invoice theme editor (implemented locally, 2026-10-21):** Business Settings → Appearance edits the invoice palette. It offers the same six web presets and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Save persists `updateBusinessProfile({ theme })` using contract colours only. Strict TypeScript, all 36 Jest suites (138 tests), and lint with no errors pass.
+
+**Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
+
 **Mobile home actions (fixed locally, 2026-10-21):** The Expo Home screen uses
 four equal quick-action tiles: new invoice, record payment, add expense, and
 add customer. Record payment opens the invoice list, which already captures a
 payment when an invoice is marked paid. `AppPressable` opts style callbacks out
 of NativeWind's Pressable wrapper, which otherwise drops them. Dismissing the
-setup task persists in SecureStore. Strict TypeScript and all 29 mobile Jest
-suites (108 tests) pass, and mobile lint reports no errors. Native Home
-screenshots were not captured here.
+setup task persists in SecureStore. Native Home screenshots were not captured
+here.
 
 **Mobile branding (implemented locally, 2026-10-21):** The installed Expo app
 uses the display name `easybizinvoice`, an opaque full-bleed iOS icon, and a
@@ -25,7 +28,7 @@ theme, which omitted `background`, by filling `#F5F6F3`. New builds send
 Validation and server failures use plain language plus a support reference when
 the response includes a request id. Web API errors use the same wording. A
 rejected upsert does not leave a business profile. Strict mobile TypeScript,
-all 29 Jest suites (108 tests), lint with no errors (90 existing warnings),
+all 35 Jest suites (132 tests), lint with no errors (90 existing warnings),
 all 29 API suites (79 tests), and all 18 contract suites (58 tests) pass.
 Authenticated device QA and a production Worker deploy of this finish-setup
 fix remain pending.
@@ -101,15 +104,20 @@ push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
 `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci` in
 `mobile/`, then ESLint (`eslint-config-expo` flat config), `tsc --noEmit`, Jest,
-and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
-mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
-diagnostics. A count gate fails the job only when the count rises past the
-baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
+and `npx expo export --platform ios`. Web lint and web typecheck are not clean.
+Each still runs and prints its diagnostics. A count gate fails those jobs only
+when the count rises past the baseline recorded in the workflow. Mobile lint,
+`tsc --noEmit`, and Jest are hard checks: measured 2026-10-21 they report 0
+ESLint errors, 0 TypeScript errors, and 0 Jest failures, and the mobile job
+fails when any of those commands exits non-zero. ESLint warnings do not fail
+the job. `Build and Test` (`.github/workflows/deploy-only.yml`)
 still runs the Postgres API suite. The PR workflow does not start Postgres and
 does not deploy. Production deploy is `.github/workflows/release.yml`. It runs
-after that CI workflow succeeds on a push to `main`, checks out the CI head
-SHA, then runs the existing verify job and the production deploy. Manual
-`workflow_dispatch` from `main` remains. CI does not receive production secrets.
+after that CI workflow succeeds on a push to `main`. A success conclusion
+covers every job in the workflow, including jobs added later. The release
+checks out the CI head SHA, then runs the existing verify job and the
+production deploy. Manual `workflow_dispatch` from `main` remains. CI does not
+receive production secrets.
 
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
@@ -344,6 +352,7 @@ Orchestrator (parent chat) sequences waves. Do not mix UI redesign, TanStack Rou
 - **State Management**: Zustand 5.0+
 - **Backend**: Supabase (shared with web)
 - **Testing**: Jest with React Native Testing Library
+- **Crash reporting**: `@sentry/react-native` 7.2.0. Preview and production EAS profiles set the DSN. Local runs, Jest, CI, and development profiles leave it unset. See `mobile/SENTRY.md`.
 - **Build & Deployment**: EAS Build (Expo Application Services)
 
 ### Backend & Infrastructure
@@ -1206,6 +1215,9 @@ npm run submit:android  # Submit to Google Play
 - Set in EAS secrets or `.env` file
 - `EXPO_PUBLIC_SUPABASE_URL`
 - `EXPO_PUBLIC_SUPABASE_ANON_KEY`
+- `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (set on the preview and production profiles in `mobile/eas.json`; leave the DSN unset locally, in Jest, and in CI)
+- `SENTRY_AUTH_TOKEN` (optional EAS secret; uploads source maps; builds succeed without it)
+- `SENTRY_PROJECT=ledgercraft-mobile` (already set in `mobile/eas.json`)
 
 **Store Requirements**:
 - See `mobile/PLAY_STORE_CHECKLIST.md` for complete checklist

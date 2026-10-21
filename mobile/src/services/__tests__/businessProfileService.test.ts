@@ -1,5 +1,6 @@
 import { businessProfileService } from '@/services/businessProfileService';
 import { mockBusinessTheme, mockOnboardingData } from '@/__tests__/fixtures/onboarding.fixtures';
+import { PRESET_THEMES } from '@/features/business-profile/theme';
 
 const dto = {
   id: 'profile-1', name: 'LedgerCraft Studio', email: 'owner@example.com', phone: null,
@@ -34,11 +35,17 @@ describe('BusinessProfileService (Hono)', () => {
       email: dto.email,
       gstRegistrationStatus: 'registered',
       defaultTaxRate: '15',
-      theme: expect.objectContaining({
+      theme: {
         primary: '#163300',
+        secondary: '#3B4DE6',
+        accent: '#4F63D7',
+        text: '#1E293B',
+        textLight: '#64748B',
         background: '#F5F6F3',
-      }),
+        surface: '#FFFFFF',
+      },
     }));
+    expect(body.theme).not.toHaveProperty('name');
   });
 
   it('sends a not-registered GST choice as a zero tax rate string', async () => {
@@ -63,6 +70,17 @@ describe('BusinessProfileService (Hono)', () => {
       .mockResolvedValueOnce(jsonResponse({ message: 'Not found' }, 404));
     await expect(businessProfileService.getBusinessProfile()).resolves.toEqual(expect.objectContaining({ id: dto.id }));
     await expect(businessProfileService.getBusinessProfile()).resolves.toBeNull();
+  });
+
+  it('saves a theme with contract colours only', async () => {
+    const theme = { ...PRESET_THEMES.slate, name: 'Slate' };
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(dto))
+      .mockResolvedValueOnce(jsonResponse({ ...dto, theme: PRESET_THEMES.slate }));
+    await businessProfileService.updateBusinessProfile({ theme });
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[1][1].body as string);
+    expect(body.theme).toEqual(PRESET_THEMES.slate);
+    expect(body.theme).not.toHaveProperty('name');
   });
 
   it('updates the profile without losing existing required fields', async () => {

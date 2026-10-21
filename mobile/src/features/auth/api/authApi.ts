@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { apiFetch, apiRequest, AuthApiError, clearSessionCookies, parseError } from './http';
+import { apiFetch, apiRequest, AuthApiError, clearSessionCookies, rejectFailedResponse } from './http';
 
 export { AuthApiError };
 
@@ -42,8 +42,7 @@ export async function getMe(): Promise<MeResponse | null> {
     return null;
   }
   if (!response.ok) {
-    const parsed = await parseError(response);
-    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
+    await rejectFailedResponse(response);
   }
   return meResponseSchema.parse(await response.json());
 }

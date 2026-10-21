@@ -161,54 +161,23 @@ jobs:
       - name: Install
         run: npm ci
 
-      # TODO: eslint-config-expo flat config. Baseline 5 errors and 100
-      # warnings (2026-10-17): unresolved @testing-library/react-native (2)
-      # and @react-navigation/stack (1), plus react/no-unescaped-entities (2).
+      # Measured 2026-10-21 on main: 0 ESLint errors (warnings remain),
+      # 0 tsc errors, and 0 Jest failures. These steps fail the job.
+      # A zero count baseline is the same as the tool exit code, so the
+      # mobile count gate is gone. Web jobs still use ci-baseline-gate.mjs.
       - name: Lint
-        continue-on-error: true
-        run: |
-          set +e
-          npm run lint > "$RUNNER_TEMP/mobile-lint.txt" 2>&1
-          status=$?
-          cat "$RUNNER_TEMP/mobile-lint.txt"
-          exit $status
+        run: npm run lint
 
-      # TODO: `tsc --noEmit` baseline is 444 errors (2026-10-17). Largest
-      # buckets are TS2304 cannot find name, TS2582 missing Jest types,
-      # TS2554 wrong arity, and TS2339 missing properties. Tests stay in the
-      # program; this does not exclude them.
       - name: Typecheck
-        continue-on-error: true
-        run: |
-          set +e
-          npx tsc --noEmit --pretty false > "$RUNNER_TEMP/mobile-tsc.txt" 2>&1
-          status=$?
-          cat "$RUNNER_TEMP/mobile-tsc.txt"
-          exit $status
+        run: npx tsc --noEmit --pretty false
 
-      # jest.setup.js restores Expo winter globals before the suite reads
-      # them. Jest 30 otherwise rejects that lazy require. The suite runs;
-      # 12 tests still fail because ItemService and BusinessProfileService
-      # throw "User not authenticated".
       - name: Test
-        continue-on-error: true
-        run: |
-          set +e
-          npm test -- --ci --watchAll=false > "$RUNNER_TEMP/mobile-jest.txt" 2>&1
-          status=$?
-          cat "$RUNNER_TEMP/mobile-jest.txt"
-          exit $status
+        run: npm test -- --ci --watchAll=false
 
       - name: Export iOS bundle
         env:
           EXPO_NO_TELEMETRY: '1'
+          # EAS builds upload source maps only when SENTRY_AUTH_TOKEN is set.
+          # This export must stay a local bundle.
+          SENTRY_DISABLE_AUTO_UPLOAD: 'true'
         run: npx expo export --platform ios --output-dir "$RUNNER_TEMP/expo-ios"
-
-      - name: Baseline gates
-        if: always()
-        run: |
-          status=0
-          node "$GITHUB_WORKSPACE/.github/scripts/ci-baseline-gate.mjs" eslint "$RUNNER_TEMP/mobile-lint.txt" 5 || status=1
-          node "$GITHUB_WORKSPACE/.github/scripts/ci-baseline-gate.mjs" tsc "$RUNNER_TEMP/mobile-tsc.txt" 444 || status=1
-          node "$GITHUB_WORKSPACE/.github/scripts/ci-baseline-gate.mjs" jest "$RUNNER_TEMP/mobile-jest.txt" 12 || status=1
-          exit $status

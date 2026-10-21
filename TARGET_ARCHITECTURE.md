@@ -2,8 +2,31 @@
 
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
-run's head SHA. Manual `workflow_dispatch` from `main` remains. The CI workflow
-does not hold production secrets.
+run's head SHA. That conclusion includes every job in the CI workflow. Manual
+`workflow_dispatch` from `main` remains. The CI workflow does not hold
+production secrets.
+
+**Mobile invoice theme editor (implemented locally, 2026-10-21):** Business
+Settings → Appearance replaces the coming-soon placeholder with the six web
+invoice presets (blue, purple, green, red, pink, slate) and hex fields for
+primary, secondary, accent, text, light text, background, and surface. A live
+preview updates with the draft. Invalid hex is rejected before save. Save calls
+`updateBusinessProfile({ theme })` with the contract colours only, so `name` is
+not sent. Onboarding still starts from the installed professional palette,
+including `background`. Strict mobile TypeScript, all 36 Jest suites (138 tests),
+and lint with no errors pass. The editor was rendered in Chrome through Expo
+web; there is no iOS simulator in this environment.
+
+**Mobile crash reporting (wired, 2026-10-21):** The Expo client uses
+`@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json`
+set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (US project
+`ledgercraft-mobile`). Development profiles, local runs, Jest, and CI leave the
+DSN unset. Session Replay is off, the Sentry user is an id, share tokens are
+redacted, and server errors are tagged with the API `requestId`. EAS uploads
+source maps only when the optional `SENTRY_AUTH_TOKEN` secret is set. Local
+mobile Jest, strict TypeScript, and ESLint pass, and the iOS export bundles
+without a Sentry token. A native crash and symbolicated stack still need a
+preview build. See `mobile/SENTRY.md`.
 
 **Mobile home actions (fixed locally, 2026-10-21):** Expo Home uses four
 equal quick-action tiles: new invoice, record payment, add expense, and add
@@ -11,9 +34,8 @@ customer. Record payment opens the invoice list, where marking an invoice paid
 already captures the payment. Style callbacks on `Pressable` go through
 `AppPressable`, because NativeWind v4's JSX runtime replaces those callbacks
 with an empty style. Dismissing the setup task is stored in SecureStore.
-Strict mobile TypeScript and all 29 Jest suites (108 tests) pass, and mobile
-lint reports no errors. Native Home screenshots were not captured: this
-environment has no iOS simulator, and Home requires a signed-in session.
+Native Home screenshots were not captured: this environment has no iOS
+simulator, and Home requires a signed-in session.
 
 **Mobile branding (implemented locally, 2026-10-21):** Expo resolves the
 installed display name as `easybizinvoice`. Its iOS icon is an opaque,
@@ -32,7 +54,7 @@ theme keys. New builds send `background`. The finish alert uses connection copy
 only when the request never reaches the API. Validation and server failures use
 plain language, and a returned request id is shown as a support reference. Web
 API errors use the same wording, so schema diagnostics stay in the console. A
-rejected upsert does not leave a business profile. Strict mobile TypeScript, all 29 Jest suites (108 tests),
+rejected upsert does not leave a business profile. Strict mobile TypeScript, all 35 Jest suites (132 tests),
 all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
 no errors pass. Authenticated device QA and a production Worker deploy of this
 finish-setup fix remain open.
