@@ -79,10 +79,15 @@ jest.mock('expo-haptics', () => ({
   NotificationFeedbackType: { Success: 'success' },
 }));
 
-// Mock React Native Alert
-jest.mock('react-native/Libraries/Alert/Alert', () => ({
-  alert: jest.fn(),
-}));
+// Mock React Native Alert. The public export is the module default.
+jest.mock('react-native/Libraries/Alert/Alert', () => {
+  const alert = jest.fn();
+  return {
+    __esModule: true,
+    default: { alert },
+    alert,
+  };
+});
 
 // Silence console warnings in tests
 global.console = {

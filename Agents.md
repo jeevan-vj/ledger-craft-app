@@ -6,7 +6,9 @@ tokens fall back through `resolveInvoiceTheme` to the mobile default palette,
 including background `#F5F6F3`. Classic, modern, minimal, executive, corporate,
 and modern pro templates paint with those tokens, and text on a brand fill
 switches to dark ink when white would be unreadable. Money and GST totals are
-unchanged. The Appearance editor in Business Settings is still a placeholder.
+unchanged.
+
+**Mobile invoice theme editor (implemented locally, 2026-10-21):** Business Settings → Appearance edits the invoice palette. It offers the same six web presets and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Save persists `updateBusinessProfile({ theme })` using contract colours only. Strict TypeScript, all 36 Jest suites (138 tests), and lint with no errors pass.
 
 **Mobile crash reporting (wired, 2026-10-21):** Expo reports native crashes and JavaScript errors through `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft`. Development profiles, local runs, Jest, and CI leave the DSN unset. The client keeps Session Replay off, sends the user id only, and tags server failures with the API `requestId`. Source maps upload on EAS builds only when the optional `SENTRY_AUTH_TOKEN` secret is present. See `mobile/SENTRY.md`.
 
@@ -110,10 +112,13 @@ push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
 `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci` in
 `mobile/`, then ESLint (`eslint-config-expo` flat config), `tsc --noEmit`, Jest,
-and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
-mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
-diagnostics. A count gate fails the job only when the count rises past the
-baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
+and `npx expo export --platform ios`. Web lint and web typecheck are not clean.
+Each still runs and prints its diagnostics. A count gate fails those jobs only
+when the count rises past the baseline recorded in the workflow. Mobile lint,
+`tsc --noEmit`, and Jest are hard checks: measured 2026-10-21 they report 0
+ESLint errors, 0 TypeScript errors, and 0 Jest failures, and the mobile job
+fails when any of those commands exits non-zero. ESLint warnings do not fail
+the job. `Build and Test` (`.github/workflows/deploy-only.yml`)
 still runs the Postgres API suite. The PR workflow does not start Postgres and
 does not deploy.
 
