@@ -78,6 +78,8 @@ npm run android
 
 `EXPO_PUBLIC_API_URL` defaults to `http://127.0.0.1:3001` in `mobile/src/features/auth/api/http.ts`. Android emulator and device hosts are noted in `.env.example`.
 
+Business Settings → Appearance edits the invoice palette. It offers the same six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Invalid hex is rejected. Save calls `updateBusinessProfile({ theme })` with the contract colours only.
+
 ## Test
 
 Web and shared packages, from the repository root:

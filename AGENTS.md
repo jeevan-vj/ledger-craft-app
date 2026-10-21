@@ -16,6 +16,8 @@ Shared Zod DTOs live in `packages/contracts`. Web imports them as `@ledgercraft/
 
 `mobile/` is Expo SDK 54 and is not in `pnpm-workspace.yaml`. CI installs it with `npm ci` and `mobile/package-lock.json`. Crash reporting uses `@sentry/react-native` `~7.2.0`. See `mobile/SENTRY.md`.
 
+Business Settings → Appearance edits the invoice palette. It offers the six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface. The live preview follows the draft. Invalid hex is rejected before save. Save calls `updateBusinessProfile({ theme })` with the contract colours only, so `name` is not sent. Onboarding still starts from the installed professional palette, including `background`. The editor was checked in Chrome through Expo web. See `mobile/src/components/business/ThemeEditor.tsx`.
+
 Web UI follows `DESIGN.md` and `.cursor/skills/ledgercraft-web-ui/SKILL.md`. Mobile UI follows `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` (Wise lime/forest, native iOS chrome). `.cursor/rules/project-guide.mdc` still contains older Supabase and Revolut examples; the files named above supersede those examples.
 
 ## Layout
