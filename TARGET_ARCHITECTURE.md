@@ -1,5 +1,11 @@
 # LedgerCraft target architecture
 
+**Mobile branding (implemented locally, 2026-10-21):** Expo resolves the
+installed display name as `easybizinvoice`. Its iOS icon is an opaque,
+full-bleed 1024 px asset and its splash screen uses seamless dark brand artwork.
+Release identity remains `com.easybizinvoice.app` under the existing EAS project,
+Apple team, Associated Domains entitlement, and App Store Connect app.
+
 **Mobile onboarding core (implemented locally, 2026-10-21):** Expo first launch
 now includes an original LedgerCraft value carousel, progressive account
 signup, and resumable business setup for name, country, and explicit GST

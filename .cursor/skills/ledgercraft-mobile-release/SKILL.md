@@ -15,7 +15,7 @@ specific facts and decisions that should not be rediscovered.
 | --- | --- |
 | Expo owner/project | `@jeevan90/easybizinvoice-mobile` |
 | EAS project ID | `7148323b-502c-447e-96c3-a5c1704c40c9` |
-| App name/version | `EasyBizInvoice` / `1.0.0` until intentionally changed |
+| App name/version | `easybizinvoice` / `1.0.0` |
 | iOS bundle identifier | `com.easybizinvoice.app` |
 | Apple team | `88282K637B` |
 | App Store Connect app ID | `6818787287` |

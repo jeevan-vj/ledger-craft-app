@@ -1,6 +1,6 @@
 module.exports = {
   expo: {
-    name: 'LedgerCraft',
+    name: 'easybizinvoice',
     slug: 'easybizinvoice-mobile',
     version: '1.0.0',
     orientation: 'portrait',
@@ -10,7 +10,7 @@ module.exports = {
     splash: {
       image: './assets/splash-icon.png',
       resizeMode: 'contain',
-      backgroundColor: '#ffffff',
+      backgroundColor: '#1B262C',
     },
     ios: {
       supportsTablet: true,
@@ -23,7 +23,7 @@ module.exports = {
     android: {
       adaptiveIcon: {
         foregroundImage: './assets/adaptive-icon.png',
-        backgroundColor: '#ffffff',
+        backgroundColor: '#1B262C',
       },
       package: 'com.easybizinvoice.app',
       versionCode: 1,
