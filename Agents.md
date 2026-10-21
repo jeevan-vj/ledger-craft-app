@@ -102,10 +102,13 @@ push to main. Web jobs use pnpm from `package.json` `packageManager` (no
 They lint, typecheck `tsconfig.app.json` and `tsconfig.node.json`, run
 `pnpm test:run`, and `pnpm build`. The mobile job uses Node 20, `npm ci` in
 `mobile/`, then ESLint (`eslint-config-expo` flat config), `tsc --noEmit`, Jest,
-and `npx expo export --platform ios`. Web lint, web typecheck, mobile lint,
-mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
-diagnostics. A count gate fails the job only when the count rises past the
-baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
+and `npx expo export --platform ios`. Web lint and web typecheck are not clean.
+Each still runs and prints its diagnostics. A count gate fails those jobs only
+when the count rises past the baseline recorded in the workflow. Mobile lint,
+`tsc --noEmit`, and Jest are hard checks: measured 2026-10-21 they report 0
+ESLint errors, 0 TypeScript errors, and 0 Jest failures, and the mobile job
+fails when any of those commands exits non-zero. ESLint warnings do not fail
+the job. `Build and Test` (`.github/workflows/deploy-only.yml`)
 still runs the Postgres API suite. The PR workflow does not start Postgres and
 does not deploy.
 
