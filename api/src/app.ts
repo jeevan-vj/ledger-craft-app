@@ -50,6 +50,9 @@ export function createApp(deps: AppDependencies = {}) {
     if (deps.chatCompleter) {
       c.set('chatCompleter', deps.chatCompleter);
     }
+    if (deps.actorUserId) {
+      c.set('actorUserId', deps.actorUserId);
+    }
     await next();
   });
   app.use('*', requestLogging);

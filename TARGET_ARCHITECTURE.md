@@ -194,6 +194,14 @@ Ledger SQLite Durable Object per organisation. SQLite-backed Durable Objects
 provide interactive accounting transactions and the CPU budget needed for
 secure password hashing. D1 is not used.
 
+Unhandled API errors are reported with `@sentry/cloudflare` from the Worker
+fetch handler, Identity, Ledger, Hono `onError`, and the Better Auth path.
+Events carry the request id, route template, environment, and git SHA release.
+The public DSN is a Worker var. The client sends only when a deploy sets
+`SENTRY_ENVIRONMENT` to `production`. Share tokens,
+request bodies, cookies, query strings, and auth headers are scrubbed.
+`sendDefaultPii` stays off. See `deploy/cloudflare.md`.
+
 The request path is **client → Hono → use case → repository → Drizzle → SQLite**.
 The gateway derives tenant ownership from authenticated membership. Organisation
 predicates and composite tenant foreign keys support the per-object isolation
