@@ -80,6 +80,8 @@ npm run android
 
 Business Settings → Appearance edits the invoice palette. It offers the same six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface, with a live preview. Invalid hex is rejected. Save calls `updateBusinessProfile({ theme })` with the contract colours only.
 
+Invoice preview and PDF HTML use that saved theme. `resolveInvoiceTheme` (`mobile/src/utils/invoiceTheme.ts`) fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. The classic, modern, minimal, executive, corporate, and modern pro templates use those tokens. Text on a brand fill switches to dark ink when white would be unreadable.
+
 ## Test
 
 Web and shared packages, from the repository root:
