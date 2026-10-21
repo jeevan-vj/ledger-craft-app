@@ -1,7 +1,8 @@
 import React from 'react';
-import { View, Text, Pressable, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/theme';
+import { AppPressable } from './AppPressable';
 
 interface ListRowProps {
   label: string;
@@ -71,7 +72,7 @@ export function ListRow({
   }
 
   return (
-    <Pressable
+    <AppPressable
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
@@ -81,7 +82,7 @@ export function ListRow({
       style={({ pressed }) => pressed && { backgroundColor: colors.fillMuted }}
     >
       {content}
-    </Pressable>
+    </AppPressable>
   );
 }
 

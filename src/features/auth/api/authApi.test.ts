@@ -69,7 +69,7 @@ describe('authApi', () => {
 
     await expect(signInEmail({ email: 'a@example.com', password: 'password123' })).rejects.toMatchObject({
       name: 'AuthApiError',
-      message: 'Invalid email or password',
+      message: 'Please sign in again. Ref: req_signin',
       status: 401,
       requestId: 'req_signin',
     });

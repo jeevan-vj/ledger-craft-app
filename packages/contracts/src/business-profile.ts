@@ -6,6 +6,9 @@ export const gstRegistrationStatusSchema = z.enum([
   'registered',
   'not_registered',
 ]);
+/** Light canvas used when a client theme omits `background`. */
+export const defaultBusinessThemeBackground = '#F5F6F3';
+
 const themeSchema = z
   .object({
     primary: z.string(),
@@ -13,7 +16,8 @@ const themeSchema = z
     accent: z.string(),
     text: z.string(),
     textLight: z.string(),
-    background: z.string(),
+    // The first mobile onboarding build sent a theme without background.
+    background: z.string().default(defaultBusinessThemeBackground),
     surface: z.string(),
   })
   .nullable();

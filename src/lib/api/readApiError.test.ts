@@ -20,7 +20,7 @@ describe('readApiFailure', () => {
     );
 
     expect(failure).toEqual({
-      message: 'Ledger write failed',
+      message: 'Something went wrong on our side. Ref: req_123',
       status: 500,
       code: 'INTERNAL',
       requestId: 'req_123',
@@ -37,7 +37,7 @@ describe('readApiFailure', () => {
     } as unknown as Response;
 
     await expect(readApiFailure(response)).resolves.toEqual({
-      message: 'Bad Gateway',
+      message: 'Something went wrong on our side.',
       status: 502,
     });
   });
@@ -47,6 +47,8 @@ describe('readApiFailure', () => {
       jsonResponse({ error: { message: 'No', requestId: 'has spaces' } }, 400),
     );
     expect(failure.requestId).toBeUndefined();
-    expect(failure.message).toBe('No');
+    expect(failure.message).toBe(
+      "Something in your details didn't save. Please try again, and contact support if it keeps happening.",
+    );
   });
 });

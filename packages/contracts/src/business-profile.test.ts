@@ -64,6 +64,54 @@ describe('business profile contracts', () => {
       gstRegistrationStatus: 'sometimes',
     }).success).toBe(false);
   });
+
+  it('accepts the mobile onboarding theme that omitted background', () => {
+    const legacyTheme = {
+      name: 'Professional',
+      primary: '#163300',
+      secondary: '#3B4DE6',
+      accent: '#4F63D7',
+      surface: '#FFFFFF',
+      text: '#1E293B',
+      textLight: '#64748B',
+    };
+    const registered = upsertBusinessProfileRequestSchema.parse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      country: 'New Zealand',
+      invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+      defaultTaxRate: '15',
+      gstRegistrationStatus: 'registered',
+      phone: '+64 21 555 0101',
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      logoUrl: null,
+      theme: legacyTheme,
+    });
+    const notRegistered = upsertBusinessProfileRequestSchema.parse({
+      ...registered,
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: '0',
+    });
+
+    expect(registered.gstRegistrationStatus).toBe('registered');
+    expect(registered.defaultTaxRate).toBe('15');
+    expect(registered.theme).toEqual({
+      primary: '#163300',
+      secondary: '#3B4DE6',
+      accent: '#4F63D7',
+      text: '#1E293B',
+      textLight: '#64748B',
+      background: '#F5F6F3',
+      surface: '#FFFFFF',
+    });
+    expect(notRegistered).toMatchObject({
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: '0',
+    });
+  });
 });
 
 it('accepts separate bank fields as text and rejects oversized values', () => {

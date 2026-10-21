@@ -77,4 +77,91 @@ describe('business profile routes', () => {
       }
     });
   });
+
+  it('saves mobile onboarding for both GST choices and leaves nothing behind on validation failure', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+
+        for (const status of ['registered', 'not_registered'] as const) {
+          const owner = await signUp(app, status === 'registered' ? 'Registered Owner' : 'Unregistered Owner');
+          const saved = await app.request('/api/business-profile', {
+            method: 'PUT',
+            headers: { ...originHeaders, Cookie: owner.cookie },
+            body: JSON.stringify(mobileOnboardingPayload(status)),
+          });
+          expect(saved.status).toBe(200);
+          const profile = businessProfileSchema.parse(await saved.json());
+          expect(profile.gstRegistrationStatus).toBe(status);
+          expect(profile.defaultTaxRate).toBe(status === 'registered' ? '15' : '0');
+          expect(profile.country).toBe('New Zealand');
+          expect(profile.theme).toEqual({
+            primary: '#163300',
+            secondary: '#3B4DE6',
+            accent: '#4F63D7',
+            text: '#1E293B',
+            textLight: '#64748B',
+            background: '#F5F6F3',
+            surface: '#FFFFFF',
+          });
+
+          const explicit = await app.request('/api/business-profile', {
+            method: 'PUT',
+            headers: { ...originHeaders, Cookie: owner.cookie },
+            body: JSON.stringify({
+              ...mobileOnboardingPayload(status),
+              theme: { ...mobileOnboardingPayload(status).theme, background: '#FFFFFF' },
+            }),
+          });
+          expect(explicit.status).toBe(200);
+          expect(businessProfileSchema.parse(await explicit.json()).theme).toMatchObject({ background: '#FFFFFF' });
+        }
+
+        const owner = await signUp(app, 'Invalid GST');
+        const rejected = await app.request('/api/business-profile', {
+          method: 'PUT',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ ...mobileOnboardingPayload('registered'), gstRegistrationStatus: 'sometimes' }),
+        });
+        expect(rejected.status).toBe(400);
+        const error = errorEnvelopeSchema.parse(await rejected.json());
+        expect(error.error.code).toBe('VALIDATION_ERROR');
+        expect(error.error.message).toMatch(/gstRegistrationStatus/);
+        const missing = await app.request('/api/business-profile', { headers: { Cookie: owner.cookie } });
+        expect(missing.status).toBe(404);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });
+
+// Issue #45: the installed iOS onboarding build sent this theme without background.
+function mobileOnboardingPayload(status: 'registered' | 'not_registered') {
+  return {
+    name: 'Kauri Studio Ltd',
+    email: 'hello@kauristudio.nz',
+    country: 'New Zealand',
+    invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+    defaultTaxRate: status === 'registered' ? '15' : '0',
+    gstRegistrationStatus: status,
+    phone: '+64 21 555 0101',
+    address: null,
+    city: null,
+    state: null,
+    zip: null,
+    logoUrl: null,
+    theme: {
+      name: 'Professional',
+      primary: '#163300',
+      secondary: '#3B4DE6',
+      accent: '#4F63D7',
+      surface: '#FFFFFF',
+      text: '#1E293B',
+      textLight: '#64748B',
+    },
+  };
+}

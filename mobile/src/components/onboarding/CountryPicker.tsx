@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
   FlatList,
   Modal,
-  Pressable,
   StyleSheet,
   Text,
   TextInput,
@@ -13,6 +12,7 @@ import { Feather } from '@expo/vector-icons';
 import { COUNTRIES } from '@/types/onboarding';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+import { AppPressable } from '@/components/ui/AppPressable';
 
 interface CountryPickerProps {
   visible: boolean;
@@ -37,9 +37,9 @@ export default function CountryPicker({ visible, onSelect, onClose, selectedCoun
       <SafeAreaView style={styles.screen}>
         <View style={styles.header}>
           <Text style={styles.title}>Business country</Text>
-          <Pressable onPress={close} style={styles.close} accessibilityRole="button" accessibilityLabel="Close country selection">
+          <AppPressable onPress={close} style={styles.close} accessibilityRole="button" accessibilityLabel="Close country selection">
             <Feather name="x" size={21} color={theme.colors.text} />
-          </Pressable>
+          </AppPressable>
         </View>
         <View style={styles.search}>
           <Feather name="search" size={18} color={theme.colors.textSecondary} />
@@ -63,7 +63,7 @@ export default function CountryPicker({ visible, onSelect, onClose, selectedCoun
           renderItem={({ item }) => {
             const selected = selectedCountry === item;
             return (
-              <Pressable
+              <AppPressable
                 onPress={() => { onSelect(item); close(); }}
                 accessibilityRole="radio"
                 accessibilityState={{ selected }}
@@ -71,7 +71,7 @@ export default function CountryPicker({ visible, onSelect, onClose, selectedCoun
               >
                 <Text style={[styles.rowText, selected && styles.rowTextSelected]}>{item}</Text>
                 {selected ? <Feather name="check" size={20} color={theme.colors.accentText} /> : null}
-              </Pressable>
+              </AppPressable>
             );
           }}
         />

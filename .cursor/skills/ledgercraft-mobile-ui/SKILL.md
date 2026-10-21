@@ -31,6 +31,7 @@ These current files supersede legacy blue-mobile, glassmorphism, emoji, and Supa
 - Use the grouped canvas and white list surfaces. Prefer native grouped rows and whitespace over floating web-style cards; never nest cards.
 - Every touch target is at least 44pt. Standard controls are 48pt; prominent primary actions may be 56pt and pill-shaped.
 - Use the platform system typeface. Monetary values are prominent and tabular where supported; supporting copy remains quiet but readable.
+- Use `AppPressable` whenever `style` is a function. NativeWind v4's JSX runtime wraps `Pressable` and replaces a style callback with `{}` (`cssInterop={false}` is the opt-out). Plain object styles on `Pressable` still render.
 - Use the existing icon library with consistent size and stroke. No emoji chrome.
 - Use haptics only for deliberate actions. Motion is 140ms for feedback, 220ms for navigation, and 320ms for deliberate transitions; respect reduced-motion settings.
 
