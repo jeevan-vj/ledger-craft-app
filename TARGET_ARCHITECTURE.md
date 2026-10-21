@@ -1,5 +1,11 @@
 # LedgerCraft target architecture
 
+**Production release gate:** `.github/workflows/release.yml` deploys to
+Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
+run's head SHA. That conclusion includes every job in the CI workflow,
+including API & contracts. Manual `workflow_dispatch` from `main` remains.
+The CI workflow does not hold production secrets.
+
 **Mobile invoice themes (implemented locally, 2026-10-21):** Expo invoice
 preview and PDF HTML use the business profile theme. `resolveInvoiceTheme`
 fills missing colours from the mobile default palette, whose background is

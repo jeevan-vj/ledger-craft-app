@@ -121,7 +121,12 @@ fails when any of those commands exits non-zero. ESLint warnings do not fail
 the job. The API & contracts job uses the same pnpm
 install and cache on Node 24, and runs `pnpm test:api`, `pnpm test:contracts`,
 and `pnpm type-check:api`. The workflow does not start Postgres and does not
-deploy.
+deploy. Production deploy is `.github/workflows/release.yml`. It runs
+after that CI workflow succeeds on a push to `main`. A success conclusion
+covers every job in the workflow, including API & contracts. The release
+checks out the CI head SHA, then runs the existing verify job and the
+production deploy. Manual `workflow_dispatch` from `main` remains. CI does not
+receive production secrets.
 
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable
