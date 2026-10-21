@@ -1,36 +1,19 @@
-# Ledger Craft Mobile App
+# EasyBizInvoice mobile
 
-React Native mobile application for iOS and Android, built with Expo.
-
-## Setup Complete ✅
-
-- Expo project initialized with TypeScript
-- Core dependencies installed (React Navigation, Zustand, NativeWind, Supabase)
-- Tailwind CSS / NativeWind configured
-- Supabase client configured with secure storage
-- Project structure created
-- Environment variables set up
-
-## Next Steps
-
-1. Set up authentication screens
-2. Implement navigation structure
-3. Build invoice features (priority)
-
-## Development
+Expo SDK 54 app in this directory. It is outside the pnpm workspace. Install and test with npm. Web, API, and deploy steps are in the repository [README](../README.md).
 
 ```bash
-# Start development server
+npm ci
 npm start
-
-# Run on iOS
 npm run ios
-
-# Run on Android
 npm run android
+npm test
+npm run lint
+npm run type-check
 ```
 
-## Environment Variables
+`EXPO_PUBLIC_API_URL` defaults to `http://127.0.0.1:3001` (`mobile/src/features/auth/api/http.ts`).
 
-Copy `.env.example` to `.env` and fill in your Supabase credentials (already configured).
+Android EAS scripts in `mobile/package.json`: `npm run build:android`, `npm run build:android:preview`, `npm run build:android:development`, and `npm run submit:android`. Pull-request CI exports the iOS bundle with `npx expo export --platform ios`.
 
+There is no `mobile/SENTRY.md`. This package does not depend on Sentry.

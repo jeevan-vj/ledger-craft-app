@@ -40,6 +40,22 @@ api/vendor
 
 test-results/*
 
+# Playwright HTML/JSON/JUnit output and MCP browser captures
+playwright-report/
+.playwright-mcp/
+/debug-*.png
+
+# Local API SQLite file and filesystem object store
+# (api/src/db/local.ts, api/src/modules/storage/filesystem.ts)
+api/.data/
+
+# Workspace lockfile is pnpm-lock.yaml.
+# mobile/package-lock.json stays: mobile/ is outside the pnpm workspace and CI runs npm ci there.
+/package-lock.json
+/yarn.lock
+/bun.lock
+/bun.lockb
+
 .wrangler/
 deploy/*.local.json
 deploy/*.local.env
