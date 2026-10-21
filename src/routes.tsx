@@ -22,6 +22,10 @@ const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Invoices = lazy(() => import("@/pages/Invoices"));
 const CreateInvoice = lazy(() => import("@/pages/CreateInvoice"));
 const EditInvoice = lazy(() => import("@/pages/EditInvoice"));
+const Quotes = lazy(() => import("@/pages/Quotes"));
+const CreateQuote = lazy(() => import("@/pages/CreateQuote"));
+const EditQuote = lazy(() => import("@/pages/EditQuote"));
+const QuoteViewPage = lazy(() => import("@/pages/QuoteViewPage"));
 const Customers = lazy(() => import("@/pages/Customers"));
 const Items = lazy(() => import("@/pages/Items"));
 const Settings = lazy(() => import("@/pages/Settings"));
@@ -33,6 +37,7 @@ const ModernSignup = lazy(() => import("@/pages/ModernSignup"));
 const InvoiceViewPage = lazy(() => import("@/pages/InvoiceViewPage"));
 const PublicInvoice = lazy(() => import("@/pages/PublicInvoice"));
 const SharedInvoice = lazy(() => import("@/pages/SharedInvoice"));
+const SharedQuote = lazy(() => import("@/pages/SharedQuote"));
 const AccountsPage = lazy(() => import("@/pages/Accounts"));
 const Categories = lazy(() => import("@/pages/Categories"));
 const Expenses = lazy(() => import("@/pages/Expenses"));
@@ -145,6 +150,10 @@ const appRoutes: RouteObject[] = [
           { path: "invoices/create", element: <CreateInvoice /> },
           { path: "invoices/:id/edit", element: <EditInvoice /> },
           { path: "invoices/:id", element: <InvoiceViewPage /> },
+          { path: "quotes", element: <Quotes /> },
+          { path: "quotes/new", element: <CreateQuote /> },
+          { path: "quotes/:id/edit", element: <EditQuote /> },
+          { path: "quotes/:id", element: <QuoteViewPage /> },
           { path: "customers", element: <Customers /> },
           { path: "items", element: <Items /> },
           { path: "settings", element: <Settings /> },
@@ -247,6 +256,11 @@ const appRoutes: RouteObject[] = [
       {
         path: "/shared/invoice/:shareToken",
         element: <SuspenseWrapper><SharedInvoice /></SuspenseWrapper>,
+        errorElement: <RouteErrorFallback />,
+      },
+      {
+        path: "/shared/quote/:shareToken",
+        element: <SuspenseWrapper><SharedQuote /></SuspenseWrapper>,
         errorElement: <RouteErrorFallback />,
       },
       {

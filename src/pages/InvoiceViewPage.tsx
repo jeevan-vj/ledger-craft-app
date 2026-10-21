@@ -1,5 +1,5 @@
 import React from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { useAppData } from '@/hooks/useAppData';
 import InvoicePreview from '@/components/invoice/preview/InvoicePreview';
 import { Card } from '@/components/ui/card';
@@ -33,6 +33,14 @@ const InvoiceViewPage = () => {
       <Button variant="ghost" className="mb-4" onClick={() => navigate(-1)}>
         <ChevronLeft className="mr-2 w-4 h-4" /> Back to Invoices
       </Button>
+      {invoice.sourceQuoteId && invoice.sourceQuoteNumber ? (
+        <p className="mb-4 text-sm text-muted-foreground">
+          Converted from quote{' '}
+          <Link to={`/quotes/${invoice.sourceQuoteId}`} className="font-medium text-primary underline">
+            {invoice.sourceQuoteNumber}
+          </Link>
+        </p>
+      ) : null}
       <InvoicePreview 
         invoice={invoice} 
         selectedTemplate={(invoice.templateName as any) || "classic"} 

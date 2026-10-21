@@ -1,4 +1,5 @@
 import { BankPaymentDetails } from '../BankPaymentDetails';
+import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,6 +19,7 @@ interface ModernTemplateProps {
   tax: number;
   businessLogo?: string;
   theme?: BusinessTheme;
+  labels?: DocumentLabels;
 }
 
 const ModernTemplate = ({ 
@@ -32,8 +34,10 @@ const ModernTemplate = ({
   taxRate, 
   tax,
   businessLogo,
-  theme = DEFAULT_BUSINESS_THEME
+  theme = DEFAULT_BUSINESS_THEME,
+  labels,
 }: ModernTemplateProps) => {
+  const copy = resolveDocumentLabels(labels);
   const isMobile = useIsMobile();
   
   React.useEffect(() => {
@@ -60,7 +64,7 @@ const ModernTemplate = ({
     <div className="w-full print-template p-3">
       {/* Header with Invoice Title */}
       <div className="p-3 sm:p-4 print:p-0">
-        <h3 className="text-xl sm:text-2xl font-bold" style={{ color: theme.text }}>Invoice</h3>
+        <h3 className="text-xl sm:text-2xl font-bold" style={{ color: theme.text }}>{copy.title === 'INVOICE' ? 'Invoice' : copy.title}</h3>
       </div>
       
       {/* Company Header - Themed Background */}
@@ -118,11 +122,11 @@ const ModernTemplate = ({
         <div className="w-1/2">
           <div className="text-xs sm:text-sm">
             <div className="flex justify-between mb-1">
-              <span className="font-semibold" style={{ color: theme.text }}>Invoice Number:</span>
+              <span className="font-semibold" style={{ color: theme.text }}>{copy.numberLabel}:</span>
               <span style={{ color: theme.text }}>{invoice.invoiceNumber}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span className="font-semibold" style={{ color: theme.text }}>Invoice Date:</span>
+              <span className="font-semibold" style={{ color: theme.text }}>{copy.dateLabel}:</span>
               <span style={{ color: theme.text }}>{new Date(invoice.date).toLocaleDateString('en-US', { 
                 day: '2-digit', 
                 month: 'short', 
@@ -130,7 +134,7 @@ const ModernTemplate = ({
               })}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span className="font-semibold" style={{ color: theme.text }}>Due Date:</span>
+              <span className="font-semibold" style={{ color: theme.text }}>{copy.dueLabel}:</span>
               <span style={{ color: theme.text }}>{new Date(invoice.dueDate).toLocaleDateString('en-US', { 
                 day: '2-digit', 
                 month: 'short', 
@@ -229,7 +233,7 @@ const ModernTemplate = ({
         </div>
       </div>
       
-      <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+      {copy.showPayment ? <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} /> : null}
       {/* Notes */}
       {invoice.notes && (
         <div className="mt-4 notes-section">

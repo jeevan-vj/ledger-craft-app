@@ -83,10 +83,17 @@ import {
   paymentTermCodeFromDays,
 } from "@/features/invoices/paymentTerms";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { SegmentedControl } from "@/components/ui/SegmentedControl";
+import { quoteDocumentLabels } from "./preview/documentLabels";
 
 type InvoiceFormMode = "create" | "edit";
+type DocumentKind = "invoice" | "quote";
+type QuoteKind = "quote" | "estimate";
 interface InvoiceFormProps {
   mode: InvoiceFormMode;
+  documentKind?: DocumentKind;
+  initialQuoteKind?: QuoteKind;
+  initialTaxRate?: number;
   initialValues?: Partial<Invoice>;
   customers: Customer[];
   businessProfile: BusinessProfile | null;
@@ -104,22 +111,31 @@ interface InvoiceFormProps {
   isLoadingInvoiceNumber?: boolean;
 }
 
-const invoiceFormSchema = z.object({
-  invoiceNumber: z.string().min(1, 'Invoice number is required for IRD compliance and proper business records'),
-  customerId: z.string().min(1, 'Please select a customer to ensure accurate billing and maintain business relationships'),
-  date: z.date({ required_error: "Invoice date is required for accurate tax period assignment and reporting" }),
-  dueDate: z.date({ required_error: "Due date is required for cash flow management and payment terms clarity" }),
-  notes: z.string().optional(),
-  terms: z.string().optional(),
-  currency: z.string().default('NZD'),
-  additionalCharges: z.coerce.number().nonnegative("Additional charges must be a positive amount. Enter 0 if no additional charges apply").default(0),
-  paymentTermDays: z.coerce.number().int().min(0).max(365),
-  discountType: z.enum(['fixed', 'percent']).optional(),
-  discountPercent: z.coerce.number().min(0).max(100).optional(),
-  discount: z.coerce.number().nonnegative("Discount must be a positive amount. Enter 0 if no discount applies").default(0),
-});
+function buildDocumentFormSchema(documentKind: DocumentKind) {
+  const quote = documentKind === 'quote';
+  return z.object({
+    invoiceNumber: z.string().min(1, quote
+      ? 'Enter a quote number'
+      : 'Invoice number is required for IRD compliance and proper business records'),
+    customerId: z.string().min(1, 'Please select a customer to ensure accurate billing and maintain business relationships'),
+    date: z.date({ required_error: quote
+      ? 'Enter the quote date'
+      : 'Invoice date is required for accurate tax period assignment and reporting' }),
+    dueDate: z.date({ required_error: quote
+      ? 'Enter the valid until date'
+      : 'Due date is required for cash flow management and payment terms clarity' }),
+    notes: z.string().optional(),
+    terms: z.string().optional(),
+    currency: z.string().default('NZD'),
+    additionalCharges: z.coerce.number().nonnegative("Additional charges must be a positive amount. Enter 0 if no additional charges apply").default(0),
+    paymentTermDays: z.coerce.number().int().min(0).max(365),
+    discountType: z.enum(['fixed', 'percent']).optional(),
+    discountPercent: z.coerce.number().min(0).max(100).optional(),
+    discount: z.coerce.number().nonnegative("Discount must be a positive amount. Enter 0 if no discount applies").default(0),
+  });
+}
 
-type InvoiceFormValues = z.infer<typeof invoiceFormSchema>;
+type InvoiceFormValues = z.infer<ReturnType<typeof buildDocumentFormSchema>>;
 
 // Add these animation variants at the top of the file after imports
 const tabVariants = {
@@ -175,6 +191,9 @@ const buttonVariants = {
 
 const InvoiceForm: React.FC<InvoiceFormProps> = ({
   mode,
+  documentKind = 'invoice',
+  initialQuoteKind,
+  initialTaxRate,
   initialValues,
   customers = [],
   businessProfile,
@@ -215,8 +234,15 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   
   // Item management state
   const [isItemDrawerOpen, setIsItemDrawerOpen] = useState(false);
-  const [isTaxEnabled, setIsTaxEnabled] = useState(() => Number(businessProfile?.defaultTaxRate) > 0);
-  const [taxRate, setTaxRate] = useState(() => Number(businessProfile?.defaultTaxRate) || 0);
+  const [isTaxEnabled, setIsTaxEnabled] = useState(() => (initialTaxRate ?? Number(businessProfile?.defaultTaxRate) ?? 0) > 0);
+  const [taxRate, setTaxRate] = useState(() => initialTaxRate ?? (Number(businessProfile?.defaultTaxRate) || 0));
+  const [quoteKind, setQuoteKind] = useState<QuoteKind>(initialQuoteKind ?? businessProfile?.defaultQuoteKind ?? 'quote');
+  const isQuote = documentKind === 'quote';
+  const documentNoun = isQuote ? (quoteKind === 'estimate' ? 'Estimate' : 'Quote') : 'Invoice';
+  const formSchema = React.useMemo(() => buildDocumentFormSchema(documentKind), [documentKind]);
+  const horizonDays = isQuote
+    ? (businessProfile?.quoteValidityDays ?? 30)
+    : (initialValues?.paymentTermDays ?? businessProfile?.paymentTermDays ?? 30);
   const [isAdditionalChargesEnabled, setIsAdditionalChargesEnabled] = useState(false);
   const [additionalChargesList, setAdditionalChargesList] = useState<AdditionalCharge[]>([]);
   const [discountMode, setDiscountMode] = useState<'off' | 'fixed' | 'percent'>(() => {
@@ -236,7 +262,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const { units = [], itemCategories = [] } = useAppData();
 
   const form = useForm<InvoiceFormValues>({
-    resolver: zodResolver(invoiceFormSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       invoiceNumber: initialValues?.invoiceNumber || defaultValues?.invoiceNumber || "",
       customerId: initialValues?.customerId || "",
@@ -249,12 +275,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         ? typeof initialValues.dueDate === "string"
           ? new Date(initialValues.dueDate)
           : initialValues.dueDate
-        : addDaysToDate(new Date(), initialValues?.paymentTermDays ?? businessProfile?.paymentTermDays ?? 30),
+        : addDaysToDate(new Date(), horizonDays),
       notes: initialValues?.notes || businessProfile?.defaultNotes || "",
       terms: initialValues?.terms || businessProfile?.defaultTerms || "",
       currency: initialValues?.currency || "NZD",
       additionalCharges: initialValues?.additionalCharges ?? 0,
-      paymentTermDays: initialValues?.paymentTermDays ?? businessProfile?.paymentTermDays ?? 30,
+      paymentTermDays: horizonDays,
       discountType: initialValues?.discountType,
       discountPercent: initialValues?.discountPercent ?? undefined,
       discount: initialValues?.discount ?? 0,
@@ -269,7 +295,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
 
   // Auto-save functionality for professional data protection
   const formData = form.watch();
-  const autoSaveKey = mode === 'edit' && initialValues?.id ? `edit-${initialValues.id}` : 'create-new';
+  const autoSaveKey = isQuote
+    ? `quote-${mode === 'edit' && initialValues?.id ? initialValues.id : 'create'}`
+    : (mode === 'edit' && initialValues?.id ? `edit-${initialValues.id}` : 'create-new');
   
   const { clearSavedData } = useAutoSave({
     key: autoSaveKey,
@@ -330,12 +358,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
           ? typeof initialValues.dueDate === "string"
             ? new Date(initialValues.dueDate)
             : initialValues.dueDate
-          : addDaysToDate(new Date(), initialValues.paymentTermDays ?? 30),
+          : addDaysToDate(new Date(), isQuote ? (businessProfile?.quoteValidityDays ?? 30) : (initialValues.paymentTermDays ?? 30)),
         notes: initialValues.notes || businessProfile?.defaultNotes || "",
         terms: initialValues.terms || businessProfile?.defaultTerms || "",
         currency: initialValues.currency || "USD",
         additionalCharges: initialValues.additionalCharges ?? 0,
-        paymentTermDays: initialValues.paymentTermDays ?? 30,
+        paymentTermDays: isQuote ? (businessProfile?.quoteValidityDays ?? 30) : (initialValues.paymentTermDays ?? 30),
         discountType: initialValues.discountType,
         discountPercent: initialValues.discountPercent ?? undefined,
         discount: initialValues.discount ?? 0,
@@ -348,6 +376,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       
       // Set the template from initial values or default to classic
       setSelectedTemplate((initialValues.templateName as InvoiceTemplateId) || 'classic');
+      if (initialQuoteKind) setQuoteKind(initialQuoteKind);
+      if (initialTaxRate != null) {
+        setTaxRate(initialTaxRate);
+        setIsTaxEnabled(initialTaxRate > 0);
+      }
       
       // Initialize additional charges list from existing invoice
       if (initialValues.additionalChargesList && initialValues.additionalChargesList.length > 0) {
@@ -580,10 +613,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const handleDownloadPdf = async () => {
     if (previewRef.current && invoicePreview) {
       try {
-        await generateInvoicePdf(invoicePreview, previewRef.current, selectedTemplate);
+        await generateInvoicePdf(
+          invoicePreview,
+          previewRef.current,
+          selectedTemplate,
+          undefined,
+          isQuote ? { fileName: `Quote-${invoicePreview.invoiceNumber}.pdf`, subject: documentNoun.toUpperCase() } : undefined,
+        );
         toast({
           title: "Success",
-          description: "Invoice PDF has been downloaded"
+          description: isQuote ? "PDF downloaded" : "Invoice PDF has been downloaded"
         });
       } catch (error) {
         console.error('Error generating PDF:', error);
@@ -815,8 +854,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       
       if (validItems.length === 0) {
         toast({
-          title: "Invoice Incomplete",
-          description: "Please add at least one line item with description, quantity, and rate. Professional invoices require detailed service or product information.",
+          title: isQuote ? "Quote incomplete" : "Invoice Incomplete",
+          description: isQuote
+            ? "Add at least one line item with a description, quantity, and rate."
+            : "Please add at least one line item with description, quantity, and rate. Professional invoices require detailed service or product information.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -826,8 +867,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       // Professional validation: Check for future due date
       if (formatDate(values.dueDate) < formatDate(values.date)) {
         toast({
-          title: "Due Date Issue", 
-          description: "Due date can't be before the invoice date.",
+          title: isQuote ? "Valid until" : "Due Date Issue",
+          description: isQuote
+            ? "Valid until can't be before the quote date."
+            : "Due date can't be before the invoice date.",
           variant: "destructive",
         });
         setIsSubmitting(false);
@@ -858,6 +901,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         discountType: discountMode === 'off' ? 'fixed' : discountMode,
         discountPercent: discountMode === 'percent' ? values.discountPercent : null,
         discount: discountMode === 'off' ? 0 : Number(values.discount),
+        ...(isQuote ? {
+          kind: quoteKind,
+          taxRate: isTaxEnabled ? taxRate : 0,
+          taxInclusive: false,
+        } : {}),
       };
 
       await onSubmit(
@@ -893,11 +941,13 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const showSend = mode === 'create' || initialValues?.status === 'draft';
   const sendDisabledReason = !form.watch('customerId')
     ? 'Select a customer'
-    : !customerEmail
+    : !isQuote && !customerEmail
       ? 'Add an email to this customer'
       : !hasValidLines
         ? 'Add at least one line item'
         : null;
+  const secondaryActionLabel = isQuote ? 'Save & share' : 'Send';
+  const secondaryAriaLabel = isQuote ? 'Save and share' : 'Send invoice';
   const canSend = showSend && !sendDisabledReason;
 
   const submitForm = (intent: 'draft' | 'send') => {
@@ -947,6 +997,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         
         <InvoicePreview
           invoice={invoicePreview}
+          documentLabels={isQuote ? quoteDocumentLabels(quoteKind) : undefined}
           selectedTemplate={selectedTemplate}
           onBackToEdit={() => setActiveTab("edit")}
           onSave={async () => {
@@ -965,8 +1016,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     <div className="space-y-6 pb-32 px-0 -mx-4 sm:mx-0 sm:px-0 sm:pb-6">
       <div className="px-4 sm:px-0">
         <PageHeader
-          title={mode === "edit" ? "Edit Invoice" : "Create Invoice"}
-          description={mode === "edit" ? "Update your invoice details" : "Create a new invoice for your client"}
+          title={mode === "edit" ? `Edit ${documentNoun}` : `Create ${documentNoun}`}
+          description={isQuote
+            ? (mode === "edit" ? `Update this ${documentNoun.toLowerCase()}` : `Create a ${documentNoun.toLowerCase()} for your client`)
+            : (mode === "edit" ? "Update your invoice details" : "Create a new invoice for your client")}
           onBack={onCancel}
         />
       </div>
@@ -998,6 +1051,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
               <CardContent className="pt-6 pb-4 px-4 sm:p-8 sm:pt-8">
                 <Form {...form}>
                   <form onSubmit={form.handleSubmit(localOnSubmit)} className="space-y-6" data-invoice-form>
+                    {isQuote ? (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-muted-foreground">Document</p>
+                        <SegmentedControl
+                          value={quoteKind}
+                          onChange={(value) => {
+                            if (value === 'quote' || value === 'estimate') setQuoteKind(value);
+                          }}
+                          options={[
+                            { value: 'quote', label: 'Quote' },
+                            { value: 'estimate', label: 'Estimate' },
+                          ]}
+                        />
+                      </div>
+                    ) : null}
                     <motion.div 
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -1009,15 +1077,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name="invoiceNumber"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel className="text-base font-semibold text-foreground/90">Invoice Number</FormLabel>
+                            <FormLabel className="text-base font-semibold text-foreground/90">{isQuote ? `${documentNoun} number` : 'Invoice Number'}</FormLabel>
                             <FormControl>
                               <Input
                                 {...field}
-                                placeholder="INV-001"
+                                placeholder={isQuote ? 'QUO-2026-0001' : 'INV-001'}
+                                readOnly={isQuote}
                                 className="w-full h-12 border-2 border-border/50 rounded-xl bg-background/50 backdrop-blur-sm transition-all duration-200 focus:border-primary focus:ring-2 focus:ring-primary/20 focus:bg-background"
                                 autoComplete="off"
                                 disabled={isLoadingInvoiceNumber}
-                                data-testid="invoice-number"
+                                data-testid={isQuote ? 'quote-number' : 'invoice-number'}
                               />
                             </FormControl>
                             <FormMessage />
@@ -1130,7 +1199,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name="date"
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
-                            <FormLabel className="text-base font-semibold text-foreground/90">Invoice Date</FormLabel>
+                            <FormLabel className="text-base font-semibold text-foreground/90">{isQuote ? `${documentNoun} date` : 'Invoice Date'}</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
                                 <FormControl>
@@ -1157,7 +1226,10 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                   onSelect={(next) => {
                                     field.onChange(next);
                                     if (next && !dueDateDirty) {
-                                      form.setValue('dueDate', addDaysToDate(next, form.getValues('paymentTermDays') ?? 30));
+                                      const days = isQuote
+                                        ? (businessProfile?.quoteValidityDays ?? 30)
+                                        : (form.getValues('paymentTermDays') ?? 30);
+                                      form.setValue('dueDate', addDaysToDate(next, days));
                                     }
                                   }}
                                   initialFocus
@@ -1174,7 +1246,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                         name="dueDate"
                         render={({ field }) => (
                           <FormItem className="flex flex-col">
-                            <FormLabel className="text-base font-semibold text-foreground/90">Due Date</FormLabel>
+                            <FormLabel className="text-base font-semibold text-foreground/90">{isQuote ? 'Valid until' : 'Due Date'}</FormLabel>
                             <Popover>
                               <PopoverTrigger asChild>
                                 <FormControl>
@@ -1207,14 +1279,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                 />
                               </PopoverContent>
                             </Popover>
-                            {dueDateDirty && dueDateValue && invoiceDateValue && !dueDateMatchesTerm(invoiceDateValue, dueDateValue, paymentTermDaysValue) && (
+                            {!isQuote && dueDateDirty && dueDateValue && invoiceDateValue && !dueDateMatchesTerm(invoiceDateValue, dueDateValue, paymentTermDaysValue) && (
                               <p className="text-xs text-muted-foreground">Doesn’t match {paymentTermDaysValue}-day terms</p>
                             )}
                             <FormMessage />
                           </FormItem>
                         )}
                       />
-                      <FormField
+                      {!isQuote ? <FormField
                         control={form.control}
                         name="paymentTermDays"
                         render={({ field }) => {
@@ -1273,7 +1345,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                             </FormItem>
                           );
                         }}
-                      />
+                      /> : null}
                     </motion.div>
                     {/* Additional Charges Manager */}
                     <motion.div
@@ -1735,11 +1807,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                       disabled={!canSend || isSubmitting}
                       onClick={() => setSendConfirmOpen(true)}
                       className="gap-2 w-full h-12"
-                      aria-label="Send invoice"
-                      data-testid="send-invoice-button"
+                      aria-label={secondaryAriaLabel}
+                      data-testid={isQuote ? 'save-and-share-button' : 'send-invoice-button'}
                     >
                       <Send size={16} />
-                      <span>Send</span>
+                      <span>{secondaryActionLabel}</span>
                     </Button>
                   </span>
                 </TooltipTrigger>
@@ -1809,10 +1881,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                       disabled={!canSend || isSubmitting}
                       onClick={() => setSendConfirmOpen(true)}
                       className="gap-2 h-12 px-6"
-                      aria-label="Send invoice"
+                      aria-label={secondaryAriaLabel}
+                      data-testid={isQuote ? 'save-and-share-button' : undefined}
                     >
                       <Send size={16} />
-                      <span>Send</span>
+                      <span>{secondaryActionLabel}</span>
                     </Button>
                   </span>
                 </TooltipTrigger>
@@ -1840,9 +1913,11 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       <AlertDialog open={sendConfirmOpen} onOpenChange={setSendConfirmOpen}>
         <AlertDialogContent className="max-w-md">
           <AlertDialogHeader>
-            <AlertDialogTitle>Send this invoice?</AlertDialogTitle>
+            <AlertDialogTitle>{isQuote ? `Share this ${documentNoun.toLowerCase()}?` : 'Send this invoice?'}</AlertDialogTitle>
             <AlertDialogDescription>
-              Send invoice {form.getValues('invoiceNumber') || 'draft'} to {customerEmail || 'the customer'}?
+              {isQuote
+                ? `Save ${form.getValues('invoiceNumber') || 'this draft'} and copy a link the client can open. Email delivery is not available.`
+                : `Send invoice ${form.getValues('invoiceNumber') || 'draft'} to ${customerEmail || 'the customer'}?`}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -1853,7 +1928,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 submitForm('send');
               }}
             >
-              Send invoice
+              {isQuote ? 'Save & share' : 'Send invoice'}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -1869,10 +1944,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 </div>
                 <div>
                   <AlertDialogTitle className="text-lg font-semibold text-foreground">
-                    Save Your Invoice Before Leaving?
+                    {isQuote ? `Save your ${documentNoun.toLowerCase()} before leaving?` : 'Save Your Invoice Before Leaving?'}
                   </AlertDialogTitle>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {mode === 'create' ? 'Draft invoice' : 'Invoice changes'} will be lost
+                    {isQuote
+                      ? `${mode === 'create' ? 'This draft' : 'These changes'} will be lost`
+                      : `${mode === 'create' ? 'Draft invoice' : 'Invoice changes'} will be lost`}
                   </p>
                 </div>
               </div>

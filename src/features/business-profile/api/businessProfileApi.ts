@@ -45,6 +45,10 @@ export function toProfile(dto: BusinessProfileDto): BusinessProfile {
     invoiceNumberFormat: dto.invoiceNumberFormat,
     invoiceNumberSequence: dto.invoiceNumberSequence,
     paymentTermDays: dto.paymentTermDays,
+    quoteNumberFormat: dto.quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: dto.quoteNumberSequence ?? 1,
+    quoteValidityDays: dto.quoteValidityDays ?? 30,
+    defaultQuoteKind: dto.defaultQuoteKind ?? 'quote',
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -82,6 +86,10 @@ export function toUpsertBusinessProfileRequest(
     invoiceNumberFormat: profile.invoiceNumberFormat ?? null,
     invoiceNumberSequence: profile.invoiceNumberSequence ?? undefined,
     paymentTermDays: profile.paymentTermDays ?? 30,
+    ...(profile.quoteNumberFormat ? { quoteNumberFormat: profile.quoteNumberFormat } : {}),
+    ...(profile.quoteNumberSequence != null ? { quoteNumberSequence: profile.quoteNumberSequence } : {}),
+    ...(profile.quoteValidityDays != null ? { quoteValidityDays: profile.quoteValidityDays } : {}),
+    ...(profile.defaultQuoteKind ? { defaultQuoteKind: profile.defaultQuoteKind } : {}),
   };
 }
 
