@@ -62,6 +62,30 @@ describe('document labels', () => {
     expect(html).not.toContain('Payment details');
   });
 
+  it('prints QUOTE or ESTIMATE on the modern pro template', () => {
+    const { unmount } = render(renderTemplateComponent('modernpro', createTemplateData(
+      { ...invoice, invoiceNumber: 'QUO-2026-0001' },
+      profile,
+      quoteDocumentLabels('quote'),
+    )));
+    expect(screen.getByText('QUOTE')).toBeInTheDocument();
+    expect(screen.getByText('Quote Number')).toBeInTheDocument();
+    unmount();
+
+    const estimate = render(renderTemplateComponent('modernpro', createTemplateData(
+      { ...invoice, invoiceNumber: 'QUO-2026-0002' },
+      profile,
+      quoteDocumentLabels('estimate'),
+    )));
+    expect(screen.getByText('ESTIMATE')).toBeInTheDocument();
+    estimate.unmount();
+
+    render(renderTemplateComponent('modernpro', createTemplateData(invoice, profile)));
+    expect(screen.getByText('Invoice #')).toBeInTheDocument();
+    expect(screen.queryByText('QUOTE')).not.toBeInTheDocument();
+    expect(screen.queryByText('ESTIMATE')).not.toBeInTheDocument();
+  });
+
   it('uses ESTIMATE for an estimate', () => {
     render(renderTemplateComponent('minimal', createTemplateData(invoice, profile, quoteDocumentLabels('estimate'))));
     expect(screen.getByRole('heading', { name: 'ESTIMATE' })).toBeInTheDocument();

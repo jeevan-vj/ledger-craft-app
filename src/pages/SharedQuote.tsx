@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { AlertCircle, Download, FileText, Loader2 } from 'lucide-react';
 import { quoteDocumentLabels } from '@/components/invoice/preview/documentLabels';
 import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
@@ -16,6 +16,7 @@ import { quoteAsInvoicePreview } from '@/features/quotes/preview';
 import { quoteNoun } from '@/features/quotes/types';
 import { createTemplateData, renderTemplateComponent } from '@/services/invoiceTemplateRenderer';
 import { useToast } from '@/hooks/use-toast';
+import { applyNoReferrerPolicy } from '@/lib/referrerPolicy';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import type { PublicQuoteResponse } from '@ledgercraft/contracts';
 import { useParams } from 'react-router-dom';
@@ -36,6 +37,8 @@ const SharedQuote: React.FC = () => {
   const [nameError, setNameError] = useState('');
   const [submitting, setSubmitting] = useState<'accept' | 'decline' | null>(null);
   const [downloading, setDownloading] = useState(false);
+
+  useLayoutEffect(() => applyNoReferrerPolicy(), []);
 
   useEffect(() => {
     let cancelled = false;

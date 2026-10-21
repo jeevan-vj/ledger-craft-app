@@ -169,7 +169,7 @@ export function toQuoteRequest(input: QuoteFormInput): CreateQuoteRequest {
     terms: input.terms ?? null,
     currency: input.currency || 'NZD',
     templateName: input.templateName ?? null,
-    taxInclusive: input.taxInclusive ?? false,
+    taxInclusive: input.taxInclusive ?? true,
     taxRate: decimal(input.taxRate ?? 0),
     discountType,
     discountPercent: discountType === 'percent' ? decimal(input.discountPercent) : null,

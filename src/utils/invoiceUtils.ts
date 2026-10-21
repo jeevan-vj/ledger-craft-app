@@ -113,11 +113,14 @@ export const invoiceDiscountLabel = (invoice: Pick<Invoice, 'discountType' | 'di
   return 'Discount';
 };
 
-/** GST rate shown on preview/PDF. Discount is taken before tax, so the base is subtotal − discount. */
+/** GST percent shown on preview/PDF. Inclusive prices use the exclusive subtotal; exclusive prices use subtotal − discount. */
 export const invoiceDisplayTaxRate = (
-  invoice: Pick<Invoice, 'subtotal' | 'taxAmount' | 'discount'>,
+  invoice: Pick<Invoice, 'subtotal' | 'taxAmount' | 'discount'> & { taxInclusive?: boolean },
 ): string => {
-  const taxable = Number(invoice.subtotal) - Number(invoice.discount ?? 0);
+  const discount = Number(invoice.discount ?? 0);
+  const taxable = invoice.taxInclusive === true
+    ? Number(invoice.subtotal)
+    : Number(invoice.subtotal) - discount;
   if (taxable <= 0) return '0';
   return ((Number(invoice.taxAmount) / taxable) * 100).toFixed(2);
 };

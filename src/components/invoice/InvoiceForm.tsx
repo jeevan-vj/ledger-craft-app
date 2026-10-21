@@ -4,6 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent } from "@/components/ui/card";
+import { previewQuoteTotals } from '@/features/quotes/quoteTotals';
 import { calculateLineTotal } from '@/utils/invoiceUtils';
 import { getCompatibleUnits } from '@/utils/unitConversion';
 import {
@@ -94,6 +95,7 @@ interface InvoiceFormProps {
   documentKind?: DocumentKind;
   initialQuoteKind?: QuoteKind;
   initialTaxRate?: number;
+  initialTaxInclusive?: boolean;
   initialValues?: Partial<Invoice>;
   customers: Customer[];
   businessProfile: BusinessProfile | null;
@@ -194,6 +196,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   documentKind = 'invoice',
   initialQuoteKind,
   initialTaxRate,
+  initialTaxInclusive,
   initialValues,
   customers = [],
   businessProfile,
@@ -234,8 +237,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   
   // Item management state
   const [isItemDrawerOpen, setIsItemDrawerOpen] = useState(false);
-  const [isTaxEnabled, setIsTaxEnabled] = useState(() => (initialTaxRate ?? Number(businessProfile?.defaultTaxRate) ?? 0) > 0);
+  const [isTaxEnabled, setIsTaxEnabled] = useState(() => (initialTaxRate ?? (Number(businessProfile?.defaultTaxRate) || 0)) > 0);
   const [taxRate, setTaxRate] = useState(() => initialTaxRate ?? (Number(businessProfile?.defaultTaxRate) || 0));
+  const [pricesIncludeTax, setPricesIncludeTax] = useState(initialTaxInclusive ?? true);
   const [quoteKind, setQuoteKind] = useState<QuoteKind>(initialQuoteKind ?? businessProfile?.defaultQuoteKind ?? 'quote');
   const isQuote = documentKind === 'quote';
   const documentNoun = isQuote ? (quoteKind === 'estimate' ? 'Estimate' : 'Quote') : 'Invoice';
@@ -377,6 +381,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       // Set the template from initial values or default to classic
       setSelectedTemplate((initialValues.templateName as InvoiceTemplateId) || 'classic');
       if (initialQuoteKind) setQuoteKind(initialQuoteKind);
+      if (initialTaxInclusive != null) setPricesIncludeTax(initialTaxInclusive);
       if (initialTaxRate != null) {
         setTaxRate(initialTaxRate);
         setIsTaxEnabled(initialTaxRate > 0);
@@ -442,14 +447,18 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         setIsTaxEnabled(true);
         setTaxRate(Number(businessProfile.defaultTaxRate));
       }
-      if (businessProfile.paymentTermDays != null && !form.getValues('paymentTermDays')) {
+      if (isQuote && !dueDateDirty) {
+        const days = businessProfile.quoteValidityDays ?? 30;
+        form.setValue('paymentTermDays', days);
+        form.setValue('dueDate', addDaysToDate(form.getValues('date'), days));
+      } else if (!isQuote && businessProfile.paymentTermDays != null && !form.getValues('paymentTermDays')) {
         form.setValue('paymentTermDays', businessProfile.paymentTermDays);
         if (!dueDateDirty) {
           form.setValue('dueDate', addDaysToDate(form.getValues('date'), businessProfile.paymentTermDays));
         }
       }
     }
-  }, [businessProfile, mode, initialValues]);
+  }, [businessProfile, mode, initialValues, isQuote, dueDateDirty]);
 
 
   useEffect(() => {
@@ -483,6 +492,30 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const paymentTermDaysValue = form.watch('paymentTermDays') ?? 30;
 
   useEffect(() => {
+    if (isQuote) {
+      const preview = previewQuoteTotals({
+        items,
+        taxInclusive: pricesIncludeTax,
+        taxEnabled: isTaxEnabled,
+        taxRate,
+        discountType: discountMode === 'percent' ? 'percent' : 'fixed',
+        discountValue: discountMode === 'fixed' ? Number(discountFormValue) || 0 : 0,
+        discountPercent: discountMode === 'percent' ? Number(discountPercentFormValue) || 0 : 0,
+        additionalCharges: isAdditionalChargesEnabled ? Number(additionalChargesFormValue) || 0 : 0,
+        additionalChargesList: isAdditionalChargesEnabled && additionalChargesList.length > 0
+          ? additionalChargesList
+          : undefined,
+        defaultTaxRate: businessProfile?.defaultTaxRate ?? 0,
+      });
+      setSubtotal(Number(preview.subtotal));
+      setTaxAmount(Number(preview.taxAmount));
+      setTotal(Number(preview.total));
+      if (discountMode === 'percent') {
+        form.setValue('discount', Number(preview.discount ?? 0), { shouldDirty: false });
+      }
+      return;
+    }
+
     const newSubtotal = items.reduce((sum, item) => sum + (Number(item.total) || 0), 0);
     setSubtotal(newSubtotal);
     const disc = discountMode === 'percent'
@@ -516,7 +549,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     }
 
     setTotal(newSubtotal + newTaxAmount + addCharges - disc);
-  }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, discountMode, additionalChargesList, additionalChargesFormValue, discountFormValue, discountPercentFormValue]);
+  }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, discountMode, additionalChargesList, additionalChargesFormValue, discountFormValue, discountPercentFormValue, isQuote, pricesIncludeTax, businessProfile?.defaultTaxRate]);
 
   const updateItem = (idx: number, field: keyof LineItem, value: any) => {
     const updated = [...items];
@@ -605,6 +638,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       discountType: discountMode === 'off' ? 'fixed' : discountMode,
       discountPercent: discountMode === 'percent' ? Number(vals.discountPercent) || 0 : null,
       discount: discountMode === 'off' ? 0 : Number(vals.discount),
+      taxInclusive: isQuote ? pricesIncludeTax : initialValues?.taxInclusive,
     };
     setInvoicePreview(previewInvoice);
     setActiveTab("preview");
@@ -904,7 +938,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         ...(isQuote ? {
           kind: quoteKind,
           taxRate: isTaxEnabled ? taxRate : 0,
-          taxInclusive: false,
+          taxInclusive: pricesIncludeTax,
         } : {}),
       };
 
@@ -1434,6 +1468,16 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                           />
                           <label htmlFor="tax-toggle" className="text-sm font-semibold text-foreground/90">Enable Tax</label>
                         </div>
+                        {isQuote ? (
+                          <div className="flex items-center gap-3 mb-3">
+                            <Switch
+                              checked={pricesIncludeTax}
+                              onCheckedChange={setPricesIncludeTax}
+                              id="prices-include-tax"
+                            />
+                            <label htmlFor="prices-include-tax" className="text-sm font-semibold text-foreground/90">Prices include GST</label>
+                          </div>
+                        ) : null}
                         {isTaxEnabled && (
                           <motion.div
                             initial={{ opacity: 0, height: 0 }}

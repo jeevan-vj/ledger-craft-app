@@ -1,5 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router-dom';
+import { Link, MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import type { Quote } from '@/features/quotes/types';
 import Quotes from '../Quotes';
@@ -65,10 +65,12 @@ function sample(overrides: Partial<Quote> & Pick<Quote, 'id' | 'status' | 'quote
   };
 }
 
-function mount() {
+function mount(entry = '/quotes') {
   return render(
-    <MemoryRouter>
-      <Quotes />
+    <MemoryRouter initialEntries={[entry]}>
+      <Routes>
+        <Route path="/quotes" element={<Quotes />} />
+      </Routes>
     </MemoryRouter>,
   );
 }
@@ -104,6 +106,42 @@ describe('Quotes list', () => {
     mount();
     fireEvent.click(screen.getByRole('button', { name: 'Revise' }));
     expect(screen.getByText(/Existing share links will stop working/)).toBeInTheDocument();
+  });
+
+  it('keeps the customer filter in step with the address', () => {
+    state.quotes = [
+      sample({ id: 'one', status: 'draft', quoteNumber: 'QUO-2026-0001', customerId: 'customer-1', customerName: 'Kauri Studio' }),
+      sample({ id: 'two', status: 'sent', quoteNumber: 'QUO-2026-0002', customerId: 'customer-2', customerName: 'River Co' }),
+    ];
+    mount('/quotes?customerId=customer-2');
+    expect(screen.queryByText('QUO-2026-0001')).not.toBeInTheDocument();
+    expect(screen.getByText('QUO-2026-0002')).toBeInTheDocument();
+  });
+
+  it('updates the filter when a customer link opens on an already mounted list', () => {
+    state.quotes = [
+      sample({ id: 'one', status: 'draft', quoteNumber: 'QUO-2026-0001', customerId: 'customer-1', customerName: 'Kauri Studio' }),
+      sample({ id: 'two', status: 'sent', quoteNumber: 'QUO-2026-0002', customerId: 'customer-2', customerName: 'River Co' }),
+    ];
+    render(
+      <MemoryRouter initialEntries={['/quotes']}>
+        <Routes>
+          <Route
+            path="/quotes"
+            element={(
+              <>
+                <Link to="/quotes?customerId=customer-2">River quotes</Link>
+                <Quotes />
+              </>
+            )}
+          />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(screen.getByText('QUO-2026-0001')).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('link', { name: 'River quotes' }));
+    expect(screen.queryByText('QUO-2026-0001')).not.toBeInTheDocument();
+    expect(screen.getByText('QUO-2026-0002')).toBeInTheDocument();
   });
 
   it('searches by customer name', () => {

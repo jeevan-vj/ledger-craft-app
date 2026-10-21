@@ -56,11 +56,17 @@ const Quotes = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const refresh = useRefreshQuotes();
-  const [params] = useSearchParams();
+  const [params, setParams] = useSearchParams();
   const quotesQuery = useQuotesQuery();
   const { customers } = useCustomerDirectory();
   const [status, setStatus] = useState<QuoteStatus | 'all'>('all');
-  const [customerId, setCustomerId] = useState(params.get('customerId') ?? '');
+  const customerId = params.get('customerId') ?? '';
+  const setCustomerId = (value: string) => {
+    const next = new URLSearchParams(params);
+    if (value) next.set('customerId', value);
+    else next.delete('customerId');
+    setParams(next, { replace: true });
+  };
   const [search, setSearch] = useState('');
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');

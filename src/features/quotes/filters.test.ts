@@ -69,6 +69,10 @@ describe('applyQuoteListFilters', () => {
 describe('quote dashboard summaries', () => {
   it('sums open quotes and counts accepted quotes that are not invoiced', () => {
     expect(openQuoteSummary(rows)).toEqual({ count: 2, value: 150 });
+    expect(openQuoteSummary([
+      quote({ id: 'cent-a', status: 'draft', total: 0.1 }),
+      quote({ id: 'cent-b', status: 'sent', total: 0.2 }),
+    ])).toEqual({ count: 2, value: 0.3 });
     expect(acceptedNotInvoicedCount(rows)).toBe(1);
     expect(acceptedNotInvoicedCount([
       quote({ id: 'converted', status: 'converted', convertedInvoiceId: 'invoice-1' }),

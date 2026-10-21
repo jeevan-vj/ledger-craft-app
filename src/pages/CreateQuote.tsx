@@ -62,6 +62,7 @@ const CreateQuote = () => {
       currency?: string;
       templateName?: string;
       taxRate?: number;
+      taxInclusive?: boolean;
       discountType?: 'fixed' | 'percent';
       discountPercent?: number | null;
     },
@@ -84,7 +85,7 @@ const CreateQuote = () => {
       currency: values.currency || 'NZD',
       templateName: values.templateName ?? null,
       taxRate: values.taxRate ?? 0,
-      taxInclusive: false,
+      taxInclusive: values.taxInclusive ?? true,
       discountType: values.discountType,
       discountPercent: values.discountPercent,
       discount,

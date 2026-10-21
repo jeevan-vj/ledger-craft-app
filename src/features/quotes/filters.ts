@@ -1,3 +1,4 @@
+import { moneyToCents } from '../../../api/src/modules/invoices/money';
 import type { Quote, QuoteCounts, QuoteStatus } from './types';
 import { emptyQuoteCounts } from './types';
 
@@ -43,7 +44,7 @@ export function openQuoteSummary(quotes: Quote[]): { count: number; value: numbe
   const open = quotes.filter((quote) => OPEN_STATUSES.has(quote.status));
   return {
     count: open.length,
-    value: open.reduce((sum, quote) => sum + quote.total, 0),
+    value: Number(open.reduce((sum, quote) => sum + moneyToCents(quote.total), 0n)) / 100,
   };
 }
 

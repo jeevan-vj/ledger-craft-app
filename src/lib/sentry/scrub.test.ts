@@ -65,6 +65,15 @@ describe('redactShareTokens', () => {
       'easybizinvoice://shared/invoice/[redacted]?shareToken=[redacted]',
     );
   });
+
+  it('redacts public quote tokens in page and API paths', () => {
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/shared/quote/${TOKEN}`)).toBe(
+      'https://easybiz.iamjeevan.com/shared/quote/[redacted]',
+    );
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/api/public/quotes/${TOKEN}/respond`)).toBe(
+      'https://easybiz.iamjeevan.com/api/public/quotes/[redacted]/respond',
+    );
+  });
 });
 
 describe('scrubSentryEvent', () => {
@@ -115,6 +124,40 @@ describe('scrubSentryEvent', () => {
       originalException: { requestId: 'not a request id' },
     });
     expect(scrubbed?.tags?.requestId).toBeUndefined();
+  });
+});
+
+describe('quote share tokens', () => {
+  it('keeps a quote token out of the event and the breadcrumb', () => {
+    const quoteToken = 'quote-share-secret';
+    const scrubbed = scrubSentryEvent({
+      request: { url: `https://easybiz.iamjeevan.com/shared/quote/${quoteToken}` },
+      transaction: `/shared/quote/${quoteToken}`,
+      message: `Failed /api/public/quotes/${quoteToken}/respond`,
+      exception: { values: [{ type: 'Error', value: `Boom /shared/quote/${quoteToken}` }] },
+      breadcrumbs: [
+        {
+          category: 'fetch',
+          data: {
+            url: `https://easybiz.iamjeevan.com/api/public/quotes/${quoteToken}`,
+            method: 'GET',
+            status_code: 500,
+          },
+        },
+      ],
+    } as unknown as ErrorEvent);
+    const breadcrumb = scrubSentryBreadcrumb({
+      category: 'fetch',
+      message: `/shared/quote/${quoteToken}`,
+      data: { url: `https://easybiz.iamjeevan.com/api/public/quotes/${quoteToken}/respond` },
+    });
+
+    expect(JSON.stringify(scrubbed)).not.toContain(quoteToken);
+    expect(JSON.stringify(breadcrumb)).not.toContain(quoteToken);
+    expect(scrubbed?.request?.url).toBe('https://easybiz.iamjeevan.com/shared/quote/[redacted]');
+    expect(breadcrumb?.data).toMatchObject({
+      url: 'https://easybiz.iamjeevan.com/api/public/quotes/[redacted]/respond',
+    });
   });
 });
 

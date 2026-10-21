@@ -74,6 +74,7 @@ describe('quotesApi', () => {
     expect(request).not.toHaveProperty('total');
     expect(request).not.toHaveProperty('subtotal');
     expect(request.kind).toBe('estimate');
+    expect(request.taxInclusive).toBe(true);
     expect(request.items[0]?.rate).toBe('50');
   });
 

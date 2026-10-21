@@ -40,6 +40,7 @@ const EditQuote = () => {
       currency?: string;
       templateName?: string;
       taxRate?: number;
+      taxInclusive?: boolean;
       discountType?: 'fixed' | 'percent';
       discountPercent?: number | null;
     },
@@ -62,7 +63,7 @@ const EditQuote = () => {
       currency: values.currency || 'NZD',
       templateName: values.templateName ?? null,
       taxRate: values.taxRate ?? quote?.taxRate ?? 0,
-      taxInclusive: false,
+      taxInclusive: values.taxInclusive ?? quote?.taxInclusive ?? true,
       discountType: values.discountType,
       discountPercent: values.discountPercent,
       discount,
@@ -145,6 +146,7 @@ const EditQuote = () => {
         documentKind="quote"
         initialQuoteKind={quote.kind}
         initialTaxRate={quote.taxRate}
+        initialTaxInclusive={quote.taxInclusive}
         initialValues={quoteAsInvoicePreview(quote)}
         customers={customers}
         businessProfile={businessProfile}

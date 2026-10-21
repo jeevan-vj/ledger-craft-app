@@ -143,6 +143,26 @@ describe('SharedQuote', () => {
     expect(screen.queryByRole('button', { name: 'Decline' })).not.toBeInTheDocument();
   });
 
+  it('shows the stored response when the quote was already answered', async () => {
+    const { QuoteAlreadyRespondedError } = await import('@/features/quotes/api/quotesApi');
+    vi.mocked(quotesApi.respond).mockRejectedValue(new QuoteAlreadyRespondedError({
+      action: 'accept',
+      name: 'Original Client',
+      note: 'Already signed',
+      respondedAt: '2026-10-21T01:00:00.000Z',
+      acceptedRevision: 1,
+    }));
+    mount();
+    await screen.findByRole('heading', { name: 'QUOTE' });
+    expect(document.querySelector('meta[name="referrer"]')?.getAttribute('content')).toBe('no-referrer');
+    fireEvent.change(screen.getByLabelText('Your name'), { target: { value: 'Second Person' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Accept quote' }));
+    expect(await screen.findByText(/Accepted by Original Client/)).toBeInTheDocument();
+    expect(screen.getByText('Already signed')).toBeInTheDocument();
+    expect(screen.queryByText(/Second Person/)).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('Your name')).not.toBeInTheDocument();
+  });
+
   it('explains a revoked link', async () => {
     const { QuotesApiError } = await import('@/features/quotes/api/quotesApi');
     vi.mocked(quotesApi.getPublic).mockRejectedValue(new QuotesApiError('revoked', 410, 'QUOTE_LINK_REVOKED'));

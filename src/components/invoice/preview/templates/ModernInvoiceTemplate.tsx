@@ -85,6 +85,9 @@ const ModernInvoiceTemplate = ({
           </div>
           <div className="mt-6 sm:mt-0 text-right w-full sm:w-auto">
             {/* <span className={`inline-block px-4 py-1 rounded-full border font-semibold text-sm mb-2 ${getStatusColor()}`}>{invoice.status}</span> */}
+            {copy.title !== 'INVOICE' ? (
+              <div className="text-lg font-extrabold tracking-wide">{copy.title}</div>
+            ) : null}
             <div className="text-xs opacity-80">
               <span>{copy.title === 'INVOICE' ? 'Invoice #' : copy.numberLabel}</span> <span className="font-bold">{invoice.invoiceNumber}</span>
             </div>
