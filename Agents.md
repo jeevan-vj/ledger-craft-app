@@ -12,9 +12,11 @@ Passwords are never persisted in drafts. Profile existence is the onboarding
 gate, and GST status is stored through Hono/SQLite migration
 `0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
 theme, which omitted `background`, by filling `#F5F6F3`. New builds send
-`background`. Connection copy is only for requests that never reach the API.
+`background`. Connection copy is only for requests that never reach the API. Validation and
+server failures use plain language plus a support reference when the response
+includes a request id. Web API errors use the same wording.
 A rejected upsert does not leave a business profile. Strict mobile TypeScript,
-all 27 Jest suites (100 tests), lint with no errors (90 existing warnings),
+all 27 Jest suites (102 tests), lint with no errors (90 existing warnings),
 all 29 API suites (79 tests), and all 18 contract suites (58 tests) pass.
 Authenticated device QA and a production Worker deploy of this finish-setup
 fix remain pending.

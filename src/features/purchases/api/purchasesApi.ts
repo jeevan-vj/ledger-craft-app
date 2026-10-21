@@ -1,3 +1,4 @@
+import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   AccountListResponse,
   BankAccountListResponse,
@@ -27,12 +28,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    let message = response.statusText || 'Request failed';
-    try {
-      const body = await response.json() as { error?: { message?: string } };
-      message = body.error?.message ?? message;
-    } catch { /* keep status text */ }
-    throw new PurchasesApiError(message, response.status);
+    const presented = await presentResponseError(response);
+    throw new PurchasesApiError(presented.message, response.status);
   }
   return response.json() as Promise<T>;
 }

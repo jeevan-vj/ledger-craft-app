@@ -14,8 +14,10 @@ SecureStore without persisting passwords. Hono/SQLite persists GST status via
 `0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
 theme, which omitted `background`, by filling `#F5F6F3` and ignoring unknown
 theme keys. New builds send `background`. The finish alert uses connection copy
-only when the request never reaches the API. A rejected upsert does not leave a
-business profile. Strict mobile TypeScript, all 27 Jest suites (100 tests),
+only when the request never reaches the API. Validation and server failures use
+plain language, and a returned request id is shown as a support reference. Web
+API errors use the same wording, so schema diagnostics stay in the console. A rejected upsert does not leave a
+business profile. Strict mobile TypeScript, all 27 Jest suites (102 tests),
 all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
 no errors pass. Authenticated device QA and a production Worker deploy of this
 finish-setup fix remain open.

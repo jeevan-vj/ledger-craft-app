@@ -1,3 +1,4 @@
+import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   CreateInvoiceRequest,
   InvoiceDto,
@@ -126,12 +127,8 @@ export function toCreateInvoiceRequest(
 }
 
 async function parseError(response: Response): Promise<{ message: string; code?: string }> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string; code?: string } };
-    return { message: body.error?.message ?? response.statusText, code: body.error?.code };
-  } catch {
-    return { message: response.statusText };
-  }
+  const presented = await presentResponseError(response);
+  return { message: presented.message, code: presented.code };
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

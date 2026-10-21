@@ -1,12 +1,19 @@
 import { clearCookies, getCookieHeader, rememberSessionToken, rememberSetCookie } from './cookieJar';
 
 export class AuthApiError extends Error {
+  readonly code?: string;
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    code?: string,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'AuthApiError';
+    this.code = code;
+    this.requestId = requestId;
   }
 }
 
@@ -25,15 +32,23 @@ function friendlyStatus(status: number): string {
   return `Request failed (${status})`;
 }
 
-export async function parseError(response: Response): Promise<string> {
+export async function parseError(response: Response): Promise<{
+  message: string;
+  code?: string;
+  requestId?: string;
+}> {
   try {
     const body = (await response.json()) as {
-      error?: { message?: string };
+      error?: { message?: string; code?: string; requestId?: string };
       message?: string;
     };
-    return body.error?.message ?? body.message ?? friendlyStatus(response.status);
+    return {
+      message: body.error?.message ?? body.message ?? friendlyStatus(response.status),
+      code: body.error?.code,
+      requestId: body.error?.requestId,
+    };
   } catch {
-    return friendlyStatus(response.status);
+    return { message: friendlyStatus(response.status) };
   }
 }
 
@@ -84,7 +99,8 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
     return undefined as T;
   }
   if (!response.ok) {
-    throw new AuthApiError(await parseError(response), response.status);
+    const parsed = await parseError(response);
+    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
   }
   try {
     return (await response.json()) as T;

@@ -1,4 +1,5 @@
 import type { CreateCustomerRequest, CustomerDto, UpdateCustomerRequest } from '@ledgercraft/contracts';
+import { presentResponseError } from '@/lib/apiErrorCopy';
 import type { Customer } from '@/types';
 
 export function customersApiEnabled(): boolean {
@@ -68,12 +69,7 @@ function toCustomer(dto: CustomerDto): Customer {
 }
 
 async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
+  return (await presentResponseError(response)).message;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {

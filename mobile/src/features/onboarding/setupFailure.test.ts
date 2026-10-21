@@ -9,20 +9,43 @@ describe('setup failure copy', () => {
     });
   });
 
-  it('shows the server message for validation and other API failures', () => {
-    const validation = setupFailureAlert(new AuthApiError('theme.background: Required', 400));
-    expect(validation.title).toBe('Couldn’t finish setup');
-    expect(validation.message).toBe('theme.background: Required. Your answers are still here.');
-    expect(validation.message).not.toContain('Check your connection');
-
-    const unavailable = setupFailureAlert(new AuthApiError('Service temporarily unavailable. Please try again later.', 503));
-    expect(unavailable.message).toContain('Service temporarily unavailable');
-    expect(unavailable.message).not.toContain('Check your connection');
+  it('hides validation diagnostics and keeps a support reference', () => {
+    const alert = setupFailureAlert(new AuthApiError('theme.background: Required', 400, 'VALIDATION_ERROR', 'req_abc123'));
+    expect(alert.title).toBe('Couldn’t finish setup');
+    expect(alert.message).toBe(
+      "Something in your details didn't save. Please try again, and contact support if it keeps happening. Your answers are still here. Ref: req_abc123",
+    );
+    expect(alert.message).not.toContain('theme.background');
+    expect(alert.message).not.toContain('Check your connection');
   });
 
-  it('does not blame the connection for an unexpected client error', () => {
-    const alert = setupFailureAlert(new Error('Business name and email are required'));
-    expect(alert.message).toBe('Business name and email are required. Your answers are still here.');
-    expect(alert.message).not.toContain('Check your connection');
+  it('uses a plain server-side message for 5xx failures', () => {
+    const alert = setupFailureAlert(new AuthApiError(
+      'Service temporarily unavailable. Please try again later.',
+      503,
+      'SERVICE_UNAVAILABLE',
+      'req_down',
+    ));
+    expect(alert.message).toBe('Something went wrong on our side. Your answers are still here. Ref: req_down');
+    expect(alert.message).not.toContain('Service temporarily unavailable');
+  });
+
+  it('shows a known user-facing server message', () => {
+    const alert = setupFailureAlert(new AuthApiError(
+      'Add an email to this customer',
+      400,
+      'customer_email_required',
+      'req_mail',
+    ));
+    expect(alert.message).toBe('Add an email to this customer. Your answers are still here. Ref: req_mail');
+  });
+
+  it('keeps a local sentence and falls back when the text is a schema diagnostic', () => {
+    expect(setupFailureAlert(new Error('Business name and email are required')).message)
+      .toBe('Business name and email are required. Your answers are still here.');
+    const diagnostic = setupFailureAlert(new Error('gstRegistrationStatus: Invalid enum value. Expected registered received sometimes'));
+    expect(diagnostic.message).toContain("Something in your details didn't save");
+    expect(diagnostic.message).not.toContain('gstRegistrationStatus');
+    expect(diagnostic.message.endsWith('Your answers are still here.')).toBe(true);
   });
 });

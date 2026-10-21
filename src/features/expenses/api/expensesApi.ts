@@ -1,3 +1,4 @@
+import { presentResponseError } from '@/lib/apiErrorCopy';
 import type {
   CreateExpenseCategoryRequest,
   CreateExpenseRequest,
@@ -152,12 +153,7 @@ export function toCreateExpenseCategoryRequest(
 }
 
 async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
+  return (await presentResponseError(response)).message;
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
