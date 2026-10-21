@@ -98,7 +98,10 @@ mobile typecheck, and mobile Jest are not clean. Each still runs and prints its
 diagnostics. A count gate fails the job only when the count rises past the
 baseline recorded in the workflow. `Build and Test` (`.github/workflows/deploy-only.yml`)
 still runs the Postgres API suite. The PR workflow does not start Postgres and
-does not deploy.
+does not deploy. Production deploy is `.github/workflows/release.yml`. It runs
+after that CI workflow succeeds on a push to `main`, checks out the CI head
+SHA, then runs the existing verify job and the production deploy. Manual
+`workflow_dispatch` from `main` remains. CI does not receive production secrets.
 
 **Mobile Wise dark redesign (branch only, 2026-10-16):** The Expo client on
 `codex/mobile-wise-ui` now has a system-aware dark-first lime theme, reusable

@@ -1,16 +1,30 @@
 name: Release to Cloudflare
 
-# Mirrors CleanTrack (jeevan-vj/timesheet) release.yml: on push to main, verify, then
-# deploy with wrangler in the "production" environment. Same checks as
-# `pnpm deploy:check` (scripts/deploy-cloudflare.mjs), then the same wrangler
-# commands that script uses for the API Worker and Pages site.
+# Deploys with wrangler in the "production" environment after the CI workflow
+# succeeds on a push to main. workflow_run checks out that run's head SHA, which
+# is the commit CI tested. RELEASE_SHA holds that value. workflow_run leaves the
+# github.sha context, and the default GITHUB_SHA, on the default-branch tip,
+# which can be a newer commit than the one CI verified. Wrangler tags, the Pages
+# commit hash, and Sentry release inputs in this file use RELEASE_SHA so the
+# published artifact and its source maps stay on the tested commit.
+#
+# A pull request does not deploy. verify requires a push event, head_branch
+# main, and this repository, so a fork pull request whose branch is named main
+# cannot publish. workflow_dispatch remains the manual path from main and still
+# runs verify before deploy.
+#
+# Same checks as `pnpm deploy:check` (scripts/deploy-cloudflare.mjs), then the
+# same wrangler commands that script uses for the API Worker and Pages site.
 #
 # BETTER_AUTH_SECRET is NOT handled here: it already exists as a Worker secret and
 # `wrangler deploy` without --secrets-file preserves it. Never rotate it from CI.
 # The synthetic-account smoke test (scripts/verify-cloudflare.mjs) is not run here
 # because it creates test data in production; only read-only checks run.
 on:
-  push:
+  workflow_run:
+    # Must match the name of .github/workflows/ci.yml.
+    workflows: ["CI"]
+    types: [completed]
     branches: [main]
   workflow_dispatch:
 
@@ -21,13 +35,30 @@ concurrency:
 permissions:
   contents: read
 
+# Commit CI tested. workflow_dispatch has no head_sha and uses this workflow's SHA.
+env:
+  RELEASE_SHA: ${{ github.event.workflow_run.head_sha || github.sha }}
+
 jobs:
   verify:
+    # Completed CI runs that failed, were cancelled, or came from a pull request
+    # still trigger this workflow. Those runs skip verify, and deploy skips with
+    # them because it requires verify to succeed.
+    if: >-
+      ${{
+        github.event_name == 'workflow_dispatch'
+        || (
+          github.event.workflow_run.conclusion == 'success'
+          && github.event.workflow_run.event == 'push'
+          && github.event.workflow_run.head_branch == 'main'
+          && github.event.workflow_run.head_repository.full_name == github.repository
+        )
+      }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.RELEASE_SHA }}
           persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
@@ -53,7 +84,14 @@ jobs:
 
   deploy:
     needs: verify
-    if: github.repository == 'jeevan-vj/ledger-craft-app' && github.ref == 'refs/heads/main'
+    # needs.result is explicit because a custom if replaces the default
+    # success() check. A skipped or failed verify must not deploy.
+    if: >-
+      ${{
+        needs.verify.result == 'success'
+        && github.repository == 'jeevan-vj/ledger-craft-app'
+        && github.ref == 'refs/heads/main'
+      }}
     runs-on: ubuntu-latest
     environment:
       name: production
@@ -67,7 +105,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ github.sha }}
+          ref: ${{ env.RELEASE_SHA }}
           persist-credentials: false
       - uses: pnpm/action-setup@v4
       - uses: actions/setup-node@v4
@@ -81,7 +119,7 @@ jobs:
         run: |
           {
             echo "VITE_SENTRY_DSN=${{ vars.VITE_SENTRY_DSN }}"
-            echo "VITE_SENTRY_RELEASE=${{ github.sha }}"
+            echo "VITE_SENTRY_RELEASE=${{ env.RELEASE_SHA }}"
           } >> "$GITHUB_ENV"
       - name: Build web (production API flags, as deploy-cloudflare.mjs)
         shell: bash
@@ -99,7 +137,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_ORG: ${{ vars.SENTRY_ORG }}
           SENTRY_PROJECT: ${{ vars.SENTRY_PROJECT || 'ledgercraft-web' }}
-          SENTRY_RELEASE: ${{ github.sha }}
+          SENTRY_RELEASE: ${{ env.RELEASE_SHA }}
         run: node scripts/upload-web-sourcemaps.mjs
       - name: Remove source maps from the published web bundle
         run: node scripts/delete-sourcemaps.mjs dist
@@ -114,8 +152,8 @@ jobs:
         run: >-
           pnpm exec wrangler deploy
           --config "$WORKER_CONFIG"
-          --tag "$GITHUB_SHA"
-          --message "GitHub Actions release $GITHUB_SHA"
+          --tag "$RELEASE_SHA"
+          --message "GitHub Actions release $RELEASE_SHA"
       # Identity keeps serving the previous bundle until Cloudflare restarts
       # that Durable Object (seconds to minutes). A new SQLite migration shows
       # up on /api/readyz only after that restart. The checker waits up to 5
@@ -129,7 +167,7 @@ jobs:
           API_URL: ${{ env.API_URL }}
         run: node .github/scripts/verify-api-readiness.mjs api/sqlite-migrations
       - name: Deploy Pages site
-        run: pnpm exec wrangler pages deploy dist --project-name ledger-craft-app --branch main --commit-hash "$GITHUB_SHA"
+        run: pnpm exec wrangler pages deploy dist --project-name ledger-craft-app --branch main --commit-hash "$RELEASE_SHA"
       - name: Verify published build
         shell: bash
         run: |

@@ -1,5 +1,10 @@
 # LedgerCraft target architecture
 
+**Production release gate:** `.github/workflows/release.yml` deploys to
+Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
+run's head SHA. Manual `workflow_dispatch` from `main` remains. The CI workflow
+does not hold production secrets.
+
 **Mobile home actions (fixed locally, 2026-10-21):** Expo Home uses four
 equal quick-action tiles: new invoice, record payment, add expense, and add
 customer. Record payment opens the invoice list, where marking an invoice paid
