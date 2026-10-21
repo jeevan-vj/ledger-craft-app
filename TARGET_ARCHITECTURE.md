@@ -1,5 +1,12 @@
 # LedgerCraft target architecture
 
+**Mobile invoice themes (implemented locally, 2026-10-21):** Expo invoice
+preview and PDF HTML use the business profile theme. `resolveInvoiceTheme`
+fills missing colours from the mobile default palette, whose background is
+`#F5F6F3`. The six print templates use the same colour roles as the web
+templates for a given theme, with readable ink on brand fills. Totals math is
+unchanged.
+
 **Mobile crash reporting (wired, 2026-10-21):** The Expo client uses
 `@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json`
 set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (US project

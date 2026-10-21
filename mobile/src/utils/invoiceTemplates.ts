@@ -1,5 +1,6 @@
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
+import { invoiceDocumentCss, resolveInvoiceTheme } from '@/utils/invoiceTheme';
 import { formatMoney } from '@/utils/money';
 
 // Helper functions
@@ -139,7 +140,7 @@ function renderInvoiceTotals(invoice: Invoice): string {
       ${discount > 0 ? `
         <div class="total-row">
           <span class="total-label">Discount:</span>
-          <span class="total-value">-${formatCurrency(discount, currency)}</span>
+          <span class="total-value discount-value" style="color: var(--inv-accent)">-${formatCurrency(discount, currency)}</span>
         </div>
       ` : ''}
       ${additionalCharges > 0 ? `
@@ -177,15 +178,23 @@ export function formatInvoiceDate(dateString: string): string {
   });
 }
 
-const getStatusColor = (status: string): string => {
+function statusFill(status: string): string {
   switch (status) {
-    case 'paid': return '#10b981';
-    case 'sent': return '#3b82f6';
-    case 'draft': return '#6b7280';
-    case 'overdue': return '#ef4444';
-    default: return '#6b7280';
+    case 'paid': return 'var(--inv-accent)';
+    case 'sent': return 'var(--inv-primary)';
+    case 'overdue': return '#D92D20';
+    default: return 'var(--inv-text-light)';
   }
-};
+}
+
+function statusInk(status: string): string {
+  switch (status) {
+    case 'paid': return 'var(--inv-on-accent)';
+    case 'sent': return 'var(--inv-on-primary)';
+    case 'overdue': return '#FFFFFF';
+    default: return 'var(--inv-on-text-light)';
+  }
+}
 
 // Classic Template
 function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile): string {
@@ -213,16 +222,16 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
             font-size: 12px;
             line-height: 1.6;
-            color: #0f172a;
+            color: var(--inv-text);
             padding: 40px;
-            background: white;
+            background: var(--inv-surface);
           }
           .invoice-container { max-width: 800px; margin: 0 auto; }
           .header {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            border-bottom: 3px solid #33415C;
+            border-bottom: 3px solid var(--inv-secondary);
             padding-bottom: 20px;
             margin-bottom: 30px;
           }
@@ -236,15 +245,15 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           ` : ''}
           .company-info h1 {
             font-size: 28px;
-            color: #33415C;
+            color: var(--inv-primary);
             margin-bottom: 5px;
             font-weight: 700;
           }
-          .company-info p { color: #64748b; font-size: 14px; }
+          .company-info p { color: var(--inv-text-light); font-size: 14px; }
           .invoice-info { text-align: right; }
           .invoice-label {
             font-size: 14px;
-            color: #64748b;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 5px;
@@ -252,7 +261,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           .invoice-number {
             font-size: 24px;
             font-weight: 700;
-            color: #33415C;
+            color: var(--inv-primary);
             margin-bottom: 10px;
           }
           .status-badge {
@@ -261,10 +270,10 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             border-radius: 6px;
             font-size: 11px;
             font-weight: 700;
-            color: white;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            background-color: ${getStatusColor(invoice.status)};
+            background-color: ${statusFill(invoice.status)};
+            color: ${statusInk(invoice.status)};
           }
           .details-section {
             display: flex;
@@ -275,7 +284,7 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           .section-title {
             font-size: 12px;
             font-weight: 700;
-            color: #64748b;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 12px;
@@ -283,11 +292,11 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           .customer-name {
             font-size: 16px;
             font-weight: 600;
-            color: #0f172a;
+            color: var(--inv-text);
             margin-bottom: 6px;
           }
           .customer-detail, .date-info {
-            color: #64748b;
+            color: var(--inv-text-light);
             margin-bottom: 4px;
             font-size: 13px;
           }
@@ -296,32 +305,32 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             justify-content: space-between;
             margin-bottom: 8px;
           }
-          .date-label { color: #64748b; }
-          .date-value { font-weight: 600; color: #0f172a; }
+          .date-label { color: var(--inv-text-light); }
+          .date-value { font-weight: 600; color: var(--inv-text); }
           table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
           }
-          thead { background-color: #f1f5f9; }
+          thead { background-color: var(--inv-background); }
           th {
             padding: 12px;
             text-align: left;
             font-size: 12px;
             font-weight: 700;
-            color: #475569;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
           }
           th:last-child, td:last-child { text-align: right; }
-          tbody tr { border-bottom: 1px solid #f1f5f9; }
+          tbody tr { border-bottom: 1px solid var(--inv-background); }
           td { padding: 12px; font-size: 13px; }
-          .item-description { font-weight: 600; color: #0f172a; }
-          .item-unit { color: #64748b; font-size: 11px; }
+          .item-description { font-weight: 600; color: var(--inv-text); }
+          .item-unit { color: var(--inv-text-light); font-size: 11px; }
           .totals-section {
             margin-left: auto;
             width: 300px;
-            border-top: 2px solid #e2e8f0;
+            border-top: 2px solid var(--inv-border);
             padding-top: 20px;
           }
           .total-row {
@@ -330,25 +339,25 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             margin-bottom: 10px;
             font-size: 14px;
           }
-          .total-label { color: #64748b; }
-          .total-value { font-weight: 600; color: #0f172a; }
+          .total-label { color: var(--inv-text-light); }
+          .total-value { font-weight: 600; color: var(--inv-text); }
           .grand-total {
-            border-top: 2px solid #e2e8f0;
+            border-top: 2px solid var(--inv-border);
             padding-top: 12px;
             margin-top: 12px;
           }
           .grand-total .total-label {
             font-size: 16px;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--inv-text);
           }
           .grand-total .total-value {
             font-size: 20px;
             font-weight: 700;
-            color: #33415C;
+            color: var(--inv-primary);
           }
           .notes-section, .terms-section {
-            background-color: #f8fafc;
+            background-color: var(--inv-background);
             padding: 16px;
             border-radius: 6px;
             margin-bottom: 20px;
@@ -356,13 +365,13 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           .notes-title, .terms-title {
             font-size: 12px;
             font-weight: 700;
-            color: #64748b;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
           }
           .notes-text, .terms-text {
-            color: #0f172a;
+            color: var(--inv-text);
             font-size: 13px;
             line-height: 1.6;
           }
@@ -370,8 +379,8 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
             text-align: center;
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
-            color: #64748b;
+            border-top: 1px solid var(--inv-border);
+            color: var(--inv-text-light);
             font-style: italic;
           }
         </style>
@@ -491,14 +500,14 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 12px;
             line-height: 1.6;
-            color: #1e293b;
-            background: white;
+            color: var(--inv-text);
+            background: var(--inv-surface);
           }
           .invoice-container { max-width: 800px; margin: 0 auto; }
           .header {
-            background: linear-gradient(135deg, #5B72EE 0%, #4A5FD8 100%);
+            background: linear-gradient(135deg, var(--inv-primary) 0%, var(--inv-secondary) 100%);
             padding: 40px;
-            color: white;
+            color: var(--inv-on-gradient);
           }
           .header-content {
             display: flex;
@@ -510,7 +519,7 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             width: 60px;
             height: 60px;
             object-fit: contain;
-            background: white;
+            background: var(--inv-surface);
             padding: 8px;
             border-radius: 8px;
             margin-bottom: 10px;
@@ -539,7 +548,8 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             font-size: 11px;
             font-weight: 700;
             text-transform: uppercase;
-            background-color: ${getStatusColor(invoice.status)};
+            background-color: ${statusFill(invoice.status)};
+            color: ${statusInk(invoice.status)};
             margin-top: 10px;
           }
           .content { padding: 40px; }
@@ -547,25 +557,25 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             display: flex;
             justify-content: space-between;
             margin-bottom: 40px;
-            background: #f8fafc;
+            background: var(--inv-background);
             padding: 24px;
             border-radius: 12px;
           }
           .info-block h3 {
             font-size: 12px;
-            color: #64748b;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 12px;
           }
           .info-block p {
             font-size: 14px;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 4px;
           }
           .info-block .highlight {
             font-weight: 600;
-            color: #5B72EE;
+            color: var(--inv-primary);
           }
           table {
             width: 100%;
@@ -573,8 +583,8 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             margin-bottom: 30px;
           }
           thead {
-            background: linear-gradient(135deg, #5B72EE 0%, #4A5FD8 100%);
-            color: white;
+            background: var(--inv-primary);
+            color: var(--inv-on-primary);
           }
           th {
             padding: 14px 12px;
@@ -585,15 +595,15 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             letter-spacing: 0.5px;
           }
           th:last-child, td:last-child { text-align: right; }
-          tbody tr { border-bottom: 1px solid #e2e8f0; }
-          tbody tr:hover { background-color: #f8fafc; }
+          tbody tr { border-bottom: 1px solid var(--inv-border); }
+          tbody tr:hover { background-color: var(--inv-background); }
           td { padding: 14px 12px; font-size: 13px; }
-          .item-description { font-weight: 600; color: #1e293b; }
-          .item-unit { color: #64748b; font-size: 11px; margin-top: 2px; }
+          .item-description { font-weight: 600; color: var(--inv-text); }
+          .item-unit { color: var(--inv-text-light); font-size: 11px; margin-top: 2px; }
           .totals-section {
             margin-left: auto;
             width: 320px;
-            background: #f8fafc;
+            background: var(--inv-background);
             padding: 24px;
             border-radius: 12px;
           }
@@ -603,38 +613,38 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile)
             margin-bottom: 12px;
             font-size: 14px;
           }
-          .total-label { color: #64748b; }
-          .total-value { font-weight: 600; color: #1e293b; }
+          .total-label { color: var(--inv-text-light); }
+          .total-value { font-weight: 600; color: var(--inv-text); }
           .grand-total {
-            border-top: 2px solid #5B72EE;
+            border-top: 2px solid var(--inv-primary);
             padding-top: 16px;
             margin-top: 16px;
           }
           .grand-total .total-label {
             font-size: 18px;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--inv-text);
           }
           .grand-total .total-value {
             font-size: 24px;
             font-weight: 700;
-            color: #5B72EE;
+            color: var(--inv-primary);
           }
           .notes-section, .terms-section {
-            background: #f8fafc;
+            background: var(--inv-background);
             padding: 20px;
             border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--inv-border);
             margin-bottom: 20px;
           }
           .notes-title, .terms-title {
             font-size: 14px;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 10px;
           }
           .notes-text, .terms-text {
-            color: #475569;
+            color: var(--inv-text-light);
             font-size: 13px;
             line-height: 1.6;
           }
@@ -741,25 +751,25 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 13px;
             line-height: 1.6;
-            color: #1e293b;
+            color: var(--inv-text);
             padding: 40px;
-            background: white;
+            background: var(--inv-surface);
           }
           .invoice-container { max-width: 700px; margin: 0 auto; }
           .header {
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 2px solid var(--inv-secondary);
           }
           .invoice-title {
             font-size: 32px;
             font-weight: 300;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 8px;
           }
           .invoice-number {
             font-size: 16px;
-            color: #64748b;
+            color: var(--inv-primary);
           }
           .info-grid {
             display: grid;
@@ -769,7 +779,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
           }
           .info-block h3 {
             font-size: 11px;
-            color: #94a3b8;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 12px;
@@ -777,12 +787,12 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
           }
           .info-block p {
             font-size: 14px;
-            color: #475569;
+            color: var(--inv-text-light);
             margin-bottom: 4px;
           }
           .info-block .name {
             font-weight: 600;
-            color: #1e293b;
+            color: var(--inv-text);
             font-size: 15px;
           }
           table {
@@ -791,21 +801,21 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
             margin-bottom: 30px;
           }
           thead {
-            border-bottom: 2px solid #e2e8f0;
+            border-bottom: 2px solid var(--inv-border);
           }
           th {
             padding: 12px 8px;
             text-align: left;
             font-size: 11px;
             font-weight: 600;
-            color: #94a3b8;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1px;
           }
           th:last-child, td:last-child { text-align: right; }
-          tbody tr { border-bottom: 1px solid #f1f5f9; }
-          td { padding: 16px 8px; font-size: 14px; color: #475569; }
-          .item-description { font-weight: 500; color: #1e293b; }
+          tbody tr { border-bottom: 1px solid var(--inv-background); }
+          td { padding: 16px 8px; font-size: 14px; color: var(--inv-text-light); }
+          .item-description { font-weight: 500; color: var(--inv-text); }
           .totals-section {
             margin-left: auto;
             width: 280px;
@@ -817,38 +827,38 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
             margin-bottom: 10px;
             font-size: 14px;
           }
-          .total-label { color: #64748b; font-weight: 400; }
-          .total-value { font-weight: 500; color: #1e293b; }
+          .total-label { color: var(--inv-text-light); font-weight: 400; }
+          .total-value { font-weight: 500; color: var(--inv-text); }
           .grand-total {
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--inv-border);
             padding-top: 14px;
             margin-top: 14px;
           }
           .grand-total .total-label {
             font-size: 16px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--inv-text);
           }
           .grand-total .total-value {
             font-size: 20px;
             font-weight: 600;
-            color: #1e293b;
+            color: var(--inv-primary);
           }
           .notes-section {
             margin-top: 40px;
             padding-top: 20px;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--inv-border);
           }
           .notes-title {
             font-size: 11px;
-            color: #94a3b8;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 10px;
             font-weight: 600;
           }
           .notes-text {
-            color: #475569;
+            color: var(--inv-text-light);
             font-size: 13px;
             line-height: 1.7;
           }
@@ -949,34 +959,34 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-family: Georgia, 'Times New Roman', serif;
             font-size: 13px;
             line-height: 1.6;
-            color: #2d3748;
+            color: var(--inv-text);
             padding: 50px;
-            background: white;
+            background: var(--inv-surface);
           }
           .invoice-container { max-width: 750px; margin: 0 auto; }
           .header {
             text-align: center;
             margin-bottom: 50px;
             padding-bottom: 30px;
-            border-bottom: 2px solid #8b5cf6;
+            border-bottom: 2px solid var(--inv-secondary);
           }
           .company-name {
             font-size: 28px;
             font-weight: 700;
-            color: #8b5cf6;
+            color: var(--inv-text);
             margin-bottom: 10px;
             letter-spacing: 2px;
           }
           .invoice-title {
             font-size: 16px;
-            color: #718096;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 3px;
             margin-top: 15px;
           }
           .invoice-number {
             font-size: 20px;
-            color: #2d3748;
+            color: var(--inv-primary);
             font-weight: 600;
             margin-top: 8px;
           }
@@ -984,13 +994,13 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             display: flex;
             justify-content: space-between;
             margin-bottom: 50px;
-            background: #faf5ff;
+            background: var(--inv-background);
             padding: 30px;
             border-radius: 8px;
           }
           .info-block h3 {
             font-size: 12px;
-            color: #8b5cf6;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 15px;
@@ -998,13 +1008,13 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           .info-block p {
             font-size: 14px;
-            color: #4a5568;
+            color: var(--inv-text-light);
             margin-bottom: 5px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .info-block .highlight {
             font-weight: 600;
-            color: #2d3748;
+            color: var(--inv-text);
           }
           table {
             width: 100%;
@@ -1012,8 +1022,8 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             margin-bottom: 40px;
           }
           thead {
-            background: #8b5cf6;
-            color: white;
+            background: var(--inv-background);
+            color: var(--inv-text-light);
           }
           th {
             padding: 16px 14px;
@@ -1026,7 +1036,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           th:last-child, td:last-child { text-align: right; }
           tbody tr {
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--inv-border);
           }
           td {
             padding: 16px 14px;
@@ -1035,12 +1045,12 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           .item-description {
             font-weight: 600;
-            color: #2d3748;
+            color: var(--inv-text);
           }
           .totals-section {
             margin-left: auto;
             width: 350px;
-            background: #faf5ff;
+            background: var(--inv-background);
             padding: 25px;
             border-radius: 8px;
           }
@@ -1051,25 +1061,25 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-size: 14px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
-          .total-label { color: #718096; }
-          .total-value { font-weight: 600; color: #2d3748; }
+          .total-label { color: var(--inv-text-light); }
+          .total-value { font-weight: 600; color: var(--inv-text); }
           .grand-total {
-            border-top: 2px solid #8b5cf6;
+            border-top: 2px solid var(--inv-primary);
             padding-top: 18px;
             margin-top: 18px;
           }
           .grand-total .total-label {
             font-size: 18px;
             font-weight: 700;
-            color: #2d3748;
+            color: var(--inv-text);
           }
           .grand-total .total-value {
             font-size: 24px;
             font-weight: 700;
-            color: #8b5cf6;
+            color: var(--inv-primary);
           }
           .notes-section {
-            background: #faf5ff;
+            background: var(--inv-background);
             padding: 25px;
             border-radius: 8px;
             margin-top: 30px;
@@ -1077,12 +1087,12 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
           .notes-title {
             font-size: 14px;
             font-weight: 600;
-            color: #8b5cf6;
+            color: var(--inv-text-light);
             margin-bottom: 12px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
           }
           .notes-text {
-            color: #4a5568;
+            color: var(--inv-text-light);
             font-size: 13px;
             line-height: 1.7;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -1178,13 +1188,13 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 13px;
             line-height: 1.6;
-            color: #1a202c;
-            background: white;
+            color: var(--inv-text);
+            background: var(--inv-surface);
           }
           .invoice-container { max-width: 850px; margin: 0 auto; }
           .header {
-            background: #1a202c;
-            color: white;
+            background: linear-gradient(135deg, var(--inv-primary) 0%, var(--inv-secondary) 100%);
+            color: var(--inv-on-gradient);
             padding: 50px 40px;
           }
           .header-grid {
@@ -1221,7 +1231,8 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-size: 12px;
             font-weight: 600;
             text-transform: uppercase;
-            background-color: ${getStatusColor(invoice.status)};
+            background-color: ${statusFill(invoice.status)};
+            color: ${statusInk(invoice.status)};
           }
           .content { padding: 40px; }
           .details-grid {
@@ -1229,13 +1240,13 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
             margin-bottom: 40px;
-            background: #f7fafc;
+            background: var(--inv-background);
             padding: 30px;
-            border-left: 4px solid #1a202c;
+            border-left: 4px solid var(--inv-primary);
           }
           .detail-block h3 {
             font-size: 11px;
-            color: #718096;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 12px;
@@ -1243,24 +1254,24 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           .detail-block p {
             font-size: 14px;
-            color: #2d3748;
+            color: var(--inv-text);
             margin-bottom: 4px;
           }
           .detail-block .name {
             font-weight: 700;
             font-size: 16px;
-            color: #1a202c;
+            color: var(--inv-text);
             margin-bottom: 8px;
           }
           table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 30px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--inv-border);
           }
           thead {
-            background: #2d3748;
-            color: white;
+            background: var(--inv-primary);
+            color: var(--inv-on-primary);
           }
           th {
             padding: 16px;
@@ -1272,28 +1283,28 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           th:last-child, td:last-child { text-align: right; }
           tbody tr {
-            border-bottom: 1px solid #e2e8f0;
-            background: white;
+            border-bottom: 1px solid var(--inv-border);
+            background: var(--inv-surface);
           }
           tbody tr:nth-child(even) {
-            background: #f7fafc;
+            background: var(--inv-background);
           }
           td { padding: 16px; font-size: 14px; }
           .item-description {
             font-weight: 600;
-            color: #1a202c;
+            color: var(--inv-text);
             margin-bottom: 4px;
           }
           .item-unit {
-            color: #718096;
+            color: var(--inv-text-light);
             font-size: 12px;
           }
           .totals-section {
             margin-left: auto;
             width: 350px;
-            background: #f7fafc;
+            background: var(--inv-background);
             padding: 30px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--inv-border);
           }
           .total-row {
             display: flex;
@@ -1301,39 +1312,39 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
             margin-bottom: 14px;
             font-size: 15px;
           }
-          .total-label { color: #4a5568; font-weight: 500; }
-          .total-value { font-weight: 600; color: #1a202c; }
+          .total-label { color: var(--inv-text-light); font-weight: 500; }
+          .total-value { font-weight: 600; color: var(--inv-text); }
           .grand-total {
-            background: #1a202c;
-            color: white;
-            margin: -30px -30px 0 -30px;
-            padding: 20px 30px;
-            margin-top: 20px;
+            border-top: 2px solid var(--inv-primary);
+            padding-top: 16px;
+            margin-top: 16px;
           }
           .grand-total .total-label {
             font-size: 18px;
             font-weight: 700;
+            color: var(--inv-text);
           }
           .grand-total .total-value {
             font-size: 26px;
             font-weight: 700;
+            color: var(--inv-primary);
           }
           .notes-section {
-            background: #f7fafc;
+            background: var(--inv-background);
             padding: 25px;
-            border-left: 4px solid #1a202c;
+            border-left: 4px solid var(--inv-primary);
             margin-top: 30px;
           }
           .notes-title {
             font-size: 14px;
             font-weight: 700;
-            color: #1a202c;
+            color: var(--inv-text);
             margin-bottom: 12px;
             text-transform: uppercase;
             letter-spacing: 1px;
           }
           .notes-text {
-            color: #4a5568;
+            color: var(--inv-text-light);
             font-size: 14px;
             line-height: 1.7;
           }
@@ -1441,14 +1452,14 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             font-size: 13px;
             line-height: 1.6;
-            color: #1e293b;
-            background: #f8fafc;
+            color: var(--inv-text);
+            background: var(--inv-background);
           }
-          .invoice-container { max-width: 850px; margin: 0 auto; background: white; }
+          .invoice-container { max-width: 850px; margin: 0 auto; background: var(--inv-surface); }
           .header {
-            background: linear-gradient(135deg, #00D4FF 0%, #5B72EE 50%, #4A5FD8 100%);
+            background: linear-gradient(135deg, var(--inv-primary) 0%, var(--inv-secondary) 100%);
             padding: 60px 40px;
-            color: white;
+            color: var(--inv-on-gradient);
             position: relative;
             overflow: hidden;
           }
@@ -1472,7 +1483,7 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             width: 70px;
             height: 70px;
             object-fit: contain;
-            background: white;
+            background: var(--inv-surface);
             padding: 10px;
             border-radius: 12px;
             margin-bottom: 15px;
@@ -1510,8 +1521,8 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
-            background: white;
-            color: ${getStatusColor(invoice.status)};
+            background-color: ${statusFill(invoice.status)};
+            color: ${statusInk(invoice.status)};
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
           }
           .content { padding: 40px; }
@@ -1522,14 +1533,14 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             margin-bottom: 40px;
           }
           .info-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: linear-gradient(135deg, var(--inv-background) 0%, var(--inv-background) 100%);
             padding: 25px;
             border-radius: 16px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           }
           .info-card h3 {
             font-size: 11px;
-            color: #5B72EE;
+            color: var(--inv-text-light);
             text-transform: uppercase;
             letter-spacing: 1.5px;
             margin-bottom: 15px;
@@ -1537,17 +1548,17 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           .info-card p {
             font-size: 14px;
-            color: #475569;
+            color: var(--inv-text-light);
             margin-bottom: 5px;
           }
           .info-card .name {
             font-size: 18px;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 10px;
           }
           .info-card .highlight {
-            color: #5B72EE;
+            color: var(--inv-primary);
             font-weight: 600;
           }
           table {
@@ -1559,8 +1570,8 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
           }
           thead {
-            background: linear-gradient(135deg, #5B72EE 0%, #4A5FD8 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--inv-primary) 0%, var(--inv-secondary) 100%);
+            color: var(--inv-on-gradient);
           }
           th {
             padding: 18px 16px;
@@ -1572,26 +1583,26 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
           }
           th:last-child, td:last-child { text-align: right; }
           tbody tr {
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--inv-border);
             transition: background 0.2s;
           }
           tbody tr:hover {
-            background: #f8fafc;
+            background: var(--inv-background);
           }
           td { padding: 18px 16px; font-size: 14px; }
           .item-description {
             font-weight: 600;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 4px;
           }
           .item-unit {
-            color: #64748b;
+            color: var(--inv-text-light);
             font-size: 12px;
           }
           .totals-section {
             margin-left: auto;
             width: 380px;
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: linear-gradient(135deg, var(--inv-background) 0%, var(--inv-background) 100%);
             padding: 30px;
             border-radius: 16px;
             box-shadow: 0 4px 16px rgba(0,0,0,0.08);
@@ -1602,11 +1613,11 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             margin-bottom: 14px;
             font-size: 15px;
           }
-          .total-label { color: #64748b; font-weight: 500; }
-          .total-value { font-weight: 600; color: #1e293b; }
+          .total-label { color: var(--inv-text-light); font-weight: 500; }
+          .total-value { font-weight: 600; color: var(--inv-text); }
           .grand-total {
-            background: linear-gradient(135deg, #5B72EE 0%, #4A5FD8 100%);
-            color: white;
+            background: linear-gradient(135deg, var(--inv-primary) 0%, var(--inv-secondary) 100%);
+            color: var(--inv-on-gradient);
             margin: 20px -30px -30px -30px;
             padding: 25px 30px;
             border-radius: 0 0 16px 16px;
@@ -1621,7 +1632,7 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
             font-weight: 700;
           }
           .notes-section {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: linear-gradient(135deg, var(--inv-background) 0%, var(--inv-background) 100%);
             padding: 30px;
             border-radius: 16px;
             margin-top: 30px;
@@ -1630,11 +1641,11 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
           .notes-title {
             font-size: 16px;
             font-weight: 700;
-            color: #1e293b;
+            color: var(--inv-text);
             margin-bottom: 12px;
           }
           .notes-text {
-            color: #475569;
+            color: var(--inv-text-light);
             font-size: 14px;
             line-height: 1.7;
           }
@@ -1748,35 +1759,18 @@ function getRawTemplateHTML(
   }
 }
 
-const A4_DOCUMENT_STYLES = `
-  @page { size: 595px 842px; margin: 0; }
-  html {
-    width: 595px;
-    min-height: 842px;
-    background: #ffffff;
-    -webkit-text-size-adjust: 100%;
-  }
-  body {
-    width: 595px;
-    min-height: 842px;
-    overflow-x: hidden;
-  }
-  .notes-text, .terms-text {
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
-`;
-
 /**
  * The single invoice document generator used by both the on-device preview and
  * Expo Print. Keeping the A4 viewport here makes the same HTML scale to the
- * WebView width and render at the requested PDF page size.
+ * WebView width and render at the requested PDF page size. Brand colours come
+ * from the loaded business profile theme.
  */
 export function generateInvoiceHTML(
   invoice: Invoice,
   businessProfile?: BusinessProfile,
   templateId: InvoiceTemplateId = 'classic',
 ): string {
+  const themeCss = invoiceDocumentCss(resolveInvoiceTheme(businessProfile?.theme));
   return getRawTemplateHTML(
     templateId,
     escapeInvoiceText(invoice),
@@ -1786,7 +1780,7 @@ export function generateInvoiceHTML(
       /<meta\s+name="viewport"\s+content="[^"]*">/i,
       '<meta name="viewport" content="width=595, shrink-to-fit=yes, maximum-scale=5, user-scalable=yes">',
     )
-    .replace('<style>', `<style>${A4_DOCUMENT_STYLES}`);
+    .replace('<style>', `<style>${themeCss}`);
 }
 
 /** @deprecated Use generateInvoiceHTML so preview and PDF cannot diverge. */
