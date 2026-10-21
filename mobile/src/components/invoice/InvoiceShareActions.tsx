@@ -8,6 +8,7 @@ import {
   Share,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import * as Clipboard from 'expo-clipboard';
@@ -140,15 +141,16 @@ export default function InvoiceShareActions({
 
         <View style={styles.group}>
           {rows.map((row) => (
-            <Pressable
+            <TouchableOpacity
               key={row.key}
               onPress={row.onPress}
               disabled={busy !== null}
+              activeOpacity={0.65}
               accessibilityRole="button"
               accessibilityLabel={row.title}
               accessibilityHint={row.subtitle}
               accessibilityState={{ busy: busy === row.key, disabled: busy !== null }}
-              style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+              style={styles.row}
             >
               <View style={styles.iconWell}>
                 {busy === row.key ? (
@@ -162,7 +164,7 @@ export default function InvoiceShareActions({
                 <Text style={styles.rowSubtitle}>{row.subtitle}</Text>
               </View>
               <Feather name="chevron-right" size={18} color={palette.textTertiary} />
-            </Pressable>
+            </TouchableOpacity>
           ))}
         </View>
 
@@ -199,11 +201,10 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   title: { ...type.title },
   subtitle: { ...type.subhead, marginTop: 2 },
   close: { width: control.touchTarget, height: control.touchTarget, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.fill },
-  group: { backgroundColor: palette.surfaceRaised, borderRadius: radius.group, overflow: 'hidden', borderWidth: 1, borderColor: palette.border },
-  row: { minHeight: 72, paddingHorizontal: space.md, flexDirection: 'row', alignItems: 'center', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: palette.separator },
-  pressed: { opacity: 0.65 },
+  group: { alignSelf: 'stretch', backgroundColor: palette.surfaceRaised, borderRadius: radius.group, overflow: 'hidden', borderWidth: 1, borderColor: palette.border },
+  row: { width: '100%', minHeight: 72, paddingHorizontal: space.md, flexDirection: 'row', alignItems: 'center', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: palette.separator },
   iconWell: { width: 40, height: 40, borderRadius: 20, alignItems: 'center', justifyContent: 'center', backgroundColor: palette.accentFill, marginRight: space.md },
-  rowCopy: { flex: 1 },
+  rowCopy: { flex: 1, minWidth: 0 },
   rowTitle: { fontSize: 16, fontWeight: '600', color: palette.text },
   rowSubtitle: { fontSize: 13, color: palette.textSecondary, marginTop: 2 },
   linkCard: { marginTop: space.lg, padding: space.md, borderRadius: radius.group, backgroundColor: palette.surfaceRaised, borderWidth: 1, borderColor: palette.border },
