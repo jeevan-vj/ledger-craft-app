@@ -14,7 +14,8 @@
   "vars": {
     "NODE_ENV": "production",
     "BETTER_AUTH_URL": "https://easybiz.iamjeevan.com",
-    "BETTER_AUTH_TRUSTED_ORIGINS": "https://easybiz.iamjeevan.com,https://ledger-craft-app.pages.dev,easybizinvoice://"
+    "BETTER_AUTH_TRUSTED_ORIGINS": "https://easybiz.iamjeevan.com,https://ledger-craft-app.pages.dev,easybizinvoice://",
+    "SENTRY_DSN": "https://c70476b701f3fd7d5fb85254a73b3060@o4512292098342912.ingest.us.sentry.io/4512292100702208"
   },
   "secrets": { "required": ["BETTER_AUTH_SECRET"] },
   "observability": { "enabled": true },

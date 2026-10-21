@@ -74,7 +74,9 @@ tests), and lint with no errors pass; authenticated device QA remains pending.
 
 **API error monitoring:** The Hono Worker reports unhandled errors through
 `@sentry/cloudflare` (worker fetch, Identity, Ledger, Hono `onError`, and
-`/api/auth/*`). `SENTRY_DSN` is a Worker secret and is a no-op when unset.
+`/api/auth/*`). The public DSN is `vars.SENTRY_DSN`. Events are sent only when
+`SENTRY_ENVIRONMENT` is `production`, which the release deploy sets. Node, tests,
+and local Wrangler stay quiet.
 Release uploads source maps only when the `SENTRY_AUTH_TOKEN` GitHub secret
 exists. Setup and the debug route are in `deploy/cloudflare.md`.
 

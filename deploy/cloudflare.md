@@ -275,48 +275,55 @@ equal to the git SHA. `sendDefaultPii` stays off. The SDK 11 `dataCollection`
 settings match that: no user profile, cookies, request bodies, query strings,
 or auth headers. The user attached to an event is the user id only. Share
 tokens in `/api/public/invoices/<orgId>_<shareToken>` are redacted from URLs,
-transaction names, breadcrumbs, and logs. When `SENTRY_DSN` is unset, the
-client does not send events, so local development, tests, and CI keep working.
+transaction names, breadcrumbs, and logs.
 
-Jeevan needs a Sentry project named `ledgercraft-api` (platform: Cloudflare
-Workers / JavaScript) and these values:
+The Sentry project is organisation `ledgercraft`, project `ledgercraft-api`,
+US region. The DSN is a public client key in `vars.SENTRY_DSN` inside
+`deploy/api/wrangler.jsonc`. The Node API, Vitest, and CI do not construct a
+Sentry client from that file. The Worker sends events only when
+`SENTRY_ENVIRONMENT` is `production`. Local `wrangler dev` loads the DSN but
+does not set that variable, so it stays quiet. The release workflow and
+`pnpm deploy:cloudflare` set `SENTRY_ENVIRONMENT=production` for the published
+Worker, along with `SENTRY_RELEASE` set to the git SHA.
 
-| Name | Where | Purpose |
+GitHub already has the two values the source-map upload needs:
+
+| Name | Where | Status |
 | --- | --- | --- |
-| `SENTRY_DSN` | Worker secret (or var) | Event intake. Leave unset until the project exists. |
-| `SENTRY_AUTH_TOKEN` | GitHub Actions secret | Source map upload. The release skips upload when this is absent. |
-| `SENTRY_ORG` | GitHub Actions variable | Sentry organisation slug. Required only when the token is set. |
-| `SENTRY_PROJECT` | GitHub Actions variable | Defaults to `ledgercraft-api` when unset. |
-| `SENTRY_TRACES_SAMPLE_RATE` | Optional Worker var | Defaults to `0.1`. Use `0` to disable tracing. |
-| `SENTRY_ENVIRONMENT` | Optional Worker var | Defaults to `NODE_ENV`. |
+| `SENTRY_AUTH_TOKEN` | GitHub Actions secret on the `production` environment | Set. Org token. The upload step skips if it is ever removed. |
+| `SENTRY_ORG` | Repository variable, value `ledgercraft` | Set. The upload reads `vars.SENTRY_ORG`. |
+| Project slug | Hard-coded in the API release workflow | `ledgercraft-api`. Do not add a `SENTRY_PROJECT` variable; the web workflow uses its own default. |
 
-Do not commit the DSN. Put it on the Worker:
+Optional Worker var: `SENTRY_TRACES_SAMPLE_RATE` (default `0.1`; `0` turns tracing off).
+
+A Worker secret and a plaintext var cannot share a name. If `SENTRY_DSN` was
+previously stored with `wrangler secret put`, the next deploy fails until that
+secret is removed. The var in `wrangler.jsonc` is the one production should use:
 
 ```bash
-pnpm exec wrangler secret put SENTRY_DSN --config deploy/api/wrangler.jsonc
+pnpm exec wrangler secret delete SENTRY_DSN --config deploy/api/wrangler.jsonc
 ```
 
-The release workflow deploys with `--tag` and `--var SENTRY_RELEASE:<git sha>`
-and writes source maps to `.wrangler/api-sourcemaps`. `upload_source_maps` is
-on, so Cloudflare receives the maps as well. `scripts/upload-api-sourcemaps.mjs`
-then uploads them to Sentry only when `SENTRY_AUTH_TOKEN` is present.
+The release writes source maps to `.wrangler/api-sourcemaps`. `upload_source_maps`
+is on, so Cloudflare receives them too. `scripts/upload-api-sourcemaps.mjs`
+uploads them to org `ledgercraft`, project `ledgercraft-api`.
 
-To verify after the DSN exists, run the Worker locally with the debug route
-enabled. Production sets `NODE_ENV=production`, so this route is not registered
-there even if `SENTRY_DEBUG_ROUTE` is set.
+To send one check event, opt in explicitly. Production `NODE_ENV` keeps
+`/api/__debug/sentry` unregistered; this command turns the route on and enables
+reporting for that local process only:
 
 ```bash
-printf 'SENTRY_DSN=%s\n' 'https://<key>@<org>.ingest.sentry.io/<project>' > deploy/api/.dev.vars
 pnpm exec wrangler dev --config deploy/api/wrangler.jsonc \
   --var NODE_ENV:development \
+  --var SENTRY_ENVIRONMENT:production \
   --var SENTRY_DEBUG_ROUTE:true
-curl -i http://127.0.0.1:8787/api/__debug/sentry
+curl -i -H 'x-request-id: req_debug_on' http://127.0.0.1:8787/api/__debug/sentry
 ```
 
-The response is a 503 with the caller's `x-request-id` (or a generated `req_`
-id). The Sentry issue should show route `/api/__debug/sentry`, that request id,
-and no cookies, Authorization header, `set-auth-token`, or query string. Delete
-`deploy/api/.dev.vars` when finished; it is gitignored.
+The response is a 503 whose body uses `req_debug_on` and does not include the
+internal error text. The Sentry issue should show route `/api/__debug/sentry`,
+that request id, and no cookies, Authorization header, `set-auth-token`, or
+query string. A normal `wrangler dev` or `pnpm dev:api` session does not send.
 
 ## Migrations and local development
 

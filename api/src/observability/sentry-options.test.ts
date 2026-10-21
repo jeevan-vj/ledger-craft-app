@@ -14,10 +14,24 @@ describe('sentrySdkOptions', () => {
     expect(sentrySdkOptions({ SENTRY_DSN: 'not-a-dsn' }).dsn).toBe('');
   });
 
+  it('does not send when the DSN is present outside production', () => {
+    for (const environment of [undefined, 'development', 'test'] as const) {
+      const options = sentrySdkOptions({
+        SENTRY_DSN: dsn,
+        NODE_ENV: 'production',
+        ...(environment ? { SENTRY_ENVIRONMENT: environment } : {}),
+      });
+      expect(options.enabled).toBe(false);
+      expect(options.dsn).toBe('');
+      expect(options.rpcTracePropagationBindings).toBeUndefined();
+    }
+  });
+
   it('keeps PII off, samples traces at 0.1, and uses the git SHA as the release', () => {
     const options = sentrySdkOptions({
       SENTRY_DSN: dsn,
       NODE_ENV: 'production',
+      SENTRY_ENVIRONMENT: 'production',
       SENTRY_RELEASE: 'abc123def',
       CF_VERSION_METADATA: { id: 'worker-version-id', tag: 'ignored-when-release-is-set' },
     });
@@ -53,6 +67,8 @@ describe('sentrySdkOptions', () => {
     });
     expect(options.release).toBe('deadbeef');
     expect(options.release).not.toBe('not-the-git-sha');
+    expect(options.enabled).toBe(false);
+    expect(options.dsn).toBe('');
     expect(options.environment).toBe('staging');
     expect(sentrySdkOptions({ CF_VERSION_METADATA: { id: 'only-the-version-id' } }).release).toBeUndefined();
   });

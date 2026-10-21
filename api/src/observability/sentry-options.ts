@@ -70,14 +70,25 @@ export function readRelease(env: Pick<SentryEnv, 'SENTRY_RELEASE' | 'CF_VERSION_
   return undefined;
 }
 
+/**
+ * The DSN is a public Worker var, so `wrangler dev` can see it. Events are sent
+ * only when a deploy also sets SENTRY_ENVIRONMENT=production. Node, tests, CI,
+ * and local Wrangler leave that unset and stay quiet. An empty dsn blocks the
+ * SDK from reading SENTRY_DSN back off the Worker env.
+ */
+export function sentryReportingEnabled(env: SentryEnv): boolean {
+  const rawDsn = env.SENTRY_DSN?.trim() ?? '';
+  return DSN_PATTERN.test(rawDsn) && env.SENTRY_ENVIRONMENT?.trim() === 'production';
+}
+
 export function sentrySdkOptions(env: SentryEnv): SentryClientOptions {
   const rawDsn = env.SENTRY_DSN?.trim() ?? '';
   const dsn = DSN_PATTERN.test(rawDsn) ? rawDsn : undefined;
+  const reporting = sentryReportingEnabled(env);
   const release = readRelease(env);
   return {
-    enabled: Boolean(dsn),
-    // An invalid DSN must not be forwarded. An empty string stops the SDK from reading it back off env.
-    ...(dsn ? { dsn } : rawDsn ? { dsn: '' } : {}),
+    enabled: reporting,
+    ...(reporting && dsn ? { dsn } : rawDsn ? { dsn: '' } : {}),
     environment: env.SENTRY_ENVIRONMENT?.trim() || env.NODE_ENV?.trim() || 'development',
     ...(release ? { release } : {}),
     tracesSampleRate: readTracesSampleRate(env.SENTRY_TRACES_SAMPLE_RATE),
@@ -95,7 +106,7 @@ export function sentrySdkOptions(env: SentryEnv): SentryClientOptions {
         response: { deny: ['set-cookie', 'set-auth-token', 'authorization'] },
       },
     },
-    ...(dsn ? { rpcTracePropagationBindings: ['IDENTITY', 'LEDGERS'] } : {}),
+    ...(reporting ? { rpcTracePropagationBindings: ['IDENTITY', 'LEDGERS'] } : {}),
     beforeSend: scrubSentryEvent,
     beforeBreadcrumb: scrubBreadcrumb,
   };

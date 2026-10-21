@@ -105,7 +105,7 @@ try {
     const shaResult=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
     if(shaResult.status!==0 || !shaResult.stdout.trim()) throw new Error('Could not read the git SHA for the Sentry release.');
     const sha=shaResult.stdout.trim();
-    const releaseArgs=['--tag',sha,'--var',`SENTRY_RELEASE:${sha}`,'--outdir','.wrangler/api-sourcemaps','--message',`LedgerCraft release ${sha}`];
+    const releaseArgs=['--tag',sha,'--var',`SENTRY_RELEASE:${sha}`,'--var','SENTRY_ENVIRONMENT:production','--outdir','.wrangler/api-sourcemaps','--message',`LedgerCraft release ${sha}`];
     if(preserveRemote) {
       wrangler('deploy','--config',config,...releaseArgs);
     } else {

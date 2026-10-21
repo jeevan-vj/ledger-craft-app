@@ -2,6 +2,9 @@
 import { spawnSync } from 'node:child_process';
 import { pathToFileURL } from 'node:url';
 
+// API source maps always belong to this Sentry project. The release workflow
+// sets SENTRY_PROJECT to this slug itself and does not read a GitHub variable,
+// so the web app's project default cannot redirect the upload.
 const PROJECT = 'ledgercraft-api';
 
 /**
