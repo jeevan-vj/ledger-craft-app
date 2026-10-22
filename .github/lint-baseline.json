@@ -1,0 +1,14 @@
+{
+  "recorded": "2026-10-21",
+  "note": "Ceilings for eslint problem counts. CI fails when either count rises. Lower a number in this file after a real cleanup so the ratchet can rise no further. The api package has no lint script, so it has no entry. web is the repo-root command pnpm lint (eslint .). mobile is npm run lint in mobile/.",
+  "web": {
+    "command": "pnpm lint",
+    "errors": 467,
+    "warnings": 113
+  },
+  "mobile": {
+    "command": "npm run lint",
+    "errors": 0,
+    "warnings": 88
+  }
+}

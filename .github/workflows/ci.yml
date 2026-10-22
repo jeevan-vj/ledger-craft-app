@@ -35,22 +35,24 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # TODO: web `eslint .` is not clean (baseline 468 errors, 112 warnings,
-      # recorded 2026-10-17). Mostly @typescript-eslint/no-explicit-any.
-      # The step keeps running so the log is the report. The gate fails the
-      # job only when the error count rises. Do not blanket-ignore rules.
+      # `pnpm lint` (`eslint .` from the repo root) is not clean. The ceiling
+      # for errors and warnings is .github/lint-baseline.json (key "web").
+      # This step prints the report. The next step fails the job when either
+      # count rises. Lower the JSON after a real cleanup. Do not blanket-ignore
+      # rules. The api package has no lint script; files it owns are included
+      # here only when the root eslint config matches them.
       - name: Lint
-        continue-on-error: true
         run: |
           set +e
           pnpm lint > "$RUNNER_TEMP/web-lint.txt" 2>&1
           status=$?
           cat "$RUNNER_TEMP/web-lint.txt"
-          exit $status
+          echo "$status" > "$RUNNER_TEMP/web-lint.exit"
+          exit 0
 
       - name: Lint baseline
         if: always()
-        run: node .github/scripts/ci-baseline-gate.mjs eslint "$RUNNER_TEMP/web-lint.txt" 468
+        run: node .github/scripts/ci-baseline-gate.mjs eslint "$RUNNER_TEMP/web-lint.txt" .github/lint-baseline.json web "$(cat "$RUNNER_TEMP/web-lint.exit")"
 
   web-typecheck:
     name: Web typecheck
@@ -138,7 +140,7 @@ jobs:
         with:
           node-version: 22
       - name: API readiness checker
-        run: node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs
+        run: node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/ci-baseline-gate.test.mjs scripts/upload-api-sourcemaps.test.mjs
       - name: Web source map upload checker
         run: node --test scripts/upload-web-sourcemaps.test.mjs
 
@@ -178,12 +180,22 @@ jobs:
       - name: Install
         run: npm ci
 
-      # Measured 2026-10-21 on main: 0 ESLint errors (warnings remain),
-      # 0 tsc errors, and 0 Jest failures. These steps fail the job.
-      # A zero count baseline is the same as the tool exit code, so the
-      # mobile count gate is gone. Web jobs still use ci-baseline-gate.mjs.
+      # Typecheck and Jest fail this job directly. Lint prints the report,
+      # then the baseline step fails the job when mobile eslint errors or
+      # warnings rise above .github/lint-baseline.json (key "mobile").
+      # Lower that JSON after a real cleanup.
       - name: Lint
-        run: npm run lint
+        run: |
+          set +e
+          npm run lint > "$RUNNER_TEMP/mobile-lint.txt" 2>&1
+          status=$?
+          cat "$RUNNER_TEMP/mobile-lint.txt"
+          echo "$status" > "$RUNNER_TEMP/mobile-lint.exit"
+          exit 0
+
+      - name: Lint baseline
+        if: always()
+        run: node "$GITHUB_WORKSPACE/.github/scripts/ci-baseline-gate.mjs" eslint "$RUNNER_TEMP/mobile-lint.txt" "$GITHUB_WORKSPACE/.github/lint-baseline.json" mobile "$(cat "$RUNNER_TEMP/mobile-lint.exit")"
 
       - name: Typecheck
         run: npx tsc --noEmit --pretty false
