@@ -5,13 +5,14 @@ import { bankAccountService } from '@/services/bankAccountService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload, ArrowRightLeft, Banknote, Repeat2 } from 'lucide-react';
+import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload, ArrowRightLeft, Banknote, Repeat2, Download } from 'lucide-react';
 import { toast } from 'sonner';
 import { BankAccountDialog } from '@/components/bank-account/BankAccountDialog';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { bankApi } from '@/features/bank/api/bankApi';
 import { BankingActivity, BankTransactionDialog, BankTransferDialog } from '@/components/bank-account/BankingActions';
+import { BankTransactionDetails } from '@/components/bank-account/BankTransactionDetails';
 
 const ACCOUNT_TYPE_CONFIG = {
   checking: { label: 'Checking', icon: Building, color: 'bg-blue-500' },
@@ -30,6 +31,7 @@ export default function BankAccountsPage() {
   const [transactionOpen, setTransactionOpen] = useState(false);
   const [transferOpen, setTransferOpen] = useState(false);
   const [editingTransaction, setEditingTransaction] = useState<BankTransactionDto | null>(null);
+  const [viewingTransaction, setViewingTransaction] = useState<BankTransactionDto | null>(null);
 
   const loadAccounts = async () => {
     try {
@@ -115,6 +117,7 @@ export default function BankAccountsPage() {
         <div className="flex flex-wrap justify-end gap-2">
           <Button variant="outline" onClick={() => { setEditingTransaction(null); setTransactionOpen(true); }} className="gap-2" disabled={accounts.length === 0}><Banknote className="h-4 w-4" />Add transaction</Button>
           <Button variant="outline" onClick={() => setTransferOpen(true)} className="gap-2" disabled={accounts.filter((account) => account.isActive).length < 2}><Repeat2 className="h-4 w-4" />Transfer</Button>
+          <Button variant="outline" onClick={() => void bankApi.downloadCsv().catch((error) => toast.error(error instanceof Error ? error.message : 'Could not export transactions'))} className="gap-2" disabled={transactions.length === 0}><Download className="h-4 w-4" />Export CSV</Button>
           <Button 
             variant="outline" 
             onClick={() => navigate('/transaction-import')} 
@@ -236,7 +239,7 @@ export default function BankAccountsPage() {
         </div>
       )}
 
-      {accounts.length > 0 ? <BankingActivity transactions={transactions} accounts={accounts} onEdit={(transaction) => { setEditingTransaction(transaction); setTransactionOpen(true); }} onDelete={handleDeleteTransaction} /> : null}
+      {accounts.length > 0 ? <BankingActivity transactions={transactions} accounts={accounts} onView={setViewingTransaction} onEdit={(transaction) => { setEditingTransaction(transaction); setTransactionOpen(true); }} onDelete={handleDeleteTransaction} /> : null}
 
       <BankAccountDialog
         open={dialogOpen}
@@ -246,6 +249,7 @@ export default function BankAccountsPage() {
       />
       <BankTransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} accounts={accounts} transaction={editingTransaction} onSaved={loadAccounts} />
       <BankTransferDialog open={transferOpen} onOpenChange={setTransferOpen} accounts={accounts} onSaved={loadAccounts} />
+      <BankTransactionDetails transaction={viewingTransaction} accountName={accounts.find((account) => account.id === viewingTransaction?.bankAccountId)?.accountName} currency={accounts.find((account) => account.id === viewingTransaction?.bankAccountId)?.currency} open={Boolean(viewingTransaction)} onOpenChange={(open) => { if (!open) setViewingTransaction(null); }} onChanged={loadAccounts} />
     </div>
   );
 }

@@ -13,4 +13,13 @@ describe('object contracts', () => {
       }).success,
     ).toBe(false);
   });
+
+  it('accepts banking attachments', () => {
+    expect(uploadObjectRequestSchema.parse({
+      kind: 'bank_attachment',
+      filename: 'statement.pdf',
+      contentType: 'application/pdf',
+      contentBase64: 'ZmFrZQ==',
+    }).kind).toBe('bank_attachment');
+  });
 });

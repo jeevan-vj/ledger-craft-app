@@ -30,6 +30,7 @@ import BankAccountFormScreen from '@/screens/banking/BankAccountFormScreen';
 import BankAccountDetailScreen from '@/screens/banking/BankAccountDetailScreen';
 import BankTransactionFormScreen from '@/screens/banking/BankTransactionFormScreen';
 import BankTransferFormScreen from '@/screens/banking/BankTransferFormScreen';
+import BankStatementImportScreen from '@/screens/banking/BankStatementImportScreen';
 import QuoteListScreen from '@/screens/quotes/QuoteListScreen';
 import QuoteFormScreen from '@/screens/quotes/QuoteFormScreen';
 import QuoteDetailScreen from '@/screens/quotes/QuoteDetailScreen';
@@ -87,6 +88,7 @@ function MoreNavigator() {
     <MoreStack.Screen name="BankTransactionCreate" component={BankTransactionFormScreen} options={{ ...form, title: 'New transaction' }} />
     <MoreStack.Screen name="BankTransactionEdit" component={BankTransactionFormScreen} options={{ ...form, title: 'Edit transaction' }} />
     <MoreStack.Screen name="BankTransferCreate" component={BankTransferFormScreen} options={{ ...form, title: 'Transfer money' }} />
+    <MoreStack.Screen name="BankStatementImport" component={BankStatementImportScreen} options={{ ...form, title: 'Import statement' }} />
     <MoreStack.Screen name="ExpenseList" component={ExpenseListScreen} options={{ title: 'Expenses' }} />
     <MoreStack.Screen name="ExpenseCreate" component={ExpenseCreateScreen} options={{ ...form, title: 'New expense' }} />
     <MoreStack.Screen name="ExpenseEdit" component={ExpenseEditScreen} options={{ ...form, title: 'Edit expense' }} />

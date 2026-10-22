@@ -80,6 +80,56 @@ export const bankTransactions = sqliteTable('bank_transactions', {
   foreignKey({ columns: [table.organisationId, table.transferId], foreignColumns: [bankTransfers.organisationId, bankTransfers.id] }).onDelete('restrict'),
 ]);
 
+export const bankTransactionSplits = sqliteTable('bank_transaction_splits', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  transactionId: text('transaction_id').notNull(),
+  category: text('category').notNull(),
+  description: text('description'),
+  amount: money('amount').notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bank_transaction_splits_amount_check', sql`amount <> '' AND amount NOT GLOB '*[^0-9.]*' AND amount GLOB '[0-9]*' AND amount NOT LIKE '%.' AND trim(amount, '0.') <> ''`),
+  uniqueIndex('bank_transaction_splits_org_id_uidx').on(table.organisationId, table.id),
+  index('bank_transaction_splits_tx_idx').on(table.organisationId, table.transactionId),
+  foreignKey({ columns: [table.organisationId, table.transactionId], foreignColumns: [bankTransactions.organisationId, bankTransactions.id] }).onDelete('cascade'),
+]);
+
+export const bankTransactionDocumentConnections = sqliteTable('bank_transaction_document_connections', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  transactionId: text('transaction_id').notNull(),
+  documentType: text('document_type').notNull(),
+  documentId: text('document_id').notNull(),
+  documentNumber: text('document_number').notNull(),
+  amount: money('amount').notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bank_transaction_connections_type_check', sql`document_type IN ('invoice', 'bill')`),
+  check('bank_transaction_connections_amount_check', sql`amount <> '' AND amount NOT GLOB '*[^0-9.]*' AND amount GLOB '[0-9]*' AND amount NOT LIKE '%.' AND trim(amount, '0.') <> ''`),
+  uniqueIndex('bank_transaction_connections_org_id_uidx').on(table.organisationId, table.id),
+  uniqueIndex('bank_transaction_connections_doc_uidx').on(table.organisationId, table.transactionId, table.documentType, table.documentId),
+  index('bank_transaction_connections_tx_idx').on(table.organisationId, table.transactionId),
+  foreignKey({ columns: [table.organisationId, table.transactionId], foreignColumns: [bankTransactions.organisationId, bankTransactions.id] }).onDelete('restrict'),
+]);
+
+export const bankTransactionAttachments = sqliteTable('bank_transaction_attachments', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  transactionId: text('transaction_id').notNull(),
+  objectKey: text('object_key').notNull(),
+  filename: text('filename').notNull(),
+  contentType: text('content_type').notNull(),
+  size: integer('size').notNull(),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bank_transaction_attachments_size_check', sql`size > 0 AND size <= 1048576`),
+  uniqueIndex('bank_transaction_attachments_org_id_uidx').on(table.organisationId, table.id),
+  uniqueIndex('bank_transaction_attachments_object_uidx').on(table.organisationId, table.objectKey),
+  index('bank_transaction_attachments_tx_idx').on(table.organisationId, table.transactionId),
+  foreignKey({ columns: [table.organisationId, table.transactionId], foreignColumns: [bankTransactions.organisationId, bankTransactions.id] }).onDelete('cascade'),
+]);
+
 export const transactionImportBatches = sqliteTable('transaction_import_batches', {
   id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),

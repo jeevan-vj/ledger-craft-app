@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  bankTransactionDetailsRequestSchema,
   createBankAccountRequestSchema,
   createBankTransactionRequestSchema,
   createBankTransferRequestSchema,
+  duplicateBankTransactionRequestSchema,
   importBankTransactionsRequestSchema,
   updateBankTransactionRequestSchema,
 } from './bank';
@@ -67,5 +69,28 @@ describe('bank contracts', () => {
     expect(createBankTransferRequestSchema.safeParse(input).success).toBe(true);
     expect(createBankTransferRequestSchema.safeParse({ ...input, amount: '-1.00' }).success).toBe(false);
     expect(createBankTransferRequestSchema.safeParse({ ...input, extra: true }).success).toBe(false);
+  });
+
+  it('validates exact split, document connection, attachment and duplicate inputs', () => {
+    const details = bankTransactionDetailsRequestSchema.parse({
+      splits: [
+        { category: 'Software', description: 'Subscription', amount: '40.00' },
+        { category: 'Equipment', description: null, amount: '60.00' },
+      ],
+      documentConnections: [{ documentType: 'bill', documentId: crypto.randomUUID(), amount: '75.00' }],
+      attachments: [{
+        objectKey: `${crypto.randomUUID()}/bank_attachment/receipt.pdf`,
+        filename: 'receipt.pdf',
+        contentType: 'application/pdf',
+        size: 512,
+      }],
+    });
+    expect(details.splits).toHaveLength(2);
+    expect(bankTransactionDetailsRequestSchema.safeParse({
+      splits: [{ category: 'Software', amount: '-1.00' }],
+      documentConnections: [],
+      attachments: [],
+    }).success).toBe(false);
+    expect(duplicateBankTransactionRequestSchema.parse({ transactionDate: '2026-10-23' })).toEqual({ transactionDate: '2026-10-23' });
   });
 });

@@ -17,4 +17,14 @@ describe('bankApi banking writes', () => {
     await bankApi.createTransfer(payload, 'transfer-test-1');
     expect(fetch).toHaveBeenCalledWith('/api/bank-transfers', expect.objectContaining({ headers: expect.objectContaining({ 'Idempotency-Key': 'transfer-test-1' }), body: JSON.stringify(payload) }));
   });
+
+  it('saves exact allocations and duplicates through dedicated routes', async () => {
+    const id = crypto.randomUUID();
+    const details = { splits: [{ category: 'Sales', amount: '100.00' }], documentConnections: [], attachments: [] };
+    vi.spyOn(globalThis, 'fetch').mockImplementation(async () => new Response(JSON.stringify({ id }), { status: 200, headers: { 'Content-Type': 'application/json' } }));
+    await bankApi.saveTransactionDetails(id, details);
+    await bankApi.duplicateTransaction(id, { transactionDate: '2026-10-23' });
+    expect(fetch).toHaveBeenNthCalledWith(1, `/api/bank-transactions/${id}/details`, expect.objectContaining({ method: 'PUT', body: JSON.stringify(details) }));
+    expect(fetch).toHaveBeenNthCalledWith(2, `/api/bank-transactions/${id}/duplicate`, expect.objectContaining({ method: 'POST', body: JSON.stringify({ transactionDate: '2026-10-23' }) }));
+  });
 });

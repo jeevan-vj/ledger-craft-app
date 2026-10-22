@@ -68,4 +68,16 @@ describe('bankingApi', () => {
       method: 'POST', body: JSON.stringify(payload), headers: expect.objectContaining({ 'Idempotency-Key': 'mobile-transfer-1' }),
     }));
   });
+
+  it('imports parsed statement rows without converting exact money', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ importedCount: 1, duplicatesSkipped: 0, transactions: [] }, 201));
+    const payload = {
+      bankAccountId: 'bank-1', fileName: 'october.csv', fileType: 'csv' as const, skipDuplicates: true,
+      transactions: [{ transactionDate: '2026-10-22', description: 'Settlement', amount: '9007199254740993.01', type: 'credit' as const, reference: null }],
+    };
+    await bankingApi.importTransactions(payload);
+    expect(global.fetch).toHaveBeenCalledWith('https://api.example.test/api/bank-transactions/import', expect.objectContaining({
+      method: 'POST', body: JSON.stringify(payload),
+    }));
+  });
 });
