@@ -1,13 +1,26 @@
 # LedgerCraft target architecture
 
 **Currency/localization foundation (implemented locally, 2026-10-23):** SQLite
-migration `0012_currency-localization.sql` adds tenant-scoped localization,
+migration `0013_currency-localization.sql` adds tenant-scoped localization,
 financial-year settings, a precision-aware currency catalogue, explicit dated
 exchange rates, and immutable document-rate usage. Hono exposes canonical
 decimal DTOs; web and Expo expose responsive settings. Expenses snapshot exact
 transaction/base amounts and reject missing rates. Invoice, bill, transfer and
 report conversion remain explicit AKP-06 follow-up; realized/unrealized posting
 remains dependent on AKP-05 authoritative ledger rules.
+
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
+Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private invoice attachments, token-snapshot attachment
+access, CSV import/export, and printable detail. Cancellation and restoration
+use balanced journals and tenant-bound transactions. Existing invoice sharing,
+templates/PDFs, payment terms, charges, bank details, and reminders are
+preserved. Recurring invoices remain AKP-04; outbound production email is still
+intentionally unavailable.
+API/contracts/mobile tests, strict mobile TypeScript, the web production build,
+iOS/Android production exports, and authenticated responsive browser proof pass;
+authenticated native-device QA remains pending.
 
 **Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
 migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money

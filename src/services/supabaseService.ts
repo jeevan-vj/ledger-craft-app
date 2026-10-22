@@ -722,6 +722,10 @@ export const invoiceService = {
   },
 
   async deleteInvoice(id: string): Promise<void> {
+    if (invoicesApiEnabled()) {
+      await invoicesApi.archive(id);
+      return;
+    }
     const { error } = await supabase
       .from('invoices')
       .delete()
@@ -735,7 +739,7 @@ export const invoiceService = {
   
   async updateInvoiceStatus(id: string, status: Invoice['status']): Promise<Invoice> {
     if (invoicesApiEnabled()) {
-      return invoicesApi.updateStatus(id, status);
+      return status === 'cancelled' ? invoicesApi.cancel(id) : invoicesApi.updateStatus(id, status);
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {

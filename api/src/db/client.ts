@@ -14,7 +14,7 @@ import {
   users,
   verifications,
 } from './schema/identity';
-import { invoices, lineItems } from './schema/invoices';
+import { invoiceAttachments, invoiceHistory, invoices, lineItems } from './schema/invoices';
 import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
 import {
@@ -54,6 +54,8 @@ export const schema = {
   items,
   invoices,
   lineItems,
+  invoiceHistory,
+  invoiceAttachments,
   quotes,
   quoteLineItems,
   sharedQuotes,

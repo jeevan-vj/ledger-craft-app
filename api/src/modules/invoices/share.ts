@@ -41,12 +41,14 @@ export async function createShareForUser(
     const expiresAt = parseExpiry(input.expiresAt);
     const shareToken = `${ctx.organisationId}_${crypto.randomUUID()}`;
     const templateName = input.templateName ?? 'classic';
+    const attachments = await invoicesRepo.listAttachments(tx, ctx.organisationId, invoice.id);
 
     await tx.insert(sharedInvoices).values({
       organisationId: ctx.organisationId,
       originalInvoiceId: invoice.id,
       invoiceData: invoice,
-      templateData: { templateName, businessProfile: profile },
+      templateData: { templateName, businessProfile: profile, attachments },
+      attachmentIds: attachments.map((attachment) => attachment.id),
       shareToken,
       expiresAt,
       createdBy: ctx.userId,
@@ -76,10 +78,29 @@ export async function getPublicSharedInvoice(
   const templateData = (row.templateData ?? {}) as {
     templateName?: string;
     businessProfile?: unknown;
+    attachments?: unknown;
   };
   return publicSharedInvoiceSchema.parse({
     invoice: row.invoiceData,
     templateName: templateData.templateName ?? 'classic',
     businessProfile: templateData.businessProfile,
+    attachments: templateData.attachments ?? [],
   });
+}
+
+export async function getPublicSharedAttachment(
+  db: Database,
+  token: string,
+  attachmentId: string,
+) {
+  const organisationId = token.split('_')[0];
+  const [share] = await db.select().from(sharedInvoices).where(and(
+    eq(sharedInvoices.organisationId, organisationId), eq(sharedInvoices.shareToken, token),
+    eq(sharedInvoices.isActive, true), or(isNull(sharedInvoices.expiresAt), gt(sharedInvoices.expiresAt, new Date())),
+  )).limit(1);
+  const ids = (share?.attachmentIds ?? []) as string[];
+  if (!share || !ids.includes(attachmentId)) throw new HTTPException(404, { message: 'Attachment not found' });
+  const attachment = await invoicesRepo.getAttachment(db, organisationId, share.originalInvoiceId, attachmentId);
+  if (!attachment) throw new HTTPException(404, { message: 'Attachment not found' });
+  return attachment;
 }

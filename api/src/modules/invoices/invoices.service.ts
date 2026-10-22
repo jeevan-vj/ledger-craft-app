@@ -113,6 +113,10 @@ export async function createInvoiceInTx(
     total: invoice.total,
   });
 
+  await invoicesRepo.recordHistory(tx, ctx, invoice.id, {
+    action: 'created', fromStatus: null, toStatus: invoice.status,
+  });
+
   return invoice;
 }
 
@@ -204,9 +208,14 @@ export async function updateInvoiceForUser(
     if (input.status && input.status !== updated.status) {
       const withStatus = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, input.status);
       if (!withStatus) throw new HTTPException(404, { message: 'Invoice not found' });
+      await invoicesRepo.recordHistory(tx, ctx, id, {
+        action: input.status === 'sent' ? 'sent' : 'updated',
+        fromStatus: existing.status,
+        toStatus: withStatus.status,
+      });
       return withStatus;
     }
-
+    await invoicesRepo.recordHistory(tx, ctx, id, { action: 'updated', fromStatus: existing.status, toStatus: updated.status });
     return updated;
   });
 }
@@ -254,6 +263,7 @@ export async function sendInvoiceForUser(
     }
     const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
     if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
+    await invoicesRepo.recordHistory(tx, ctx, id, { action: 'sent', fromStatus: prepared.invoice.status, toStatus: 'sent' });
     return sent;
   });
 }

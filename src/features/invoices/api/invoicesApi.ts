@@ -1,6 +1,10 @@
 import type {
   CreateInvoiceRequest,
   InvoiceDto,
+  InvoiceAttachmentDto,
+  InvoiceHistoryDto,
+  ImportInvoicesRequest,
+  ImportInvoicesResponse,
   PublicSharedInvoice,
   RemindInvoiceRequest,
   SendInvoiceRequest,
@@ -46,6 +50,10 @@ function toLine(dto: InvoiceDto['items'][number]): LineItem {
     rateUnit: dto.rateUnit,
     tax: dto.tax == null ? null : Number(dto.tax),
     total: Number(dto.total),
+    discountType: dto.discountType,
+    discountValue: dto.discountValue == null ? null : Number(dto.discountValue),
+    discountAmount: Number(dto.discountAmount ?? 0),
+    taxes: dto.taxes?.map((tax) => ({ ...tax, rate: Number(tax.rate) })),
   };
 }
 
@@ -53,6 +61,7 @@ function toInvoice(dto: InvoiceDto): Invoice {
   return {
     id: dto.id,
     invoiceNumber: dto.invoiceNumber,
+    externalId: dto.externalId,
     customerId: dto.customerId,
     customer: dto.customerName
       ? {
@@ -92,6 +101,7 @@ function toInvoice(dto: InvoiceDto): Invoice {
     currency: dto.currency,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
+    archivedAt: dto.archivedAt,
     sourceQuoteId: dto.sourceQuoteId,
     sourceQuoteNumber: dto.sourceQuoteNumber,
   };
@@ -128,6 +138,9 @@ export function toCreateInvoiceRequest(
       unit: item.unit || 'ea',
       rate: String(item.rate),
       rateUnit: item.rateUnit || item.unit || 'ea',
+      discountType: item.discountType,
+      discountValue: money(item.discountValue),
+      taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
     })),
   };
 }
@@ -210,6 +223,9 @@ export const invoicesApi = {
             unit: item.unit || 'ea',
             rate: String(item.rate),
             rateUnit: item.rateUnit || item.unit || 'ea',
+            discountType: item.discountType,
+            discountValue: money(item.discountValue),
+            taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
           }))
         : undefined,
     };
@@ -249,9 +265,47 @@ export const invoicesApi = {
     });
   },
 
+  async cancel(id: string, reason?: string): Promise<Invoice> {
+    return toInvoice(await request<InvoiceDto>(`/api/invoices/${id}/cancel`, { method: 'POST', body: JSON.stringify({ reason }) }));
+  },
+
+  async restore(id: string, reason?: string): Promise<Invoice> {
+    return toInvoice(await request<InvoiceDto>(`/api/invoices/${id}/restore`, { method: 'POST', body: JSON.stringify({ reason }) }));
+  },
+
+  async archive(id: string): Promise<Invoice> {
+    return toInvoice(await request<InvoiceDto>(`/api/invoices/${id}`, { method: 'DELETE' }));
+  },
+
+  async duplicate(id: string): Promise<Invoice> {
+    return toInvoice(await request<InvoiceDto>(`/api/invoices/${id}/duplicate`, { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() } }));
+  },
+
+  async history(id: string): Promise<InvoiceHistoryDto[]> {
+    return (await request<{ history: InvoiceHistoryDto[] }>(`/api/invoices/${id}/history`)).history;
+  },
+
+  async attachments(id: string): Promise<InvoiceAttachmentDto[]> {
+    return (await request<{ attachments: InvoiceAttachmentDto[] }>(`/api/invoices/${id}/attachments`)).attachments;
+  },
+
+  async attach(id: string, input: { objectKey: string; filename: string; contentType: string; size: number }): Promise<InvoiceAttachmentDto> {
+    return request<InvoiceAttachmentDto>(`/api/invoices/${id}/attachments`, { method: 'POST', body: JSON.stringify(input) });
+  },
+
+  async removeAttachment(id: string, attachmentId: string): Promise<void> {
+    return request<void>(`/api/invoices/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
+  },
+
+  async importInvoices(input: ImportInvoicesRequest): Promise<ImportInvoicesResponse> {
+    return request<ImportInvoicesResponse>('/api/invoices-import', { method: 'POST', body: JSON.stringify(input) });
+  },
+
+  exportUrl: '/api/invoices-export.csv',
+
   async getShared(token: string): Promise<{
     invoiceData: Invoice;
-    templateData: { templateName: string; businessProfile: ReturnType<typeof toProfile> };
+    templateData: { templateName: string; businessProfile: ReturnType<typeof toProfile>; attachments: InvoiceAttachmentDto[] };
   } | null> {
     try {
       const dto = await request<PublicSharedInvoice>(`/api/public/invoices/${token}`);
@@ -260,6 +314,7 @@ export const invoicesApi = {
         templateData: {
           templateName: dto.templateName,
           businessProfile: toProfile(dto.businessProfile),
+          attachments: dto.attachments ?? [],
         },
       };
     } catch (error) {
