@@ -72,6 +72,16 @@ Tasks are dependency ordered. A task is complete only when its API/domain behavi
 
 Expected outcome: the comparison becomes an executable release gate instead of a one-time document.
 
+Status (2026-10-23): **implemented locally.** The versioned manifest at
+`docs/akaunting-core-capabilities.json` covers all 25 core comparison rows and
+separates 11 optional extensions. Each core row records its contract, API, web,
+and relevant mobile evidence or an explicit gap. `pnpm
+verify:akaunting-core:report` validates and reports the current inventory
+without blocking normal CI; `pnpm verify:akaunting-core` is the strict release
+gate and intentionally fails while required capabilities remain partial or
+missing. Validator behavior has Node tests. The pinned-SHA review and update
+process is documented in `docs/akaunting-parity-gate.md`.
+
 Acceptance criteria:
 
 - Add a machine-readable capability manifest covering every row in the core comparison table.

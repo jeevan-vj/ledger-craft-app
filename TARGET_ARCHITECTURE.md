@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Akaunting core parity gate (implemented locally, 2026-10-23):**
+`docs/akaunting-core-capabilities.json` is the machine-readable contract for all
+25 required comparison rows and separately inventories 11 optional extensions.
+Evidence is mapped across contracts, API, web, and relevant mobile tests.
+`pnpm verify:akaunting-core:report` validates and reports the incomplete state
+without breaking normal CI; `pnpm verify:akaunting-core` is strict and remains
+red until every required capability is available. The Akaunting baseline is
+pinned by full commit SHA and can change only through the reviewed process in
+`docs/akaunting-parity-gate.md`.
+
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
 run's head SHA. That conclusion includes every job in the CI workflow,

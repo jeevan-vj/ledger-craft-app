@@ -22,6 +22,13 @@ Invoice preview and PDF HTML use the loaded business profile theme. `resolveInvo
 
 Quotes and estimates are a Hono slice on their own tables (`api/sqlite-migrations/0007_quotes.sql`). Contracts live in `packages/contracts/src/quote.ts`. Authenticated routes are under `/api/quotes`; public read and respond are `/api/public/quotes/:token` and `/api/public/quotes/:token/respond`. Quote rows do not post journals. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. Mobile provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE`; both clients present share-link delivery instead of claiming email delivery. Focused API, web, and mobile quote tests, full API/contracts/mobile suites, web build, and iOS/Android production exports pass; authenticated native-device QA remains pending.
 
+Akaunting core parity is a versioned contract in
+`docs/akaunting-core-capabilities.json`. Report mode runs in normal CI and
+reports open work without hiding it; strict mode remains red until every
+required core row is available. Optional AKX modules are separate and do not
+block the core gate. Baseline review instructions are in
+`docs/akaunting-parity-gate.md`.
+
 Web UI follows `DESIGN.md` and `.cursor/skills/ledgercraft-web-ui/SKILL.md`. Mobile UI follows `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` (Wise lime/forest, native iOS chrome). `.cursor/rules/project-guide.mdc` still contains older Supabase and Revolut examples; the files named above supersede those examples.
 
 ## Layout
@@ -65,6 +72,9 @@ pnpm type-check:api
 pnpm lint
 pnpm build
 pnpm verify:w1            # contracts tests, API tests, API + contracts typecheck
+pnpm test:akaunting-core  # capability-manifest validator tests
+pnpm verify:akaunting-core:report # validate/report without failing on open scope
+pnpm verify:akaunting-core # strict; fails while any required core row is open
 pnpm run deploy:check     # Node 24+. Local checks and Wrangler dry run
 pnpm run deploy:cloudflare
 pnpm run deploy:help
@@ -96,7 +106,7 @@ pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
 
 `.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Web lint and web typecheck still compare counts with baselines in that workflow; the count gate fails when the count rises. Mobile uses Node 20 and `npm ci`. `npm run lint`, `npx tsc --noEmit`, and `npm test -- --ci --watchAll=false` fail the job directly. The mobile count gate is gone. The iOS export is `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs`.
 
-`.github/workflows/release.yml` deploys to Cloudflare after the `CI` workflow succeeds on a push to `main`. It checks out that run's head SHA, uses Node 24, and preserves the existing Worker `BETTER_AUTH_SECRET`. Manual `workflow_dispatch` from `main` still runs verify before deploy. The CI workflow does not receive production secrets.
+`.github/workflows/release.yml` deploys to Cloudflare after the `CI` workflow succeeds on a push to `main`. It checks out that run's head SHA, uses Node 24, and preserves the existing Worker `BETTER_AUTH_SECRET`. Manual `workflow_dispatch` from `main` still runs verify before deploy. The CI workflow does not receive production secrets. The release-readiness job tests the API/source-map/parity checkers and runs Akaunting parity in report mode; strict parity enforcement remains an explicit release command while the tracked core backlog is open.
 
 ## Monitoring
 

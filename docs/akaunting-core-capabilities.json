@@ -1,0 +1,270 @@
+{
+  "schemaVersion": 1,
+  "baseline": {
+    "repository": "akaunting/akaunting",
+    "commit": "edde6b54f27ee0635b9a5dbde52117d441a18195",
+    "reviewedAt": "2026-09-29",
+    "scope": "Open-source Akaunting core routes and documented default features"
+  },
+  "coreCapabilities": [
+    {
+      "id": "business-dashboard", "title": "Business dashboard", "required": true, "status": "partial", "backlogTask": "AKP-10",
+      "gap": "Saved layouts, payables widgets, date filtering, and server-backed configurable widgets remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Dashboard report contracts are not implemented." },
+        "api": { "applicable": true, "paths": [], "gap": "Server-authoritative dashboard APIs are not implemented." },
+        "web": { "applicable": true, "paths": ["tests/e2e/final-ux-demo.spec.ts"], "gap": "Existing UI coverage does not prove saved configurable widgets." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/screens/main/DashboardScreen.test.tsx"], "gap": "Existing coverage does not prove configurable widgets or drill-down." }
+      }
+    },
+    {
+      "id": "products-and-services", "title": "Products and services", "required": true, "status": "partial", "backlogTask": "AKP-07",
+      "gap": "Media and per-item multiple-tax behavior remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/item.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/items/items.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/features/items/model/itemCatalog.test.ts"], "gap": "No web E2E proves media or multiple taxes." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/items/model/itemForms.test.ts"], "gap": "Media and multiple taxes are absent." }
+      }
+    },
+    {
+      "id": "customers", "title": "Customers", "required": true, "status": "partial", "backlogTask": "AKP-08",
+      "gap": "Contact people, addresses, statements, bulk mobility, and portal login remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/customer.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/customers/customers.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/features/customers/hooks/useCustomers.test.tsx"], "gap": "No authenticated portal or statement E2E exists." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/services/__tests__/customerService.test.ts"], "gap": "Contacts, statements, and portal workflows are absent." }
+      }
+    },
+    {
+      "id": "sales-invoices", "title": "Sales invoices", "required": true, "status": "partial", "backlogTask": "AKP-07",
+      "gap": "Lifecycle actions, attachments, line discounts and taxes, import/export, recurrence, and production delivery remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/invoice.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/invoices/invoices.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/invoice-sharing-local.spec.ts", "tests/e2e/invoice-pdf-download.spec.ts"], "gap": "Open lifecycle and fidelity features are not covered." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/services/__tests__/invoiceService.test.ts", "mobile/src/features/invoices/__tests__/invoiceSharing.test.ts"], "gap": "Open lifecycle and fidelity features are not implemented." }
+      }
+    },
+    {
+      "id": "invoice-payments-and-receipts", "title": "Invoice payments and receipts", "required": true, "status": "available", "backlogTask": "AKP-05",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/payment.test.ts", "packages/contracts/src/receipt.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/payments/payments.test.ts", "api/src/modules/receipts/receipts.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/payment-processing.spec.ts", "src/features/receipts/receiptPdf.test.ts"] },
+        "mobile": { "applicable": true, "paths": ["mobile/src/services/__tests__/invoiceService.test.ts", "mobile/src/utils/__tests__/statusUtils.test.ts"] }
+      }
+    },
+    {
+      "id": "vendors-and-bills", "title": "Vendors and bills", "required": true, "status": "partial", "backlogTask": "AKP-01",
+      "gap": "Contacts/defaults, attachments, history, cancel/restore, split allocations, import/export, recurrence, and device QA remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/purchase.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/purchases/purchases.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/pages/__tests__/Vendors.test.tsx", "src/pages/__tests__/Bills.test.tsx"], "gap": "Remaining lifecycle and data-mobility paths are not proved." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/purchases/api/purchasesApi.test.ts", "mobile/src/features/purchases/model/purchaseForms.test.ts"], "gap": "Remaining lifecycle, attachment, import, and authenticated-device proof are open." }
+      }
+    },
+    {
+      "id": "expenses", "title": "Expenses", "required": true, "status": "available", "backlogTask": "AKP-05",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/expense.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/expenses/expenses.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/pages/__tests__/Expenses.test.tsx", "tests/e2e/financial-accuracy.spec.ts"] },
+        "mobile": { "applicable": false, "paths": [], "reason": "Core parity is proved by the API and web workflow; mobile expense expansion is tracked by mobile coverage." }
+      }
+    },
+    {
+      "id": "payment-and-bank-accounts", "title": "Payment/bank accounts", "required": true, "status": "partial", "backlogTask": "AKP-02",
+      "gap": "Default payment account, statements, performance, bulk state changes, and a unified posting model remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/bank.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts", "api/src/modules/accounts/accounts.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/components/bank-account/__tests__/BankAccountDialog.test.tsx"], "gap": "No E2E proves statements, defaults, or bulk state changes." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/banking/api/bankingApi.test.ts", "mobile/src/features/banking/model/bankAccountForms.test.ts"], "gap": "Statements, defaults, and bulk state changes are absent." }
+      }
+    },
+    {
+      "id": "banking-transactions", "title": "Banking transactions", "required": true, "status": "partial", "backlogTask": "AKP-02",
+      "gap": "Manual CRUD, split allocations, document connections, attachments, duplicate, print/export, and mobile import remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/bank.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/transaction-import.spec.ts"], "gap": "Only import is covered; manual and connected transaction workflows are absent." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/banking/api/bankingApi.test.ts"], "gap": "Only imported history is covered." }
+      }
+    },
+    {
+      "id": "transfers", "title": "Transfers", "required": true, "status": "missing", "backlogTask": "AKP-02",
+      "gap": "No first-class transfer entity or atomic source/destination workflow exists.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Transfer contracts are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "Atomic transfer integration coverage is missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Transfer E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Transfer workflow tests are missing." }
+      }
+    },
+    {
+      "id": "reconciliation", "title": "Reconciliation", "required": true, "status": "available", "backlogTask": "AKP-02",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/reconciliation.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/reconciliation/reconciliation.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/reconciliation.spec.ts"] },
+        "mobile": { "applicable": false, "paths": [], "reason": "Akaunting core parity is proved on web; a native reconciliation workflow is tracked by mobile coverage." }
+      }
+    },
+    {
+      "id": "recurring-activity", "title": "Recurring activity", "required": true, "status": "missing", "backlogTask": "AKP-04",
+      "gap": "No persisted recurrence templates, scheduler, occurrence idempotency, or run history exists.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Recurrence contracts are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "Scheduler integration tests are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Recurring workflow E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Recurring workflow tests are missing." }
+      }
+    },
+    {
+      "id": "chart-of-accounts-and-journals", "title": "Chart of accounts and journals", "required": true, "status": "available", "backlogTask": "AKP-05",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/journal.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/accounts/accounts.test.ts", "api/src/modules/journals/journals.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/features/ledger/api/snapshot.test.ts", "tests/e2e/finance-validation.spec.ts"] },
+        "mobile": { "applicable": false, "paths": [], "reason": "Akaunting core parity is proved on web; native accounting administration is tracked by mobile coverage." }
+      }
+    },
+    {
+      "id": "financial-reports", "title": "Financial reports", "required": true, "status": "partial", "backlogTask": "AKP-05",
+      "gap": "Reports remain client-heavy and lack authoritative APIs, saved definitions, cash/accrual selection, exports, and complete drill-down.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Authoritative report contracts are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "Authoritative report integration tests are missing." },
+        "web": { "applicable": true, "paths": ["tests/e2e/professional-accountant-workflow.spec.ts"], "gap": "Existing UI coverage does not prove a server-authoritative ledger source." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Native report workflows are absent." }
+      }
+    },
+    {
+      "id": "tax", "title": "Tax", "required": true, "status": "partial", "backlogTask": "AKP-11",
+      "gap": "Reusable rate catalogue, compound and withholding types, multiple line taxes, and complete settings CRUD remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/tax.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/tax/tax.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/accountant-tax-workflow.spec.ts", "src/components/tax/__tests__/TaxComponents.test.tsx"], "gap": "Open catalogue and multi-tax paths are not covered." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/utils/__tests__/countryTaxDefaults.test.ts"], "gap": "Native tax settings and multi-tax workflows are absent." }
+      }
+    },
+    {
+      "id": "currencies-and-localization", "title": "Currencies and localization", "required": true, "status": "missing", "backlogTask": "AKP-06",
+      "gap": "No managed currency catalogue, exchange rates, base-currency accounting, locale settings, or financial-year configuration exists.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Currency and locale contracts are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "Currency accounting integration tests are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Currency and locale E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Currency and locale tests are missing." }
+      }
+    },
+    {
+      "id": "company-settings", "title": "Company settings", "required": true, "status": "partial", "backlogTask": "AKP-11",
+      "gap": "Email templates, schedules, communication defaults, currencies, and localization remain open.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/business-profile.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/business-profile/business-profile.test.ts"] },
+        "web": { "applicable": true, "paths": ["src/features/business-profile/api/businessProfileApi.bank.test.ts"], "gap": "No complete settings E2E exists." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/screens/settings/BusinessSettingsScreen.test.tsx", "mobile/src/services/__tests__/businessProfileService.test.ts"], "gap": "Communication, currency, and locale settings are absent." }
+      }
+    },
+    {
+      "id": "companies-and-organisations", "title": "Companies/organisations", "required": true, "status": "partial", "backlogTask": "AKP-03",
+      "gap": "Organisation CRUD, archive, switching, membership administration, and multiple-company UX are missing.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/session.test.ts"], "gap": "Only current-session organisation binding is covered." },
+        "api": { "applicable": true, "paths": ["api/src/modules/auth/session.test.ts", "api/src/test/rls.test.ts"], "gap": "Organisation lifecycle and switching are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Multiple-company E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Multiple-company workflow tests are missing." }
+      }
+    },
+    {
+      "id": "users-and-permissions", "title": "Users and permissions", "required": true, "status": "missing", "backlogTask": "AKP-03",
+      "gap": "Invitations, membership administration, role catalogue, and server action authorization are missing.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Invitation and permission contracts are missing." },
+        "api": { "applicable": true, "paths": ["api/src/modules/auth/session.test.ts"], "gap": "Session ownership exists, but role enforcement tests are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Team administration E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Team administration tests are missing." }
+      }
+    },
+    {
+      "id": "customer-portal", "title": "Customer portal", "required": true, "status": "missing", "backlogTask": "AKP-08",
+      "gap": "Customers cannot authenticate, manage profiles, or list invoices, statements, payments, and receipts.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Portal identity and resource contracts are missing." },
+        "api": { "applicable": true, "paths": ["api/src/cloudflare/public-routes.test.ts"], "gap": "Public share tokens exist, but authenticated portal authorization is missing." },
+        "web": { "applicable": true, "paths": ["src/pages/__tests__/SharedInvoice.test.tsx"], "gap": "Public sharing is not an authenticated portal." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/invoices/__tests__/invoiceSharing.test.ts"], "gap": "Public sharing is not an authenticated portal." }
+      }
+    },
+    {
+      "id": "attachments-and-uploads", "title": "Attachments/uploads", "required": true, "status": "partial", "backlogTask": "AKP-07",
+      "gap": "Object storage is not consistently linked and authorized across invoices, bills, items, contacts, and transactions.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/object.test.ts"] },
+        "api": { "applicable": true, "paths": ["api/src/modules/storage/objects.test.ts", "api/src/modules/storage/keys.test.ts"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/receipt-management.spec.ts"], "gap": "Cross-domain attachment workflows are absent." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Cross-domain attachment workflow tests are missing." }
+      }
+    },
+    {
+      "id": "import-export", "title": "Import/export", "required": true, "status": "partial", "backlogTask": "AKP-09",
+      "gap": "Most core domains lack previewable, idempotent import and lossless export.",
+      "verification": {
+        "contract": { "applicable": true, "paths": ["packages/contracts/src/bank.test.ts", "packages/contracts/src/item.test.ts"], "gap": "Only bank and item schemas cover data mobility." },
+        "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts", "api/src/modules/items/items.test.ts"], "gap": "Domain-wide import/export is missing." },
+        "web": { "applicable": true, "paths": ["tests/e2e/transaction-import.spec.ts", "src/features/items/model/itemCatalog.test.ts"], "gap": "Domain-wide round trips are missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Native data-mobility workflows are missing." }
+      }
+    },
+    {
+      "id": "search-bulk-actions-notifications", "title": "Search, bulk actions, notifications", "required": true, "status": "missing", "backlogTask": "AKP-12",
+      "gap": "No cross-domain search, reusable server bulk-action model, or persistent notification centre exists.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "Search, bulk-action, and notification contracts are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "Integration tests are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "Cross-domain E2E is missing." },
+        "mobile": { "applicable": true, "paths": [], "gap": "Cross-domain workflow tests are missing." }
+      }
+    },
+    {
+      "id": "external-api-and-api-keys", "title": "External API and API keys", "required": true, "status": "missing", "backlogTask": "AKP-13",
+      "gap": "No API-key lifecycle, scoped external API, OpenAPI publication, or webhook delivery exists.",
+      "verification": {
+        "contract": { "applicable": true, "paths": [], "gap": "External API contracts and OpenAPI output are missing." },
+        "api": { "applicable": true, "paths": [], "gap": "API-key and webhook integration tests are missing." },
+        "web": { "applicable": true, "paths": [], "gap": "API-key administration E2E is missing." },
+        "mobile": { "applicable": false, "paths": [], "reason": "Human-facing mobile apps must not carry external API keys." }
+      }
+    },
+    {
+      "id": "mobile-coverage", "title": "Mobile coverage", "required": true, "status": "partial", "backlogTask": "AKP-10",
+      "gap": "Transfers, reconciliation, reporting, team administration, portal, and several accounting workflows are absent or lack authenticated-device proof.",
+      "verification": {
+        "contract": { "applicable": false, "paths": [], "reason": "Mobile consumes the domain contracts recorded by each capability." },
+        "api": { "applicable": false, "paths": [], "reason": "Mobile consumes the same Hono APIs recorded by each capability." },
+        "web": { "applicable": false, "paths": [], "reason": "This row measures the native client." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/lib/queryClient.test.ts", "mobile/src/screens/main/DashboardScreen.test.tsx"], "gap": "The missing native workflows and authenticated-device proof remain open." }
+      }
+    }
+  ],
+  "extensions": [
+    { "id": "AKX-00", "title": "First-party module catalogue", "required": false, "status": "planned", "decision": "Catalogue decisions are planned but do not block core parity." },
+    { "id": "AKX-01", "title": "Two-factor authentication", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-02", "title": "Estimates and quotes", "required": false, "status": "available", "decision": "Implemented as the shared quote and estimate slice; it remains outside the core gate." },
+    { "id": "AKX-03", "title": "Inventory", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-04", "title": "Automated bank feeds", "required": false, "status": "deferred", "decision": "Requires a provider and architecture exception decision." },
+    { "id": "AKX-05", "title": "Employee expense claims", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-06", "title": "Projects and time tracking", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-07", "title": "CRM", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-08", "title": "Employees and payroll", "required": false, "status": "deferred", "decision": "Requires jurisdiction-specific compliance approval." },
+    { "id": "AKX-09", "title": "Accounting calendar", "required": false, "status": "deferred", "decision": "Requires an explicit product decision." },
+    { "id": "AKX-10", "title": "Connector framework", "required": false, "status": "deferred", "decision": "Requires named integration approvals and certification." }
+  ]
+}
