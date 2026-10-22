@@ -36,10 +36,17 @@ functions/api/[[path]].ts    Pages /api proxy
 deploy/api/wrangler.jsonc    Worker + Durable Objects
 deploy/cloudflare.md         release runbook
 docs/sentry-web.md           web Sentry setup
+docs/PIPELINE.md             label names and risk rules
 mobile/SENTRY.md             Expo crash reporting
+.github/labels.yml           repository labels synced on main
+.github/CODEOWNERS           review owners for migrations, money, auth, workflows, release
 ```
 
 Leave `src/` and `mobile/` where they are until a change is only about moving them. Do not combine a TanStack Router migration, an `apps/` move, a UI redesign, and a data cutover.
+
+## Software factory
+
+`docs/PIPELINE.md` is the label and risk contract. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, and the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `risk:high` is a migration under `api/sqlite-migrations/` or Drizzle, money/GST/invoice/quote calculation, Better Auth, `.github/workflows/` or release config, a secret, or a major dependency bump. `.github/CODEOWNERS` requests `@jeevan-vj` on those paths. An auto-merge gate is not implemented; `auto-merge-eligible` is only defined for `risk:low` after review.
 
 ## Commands
 
