@@ -11,6 +11,9 @@ vi.mock('@/features/purchases/api/purchasesApi', () => ({
     createVendor: vi.fn(),
     updateVendor: vi.fn(),
     removeVendor: vi.fn(),
+    listAccounts: vi.fn(),
+    exportVendors: vi.fn(),
+    importVendors: vi.fn(),
   },
 }));
 
@@ -18,6 +21,7 @@ describe('Vendors page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(purchasesApi.listVendors).mockResolvedValue([]);
+    vi.mocked(purchasesApi.listAccounts).mockResolvedValue([]);
   });
 
   it('shows the current design-system empty state and vendor form', async () => {
@@ -31,5 +35,7 @@ describe('Vendors page', () => {
     fireEvent.click(screen.getByRole('button', { name: /new vendor/i }));
     expect(screen.getByRole('dialog')).toBeInTheDocument();
     expect(screen.getByLabelText('Vendor name')).toBeInTheDocument();
+    expect(screen.getByLabelText('Contact person')).toBeInTheDocument();
+    expect(screen.getByLabelText('Active vendor')).toBeChecked();
   });
 });

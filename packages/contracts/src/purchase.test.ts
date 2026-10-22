@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
+  attachBillObjectRequestSchema,
   billSchema,
   createBillRequestSchema,
   createVendorRequestSchema,
+  importVendorsRequestSchema,
   recordBillPaymentRequestSchema,
 } from './purchase';
 
@@ -85,5 +87,27 @@ describe('purchase contracts', () => {
     };
     expect(recordBillPaymentRequestSchema.parse(request)).toEqual(request);
     expect(recordBillPaymentRequestSchema.safeParse({ ...request, amount: '0' }).success).toBe(false);
+  });
+
+  it('accepts exact split payment allocations and rejects ambiguous payment shapes', () => {
+    const split = recordBillPaymentRequestSchema.parse({
+      allocations: [
+        { bankAccountId: '55555555-5555-5555-5555-555555555555', amount: '3.25' },
+        { bankAccountId: '44444444-4444-4444-4444-444444444444', amount: '1.75' },
+      ],
+      paymentDate: '2026-10-04',
+    });
+    expect(split.allocations).toHaveLength(2);
+    expect(recordBillPaymentRequestSchema.safeParse({ ...split, amount: '5.00' }).success).toBe(false);
+  });
+
+  it('validates bill attachment metadata and vendor CSV import requests', () => {
+    expect(attachBillObjectRequestSchema.parse({
+      objectKey: 'organisations/org-1/receipt/file.pdf',
+      filename: 'supplier-bill.pdf',
+      contentType: 'application/pdf',
+      size: 42,
+    }).filename).toBe('supplier-bill.pdf');
+    expect(importVendorsRequestSchema.parse({ csv: 'name,email\nAcme,ap@acme.test', dryRun: true }).dryRun).toBe(true);
   });
 });

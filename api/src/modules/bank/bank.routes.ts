@@ -1,13 +1,19 @@
 import {
   createBankAccountRequestSchema,
+  bankTransactionDetailsRequestSchema,
+  createBankTransactionRequestSchema,
+  createBankTransferRequestSchema,
+  duplicateBankTransactionRequestSchema,
   importBankTransactionsRequestSchema,
   updateBankAccountRequestSchema,
+  updateBankTransactionRequestSchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import * as bankService from './bank.service';
+import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 
 export function bankRoutes() {
   const routes = new Hono<AppEnv>();
@@ -51,6 +57,73 @@ export function bankRoutes() {
           to: c.req.query('to') ?? undefined,
         }),
       );
+    });
+
+    routes.get(`${prefix}/bank-transactions/export.csv`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const bankAccountId = c.req.query('bankAccountId');
+      const csv = await bankService.exportBankTransactionsCsvForUser(
+        db,
+        user.id,
+        bankAccountId ? z.string().uuid().parse(bankAccountId) : undefined,
+      );
+      return c.body(csv, 200, {
+        'Content-Type': 'text/csv; charset=utf-8',
+        'Content-Disposition': 'attachment; filename="bank-transactions.csv"',
+      });
+    });
+
+    routes.get(`${prefix}/bank-transactions/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await bankService.getBankTransactionForUser(db, user.id, c.req.param('id')));
+    });
+
+    routes.post(`${prefix}/bank-transactions`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = createBankTransactionRequestSchema.parse(await c.req.json());
+      return c.json(await bankService.createBankTransactionForUser(db, user.id, input), 201);
+    });
+
+    routes.patch(`${prefix}/bank-transactions/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = updateBankTransactionRequestSchema.parse(await c.req.json());
+      return c.json(await bankService.updateBankTransactionForUser(db, user.id, c.req.param('id'), input));
+    });
+
+    routes.delete(`${prefix}/bank-transactions/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      await bankService.deleteBankTransactionForUser(db, user.id, c.req.param('id'));
+      return c.body(null, 204);
+    });
+
+    routes.put(`${prefix}/bank-transactions/:id/details`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = bankTransactionDetailsRequestSchema.parse(await c.req.json());
+      return c.json(await bankService.saveBankTransactionDetailsForUser(db, user.id, c.req.param('id'), input));
+    });
+
+    routes.post(`${prefix}/bank-transactions/:id/duplicate`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = duplicateBankTransactionRequestSchema.parse(await c.req.json());
+      return c.json(await bankService.duplicateBankTransactionForUser(db, user.id, c.req.param('id'), input), 201);
+    });
+
+    routes.get(`${prefix}/bank-transfers/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await bankService.getBankTransferForUser(db, user.id, c.req.param('id')));
+    });
+
+    routes.post(`${prefix}/bank-transfers`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const body: unknown = await c.req.json();
+      const input = createBankTransferRequestSchema.parse(body);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      return c.json(await bankService.createBankTransferForUser(db, user.id, input, key ? {
+        key,
+        method: 'POST',
+        path: '/api/bank-transfers',
+        requestHash: hashIdempotencyPayload(body),
+      } : undefined), 201);
     });
 
     routes.post(`${prefix}/bank-transactions/import`, async (c) => {
