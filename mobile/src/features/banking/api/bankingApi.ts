@@ -40,6 +40,47 @@ export interface BankTransactionDto {
   merchant: string | null;
   isReconciled: boolean;
   notes: string | null;
+  source: 'import' | 'manual' | 'transfer';
+  paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
+  counterparty: string | null;
+  transferId: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BankTransactionWriteRequest {
+  bankAccountId: string;
+  transactionDate: string;
+  description: string;
+  reference?: string | null;
+  amount: string;
+  type: 'debit' | 'credit';
+  category?: string | null;
+  counterparty?: string | null;
+  paymentMethod?: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
+  notes?: string | null;
+}
+
+export interface BankTransferWriteRequest {
+  sourceAccountId: string;
+  destinationAccountId: string;
+  transactionDate: string;
+  amount: string;
+  description?: string;
+  reference?: string | null;
+}
+
+export interface BankTransferDto {
+  id: string;
+  sourceAccountId: string;
+  destinationAccountId: string;
+  transactionDate: string;
+  amount: string;
+  currency: string;
+  description: string;
+  reference: string | null;
+  sourceTransaction: BankTransactionDto;
+  destinationTransaction: BankTransactionDto;
   createdAt: string;
   updatedAt: string;
 }
@@ -63,5 +104,24 @@ export const bankingApi = {
   async listTransactions(bankAccountId?: string): Promise<BankTransactionDto[]> {
     const query = bankAccountId ? `?bankAccountId=${encodeURIComponent(bankAccountId)}` : '';
     return (await apiRequest<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query}`, { method: 'GET' })).transactions;
+  },
+  getTransaction(id: string): Promise<BankTransactionDto> {
+    return apiRequest(`/api/bank-transactions/${id}`, { method: 'GET' });
+  },
+  createTransaction(input: BankTransactionWriteRequest): Promise<BankTransactionDto> {
+    return apiRequest('/api/bank-transactions', { method: 'POST', body: JSON.stringify(input) });
+  },
+  updateTransaction(id: string, input: Partial<Omit<BankTransactionWriteRequest, 'bankAccountId'>>): Promise<BankTransactionDto> {
+    return apiRequest(`/api/bank-transactions/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+  },
+  async removeTransaction(id: string): Promise<void> {
+    await apiRequest<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
+  },
+  createTransfer(input: BankTransferWriteRequest, idempotencyKey: string): Promise<BankTransferDto> {
+    return apiRequest('/api/bank-transfers', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify(input),
+    });
   },
 };

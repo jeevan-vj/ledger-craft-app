@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { BankAccount } from '@/types/bankTransaction';
+import type { BankTransactionDto } from '@ledgercraft/contracts';
 import { bankAccountService } from '@/services/bankAccountService';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload, ArrowRightLeft } from 'lucide-react';
+import { Plus, Edit, Trash2, CreditCard, Building, Landmark, Wallet, Upload, ArrowRightLeft, Banknote, Repeat2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { BankAccountDialog } from '@/components/bank-account/BankAccountDialog';
 import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { bankApi } from '@/features/bank/api/bankApi';
+import { BankingActivity, BankTransactionDialog, BankTransferDialog } from '@/components/bank-account/BankingActions';
 
 const ACCOUNT_TYPE_CONFIG = {
   checking: { label: 'Checking', icon: Building, color: 'bg-blue-500' },
@@ -23,12 +26,20 @@ export default function BankAccountsPage() {
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
+  const [transactions, setTransactions] = useState<BankTransactionDto[]>([]);
+  const [transactionOpen, setTransactionOpen] = useState(false);
+  const [transferOpen, setTransferOpen] = useState(false);
+  const [editingTransaction, setEditingTransaction] = useState<BankTransactionDto | null>(null);
 
   const loadAccounts = async () => {
     try {
       setLoading(true);
-      const accountList = await bankAccountService.getBankAccounts();
+      const [accountList, transactionList] = await Promise.all([
+        bankAccountService.getBankAccounts(),
+        bankApi.listTransactionDtos(),
+      ]);
       setAccounts(accountList);
+      setTransactions(transactionList);
     } catch (error) {
       console.error('Error loading bank accounts:', error);
       toast.error('Failed to load bank accounts');
@@ -72,6 +83,12 @@ export default function BankAccountsPage() {
     await loadAccounts();
   };
 
+  const handleDeleteTransaction = async (transaction: BankTransactionDto) => {
+    if (!window.confirm(`Delete "${transaction.description}"? The account balance will be reversed.`)) return;
+    try { await bankApi.removeTransaction(transaction.id); toast.success('Transaction deleted'); await loadAccounts(); }
+    catch (error) { toast.error(error instanceof Error ? error.message : 'Failed to delete transaction'); }
+  };
+
   const formatCurrency = (amount: number, currency: string) => {
     return new Intl.NumberFormat('en-NZ', {
       style: 'currency',
@@ -95,7 +112,9 @@ export default function BankAccountsPage() {
         title="Bank Accounts"
         description="Manage your bank accounts for transaction imports and reconciliation"
         actions={
-        <div className="flex gap-2">
+        <div className="flex flex-wrap justify-end gap-2">
+          <Button variant="outline" onClick={() => { setEditingTransaction(null); setTransactionOpen(true); }} className="gap-2" disabled={accounts.length === 0}><Banknote className="h-4 w-4" />Add transaction</Button>
+          <Button variant="outline" onClick={() => setTransferOpen(true)} className="gap-2" disabled={accounts.filter((account) => account.isActive).length < 2}><Repeat2 className="h-4 w-4" />Transfer</Button>
           <Button 
             variant="outline" 
             onClick={() => navigate('/transaction-import')} 
@@ -217,12 +236,16 @@ export default function BankAccountsPage() {
         </div>
       )}
 
+      {accounts.length > 0 ? <BankingActivity transactions={transactions} accounts={accounts} onEdit={(transaction) => { setEditingTransaction(transaction); setTransactionOpen(true); }} onDelete={handleDeleteTransaction} /> : null}
+
       <BankAccountDialog
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         account={editingAccount}
         onSaved={handleAccountSaved}
       />
+      <BankTransactionDialog open={transactionOpen} onOpenChange={setTransactionOpen} accounts={accounts} transaction={editingTransaction} onSaved={loadAccounts} />
+      <BankTransferDialog open={transferOpen} onOpenChange={setTransferOpen} accounts={accounts} onSaved={loadAccounts} />
     </div>
   );
 }

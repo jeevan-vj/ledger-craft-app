@@ -63,6 +63,9 @@ export type BankingStackParamList = {
   BankAccountCreate: undefined;
   BankAccountDetail: { bankAccountId: string };
   BankAccountEdit: { bankAccountId: string };
+  BankTransactionCreate: { bankAccountId: string };
+  BankTransactionEdit: { bankAccountId: string; transactionId: string };
+  BankTransferCreate: { sourceAccountId: string };
 };
 
 export type SettingsStackParamList = {

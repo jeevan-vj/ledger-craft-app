@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/pages/BankAccounts.tsx"
+        ],
+        "createdAt": "2026-10-19T00:21:52.795Z",
+        "reason": "Intentional circular loading spinner uses a partial accent border to communicate indeterminate progress; BankAccounts.tsx line 103 is the existing implementation evidence."
+      }
+    ]
+  }
+}
