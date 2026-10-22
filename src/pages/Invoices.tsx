@@ -3,7 +3,7 @@ import { useAppData } from '@/hooks/useAppData';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { formatCurrency, getStatusColor, formatDate } from '@/utils/invoiceUtils';
 import { Button } from '@/components/ui/button';
-import { Plus, ChevronRight, Calendar, DollarSign, Edit, Trash2, Copy, Loader2, Share2, Filter, X, Search, ChevronDown, RefreshCw, Clock, Upload } from 'lucide-react';
+import { Plus, ChevronRight, Calendar, DollarSign, Edit, Trash2, Copy, Loader2, Share2, Filter, X, Search, ChevronDown, RefreshCw, Clock, Upload, Download } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -29,12 +29,14 @@ import { PaymentCaptureModal } from '@/components/invoice/PaymentCaptureModal';
 import { Invoice, InvoiceStatus } from '@/types';
 import { CreatePaymentRequest } from '@/types/payment';
 import { paymentService } from '@/services/paymentService';
+import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 
 const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft' },
   { value: 'sent', label: 'Sent' },
   { value: 'paid', label: 'Paid' },
   { value: 'overdue', label: 'Overdue' },
+  { value: 'cancelled', label: 'Cancelled' },
 ];
 
 const AMOUNT_RANGES = [
@@ -65,7 +67,7 @@ interface InvoiceFilters {
 }
 
 const Invoices = () => {
-  const { invoices, isLoadingInvoices, refreshInvoices, businessProfile, deleteInvoice, createInvoice, getNextInvoiceNumber, updateInvoiceStatus } = useAppData();
+  const { invoices, isLoadingInvoices, refreshInvoices, businessProfile, deleteInvoice, updateInvoiceStatus } = useAppData();
   const { toast } = useToast();
   const navigate = useNavigate();
   const isMobile = useIsMobile();
@@ -120,17 +122,7 @@ const Invoices = () => {
 
   const handleClone = async (invoice) => {
     try {
-      const { id, invoiceNumber, createdAt, updatedAt, status, ...rest } = invoice;
-      const newInvoiceNumber = await getNextInvoiceNumber();
-      const clonedInvoice = {
-        ...rest,
-        invoiceNumber: newInvoiceNumber,
-        status: 'draft',
-        date: formatDate(new Date()),
-        dueDate: formatDate(new Date()),
-        items: invoice.items.map(item => ({ ...item, id: undefined })),
-      };
-      const created = await createInvoice(clonedInvoice);
+      const created = await invoicesApi.duplicate(invoice.id);
       toast({ title: 'Invoice cloned', description: 'A new invoice has been created.' });
       // Force refresh from database after clone
       await refreshInvoices();
@@ -372,12 +364,14 @@ const Invoices = () => {
         title="Invoices"
         actions={
           invoices.length > 0 ? (
-            <Button asChild>
-              <Link to="/invoices/new">
-                <Plus size={18} />
-                <span>New Invoice</span>
-              </Link>
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button variant="outline" asChild>
+                <a href={invoicesApi.exportUrl} download><Download size={18} /><span>Export CSV</span></a>
+              </Button>
+              <Button asChild>
+                <Link to="/invoices/new"><Plus size={18} /><span>New Invoice</span></Link>
+              </Button>
+            </div>
           ) : undefined
         }
       />

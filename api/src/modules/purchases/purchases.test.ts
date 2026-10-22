@@ -1,6 +1,6 @@
 import {
   billListResponseSchema,
-  billPaymentSchema,
+  billPaymentBatchSchema,
   billSchema,
   errorEnvelopeSchema,
   vendorListResponseSchema,
@@ -72,6 +72,11 @@ describe('purchase routes', () => {
           }),
         });
         const bankAccount = await bankResponse.json() as { id: string };
+        const secondBankResponse = await app.request('/api/bank-accounts', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ accountName: 'Savings', accountNumber: '12-3456-7890123-01', bankName: 'ANZ', accountType: 'savings' }),
+        });
+        const secondBank = await secondBankResponse.json() as { id: string };
 
         const vendorResponse = await app.request('/api/vendors', {
           method: 'POST',
@@ -81,23 +86,43 @@ describe('purchase routes', () => {
         expect(vendorResponse.status).toBe(201);
         const vendor = vendorSchema.parse(await vendorResponse.json());
 
+        const importCsv = [
+          'importIdentifier,name,contactName,email,phone,taxId,address,paymentTermDays,defaultAccountId,defaultTaxRate,isActive',
+          `"vendor-002","South, Harbour Supplies","Mereana Lee","mereana@example.com","","","12 Quay Street, Wellington","14","${expenseAccount.id}","15","false"`,
+        ].join('\n');
+        const previewImport = await app.request('/api/vendors/import', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ csv: importCsv, dryRun: true }),
+        });
+        expect(previewImport.status).toBe(200);
+        expect(await previewImport.json()).toMatchObject({ dryRun: true, validRows: 1, appliedRows: 0, errors: [] });
+        const applyImport = await app.request('/api/vendors/import', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ csv: importCsv, dryRun: false }),
+        });
+        expect(await applyImport.json()).toMatchObject({ validRows: 1, appliedRows: 1, errors: [] });
+        const vendorExport = await app.request('/api/vendors-export.csv', { headers: { Cookie: ownerA } });
+        expect(vendorExport.status).toBe(200);
+        expect(await vendorExport.text()).toContain('"South, Harbour Supplies"');
+
+        const billInput = {
+          vendorId: vendor.id,
+          vendorReference: 'HS-1042',
+          issueDate: '2026-10-03',
+          dueDate: '2026-10-23',
+          taxInclusive: true,
+          lines: [{
+            description: 'Printer paper',
+            quantity: '2',
+            unitPrice: '11.50',
+            taxRate: '15',
+            accountId: expenseAccount.id,
+          }],
+        };
         const billResponse = await app.request('/api/bills', {
           method: 'POST',
-          headers: { ...jsonHeaders, Cookie: ownerA },
-          body: JSON.stringify({
-            vendorId: vendor.id,
-            vendorReference: 'HS-1042',
-            issueDate: '2026-10-03',
-            dueDate: '2026-10-23',
-            taxInclusive: true,
-            lines: [{
-              description: 'Printer paper',
-              quantity: '2',
-              unitPrice: '11.50',
-              taxRate: '15',
-              accountId: expenseAccount.id,
-            }],
-          }),
+          headers: { ...jsonHeaders, Cookie: ownerA, 'Idempotency-Key': 'bill-create-retry-1' },
+          body: JSON.stringify(billInput),
         });
         expect(billResponse.status).toBe(201);
         const draft = billSchema.parse(await billResponse.json());
@@ -109,6 +134,24 @@ describe('purchase routes', () => {
           total: '23.00',
           balanceDue: '23.00',
         });
+        expect(draft.history.map((entry) => entry.event)).toContain('created');
+        const replay = await app.request('/api/bills', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA, 'Idempotency-Key': 'bill-create-retry-1' },
+          body: JSON.stringify(billInput),
+        });
+        expect(billSchema.parse(await replay.json()).id).toBe(draft.id);
+
+        const upload = await app.request('/api/objects', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ kind: 'receipt', filename: 'bill.pdf', contentType: 'application/pdf', contentBase64: 'YmlsbA==' }),
+        });
+        expect(upload.status).toBe(201);
+        const uploaded = await upload.json() as { key: string };
+        const attached = await app.request(`/api/bills/${draft.id}/attachments`, {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ objectKey: uploaded.key, filename: 'bill.pdf', contentType: 'application/pdf', size: 4 }),
+        });
+        expect(attached.status).toBe(201);
 
         const receivedResponse = await app.request(`/api/bills/${draft.id}/receive`, {
           method: 'POST',
@@ -138,17 +181,30 @@ describe('purchase routes', () => {
           method: 'POST',
           headers: { ...jsonHeaders, Cookie: ownerA },
           body: JSON.stringify({
-            bankAccountId: bankAccount.id,
-            amount: '5.00',
+            allocations: [
+              { bankAccountId: bankAccount.id, amount: '3.00' },
+              { bankAccountId: secondBank.id, amount: '2.00' },
+            ],
             paymentDate: '2026-10-04',
           }),
         });
         expect(paymentResponse.status).toBe(201);
-        expect(billPaymentSchema.parse(await paymentResponse.json()).amount).toBe('5.00');
+        const paymentBatch = billPaymentBatchSchema.parse(await paymentResponse.json());
+        expect(paymentBatch).toMatchObject({ total: '5.00' });
+        expect(paymentBatch.payments).toHaveLength(2);
         const paidBill = billSchema.parse(
           await (await app.request(`/api/bills/${draft.id}`, { headers: { Cookie: ownerA } })).json(),
         );
         expect(paidBill).toMatchObject({ paymentStatus: 'partial', totalPaid: '5.00', balanceDue: '18.00' });
+        expect(paidBill.attachments).toHaveLength(1);
+        expect(paidBill.history.map((entry) => entry.event)).toEqual(expect.arrayContaining(['created', 'received', 'payment_recorded', 'attachment_added']));
+        const billExport = await app.request('/api/bills-export.csv', { headers: { Cookie: ownerA } });
+        expect(billExport.status).toBe(200);
+        expect(await billExport.text()).toContain('"BILL-0001"');
+
+        expect((await app.request(`/api/bills/${draft.id}/attachments/${paidBill.attachments[0]!.id}`, {
+          method: 'DELETE', headers: { ...jsonHeaders, Cookie: ownerB },
+        })).status).toBe(404);
 
         const overpayment = await app.request(`/api/bills/${draft.id}/payments`, {
           method: 'POST',
@@ -166,6 +222,19 @@ describe('purchase routes', () => {
         );
         expect(billsB.bills).toEqual([]);
         expect((await app.request(`/api/bills/${draft.id}`, { headers: { Cookie: ownerB } })).status).toBe(404);
+
+        const secondDraftResponse = await app.request('/api/bills', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ vendorId: vendor.id, issueDate: '2026-10-03', dueDate: '2026-10-23', lines: [{ description: 'Pens', quantity: '1', unitPrice: '11.50', taxRate: '15', accountId: expenseAccount.id }] }),
+        });
+        const secondDraft = billSchema.parse(await secondDraftResponse.json());
+        await app.request(`/api/bills/${secondDraft.id}/receive`, { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA } });
+        const cancelledResponse = await app.request(`/api/bills/${secondDraft.id}/cancel`, { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA } });
+        expect(billSchema.parse(await cancelledResponse.json()).displayStatus).toBe('cancelled');
+        const restoredResponse = await app.request(`/api/bills/${secondDraft.id}/restore`, { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA } });
+        const restored = billSchema.parse(await restoredResponse.json());
+        expect(restored.lifecycleStatus).toBe('received');
+        expect(restored.history.map((entry) => entry.event)).toEqual(expect.arrayContaining(['cancelled', 'restored']));
       } finally {
         await sql.end({ timeout: 5 });
       }

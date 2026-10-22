@@ -3,6 +3,7 @@ import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from 're
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import * as ImagePicker from 'expo-image-picker';
 import { BillPaymentSheet } from '@/components/purchases/BillPaymentSheet';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { GroupedSection } from '@/components/ui/GroupedSection';
@@ -10,6 +11,7 @@ import { ListRow } from '@/components/ui/ListRow';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type RecordBillPaymentRequest } from '@/features/purchases/api/purchasesApi';
+import { objectsApi } from '@/features/storage/api/objectsApi';
 import type { PurchaseStackParamList } from '@/navigation/types';
 import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
@@ -21,7 +23,7 @@ type Route = RouteProp<PurchaseStackParamList, 'BillDetail'>;
 
 export default function BillDetailScreen() {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const { params } = useRoute<Route>();
@@ -40,8 +42,32 @@ export default function BillDetailScreen() {
     onSuccess: async () => { await refresh(); successHaptic(); },
     onError: errorHaptic,
   });
-  const voidBill = useMutation({
-    mutationFn: () => purchasesApi.voidBill(params.billId),
+  const cancelBill = useMutation({
+    mutationFn: () => purchasesApi.cancelBill(params.billId),
+    onSuccess: async () => { await refresh(); successHaptic(); },
+    onError: errorHaptic,
+  });
+  const restoreBill = useMutation({ mutationFn: () => purchasesApi.restoreBill(params.billId), onSuccess: async () => { await refresh(); successHaptic(); }, onError: errorHaptic });
+  const attach = useMutation({
+    mutationFn: async () => {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (permission.status !== 'granted') throw new Error('Photo library permission is required to attach a receipt.');
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.75, base64: true });
+      const asset = result.canceled ? undefined : result.assets[0];
+      if (!asset) return;
+      if (!asset.base64) throw new Error('The selected receipt could not be read.');
+      const size = asset.fileSize ?? Math.ceil(asset.base64.length * 0.75);
+      if (size > 1_048_576) throw new Error('Attachments must be 1 MB or smaller.');
+      const filename = asset.fileName ?? `bill-receipt-${Date.now()}.jpg`;
+      const contentType = asset.mimeType ?? 'image/jpeg';
+      const uploaded = await objectsApi.upload({ kind: 'receipt', filename, contentType, contentBase64: asset.base64 });
+      await purchasesApi.attachObject(params.billId, { objectKey: uploaded.key, filename, contentType, size: uploaded.size });
+    },
+    onSuccess: async () => { await refresh(); successHaptic(); },
+    onError: errorHaptic,
+  });
+  const removeAttachment = useMutation({
+    mutationFn: (attachmentId: string) => purchasesApi.removeAttachment(params.billId, attachmentId),
     onSuccess: async () => { await refresh(); successHaptic(); },
     onError: errorHaptic,
   });
@@ -63,11 +89,11 @@ export default function BillDetailScreen() {
   if (bill.data === undefined && bill.isLoading) return <View style={styles.center}><ActivityIndicator size="large" color={palette.accent} /></View>;
   if (!bill.data) return <View style={styles.center}><EmptyState title="Couldn’t load this bill" description={bill.error instanceof Error ? bill.error.message : 'Try again.'} actionLabel="Try again" onAction={() => bill.refetch()} /></View>;
   const item = bill.data;
-  const mutationError = receive.error ?? voidBill.error;
+  const mutationError = receive.error ?? cancelBill.error ?? restoreBill.error ?? attach.error ?? removeAttachment.error;
 
-  const confirmVoid = () => Alert.alert('Void bill?', 'This reverses the accounts payable journal and cannot be treated as unpaid again.', [
+  const confirmVoid = () => Alert.alert('Cancel bill?', 'This reverses the accounts payable journal. You can restore it later.', [
     { text: 'Cancel', style: 'cancel' },
-    { text: 'Void bill', style: 'destructive', onPress: () => voidBill.mutate() },
+    { text: 'Cancel bill', style: 'destructive', onPress: () => cancelBill.mutate() },
   ]);
 
   return (
@@ -92,11 +118,17 @@ export default function BillDetailScreen() {
         <ListRow label="Paid" value={formatMoney(item.totalPaid, item.currency)} showChevron={false} />
         <ListRow label="Balance due" value={formatMoney(item.balanceDue, item.currency)} showChevron={false} />
       </GroupedSection>
+      <GroupedSection title="Attachments">
+        {item.attachments.map((attachment) => <ListRow key={attachment.id} label={attachment.filename} subtitle={`${Math.ceil(attachment.size / 1024)} KB · tap to remove`} onPress={() => Alert.alert('Remove attachment?', attachment.filename, [{ text: 'Keep', style: 'cancel' }, { text: 'Remove', style: 'destructive', onPress: () => removeAttachment.mutate(attachment.id) }])} />)}
+        <ListRow label={attach.isPending ? 'Adding receipt…' : 'Add receipt photo'} accessibilityHint="Opens your photo library" onPress={() => attach.mutate()} disabled={attach.isPending} />
+      </GroupedSection>
+      <GroupedSection title="History">{item.history.map((entry) => <ListRow key={entry.id} label={entry.summary} subtitle={new Date(entry.createdAt).toLocaleString('en-NZ')} showChevron={false} />)}</GroupedSection>
       {mutationError instanceof Error ? <Text style={styles.error} selectable>{mutationError.message}</Text> : null}
       <View style={styles.actions}>
         {item.lifecycleStatus === 'draft' ? <ModernButton fullWidth loading={receive.isPending} onPress={() => receive.mutate()}>Receive and post</ModernButton> : null}
         {item.lifecycleStatus === 'received' && item.paymentStatus !== 'paid' ? <ModernButton fullWidth onPress={() => setPaymentOpen(true)}>Record payment</ModernButton> : null}
-        {item.lifecycleStatus === 'received' && item.paymentStatus === 'unpaid' ? <ModernButton fullWidth variant="ghost" loading={voidBill.isPending} onPress={confirmVoid}>Void bill</ModernButton> : null}
+        {item.lifecycleStatus === 'received' && item.paymentStatus === 'unpaid' ? <ModernButton fullWidth variant="ghost" loading={cancelBill.isPending} onPress={confirmVoid}>Cancel bill</ModernButton> : null}
+        {item.lifecycleStatus === 'void' ? <ModernButton fullWidth loading={restoreBill.isPending} onPress={() => restoreBill.mutate()}>Restore bill</ModernButton> : null}
       </View>
       <BillPaymentSheet
         bill={item}

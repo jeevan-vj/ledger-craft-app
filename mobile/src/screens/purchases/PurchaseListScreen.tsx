@@ -30,7 +30,7 @@ type Mode = 'bills' | 'vendors';
 
 export default function PurchaseListScreen() {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<Navigation>();
@@ -127,7 +127,7 @@ export default function PurchaseListScreen() {
 
 function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean; last: boolean; onPress: () => void }) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const statusColor: Record<BillDto['displayStatus'], string> = {
     draft: palette.textSecondary,
@@ -136,6 +136,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
     partial: palette.warning,
     paid: palette.success,
     void: palette.textTertiary,
+    cancelled: palette.danger,
   };
   return (
     <AppPressable
@@ -163,7 +164,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
 
 function VendorRow({ vendor, first, last }: { vendor: VendorDto; first: boolean; last: boolean }) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   return (
     <View style={[styles.row, first && styles.first, last && styles.last]} accessible accessibilityLabel={`${vendor.name}, ${vendor.isActive ? 'active' : 'inactive'} vendor`}>

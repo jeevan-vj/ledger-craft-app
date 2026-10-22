@@ -16,6 +16,7 @@ describe('meResponseSchema', () => {
       membership: {
         role: 'owner' as const,
       },
+      permissions: ['api.access'],
     };
 
     expect(meResponseSchema.parse(payload)).toEqual(payload);

@@ -41,26 +41,26 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Expo exposes separate public-link, PDF download/export, and PDF share actions plus an unauthenticated native public-invoice route. Android production App Link verification awaits its first signing credential. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
 | Invoice payments and receipts | Available | Invoice-linked payments, partial/full status updates, and payment receipts exist. Account-ledger posting and split/connected banking workflows still need hardening under the banking task. |
-| Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Expo vendor/bill browsing and payment-critical flows are implemented locally pending device QA/deployment. Attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
+| Vendors and bills | Partial | The complete AKP-01 lifecycle is implemented locally: vendor contacts/defaults/active state/import identifiers, exact bills and split payment allocations, attachments, immutable history, cancel/restore, idempotent bill creation, and canonical vendor CSV preview/apply/export plus bill export. Web includes the full responsive administration flow; Expo consumes active vendor defaults and supports split payments, cancel/restore, attachment capture, and history. Production deployment and authenticated native-device QA remain pending. Recurring bills are an optional AKP-04 extension, not an AKP-01 core gap. |
 | Expenses | Available | Expense and category CRUD, tax amounts, account/customer links, receipt reference, and web/mobile entry flows exist. Approval policy, claims, reimbursements, and recurring expenses are extensions/gaps. |
 | Payment/bank accounts | Partial | Bank-account CRUD and accounting accounts exist. Expo account list/filter/create/detail/edit/delete-attempt and exact balance fields are implemented locally. Default payment account, account statements/performance, bulk enable/disable, and a unified posting model are incomplete. |
-| Banking transactions | Partial | List and file import exist; Expo shows per-account imported transaction history. Manual income/expense CRUD, duplicate/export/PDF, split transactions, document connections, category/payment-method parity, and mobile import are missing. |
-| Transfers | Missing | No first-class transfer entity or atomic source/destination account workflow exists. |
-| Reconciliation | Available | Sessions, matches, confirmation, adjustments, completion, and history exist. It cannot yet reconcile against bills or the missing transfer/manual-transaction workflows. |
+| Banking transactions | Partial | List/import plus exact-decimal manual income/expense create, update, delete and web/mobile activity now exist. Duplicate/export/PDF, split transactions, document connections, attachments, and mobile import remain missing. |
+| Transfers | Partial | First-class idempotent same-currency transfers atomically post equal and opposite reconciled legs and reject same-account, cross-currency, inactive-account, and cross-organisation requests. Exchange-rate transfers and richer lifecycle/reporting remain missing. |
+| Reconciliation | Available | Sessions, matches, confirmation, adjustments, completion, and history exist. Paired transfer legs are marked reconciled and excluded from manual mutation; bill/document allocation coverage remains open. |
 | Recurring activity | Missing | No persisted schedule/execution engine for invoices, bills, income, expenses, or transfers exists. |
 | Chart of accounts and journals | Available | Account initialization/write and manual journal CRUD exist with exact values and organisation scoping. General-ledger/report authority remains client-heavy. |
 | Financial reports | Partial | P&L, balance sheet, cash flow, trial balance, receivables, and payables UI calculations exist. Reports are not server-authoritative, saved, pinnable, configurable by cash/accrual basis, or consistently printable/exportable. |
 | Tax | Partial | Tax configuration, returns, adjustments, and NZ GST/IRD workflows exceed Akaunting's basic summary in places. A reusable tax-rate catalogue, compound/withholding tax types, line-level tax assignment, and full settings CRUD are missing. |
 | Currencies and localization | Missing | Currency codes are stored on several records, but there is no currency catalogue, exchange rate, base/transaction currency accounting, locale/language, date/number formatting, or financial-year configuration. |
 | Company settings | Partial | Business identity, logo, invoice numbering, terms, bank details, template appearance, and default tax rate exist. Email templates, scheduling, defaults, localization, currencies, and richer invoice settings are missing. |
-| Companies/organisations | Partial | The data model isolates one provisioned organisation per user. Organisation CRUD, membership administration, switching, and multiple-company UX are missing. |
-| Users and permissions | Missing | Membership roles exist in identity data and the web has presentation guards, but there is no invitation/user administration or server-enforced action permission matrix. Current tests describe authenticated users as owners. |
+| Companies/organisations | Partial | Organisation create/rename/archive, active switching, isolated ledgers, and responsive web/Expo management are implemented locally. Restore, ownership transfer, deployment, and authenticated native-device QA remain. |
+| Users and permissions | Partial | Fixed owner/admin/accountant/member/read-only roles, hashed email-bound invitation accept/revoke/refresh, membership lifecycle, and server-enforced domain permissions are implemented locally. Custom roles and outbound email delivery remain explicit follow-up work. |
 | Customer portal | Missing | Token-scoped invoice viewing/download is available, but customers cannot authenticate to a portal, manage a profile, list invoices, or review payments. |
 | Attachments/uploads | Partial | Organisation-scoped object upload/list/delete exists with the 1 MB SQLite limit. Attachments are not consistently linked to invoices, bills, items, contacts, and transactions. |
 | Import/export | Partial | Bank transaction import and canonical item CSV preview/apply/export exist. Akaunting-style import/export for customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports remains missing. |
 | Search, bulk actions, notifications | Missing | Individual screens have local filtering, but there is no cross-domain search, reusable server bulk-action model, or persistent notification centre. |
 | External API and API keys | Missing | The first-party clients use Hono APIs, but there is no customer-facing API-key lifecycle, scoped external API, webhook delivery, or public API documentation. |
-| Mobile coverage | Partial | Auth, dashboard, invoices, customers, items, expenses, settings, payment-critical purchase workflows, bank-account management, and imported transaction history exist. Most accounting, transfers, reconciliation, reporting, team, and portal workflows are web-only or absent. |
+| Mobile coverage | Partial | Auth, dashboard, invoices, customers, items, expenses, settings, payment-critical purchase workflows, bank-account management, manual transactions, transfers, and banking history exist. Most accounting, reconciliation, reporting, team, and portal workflows are web-only or absent. |
 
 Conclusion: LedgerCraft has a strong sales, expense, NZ tax, and reconciliation foundation, but it does **not** currently contain every Akaunting core feature.
 
@@ -83,16 +83,17 @@ Acceptance criteria:
 
 Expected outcome: users can manage supplier obligations from vendor creation through bill settlement, with correct payables and tax accounting.
 
-Status (2026-10-03): **partial.** Shared
-contracts, migration `0004_purchases-payables.sql`, vendor CRUD, bill line
-account coding, draft/receive/void/payment use cases, exact tax-inclusive totals,
-balanced AP journals, partial/full balance updates, overpayment rejection,
-tenant isolation, and responsive web workflows are deployed. Expo vendor/bill
-browsing, draft create/edit, detail, receive/void, and partial/full payment flows
-are implemented locally; focused API-client tests and iOS/Android production
-exports pass. Authenticated device QA and mobile deployment remain pending. The
-remaining acceptance criteria below stay open; this status does not mark AKP-01
-complete.
+Status (2026-10-23): **core complete locally.** Migration
+`0009_purchase-lifecycle.sql` adds vendor contact/default/import fields and
+organisation-scoped bill attachments and immutable history. Hono now validates
+cancel/restore transitions, idempotent bill creation, exact split payment
+allocations, object ownership, vendor CSV preview/apply/export, and bill export.
+The responsive web flow administers the complete lifecycle. Expo applies active
+vendor defaults and supports split payments, cancel/restore, attachment capture,
+and history. Contract, API, web, and mobile tests pass, as do the web build,
+iOS/Android production exports, and an authenticated desktop/390 px browser
+flow. Production deployment and authenticated native-device QA remain pending.
+Recurring bills are tracked separately in optional extension AKP-04.
 
 Acceptance criteria:
 
@@ -107,13 +108,17 @@ Acceptance criteria:
 
 Expected outcome: users can record and manage income, expenses, and transfers without relying on imported statements.
 
-Status (2026-10-19): **partial.** Expo bank-account list/filter, create, detail,
-edit, delete-attempt, active-state, exact balance fields, and per-account imported
-transaction history are implemented locally through the existing Hono API.
-Strict TypeScript, 20 mobile Jest suites (78 tests), lint with no errors, and
-iOS/Android production exports pass. Authenticated device QA and the remaining
-manual transaction, transfer, split, attachment, import, print/export, and
-concurrency scope remain open.
+Status (2026-10-23): **implemented locally.** Exact-decimal manual income/
+expense writes and idempotent same-currency transfers update balances atomically.
+Migration `0010_banking-parity-completion.sql` adds tenant-scoped transaction
+splits, document connections, and attachment metadata. Income can be connected
+to invoices and expenses to received bills without exceeding either the bank
+transaction or remaining document balance. Web supports allocation, SQLite
+attachments capped at 1 MB, duplicate, printable/PDF detail, and CSV export.
+Expo adds an exact-text CSV parser, native file picker, preview, duplicate
+skipping, and statement import. Focused contracts, API, web, and mobile tests,
+migration verification, strict mobile TypeScript, and focused lint pass.
+Authenticated native-device QA and deployment remain open.
 
 Acceptance criteria:
 
@@ -125,6 +130,8 @@ Acceptance criteria:
 - Integration tests prove atomic rollback and exact balances under concurrent writes.
 
 ### AKP-03 — Multi-company, invitations, roles, and server authorization (P0)
+
+Status: **Partially implemented locally (2026-10-23).** Migration `0008` adds active-company selection, membership removal, and hashed invitations in Identity storage. Hono enforces fixed-role permissions for protected domains, and web/Expo cover company and team administration. Automated proof covers cross-company isolation, direct read-only writes, privilege escalation, wrong-email/stale/reused invitations, and removed membership access. Custom roles, email delivery, deployment, and authenticated native-device QA remain.
 
 Expected outcome: an owner can operate multiple companies and safely collaborate with managers, accountants, employees, and read-only users.
 
@@ -177,6 +184,17 @@ Acceptance criteria:
 - Tests cover zero/three-decimal currencies, rate direction, rounding, historical rate immutability, and timezone boundaries.
 
 ### AKP-07 — Complete invoice lifecycle and document fidelity (P1)
+
+Status (2026-10-23): implemented locally across contracts, Hono/SQLite migration
+`0012_invoice-lifecycle.sql`, responsive web, and Expo. The slice includes balanced cancel/restore journals,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private PDF/image attachments with snapshot-scoped
+share-token access, CSV dry-run/apply/export, and printable detail. Expo covers
+critical lifecycle/history and image attachment actions; web also accepts PDFs
+and owns CSV administration. Authenticated native-device QA remains pending.
+Recurring invoices remain AKP-04 and production email remains unavailable.
+API/contracts/mobile tests, the web production build, strict mobile TypeScript,
+iOS/Android production exports, and authenticated responsive browser proof pass.
 
 Expected outcome: LedgerCraft supports the remaining Akaunting invoice-management operations without regressing sharing or PDFs.
 

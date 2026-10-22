@@ -26,30 +26,27 @@ interface Props {
 
 export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, onClose, onSubmit }: Props) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
   const styles = createStyles(theme);
   const initialDraft = createBillPaymentDraft(bill.balanceDue, localIsoDate(new Date()));
-  const [bankAccountId, setBankAccountId] = useState(initialDraft.bankAccountId);
-  const [amount, setAmount] = useState(initialDraft.amount);
+  const [allocations, setAllocations] = useState([{ bankAccountId: initialDraft.bankAccountId, amount: initialDraft.amount }]);
   const [paymentDate, setPaymentDate] = useState(initialDraft.paymentDate);
   const [referenceNumber, setReferenceNumber] = useState(initialDraft.referenceNumber);
   const [pickerVisible, setPickerVisible] = useState(false);
+  const [pickerIndex, setPickerIndex] = useState(0);
   const [search, setSearch] = useState('');
 
   useEffect(() => {
     if (!visible) return;
     const draft = createBillPaymentDraft(bill.balanceDue, localIsoDate(new Date()));
-    setBankAccountId(draft.bankAccountId);
-    setAmount(draft.amount);
+    setAllocations([{ bankAccountId: draft.bankAccountId, amount: draft.amount }]);
     setPaymentDate(draft.paymentDate);
     setReferenceNumber(draft.referenceNumber);
     setSearch('');
     setPickerVisible(false);
   }, [bill.balanceDue, bill.id, visible]);
-  const selected = bankAccounts.find((account) => account.id === bankAccountId);
   const filtered = useMemo(() => bankAccounts.filter((account) =>
     !search || `${account.accountName} ${account.bankName}`.toLowerCase().includes(search.toLowerCase())), [bankAccounts, search]);
-  const validAmount = isPaymentAmountValid(amount, bill.balanceDue);
+  const validAllocations = allocations.every((allocation) => allocation.bankAccountId && isPaymentAmountValid(allocation.amount, bill.balanceDue));
 
   return (
     <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
@@ -60,16 +57,17 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
               <Text style={styles.title}>Record payment</Text>
               <Text style={styles.subtitle}>{bill.billNumber} · {formatMoney(bill.balanceDue, bill.currency)} remaining</Text>
             </View>
-            <GroupedSection title="Payment account">
-              <ListRow label="Paid from" value={selected?.accountName} placeholder="Choose account" accessibilityHint="Opens the payment account picker" onPress={() => setPickerVisible(true)} />
-            </GroupedSection>
-            <ModernInput label="Amount" value={amount} onChangeText={setAmount} keyboardType="decimal-pad" error={amount && !validAmount ? `Enter up to ${bill.balanceDue}` : undefined} />
+            {allocations.map((allocation, index) => {
+              const account = bankAccounts.find((item) => item.id === allocation.bankAccountId);
+              return <View key={index}><GroupedSection title={allocations.length > 1 ? `Allocation ${index + 1}` : 'Payment account'}><ListRow label="Paid from" value={account?.accountName} placeholder="Choose account" accessibilityHint="Opens the payment account picker" onPress={() => { setPickerIndex(index); setPickerVisible(true); }} /></GroupedSection><ModernInput label="Amount" value={allocation.amount} onChangeText={(value) => setAllocations((rows) => rows.map((row, rowIndex) => rowIndex === index ? { ...row, amount: value } : row))} keyboardType="decimal-pad" /></View>;
+            })}
+            <ModernButton variant="secondary" fullWidth onPress={() => setAllocations((rows) => [...rows, { bankAccountId: '', amount: '' }])}>Split across another account</ModernButton>
             <SmartDatePicker label="Payment date" value={paymentDate} showPresets={false} onChangeDate={setPaymentDate} />
             <ModernInput label="Reference (optional)" value={referenceNumber} onChangeText={setReferenceNumber} autoCapitalize="characters" />
             {error ? <Text style={styles.error} selectable>{error}</Text> : null}
             <View style={styles.actions}>
               <ModernButton variant="secondary" fullWidth onPress={onClose} disabled={saving}>Cancel</ModernButton>
-              <ModernButton fullWidth onPress={() => onSubmit({ bankAccountId, amount, paymentDate, referenceNumber: referenceNumber.trim() || null })} loading={saving} disabled={!bankAccountId || !validAmount}>Record payment</ModernButton>
+              <ModernButton fullWidth onPress={() => onSubmit(allocations.length === 1 ? { ...allocations[0], paymentDate, referenceNumber: referenceNumber.trim() || null } : { allocations, paymentDate, referenceNumber: referenceNumber.trim() || null })} loading={saving} disabled={!validAllocations}>Record payment</ModernButton>
             </View>
           </ScrollView>
         </KeyboardAvoidingView>
@@ -91,8 +89,8 @@ export function BillPaymentSheet({ bill, bankAccounts, visible, saving, error, o
             key={account.id}
             title={account.accountName}
             subtitle={`${account.bankName} · ${account.currency}`}
-            selected={account.id === bankAccountId}
-            onPress={() => { setBankAccountId(account.id); setPickerVisible(false); }}
+            selected={account.id === allocations[pickerIndex]?.bankAccountId}
+            onPress={() => { setAllocations((rows) => rows.map((row, index) => index === pickerIndex ? { ...row, bankAccountId: account.id } : row)); setPickerVisible(false); }}
           />
         ))}
       </SelectionSheet>

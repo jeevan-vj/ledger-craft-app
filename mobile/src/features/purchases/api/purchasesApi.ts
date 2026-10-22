@@ -1,4 +1,5 @@
 import { apiRequest } from '@/features/auth/api/http';
+import { randomId } from '@/utils/id';
 
 export interface VendorDto {
   id: string;
@@ -10,6 +11,10 @@ export interface VendorDto {
   paymentTermDays: number;
   notes: string | null;
   isActive: boolean;
+  contactName: string | null;
+  defaultAccountId: string | null;
+  defaultTaxRate: string;
+  importIdentifier: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -41,7 +46,7 @@ export interface BillDto {
   dueDate: string;
   lifecycleStatus: 'draft' | 'received' | 'void';
   paymentStatus: 'unpaid' | 'partial' | 'paid';
-  displayStatus: 'draft' | 'received' | 'overdue' | 'partial' | 'paid' | 'void';
+  displayStatus: 'draft' | 'received' | 'overdue' | 'partial' | 'paid' | 'void' | 'cancelled';
   currency: string;
   taxInclusive: boolean;
   subtotal: string;
@@ -51,6 +56,9 @@ export interface BillDto {
   balanceDue: string;
   notes: string | null;
   lines: BillLineDto[];
+  payments: BillPaymentDto[];
+  attachments: { id: string; objectKey: string; filename: string; contentType: string; size: number; createdAt: string }[];
+  history: { id: string; event: string; summary: string; createdAt: string }[];
   createdAt: string;
   updatedAt: string;
 }
@@ -67,8 +75,9 @@ export interface BillWriteRequest {
 }
 
 export interface RecordBillPaymentRequest {
-  bankAccountId: string;
-  amount: string;
+  bankAccountId?: string;
+  amount?: string;
+  allocations?: { bankAccountId: string; amount: string }[];
   paymentDate: string;
   referenceNumber?: string | null;
   notes?: string | null;
@@ -85,6 +94,9 @@ export interface BillPaymentDto {
   notes: string | null;
   createdAt: string;
 }
+
+export interface BillPaymentBatchDto { payments: BillPaymentDto[]; total: string }
+export interface BillAttachmentDto { id: string; objectKey: string; filename: string; contentType: string; size: number; createdAt: string }
 
 export interface AccountDto {
   id: string;
@@ -117,7 +129,7 @@ export const purchasesApi = {
     return apiRequest(`/api/bills/${id}`, { method: 'GET' });
   },
   createBill(input: BillWriteRequest): Promise<BillDto> {
-    return apiRequest('/api/bills', { method: 'POST', body: JSON.stringify(input) });
+    return apiRequest('/api/bills', { method: 'POST', headers: { 'Idempotency-Key': randomId() }, body: JSON.stringify(input) });
   },
   updateBill(id: string, input: Partial<BillWriteRequest>): Promise<BillDto> {
     return apiRequest(`/api/bills/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
@@ -128,7 +140,19 @@ export const purchasesApi = {
   voidBill(id: string): Promise<BillDto> {
     return apiRequest(`/api/bills/${id}/void`, { method: 'POST' });
   },
-  recordPayment(id: string, input: RecordBillPaymentRequest): Promise<BillPaymentDto> {
+  cancelBill(id: string): Promise<BillDto> {
+    return apiRequest(`/api/bills/${id}/cancel`, { method: 'POST' });
+  },
+  restoreBill(id: string): Promise<BillDto> {
+    return apiRequest(`/api/bills/${id}/restore`, { method: 'POST' });
+  },
+  attachObject(id: string, input: { objectKey: string; filename: string; contentType: string; size: number }): Promise<BillAttachmentDto> {
+    return apiRequest(`/api/bills/${id}/attachments`, { method: 'POST', body: JSON.stringify(input) });
+  },
+  removeAttachment(id: string, attachmentId: string): Promise<void> {
+    return apiRequest(`/api/bills/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
+  },
+  recordPayment(id: string, input: RecordBillPaymentRequest): Promise<BillPaymentBatchDto> {
     return apiRequest(`/api/bills/${id}/payments`, {
       method: 'POST',
       body: JSON.stringify(input),

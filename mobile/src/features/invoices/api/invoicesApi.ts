@@ -10,6 +10,7 @@ import { randomId } from '@/utils/id';
 export interface MobileInvoiceDto {
   id: string;
   invoiceNumber: string;
+  externalId?: string | null;
   customerId: string;
   date: string;
   dueDate: string;
@@ -33,7 +34,7 @@ export interface MobileInvoiceDto {
   balanceDue: string;
   paymentStatus: string;
   taxInclusive: boolean;
-  status: Exclude<InvoiceStatus, 'cancelled'>;
+  status: InvoiceStatus;
   notes: string | null;
   terms: string | null;
   currency: string;
@@ -49,9 +50,14 @@ export interface MobileInvoiceDto {
     rateUnit: string;
     tax: string | null;
     total: string;
+    discountType?: 'fixed' | 'percent';
+    discountValue?: string | null;
+    discountAmount?: string;
+    taxes?: Array<{ id: string; name: string; rate: string }>;
   }>;
   createdAt: string;
   updatedAt: string;
+  archivedAt?: string | null;
 }
 
 export interface MobileShareInvoiceResponse {
@@ -85,6 +91,10 @@ function toLine(dto: MobileInvoiceDto['items'][number]): LineItem {
     rate: Number(dto.rate),
     total: Number(dto.total),
     tax: dto.tax == null ? undefined : Number(dto.tax),
+    discountType: dto.discountType,
+    discountValue: dto.discountValue == null ? null : Number(dto.discountValue),
+    discountAmount: Number(dto.discountAmount ?? 0),
+    taxes: dto.taxes?.map((tax) => ({ ...tax, rate: Number(tax.rate) })),
   };
 }
 
@@ -92,6 +102,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
   return {
     id: dto.id,
     invoiceNumber: dto.invoiceNumber,
+    externalId: dto.externalId,
     customerId: dto.customerId,
     customer: dto.customerName
       ? {
@@ -126,6 +137,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     sourceQuoteNumber: dto.sourceQuoteNumber,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
+    archivedAt: dto.archivedAt,
   };
 }
 
@@ -156,6 +168,9 @@ function toCreateBody(
       unit: item.unit || 'ea',
       rate: String(item.rate),
       rateUnit: item.unit || 'ea',
+      discountType: item.discountType,
+      discountValue: money(item.discountValue),
+      taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
     })),
   };
 }
@@ -202,6 +217,9 @@ export const invoicesApi = {
                   unit: item.unit || 'ea',
                   rate: String(item.rate),
                   rateUnit: item.unit || 'ea',
+                  discountType: item.discountType,
+                  discountValue: money(item.discountValue),
+                  taxes: item.taxes?.map((tax) => ({ ...tax, rate: String(tax.rate) })),
                 }))
               : undefined,
         }),
@@ -216,6 +234,37 @@ export const invoicesApi = {
         body: JSON.stringify({ status }),
       }),
     );
+  },
+
+  async cancel(id: string): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}/cancel`, { method: 'POST', body: '{}' }));
+  },
+
+  async restore(id: string): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}/restore`, { method: 'POST', body: '{}' }));
+  },
+
+  async archive(id: string): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}`, { method: 'DELETE' }));
+  },
+
+  async duplicate(id: string): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}/duplicate`, { method: 'POST', headers: { 'Idempotency-Key': randomId() } }));
+  },
+
+  async history(id: string): Promise<{ id: string; action: string; reason: string | null; createdAt: string }[]> {
+    return (await apiRequest<{ history: { id: string; action: string; reason: string | null; createdAt: string }[] }>(`/api/invoices/${id}/history`, { method: 'GET' })).history;
+  },
+
+  async attachments(id: string): Promise<{ id: string; filename: string; size: number; contentType: string; createdAt: string }[]> {
+    return (await apiRequest<{ attachments: { id: string; filename: string; size: number; contentType: string; createdAt: string }[] }>(`/api/invoices/${id}/attachments`, { method: 'GET' })).attachments;
+  },
+
+  async attach(id: string, input: { objectKey: string; filename: string }): Promise<{ id: string; filename: string; size: number; contentType: string; createdAt: string }> {
+    return apiRequest(`/api/invoices/${id}/attachments`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    });
   },
 
   async share(id: string, templateName = 'classic'): Promise<MobileShareInvoiceResponse> {

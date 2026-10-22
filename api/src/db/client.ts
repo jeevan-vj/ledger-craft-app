@@ -5,17 +5,27 @@ import { accountTemplates, accounts, accountContacts, journalEntries, journalEnt
 import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
+  activeOrganisationSelections,
   authAccounts,
+  organisationInvitations,
   organisationMemberships,
   organisations,
   sessions,
   users,
   verifications,
 } from './schema/identity';
-import { invoices, lineItems } from './schema/invoices';
+import { invoiceAttachments, invoiceHistory, invoices, lineItems } from './schema/invoices';
 import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
-import { bankAccounts, bankTransactions, transactionImportBatches } from './schema/bank';
+import {
+  bankAccounts,
+  bankTransactionAttachments,
+  bankTransactionDocumentConnections,
+  bankTransactionSplits,
+  bankTransactions,
+  bankTransfers,
+  transactionImportBatches,
+} from './schema/bank';
 import { expenseCategories, expenses } from './schema/expenses';
 import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
@@ -35,12 +45,16 @@ export const schema = {
   verifications,
   organisations,
   organisationMemberships,
+  activeOrganisationSelections,
+  organisationInvitations,
   customers,
   businessProfiles,
   itemCategories,
   items,
   invoices,
   lineItems,
+  invoiceHistory,
+  invoiceAttachments,
   quotes,
   quoteLineItems,
   sharedQuotes,
@@ -57,6 +71,10 @@ export const schema = {
   conversationMessages,
   bankAccounts,
   bankTransactions,
+  bankTransactionSplits,
+  bankTransactionDocumentConnections,
+  bankTransactionAttachments,
+  bankTransfers,
   transactionImportBatches,
   reconciliationSessions,
   reconciliationMatches,

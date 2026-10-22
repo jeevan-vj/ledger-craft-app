@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 
 import { createTemplateData, renderTemplateComponent } from '@/services/invoiceTemplateRenderer';
 import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
+import type { InvoiceAttachmentDto } from '@ledgercraft/contracts';
 
 const SharedInvoice: React.FC = () => {
   const { shareToken } = useParams<{ shareToken: string }>();
@@ -23,6 +24,7 @@ const SharedInvoice: React.FC = () => {
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [templateName, setTemplateName] = useState<string>('classic');
   const [isDownloading, setIsDownloading] = useState(false);
+  const [attachments, setAttachments] = useState<InvoiceAttachmentDto[]>([]);
   const templateRef = useRef<HTMLDivElement>(null);
   const selectedTemplate = templateName.toLowerCase() as InvoiceTemplateId;
   const appUrl = shareToken
@@ -60,6 +62,7 @@ const SharedInvoice: React.FC = () => {
         setInvoiceData(result.invoiceData);
         setBusinessProfile(result.templateData.businessProfile);
         setTemplateName(result.templateData.templateName || 'classic');
+        setAttachments(result.templateData.attachments ?? []);
         setLoading(false);
       } catch (err) {
         if (cancelled) return;
@@ -196,6 +199,19 @@ const SharedInvoice: React.FC = () => {
             {renderTemplate()}
           </div>
         </div>
+
+        {attachments.length > 0 ? (
+          <Card className="mt-4 p-4">
+            <h2 className="font-semibold">Shared attachments</h2>
+            <ul className="mt-2 space-y-2">
+              {attachments.map((file) => (
+                <li key={file.id}>
+                  <a className="text-sm font-medium text-primary underline" href={`/api/public/invoices/${encodeURIComponent(shareToken ?? '')}/attachments/${file.id}`} target="_blank" rel="noreferrer">{file.filename}</a>
+                </li>
+              ))}
+            </ul>
+          </Card>
+        ) : null}
 
         {/* Footer */}
         <div className="mt-8 text-center">

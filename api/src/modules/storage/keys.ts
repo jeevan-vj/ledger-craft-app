@@ -4,6 +4,7 @@ import { apiError } from '../../http-error';
 
 const RECEIPT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const LOGO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const INVOICE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const RECEIPT_MAX_BYTES = 1024 * 1024;
 const LOGO_MAX_BYTES = 1024 * 1024;
 
@@ -14,16 +15,20 @@ const EXT_BY_TYPE: Record<string, string> = {
   'application/pdf': 'pdf',
 };
 
-export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' {
-  return kind === 'receipt' ? 'receipts' : 'logos';
+export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' | 'invoices' | 'bank-attachments' {
+  if (kind === 'receipt') return 'receipts';
+  if (kind === 'invoice') return 'invoices';
+  if (kind === 'bank_attachment') return 'bank-attachments';
+  return 'logos';
 }
 
 export function allowedContentTypes(kind: ObjectKind): Set<string> {
-  return kind === 'receipt' ? RECEIPT_TYPES : LOGO_TYPES;
+  if (kind === 'invoice') return INVOICE_TYPES;
+  return kind === 'receipt' || kind === 'bank_attachment' ? RECEIPT_TYPES : LOGO_TYPES;
 }
 
 export function maxBytesForKind(kind: ObjectKind): number {
-  return kind === 'receipt' ? RECEIPT_MAX_BYTES : LOGO_MAX_BYTES;
+  return kind === 'receipt' || kind === 'bank_attachment' ? RECEIPT_MAX_BYTES : LOGO_MAX_BYTES;
 }
 
 export function extensionForContentType(contentType: string, filename: string): string {
