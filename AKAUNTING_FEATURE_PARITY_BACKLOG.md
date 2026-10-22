@@ -41,7 +41,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Expo exposes separate public-link, PDF download/export, and PDF share actions plus an unauthenticated native public-invoice route. Android production App Link verification awaits its first signing credential. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
 | Invoice payments and receipts | Available | Invoice-linked payments, partial/full status updates, and payment receipts exist. Account-ledger posting and split/connected banking workflows still need hardening under the banking task. |
-| Vendors and bills | Partial | Vendor CRUD and web bill draft/receive/void/payment workflows use Hono/SQLite, exact totals, balanced AP journals, overpayment rejection, and organisation isolation. Expo vendor/bill browsing and payment-critical flows are implemented locally pending device QA/deployment. Attachments, history, cancel/restore, split allocations, import/export, and recurring bills remain. |
+| Vendors and bills | Partial | The complete AKP-01 lifecycle is implemented locally: vendor contacts/defaults/active state/import identifiers, exact bills and split payment allocations, attachments, immutable history, cancel/restore, idempotent bill creation, and canonical vendor CSV preview/apply/export plus bill export. Web includes the full responsive administration flow; Expo consumes active vendor defaults and supports split payments, cancel/restore, attachment capture, and history. Production deployment and authenticated native-device QA remain pending. Recurring bills are an optional AKP-04 extension, not an AKP-01 core gap. |
 | Expenses | Available | Expense and category CRUD, tax amounts, account/customer links, receipt reference, and web/mobile entry flows exist. Approval policy, claims, reimbursements, and recurring expenses are extensions/gaps. |
 | Payment/bank accounts | Partial | Bank-account CRUD and accounting accounts exist. Expo account list/filter/create/detail/edit/delete-attempt and exact balance fields are implemented locally. Default payment account, account statements/performance, bulk enable/disable, and a unified posting model are incomplete. |
 | Banking transactions | Partial | List and file import exist; Expo shows per-account imported transaction history. Manual income/expense CRUD, duplicate/export/PDF, split transactions, document connections, category/payment-method parity, and mobile import are missing. |
@@ -83,16 +83,17 @@ Acceptance criteria:
 
 Expected outcome: users can manage supplier obligations from vendor creation through bill settlement, with correct payables and tax accounting.
 
-Status (2026-10-03): **partial.** Shared
-contracts, migration `0004_purchases-payables.sql`, vendor CRUD, bill line
-account coding, draft/receive/void/payment use cases, exact tax-inclusive totals,
-balanced AP journals, partial/full balance updates, overpayment rejection,
-tenant isolation, and responsive web workflows are deployed. Expo vendor/bill
-browsing, draft create/edit, detail, receive/void, and partial/full payment flows
-are implemented locally; focused API-client tests and iOS/Android production
-exports pass. Authenticated device QA and mobile deployment remain pending. The
-remaining acceptance criteria below stay open; this status does not mark AKP-01
-complete.
+Status (2026-10-23): **core complete locally.** Migration
+`0008_purchase-lifecycle.sql` adds vendor contact/default/import fields and
+organisation-scoped bill attachments and immutable history. Hono now validates
+cancel/restore transitions, idempotent bill creation, exact split payment
+allocations, object ownership, vendor CSV preview/apply/export, and bill export.
+The responsive web flow administers the complete lifecycle. Expo applies active
+vendor defaults and supports split payments, cancel/restore, attachment capture,
+and history. Contract, API, web, and mobile tests pass, as do the web build,
+iOS/Android production exports, and an authenticated desktop/390 px browser
+flow. Production deployment and authenticated native-device QA remain pending.
+Recurring bills are tracked separately in optional extension AKP-04.
 
 Acceptance criteria:
 
