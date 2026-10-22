@@ -57,6 +57,7 @@ const ReceiptViewPage = lazy(() => import("@/pages/ReceiptViewPage"));
 const Vendors = lazy(() => import("@/pages/Vendors"));
 const Bills = lazy(() => import("@/pages/Bills"));
 const BillForm = lazy(() => import("@/pages/BillForm"));
+const Recurring = lazy(() => import("@/pages/Recurring"));
 const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
 const PaymentDetailPage = lazy(() => import("@/pages/PaymentDetailPage"));
 // Loading component
@@ -164,6 +165,7 @@ const appRoutes: RouteObject[] = [
           { path: "bills", element: <Bills /> },
           { path: "bills/new", element: <BillForm /> },
           { path: "bills/:id/edit", element: <BillForm /> },
+          { path: "recurring", element: <Recurring /> },
           
           // Payment & Accounting Routes
           { 

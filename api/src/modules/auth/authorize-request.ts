@@ -13,6 +13,7 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
   [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
   [/^\/(?:api\/)?(?:reports|tax-configurations|tax-returns|tax-adjustments)(?:\/|$)/, 'reports'],
   [/^\/(?:api\/)?(?:business-profile|items|item-categories|objects)(?:\/|$)/, 'settings'],
+  [/^\/(?:api\/)?(?:recurring-templates|recurring-runs)(?:\/|$)/, 'settings'],
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],
 ];
 

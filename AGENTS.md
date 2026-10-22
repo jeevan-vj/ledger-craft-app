@@ -1,5 +1,17 @@
 # AGENTS.md
 
+**Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
+`0013_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
+and expense templates with daily, weekly, monthly, annual, and custom
+intervals, local time/timezone, end-date and occurrence limits, pause/resume/end
+state, and immutable run history. Ledger Durable Object alarms claim a unique
+occurrence before generating through the existing application services, so
+catch-up, retries, Worker restarts, and concurrent alarms cannot create the
+same period twice. Responsive web and Expo management/status screens are
+included. Invoice delivery is recorded as unavailable when no mail provider is
+configured; no paid scheduler or email provider is required. Deployment and
+authenticated native-device QA remain pending.
+
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Invoice
 cancel/restore/archive and idempotent duplicate workflows now keep an immutable
 history and post balanced cancellation/restoration journals. SQLite migration
@@ -9,7 +21,7 @@ snapshot-scoped public attachment access, CSV preview/apply/export, and printabl
 detail. Responsive web exposes the full lifecycle; Expo exposes lifecycle,
 history, line pricing, and image attachment actions. Existing templates,
 sharing, PDFs, payment terms, charges, bank details, and reminders remain intact.
-Recurring invoices remain AKP-04 and production email remains unavailable.
+Production email remains unavailable.
 All 39 API suites (118 tests), all 19 contract suites (65 tests), all 41 mobile
 Jest suites (185 tests), strict mobile TypeScript, the web production build,
 and iOS/Android production exports pass. Authenticated local Chrome proof passed
@@ -56,7 +68,7 @@ bill export. Expo applies active vendor defaults and supports split payments,
 cancel/restore, attachment capture, and history. Contract/API/web/mobile tests,
 the web build, authenticated desktop and 390 px browser QA, and iOS/Android
 production exports pass. Deployment and authenticated native-device QA remain
-pending. Recurring bills belong to optional AKP-04 scope.
+pending.
 
 Web UI follows `DESIGN.md` and `.cursor/skills/ledgercraft-web-ui/SKILL.md`. Mobile UI follows `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` (Wise lime/forest, native iOS chrome). `.cursor/rules/project-guide.mdc` still contains older Supabase and Revolut examples; the files named above supersede those examples.
 

@@ -36,6 +36,7 @@ import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
 import { billLines, billPayments, bills, vendors } from './schema/purchases';
+import { recurringRuns, recurringTemplates } from './schema/recurring';
 
 export const schema = {
   rlsProbe,
@@ -88,6 +89,8 @@ export const schema = {
   bills,
   billLines,
   billPayments,
+  recurringTemplates,
+  recurringRuns,
 };
 
 

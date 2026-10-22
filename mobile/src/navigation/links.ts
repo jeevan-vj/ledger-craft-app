@@ -63,6 +63,11 @@ export const moreMenuSections = [
         subtitle: 'Switch companies, roles and invitations',
         screen: 'CompanyTeam',
       },
+      {
+        label: 'Recurring schedules',
+        subtitle: 'Automated documents and transactions',
+        screen: 'RecurringSchedules',
+      },
     ],
   },
   {
@@ -100,6 +105,7 @@ type CustomerDestination =
 type MoreDestination =
   | { name: 'BusinessSettings' }
   | { name: 'CompanyTeam'; params?: { invite?: string } }
+  | { name: 'RecurringSchedules' }
   | { name: 'ItemList' }
   | { name: 'BankAccountList' }
   | { name: 'ExpenseList' }

@@ -73,6 +73,7 @@ export type SettingsStackParamList = {
   SettingsList: undefined;
   BusinessSettings: undefined;
   CompanyTeam: { invite?: string } | undefined;
+  RecurringSchedules: undefined;
 };
 
 export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList & ItemStackParamList & BankingStackParamList;

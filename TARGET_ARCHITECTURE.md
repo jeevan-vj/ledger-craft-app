@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Recurring scheduler (implemented locally, 2026-10-23):** Contracts, Hono,
+per-organisation SQLite migration `0013_recurring-scheduler.sql`, Ledger
+Durable Object alarms, responsive web, and Expo manage recurring invoices,
+bills, income, and expenses. Templates retain timezone/local-time and schedule
+limits; deterministic occurrence keys, transactional claims, run history, and
+retry metadata protect catch-up and concurrent execution. Generation reuses
+the manual application services and exact-money contracts. Production email is
+not configured, so generated invoices expose an honest unavailable delivery
+status. Deployment and authenticated native-device QA remain pending.
+
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
 Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
 policy-based archive, idempotent duplicate, immutable history, exact line
@@ -7,8 +17,7 @@ discounts/multiple taxes, private invoice attachments, token-snapshot attachment
 access, CSV import/export, and printable detail. Cancellation and restoration
 use balanced journals and tenant-bound transactions. Existing invoice sharing,
 templates/PDFs, payment terms, charges, bank details, and reminders are
-preserved. Recurring invoices remain AKP-04; outbound production email is still
-intentionally unavailable.
+preserved. Outbound production email is still intentionally unavailable.
 API/contracts/mobile tests, strict mobile TypeScript, the web production build,
 iOS/Android production exports, and authenticated responsive browser proof pass;
 authenticated native-device QA remains pending.

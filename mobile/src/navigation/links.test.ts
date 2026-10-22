@@ -11,6 +11,7 @@ describe('mobile navigation links', () => {
       'BankAccountList',
       'BusinessSettings',
       'CompanyTeam',
+      'RecurringSchedules',
       'ExpenseList',
       'PurchaseList',
     ]);
