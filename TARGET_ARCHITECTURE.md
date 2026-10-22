@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
+Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private invoice attachments, token-snapshot attachment
+access, CSV import/export, and printable detail. Cancellation and restoration
+use balanced journals and tenant-bound transactions. Existing invoice sharing,
+templates/PDFs, payment terms, charges, bank details, and reminders are
+preserved. Recurring invoices remain AKP-04; outbound production email is still
+intentionally unavailable.
+API/contracts/mobile tests, strict mobile TypeScript, the web production build,
+iOS/Android production exports, and authenticated responsive browser proof pass;
+authenticated native-device QA remains pending.
+
 **Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
 migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
 transaction splits, invoice/bill connections, and 1 MB attachment metadata.
@@ -299,7 +312,8 @@ organisation transaction. Draft documents do not post. Posted journals cannot
 be edited or deleted; corrections use reversing postings. Financial statements,
 general ledger, account statements, aging, sales/purchase and tax summaries are
 calculated by Hono from posted journal lines, never trusted from client totals.
-Query contracts validate date range, cash/accrual basis, comparison period and
+Migration `0013_server-authoritative-reports.sql` adds the reporting indexes and
+posted-journal immutability triggers. Query contracts validate date range, cash/accrual basis, comparison period and
 tenant-scoped filters. Base currency is NZD-only until AKP-06 supplies exchange
 rates, and category filtering remains deferred until category dimensions are
 represented on journal lines.
@@ -560,6 +574,8 @@ Do not assume GoTrue password hashes are either compatible or incompatible. Test
 There is one active identity provider at a time. The migration may stage Better Auth tables while Supabase Auth remains authoritative, but clients must not have two competing session systems. The cutover happens only after every protected data path uses Hono.
 
 The current frontend `PermissionGuard` remains presentation only. The API repeats every permission check against the active organisation membership.
+
+**Current SQLite implementation (2026-10-23):** Identity storage owns organisations, active selections, memberships, and hashed invitations. Fixed roles map to a shared server permission catalogue, Hono checks protected domain requests before use cases, and dedicated organisation services guard team administration. Switching changes the trusted active membership used to select the organisation Ledger Durable Object; it never moves or combines ledger data. Custom roles and outbound invitation email are deferred explicitly.
 
 ---
 

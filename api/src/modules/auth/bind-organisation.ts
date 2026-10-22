@@ -1,7 +1,7 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
-import { organisationMemberships } from '../../db/schema/identity';
+import { activeOrganisationSelections, organisationMemberships, organisations } from '../../db/schema/identity';
 
 export type OrganisationContext = {
   userId: string;
@@ -16,11 +16,16 @@ export async function withOrganisationTx<T>(
 ): Promise<T> {
   return db.transaction(async (tx) => {
 
-    const memberships = await tx
-      .select()
+    const active = await tx.select({ membership: organisationMemberships, organisation: organisations })
       .from(organisationMemberships)
-      .where(eq(organisationMemberships.userId, userId));
-    const membership = memberships[0];
+      .innerJoin(organisations, eq(organisations.id, organisationMemberships.organisationId))
+      .where(and(
+        eq(organisationMemberships.userId, userId),
+        isNull(organisationMemberships.removedAt),
+        isNull(organisations.archivedAt),
+      ));
+    const [selection] = await tx.select().from(activeOrganisationSelections).where(eq(activeOrganisationSelections.userId, userId));
+    const membership = active.find((row) => row.membership.organisationId === selection?.organisationId)?.membership ?? active[0]?.membership;
     if (!membership) {
       throw new HTTPException(403, { message: 'No organisation membership' });
     }

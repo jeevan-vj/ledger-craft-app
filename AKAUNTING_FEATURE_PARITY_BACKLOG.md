@@ -53,8 +53,8 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Tax | Partial | Tax configuration, returns, adjustments, and NZ GST/IRD workflows exceed Akaunting's basic summary in places. A reusable tax-rate catalogue, compound/withholding tax types, line-level tax assignment, and full settings CRUD are missing. |
 | Currencies and localization | Missing | Currency codes are stored on several records, but there is no currency catalogue, exchange rate, base/transaction currency accounting, locale/language, date/number formatting, or financial-year configuration. |
 | Company settings | Partial | Business identity, logo, invoice numbering, terms, bank details, template appearance, and default tax rate exist. Email templates, scheduling, defaults, localization, currencies, and richer invoice settings are missing. |
-| Companies/organisations | Partial | The data model isolates one provisioned organisation per user. Organisation CRUD, membership administration, switching, and multiple-company UX are missing. |
-| Users and permissions | Missing | Membership roles exist in identity data and the web has presentation guards, but there is no invitation/user administration or server-enforced action permission matrix. Current tests describe authenticated users as owners. |
+| Companies/organisations | Partial | Organisation create/rename/archive, active switching, isolated ledgers, and responsive web/Expo management are implemented locally. Restore, ownership transfer, deployment, and authenticated native-device QA remain. |
+| Users and permissions | Partial | Fixed owner/admin/accountant/member/read-only roles, hashed email-bound invitation accept/revoke/refresh, membership lifecycle, and server-enforced domain permissions are implemented locally. Custom roles and outbound email delivery remain explicit follow-up work. |
 | Customer portal | Missing | Token-scoped invoice viewing/download is available, but customers cannot authenticate to a portal, manage a profile, list invoices, or review payments. |
 | Attachments/uploads | Partial | Organisation-scoped object upload/list/delete exists with the 1 MB SQLite limit. Attachments are not consistently linked to invoices, bills, items, contacts, and transactions. |
 | Import/export | Partial | Bank transaction import and canonical item CSV preview/apply/export exist. Akaunting-style import/export for customers, invoices, vendors, bills, accounts, journals, categories, taxes, and reports remains missing. |
@@ -131,6 +131,8 @@ Acceptance criteria:
 
 ### AKP-03 — Multi-company, invitations, roles, and server authorization (P0)
 
+Status: **Partially implemented locally (2026-10-23).** Migration `0008` adds active-company selection, membership removal, and hashed invitations in Identity storage. Hono enforces fixed-role permissions for protected domains, and web/Expo cover company and team administration. Automated proof covers cross-company isolation, direct read-only writes, privilege escalation, wrong-email/stale/reused invitations, and removed membership access. Custom roles, email delivery, deployment, and authenticated native-device QA remain.
+
 Expected outcome: an owner can operate multiple companies and safely collaborate with managers, accountants, employees, and read-only users.
 
 Acceptance criteria:
@@ -160,7 +162,7 @@ Acceptance criteria:
 **Implemented locally (2026-10-23), with explicit AKP-06 follow-up.** Canonical
 exact-decimal postings, immutable posted journals, tenant-scoped Hono financial
 reports, responsive web workflows, and an Expo summary are complete through
-migration `0011_server-authoritative-reports.sql`. Date, cash/accrual,
+migration `0013_server-authoritative-reports.sql`. Date, cash/accrual,
 comparison, account/customer/vendor filtering and NZD base currency are
 validated. Multi-currency conversion remains AKP-06. Category filtering remains
 deferred until category dimensions are stored on journal lines; the query field
@@ -191,6 +193,17 @@ Acceptance criteria:
 - Tests cover zero/three-decimal currencies, rate direction, rounding, historical rate immutability, and timezone boundaries.
 
 ### AKP-07 — Complete invoice lifecycle and document fidelity (P1)
+
+Status (2026-10-23): implemented locally across contracts, Hono/SQLite migration
+`0012_invoice-lifecycle.sql`, responsive web, and Expo. The slice includes balanced cancel/restore journals,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private PDF/image attachments with snapshot-scoped
+share-token access, CSV dry-run/apply/export, and printable detail. Expo covers
+critical lifecycle/history and image attachment actions; web also accepts PDFs
+and owns CSV administration. Authenticated native-device QA remains pending.
+Recurring invoices remain AKP-04 and production email remains unavailable.
+API/contracts/mobile tests, the web production build, strict mobile TypeScript,
+iOS/Android production exports, and authenticated responsive browser proof pass.
 
 Expected outcome: LedgerCraft supports the remaining Akaunting invoice-management operations without regressing sharing or PDFs.
 

@@ -1,5 +1,5 @@
 import type { Database } from '../../db/client';
-import { organisationMemberships, organisations } from '../../db/schema/identity';
+import { activeOrganisationSelections, organisationMemberships, organisations } from '../../db/schema/identity';
 
 export async function provisionOrganisationForUser(
   db: Database,
@@ -15,6 +15,7 @@ export async function provisionOrganisationForUser(
       userId: user.id,
       role: 'owner',
     });
+    await tx.insert(activeOrganisationSelections).values({ userId: user.id, organisationId });
   });
 
   return { organisationId };

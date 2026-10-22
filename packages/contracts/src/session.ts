@@ -12,13 +12,14 @@ export const sessionOrganisationSchema = z.object({
 });
 
 export const sessionMembershipSchema = z.object({
-  role: z.enum(['owner', 'admin', 'member']),
+  role: z.enum(['owner', 'admin', 'accountant', 'member', 'read_only']),
 });
 
 export const meResponseSchema = z.object({
   user: sessionUserSchema,
   organisation: sessionOrganisationSchema,
   membership: sessionMembershipSchema,
+  permissions: z.array(z.string()).default([]),
 });
 
 export type SessionUser = z.infer<typeof sessionUserSchema>;
