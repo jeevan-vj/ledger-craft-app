@@ -756,7 +756,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 // Pass the currentItemIndex to handleCreateNewItem
                 onCreateNewItem={() => handleCreateNewItem(currentItemIndex)}
                 buttonClassName="w-full justify-start text-primary border border-primary font-semibold"
-                refetch={refetchItemsTrigger}
+                refetch={() => setRefetchItemsTrigger((value) => value + 1)}
               />
             </div>
 
@@ -1632,7 +1632,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                                       onCreateNewItem={() => handleCreateNewItem(index)}
                                                       buttonClassName="h-6 w-6 p-0"
                                                       iconOnly
-                                                      refetch={refetchItemsTrigger}
+                                                      refetch={() => setRefetchItemsTrigger((value) => value + 1)}
                                                     />
                                                   </div>
                                                 </div>

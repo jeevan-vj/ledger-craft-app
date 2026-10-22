@@ -116,7 +116,7 @@ const mapSupabaseInvoiceToInvoice = (invoice: SupabaseInvoice | any, items: Supa
   public_viewed_at: invoice.public_viewed_at || undefined
 });
 
-const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at', 'public_viewed_at'>> => {
+const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at' | 'public_viewed_at'>> => {
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 
