@@ -26,6 +26,16 @@ export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;
 
 export const moreMenuSections = [
   {
+    title: 'Accounting',
+    rows: [
+      {
+        label: 'Financial reports',
+        subtitle: 'Profit, cash, balances and aging',
+        screen: 'Reports',
+      },
+    ],
+  },
+  {
     title: 'Sales',
     rows: [
       {

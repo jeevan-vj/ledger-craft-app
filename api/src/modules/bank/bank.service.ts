@@ -31,6 +31,25 @@ import {
   type IdempotencyScope,
 } from '../invoices/idempotency';
 import { assertKeyOwned } from '../storage/keys';
+import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
+
+async function postBankTransaction(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  account: BankAccountDto,
+  transaction: BankTransactionDto,
+  referenceType = 'bank_transaction',
+  referenceId = transaction.id,
+) {
+  const bankId = await bankLedgerAccount(tx, ctx, account);
+  const otherId = await systemAccount(tx, ctx, transaction.type === 'credit' ? '4900' : '5000');
+  await postBalancedEntry(tx, ctx, {
+    date: transaction.transactionDate, description: transaction.description, referenceType, referenceId,
+    lines: transaction.type === 'credit'
+      ? [{ accountId: bankId, description: transaction.description, debit: transaction.amount, credit: '0' }, { accountId: otherId, description: transaction.description, debit: '0', credit: transaction.amount }]
+      : [{ accountId: otherId, description: transaction.description, debit: transaction.amount, credit: '0' }, { accountId: bankId, description: transaction.description, debit: '0', credit: transaction.amount }],
+  });
+}
 
 function applyAmount(balance: string, type: 'debit' | 'credit', amount: string) {
   return roundMoney(type === 'credit' ? decimal(balance).add(amount) : decimal(balance).sub(amount));
@@ -125,6 +144,7 @@ export async function createBankTransactionForUser(
     const balance = applyAmount(account.currentBalance, input.type, input.amount);
     const transaction = await repo.insertManualTransaction(tx, ctx, input, balance);
     await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
+    await postBankTransaction(tx, ctx, account, transaction);
     return transaction;
   });
 }
@@ -153,6 +173,10 @@ export async function updateBankTransactionForUser(
     const updated = await repo.updateManualTransaction(tx, ctx.organisationId, id, input, balance);
     if (!updated) throw new HTTPException(409, { message: 'Bank transaction could not be updated' });
     await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
+    if (input.amount !== undefined || input.type !== undefined || input.transactionDate !== undefined) {
+      await reversePosting(tx, ctx, { referenceType: 'bank_transaction', referenceId: id, reversalType: 'bank_transaction_reversal', date: updated.transactionDate, description: `Reverse ${existing.description}` });
+      await postBankTransaction(tx, ctx, account, updated);
+    }
     return updated;
   });
 }
@@ -170,6 +194,7 @@ export async function deleteBankTransactionForUser(db: Database, userId: string,
     const account = await repo.getAccount(tx, ctx.organisationId, existing.bankAccountId);
     if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
     const balance = reverseAmount(account.currentBalance, existing.type, existing.amount);
+    await reversePosting(tx, ctx, { referenceType: 'bank_transaction', referenceId: id, reversalType: 'bank_transaction_reversal', date: new Date().toISOString().slice(0, 10), description: `Reverse ${existing.description}` });
     if (!(await repo.deleteManualTransaction(tx, ctx.organisationId, id))) {
       throw new HTTPException(409, { message: 'Bank transaction could not be deleted' });
     }
@@ -318,6 +343,15 @@ export async function createBankTransferForUser(
     const transfer = await repo.insertTransfer(tx, ctx, input, source.currency, balances);
     await repo.setAccountBalance(tx, ctx.organisationId, source.id, balances.source);
     await repo.setAccountBalance(tx, ctx.organisationId, destination.id, balances.destination);
+    const sourceLedger = await bankLedgerAccount(tx, ctx, source);
+    const destinationLedger = await bankLedgerAccount(tx, ctx, destination);
+    await postBalancedEntry(tx, ctx, {
+      date: transfer.transactionDate, description: transfer.description, referenceType: 'bank_transfer', referenceId: transfer.id,
+      lines: [
+        { accountId: destinationLedger, description: transfer.description, debit: transfer.amount, credit: '0' },
+        { accountId: sourceLedger, description: transfer.description, debit: '0', credit: transfer.amount },
+      ],
+    });
     if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: transfer });
     return transfer;
   });
@@ -340,6 +374,7 @@ export async function importBankTransactionsForUser(
     const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
     if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
     const result = await repo.importTransactions(tx, ctx, input);
+    for (const transaction of result.imported) await postBankTransaction(tx, ctx, account, transaction);
     return importBankTransactionsResponseSchema.parse({
       importedCount: result.imported.length,
       duplicatesSkipped: result.duplicatesSkipped,

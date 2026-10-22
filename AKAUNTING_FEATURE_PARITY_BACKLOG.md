@@ -157,6 +157,15 @@ Acceptance criteria:
 
 ### AKP-05 — Server-authoritative accounting and reports (P0)
 
+**Implemented locally (2026-10-23), with explicit AKP-06 follow-up.** Canonical
+exact-decimal postings, immutable posted journals, tenant-scoped Hono financial
+reports, responsive web workflows, and an Expo summary are complete through
+migration `0011_server-authoritative-reports.sql`. Date, cash/accrual,
+comparison, account/customer/vendor filtering and NZD base currency are
+validated. Multi-currency conversion remains AKP-06. Category filtering remains
+deferred until category dimensions are stored on journal lines; the query field
+is reserved but does not silently fabricate filtered totals.
+
 Expected outcome: invoices, bills, payments, expenses, transfers, and adjustments produce balanced postings, and every report is derived from the same ledger.
 
 Acceptance criteria:

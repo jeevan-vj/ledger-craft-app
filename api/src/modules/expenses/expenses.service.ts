@@ -13,6 +13,19 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './expenses.repository';
+import { postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
+
+async function postApprovedExpense(tx: Database, ctx: { organisationId: string; userId: string }, expense: ExpenseDto) {
+  if (expense.status !== 'approved') return;
+  const expenseId = await systemAccount(tx, ctx, '5000');
+  const gstId = await systemAccount(tx, ctx, '2150');
+  const cashId = expense.accountId ?? await systemAccount(tx, ctx, '1110');
+  const net = decimal(expense.amount).sub(expense.taxAmount);
+  const lines = [{ accountId: expenseId, description: expense.description, debit: net.toFixed(), credit: '0' }];
+  if (decimal(expense.taxAmount).compare(0) > 0) lines.push({ accountId: gstId, description: `GST - ${expense.description}`, debit: expense.taxAmount, credit: '0' });
+  lines.push({ accountId: cashId, description: expense.description, debit: '0', credit: expense.amount });
+  await postBalancedEntry(tx, ctx, { date: expense.expenseDate, description: expense.description, referenceType: 'expense', referenceId: expense.id, lines });
+}
 
 async function assertRefs(
   tx: Database,
@@ -58,7 +71,9 @@ export async function createExpenseForUser(
 ): Promise<ExpenseDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     await assertRefs(tx, ctx.organisationId, input);
-    return repo.insertExpense(tx, ctx, input);
+    const expense = await repo.insertExpense(tx, ctx, input);
+    await postApprovedExpense(tx, ctx, expense);
+    return expense;
   });
 }
 
@@ -73,14 +88,24 @@ export async function updateExpenseForUser(
       throw new HTTPException(400, { message: 'Amount must be greater than 0' });
     }
     await assertRefs(tx, ctx.organisationId, input);
+    const current = await repo.getExpense(tx, ctx.organisationId, id);
+    if (!current) throw new HTTPException(404, { message: 'Expense not found' });
+    if (current.status === 'approved' && Object.keys(input).some((key) => key !== 'notes')) {
+      throw new HTTPException(409, { message: 'Approved expenses are immutable; reject and record a corrected expense' });
+    }
     const expense = await repo.updateExpense(tx, ctx.organisationId, id, input);
     if (!expense) throw new HTTPException(404, { message: 'Expense not found' });
+    await postApprovedExpense(tx, ctx, expense);
     return expense;
   });
 }
 
 export async function deleteExpenseForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const current = await repo.getExpense(tx, ctx.organisationId, id);
+    if (current?.status === 'approved') {
+      await reversePosting(tx, ctx, { referenceType: 'expense', referenceId: id, reversalType: 'expense_reversal', date: new Date().toISOString().slice(0, 10), description: `Reverse expense ${current.description}` });
+    }
     const deleted = await repo.deleteExpense(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Expense not found' });
   });

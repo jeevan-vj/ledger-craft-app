@@ -104,14 +104,12 @@ export async function createInvoiceInTx(
     totals,
   });
 
-  await postInvoiceJournal(tx, ctx, {
-    invoiceId: invoice.id,
-    invoiceNumber: invoice.invoiceNumber,
-    date: invoice.date,
-    subtotal: invoice.subtotal,
-    taxAmount: invoice.taxAmount,
-    total: invoice.total,
-  });
+  if (invoice.status !== 'draft') {
+    await postInvoiceJournal(tx, ctx, {
+      invoiceId: invoice.id, invoiceNumber: invoice.invoiceNumber, date: invoice.date,
+      subtotal: invoice.subtotal, taxAmount: invoice.taxAmount, total: invoice.total,
+    });
+  }
 
   return invoice;
 }
@@ -162,6 +160,9 @@ export async function updateInvoiceForUser(
       input.taxRate !== undefined ||
       input.additionalCharges !== undefined ||
       input.additionalChargesList !== undefined;
+    if (existing.status !== 'draft' && (shouldRecalc || input.date !== undefined)) {
+      throw apiError(409, 'INVOICE_POSTED', 'Posted invoices are immutable; create a reversal or adjustment');
+    }
 
     let totals = undefined;
     if (shouldRecalc) {
@@ -204,6 +205,9 @@ export async function updateInvoiceForUser(
     if (input.status && input.status !== updated.status) {
       const withStatus = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, input.status);
       if (!withStatus) throw new HTTPException(404, { message: 'Invoice not found' });
+      if (updated.status === 'draft' && withStatus.status !== 'draft') {
+        await postInvoiceJournal(tx, ctx, { invoiceId: withStatus.id, invoiceNumber: withStatus.invoiceNumber, date: withStatus.date, subtotal: withStatus.subtotal, taxAmount: withStatus.taxAmount, total: withStatus.total });
+      }
       return withStatus;
     }
 
@@ -254,6 +258,7 @@ export async function sendInvoiceForUser(
     }
     const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
     if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
+    await postInvoiceJournal(tx, ctx, { invoiceId: sent.id, invoiceNumber: sent.invoiceNumber, date: sent.date, subtotal: sent.subtotal, taxAmount: sent.taxAmount, total: sent.total });
     return sent;
   });
 }

@@ -18,6 +18,7 @@ const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['nam
   BankAccountList: 'dollar-sign',
   ExpenseList: 'credit-card',
   PurchaseList: 'shopping-bag',
+  Reports: 'bar-chart-2',
 };
 
 export default function SettingsScreen() {

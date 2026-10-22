@@ -34,6 +34,7 @@ import BankStatementImportScreen from '@/screens/banking/BankStatementImportScre
 import QuoteListScreen from '@/screens/quotes/QuoteListScreen';
 import QuoteFormScreen from '@/screens/quotes/QuoteFormScreen';
 import QuoteDetailScreen from '@/screens/quotes/QuoteDetailScreen';
+import ReportsScreen from '@/screens/reports/ReportsScreen';
 
 const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -77,6 +78,7 @@ function MoreNavigator() {
   return <MoreStack.Navigator screenOptions={list}>
     <MoreStack.Screen name="SettingsList" component={SettingsScreen} options={{ title: 'More', headerShown: false }} />
     <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
+    <MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} />
     <MoreStack.Screen name="ItemList" component={ItemListScreen} options={{ title: 'Items' }} />
     <MoreStack.Screen name="ItemCreate" component={ItemFormScreen} options={{ ...form, title: 'New item' }} />
     <MoreStack.Screen name="ItemEdit" component={ItemFormScreen} options={{ ...form, title: 'Edit item' }} />
