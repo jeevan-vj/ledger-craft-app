@@ -38,6 +38,7 @@ export const useAuth = () => {
   const checkOnboardingStatus = useStore((state) => state.checkOnboardingStatus);
   const setOnboardingStatus = useStore((state) => state.setOnboardingStatus);
   const initialize = useStore((state) => state.initialize);
+  const refreshUser = useStore((state) => state.refreshUser);
 
   return useMemo(() => ({
     user,
@@ -52,6 +53,7 @@ export const useAuth = () => {
     checkOnboardingStatus,
     setOnboardingStatus,
     initialize,
+    refreshUser,
   }), [
     user,
     session,
@@ -65,6 +67,7 @@ export const useAuth = () => {
     checkOnboardingStatus,
     setOnboardingStatus,
     initialize,
+    refreshUser,
   ]);
 };
 

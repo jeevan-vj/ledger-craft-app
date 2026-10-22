@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuLabel,
 } from '@/components/ui/dropdown-menu';
+import { CompanySwitcher } from '@/components/organisations/CompanySwitcher';
 
 interface HeaderProps {
   toggleSidebar: () => void;
@@ -66,6 +67,7 @@ export function Header({ toggleSidebar, isMobile }: HeaderProps) {
       {!isMobile && <div className="flex-1" />}
 
       <div className="flex items-center justify-end gap-1">
+        {user && <CompanySwitcher compact={isMobile} />}
         <button
           type="button"
           className="p-2 rounded-full text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"

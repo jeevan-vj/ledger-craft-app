@@ -1,7 +1,7 @@
 # LedgerCraft target architecture
 
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
-Hono, per-organisation SQLite, responsive web, and Expo cover cancel/restore,
+Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
 policy-based archive, idempotent duplicate, immutable history, exact line
 discounts/multiple taxes, private invoice attachments, token-snapshot attachment
 access, CSV import/export, and printable detail. Cancellation and restoration
@@ -12,6 +12,17 @@ intentionally unavailable.
 API/contracts/mobile tests, strict mobile TypeScript, the web production build,
 iOS/Android production exports, and authenticated responsive browser proof pass;
 authenticated native-device QA remains pending.
+
+**Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
+migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
+transaction splits, invoice/bill connections, and 1 MB attachment metadata.
+Connections atomically update document balances and reject direction, currency,
+tenant, transaction-total, and document-balance violations. Web adds transaction
+detail/allocation, attachments, duplicate, print/PDF, and CSV export. Expo adds
+native CSV statement selection, exact-text parsing, preview, duplicate skipping,
+and import. Focused contract/API/web/mobile tests, migration verification, and
+strict mobile TypeScript pass. Authenticated native-device QA and deployment
+remain open.
 
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
@@ -103,14 +114,16 @@ no errors, and iOS/Android production exports pass. Native visual QA remains
 open because no local iOS simulator runtime is installed and EAS Simulator is
 unavailable for the account.
 
-**Mobile banking management (implemented locally, 2026-10-19):** Expo now
+**Mobile banking management (implemented locally, updated 2026-10-23):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
 transaction history from More through Hono. Dirty bank-account forms are
 protected from dismissal. Strict TypeScript, 20 Jest suites (78 tests), lint
-with no errors, and iOS/Android production exports pass. Authenticated device QA
-remains open; manual transactions, transfers, splits, attachments, and mobile
-import remain in AKP-02.
+with no errors, and iOS/Android production exports pass. Manual transactions and
+transfers are implemented, and native CSV statement selection, exact-text
+preview, duplicate skipping, and import are now available. Split, attachment,
+and document allocation editing remains web-only. Authenticated device QA is
+open.
 
 **Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
 item list/filter, create, detail, edit, delete-attempt, active-state, category,
@@ -158,6 +171,19 @@ create/save/download/file/reload browser flow pass. Frontend build
 and the production smoke suite passes. No schema migration was needed;
 readiness remains `0004_purchases-payables.sql`.
 
+**Purchase lifecycle parity (implemented locally, 2026-10-23):** Shared
+contracts, Hono/SQLite migration `0009_purchase-lifecycle.sql`, web, and Expo now
+cover the AKP-01 core lifecycle. Vendors have contact details, active state,
+defaults, notes, and stable import identifiers. Bills have organisation-scoped
+attachments, immutable history, validated cancel/restore, idempotent creation,
+and atomic exact-decimal split payments. Web adds canonical vendor CSV
+preview/apply/export and bill export. Expo applies active vendor defaults and
+supports split payments, cancel/restore, attachment capture, and history.
+Contract/API/web/mobile tests, the web build, iOS/Android production exports,
+and an authenticated desktop plus 390 px browser flow pass. Deployment and
+authenticated native-device QA remain pending. Recurring bills are an optional
+AKP-04 extension.
+
 **Mobile purchases/payables (TestFlight submitted, 2026-10-04):** Expo now has
 a native Purchases tab for vendor and bill browsing, bill draft create/edit and
 detail, receive/void actions, and exact-decimal partial/full payment capture
@@ -165,9 +191,9 @@ against bank accounts. Focused API-client tests and iOS/Android Expo production
 exports pass. EAS production iOS archive build 2
 (`170b1d99-61c0-4616-8ccd-e3a111c10f21`) finished successfully and submission
 `1b89f039-ccbc-4af5-8e7f-81874f082f54` was uploaded to App Store Connect for
-TestFlight. Apple processing and authenticated device QA remain pending;
-attachments, history, cancel/restore, split allocations, import/export, and
-recurring bills remain open in AKP-01.
+TestFlight. This paragraph records the earlier deployed baseline; the local
+2026-10-23 lifecycle work above supersedes its feature-gap list. Authenticated
+device QA remains pending.
 
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 draft/receive/void/pay bill workflows now run through shared Zod contracts,
@@ -179,8 +205,9 @@ system and adapt to mobile web. Migration `0004_purchases-payables.sql` is
 reviewed, checksum tracked and applied in production. Frontend build
 `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published.
 Release gates, live smoke checks, and authenticated Browser purchase flows pass.
-Attachments, history, cancel/restore, split allocations, import/export,
-recurring bills, and final native device QA remain in AKP-01.
+This paragraph records the earlier deployed baseline; the local 2026-10-23
+lifecycle work above supersedes its feature-gap list. Production deployment and
+authenticated native-device QA remain pending.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
@@ -535,6 +562,8 @@ Do not assume GoTrue password hashes are either compatible or incompatible. Test
 There is one active identity provider at a time. The migration may stage Better Auth tables while Supabase Auth remains authoritative, but clients must not have two competing session systems. The cutover happens only after every protected data path uses Hono.
 
 The current frontend `PermissionGuard` remains presentation only. The API repeats every permission check against the active organisation membership.
+
+**Current SQLite implementation (2026-10-23):** Identity storage owns organisations, active selections, memberships, and hashed invitations. Fixed roles map to a shared server permission catalogue, Hono checks protected domain requests before use cases, and dedicated organisation services guard team administration. Switching changes the trusted active membership used to select the organisation Ledger Durable Object; it never moves or combines ledger data. Custom roles and outbound invitation email are deferred explicitly.
 
 ---
 

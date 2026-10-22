@@ -72,4 +72,23 @@ describe('purchasesApi', () => {
       }),
     ).rejects.toThrow('Payment exceeds the remaining balance');
   });
+
+  it('sends split allocations and bill lifecycle actions without decimal conversion', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ payments: [], total: '5.00' }));
+    await purchasesApi.recordPayment('bill-1', {
+      allocations: [
+        { bankAccountId: 'bank-1', amount: '3.25' },
+        { bankAccountId: 'bank-2', amount: '1.75' },
+      ],
+      paymentDate: '2026-10-23',
+    });
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      'https://api.example.test/api/bills/bill-1/payments',
+      expect.objectContaining({ body: expect.stringContaining('"amount":"3.25"') }),
+    );
+    await purchasesApi.cancelBill('bill-1');
+    expect(global.fetch).toHaveBeenLastCalledWith('https://api.example.test/api/bills/bill-1/cancel', expect.objectContaining({ method: 'POST' }));
+    await purchasesApi.restoreBill('bill-1');
+    expect(global.fetch).toHaveBeenLastCalledWith('https://api.example.test/api/bills/bill-1/restore', expect.objectContaining({ method: 'POST' }));
+  });
 });

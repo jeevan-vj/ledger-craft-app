@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Upload } from 'lucide-react';
 import ThemePicker from '@/components/business/ThemePicker';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { CompanyTeamPanel } from '@/components/organisations/CompanyTeamPanel';
 import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
 
 const profileFormSchema = z.object({
@@ -219,11 +220,14 @@ const Settings = () => {
     <div className="space-y-6">
       <PageHeader title="Settings" />
       <Tabs defaultValue="profile" value={activeTab} onValueChange={setActiveTab}>
-        <TabsList>
-          <TabsTrigger value="profile">Business Profile</TabsTrigger>
-          <TabsTrigger value="preferences">Preferences</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-        </TabsList>
+        <div className="max-w-full overflow-x-auto pb-1">
+          <TabsList>
+            <TabsTrigger value="profile">Business Profile</TabsTrigger>
+            <TabsTrigger value="preferences">Preferences</TabsTrigger>
+            <TabsTrigger value="appearance">Appearance</TabsTrigger>
+            <TabsTrigger value="team">Company & team</TabsTrigger>
+          </TabsList>
+        </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)}>
             <TabsContent value="profile" className="mt-4">
@@ -633,7 +637,7 @@ const Settings = () => {
               />
             </TabsContent>
             
-            <div className="mt-6">
+            {activeTab !== 'team' && <div className="mt-6">
               <Button
                 type="submit"
                 className=""
@@ -646,9 +650,10 @@ const Settings = () => {
                   </>
                 ) : "Save Changes"}
               </Button>
-            </div>
+            </div>}
           </form>
         </Form>
+        <TabsContent value="team" className="mt-4"><CompanyTeamPanel /></TabsContent>
       </Tabs>
     </div>
   );

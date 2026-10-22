@@ -14,8 +14,9 @@ const meResponseSchema = z.object({
     name: z.string().min(1),
   }),
   membership: z.object({
-    role: z.enum(['owner', 'admin', 'member']),
+    role: z.enum(['owner', 'admin', 'accountant', 'member', 'read_only']),
   }),
+  permissions: z.array(z.string()).default([]),
 });
 
 export type MeResponse = z.infer<typeof meResponseSchema>;
