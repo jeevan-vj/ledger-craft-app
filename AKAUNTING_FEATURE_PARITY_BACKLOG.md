@@ -36,7 +36,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 
 | Capability | LedgerCraft status | Evidence and remaining gap |
 | --- | --- | --- |
-| Business dashboard | Partial | Dashboard and accounting pages exist; there is no saved dashboard/widget layout, payables widget, or date-filtered configurable dashboard comparable to Akaunting. |
+| Business dashboard | Partial | Date-filtered summary, receivables, payables, cash, tax and activity widgets now use organisation-scoped Hono reports. Per-user layouts and saved report definitions persist in SQLite and sync to web/mobile. The operational figures are explicitly provisional until AKP-05 supplies ledger-authoritative financial statements; expense-category/P&L authority and final authenticated device QA remain. |
 | Products and services | Partial | Core item/category CRUD now includes hydrated category detail, active state, duplicate, atomic bulk actions, canonical CSV preview/apply/export, strict price/tax validation, profile-currency display, and sale-safe invoice selection. Media and per-item multi-tax behavior remain open. |
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Expo exposes separate public-link, PDF download/export, and PDF share actions plus an unauthenticated native public-invoice route. Android production App Link verification awaits its first signing credential. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
@@ -218,6 +218,17 @@ Acceptance criteria:
 ### AKP-10 — Configurable dashboards and saved reports (P1)
 
 Expected outcome: users can configure a useful company dashboard and retain report definitions.
+
+**Implemented locally (2026-10-23):** Shared strict DTOs, migration
+`0008_configurable-dashboards.sql`, organisation/user-scoped Hono persistence,
+exact-decimal operational report aggregation, per-user visibility/order/size/default
+layouts, and saved report create/rename/duplicate/pin/archive flows are in place.
+Web filters are URL-backed and web provides print, CSV and PDF output. Expo consumes
+the same report/filter DTOs, respects the saved widget layout, exposes date presets,
+and opens saved filters. All figures carry a visible provisional/AKP-05 authority
+marker: authoritative P&L, expense-category/accounting basis, closed-period reports,
+and complete golden drill-down remain dependent on AKP-05 rather than being inferred
+from incomplete journals.
 
 Acceptance criteria:
 

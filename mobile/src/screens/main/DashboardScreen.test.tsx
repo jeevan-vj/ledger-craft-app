@@ -6,6 +6,7 @@ import DashboardScreen from './DashboardScreen';
 import { invoiceService } from '@/services/invoiceService';
 import { useStore } from '@/store';
 import { darkPalette } from '@/theme/tokens';
+import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 
 const mockNavigate = jest.fn();
 
@@ -37,6 +38,30 @@ jest.mock('@/features/quotes/api/quotesApi', () => ({
   },
 }));
 
+jest.mock('@/features/dashboard/api/dashboardApi', () => ({
+  dashboardApi: {
+    getDashboard: jest.fn(),
+    listSavedReports: jest.fn(),
+  },
+}));
+
+const reportFilters = { from: '2026-10-01', to: '2026-10-31', comparison: 'previous_period' as const };
+const widgetKinds = ['summary', 'receivables', 'payables', 'cash', 'tax', 'activity'] as const;
+const dashboardPayload = {
+  layout: {
+    id: '11111111-1111-4111-8111-111111111111', name: 'My dashboard', isDefault: true,
+    filters: reportFilters,
+    widgets: widgetKinds.map((kind, order) => ({ kind, order, visible: true, size: kind === 'summary' ? 'large' as const : 'medium' as const })),
+    createdAt: new Date().toISOString(), updatedAt: new Date().toISOString(),
+  },
+  reports: widgetKinds.map((type) => ({
+    type, filters: reportFilters,
+    authority: { status: 'provisional' as const, dependency: 'AKP-05' as const, message: 'Pending ledger authority.' },
+    metrics: [{ key: `${type}-total`, label: type === 'cash' ? 'Account balance' : 'Total', value: type === 'cash' ? '1234.56' : '12.34', comparisonValue: '10.00', currency: 'NZD' }],
+    rows: [],
+  })),
+};
+
 function flatStyle(style: unknown): ViewStyle {
   return StyleSheet.flatten(style as ViewStyle) ?? {};
 }
@@ -45,11 +70,21 @@ describe('Home quick actions', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     (invoiceService.fetchInvoices as jest.Mock).mockResolvedValue([]);
+    (dashboardApi.getDashboard as jest.Mock).mockResolvedValue(dashboardPayload);
+    (dashboardApi.listSavedReports as jest.Mock).mockResolvedValue([]);
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
     (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
     useStore.setState({
       user: { id: 'user-1', email: 'niro@example.com', user_metadata: { full_name: 'Niro' } },
     });
+  });
+
+  it('renders the shared server report widgets and AKP-05 authority label', async () => {
+    const screen = render(<DashboardScreen />);
+    expect(await screen.findByText('Business reports')).toBeTruthy();
+    expect(screen.getByText('Provisional · AKP-05')).toBeTruthy();
+    expect(screen.getByLabelText('Operational balance $1,234.56')).toBeTruthy();
+    expect(screen.getByText('receivables')).toBeTruthy();
   });
 
   it('renders home actions that open distinct screens', async () => {

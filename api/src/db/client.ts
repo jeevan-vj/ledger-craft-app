@@ -26,6 +26,7 @@ import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
 import { billLines, billPayments, bills, vendors } from './schema/purchases';
+import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
 
 export const schema = {
   rlsProbe,
@@ -70,6 +71,8 @@ export const schema = {
   bills,
   billLines,
   billPayments,
+  dashboardLayouts,
+  savedReportDefinitions,
 };
 
 

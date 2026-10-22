@@ -169,6 +169,16 @@ Release gates, live smoke checks, and authenticated Browser purchase flows pass.
 Attachments, history, cancel/restore, split allocations, import/export,
 recurring bills, and final native device QA remain in AKP-01.
 
+**Configurable operational dashboards (implemented locally, 2026-10-23):** Shared
+report DTOs now drive organisation-scoped Hono endpoints and the web/Expo dashboards.
+SQLite migration `0008_configurable-dashboards.sql` persists per-user widget
+visibility/order/size/default layout and saved report definitions inside each
+organisation. Date/comparison filters, exact-decimal summary/receivable/payable/cash/
+tax/activity metrics, source-row drill-down, web URL filters, CSV/PDF/print actions,
+and mobile saved filters are implemented. These reports deliberately identify
+themselves as provisional operational views; AKP-05 remains the dependency for
+ledger-authoritative P&L, accounting-basis selection and closed-period reporting.
+
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
 and private-use percentage fields through Hono/SQLite. New expenses default to

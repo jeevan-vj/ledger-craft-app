@@ -5,6 +5,35 @@ export {
 } from './error';
 
 export {
+  createSavedReportRequestSchema,
+  dashboardComparisonSchema,
+  dashboardLayoutListResponseSchema,
+  dashboardLayoutSchema,
+  dashboardResponseSchema,
+  dashboardWidgetKindSchema,
+  dashboardWidgetPreferenceSchema,
+  reportAuthoritySchema,
+  reportFiltersSchema,
+  reportMetricSchema,
+  reportResultSchema,
+  reportRowSchema,
+  saveDashboardLayoutRequestSchema,
+  savedReportDefinitionSchema,
+  savedReportListResponseSchema,
+  updateSavedReportRequestSchema,
+  type CreateSavedReportRequest,
+  type DashboardLayoutDto,
+  type DashboardResponse,
+  type DashboardWidgetKind,
+  type DashboardWidgetPreference,
+  type ReportFilters,
+  type ReportResultDto,
+  type SaveDashboardLayoutRequest,
+  type SavedReportDefinitionDto,
+  type UpdateSavedReportRequest,
+} from './dashboard';
+
+export {
   healthzResponseSchema,
   readyzNotReadyResponseSchema,
   readyzOkResponseSchema,

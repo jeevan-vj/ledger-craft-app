@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,6 +10,7 @@ import { quotesApi } from '@/features/quotes/api/quotesApi';
 import { summarizeQuotes } from '@/features/quotes/quoteModel';
 import type { Quote } from '@/types/quote';
 import type { Invoice } from '@/types/invoice';
+import type { DashboardResponse, ReportFilters, SavedReportDefinitionDto } from '@ledgercraft/contracts';
 import type { HomeStackParamList, MainTabParamList } from '@/navigation/types';
 import { homeQuickActionLink, invoiceTabParams, moreTabParams, type HomeQuickActionId } from '@/navigation/links';
 import { Card, AppPressable, CircleIconButton, DashedSetupCard, EmptyState, PillButton, QuickAction } from '@/components/ui';
@@ -18,6 +19,7 @@ import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { homeTaskStorage } from './homeTaskStorage';
+import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
@@ -42,14 +44,15 @@ export default function DashboardScreen() {
   const { safeArea: insets, bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<DashboardNavigation>();
   const { user } = useAuth();
-  const { width } = useWindowDimensions();
-  const cardWidth = Math.max(280, width - 40);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [quotes, setQuotes] = useState<Quote[]>([]);
   const [quoteError, setQuoteError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [summaryPage, setSummaryPage] = useState(0);
+  const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
+  const [savedReports, setSavedReports] = useState<SavedReportDefinitionDto[]>([]);
+  const [dashboardFilters, setDashboardFilters] = useState<ReportFilters | undefined>();
+  const [reportError, setReportError] = useState<string | null>(null);
   const [tasksDismissed, setTasksDismissed] = useState<boolean | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -63,6 +66,18 @@ export default function DashboardScreen() {
       setError('Invoices could not be loaded.');
     }
     try {
+      const [nextDashboard, nextSavedReports] = await Promise.all([
+        dashboardApi.getDashboard(dashboardFilters),
+        dashboardApi.listSavedReports(),
+      ]);
+      setDashboard(nextDashboard);
+      setSavedReports(nextSavedReports);
+      setReportError(null);
+    } catch (loadError) {
+      console.error('Error loading operational reports:', loadError);
+      setReportError('Business reports could not be loaded.');
+    }
+    try {
       setQuotes((await quotesApi.list()).quotes);
       setQuoteError(null);
     } catch (loadError) {
@@ -72,7 +87,7 @@ export default function DashboardScreen() {
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [dashboardFilters]);
   useEffect(() => { load(); }, [load]);
   useEffect(() => {
     let active = true;
@@ -94,6 +109,17 @@ export default function DashboardScreen() {
   const totalOutstanding = outstanding.reduce((sum, item) => sum + item.total, 0);
   const overdue = invoices.filter((item) => item.status === 'overdue');
   const quoteSummary = useMemo(() => summarizeQuotes(quotes), [quotes]);
+  const visibleReports = useMemo(() => {
+    if (!dashboard) return [];
+    return dashboard.layout.widgets
+      .filter((item) => item.visible)
+      .sort((a, b) => a.order - b.order)
+      .map((item) => dashboard.reports.find((report) => report.type === item.kind))
+      .filter((report): report is DashboardResponse['reports'][number] => Boolean(report));
+  }, [dashboard]);
+  const balance = dashboard?.reports.find((report) => report.type === 'cash')?.metrics.find((metric) => metric.label === 'Account balance')?.value
+    ?? dashboard?.reports.find((report) => report.type === 'receivables')?.metrics[0]?.value
+    ?? String(totalOutstanding || totalPaid);
   const workItems = useMemo(() => {
     const rank: Record<string, number> = { overdue: 0, draft: 1, sent: 2 };
     return [...invoices]
@@ -131,6 +157,11 @@ export default function DashboardScreen() {
     });
   };
   const retry = () => { setLoading(true); load(); };
+  const applyPeriod = (days?: number) => {
+    const to = new Date();
+    const from = days ? new Date(to.getTime() - (days - 1) * 86_400_000) : new Date(Date.UTC(to.getUTCFullYear(), 0, 1));
+    setDashboardFilters({ from: from.toISOString().slice(0, 10), to: to.toISOString().slice(0, 10), comparison: 'previous_period' });
+  };
 
   if (loading) {
     return (
@@ -160,7 +191,7 @@ export default function DashboardScreen() {
     </View>
 
     <View style={styles.balanceRow}>
-      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Total balance</Text><Text style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Total balance ${formatMoney(totalOutstanding || totalPaid, 'NZD')}` : 'Total balance hidden'}>{balanceVisible ? formatMoney(totalOutstanding || totalPaid, 'NZD') : '••••••'}</Text></View>
+      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Operational balance</Text><Text selectable style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Operational balance ${formatMoney(balance, 'NZD')}` : 'Operational balance hidden'}>{balanceVisible ? formatMoney(balance, 'NZD') : '••••••'}</Text></View>
       <View style={styles.balanceActions}><CircleIconButton icon={balanceVisible ? 'eye-off' : 'eye'} label={balanceVisible ? 'Hide balance' : 'Show balance'} onPress={() => setBalanceVisible((visible) => !visible)} /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
     </View>
 
@@ -183,20 +214,24 @@ export default function DashboardScreen() {
       </AppPressable>
     ) : null}
 
-    <Text style={[theme.type.headline, styles.sectionTitle]}>Business summary</Text>
-    <ScrollView horizontal pagingEnabled snapToInterval={cardWidth + 12} decelerationRate="fast" showsHorizontalScrollIndicator={false} contentContainerStyle={{ gap: 12 }} accessibilityLabel={`Business summary, card ${summaryPage + 1} of 2`} onMomentumScrollEnd={(event) => setSummaryPage(Math.round(event.nativeEvent.contentOffset.x / (cardWidth + 12)))}>
-      <Card elevated style={{ width: cardWidth }}>
-        <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Money coming in</Text>
-        <Text style={[theme.type.display, { marginTop: 8 }]}>{formatMoney(totalOutstanding, 'NZD')}</Text>
-        <View style={styles.summaryFooter}><Text style={theme.type.footnote}>{outstanding.length} outstanding invoices</Text><Feather name="trending-up" size={20} color={theme.colors.accent} /></View>
-      </Card>
-      <Card elevated style={{ width: cardWidth }}>
-        <Text style={[theme.type.subhead, { color: theme.colors.textSecondary }]}>Paid this period</Text>
-        <Text style={[theme.type.display, { marginTop: 8 }]}>{formatMoney(totalPaid, 'NZD')}</Text>
-        <View style={styles.summaryFooter}><Text style={theme.type.footnote}>{paid.length} paid invoices</Text><Feather name="check-circle" size={20} color={theme.colors.accent} /></View>
-      </Card>
-    </ScrollView>
-    <View style={styles.dots}>{[0, 1].map((page) => <View key={page} style={{ width: page === summaryPage ? 18 : 6, height: 6, borderRadius: 3, backgroundColor: page === summaryPage ? theme.colors.accent : theme.colors.border }} />)}</View>
+    <View style={styles.sectionHead}>
+      <Text style={theme.type.headline}>Business reports</Text>
+      <Text selectable style={theme.type.footnote}>Provisional · AKP-05</Text>
+    </View>
+    <View style={styles.periods}>
+      <PillButton label="30 days" variant="secondary" onPress={() => applyPeriod(30)} />
+      <PillButton label="90 days" variant="secondary" onPress={() => applyPeriod(90)} />
+      <PillButton label="Year" variant="secondary" onPress={() => applyPeriod()} />
+    </View>
+    {savedReports.length > 0 ? <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.savedReports} accessibilityLabel="Saved report filters">
+      {savedReports.map((report) => <PillButton key={report.id} label={report.name} variant={report.isPinned ? 'primary' : 'ghost'} onPress={() => setDashboardFilters(report.filters)} />)}
+    </ScrollView> : null}
+    {reportError ? <AppPressable onPress={retry} accessibilityRole="button" accessibilityLabel="Retry loading business reports" style={[styles.errorBanner, { backgroundColor: theme.colors.dangerFill }]}><Text selectable style={[theme.type.subhead, { color: theme.colors.danger }]}>{reportError} Tap to retry.</Text></AppPressable> : null}
+    {visibleReports.length > 0 ? <View style={styles.reportList}>{visibleReports.map((report) => <Card key={report.type} elevated>
+      <Text style={[theme.type.subhead, { color: theme.colors.textSecondary, textTransform: 'capitalize' }]}>{report.type}</Text>
+      {report.metrics.map((metric) => <View key={metric.key} style={styles.reportMetric}><Text selectable style={theme.type.footnote}>{metric.label}</Text><Text selectable style={[theme.type.headline, styles.tabular]}>{report.type === 'activity' ? Number(metric.value).toFixed(0) : formatMoney(metric.value, metric.currency)}</Text></View>)}
+      {report.rows.length === 0 ? <Text style={[theme.type.footnote, { marginTop: 12 }]}>No source activity in this period.</Text> : <Text style={[theme.type.footnote, { marginTop: 12 }]}>{report.rows.length} source record{report.rows.length === 1 ? '' : 's'}</Text>}
+    </Card>)}</View> : !reportError ? <DashedSetupCard title="No dashboard widgets" description="Configure visible widgets on the web; your personal layout syncs here." icon="bar-chart-2" /> : null}
 
     <Text style={[theme.type.headline, styles.sectionTitle]}>Quotes</Text>
     <AppPressable onPress={openQuotes} accessibilityRole="button" accessibilityLabel="Open quotes" style={({ pressed }) => [pressed && { opacity: 0.7 }]}>
@@ -269,6 +304,10 @@ const styles = StyleSheet.create({
   actions: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start', marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
   summaryFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
+  periods: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },
+  savedReports: { gap: 8, paddingBottom: 16 },
+  reportList: { gap: 12, marginBottom: 28 },
+  reportMetric: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginTop: 12 },
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   taskActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, marginTop: 28 },
