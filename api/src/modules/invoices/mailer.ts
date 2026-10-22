@@ -11,6 +11,8 @@ export type InvoiceMail = {
 export type InvoiceMailer = {
   sendInvoice(mail: InvoiceMail): Promise<void>;
   sendReminder?(mail: InvoiceMail): Promise<void>;
+  /** Optional until a provider exists. Production leaves this unset and quote send returns 503. */
+  sendQuote?(mail: InvoiceMail): Promise<void>;
 };
 
 export function createLoggingInvoiceMailer(): InvoiceMailer {
@@ -28,5 +30,11 @@ export function createUnavailableInvoiceMailer(): InvoiceMailer {
   const unavailable = async () => {
     throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email delivery is unavailable. Download or share the invoice instead.');
   };
-  return { sendInvoice: unavailable, sendReminder: unavailable };
+  return {
+    sendInvoice: unavailable,
+    sendReminder: unavailable,
+    sendQuote: async () => {
+      throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email delivery is unavailable. Share the quote link instead.');
+    },
+  };
 }

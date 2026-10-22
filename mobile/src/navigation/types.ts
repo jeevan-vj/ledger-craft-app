@@ -3,9 +3,12 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type RootStackParamList = {
   Auth: undefined;
   Main: undefined;
+  PublicInvoice: { shareToken: string };
+  PublicQuote: { shareToken: string };
 };
 
 export type AuthStackParamList = {
+  Intro: undefined;
   Login: undefined;
   Signup: undefined;
   Onboarding: undefined;
@@ -27,6 +30,10 @@ export type InvoiceStackParamList = {
   InvoiceCreate: { customerId?: string } | undefined;
   InvoiceEdit: { invoiceId: string };
   InvoiceDetail: { invoiceId: string };
+  QuoteList: undefined;
+  QuoteCreate: { customerId?: string } | undefined;
+  QuoteEdit: { quoteId: string };
+  QuoteDetail: { quoteId: string };
   /** Contextual detour so Back returns to the invoice instead of the More tab. */
   BusinessSettings: undefined;
 };

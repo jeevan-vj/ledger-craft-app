@@ -3,10 +3,15 @@ module.exports = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testEnvironment: 'node',
   transformIgnorePatterns: [
-    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|sentry-expo|native-base|react-native-svg|@supabase/.*)'
+    'node_modules/(?!((jest-)?react-native|@react-native(-community)?)|expo(nent)?|@expo(nent)?/.*|@expo-google-fonts/.*|react-navigation|@react-navigation/.*|@unimodules/.*|unimodules|@sentry/.*|native-base|react-native-svg|@supabase/.*)'
   ],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^hono/http-exception$': '<rootDir>/src/shims/hono-http-exception.ts',
+    '^hono/utils/http-status$': '<rootDir>/src/shims/hono-http-status.ts',
+    '^@ledgercraft/contracts$': '<rootDir>/../packages/contracts/src/index.ts',
+    '^zod$': '<rootDir>/node_modules/zod',
+    '^@babel/runtime/(.*)$': '<rootDir>/node_modules/@babel/runtime/$1',
   },
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',

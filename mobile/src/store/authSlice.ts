@@ -12,6 +12,7 @@ import {
   type MeResponse,
 } from '@/features/auth/api/authApi';
 import { clearServerState } from '@/lib/queryClient';
+import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
 
 export type AuthUser = {
   id: string;
@@ -89,10 +90,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
         throw new AuthApiError('Signed in, but no session was returned.', 401);
       }
       const user = toAuthUser(me);
+      const profile = await businessProfileApi.get();
       set({
         user,
         session: { user },
-        hasCompletedOnboarding: true,
+        hasCompletedOnboarding: Boolean(profile),
         onboardingChecked: true,
         loading: false,
         error: null,
@@ -121,7 +123,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       set({
         user,
         session: { user },
-        hasCompletedOnboarding: true,
+        hasCompletedOnboarding: false,
         onboardingChecked: true,
         loading: false,
         error: null,
@@ -158,8 +160,9 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
 
   checkOnboardingStatus: async () => {
     const { user } = get();
+    const profile = user ? await businessProfileApi.get() : null;
     set({
-      hasCompletedOnboarding: !!user,
+      hasCompletedOnboarding: Boolean(profile),
       onboardingChecked: true,
       loading: false,
     });
@@ -178,10 +181,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       return;
     }
     const user = toAuthUser(me);
+    const profile = await businessProfileApi.get();
     set({
       user,
       session: { user },
-      hasCompletedOnboarding: true,
+      hasCompletedOnboarding: Boolean(profile),
       onboardingChecked: true,
     });
   },
@@ -198,10 +202,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       const me = await getMe();
       if (me) {
         const user = toAuthUser(me);
+        const profile = await businessProfileApi.get();
         set({
           user,
           session: { user },
-          hasCompletedOnboarding: true,
+          hasCompletedOnboarding: Boolean(profile),
           onboardingChecked: true,
           loading: false,
           error: null,

@@ -37,6 +37,7 @@ export const generatePdfFromElement = async (
   fileName = 'invoice.pdf',
   _template: InvoiceTemplateId = 'classic',
   _businessLogoUrl?: string,
+  subject = 'Invoice',
 ): Promise<void> => {
   const clone = element.cloneNode(true) as HTMLElement;
   const captureId = `pdf-capture-${crypto.randomUUID()}`;
@@ -91,7 +92,7 @@ export const generatePdfFromElement = async (
       }
       y += captureHeight;
     }
-    pdf.setProperties({ title: fileName.replace(/\.pdf$/i, ''), subject: 'Invoice', creator: 'LedgerCraft' });
+    pdf.setProperties({ title: fileName.replace(/\.pdf$/i, ''), subject, creator: 'LedgerCraft' });
     await pdf.save(fileName, { returnPromise: true });
   } catch (error) {
     throw new Error(`Failed to generate PDF: ${error instanceof Error ? error.message : String(error)}`);
@@ -105,6 +106,13 @@ export const generateInvoicePdf = async (
   element: HTMLElement,
   template: InvoiceTemplateId = 'classic',
   businessLogoUrl?: string,
+  options?: { fileName?: string; subject?: string },
 ): Promise<void> => {
-  await generatePdfFromElement(element, `Invoice-${invoice.invoiceNumber}.pdf`, template, businessLogoUrl);
+  await generatePdfFromElement(
+    element,
+    options?.fileName ?? `Invoice-${invoice.invoiceNumber}.pdf`,
+    template,
+    businessLogoUrl,
+    options?.subject ?? 'Invoice',
+  );
 };

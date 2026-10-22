@@ -1,14 +1,14 @@
 import React from 'react';
-import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuth } from '@/store';
 import type { MoreStackParamList } from '@/navigation/types';
 import { moreMenuSections, type MoreMenuScreen } from '@/navigation/links';
-import { Card, DashedSetupCard, ListRow } from '@/components/ui';
+import { Card, DashedSetupCard, ListRow, AppPressable } from '@/components/ui';
 import { useTheme } from '@/theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsList'>;
 
@@ -22,13 +22,13 @@ const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['nam
 
 export default function SettingsScreen() {
   const theme = useTheme();
-  const insets = useSafeAreaInsets();
+  const { safeArea: insets, bottomPadding } = useTabScreenInsets();
   const { signOut, user } = useAuth();
   const navigation = useNavigation<NavigationProp>();
   const name = user?.user_metadata?.full_name || 'LedgerCraft member';
   const confirmSignOut = () => Alert.alert('Sign out?', 'You can sign back in anytime.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign out', style: 'destructive', onPress: signOut }]);
 
-  return <ScrollView style={{ backgroundColor: theme.colors.background }} contentContainerStyle={[styles.content, { paddingTop: 24 + insets.top, paddingBottom: 32 + insets.bottom }]} showsVerticalScrollIndicator={false}>
+  return <ScrollView style={{ backgroundColor: theme.colors.background }} contentContainerStyle={[styles.content, { paddingTop: 24 + insets.top, paddingBottom: bottomPadding }]} showsVerticalScrollIndicator={false}>
     <View style={styles.profile}>
       <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={[styles.avatarText, { color: theme.colors.accentForeground }]}>{name.slice(0, 1).toUpperCase()}</Text></View>
       <Text style={[theme.type.display, styles.name]}>{name}</Text>
@@ -62,7 +62,7 @@ export default function SettingsScreen() {
       accessibilityLabel="Connect a bank account. Automatic transaction matching is not set up yet."
     />
 
-    <Pressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></Pressable>
+    <AppPressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></AppPressable>
     <Text style={[theme.type.caption, styles.version]}>LedgerCraft · Version 1.0.0</Text>
   </ScrollView>;
 }

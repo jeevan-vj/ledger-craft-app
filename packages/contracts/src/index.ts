@@ -37,6 +37,8 @@ export {
 
 export {
   businessProfileSchema,
+  gstRegistrationStatusSchema,
+  quoteKindSchema,
   upsertBusinessProfileRequestSchema,
   type BusinessProfileDto,
   type UpsertBusinessProfileRequest,
@@ -94,6 +96,42 @@ export {
   type ShareInvoiceResponse,
   type UpdateInvoiceRequest,
 } from './invoice';
+
+export {
+  convertQuoteResponseSchema,
+  createQuoteRequestSchema,
+  createShareQuoteRequestSchema,
+  nextQuoteNumberResponseSchema,
+  publicQuoteResponseSchema,
+  publicSharedQuoteSchema,
+  quoteCountsSchema,
+  quoteListQuerySchema,
+  quoteListResponseSchema,
+  quoteSchema,
+  quoteStatusChangeSchema,
+  quoteStatusSchema,
+  respondToQuoteRequestSchema,
+  sendQuoteRequestSchema,
+  shareQuoteResponseSchema,
+  updateQuoteRequestSchema,
+  type ConvertQuoteResponse,
+  type CreateQuoteRequest,
+  type CreateShareQuoteRequest,
+  type NextQuoteNumberResponse,
+  type PublicQuoteResponse,
+  type PublicSharedQuote,
+  type QuoteCounts,
+  type QuoteDto,
+  type QuoteKind,
+  type QuoteListQuery,
+  type QuoteListResponse,
+  type QuoteStatus,
+  type QuoteStatusChange,
+  type RespondToQuoteRequest,
+  type SendQuoteRequest,
+  type ShareQuoteResponse,
+  type UpdateQuoteRequest,
+} from './quote';
 
 export {
   createExpenseCategoryRequestSchema,
@@ -209,9 +247,11 @@ export {
 
 export {
   createPaymentReceiptRequestSchema,
+  paymentReceiptDataSchema,
   paymentReceiptListResponseSchema,
   paymentReceiptSchema,
   type CreatePaymentReceiptRequest,
+  type PaymentReceiptDataDto,
   type PaymentReceiptDto,
   type PaymentReceiptListResponse,
 } from './receipt';

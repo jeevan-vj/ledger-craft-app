@@ -6,12 +6,6 @@ const LOGO_PATH = path.join(__dirname, '../../public/logo.png');
 const ASSETS_DIR = path.join(__dirname, '../assets');
 const ICON_SIZE = 1024;
 
-// Brand colors
-const BRAND_COLORS = {
-  primary: '#2563eb',
-  background: '#ffffff',
-};
-
 async function generateIcons() {
   try {
     // Check if logo exists
@@ -65,15 +59,19 @@ async function generateIcons() {
         .toFile(outputPath);
     }
 
-    // 1. Generate iOS/main icon (1024x1024)
-    // iOS safe zone: ~10% padding on all sides (logo in middle 80%)
-    const iosLogoSize = 820; // 1024 - (102 * 2) = 820px
+    // iOS app icons cannot contain transparency. Using the square source art
+    // edge-to-edge also avoids the white frame caused by padding the artwork on
+    // a transparent canvas.
+    async function createFullBleedIcon(outputPath) {
+      return sharp(LOGO_PATH)
+        .resize(ICON_SIZE, ICON_SIZE, { fit: 'cover' })
+        .removeAlpha()
+        .png()
+        .toFile(outputPath);
+    }
 
-    await createIcon(
-      iosLogoSize,
-      path.join(ASSETS_DIR, 'icon.png'),
-      { r: 0, g: 0, b: 0, alpha: 0 } // Transparent
-    );
+    // 1. Generate iOS/main icon (1024x1024)
+    await createFullBleedIcon(path.join(ASSETS_DIR, 'icon.png'));
 
     console.log('✅ Generated icon.png (iOS/main icon)');
 
@@ -90,14 +88,8 @@ async function generateIcons() {
     console.log('✅ Generated adaptive-icon.png (Android adaptive icon foreground)');
 
     // 3. Generate splash screen icon (1024x1024)
-    // Splash icon: Logo centered on white background
-    const splashLogoSize = 614; // ~60% of canvas
-
-    await createIcon(
-      splashLogoSize,
-      path.join(ASSETS_DIR, 'splash-icon.png'),
-      { r: 255, g: 255, b: 255, alpha: 1 } // White
-    );
+    // Keep the splash artwork and native launch-screen background seamless.
+    await createFullBleedIcon(path.join(ASSETS_DIR, 'splash-icon.png'));
 
     console.log('✅ Generated splash-icon.png (splash screen icon)');
 
@@ -112,7 +104,8 @@ async function generateIcons() {
     for (const file of iconFiles) {
       const metadata = await sharp(file.path).metadata();
       const status = metadata.width === ICON_SIZE && metadata.height === ICON_SIZE ? '✅' : '❌';
-      console.log(`${status} ${file.name}: ${metadata.width}x${metadata.height}`);
+      const alpha = metadata.hasAlpha ? 'with alpha' : 'opaque';
+      console.log(`${status} ${file.name}: ${metadata.width}x${metadata.height}, ${alpha}`);
     }
 
     console.log('\n🎉 All icons generated successfully!');

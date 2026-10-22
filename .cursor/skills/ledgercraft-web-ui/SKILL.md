@@ -15,7 +15,7 @@ Before editing, read:
 2. `src/design-system/revolut.css` for canonical semantic tokens.
 3. `tailwind.config.ts` and the relevant components in `src/components/ui/`.
 
-The current files above supersede legacy color, gradient, glassmorphism, emoji, and Supabase-era examples in `.cursor/rules/project-guide.mdc`. Preserve the product behavior and architecture in `Agents.md` and `TARGET_ARCHITECTURE.md`.
+The current files above supersede legacy color, gradient, glassmorphism, emoji, and Supabase-era examples in `.cursor/rules/project-guide.mdc`. Preserve the product behavior and architecture in `AGENTS.md` and `TARGET_ARCHITECTURE.md`.
 
 ## Build decisions
 

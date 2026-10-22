@@ -16,13 +16,20 @@ export interface MobileBusinessProfileDto {
   logoUrl: string | null;
   website: string | null;
   defaultTaxRate: string | null;
+  gstRegistrationStatus: 'unknown' | 'registered' | 'not_registered';
   defaultTerms: string | null;
   paymentTermDays: number;
   defaultNotes: string | null;
   bankInfo: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
   theme: BusinessTheme | null;
   invoiceNumberFormat: string | null;
   invoiceNumberSequence: number | null;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   createdAt: string;
   updatedAt: string;
 }
@@ -40,7 +47,12 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     country: dto.country,
     invoiceNumberFormat: dto.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
     invoiceNumberSequence: dto.invoiceNumberSequence ?? 1,
+    quoteNumberFormat: dto.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: dto.quoteNumberSequence ?? 1,
+    quoteValidityDays: dto.quoteValidityDays ?? 30,
+    defaultQuoteKind: dto.defaultQuoteKind ?? 'quote',
     defaultTaxRate: dto.defaultTaxRate == null ? undefined : Number(dto.defaultTaxRate),
+    gstRegistrationStatus: dto.gstRegistrationStatus,
     address: dto.address ?? undefined,
     city: dto.city ?? undefined,
     state: dto.state ?? undefined,
@@ -51,6 +63,8 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     defaultTerms: dto.defaultTerms ?? undefined,
     defaultNotes: dto.defaultNotes ?? undefined,
     bankInfo: dto.bankInfo ?? undefined,
+    bankAccountName: dto.bankAccountName ?? undefined,
+    bankAccountNumber: dto.bankAccountNumber ?? undefined,
     logoUrl: dto.logoUrl ?? undefined,
     theme: dto.theme ?? undefined,
     createdAt: dto.createdAt,

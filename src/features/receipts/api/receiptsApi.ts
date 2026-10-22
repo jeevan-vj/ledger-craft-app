@@ -1,21 +1,27 @@
-import type { CreatePaymentReceiptRequest, PaymentReceiptDto } from '@ledgercraft/contracts';
+import type { CreatePaymentReceiptRequest, PaymentReceiptDataDto, PaymentReceiptDto } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { Receipt } from '@/types/payment';
 
 export function receiptsApiEnabled(): boolean {
-  return import.meta.env.VITE_RECEIPTS_API === 'true';
+  return import.meta.env.VITE_RECEIPTS_API !== 'false';
 }
 
 export class ReceiptsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ReceiptsApiError';
+    this.requestId = requestId;
   }
 }
 
 function toReceipt(dto: PaymentReceiptDto): Receipt {
+  const data = dto.receiptData;
   return {
     id: dto.id,
     paymentId: dto.paymentId,
@@ -24,17 +30,62 @@ function toReceipt(dto: PaymentReceiptDto): Receipt {
     generatedAt: dto.generatedAt,
     emailSentAt: dto.emailSentAt ?? undefined,
     isEmailed: dto.isEmailed,
+    receiptData: toReceiptData(data, dto.receiptNumber, dto.createdAt),
     createdAt: dto.createdAt,
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
+function toReceiptData(data: PaymentReceiptDataDto, receiptNumber: string, createdAt: string) {
+  const amountPaid = Number(data.amountPaid);
+  return {
+    payment: {
+      id: data.paymentId,
+      invoiceId: data.invoiceId,
+      invoiceNumber: data.invoiceNumber,
+      userId: '',
+      paymentMethod: data.paymentMethod,
+      amount: amountPaid,
+      paymentDate: data.paymentDate,
+      status: 'completed' as const,
+      createdAt,
+      updatedAt: createdAt,
+    },
+    invoice: {
+      id: data.invoiceId,
+      invoiceNumber: data.invoiceNumber,
+      customerId: '',
+      date: data.invoiceDate ?? data.paymentDate,
+      dueDate: data.invoiceDueDate ?? '',
+      items: [],
+      subtotal: Number(data.invoiceTotal),
+      taxAmount: 0,
+      total: Number(data.invoiceTotal),
+      totalPaid: Number(data.totalPaid),
+      balanceDue: Number(data.balanceDue),
+      paymentStatus: Number(data.balanceDue) === 0 ? 'paid' as const : 'partially_paid' as const,
+      taxInclusive: false,
+      status: Number(data.balanceDue) === 0 ? 'paid' as const : 'sent' as const,
+      currency: data.currency,
+    },
+    customer: {
+      id: '',
+      name: data.customerName,
+      email: data.customerEmail ?? '',
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      country: 'NZ',
+      phone: null,
+      isVip: false,
+      tags: [],
+    },
+    receiptNumber,
+    paymentDate: data.paymentDate,
+    amountPaid,
+    paymentMethod: data.paymentMethod.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    balanceAfterPayment: Number(data.balanceDue),
+  };
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -47,7 +98,10 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     },
   });
   if (response.status === 204) return undefined as T;
-  if (!response.ok) throw new ReceiptsApiError(await parseError(response), response.status);
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new ReceiptsApiError(failure.message, failure.status, failure.requestId);
+  }
   return (await response.json()) as T;
 }
 

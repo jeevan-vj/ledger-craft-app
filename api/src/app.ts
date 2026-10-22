@@ -9,6 +9,7 @@ import { customerRoutes } from './modules/customers/customers.routes';
 import { expenseRoutes } from './modules/expenses/expenses.routes';
 import { healthRoutes } from './modules/health/health.routes';
 import { invoiceRoutes } from './modules/invoices/invoices.routes';
+import { quoteRoutes } from './modules/quotes/quotes.routes';
 import { itemRoutes } from './modules/items/items.routes';
 import { paymentRoutes } from './modules/payments/payments.routes';
 import { accountRoutes } from './modules/accounts/accounts.routes';
@@ -50,6 +51,9 @@ export function createApp(deps: AppDependencies = {}) {
     if (deps.chatCompleter) {
       c.set('chatCompleter', deps.chatCompleter);
     }
+    if (deps.actorUserId) {
+      c.set('actorUserId', deps.actorUserId);
+    }
     await next();
   });
   app.use('*', requestLogging);
@@ -78,6 +82,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', businessProfileRoutes());
   app.route('/', itemRoutes());
   app.route('/', invoiceRoutes());
+  app.route('/', quoteRoutes());
   app.route('/', expenseRoutes());
   app.route('/', paymentRoutes());
   app.route('/', accountRoutes());

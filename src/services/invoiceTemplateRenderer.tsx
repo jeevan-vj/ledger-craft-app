@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
 import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
+import { invoiceDocumentLabels, resolveDocumentLabels, type DocumentLabels } from '@/components/invoice/preview/documentLabels';
 import { InvoiceTemplateId } from '../components/invoice/templates/InvoiceTemplates';
 import ClassicTemplate from '../components/invoice/preview/templates/ClassicTemplate';
 import ModernTemplate from '../components/invoice/preview/templates/ModernTemplate';
@@ -23,9 +24,14 @@ interface TemplateData {
   tax: number;
   businessLogo?: string;
   theme?: any;
+  labels: DocumentLabels;
 }
 
-export const createTemplateData = (invoice: Invoice, businessProfile?: BusinessProfile | null): TemplateData => {
+export const createTemplateData = (
+  invoice: Invoice,
+  businessProfile?: BusinessProfile | null,
+  labels?: DocumentLabels,
+): TemplateData => {
   return {
     invoice,
     companyName: businessProfile?.name || 'Business Name',
@@ -51,6 +57,7 @@ export const createTemplateData = (invoice: Invoice, businessProfile?: BusinessP
     tax: invoice.taxAmount,
     businessLogo: businessProfile?.logoUrl || '',
     theme: businessProfile?.theme || DEFAULT_BUSINESS_THEME,
+    labels: resolveDocumentLabels(labels),
   };
 };
 
@@ -97,9 +104,11 @@ const EmailInvoiceTemplate: React.FC<{
 // Create email-compatible HTML for invoice
 export const createEmailCompatibleInvoiceHtml = (
   invoice: Invoice,
-  businessProfile?: BusinessProfile | null
+  businessProfile?: BusinessProfile | null,
+  labels?: DocumentLabels,
 ): string => {
-  const templateData = createTemplateData(invoice, businessProfile);
+  const templateData = createTemplateData(invoice, businessProfile, labels);
+  const copy = templateData.labels ?? invoiceDocumentLabels;
   const escapeBankValue = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
   const bankRows = [
     ['Account name:', businessProfile?.bankAccountName?.trim()],
@@ -116,7 +125,7 @@ export const createEmailCompatibleInvoiceHtml = (
             <tr>
               <td>
                 ${businessProfile?.logoUrl ? `<img src="${businessProfile.logoUrl}" alt="${templateData.companyName}" style="height: 40px; margin-bottom: 10px;">` : ''}
-                <h1 style="margin: 0; font-size: 32px; font-weight: bold;">INVOICE</h1>
+                <h1 style="margin: 0; font-size: 32px; font-weight: bold;">${copy.title}</h1>
                 <p style="margin: 5px 0 0 0; font-size: 18px; opacity: 0.9;">#${invoice.invoiceNumber}</p>
               </td>
               <td style="text-align: right; vertical-align: top;">
@@ -155,15 +164,15 @@ export const createEmailCompatibleInvoiceHtml = (
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td width="33%" style="vertical-align: top;">
-                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">Invoice Number</h4>
+                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">${copy.numberLabel}</h4>
                 <p style="margin: 0; color: #111827; font-weight: bold;">${invoice.invoiceNumber}</p>
               </td>
               <td width="33%" style="vertical-align: top;">
-                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">Invoice Date</h4>
+                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">${copy.dateLabel}</h4>
                 <p style="margin: 0; color: #111827; font-weight: bold;">${new Date(invoice.date).toLocaleDateString()}</p>
               </td>
               <td width="33%" style="vertical-align: top;">
-                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">Due Date</h4>
+                <h4 style="margin: 0 0 5px 0; color: #6b7280; font-size: 14px;">${copy.dueLabel}</h4>
                 <p style="margin: 0; color: #111827; font-weight: bold;">${new Date(invoice.dueDate).toLocaleDateString()}</p>
               </td>
             </tr>
@@ -236,7 +245,7 @@ export const createEmailCompatibleInvoiceHtml = (
         </td>
       </tr>
       
-      ${bankRows ? `<tr><td style="padding:20px;"><h4>Payment details</h4><table>${bankRows}</table></td></tr>` : ''}
+      ${copy.showPayment && bankRows ? `<tr><td style="padding:20px;"><h4>Payment details</h4><table>${bankRows}</table></td></tr>` : ''}
       <!-- Notes -->
       ${invoice.notes ? `
         <tr>

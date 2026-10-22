@@ -7,23 +7,28 @@ import type {
   UpdateAccountRequest,
 } from '@ledgercraft/contracts';
 import type { Account, AccountType } from '@/types';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { CreatePaymentRequest as ClientPaymentRequest, Payment } from '@/types/payment';
 
 export function paymentsApiEnabled(): boolean {
-  return import.meta.env.VITE_PAYMENTS_API === 'true';
+  return import.meta.env.VITE_PAYMENTS_API !== 'false';
 }
 
 export function accountsApiEnabled(): boolean {
-  return import.meta.env.VITE_ACCOUNTS_API === 'true';
+  return import.meta.env.VITE_ACCOUNTS_API !== 'false';
 }
 
 export class PaymentsApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'PaymentsApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -31,6 +36,7 @@ function toPayment(dto: PaymentDto): Payment {
   return {
     id: dto.id,
     invoiceId: dto.invoiceId,
+    invoiceNumber: dto.invoiceNumber ?? undefined,
     userId: '',
     paymentMethod: dto.paymentMethod,
     amount: Number(dto.amount),
@@ -61,15 +67,6 @@ function toAccount(dto: AccountDto): Account {
   };
 }
 
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -83,7 +80,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    throw new PaymentsApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new PaymentsApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

@@ -39,7 +39,10 @@ const site='https://easybiz.iamjeevan.com';
 const api='https://ledgercraft-api.jeevan90wijerathna.workers.dev';
 const expectedMigration=readdirSync('api/sqlite-migrations').filter(name=>name.endsWith('.sql')).sort().at(-1);
 const apiFlags=Object.fromEntries(['CUSTOMERS','BUSINESS','ITEMS','INVOICES','EXPENSES','PAYMENTS','ACCOUNTS','BANK','RECONCILIATION','TAX','STORAGE','RECEIPTS','AI','CONVERSATIONS','JOURNALS'].map(name=>[`VITE_${name}_API`,'true']));
-const environment={...process.env,...apiFlags,CLOUDFLARE_ACCOUNT_ID:'c611a72b3bacd0c105ab864d7006fca7',VITE_OPENAI_API_KEY:'',VITE_RESEND_API_KEY:'', WRANGLER_LOG_PATH:process.env.WRANGLER_LOG_PATH ?? '/tmp/ledgercraft-wrangler.log'};
+const release=process.env.SENTRY_RELEASE || process.env.GITHUB_SHA || '';
+const environment={...process.env,...apiFlags,
+  ...(release ? {SENTRY_RELEASE: release, VITE_SENTRY_RELEASE: process.env.VITE_SENTRY_RELEASE || release} : {}),
+  CLOUDFLARE_ACCOUNT_ID:'c611a72b3bacd0c105ab864d7006fca7',VITE_OPENAI_API_KEY:'',VITE_RESEND_API_KEY:'', WRANGLER_LOG_PATH:process.env.WRANGLER_LOG_PATH ?? '/tmp/ledgercraft-wrangler.log'};
 function run(command,args,options={}) {
   const result=spawnSync(command,args,{cwd:root,env:environment,stdio:'inherit',...options});
   if(result.error) throw result.error;
@@ -102,14 +105,21 @@ try {
       }
       if(!preserveRemote) writeFileSync(secretPath,JSON.stringify({BETTER_AUTH_SECRET:randomBytes(48).toString('base64url')}),{mode:0o600});
     }
+    const shaResult=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});
+    if(shaResult.status!==0 || !shaResult.stdout.trim()) throw new Error('Could not read the git SHA for the Sentry release.');
+    const sha=shaResult.stdout.trim();
+    const releaseArgs=['--tag',sha,'--var',`SENTRY_RELEASE:${sha}`,'--var','SENTRY_ENVIRONMENT:production','--outdir','.wrangler/api-sourcemaps','--message',`LedgerCraft release ${sha}`];
     if(preserveRemote) {
-      wrangler('deploy','--config',config);
+      wrangler('deploy','--config',config,...releaseArgs);
     } else {
       const secrets=JSON.parse(readFileSync(secretPath,'utf8'));
       if(typeof secrets.BETTER_AUTH_SECRET!=='string' || secrets.BETTER_AUTH_SECRET.length<32 || Object.keys(secrets).some(k=>k!=='BETTER_AUTH_SECRET')) throw new Error('Invalid deployment secret file');
-      wrangler('deploy','--config',config,'--secrets-file',secretPath);
+      wrangler('deploy','--config',config,'--secrets-file',secretPath,...releaseArgs);
     }
+    run('node',['scripts/upload-api-sourcemaps.mjs','.wrangler/api-sourcemaps']);
     await verifyPublished(api);
+    run('node',['scripts/upload-web-sourcemaps.mjs']);
+    run('node',['scripts/delete-sourcemaps.mjs','dist']);
     wrangler('pages','deploy','dist','--project-name','ledger-craft-app','--branch','main');
     await verifyPublished(site,JSON.parse(readFileSync('dist/version.json','utf8')));
     await verifyPublished('https://ledger-craft-app.pages.dev',JSON.parse(readFileSync('dist/version.json','utf8')));

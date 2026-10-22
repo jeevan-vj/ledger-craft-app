@@ -6,7 +6,7 @@ alwaysApply: true
 
 # Current authority
 
-For UI work, `DESIGN.md`, `ledgercraft-web-ui`, `ledgercraft-mobile-ui`, and the current platform token files supersede conflicting legacy design examples below. For data, auth, and deployment work, the current Cloudflare/Hono/SQLite decisions in `Agents.md` and `TARGET_ARCHITECTURE.md` supersede the Supabase-era guidance below. Do not add new client Supabase calls, emoji interface chrome, decorative glassmorphism, or white text on mobile lime actions.
+For UI work, `DESIGN.md`, `ledgercraft-web-ui`, `ledgercraft-mobile-ui`, and the current platform token files supersede conflicting legacy design examples below. For data, auth, and deployment work, the current Cloudflare/Hono/SQLite decisions in `AGENTS.md` and `TARGET_ARCHITECTURE.md` supersede the Supabase-era guidance below. Do not add new client Supabase calls, emoji interface chrome, decorative glassmorphism, or white text on mobile lime actions.
 
 rules:
   # React component best practices

@@ -9,7 +9,6 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
@@ -17,24 +16,25 @@ import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
-import type { Invoice } from '@/types/invoice';
+import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
-import type { BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
-import { shareInvoicePDF } from '@/utils/pdfUtils';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { getStatusLabel, statusInk } from '@/utils/statusUtils';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
-import { control, radius, space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
-import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
+import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
+import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
@@ -49,17 +49,18 @@ export default function InvoiceDetailScreen() {
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
-  const insets = useSafeAreaInsets();
+  const { tabBarClearance } = useTabScreenInsets();
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
-  const [generatingPdf, setGeneratingPdf] = useState(false);
+  const [shareActionsVisible, setShareActionsVisible] = useState(false);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [bottomBarHeight, setBottomBarHeight] = useState(0);
 
   useEffect(() => {
     loadData();
@@ -163,27 +164,6 @@ export default function InvoiceDetailScreen() {
     setPaymentModalVisible(true);
   };
 
-  const handleSharePDF = async () => {
-    if (!invoice) return;
-
-    try {
-      setGeneratingPdf(true);
-      await shareInvoicePDF(
-        invoice,
-        businessProfile || undefined,
-        (invoice.templateName as InvoiceTemplateId | undefined) || 'classic',
-      );
-    } catch (error) {
-      console.error('Error sharing PDF:', error);
-      Alert.alert(
-        'Unable to share PDF',
-        error instanceof Error ? error.message : 'Failed to share PDF',
-      );
-    } finally {
-      setGeneratingPdf(false);
-    }
-  };
-
   if (loading) {
     return (
       <View style={styles.centerContainer}>
@@ -212,7 +192,7 @@ export default function InvoiceDetailScreen() {
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomBarHeight + space.lg }]}
         contentInsetAdjustmentBehavior="automatic"
       >
         <View style={styles.hero}>
@@ -300,6 +280,17 @@ export default function InvoiceDetailScreen() {
             <Text style={styles.detailLabel}>Currency</Text>
             <Text style={styles.detailValue}>{invoice.currency || 'NZD'}</Text>
           </View>
+          {invoice.sourceQuoteId && invoice.sourceQuoteNumber ? (
+            <AppPressable
+              accessibilityRole="button"
+              accessibilityLabel={`Converted from ${invoice.sourceQuoteNumber}`}
+              onPress={() => navigation.navigate('QuoteDetail', { quoteId: invoice.sourceQuoteId! })}
+              style={({ pressed }) => [styles.detailRow, pressed && { opacity: 0.7 }]}
+            >
+              <Text style={styles.detailLabel}>Source</Text>
+              <Text style={[styles.detailValue, { color: palette.accentText }]}>Converted from {invoice.sourceQuoteNumber}</Text>
+            </AppPressable>
+          ) : null}
         </View>
 
         {/* Line Items Card */}
@@ -383,48 +374,17 @@ export default function InvoiceDetailScreen() {
             onCompleteProfile={() => navigation.navigate('BusinessSettings')}
           />
         </View>
-        <View style={{ height: 100 }} />
       </ScrollView>
 
-      <View style={[styles.bottomBar, { paddingBottom: Math.max(insets.bottom, space.md) }]}>
-        <ModernButton
-          onPress={() => setShowPreview(true)}
-          variant="primary"
-          size="lg"
-          fullWidth
-          icon={<Feather name="eye" size={19} color={palette.accentForeground} />}
-        >
-          Preview invoice
-        </ModernButton>
-        {invoice.status !== 'paid' ? (
-          <ModernButton onPress={handleMarkAsPaid} variant="secondary" size="lg" fullWidth>
-            Record payment
-          </ModernButton>
-        ) : null}
-        <View style={styles.secondaryRow}>
-          <Pressable
-            onPress={handleSharePDF}
-            disabled={generatingPdf}
-            accessibilityRole="button"
-            accessibilityLabel="Share"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            {generatingPdf ? (
-              <ActivityIndicator size="small" color={palette.accentText} />
-            ) : (
-              <Text style={styles.secondaryLabel}>Share</Text>
-            )}
-          </Pressable>
-          <Pressable
-            onPress={handleEdit}
-            accessibilityRole="button"
-            accessibilityLabel="Edit"
-            style={({ pressed }) => [styles.secondaryAction, pressed && styles.secondaryPressed]}
-          >
-            <Text style={styles.secondaryLabel}>Edit</Text>
-          </Pressable>
-        </View>
-      </View>
+      <InvoiceDetailActions
+        isPaid={invoice.status === 'paid'}
+        bottomInset={tabBarClearance}
+        onPreview={() => setShowPreview(true)}
+        onRecordPayment={handleMarkAsPaid}
+        onShare={() => setShareActionsVisible(true)}
+        onEdit={handleEdit}
+        onHeightChange={setBottomBarHeight}
+      />
 
       {/* Preview Modal */}
       <Modal
@@ -461,6 +421,13 @@ export default function InvoiceDetailScreen() {
         invoice={invoice}
         onSubmit={handlePaymentSubmit}
         onClose={() => setPaymentModalVisible(false)}
+      />
+
+      <InvoiceShareActions
+        visible={shareActionsVisible}
+        invoice={invoice}
+        businessProfile={businessProfile || undefined}
+        onClose={() => setShareActionsVisible(false)}
       />
     </View>
   );
@@ -612,34 +579,6 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 15,
     color: palette.text,
     lineHeight: 22,
-  },
-  bottomBar: {
-    backgroundColor: palette.surfaceRaised,
-    paddingHorizontal: space.screen,
-    paddingTop: 12,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: palette.separator,
-    gap: 8,
-  },
-  secondaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingTop: 4,
-  },
-  secondaryAction: {
-    minHeight: control.touchTarget,
-    minWidth: control.touchTarget,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-  },
-  secondaryPressed: {
-    opacity: 0.6,
-  },
-  secondaryLabel: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: palette.accentText,
   },
   statusButton: {
     flexDirection: 'row',

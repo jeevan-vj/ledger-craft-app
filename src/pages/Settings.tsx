@@ -35,6 +35,10 @@ const profileFormSchema = z.object({
   defaultNotes: z.string().optional(),
   invoiceNumberFormat: z.string().min(2, { message: "Format required" }).optional(),
   invoiceNumberSequence: z.number().optional(),
+  quoteNumberFormat: z.string().min(1).max(40).default('QUO-{YYYY}-{SEQ}'),
+  quoteNumberSequence: z.number().int().min(1).default(1),
+  quoteValidityDays: z.number().int().min(1).max(365).default(30),
+  defaultQuoteKind: z.enum(['quote', 'estimate']).default('quote'),
   logoFile: z.any().optional()
 });
 
@@ -69,6 +73,10 @@ const Settings = () => {
       defaultNotes: businessProfile?.defaultNotes || '',
       invoiceNumberFormat: businessProfile?.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
       invoiceNumberSequence: businessProfile?.invoiceNumberSequence ?? 1,
+      quoteNumberFormat: businessProfile?.quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
+      quoteNumberSequence: businessProfile?.quoteNumberSequence ?? 1,
+      quoteValidityDays: businessProfile?.quoteValidityDays ?? 30,
+      defaultQuoteKind: businessProfile?.defaultQuoteKind ?? 'quote',
       logoFile: undefined,
     },
   });
@@ -100,6 +108,10 @@ const Settings = () => {
         defaultNotes: businessProfile.defaultNotes || '',
         invoiceNumberFormat: businessProfile.invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
         invoiceNumberSequence: businessProfile.invoiceNumberSequence ?? 1,
+        quoteNumberFormat: businessProfile.quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
+        quoteNumberSequence: businessProfile.quoteNumberSequence ?? 1,
+        quoteValidityDays: businessProfile.quoteValidityDays ?? 30,
+        defaultQuoteKind: businessProfile.defaultQuoteKind ?? 'quote',
         logoFile: undefined,
       });
       setPreviewLogoUrl(businessProfile.logoUrl || undefined);
@@ -142,6 +154,10 @@ const Settings = () => {
         id: businessProfile?.id,
         invoiceNumberFormat: data.invoiceNumberFormat?.trim() || 'INV-{YYYY}-{SEQ}',
         invoiceNumberSequence: data.invoiceNumberSequence ?? 1,
+        quoteNumberFormat: data.quoteNumberFormat?.trim() || 'QUO-{YYYY}-{SEQ}',
+        quoteNumberSequence: data.quoteNumberSequence ?? 1,
+        quoteValidityDays: data.quoteValidityDays ?? 30,
+        defaultQuoteKind: data.defaultQuoteKind ?? 'quote',
         logoUrl: logoUrlToSave,
       };
       
@@ -427,6 +443,76 @@ const Settings = () => {
                         </FormItem>
                       )}
                     />
+
+                    <div className="md:col-span-2 space-y-4 rounded-lg border p-4">
+                      <div>
+                        <h3 className="font-semibold">Quotes and estimates</h3>
+                        <p className="text-sm text-muted-foreground">Numbering and how long a new quote stays valid. Estimates use the same series.</p>
+                      </div>
+                      <FormField
+                        control={form.control}
+                        name="quoteNumberFormat"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2">
+                            <FormLabel>Quote number format</FormLabel>
+                            <FormControl>
+                              <Input placeholder="QUO-{YYYY}-{SEQ}" {...field} />
+                            </FormControl>
+                            <p className="text-xs text-muted-foreground">Default QUO-{'{YYYY}'}-{'{SEQ}'}.</p>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <div className="grid gap-4 md:grid-cols-3">
+                        <FormField
+                          control={form.control}
+                          name="quoteNumberSequence"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Next quote number</FormLabel>
+                              <FormControl>
+                                <Input type="number" min={1} step={1} {...field} onChange={(event) => field.onChange(Number(event.target.value))} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="quoteValidityDays"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Valid for (days)</FormLabel>
+                              <FormControl>
+                                <Input type="number" min={1} max={365} {...field} onChange={(event) => field.onChange(Number(event.target.value))} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="defaultQuoteKind"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Default document</FormLabel>
+                              <Select value={field.value} onValueChange={field.onChange}>
+                                <FormControl>
+                                  <SelectTrigger aria-label="Default quote kind">
+                                    <SelectValue />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  <SelectItem value="quote">Quote</SelectItem>
+                                  <SelectItem value="estimate">Estimate</SelectItem>
+                                </SelectContent>
+                              </Select>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

@@ -1,0 +1,53 @@
+name: Bug
+description: Repro steps, expected and actual behaviour, a Sentry link, and the environment.
+title: "Bug: "
+labels:
+  - type:bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Report a defect. If the fix will touch money, GST, auth, migrations, or release config, set the risk to high using the rules in [docs/PIPELINE.md](https://github.com/jeevan-vj/ledger-craft-app/blob/main/docs/PIPELINE.md).
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: What you did, in order, from a clean start.
+      placeholder: |
+        1. Sign in on the web app
+        2. Open invoice INV-1001
+        3. Record a payment
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected
+      description: What should have happened.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual
+      description: What happened instead. Include the API error code and request id when you have them.
+    validations:
+      required: true
+  - type: input
+    id: sentry
+    attributes:
+      label: Sentry link
+      description: Event or issue URL from the web, API, or mobile project. Leave this blank when there is no event.
+      placeholder: https://ledgercraft.sentry.io/issues/
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Where it happened.
+      placeholder: |
+        Surface: web, mobile, or API
+        URL or build: https://easybiz.iamjeevan.com or TestFlight build
+        Account: the organisation name, not a password
+        Browser or device:
+    validations:
+      required: true

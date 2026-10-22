@@ -1,4 +1,5 @@
 import { BankPaymentDetails } from '../BankPaymentDetails';
+import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { Invoice } from '@/types';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
@@ -17,6 +18,7 @@ interface ClassicTemplateProps {
   taxRate: string;
   tax: number;
   businessLogo?: string;
+  labels?: DocumentLabels;
 }
 
 const ClassicTemplate = ({ 
@@ -30,8 +32,10 @@ const ClassicTemplate = ({
   clientAddress,
   taxRate,
   tax,
-  businessLogo
+  businessLogo,
+  labels,
 }: ClassicTemplateProps) => {
+  const copy = resolveDocumentLabels(labels);
   const isMobile = useIsMobile();
   
   // Add meta tag to disable auto-linking on mobile
@@ -75,7 +79,7 @@ const ClassicTemplate = ({
               </div>
             )}
             <h1 className={cn("text-xl sm:text-2xl font-bold text-gray-800", businessLogo ? "mt-1" : "")}>
-              INVOICE
+              {copy.title}
             </h1>
             <p className="text-sm sm:text-base text-gray-600">#{invoice.invoiceNumber}</p>
           </div>
@@ -121,11 +125,11 @@ const ClassicTemplate = ({
         <div className="w-1/2">
           <div className="text-xs sm:text-sm">
             <div className="flex justify-between mb-1">
-              <span className="font-semibold">Invoice Number:</span>
+              <span className="font-semibold">{copy.numberLabel}:</span>
               <span>{invoice.invoiceNumber}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span className="font-semibold">Invoice Date:</span>
+              <span className="font-semibold">{copy.dateLabel}:</span>
               <span>{new Date(invoice.date).toLocaleDateString('en-US', { 
                 day: '2-digit', 
                 month: 'short', 
@@ -133,7 +137,7 @@ const ClassicTemplate = ({
               })}</span>
             </div>
             <div className="flex justify-between mb-1">
-              <span className="font-semibold">Due Date:</span>
+              <span className="font-semibold">{copy.dueLabel}:</span>
               <span>{new Date(invoice.dueDate).toLocaleDateString('en-US', { 
                 day: '2-digit', 
                 month: 'short', 
@@ -233,7 +237,7 @@ const ClassicTemplate = ({
       </div>
 
       <div className="px-3 sm:px-4">
-        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+        {copy.showPayment ? <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} /> : null}
       </div>
       {/* Notes */}
       {invoice.notes && (

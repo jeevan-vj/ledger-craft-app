@@ -1,4 +1,5 @@
 import type { BusinessProfileDto, UpsertBusinessProfileRequest } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type { BusinessProfile } from '@/types';
 
 export function businessProfileApiEnabled(): boolean {
@@ -6,12 +7,16 @@ export function businessProfileApiEnabled(): boolean {
 }
 
 export class BusinessProfileApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'BusinessProfileApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -30,6 +35,7 @@ export function toProfile(dto: BusinessProfileDto): BusinessProfile {
     logoUrl: dto.logoUrl,
     website: dto.website,
     defaultTaxRate: dto.defaultTaxRate == null ? null : Number(dto.defaultTaxRate),
+    gstRegistrationStatus: dto.gstRegistrationStatus,
     defaultTerms: dto.defaultTerms,
     defaultNotes: dto.defaultNotes,
     bankInfo: dto.bankInfo,
@@ -39,6 +45,10 @@ export function toProfile(dto: BusinessProfileDto): BusinessProfile {
     invoiceNumberFormat: dto.invoiceNumberFormat,
     invoiceNumberSequence: dto.invoiceNumberSequence,
     paymentTermDays: dto.paymentTermDays,
+    quoteNumberFormat: dto.quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: dto.quoteNumberSequence ?? 1,
+    quoteValidityDays: dto.quoteValidityDays ?? 30,
+    defaultQuoteKind: dto.defaultQuoteKind ?? 'quote',
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -66,6 +76,7 @@ export function toUpsertBusinessProfileRequest(
     logoUrl: profile.logoUrl ?? null,
     website: profile.website ?? null,
     defaultTaxRate: money(profile.defaultTaxRate),
+    gstRegistrationStatus: profile.gstRegistrationStatus,
     defaultTerms: profile.defaultTerms ?? null,
     defaultNotes: profile.defaultNotes ?? null,
     bankInfo: profile.bankInfo ?? null,
@@ -75,16 +86,11 @@ export function toUpsertBusinessProfileRequest(
     invoiceNumberFormat: profile.invoiceNumberFormat ?? null,
     invoiceNumberSequence: profile.invoiceNumberSequence ?? undefined,
     paymentTermDays: profile.paymentTermDays ?? 30,
+    ...(profile.quoteNumberFormat ? { quoteNumberFormat: profile.quoteNumberFormat } : {}),
+    ...(profile.quoteNumberSequence != null ? { quoteNumberSequence: profile.quoteNumberSequence } : {}),
+    ...(profile.quoteValidityDays != null ? { quoteValidityDays: profile.quoteValidityDays } : {}),
+    ...(profile.defaultQuoteKind ? { defaultQuoteKind: profile.defaultQuoteKind } : {}),
   };
-}
-
-async function parseError(response: Response): Promise<string> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string } };
-    return body.error?.message ?? response.statusText;
-  } catch {
-    return response.statusText;
-  }
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -98,7 +104,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    throw new BusinessProfileApiError(await parseError(response), response.status);
+    const failure = await readApiFailure(response);
+    throw new BusinessProfileApiError(failure.message, failure.status, failure.requestId);
   }
   return (await response.json()) as T;
 }

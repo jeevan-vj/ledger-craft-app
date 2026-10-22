@@ -1,4 +1,5 @@
 import { BankPaymentDetails } from '../BankPaymentDetails';
+import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { Invoice, LineItem, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
@@ -18,6 +19,7 @@ interface CorporateTemplateProps {
   tax: number;
   businessLogo?: string;
   theme?: BusinessTheme;
+  labels?: DocumentLabels;
 }
 
 const CorporateTemplate = ({
@@ -32,8 +34,10 @@ const CorporateTemplate = ({
   taxRate,
   tax,
   businessLogo,
-  theme = DEFAULT_BUSINESS_THEME
+  theme = DEFAULT_BUSINESS_THEME,
+  labels,
 }: CorporateTemplateProps) => {
+  const copy = resolveDocumentLabels(labels);
   const isMobile = useIsMobile();
   
   React.useEffect(() => {
@@ -73,7 +77,7 @@ const CorporateTemplate = ({
             </div>
           )}
           <div>
-            <h1 className="text-xl sm:text-3xl font-bold mb-1">INVOICE</h1>
+            <h1 className="text-xl sm:text-3xl font-bold mb-1">{copy.title}</h1>
             <p className="text-sm sm:text-lg">#{invoice.invoiceNumber}</p>
           </div>
           <div className="text-right">
@@ -128,15 +132,15 @@ const CorporateTemplate = ({
         </div>
         <div className="p-3 sm:p-6 rounded-lg" style={{ backgroundColor: theme.background }}>
           <div className="mb-3 sm:mb-4">
-            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>Invoice Number</p>
+            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>{copy.numberLabel}</p>
             <p className="text-sm sm:text-lg font-medium" style={{ color: theme.text }}>{invoice.invoiceNumber}</p>
           </div>
           <div className="mb-3 sm:mb-4">
-            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>Invoice Date</p>
+            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>{copy.dateLabel}</p>
             <p className="text-sm sm:text-lg font-medium" style={{ color: theme.text }}>{new Date(invoice.date).toLocaleDateString()}</p>
           </div>
           <div>
-            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>Due Date</p>
+            <p className="text-xs font-bold uppercase tracking-wider mb-0.5 sm:mb-1" style={{ color: theme.textLight }}>{copy.dueLabel}</p>
             <p className="text-sm sm:text-lg font-medium" style={{ color: theme.text }}>{new Date(invoice.dueDate).toLocaleDateString()}</p>
           </div>
         </div>
@@ -230,7 +234,7 @@ const CorporateTemplate = ({
         </div>
       </div>
       
-      <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+      {copy.showPayment ? <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} /> : null}
       {/* Notes & Terms */}
       {(invoice.notes || invoice.terms) && (
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-8 mt-4 sm:mt-6 border-t pt-4 sm:pt-6" style={{ borderColor: theme.textLight + '40' }}>

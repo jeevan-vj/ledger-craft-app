@@ -30,6 +30,9 @@ import BankAccountFormScreen from '@/screens/banking/BankAccountFormScreen';
 import BankAccountDetailScreen from '@/screens/banking/BankAccountDetailScreen';
 import BankTransactionFormScreen from '@/screens/banking/BankTransactionFormScreen';
 import BankTransferFormScreen from '@/screens/banking/BankTransferFormScreen';
+import QuoteListScreen from '@/screens/quotes/QuoteListScreen';
+import QuoteFormScreen from '@/screens/quotes/QuoteFormScreen';
+import QuoteDetailScreen from '@/screens/quotes/QuoteDetailScreen';
 
 const Tab = createNativeBottomTabNavigator<MainTabParamList>();
 const HomeStack = createNativeStackNavigator<HomeStackParamList>();
@@ -52,6 +55,10 @@ function InvoiceNavigator() {
     <InvoiceStack.Screen name="InvoiceCreate" component={InvoiceCreateScreen} options={{ ...form, title: 'New invoice' }} />
     <InvoiceStack.Screen name="InvoiceEdit" component={InvoiceCreateScreen} options={{ ...form, title: 'Edit invoice' }} />
     <InvoiceStack.Screen name="InvoiceDetail" component={InvoiceDetailScreen} options={{ ...detail, title: 'Invoice' }} />
+    <InvoiceStack.Screen name="QuoteList" component={QuoteListScreen} options={{ title: 'Quotes' }} />
+    <InvoiceStack.Screen name="QuoteCreate" component={QuoteFormScreen} options={{ ...form, title: 'New quote' }} />
+    <InvoiceStack.Screen name="QuoteEdit" component={QuoteFormScreen} options={{ ...form, title: 'Edit quote' }} />
+    <InvoiceStack.Screen name="QuoteDetail" component={QuoteDetailScreen} options={{ ...detail, title: 'Quote' }} />
     <InvoiceStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
   </InvoiceStack.Navigator>;
 }

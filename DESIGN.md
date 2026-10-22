@@ -68,6 +68,8 @@ The mobile system is native-first, spacious, and direct. It follows the system a
 ### Native behavior
 
 - Preserve platform navigation: iOS large titles, system back gestures, modal form presentation, and Liquid Glass-compatible bars.
+- The app root owns `SafeAreaProvider`. Headerless screens use its top inset, large-title scroll containers opt into automatic inset adjustment, and tab-hosted screens reserve the measured native tab-bar height through `useTabScreenInsets()`.
+- Fixed bottom actions sit above the native tab bar and measure themselves so the final scroll content clears both the action surface and tab bar. Do not use magic footer spacers.
 - Every target is at least 44pt. Primary controls are 48–56pt high and pill-shaped.
 - Use `GroupedSection` and `ListRow` for settings-style information. Avoid cards inside grouped cards.
 - Use light haptics on deliberate actions, not every scroll or navigation event.
@@ -78,6 +80,7 @@ The mobile system is native-first, spacious, and direct. It follows the system a
 - `ModernButton` is the expressive primary button; `ActionButton` is the compact compatibility primitive. Both use lime with forest text.
 - `ModernInput` and `FormInput` share muted resting fills, surface focus, and explicit errors.
 - `GroupedSection`, `ListRow`, `IconWell`, `QuickAction`, and `EmptyState` form the native content grammar.
+- `AppPressable` is the pressable for a `style` callback. NativeWind's JSX runtime otherwise replaces that callback with an empty object, so the background, padding, radius, and pressed opacity never appear. It keeps the callback, accessibility props, and press feedback.
 - `SelectionSheet` and `SelectionRow` are the standard searchable picker pattern: page-sheet presentation, one grouped list, 44pt minimum controls, accessible selected state, and forest checks on lime.
 
 ## Contribution rules

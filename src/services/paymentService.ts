@@ -5,6 +5,7 @@ import { invoiceService } from './supabaseService';
 import { accountingJournalService } from './accountingJournalService';
 import { paymentsApi, paymentsApiEnabled, toCreatePaymentRequest } from '@/features/payments/api/paymentsApi';
 import { receiptsApi, receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
+import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
 
 // Map Supabase payment to Payment type
 const mapSupabasePaymentToPayment = (payment: any): Payment => ({
@@ -361,7 +362,7 @@ export class PaymentService {
   // Mark receipt as emailed
   async markReceiptAsEmailed(receiptId: string): Promise<void> {
     if (receiptsApiEnabled()) {
-      return;
+      throw new Error('Receipt email delivery is unavailable on the current free deployment');
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
@@ -380,6 +381,19 @@ export class PaymentService {
 
   // Get invoices with outstanding balances (for payment processing)
   async getInvoicesWithBalance(): Promise<EnhancedInvoice[]> {
+    if (invoicesApiEnabled()) {
+      const invoices = await invoicesApi.list();
+      return invoices
+        .filter((invoice) => invoice.status !== 'paid' && (invoice.balanceDue ?? invoice.total) > 0)
+        .map((invoice) => ({
+          ...invoice,
+          paymentStatus: invoice.paymentStatus ?? 'unpaid',
+          totalPaid: invoice.totalPaid ?? 0,
+          balanceDue: invoice.balanceDue ?? invoice.total,
+          taxInclusive: invoice.taxInclusive ?? false,
+        }))
+        .sort((left, right) => left.dueDate.localeCompare(right.dueDate));
+    }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
 

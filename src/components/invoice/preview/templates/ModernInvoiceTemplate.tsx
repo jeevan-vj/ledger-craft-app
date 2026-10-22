@@ -1,4 +1,5 @@
 import { BankPaymentDetails } from '../BankPaymentDetails';
+import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { Invoice, LineItem, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
@@ -18,6 +19,7 @@ interface ModernInvoiceTemplateProps {
   tax: number;
   businessLogo?: string;
   theme?: BusinessTheme;
+  labels?: DocumentLabels;
 }
 
 const ModernInvoiceTemplate = ({
@@ -32,8 +34,10 @@ const ModernInvoiceTemplate = ({
   taxRate,
   tax,
   businessLogo,
-  theme = DEFAULT_BUSINESS_THEME
+  theme = DEFAULT_BUSINESS_THEME,
+  labels,
 }: ModernInvoiceTemplateProps) => {
+  const copy = resolveDocumentLabels(labels);
   const isMobile = useIsMobile();
 
   React.useEffect(() => {
@@ -81,11 +85,14 @@ const ModernInvoiceTemplate = ({
           </div>
           <div className="mt-6 sm:mt-0 text-right w-full sm:w-auto">
             {/* <span className={`inline-block px-4 py-1 rounded-full border font-semibold text-sm mb-2 ${getStatusColor()}`}>{invoice.status}</span> */}
+            {copy.title !== 'INVOICE' ? (
+              <div className="text-lg font-extrabold tracking-wide">{copy.title}</div>
+            ) : null}
             <div className="text-xs opacity-80">
-              <span>Invoice #</span> <span className="font-bold">{invoice.invoiceNumber}</span>
+              <span>{copy.title === 'INVOICE' ? 'Invoice #' : copy.numberLabel}</span> <span className="font-bold">{invoice.invoiceNumber}</span>
             </div>
             <div className="text-xs opacity-80">
-              <span>Date: </span>{new Date(invoice.date).toLocaleDateString()}
+              <span>{copy.title === 'INVOICE' ? 'Date: ' : `${copy.dateLabel}: `}</span>{new Date(invoice.date).toLocaleDateString()}
             </div>
           </div>
         </div>
@@ -105,11 +112,11 @@ const ModernInvoiceTemplate = ({
           </div>
           <div className="flex flex-col gap-2">
             <div>
-              <span className="text-xs font-bold" style={{ color: theme.textLight }}>Invoice Date: </span>
+              <span className="text-xs font-bold" style={{ color: theme.textLight }}>{copy.dateLabel}: </span>
               <span className="text-sm font-medium" style={{ color: theme.text }}>{new Date(invoice.date).toLocaleDateString()}</span>
             </div>
             <div>
-              <span className="text-xs font-bold" style={{ color: theme.textLight }}>Due Date: </span>
+              <span className="text-xs font-bold" style={{ color: theme.textLight }}>{copy.dueLabel}: </span>
               <span className="text-sm font-medium" style={{ color: theme.text }}>{new Date(invoice.dueDate).toLocaleDateString()}</span>
             </div>
             <div>
@@ -208,7 +215,7 @@ const ModernInvoiceTemplate = ({
           </div>
         </div>
 
-        <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} />
+        {copy.showPayment ? <BankPaymentDetails bankAccountName={bankAccountName} bankAccountNumber={bankAccountNumber} /> : null}
         {/* Notes & Terms */}
         {(invoice.notes || invoice.terms) && (
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 px-8 pb-8" style={{ backgroundColor: theme.surface }}>

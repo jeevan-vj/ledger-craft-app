@@ -8,6 +8,7 @@ import type {
   UpdateInvoiceRequest,
 } from '@ledgercraft/contracts';
 import type { Invoice, LineItem } from '@/types';
+import { readApiFailure } from '@/lib/api/readApiError';
 import { toProfile } from '@/features/business-profile/api/businessProfileApi';
 
 export function invoicesApiEnabled(): boolean {
@@ -15,13 +16,17 @@ export function invoicesApiEnabled(): boolean {
 }
 
 export class InvoicesApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
     readonly code?: string,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'InvoicesApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -77,12 +82,18 @@ function toInvoice(dto: InvoiceDto): Invoice {
     additionalChargesList: dto.additionalChargesList?.map(charge => ({ ...charge, amount: Number(charge.amount) })),
     additionalChargesTotal: Number(dto.additionalChargesTotal ?? dto.additionalCharges ?? 0),
     total: Number(dto.total),
+    totalPaid: Number(dto.totalPaid),
+    balanceDue: Number(dto.balanceDue),
+    paymentStatus: dto.paymentStatus as Invoice['paymentStatus'],
+    taxInclusive: dto.taxInclusive,
     status: dto.status,
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
+    sourceQuoteId: dto.sourceQuoteId,
+    sourceQuoteNumber: dto.sourceQuoteNumber,
   };
 }
 
@@ -121,15 +132,6 @@ export function toCreateInvoiceRequest(
   };
 }
 
-async function parseError(response: Response): Promise<{ message: string; code?: string }> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string; code?: string } };
-    return { message: body.error?.message ?? response.statusText, code: body.error?.code };
-  } catch {
-    return { message: response.statusText };
-  }
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -141,8 +143,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   });
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
-    const parsed = await parseError(response);
-    throw new InvoicesApiError(parsed.message, response.status, parsed.code);
+    const failure = await readApiFailure(response);
+    throw new InvoicesApiError(failure.message, failure.status, failure.code, failure.requestId);
   }
   return (await response.json()) as T;
 }

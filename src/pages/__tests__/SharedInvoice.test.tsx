@@ -27,6 +27,14 @@ it('shows the recipient invoice with its bank details and actual tax rate', asyn
   expect(screen.getByText('Sender Account')).toBeInTheDocument();
   expect(screen.getByText('12-3456-7890123-00')).toBeInTheDocument();
   expect(screen.getByText(/15\.00%/)).toBeInTheDocument();
+  expect(screen.getByRole('link', { name: 'Open in LedgerCraft' })).toHaveAttribute(
+    'href',
+    'easybizinvoice://shared/invoice/token',
+  );
+  expect(screen.getByRole('link', { name: 'Get the app' })).toHaveAttribute(
+    'href',
+    expect.stringContaining('apps.apple.com'),
+  );
 });
 it('downloads the rendered invoice, excluding page controls', async () => {
   mount();

@@ -1,0 +1,85 @@
+# Review owner for the software-factory risk paths.
+# GitHub uses the last matching pattern. Every path below was checked against this repo.
+# There is no quote module. Invoice and bill totals are the quote-equivalent calculations.
+# @jeevan-vj
+
+# Keep the owner list from being edited without the owner.
+/.github/CODEOWNERS @jeevan-vj
+
+# SQLite migrations and Drizzle schema.
+/api/sqlite-migrations/ @jeevan-vj
+/api/src/db/schema/ @jeevan-vj
+/api/src/db/migrate.ts @jeevan-vj
+/api/drizzle.config.ts @jeevan-vj
+/api/drizzle.sqlite.config.ts @jeevan-vj
+/scripts/generate-sqlite-migrations.mjs @jeevan-vj
+
+# Money, GST, invoice, and bill totals.
+# Server formulas:
+/api/src/modules/invoices/money.ts @jeevan-vj
+/api/src/modules/invoices/money.test.ts @jeevan-vj
+/api/src/modules/invoices/totals.ts @jeevan-vj
+/api/src/modules/invoices/totals.test.ts @jeevan-vj
+# Create and update decide when computeInvoiceTotals runs.
+/api/src/modules/invoices/invoices.service.ts @jeevan-vj
+# GST collected on sales is posted here.
+/api/src/modules/invoices/invoices.journal.ts @jeevan-vj
+# calculateBillLines is in this repository file, so vendor CRUD in the same file is included.
+/api/src/modules/purchases/purchases.repository.ts @jeevan-vj
+/api/src/modules/purchases/purchases.journal.ts @jeevan-vj
+# Invoice balance due is total minus completed payments.
+/api/src/modules/payments/payments.service.ts @jeevan-vj
+# Web formulas. InvoiceForm, the expense screens, and the GST wizard inline the math.
+/src/utils/invoiceUtils.ts @jeevan-vj
+/src/services/taxCalculationService.ts @jeevan-vj
+/src/services/__tests__/taxCalculationService.test.ts @jeevan-vj
+/src/services/simpleTaxService.ts @jeevan-vj
+/src/services/irdReportingService.ts @jeevan-vj
+/src/utils/gstReconciliation.ts @jeevan-vj
+/src/utils/__tests__/gstReconciliation.test.ts @jeevan-vj
+/src/features/tax/api/periodRows.ts @jeevan-vj
+/src/features/tax/api/periodRows.test.ts @jeevan-vj
+/src/components/invoice/InvoiceForm.tsx @jeevan-vj
+/src/components/expense/ExpenseTaxInterface.tsx @jeevan-vj
+/src/components/expense/ExpenseGSTSummary.tsx @jeevan-vj
+/src/components/expense/BulkExpenseProcessor.tsx @jeevan-vj
+/src/components/tax/GSTReturnWizard.tsx @jeevan-vj
+# Mobile formulas. Draft bill totals, invoice create, and expense GST are inline.
+/mobile/src/features/purchases/model/purchaseForms.ts @jeevan-vj
+/mobile/src/features/purchases/model/purchaseForms.test.ts @jeevan-vj
+/mobile/src/screens/invoices/InvoiceCreateScreen.tsx @jeevan-vj
+/mobile/src/screens/expenses/ExpenseCreateScreen.tsx @jeevan-vj
+/mobile/src/screens/expenses/ExpenseEditScreen.tsx @jeevan-vj
+
+# Better Auth config and routes.
+/api/src/modules/auth/ @jeevan-vj
+# Node app mounts /api/auth/* here.
+/api/src/app.ts @jeevan-vj
+# Local server constructs createAuth here.
+/api/src/index.ts @jeevan-vj
+# Identity Durable Object handles /api/auth/* in production.
+/api/src/cloudflare/worker.ts @jeevan-vj
+# BETTER_AUTH_SECRET, base URL, and trusted origins.
+/api/src/env.ts @jeevan-vj
+
+# Workflows, including release.yml and this label sync.
+/.github/workflows/ @jeevan-vj
+
+# Release and deploy config.
+/wrangler.toml @jeevan-vj
+/deploy/api/wrangler.jsonc @jeevan-vj
+/deploy/cloudflare.md @jeevan-vj
+/functions/api/ @jeevan-vj
+/mobile/eas.json @jeevan-vj
+/scripts/deploy-cloudflare.mjs @jeevan-vj
+/scripts/verify-cloudflare.mjs @jeevan-vj
+/scripts/upload-api-sourcemaps.mjs @jeevan-vj
+/scripts/upload-api-sourcemaps.test.mjs @jeevan-vj
+/scripts/upload-web-sourcemaps.mjs @jeevan-vj
+/scripts/upload-web-sourcemaps.test.mjs @jeevan-vj
+/scripts/delete-sourcemaps.mjs @jeevan-vj
+/scripts/auto-version.js @jeevan-vj
+/scripts/generate-version.js @jeevan-vj
+/scripts/verify-build-version.mjs @jeevan-vj
+/.github/scripts/verify-api-readiness.mjs @jeevan-vj
+/.github/scripts/verify-api-readiness.test.mjs @jeevan-vj

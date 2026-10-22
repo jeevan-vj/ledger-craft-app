@@ -25,7 +25,7 @@ export const invoiceLineInputSchema = z
   })
   .strict();
 
-function refineDiscount(
+export function refineDiscount(
   value: { discountType?: 'fixed' | 'percent'; discountPercent?: string | null; discount?: string | null },
   ctx: z.RefinementCtx,
 ) {
@@ -143,6 +143,8 @@ export const invoiceSchema = z.object({
   currency: z.string(),
   customerName: z.string().nullable(),
   items: z.array(invoiceLineSchema),
+  sourceQuoteId: z.string().uuid().optional(),
+  sourceQuoteNumber: z.string().min(1).optional(),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });

@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Download, FileText, AlertCircle, Loader2 } from 'lucide-react';
+import { Download, FileText, AlertCircle, Loader2, Smartphone } from 'lucide-react';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { Invoice, BusinessProfile } from '@/types';
+import { applyNoReferrerPolicy } from '@/lib/referrerPolicy';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,6 +25,14 @@ const SharedInvoice: React.FC = () => {
   const [isDownloading, setIsDownloading] = useState(false);
   const templateRef = useRef<HTMLDivElement>(null);
   const selectedTemplate = templateName.toLowerCase() as InvoiceTemplateId;
+  const appUrl = shareToken
+    ? `easybizinvoice://shared/invoice/${encodeURIComponent(shareToken)}`
+    : 'easybizinvoice://';
+  const installUrl = typeof navigator !== 'undefined' && /android/i.test(navigator.userAgent)
+    ? 'https://play.google.com/store/apps/details?id=com.easybizinvoice.app'
+    : 'https://apps.apple.com/app/id6818787287';
+
+  useLayoutEffect(() => applyNoReferrerPolicy(), []);
 
   useEffect(() => {
     let cancelled = false;
@@ -94,10 +103,10 @@ const SharedInvoice: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
-          <p className="text-gray-600">Loading invoice...</p>
+          <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
+          <p className="text-muted-foreground">Loading invoice...</p>
         </div>
       </div>
     );
@@ -105,17 +114,17 @@ const SharedInvoice: React.FC = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-background flex items-center justify-center">
         <Card className="max-w-md w-full mx-4">
           <CardHeader className="text-center">
-            <div className="mx-auto mb-4 bg-red-100 rounded-full p-3 w-fit">
-              <AlertCircle className="h-6 w-6 text-red-600" />
+            <div className="mx-auto mb-4 bg-destructive/10 rounded-full p-3 w-fit">
+              <AlertCircle className="h-6 w-6 text-destructive" />
             </div>
-            <CardTitle className="text-xl text-gray-900">Invoice Not Found</CardTitle>
+            <CardTitle className="text-xl text-card-foreground">Invoice Not Found</CardTitle>
           </CardHeader>
           <CardContent className="text-center space-y-4">
-            <p className="text-gray-600">{error}</p>
-            <p className="text-sm text-gray-500">
+            <p className="text-foreground">{error}</p>
+            <p className="text-sm text-muted-foreground">
               This link may have expired or been deactivated. Please request a new link from the sender.
             </p>
             <Button 
@@ -131,26 +140,37 @@ const SharedInvoice: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 sm:sticky sm:top-0 z-10">
+      <div className="bg-card border-b border-border sm:sticky sm:top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 py-4">
             <div className="flex min-w-0 items-center gap-3">
-              <div className="bg-blue-100 rounded-lg p-2 shrink-0">
-                <FileText className="h-5 w-5 text-blue-600" />
+              <div className="bg-accent rounded-lg p-2 shrink-0">
+                <FileText className="h-5 w-5 text-accent-foreground" />
               </div>
               <div className="min-w-0 break-words">
-                <h1 className="text-lg font-semibold text-gray-900">
+                <h1 className="text-lg font-semibold text-card-foreground">
                   Invoice {invoiceData?.invoiceNumber}
                 </h1>
-                <p className="text-sm text-gray-500">
+                <p className="text-sm text-muted-foreground">
                   From {businessProfile?.name || 'Business'}
                 </p>
               </div>
             </div>
             
-            <div className="shrink-0">
+            <div className="flex shrink-0 flex-col gap-2 sm:flex-row">
+              <Button variant="outline" asChild className="min-h-11">
+                <a href={appUrl} aria-label="Open in LedgerCraft">
+                  <Smartphone className="h-4 w-4" />
+                  Open in LedgerCraft
+                </a>
+              </Button>
+              <Button variant="ghost" asChild className="min-h-11">
+                <a href={installUrl} target="_blank" rel="noopener noreferrer" aria-label="Get the app">
+                  Get the app
+                </a>
+              </Button>
               <Button
                 variant="outline"
                 onClick={handleDownloadPdf}
@@ -171,7 +191,7 @@ const SharedInvoice: React.FC = () => {
 
       {/* Invoice Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-8">
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <div className="bg-card rounded-2xl border border-border overflow-hidden">
           <div ref={templateRef} className="p-2 sm:p-6 md:p-8">
             {renderTemplate()}
           </div>
@@ -179,7 +199,7 @@ const SharedInvoice: React.FC = () => {
 
         {/* Footer */}
         <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             This invoice was shared securely. 
             {businessProfile?.name && (
               <> View more from {businessProfile.name}.</>

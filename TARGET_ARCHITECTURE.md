@@ -1,23 +1,103 @@
 # LedgerCraft target architecture
 
-**Manual banking and transfers (implemented locally, 2026-10-19):** Hono and
-SQLite now support exact-decimal manual income/expense create, update and delete
-with atomic balance adjustments, plus idempotent same-currency transfers that
-commit equal and opposite reconciled legs. Web and Expo provide transaction and
-transfer forms and activity history. Contract/API/client tests, migration
-verification, strict mobile TypeScript, mobile lint with no errors, web/mobile
-builds, iOS/Android production exports, and an authenticated browser flow pass.
-Native device QA remains open; transaction attachments, splits, document
-allocations, duplicate, print/PDF, CSV export, and mobile statement import remain
-in AKP-02.
+**Production release gate:** `.github/workflows/release.yml` deploys to
+Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
+run's head SHA. That conclusion includes every job in the CI workflow,
+including API & contracts. Manual `workflow_dispatch` from `main` remains.
+The CI workflow does not hold production secrets.
+
+**Mobile invoice themes (implemented locally, 2026-10-21):** Expo invoice
+preview and PDF HTML use the business profile theme. `resolveInvoiceTheme`
+fills missing colours from the mobile default palette, whose background is
+`#F5F6F3`. The six print templates use the same colour roles as the web
+templates for a given theme, with readable ink on brand fills. Totals math is
+unchanged.
+
+**Mobile invoice theme editor (implemented locally, 2026-10-21):** Business
+Settings → Appearance replaces the coming-soon placeholder with the six web
+invoice presets (blue, purple, green, red, pink, slate) and hex fields for
+primary, secondary, accent, text, light text, background, and surface. A live
+preview updates with the draft. Invalid hex is rejected before save. Save calls
+`updateBusinessProfile({ theme })` with the contract colours only, so `name` is
+not sent. Onboarding still starts from the installed professional palette,
+including `background`. Strict mobile TypeScript, all 36 Jest suites (138 tests),
+and lint with no errors pass. The editor was rendered in Chrome through Expo
+web; there is no iOS simulator in this environment.
+
+**Mobile crash reporting (wired, 2026-10-21):** The Expo client uses
+`@sentry/react-native` 7.2.0. Preview and production profiles in `mobile/eas.json`
+set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (US project
+`ledgercraft-mobile`). Development profiles, local runs, Jest, and CI leave the
+DSN unset. Session Replay is off, the Sentry user is an id, share tokens are
+redacted, and server errors are tagged with the API `requestId`. EAS uploads
+source maps only when the optional `SENTRY_AUTH_TOKEN` secret is set. Local
+mobile Jest, strict TypeScript, and ESLint pass, and the iOS export bundles
+without a Sentry token. A native crash and symbolicated stack still need a
+preview build. See `mobile/SENTRY.md`.
+
+**Mobile home actions (fixed locally, 2026-10-21):** Expo Home uses four
+equal quick-action tiles: new invoice, record payment, add expense, and add
+customer. Record payment opens the invoice list, where marking an invoice paid
+already captures the payment. Style callbacks on `Pressable` go through
+`AppPressable`, because NativeWind v4's JSX runtime replaces those callbacks
+with an empty style. Dismissing the setup task is stored in SecureStore.
+Native Home screenshots were not captured: this environment has no iOS
+simulator, and Home requires a signed-in session.
+
+**Mobile branding (implemented locally, 2026-10-21):** Expo resolves the
+installed display name as `easybizinvoice`. Its iOS icon is an opaque,
+full-bleed 1024 px asset and its splash screen uses seamless dark brand artwork.
+Release identity remains `com.easybizinvoice.app` under the existing EAS project,
+Apple team, Associated Domains entitlement, and App Store Connect app.
+
+**Mobile onboarding core (implemented locally, 2026-10-21):** Expo first launch
+now includes an original LedgerCraft value carousel, progressive account
+signup, and resumable business setup for name, country, and explicit GST
+registration. Profile existence is the auth/onboarding gate; safe drafts use
+SecureStore without persisting passwords. Hono/SQLite persists GST status via
+`0006_business-gst-registration.sql`. Finish setup accepts the installed iOS
+theme, which omitted `background`, by filling `#F5F6F3` and ignoring unknown
+theme keys. New builds send `background`. The finish alert uses connection copy
+only when the request never reaches the API. Validation and server failures use
+plain language, and a returned request id is shown as a support reference. Web
+API errors use the same wording, so schema diagnostics stay in the console. A
+rejected upsert does not leave a business profile. Strict mobile TypeScript, all 35 Jest suites (132 tests),
+all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
+no errors pass. Authenticated device QA and a production Worker deploy of this
+finish-setup fix remain open.
+
+**Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
+detail now separates public-link sharing, PDF download/export, and PDF file
+sharing. Public links use the existing immutable Hono/SQLite snapshot and can
+open an unauthenticated native invoice route through the app scheme or the
+production HTTPS path; the web fallback remains available and now offers
+Open/Get app actions with theme-correct recipient states. iOS Associated
+Domains and the production AASA file use the Team ID verified from TestFlight
+build 5. Android intent routing is configured, but EAS has no Android signing
+credential yet, so a production `assetlinks.json` and Android device link
+verification remain pending. Mobile strict TypeScript, all 23 Jest suites (89
+tests), lint with no errors, and iOS/Android production exports pass. The
+focused web shared-invoice test and Vite production build pass; authenticated
+sender and signed-device deep-link QA remain open.
+
+**Mobile layout safety (verified locally, 2026-10-19):** Expo now has one
+root-owned safe-area provider, shared measured native-tab clearance for tab
+scenes, automatic large-title list insets, and a measured invoice-detail action
+footer. A4 invoice HTML keeps its 595 × 842 print canvas without forcing a
+desktop initial scale in mobile WebViews, and the template selector follows the
+Wise semantic theme. Strict TypeScript, all 21 Jest suites (81 tests), lint with
+no errors, and iOS/Android production exports pass. Native visual QA remains
+open because no local iOS simulator runtime is installed and EAS Simulator is
+unavailable for the account.
 
 **Mobile banking management (implemented locally, 2026-10-19):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
 transaction history from More through Hono. Dirty bank-account forms are
-protected from dismissal. Strict TypeScript, 21 Jest suites (81 tests), lint
+protected from dismissal. Strict TypeScript, 20 Jest suites (78 tests), lint
 with no errors, and iOS/Android production exports pass. Authenticated device QA
-remains open; the remaining AKP-02 scope is tracked above.
+remains open; manual transactions, transfers, splits, attachments, and mobile
+import remain in AKP-02.
 
 **Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
 item list/filter, create, detail, edit, delete-attempt, active-state, category,
@@ -143,6 +223,14 @@ Ledger SQLite Durable Object per organisation. SQLite-backed Durable Objects
 provide interactive accounting transactions and the CPU budget needed for
 secure password hashing. D1 is not used.
 
+Unhandled API errors are reported with `@sentry/cloudflare` from the Worker
+fetch handler, Identity, Ledger, Hono `onError`, and the Better Auth path.
+Events carry the request id, route template, environment, and git SHA release.
+The public DSN is a Worker var. The client sends only when a deploy sets
+`SENTRY_ENVIRONMENT` to `production`. Share tokens,
+request bodies, cookies, query strings, and auth headers are scrubbed.
+`sendDefaultPii` stays off. See `deploy/cloudflare.md`.
+
 The request path is **client → Hono → use case → repository → Drizzle → SQLite**.
 The gateway derives tenant ownership from authenticated membership. Organisation
 predicates and composite tenant foreign keys support the per-object isolation
@@ -175,6 +263,8 @@ Wrangler commands, migration behavior and verification evidence.
 **Reconstruction (2026-09-03):** the hosted project still exists (`viqckjmborlqaemavrzu`) but `public` has zero tables, `auth.users` is empty, storage is empty, and no app migrations are applied. Production rows and identities are unrecoverable unless a platform backup is found. Reconstruction is greenfield toward this document, not a forensic clone. Do not replay checked-in SQL in order. Derive compatibility columns from application TypeScript contracts (`src/types`, service mappers). Skip preserving old `auth.users` UUIDs.
 
 **W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
+
+**Quotes and estimates (2026-10-23).** The API stores one quote entity (`kind` is `quote` or `estimate`) in `quotes`, `quote_line_items`, and `shared_quotes` via reviewed migration `api/sqlite-migrations/0007_quotes.sql`. Numbering is `QUO-{YYYY}-{SEQ}` on its own sequence. Default validity is 30 days. Both are columns on `business_profiles`. Quote reads and writes do not post journal entries and do not change GST, receivables, or revenue. Conversion, only from `accepted`, creates a draft invoice through the existing invoice transaction, dated today in Pacific/Auckland, with the quote's stored tax rate and matching totals. Public share links accept or decline with a typed name. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE` until a mailer implements `sendQuote`. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. The mobile app provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. Focused quote tests, full API/contracts/mobile suites, the web production build, and iOS/Android production exports pass. Authenticated native-device QA remains pending.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 
@@ -751,6 +841,8 @@ Minimum operational signals:
 - migration version and readiness status
 
 Add OpenTelemetry when cross-service tracing is useful; it is not required to create the first API route.
+
+The web client reports browser errors to Sentry when `VITE_SENTRY_DSN` is set at build time. The SDK loads after first paint and is omitted from the bundle when the DSN is unset. Session Replay, Feedback, and performance tracing are off. `sendDefaultPii` is off (SDK 11 uses `dataCollection`), and the user is identified by id only. Share tokens in public invoice URLs are redacted. API `requestId` values are kept on web API errors and sent as a Sentry tag. Production source maps are uploaded for the git SHA when `SENTRY_AUTH_TOKEN` is present, then removed from `dist` before Cloudflare Pages deploy. Setup and verification live in `docs/sentry-web.md`.
 
 Expose:
 

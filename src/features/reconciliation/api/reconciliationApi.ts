@@ -8,6 +8,7 @@ import type {
   ReconciliationSessionDto,
   ReconciliationSessionListResponse,
 } from '@ledgercraft/contracts';
+import { readApiFailure } from '@/lib/api/readApiError';
 import type {
   MatchableItem,
   ReconciliationAdjustment,
@@ -22,13 +23,17 @@ export function reconciliationApiEnabled(): boolean {
 }
 
 export class ReconciliationApiError extends Error {
+  readonly requestId?: string;
+
   constructor(
     message: string,
     readonly status: number,
     readonly code?: string,
+    requestId?: string,
   ) {
     super(message);
     this.name = 'ReconciliationApiError';
+    this.requestId = requestId;
   }
 }
 
@@ -123,15 +128,6 @@ export function toCreateSessionRequest(setup: ReconciliationSetup): CreateReconc
   };
 }
 
-async function parseError(response: Response): Promise<{ message: string; code?: string }> {
-  try {
-    const body = (await response.json()) as { error?: { message?: string; code?: string } };
-    return { message: body.error?.message ?? response.statusText, code: body.error?.code };
-  } catch {
-    return { message: response.statusText };
-  }
-}
-
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(path, {
     credentials: 'include',
@@ -145,8 +141,8 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
     return undefined as T;
   }
   if (!response.ok) {
-    const parsed = await parseError(response);
-    throw new ReconciliationApiError(parsed.message, response.status, parsed.code);
+    const failure = await readApiFailure(response);
+    throw new ReconciliationApiError(failure.message, failure.status, failure.code, failure.requestId);
   }
   return (await response.json()) as T;
 }

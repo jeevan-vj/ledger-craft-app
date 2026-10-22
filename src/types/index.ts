@@ -108,6 +108,7 @@ export interface BusinessProfile {
   logoUrl?: string | null;  // Ensure consistent camelCase naming
   website?: string | null;
   defaultTaxRate?: number | null;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   bankInfo?: string | null;
@@ -120,6 +121,10 @@ export interface BusinessProfile {
   invoiceNumberFormat?: string | null;
   invoiceNumberSequence?: number | null;
   paymentTermDays?: number;
+  quoteNumberFormat?: string | null;
+  quoteNumberSequence?: number | null;
+  quoteValidityDays?: number | null;
+  defaultQuoteKind?: 'quote' | 'estimate';
 }
 
 export interface LineItem {
@@ -190,6 +195,10 @@ export interface Invoice {
   additionalChargesList?: AdditionalCharge[]; // New structured charges
   additionalChargesTotal?: number; // Calculated total of all additional charges
   total: number;
+  totalPaid?: number;
+  balanceDue?: number;
+  paymentStatus?: 'unpaid' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
+  taxInclusive?: boolean;
   status: InvoiceStatus;
   notes?: string | null;
   terms?: string | null;
@@ -199,6 +208,8 @@ export interface Invoice {
   createdAt?: string;
   updatedAt?: string;
   public_viewed_at?: string | null;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
 }
 
 // Helper interfaces for Supabase compatibility

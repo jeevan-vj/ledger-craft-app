@@ -16,6 +16,7 @@ describe('business profile contracts', () => {
     logoUrl: null,
     website: null,
     defaultTaxRate: '15.0000',
+    gstRegistrationStatus: 'registered',
     defaultTerms: null,
     paymentTermDays: 30,
     defaultNotes: null,
@@ -23,6 +24,10 @@ describe('business profile contracts', () => {
     theme: null,
     invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
     invoiceNumberSequence: 1,
+    quoteNumberFormat: 'QUO-{YYYY}-{SEQ}',
+    quoteNumberSequence: 1,
+    quoteValidityDays: 30,
+    defaultQuoteKind: 'quote' as const,
     createdAt: '2026-09-07T00:00:00.000Z',
     updatedAt: '2026-09-07T00:00:00.000Z',
   };
@@ -48,6 +53,100 @@ describe('business profile contracts', () => {
       paymentTermDays: 14,
     });
     expect(parsed.paymentTermDays).toBe(14);
+  });
+
+  it('accepts an explicit GST registration status and rejects unknown values', () => {
+    expect(upsertBusinessProfileRequestSchema.parse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      gstRegistrationStatus: 'not_registered',
+    }).gstRegistrationStatus).toBe('not_registered');
+
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      gstRegistrationStatus: 'sometimes',
+    }).success).toBe(false);
+  });
+
+  it('accepts the mobile onboarding theme that omitted background', () => {
+    const legacyTheme = {
+      name: 'Professional',
+      primary: '#163300',
+      secondary: '#3B4DE6',
+      accent: '#4F63D7',
+      surface: '#FFFFFF',
+      text: '#1E293B',
+      textLight: '#64748B',
+    };
+    const registered = upsertBusinessProfileRequestSchema.parse({
+      name: 'Kauri Studio Ltd',
+      email: 'hello@kauristudio.nz',
+      country: 'New Zealand',
+      invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+      defaultTaxRate: '15',
+      gstRegistrationStatus: 'registered',
+      phone: '+64 21 555 0101',
+      address: null,
+      city: null,
+      state: null,
+      zip: null,
+      logoUrl: null,
+      theme: legacyTheme,
+    });
+    const notRegistered = upsertBusinessProfileRequestSchema.parse({
+      ...registered,
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: '0',
+    });
+
+    expect(registered.gstRegistrationStatus).toBe('registered');
+    expect(registered.defaultTaxRate).toBe('15');
+    expect(registered.theme).toEqual({
+      primary: '#163300',
+      secondary: '#3B4DE6',
+      accent: '#4F63D7',
+      text: '#1E293B',
+      textLight: '#64748B',
+      background: '#F5F6F3',
+      surface: '#FFFFFF',
+    });
+    expect(notRegistered).toMatchObject({
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: '0',
+    });
+  });
+
+  it('fills quote settings on older profile snapshots and accepts edits', () => {
+    const { quoteNumberFormat, quoteNumberSequence, quoteValidityDays, defaultQuoteKind, ...legacy } = profile;
+    const parsed = businessProfileSchema.parse(legacy);
+    expect(parsed.quoteNumberFormat).toBe(quoteNumberFormat);
+    expect(parsed.quoteNumberSequence).toBe(quoteNumberSequence);
+    expect(parsed.quoteValidityDays).toBe(quoteValidityDays);
+    expect(parsed.defaultQuoteKind).toBe(defaultQuoteKind);
+
+    expect(upsertBusinessProfileRequestSchema.parse({
+      name: profile.name,
+      email: profile.email,
+      quoteNumberFormat: 'EST-{YYYY}-{SEQ}',
+      quoteNumberSequence: 12,
+      quoteValidityDays: 14,
+      defaultQuoteKind: 'estimate',
+    })).toMatchObject({
+      quoteNumberFormat: 'EST-{YYYY}-{SEQ}',
+      quoteValidityDays: 14,
+      defaultQuoteKind: 'estimate',
+    });
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: profile.name,
+      email: profile.email,
+      quoteValidityDays: 0,
+    }).success).toBe(false);
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: profile.name,
+      email: profile.email,
+      defaultQuoteKind: 'proposal',
+    }).success).toBe(false);
   });
 });
 

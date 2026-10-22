@@ -9,7 +9,7 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native';
-import { useAuth } from '@/store';
+import { useAuth, useStore } from '@/store';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '@/navigation/types';
@@ -69,6 +69,8 @@ export default function LoginScreen() {
 
     if (error) {
       Alert.alert('Login Failed', authErrorMessage(error));
+    } else if (!useStore.getState().hasCompletedOnboarding) {
+      navigation.replace('Onboarding');
     }
   };
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Plus, Download, RefreshCw, Wallet, Calendar, Repeat } from 'lucide-react';
+import { Plus, Wallet, Calendar, Repeat } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { Button } from '@/components/ui/button';
@@ -12,9 +12,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import { useAppData } from '@/hooks/useAppData';
-import { Payment, EnhancedInvoice, CreatePaymentRequest } from '@/types/payment';
-import { Invoice } from '@/types';
+import { EnhancedInvoice, CreatePaymentRequest } from '@/types/payment';
 import { paymentService } from '@/services/paymentService';
+import { downloadReceiptPdf } from '@/features/receipts/receiptPdf';
 
 export default function PaymentsPage() {
   const [unpaidInvoices, setUnpaidInvoices] = useState<EnhancedInvoice[]>([]);
@@ -30,7 +30,6 @@ export default function PaymentsPage() {
     invoices,
     createPayment,
     refreshPayments,
-    refreshInvoices,
     getInvoicesWithBalance
   } = useAppData();
 
@@ -55,10 +54,6 @@ export default function PaymentsPage() {
   useEffect(() => {
     fetchUnpaidInvoices();
   }, []);
-
-  useEffect(() => {
-    console.log('selectedInvoice state changed to:', selectedInvoice);
-  }, [selectedInvoice]);
 
   const handleCreatePayment = async (paymentData: CreatePaymentRequest) => {
     try {
@@ -100,10 +95,12 @@ export default function PaymentsPage() {
 
   const handleDownloadReceipt = async (paymentId: string) => {
     try {
-      // Simulate receipt download
+      const receipt = await paymentService.getReceiptByPayment(paymentId);
+      if (!receipt) throw new Error('Receipt not found');
+      downloadReceiptPdf(receipt);
       toast({
-        title: "Success",
-        description: "Receipt downloaded successfully"
+        title: "Receipt downloaded",
+        description: `${receipt.receiptNumber}.pdf was created.`
       });
     } catch (error) {
       toast({
@@ -114,21 +111,12 @@ export default function PaymentsPage() {
     }
   };
 
-  const handleResendReceipt = async (paymentId: string) => {
-    try {
-      // Simulate receipt resend
-      await new Promise(resolve => setTimeout(resolve, 500));
-      toast({
-        title: "Success",
-        description: "Receipt email sent successfully"
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to send receipt email",
-        variant: "destructive"
-      });
-    }
+  const handleResendReceipt = () => {
+    toast({
+      title: "Email delivery unavailable",
+      description: "Download the receipt PDF and send it using your email provider.",
+      variant: "destructive"
+    });
   };
 
   const handleExportPayments = async () => {
@@ -303,7 +291,7 @@ export default function PaymentsPage() {
                             #{invoice.invoiceNumber || invoice.id?.slice(-8) || 'N/A'}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {invoice.customer?.name || invoice.customerName || 'Unknown Customer'}
+                            {invoice.customer?.name || 'Unknown Customer'}
                           </p>
                         </div>
                         <div className="text-right">
@@ -321,11 +309,8 @@ export default function PaymentsPage() {
               </div>
 
               {/* Payment Form */}
-              {console.log('PaymentForm conditional check - selectedInvoice:', selectedInvoice)}
-              {console.log('PaymentForm conditional check - !!selectedInvoice:', !!selectedInvoice)}
               {selectedInvoice && (
                 <>
-                  {console.log('Rendering PaymentForm with selectedInvoice:', selectedInvoice)}
                   <div className="border-t pt-6">
                     <h3 className="font-semibold mb-4">Payment Details</h3>
                     <PaymentForm

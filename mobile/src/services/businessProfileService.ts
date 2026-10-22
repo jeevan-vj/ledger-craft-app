@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { toContractTheme } from '@/features/business-profile/theme';
 import { OnboardingData, BusinessTheme } from '@/types/onboarding';
 import { decode } from 'base64-arraybuffer';
 import { objectsApi, storageApiEnabled } from '@/features/storage/api/objectsApi';
@@ -15,7 +16,12 @@ export interface BusinessProfile {
   country: string;
   invoiceNumberFormat: string;
   invoiceNumberSequence: number;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   defaultTaxRate?: number;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   address?: string;
   city?: string;
   state?: string;
@@ -26,6 +32,8 @@ export interface BusinessProfile {
   defaultTerms?: string;
   defaultNotes?: string;
   bankInfo?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
   logoUrl?: string;
   theme?: BusinessTheme;
   createdAt: string;
@@ -44,10 +52,15 @@ export interface BusinessProfileUpdate {
   state?: string;
   zip?: string;
   defaultTaxRate?: number;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultTerms?: string;
   defaultNotes?: string;
   invoiceNumberFormat?: string;
   invoiceNumberSequence?: number;
+  quoteNumberFormat?: string;
+  quoteNumberSequence?: number;
+  quoteValidityDays?: number;
+  defaultQuoteKind?: 'quote' | 'estimate';
   logoUri?: string;
   theme?: BusinessTheme;
 }
@@ -72,12 +85,14 @@ class BusinessProfileService {
           country: data.country,
           invoiceNumberFormat: data.invoiceNumberFormat,
           defaultTaxRate: data.defaultTaxRate ?? null,
+          gstRegistrationStatus: data.gstRegistrationStatus,
+          phone: data.phone ?? null,
           address: data.address ?? null,
           city: data.city ?? null,
           state: data.state ?? null,
           zip: data.zip ?? null,
           logoUrl,
-          theme: data.theme,
+          theme: toContractTheme(data.theme),
         });
       }
 
@@ -111,6 +126,8 @@ class BusinessProfileService {
         invoice_number_format: data.invoiceNumberFormat,
         invoice_number_sequence: 0,
         default_tax_rate: data.defaultTaxRate,
+        gst_registration_status: data.gstRegistrationStatus,
+        phone: data.phone,
         address: data.address,
         city: data.city,
         state: data.state,
@@ -202,11 +219,20 @@ class BusinessProfileService {
           zip: updates.zip ?? current?.zip ?? null,
           invoiceNumberFormat: updates.invoiceNumberFormat ?? current?.invoiceNumberFormat ?? null,
           invoiceNumberSequence: updates.invoiceNumberSequence ?? current?.invoiceNumberSequence ?? undefined,
+          quoteNumberFormat: updates.quoteNumberFormat ?? current?.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
+          quoteNumberSequence: updates.quoteNumberSequence ?? current?.quoteNumberSequence ?? 1,
+          quoteValidityDays: updates.quoteValidityDays ?? current?.quoteValidityDays ?? 30,
+          defaultQuoteKind: updates.defaultQuoteKind ?? current?.defaultQuoteKind ?? 'quote',
           defaultTaxRate: updates.defaultTaxRate ?? current?.defaultTaxRate ?? null,
+          gstRegistrationStatus: updates.gstRegistrationStatus ?? current?.gstRegistrationStatus ?? 'unknown',
           defaultTerms: updates.defaultTerms ?? current?.defaultTerms ?? null,
           defaultNotes: updates.defaultNotes ?? current?.defaultNotes ?? null,
           logoUrl,
-          theme: updates.theme ?? current?.theme ?? null,
+          theme: updates.theme
+            ? toContractTheme(updates.theme)
+            : current?.theme
+              ? toContractTheme(current.theme)
+              : null,
         });
       }
 
@@ -248,6 +274,7 @@ class BusinessProfileService {
       if (updates.invoiceNumberFormat !== undefined) updateData.invoice_number_format = updates.invoiceNumberFormat;
       if (updates.invoiceNumberSequence !== undefined) updateData.invoice_number_sequence = updates.invoiceNumberSequence;
       if (updates.defaultTaxRate !== undefined) updateData.default_tax_rate = updates.defaultTaxRate;
+      if (updates.gstRegistrationStatus !== undefined) updateData.gst_registration_status = updates.gstRegistrationStatus;
       
       // Preferences
       if (updates.defaultTerms !== undefined) updateData.default_terms = updates.defaultTerms;
@@ -355,15 +382,11 @@ class BusinessProfileService {
     // Reconstruct theme if color data exists
     let theme: BusinessTheme | undefined;
     if (data.primary_color || data.secondary_color || data.accent_color) {
-      theme = {
-        name: 'Custom',
-        primary: data.primary_color || '#163300',
-        secondary: data.secondary_color || '#4A5FD8',
-        accent: data.accent_color || '#00D4FF',
-        surface: '#FFFFFF',
-        text: '#1E293B',
-        textLight: '#64748B',
-      };
+      theme = toContractTheme({
+        primary: data.primary_color,
+        secondary: data.secondary_color,
+        accent: data.accent_color,
+      });
     }
 
     const profile = {
@@ -375,6 +398,7 @@ class BusinessProfileService {
       invoiceNumberFormat: data.invoice_number_format,
       invoiceNumberSequence: data.invoice_number_sequence,
       defaultTaxRate: data.default_tax_rate,
+      gstRegistrationStatus: data.gst_registration_status ?? 'unknown',
       address: data.address,
       city: data.city,
       state: data.state,

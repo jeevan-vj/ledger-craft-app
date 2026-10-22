@@ -15,6 +15,7 @@ import { useAuth } from '@/store';
 import LoginScreen from '@/screens/auth/LoginScreen';
 import SignupScreen from '@/screens/auth/SignupScreen';
 import OnboardingScreen from '@/screens/auth/OnboardingScreen';
+import IntroScreen from '@/screens/auth/IntroScreen';
 
 // Animation configurations
 import {
@@ -32,7 +33,7 @@ export default function AuthNavigator() {
     if (user && !hasCompletedOnboarding) {
       return 'Onboarding';
     }
-    return 'Login';
+    return 'Intro';
   }, [user, hasCompletedOnboarding]);
 
   return (
@@ -47,6 +48,11 @@ export default function AuthNavigator() {
         fullScreenGestureEnabled: Platform.OS === 'ios',
       }}
     >
+      <Stack.Screen
+        name="Intro"
+        component={IntroScreen}
+        options={{ ...authScreenOptions, animation: 'fade', animationDuration: 250 }}
+      />
       <Stack.Screen
         name="Login"
         component={LoginScreen}

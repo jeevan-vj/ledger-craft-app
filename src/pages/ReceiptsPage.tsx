@@ -15,6 +15,7 @@ import { useAppData } from '@/hooks/useAppData';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Receipt } from '@/types/payment';
 import { format } from 'date-fns';
+import { downloadReceiptPdf } from '@/features/receipts/receiptPdf';
 
 export default function ReceiptsPage() {
   const [filteredReceipts, setFilteredReceipts] = useState<Receipt[]>([]);
@@ -27,8 +28,6 @@ export default function ReceiptsPage() {
   const {
     receipts,
     isLoadingReceipts,
-    refreshReceipts,
-    markReceiptAsEmailed
   } = useAppData();
 
   // No need for fetchReceipts as we're using AppContext
@@ -62,11 +61,12 @@ export default function ReceiptsPage() {
 
   const handleDownloadReceipt = async (receiptId: string) => {
     try {
-      // Simulate download
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const receipt = receipts.find((candidate) => candidate.id === receiptId);
+      if (!receipt) throw new Error('Receipt not found');
+      downloadReceiptPdf(receipt);
       toast({
-        title: "Success",
-        description: "Receipt downloaded successfully"
+        title: "Receipt downloaded",
+        description: `${receipt.receiptNumber}.pdf was created.`
       });
     } catch (error) {
       toast({
@@ -77,13 +77,12 @@ export default function ReceiptsPage() {
     }
   };
 
-  const handleResendEmail = async (receiptId: string) => {
-    try {
-      await markReceiptAsEmailed(receiptId);
-      // The AppContext will handle updating the state and showing toast
-    } catch (error) {
-      console.error('Error resending receipt email:', error);
-    }
+  const handleResendEmail = () => {
+    toast({
+      title: "Email delivery unavailable",
+      description: "Download the receipt PDF and send it using your email provider.",
+      variant: "destructive",
+    });
   };
 
   if (isLoadingReceipts) {
@@ -145,9 +144,9 @@ export default function ReceiptsPage() {
               subtitle: 'Each recorded payment creates a receipt you can send.',
             },
             {
-              icon: Mail,
-              title: 'Email to the customer',
-              subtitle: 'Resend any time from the receipt list.',
+              icon: Download,
+              title: 'Save a PDF',
+              subtitle: 'Download a receipt to share using your email provider.',
             },
           ]}
           ctaLabel="Go to payments"
@@ -273,8 +272,10 @@ export default function ReceiptsPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          onClick={() => handleResendEmail(receipt.id)}
-                          disabled={!receipt.receiptData?.customer?.email}
+                          onClick={handleResendEmail}
+                          disabled
+                          aria-label="Email delivery unavailable"
+                          title="Email delivery is unavailable on the current deployment"
                         >
                           <Mail className="h-4 w-4" />
                         </Button>

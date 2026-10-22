@@ -1,6 +1,10 @@
-import { apiRequest } from '@/features/auth/api/http';
+import { apiRequest, AuthApiError } from '@/features/auth/api/http';
+import {
+  toBusinessProfile,
+  type MobileBusinessProfileDto,
+} from '@/features/business-profile/api/businessProfileApi';
 import { customersApi, customersApiEnabled } from '@/features/customers/api/customersApi';
-import type { Customer, Invoice, InvoiceStatus, LineItem } from '@/types/invoice';
+import type { BusinessProfile, Customer, Invoice, InvoiceStatus, LineItem } from '@/types/invoice';
 import { randomId } from '@/utils/id';
 
 export interface MobileInvoiceDto {
@@ -34,6 +38,8 @@ export interface MobileInvoiceDto {
   terms: string | null;
   currency: string;
   customerName: string | null;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
   items: Array<{
     id: string;
     description: string;
@@ -46,6 +52,18 @@ export interface MobileInvoiceDto {
   }>;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface MobileShareInvoiceResponse {
+  shareToken: string;
+  expiresAt: string | null;
+  isActive: boolean;
+}
+
+export interface MobileSharedInvoiceSnapshot {
+  invoice: Invoice;
+  templateName: string;
+  businessProfile: BusinessProfile;
 }
 
 export function invoicesApiEnabled(): boolean {
@@ -104,6 +122,8 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,
+    sourceQuoteId: dto.sourceQuoteId,
+    sourceQuoteNumber: dto.sourceQuoteNumber,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -196,6 +216,33 @@ export const invoicesApi = {
         body: JSON.stringify({ status }),
       }),
     );
+  },
+
+  async share(id: string, templateName = 'classic'): Promise<MobileShareInvoiceResponse> {
+    return apiRequest<MobileShareInvoiceResponse>(`/api/invoices/${encodeURIComponent(id)}/share`, {
+      method: 'POST',
+      body: JSON.stringify({ templateName }),
+    });
+  },
+
+  async getShared(token: string): Promise<MobileSharedInvoiceSnapshot | null> {
+    try {
+      const dto = await apiRequest<{
+        invoice: MobileInvoiceDto;
+        templateName: string;
+        businessProfile: MobileBusinessProfileDto;
+      }>(`/api/public/invoices/${encodeURIComponent(token)}`, { method: 'GET' });
+      return {
+        invoice: toInvoice(dto.invoice),
+        templateName: dto.templateName,
+        businessProfile: toBusinessProfile(dto.businessProfile),
+      };
+    } catch (error) {
+      if (error instanceof AuthApiError && error.status === 404) {
+        return null;
+      }
+      throw error;
+    }
   },
 
   async nextNumber(): Promise<string> {

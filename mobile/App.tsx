@@ -2,6 +2,8 @@ import { useEffect } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { initialWindowMetrics, SafeAreaProvider } from 'react-native-safe-area-context';
+import { AppErrorBoundary } from './src/components/AppErrorBoundary';
 import RootNavigator from './src/navigation';
 import { appQueryClient, configureQueryLifecycle } from './src/lib/queryClient';
 import { ThemeProvider, useTheme } from './src/theme';
@@ -21,5 +23,13 @@ function ThemedApp() {
 }
 
 export default function App() {
-  return <ThemeProvider><ThemedApp /></ThemeProvider>;
+  return (
+    <SafeAreaProvider initialMetrics={initialWindowMetrics}>
+      <ThemeProvider>
+        <AppErrorBoundary>
+          <ThemedApp />
+        </AppErrorBoundary>
+      </ThemeProvider>
+    </SafeAreaProvider>
+  );
 }

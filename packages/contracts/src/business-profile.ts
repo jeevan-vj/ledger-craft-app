@@ -1,6 +1,15 @@
 import { z } from 'zod';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
+export const quoteKindSchema = z.enum(['quote', 'estimate']);
+export const gstRegistrationStatusSchema = z.enum([
+  'unknown',
+  'registered',
+  'not_registered',
+]);
+/** Light canvas used when a client theme omits `background`. */
+export const defaultBusinessThemeBackground = '#F5F6F3';
+
 const themeSchema = z
   .object({
     primary: z.string(),
@@ -8,7 +17,8 @@ const themeSchema = z
     accent: z.string(),
     text: z.string(),
     textLight: z.string(),
-    background: z.string(),
+    // The first mobile onboarding build sent a theme without background.
+    background: z.string().default(defaultBusinessThemeBackground),
     surface: z.string(),
   })
   .nullable();
@@ -27,6 +37,7 @@ export const businessProfileSchema = z.object({
   logoUrl: z.string().nullable(),
   website: z.string().nullable(),
   defaultTaxRate: money.nullable(),
+  gstRegistrationStatus: gstRegistrationStatusSchema.default('unknown'),
   defaultTerms: z.string().nullable(),
   paymentTermDays: z.number().int().min(0).max(365),
   defaultNotes: z.string().nullable(),
@@ -36,6 +47,10 @@ export const businessProfileSchema = z.object({
   theme: themeSchema,
   invoiceNumberFormat: z.string().nullable(),
   invoiceNumberSequence: z.number().int().nullable(),
+  quoteNumberFormat: z.string().min(1).default('QUO-{YYYY}-{SEQ}'),
+  quoteNumberSequence: z.number().int().default(1),
+  quoteValidityDays: z.number().int().min(1).max(365).default(30),
+  defaultQuoteKind: quoteKindSchema.default('quote'),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -54,6 +69,7 @@ export const upsertBusinessProfileRequestSchema = z
     logoUrl: z.string().nullable().optional(),
     website: z.string().nullable().optional(),
     defaultTaxRate: money.nullable().optional(),
+    gstRegistrationStatus: gstRegistrationStatusSchema.optional(),
     defaultTerms: z.string().nullable().optional(),
     paymentTermDays: z.number().int().min(0).max(365).optional(),
     defaultNotes: z.string().nullable().optional(),
@@ -63,6 +79,10 @@ export const upsertBusinessProfileRequestSchema = z
     theme: themeSchema.optional(),
     invoiceNumberFormat: z.string().nullable().optional(),
     invoiceNumberSequence: z.number().int().optional(),
+    quoteNumberFormat: z.string().min(1).max(40).optional(),
+    quoteNumberSequence: z.number().int().min(1).optional(),
+    quoteValidityDays: z.number().int().min(1).max(365).optional(),
+    defaultQuoteKind: quoteKindSchema.optional(),
   })
   .strict();
 

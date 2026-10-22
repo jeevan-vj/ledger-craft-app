@@ -23,6 +23,7 @@ function toDto(row: typeof businessProfiles.$inferSelect): BusinessProfileDto {
     logoUrl: row.logoUrl ?? null,
     website: row.website ?? null,
     defaultTaxRate: row.defaultTaxRate ?? null,
+    gstRegistrationStatus: row.gstRegistrationStatus,
     defaultTerms: row.defaultTerms ?? null,
     paymentTermDays: row.paymentTermDays,
     defaultNotes: row.defaultNotes ?? null,
@@ -32,6 +33,10 @@ function toDto(row: typeof businessProfiles.$inferSelect): BusinessProfileDto {
     theme: row.theme ?? null,
     invoiceNumberFormat: row.invoiceNumberFormat ?? null,
     invoiceNumberSequence: row.invoiceNumberSequence ?? null,
+    quoteNumberFormat: row.quoteNumberFormat,
+    quoteNumberSequence: row.quoteNumberSequence,
+    quoteValidityDays: row.quoteValidityDays,
+    defaultQuoteKind: row.defaultQuoteKind,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -73,6 +78,7 @@ export async function upsertBusinessProfile(
   if (input.logoUrl !== undefined) values.logoUrl = input.logoUrl;
   if (input.website !== undefined) values.website = input.website;
   if (input.defaultTaxRate !== undefined) values.defaultTaxRate = input.defaultTaxRate;
+  if (input.gstRegistrationStatus !== undefined) values.gstRegistrationStatus = input.gstRegistrationStatus;
   if (input.defaultTerms !== undefined) values.defaultTerms = input.defaultTerms;
   if (input.paymentTermDays !== undefined) values.paymentTermDays = input.paymentTermDays;
   if (input.defaultNotes !== undefined) values.defaultNotes = input.defaultNotes;
@@ -82,6 +88,10 @@ export async function upsertBusinessProfile(
   if (input.theme !== undefined) values.theme = input.theme;
   if (input.invoiceNumberFormat !== undefined) values.invoiceNumberFormat = input.invoiceNumberFormat;
   if (input.invoiceNumberSequence !== undefined) values.invoiceNumberSequence = input.invoiceNumberSequence;
+  if (input.quoteNumberFormat !== undefined) values.quoteNumberFormat = input.quoteNumberFormat;
+  if (input.quoteNumberSequence !== undefined) values.quoteNumberSequence = input.quoteNumberSequence;
+  if (input.quoteValidityDays !== undefined) values.quoteValidityDays = input.quoteValidityDays;
+  if (input.defaultQuoteKind !== undefined) values.defaultQuoteKind = input.defaultQuoteKind;
 
   if (existing[0]) {
     const [row] = await tx
@@ -110,6 +120,7 @@ export async function upsertBusinessProfile(
       logoUrl: input.logoUrl ?? null,
       website: input.website ?? null,
       defaultTaxRate: input.defaultTaxRate ?? null,
+      gstRegistrationStatus: input.gstRegistrationStatus ?? 'unknown',
       defaultTerms: input.defaultTerms ?? null,
       paymentTermDays: input.paymentTermDays ?? 30,
       defaultNotes: input.defaultNotes ?? null,
@@ -119,6 +130,10 @@ export async function upsertBusinessProfile(
       theme: input.theme ?? null,
       invoiceNumberFormat: input.invoiceNumberFormat ?? 'INV-{YYYY}-{SEQ}',
       invoiceNumberSequence: input.invoiceNumberSequence ?? 1,
+      quoteNumberFormat: input.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
+      quoteNumberSequence: input.quoteNumberSequence ?? 1,
+      quoteValidityDays: input.quoteValidityDays ?? 30,
+      defaultQuoteKind: input.defaultQuoteKind ?? 'quote',
     })
     .returning();
   if (!row) throw new Error('Failed to insert business profile');
@@ -154,6 +169,17 @@ export async function lockBusinessProfile(
     .from(businessProfiles)
     .where(eq(businessProfiles.organisationId, organisationId));
   return rows[0];
+}
+
+export async function bumpQuoteSequence(
+  tx: Database,
+  profileId: string,
+  nextSequence: number,
+): Promise<void> {
+  await tx
+    .update(businessProfiles)
+    .set({ quoteNumberSequence: nextSequence, updatedAt: new Date() })
+    .where(eq(businessProfiles.id, profileId));
 }
 
 export async function bumpInvoiceSequence(

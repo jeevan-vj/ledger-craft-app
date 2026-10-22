@@ -13,6 +13,7 @@ import {
   verifications,
 } from './schema/identity';
 import { invoices, lineItems } from './schema/invoices';
+import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
 import { bankAccounts, bankTransactions, bankTransfers, transactionImportBatches } from './schema/bank';
 import { expenseCategories, expenses } from './schema/expenses';
@@ -40,6 +41,9 @@ export const schema = {
   items,
   invoices,
   lineItems,
+  quotes,
+  quoteLineItems,
+  sharedQuotes,
   accounts,
   accountContacts,
   accountTemplates,

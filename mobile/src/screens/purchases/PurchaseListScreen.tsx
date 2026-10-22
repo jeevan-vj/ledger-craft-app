@@ -14,6 +14,7 @@ import { Feather } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
@@ -22,6 +23,7 @@ import type { PurchaseStackParamList } from '@/navigation/types';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
 type Mode = 'bills' | 'vendors';
@@ -30,6 +32,7 @@ export default function PurchaseListScreen() {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
+  const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<Navigation>();
   const [mode, setMode] = useState<Mode>('bills');
   const [search, setSearch] = useState('');
@@ -97,7 +100,7 @@ export default function PurchaseListScreen() {
         key={`${mode}-${rows.length}`}
         keyExtractor={(item) => item.id}
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}
         refreshControl={<RefreshControl refreshing={activeQuery.isRefetching} onRefresh={() => activeQuery.refetch()} tintColor={palette.accent} colors={[palette.accent]} />}
         renderItem={({ item, index }) => mode === 'bills' ? (
           <BillRow
@@ -135,7 +138,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
     void: palette.textTertiary,
   };
   return (
-    <Pressable
+    <AppPressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={`${bill.vendorName}, ${bill.billNumber}, ${formatMoney(bill.balanceDue, bill.currency)} due`}
@@ -154,7 +157,7 @@ function BillRow({ bill, first, last, onPress }: { bill: BillDto; first: boolean
         <Text style={[styles.status, { color: statusColor[bill.displayStatus] }]}>{bill.displayStatus}</Text>
       </View>
       <Feather name="chevron-right" size={18} color={palette.textTertiary} />
-    </Pressable>
+    </AppPressable>
   );
 }
 

@@ -1,10 +1,12 @@
 import { businessProfileService } from '@/services/businessProfileService';
 import { mockBusinessTheme, mockOnboardingData } from '@/__tests__/fixtures/onboarding.fixtures';
+import { PRESET_THEMES } from '@/features/business-profile/theme';
 
 const dto = {
   id: 'profile-1', name: 'LedgerCraft Studio', email: 'owner@example.com', phone: null,
   address: null, city: null, state: null, zip: null, country: 'NZ', taxId: null,
   logoUrl: null, website: null, defaultTaxRate: '15', defaultTerms: null,
+  gstRegistrationStatus: 'registered' as const,
   paymentTermDays: 20, defaultNotes: null, bankInfo: null, theme: mockBusinessTheme,
   invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1,
   createdAt: '2026-10-18T00:00:00.000Z', updatedAt: '2026-10-18T00:00:00.000Z',
@@ -27,6 +29,39 @@ describe('BusinessProfileService (Hono)', () => {
     const profile = await businessProfileService.createBusinessProfile({ ...mockOnboardingData, businessName: dto.name, businessEmail: dto.email, logoUri: undefined });
     expect(profile).toEqual(expect.objectContaining({ name: dto.name, defaultTaxRate: 15, theme: mockBusinessTheme }));
     expect(global.fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/business-profile', expect.objectContaining({ method: 'PUT' }));
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body as string);
+    expect(body).toEqual(expect.objectContaining({
+      name: dto.name,
+      email: dto.email,
+      gstRegistrationStatus: 'registered',
+      defaultTaxRate: '15',
+      theme: {
+        primary: '#163300',
+        secondary: '#3B4DE6',
+        accent: '#4F63D7',
+        text: '#1E293B',
+        textLight: '#64748B',
+        background: '#F5F6F3',
+        surface: '#FFFFFF',
+      },
+    }));
+    expect(body.theme).not.toHaveProperty('name');
+  });
+
+  it('sends a not-registered GST choice as a zero tax rate string', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({ ...dto, gstRegistrationStatus: 'not_registered', defaultTaxRate: '0' }));
+    await businessProfileService.createBusinessProfile({
+      ...mockOnboardingData,
+      businessName: dto.name,
+      businessEmail: dto.email,
+      gstRegistrationStatus: 'not_registered',
+      defaultTaxRate: 0,
+      logoUri: undefined,
+    });
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[0][1].body as string);
+    expect(body.gstRegistrationStatus).toBe('not_registered');
+    expect(body.defaultTaxRate).toBe('0');
+    expect(body.theme.background).toBe('#F5F6F3');
   });
 
   it('gets the current profile and maps 404 to null', async () => {
@@ -35,6 +70,17 @@ describe('BusinessProfileService (Hono)', () => {
       .mockResolvedValueOnce(jsonResponse({ message: 'Not found' }, 404));
     await expect(businessProfileService.getBusinessProfile()).resolves.toEqual(expect.objectContaining({ id: dto.id }));
     await expect(businessProfileService.getBusinessProfile()).resolves.toBeNull();
+  });
+
+  it('saves a theme with contract colours only', async () => {
+    const theme = { ...PRESET_THEMES.slate, name: 'Slate' };
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(dto))
+      .mockResolvedValueOnce(jsonResponse({ ...dto, theme: PRESET_THEMES.slate }));
+    await businessProfileService.updateBusinessProfile({ theme });
+    const body = JSON.parse((global.fetch as jest.Mock).mock.calls[1][1].body as string);
+    expect(body.theme).toEqual(PRESET_THEMES.slate);
+    expect(body.theme).not.toHaveProperty('name');
   });
 
   it('updates the profile without losing existing required fields', async () => {

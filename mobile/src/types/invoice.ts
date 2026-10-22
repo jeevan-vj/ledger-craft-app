@@ -45,9 +45,26 @@ export interface BusinessProfile {
   logoUrl?: string | null;
   website?: string | null;
   defaultTaxRate?: number | null;
+  gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
   defaultNotes?: string | null;
   defaultTerms?: string | null;
   currency?: string;
+  bankInfo?: string | null;
+  bankAccountName?: string | null;
+  bankAccountNumber?: string | null;
+  /**
+   * Brand colours for invoice preview and PDF. Missing tokens fall back inside
+   * `resolveInvoiceTheme`. Ownership stays on the loaded profile, not the form.
+   */
+  theme?: {
+    primary?: string | null;
+    secondary?: string | null;
+    accent?: string | null;
+    text?: string | null;
+    textLight?: string | null;
+    background?: string | null;
+    surface?: string | null;
+  } | null;
   userId: string;
 }
 
@@ -76,6 +93,8 @@ export interface Invoice {
   terms?: string | null;
   currency: string;
   templateName?: string;
+  sourceQuoteId?: string;
+  sourceQuoteNumber?: string;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

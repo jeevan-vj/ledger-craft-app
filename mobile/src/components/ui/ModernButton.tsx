@@ -68,8 +68,9 @@ export function ModernButton({
       'worklet';
       pressed.value = false;
     })
-    .onEnd(() => {
+    .onEnd((_event, success) => {
       'worklet';
+      if (!success) return;
       runOnJS(triggerHaptic)();
       runOnJS(handlePress)();
     });

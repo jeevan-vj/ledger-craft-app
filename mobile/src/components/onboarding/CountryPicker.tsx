@@ -1,15 +1,18 @@
 import React, { useState } from 'react';
 import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  TextInput,
   FlatList,
+  Modal,
   StyleSheet,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Feather } from '@expo/vector-icons';
 import { COUNTRIES } from '@/types/onboarding';
+import { radius, space } from '@/theme/tokens';
+import { useTheme } from '@/theme';
+import { AppPressable } from '@/components/ui/AppPressable';
 
 interface CountryPickerProps {
   visible: boolean;
@@ -18,183 +21,78 @@ interface CountryPickerProps {
   selectedCountry?: string;
 }
 
-export default function CountryPicker({
-  visible,
-  onSelect,
-  onClose,
-  selectedCountry,
-}: CountryPickerProps) {
+export default function CountryPicker({ visible, onSelect, onClose, selectedCountry }: CountryPickerProps) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
   const [searchQuery, setSearchQuery] = useState('');
+  const filteredCountries = COUNTRIES.filter((country) => country.toLowerCase().includes(searchQuery.trim().toLowerCase()));
 
-  const filteredCountries = COUNTRIES.filter((country) =>
-    country.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  const handleSelect = (country: string) => {
-    onSelect(country);
-    setSearchQuery('');
-    onClose();
-  };
-
-  const handleClose = () => {
+  const close = () => {
     setSearchQuery('');
     onClose();
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      transparent={true}
-      onRequestClose={handleClose}
-    >
-      <View style={styles.overlay}>
-        <View style={styles.container}>
-          {/* Header */}
-          <View style={styles.header}>
-            <Text style={styles.title}>Select Country</Text>
-            <TouchableOpacity onPress={handleClose} style={styles.closeButton}>
-              <Text style={styles.closeText}>✕</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* Search */}
-          <View style={styles.searchContainer}>
-            <Feather name="search" size={16} color="#94A3B8" />
-            <TextInput
-              style={styles.searchInput}
-              placeholder="Search countries..."
-              value={searchQuery}
-              onChangeText={setSearchQuery}
-              placeholderTextColor="#94A3B8"
-              autoCapitalize="none"
-              autoCorrect={false}
-            />
-          </View>
-
-          {/* Countries List */}
-          <FlatList
-            data={filteredCountries}
-            keyExtractor={(item) => item}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                style={[
-                  styles.countryItem,
-                  selectedCountry === item && styles.countryItemSelected,
-                ]}
-                onPress={() => handleSelect(item)}
-                activeOpacity={0.7}
-              >
-                <Text
-                  style={[
-                    styles.countryText,
-                    selectedCountry === item && styles.countryTextSelected,
-                  ]}
-                >
-                  {item}
-                </Text>
-                {selectedCountry === item && (
-                  <Text style={styles.checkmark}>Selected</Text>
-                )}
-              </TouchableOpacity>
-            )}
-            style={styles.list}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={true}
-            keyboardShouldPersistTaps="handled"
-          />
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={close}>
+      <SafeAreaView style={styles.screen}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Business country</Text>
+          <AppPressable onPress={close} style={styles.close} accessibilityRole="button" accessibilityLabel="Close country selection">
+            <Feather name="x" size={21} color={theme.colors.text} />
+          </AppPressable>
         </View>
-      </View>
+        <View style={styles.search}>
+          <Feather name="search" size={18} color={theme.colors.textSecondary} />
+          <TextInput value={searchQuery} onChangeText={setSearchQuery} placeholder="Search countries"
+            placeholderTextColor={theme.colors.textTertiary} style={styles.searchInput} autoCapitalize="none"
+            autoCorrect={false} accessibilityLabel="Search countries" />
+        </View>
+        <FlatList
+          data={filteredCountries}
+          keyExtractor={(item) => item}
+          contentContainerStyle={styles.list}
+          contentInsetAdjustmentBehavior="automatic"
+          keyboardShouldPersistTaps="handled"
+          ListEmptyComponent={(
+            <View style={styles.empty}>
+              <Feather name="search" size={26} color={theme.colors.textTertiary} />
+              <Text style={styles.emptyTitle}>No countries found</Text>
+              <Text style={styles.emptyBody}>Try a different country name.</Text>
+            </View>
+          )}
+          renderItem={({ item }) => {
+            const selected = selectedCountry === item;
+            return (
+              <AppPressable
+                onPress={() => { onSelect(item); close(); }}
+                accessibilityRole="radio"
+                accessibilityState={{ selected }}
+                style={({ pressed }) => [styles.row, pressed && styles.rowPressed]}
+              >
+                <Text style={[styles.rowText, selected && styles.rowTextSelected]}>{item}</Text>
+                {selected ? <Feather name="check" size={20} color={theme.colors.accentText} /> : null}
+              </AppPressable>
+            );
+          }}
+        />
+      </SafeAreaView>
     </Modal>
   );
 }
 
-const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  container: {
-    backgroundColor: '#FFFFFF',
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    height: '80%',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E2E8F0',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#1E293B',
-  },
-  closeButton: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#F8FAFC',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  closeText: {
-    fontSize: 20,
-    color: '#64748B',
-    fontWeight: '600',
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F8FAFC',
-    borderRadius: 12,
-    margin: 16,
-    paddingHorizontal: 12,
-  },
-  searchIcon: {
-    fontSize: 18,
-    marginRight: 8,
-  },
-  searchInput: {
-    flex: 1,
-    paddingVertical: 12,
-    fontSize: 16,
-    color: '#1E293B',
-  },
-  list: {
-    flex: 1,
-  },
-  listContent: {
-    paddingBottom: 20,
-  },
-  countryItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#F1F5F9',
-  },
-  countryItemSelected: {
-    backgroundColor: '#EEF2FF',
-  },
-  countryText: {
-    fontSize: 16,
-    color: '#1E293B',
-  },
-  countryTextSelected: {
-    color: '#163300',
-    fontWeight: '600',
-  },
-  checkmark: {
-    fontSize: 18,
-    color: '#163300',
-    fontWeight: 'bold',
-  },
+const createStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
+  screen: { flex: 1, backgroundColor: theme.colors.background },
+  header: { minHeight: 60, paddingHorizontal: space.xl, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' },
+  title: { ...theme.type.title, fontSize: 24 },
+  close: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.fill },
+  search: { minHeight: 52, marginHorizontal: space.xl, marginBottom: space.lg, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', gap: space.sm, borderRadius: radius.md, backgroundColor: theme.colors.fillMuted, borderWidth: 1, borderColor: theme.colors.border },
+  searchInput: { ...theme.type.body, flex: 1, paddingVertical: 12 },
+  list: { paddingHorizontal: space.xl, paddingBottom: space.section },
+  row: { minHeight: 56, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator },
+  rowPressed: { backgroundColor: theme.colors.fillMuted },
+  rowText: { ...theme.type.body },
+  rowTextSelected: { color: theme.colors.accentText, fontWeight: '700' },
+  empty: { alignItems: 'center', paddingVertical: 64, paddingHorizontal: space.xl },
+  emptyTitle: { ...theme.type.headline, marginTop: space.md },
+  emptyBody: { ...theme.type.subhead, marginTop: space.xs, textAlign: 'center' },
 });
-

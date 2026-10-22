@@ -16,6 +16,10 @@ Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
 and downloaded by the client. Email delivery and AI features are unavailable in
 this deployment; they must not claim successful delivery or generation.
 
+## Web error monitoring
+
+Browser errors go to Sentry only when the production build was given `VITE_SENTRY_DSN`. The SDK is a separate chunk that loads after the first paint. Replay, Feedback, and performance tracing are off. The release workflow uploads hidden source maps for the git SHA when the production environment secret `SENTRY_AUTH_TOKEN` exists, then deletes `dist/**/*.map` before `wrangler pages deploy`. Missing token skips the upload and the site still deploys. The service worker does not precache maps. Details and the setup checklist are in `docs/sentry-web.md`.
+
 **Latest release (2026-10-03): GST return workflow deployed and verified.**
 
 - Website: https://easybiz.iamjeevan.com
@@ -255,7 +259,9 @@ and anonymous-access rejection, then deploys Pages. It verifies the published
 frontend build marker and routes, and runs the authenticated smoke script.
 A local lock prevents concurrent releases from the same checkout. If invoking
 from multiple machines, coordinate releases outside that local lock. No GitHub
-workflow is installed by this script.
+workflow is installed by this script. GitHub production deploys are
+`.github/workflows/release.yml`: that workflow runs after CI succeeds on a push
+to `main`, and `workflow_dispatch` from `main` remains available.
 
 Production entry points:
 
@@ -264,6 +270,66 @@ Production entry points:
 
 The Pages Function proxies `/api/*` to the Worker so browser authentication stays
 on the Pages origin. Better Auth's URL and trusted origins match that origin.
+
+## Error monitoring (Sentry)
+
+The API Worker reports unhandled errors to Sentry with `@sentry/cloudflare`.
+That covers the worker `fetch` handler, the Identity and Ledger Durable Objects,
+Hono's `onError` handler, and `/api/auth/*` (Better Auth bypasses Hono). Each
+event carries the request id, the route template, the environment, and a release
+equal to the git SHA. `sendDefaultPii` stays off. The SDK 11 `dataCollection`
+settings match that: no user profile, cookies, request bodies, query strings,
+or auth headers. The user attached to an event is the user id only. Share
+tokens in `/api/public/invoices/<orgId>_<shareToken>` are redacted from URLs,
+transaction names, breadcrumbs, and logs.
+
+The Sentry project is organisation `ledgercraft`, project `ledgercraft-api`,
+US region. The DSN is a public client key in `vars.SENTRY_DSN` inside
+`deploy/api/wrangler.jsonc`. The Node API, Vitest, and CI do not construct a
+Sentry client from that file. The Worker sends events only when
+`SENTRY_ENVIRONMENT` is `production`. Local `wrangler dev` loads the DSN but
+does not set that variable, so it stays quiet. The release workflow and
+`pnpm deploy:cloudflare` set `SENTRY_ENVIRONMENT=production` for the published
+Worker, along with `SENTRY_RELEASE` set to the git SHA.
+
+GitHub already has the two values the source-map upload needs:
+
+| Name | Where | Status |
+| --- | --- | --- |
+| `SENTRY_AUTH_TOKEN` | GitHub Actions secret on the `production` environment | Set. Org token. The upload step skips if it is ever removed. |
+| `SENTRY_ORG` | Repository variable, value `ledgercraft` | Set. The upload reads `vars.SENTRY_ORG`. |
+| Project slug | Hard-coded in the API release workflow | `ledgercraft-api`. Do not add a `SENTRY_PROJECT` variable; the web workflow uses its own default. |
+
+Optional Worker var: `SENTRY_TRACES_SAMPLE_RATE` (default `0.1`; `0` turns tracing off).
+
+A Worker secret and a plaintext var cannot share a name. If `SENTRY_DSN` was
+previously stored with `wrangler secret put`, the next deploy fails until that
+secret is removed. The var in `wrangler.jsonc` is the one production should use:
+
+```bash
+pnpm exec wrangler secret delete SENTRY_DSN --config deploy/api/wrangler.jsonc
+```
+
+The release writes source maps to `.wrangler/api-sourcemaps`. `upload_source_maps`
+is on, so Cloudflare receives them too. `scripts/upload-api-sourcemaps.mjs`
+uploads them to org `ledgercraft`, project `ledgercraft-api`.
+
+To send one check event, opt in explicitly. Production `NODE_ENV` keeps
+`/api/__debug/sentry` unregistered; this command turns the route on and enables
+reporting for that local process only:
+
+```bash
+pnpm exec wrangler dev --config deploy/api/wrangler.jsonc \
+  --var NODE_ENV:development \
+  --var SENTRY_ENVIRONMENT:production \
+  --var SENTRY_DEBUG_ROUTE:true
+curl -i -H 'x-request-id: req_debug_on' http://127.0.0.1:8787/api/__debug/sentry
+```
+
+The response is a 503 whose body uses `req_debug_on` and does not include the
+internal error text. The Sentry issue should show route `/api/__debug/sentry`,
+that request id, and no cookies, Authorization header, `set-auth-token`, or
+query string. A normal `wrangler dev` or `pnpm dev:api` session does not send.
 
 ## Migrations and local development
 

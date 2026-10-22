@@ -1,7 +1,9 @@
 import React from 'react';
-import { Pressable, Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet } from 'react-native';
 import { space } from '@/theme/tokens';
+import { lightImpactHaptic } from '@/utils/haptics';
 import { IconWell } from './IconWell';
+import { AppPressable } from './AppPressable';
 import { useTheme } from '@/theme';
 
 interface QuickActionProps {
@@ -9,31 +11,38 @@ interface QuickActionProps {
   label: string;
   onPress: () => void;
   primary?: boolean;
+  accessibilityHint?: string;
 }
 
-export function QuickAction({ icon, label, onPress, primary = false }: QuickActionProps) {
+export function QuickAction({ icon, label, onPress, primary = false, accessibilityHint }: QuickActionProps) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
   const styles = createStyles(theme);
   return (
-    <Pressable
-      onPress={onPress}
+    <AppPressable
+      onPress={() => {
+        lightImpactHaptic();
+        onPress();
+      }}
       accessibilityRole="button"
       accessibilityLabel={label}
+      accessibilityHint={accessibilityHint}
       style={({ pressed }) => [styles.wrap, pressed && styles.pressed]}
     >
-      <IconWell size={56} primary={primary}>
+      <IconWell size={theme.control.prominent} primary={primary}>
         {icon}
       </IconWell>
-      <Text style={styles.label}>{label}</Text>
-    </Pressable>
+      <Text style={styles.label} numberOfLines={2}>{label}</Text>
+    </AppPressable>
   );
 }
 
-const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
+const createStyles = ({ colors: palette, type, control: controlTokens }: ReturnType<typeof useTheme>) => StyleSheet.create({
   wrap: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
     alignItems: 'center',
-    minWidth: 72,
+    minHeight: controlTokens.touchTarget,
   },
   pressed: {
     opacity: 0.7,
@@ -44,5 +53,6 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     color: palette.text,
     fontWeight: '600',
     marginTop: space.sm,
+    textAlign: 'center',
   },
 });

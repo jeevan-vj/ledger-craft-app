@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Plus, Star, Pencil, Trash, Mail, Phone, MapPin, ChevronRight, Filter, X, Search, ChevronDown, RefreshCw, Loader2, Users } from 'lucide-react';
@@ -588,6 +589,9 @@ const Customers = () => {
                       )}
                     </div>
                     <div className="flex space-x-1">
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link to={`/quotes?customerId=${customer.id}`} aria-label={`Quotes for ${customer.name}`}>Quotes</Link>
+                      </Button>
                       <Button
                         variant="ghost"
                         size="icon"
@@ -701,6 +705,9 @@ const Customers = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          <Button variant="ghost" size="sm" asChild>
+                            <Link to={`/quotes?customerId=${customer.id}`} aria-label={`Quotes for ${customer.name}`}>Quotes</Link>
+                          </Button>
                           <Button
                             variant="ghost"
                             size="icon"
