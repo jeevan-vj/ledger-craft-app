@@ -4,6 +4,14 @@ Operating guide for EasyBizInvoice (`ledger-craft-app`). This file replaces `Age
 
 Spec: `TARGET_ARCHITECTURE.md`. Deployment runbook: `deploy/cloudflare.md`. Session skill: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`.
 
+Currency/localization is implemented locally through migration
+`0012_currency-localization.sql`: organisation-scoped base currency, managed
+precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
+formats, and financial-year start. Used rates are immutable. Expense records
+snapshot transaction and base values; do not claim invoice/bill/transfer/report
+conversion or realized/unrealized postings until the remaining AKP-06 work and
+AKP-05 ledger rules land.
+
 ## Stack that is current
 
 Pages project `ledger-craft-app` serves the Vite app. The Hono Worker `ledgercraft-api` (`deploy/api/worker.ts`, config `deploy/api/wrangler.jsonc`) routes to SQLite Durable Objects: one Identity object for Better Auth users, emails, and sessions, and one Ledger object per organisation. The Pages Function `functions/api/[[path]].ts` proxies `/api/*`.

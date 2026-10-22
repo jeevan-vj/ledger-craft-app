@@ -13,6 +13,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './expenses.repository';
+import { convertToBase, resolveDocumentCurrency, roundAt, currencyRepository } from '../currency/currency.service';
 
 async function assertRefs(
   tx: Database,
@@ -58,7 +59,16 @@ export async function createExpenseForUser(
 ): Promise<ExpenseDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     await assertRefs(tx, ctx.organisationId, input);
-    return repo.insertExpense(tx, ctx, input);
+    const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.expenseDate);
+    const amount = roundAt(input.amount, resolved.currency.precision);
+    const taxAmount = roundAt(input.taxAmount ?? '0', resolved.currency.precision);
+    const expense = await repo.insertExpense(tx, ctx, input, {
+      amount, taxAmount, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
+      baseCurrency: resolved.base.code, baseAmount: convertToBase(amount, resolved.rate, resolved.base.precision),
+      baseTaxAmount: convertToBase(taxAmount, resolved.rate, resolved.base.precision),
+    });
+    if (resolved.rateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, resolved.rateId, 'expense', expense.id);
+    return expense;
   });
 }
 
@@ -73,7 +83,19 @@ export async function updateExpenseForUser(
       throw new HTTPException(400, { message: 'Amount must be greater than 0' });
     }
     await assertRefs(tx, ctx.organisationId, input);
-    const expense = await repo.updateExpense(tx, ctx.organisationId, id, input);
+    const existing = await repo.getExpense(tx, ctx.organisationId, id);
+    if (!existing) throw new HTTPException(404, { message: 'Expense not found' });
+    if (existing.exchangeRateId && ((input.currency && input.currency !== existing.currency) || (input.expenseDate && input.expenseDate !== existing.expenseDate))) {
+      throw new HTTPException(409, { message: 'Currency and date are locked after a foreign exchange rate is attached' });
+    }
+    const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency ?? existing.currency, input.expenseDate ?? existing.expenseDate);
+    const amount = roundAt(input.amount ?? existing.amount, resolved.currency.precision);
+    const taxAmount = roundAt(input.taxAmount ?? existing.taxAmount, resolved.currency.precision);
+    const expense = await repo.updateExpense(tx, ctx.organisationId, id, input, {
+      amount, taxAmount, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
+      baseCurrency: resolved.base.code, baseAmount: convertToBase(amount, resolved.rate, resolved.base.precision),
+      baseTaxAmount: convertToBase(taxAmount, resolved.rate, resolved.base.precision),
+    });
     if (!expense) throw new HTTPException(404, { message: 'Expense not found' });
     return expense;
   });

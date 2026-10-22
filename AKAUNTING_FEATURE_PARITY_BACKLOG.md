@@ -51,7 +51,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Chart of accounts and journals | Available | Account initialization/write and manual journal CRUD exist with exact values and organisation scoping. General-ledger/report authority remains client-heavy. |
 | Financial reports | Partial | P&L, balance sheet, cash flow, trial balance, receivables, and payables UI calculations exist. Reports are not server-authoritative, saved, pinnable, configurable by cash/accrual basis, or consistently printable/exportable. |
 | Tax | Partial | Tax configuration, returns, adjustments, and NZ GST/IRD workflows exceed Akaunting's basic summary in places. A reusable tax-rate catalogue, compound/withholding tax types, line-level tax assignment, and full settings CRUD are missing. |
-| Currencies and localization | Missing | Currency codes are stored on several records, but there is no currency catalogue, exchange rate, base/transaction currency accounting, locale/language, date/number formatting, or financial-year configuration. |
+| Currencies and localization | Partial | Migration `0012_currency-localization.sql` adds organisation base currency, a precision-aware catalogue, immutable dated rates and localization/financial-year settings. Web and Expo settings use canonical DTOs; expenses snapshot exact transaction/base amounts and fail when a reviewed rate is missing. Invoice/bill/transfer snapshot wiring, report conversion, and AKP-05 exchange-difference journals remain open. |
 | Company settings | Partial | Business identity, logo, invoice numbering, terms, bank details, template appearance, and default tax rate exist. Email templates, scheduling, defaults, localization, currencies, and richer invoice settings are missing. |
 | Companies/organisations | Partial | Organisation create/rename/archive, active switching, isolated ledgers, and responsive web/Expo management are implemented locally. Restore, ownership transfer, deployment, and authenticated native-device QA remain. |
 | Users and permissions | Partial | Fixed owner/admin/accountant/member/read-only roles, hashed email-bound invitation accept/revoke/refresh, membership lifecycle, and server-enforced domain permissions are implemented locally. Custom roles and outbound email delivery remain explicit follow-up work. |
@@ -173,6 +173,8 @@ Acceptance criteria:
 ### AKP-06 — Currency, exchange-rate, localization, and financial-year settings (P1)
 
 Expected outcome: multi-currency documents and reports remain mathematically auditable while users see localized dates and amounts.
+
+Implementation note (local, 2026-10-23): the settings/catalogue/rate foundation and expense snapshots are implemented in migration `0012`. Rate direction is explicitly “base units per one foreign unit”; used rates are immutable and API values remain canonical decimal strings. Invoice, bill and cross-currency transfer snapshot integration is still required. Realized/unrealized exchange postings and base-currency financial reports depend on the authoritative ledger/report work in AKP-05 and are deliberately not synthesized client-side.
 
 Acceptance criteria:
 

@@ -36,6 +36,7 @@ import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
 import { billLines, billPayments, bills, vendors } from './schema/purchases';
+import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from './schema/currency';
 
 export const schema = {
   rlsProbe,
@@ -86,6 +87,10 @@ export const schema = {
   bills,
   billLines,
   billPayments,
+  organisationLocalizationSettings,
+  organisationCurrencies,
+  exchangeRates,
+  exchangeRateUsage,
 };
 
 

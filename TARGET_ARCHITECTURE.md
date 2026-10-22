@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Currency/localization foundation (implemented locally, 2026-10-23):** SQLite
+migration `0012_currency-localization.sql` adds tenant-scoped localization,
+financial-year settings, a precision-aware currency catalogue, explicit dated
+exchange rates, and immutable document-rate usage. Hono exposes canonical
+decimal DTOs; web and Expo expose responsive settings. Expenses snapshot exact
+transaction/base amounts and reject missing rates. Invoice, bill, transfer and
+report conversion remain explicit AKP-06 follow-up; realized/unrealized posting
+remains dependent on AKP-05 authoritative ledger rules.
+
 **Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
 migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
 transaction splits, invoice/bill connections, and 1 MB attachment metadata.
