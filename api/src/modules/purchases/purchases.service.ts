@@ -23,6 +23,7 @@ import {
   type IdempotencyScope,
 } from '../invoices/idempotency';
 import * as repo from './purchases.repository';
+import { currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
 
 async function validateVendorAndAccounts(
   tx: Database,
@@ -111,7 +112,12 @@ export async function createBillForUser(
       }
     }
     await validateVendorAndAccounts(tx, ctx.organisationId, input);
-    const bill = await repo.insertBill(tx, ctx, input);
+    const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.issueDate);
+    const bill = await repo.insertBill(tx, ctx, { ...input, currency: resolved.currency.code }, {
+      precision: resolved.currency.precision, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
+      baseCurrency: resolved.base.code, basePrecision: resolved.base.precision,
+    });
+    if (resolved.rateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, resolved.rateId, 'bill', bill.id);
     if (idempotency) {
       await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: bill });
     }
@@ -124,8 +130,15 @@ export async function updateBillForUser(db: Database, userId: string, id: string
     const existing = await repo.getBill(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Bill not found' });
     if (existing.lifecycleStatus !== 'draft') throw new HTTPException(409, { message: 'Only draft bills can be edited' });
+    if (existing.exchangeRateId && ((input.currency && input.currency !== existing.currency) || (input.issueDate && input.issueDate !== existing.issueDate))) {
+      throw new HTTPException(409, { message: 'Bill currency and issue date are locked after a foreign exchange rate is attached' });
+    }
     await validateVendorAndAccounts(tx, ctx.organisationId, input);
-    const updated = await repo.updateBill(tx, ctx.organisationId, id, input);
+    const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency ?? existing.currency, input.issueDate ?? existing.issueDate);
+    const updated = await repo.updateBill(tx, ctx.organisationId, id, input, {
+      precision: resolved.currency.precision, exchangeRate: existing.exchangeRate, exchangeRateId: existing.exchangeRateId,
+      baseCurrency: existing.baseCurrency, basePrecision: resolved.base.precision,
+    });
     await repo.appendBillHistory(tx, ctx, id, 'updated', 'Draft bill updated');
     return updated;
   });

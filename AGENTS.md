@@ -20,12 +20,12 @@ Operating guide for EasyBizInvoice (`ledger-craft-app`). This file replaces `Age
 Spec: `TARGET_ARCHITECTURE.md`. Deployment runbook: `deploy/cloudflare.md`. Session skill: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`.
 
 Currency/localization is implemented locally through migration
-`0012_currency-localization.sql`: organisation-scoped base currency, managed
+`0013_currency-localization.sql`: organisation-scoped base currency, managed
 precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
-formats, and financial-year start. Used rates are immutable. Expense records
-snapshot transaction and base values; do not claim invoice/bill/transfer/report
-conversion or realized/unrealized postings until the remaining AKP-06 work and
-AKP-05 ledger rules land.
+formats, and financial-year start. Used rates are immutable. Invoice, bill,
+expense, and explicit-rate base/foreign transfer records snapshot transaction
+and base values. Do not claim base-currency reports or realized/unrealized
+postings until AKP-05 ledger/report rules land.
 
 ## Stack that is current
 

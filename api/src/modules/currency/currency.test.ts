@@ -53,8 +53,30 @@ describe('currency and localization routes', () => {
         const foreignExpense = await app.request('/api/expenses', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ description: 'US subscription', amount: '10.005', taxAmount: '1.005', currency: 'USD', expenseDate: '2026-10-20' }) });
         expect(foreignExpense.status).toBe(201);
         expect(await foreignExpense.json()).toMatchObject({ amount: '10.01', taxAmount: '1.01', currency: 'USD', exchangeRate: '1.60005', baseCurrency: 'NZD', baseAmount: '16.02', baseTaxAmount: '1.62' });
+
+        await app.request('/api/business-profile', { method: 'PUT', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ name: 'Currency Co', email: 'owner@currency.example', country: 'NZ', defaultTaxRate: '0', invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1 }) });
+        const customer = await (await app.request('/api/customers', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ name: 'US Customer', email: 'customer@example.com', country: 'US' }) })).json() as { id: string };
+        const invoiceResponse = await app.request('/api/invoices', { method: 'POST', headers: { ...headers, Cookie: ownerA, 'Idempotency-Key': 'currency-invoice-1' }, body: JSON.stringify({ customerId: customer.id, date: '2026-10-20', dueDate: '2026-11-20', currency: 'USD', taxInclusive: false, taxRate: '0', items: [{ description: 'Consulting', quantity: '1', rate: '10.005' }] }) });
+        expect(invoiceResponse.status).toBe(201);
+        expect(await invoiceResponse.json()).toMatchObject({ currency: 'USD', total: '10.01', exchangeRate: '1.60005', baseCurrency: 'NZD', baseTotal: '16.02' });
+
+        const vendorResponse = await app.request('/api/vendors', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ name: 'US Vendor' }) });
+        const vendor = await vendorResponse.json() as { id: string };
+        const billResponse = await app.request('/api/bills', { method: 'POST', headers: { ...headers, Cookie: ownerA, 'Idempotency-Key': 'currency-bill-1' }, body: JSON.stringify({ vendorId: vendor.id, issueDate: '2026-10-20', dueDate: '2026-11-20', currency: 'USD', taxInclusive: false, lines: [{ description: 'Hosting', quantity: '1', unitPrice: '10.005', taxRate: '0' }] }) });
+        expect(billResponse.status).toBe(201);
+        expect(await billResponse.json()).toMatchObject({ currency: 'USD', total: '10.01', exchangeRate: '1.60005', baseCurrency: 'NZD', baseTotal: '16.02' });
+
+        const createAccount = async (currency: string, name: string) => (await (await app.request('/api/bank-accounts', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ accountName: name, accountNumber: crypto.randomUUID(), bankName: 'Ledger', accountType: 'checking', currency, openingBalance: '100.00' }) })).json()) as { id: string };
+        const nzd = await createAccount('NZD', 'NZD account');
+        const usd = await createAccount('USD', 'USD account');
+        const rejectedTransfer = await app.request('/api/bank-transfers', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ sourceAccountId: nzd.id, destinationAccountId: usd.id, transactionDate: '2026-10-20', amount: '16.02' }) });
+        expect(rejectedTransfer.status).toBe(400);
+        const rateId = settings.rates[0]!.id;
+        const transferResponse = await app.request('/api/bank-transfers', { method: 'POST', headers: { ...headers, Cookie: ownerA, 'Idempotency-Key': 'currency-transfer-1' }, body: JSON.stringify({ sourceAccountId: nzd.id, destinationAccountId: usd.id, transactionDate: '2026-10-20', amount: '16.02', exchangeRateId: rateId }) });
+        expect(transferResponse.status).toBe(201);
+        expect(await transferResponse.json()).toMatchObject({ currency: 'NZD', amount: '16.02', destinationCurrency: 'USD', destinationAmount: '10.01', exchangeRate: '1.60005', exchangeRateId: rateId });
         const usedSettings = currencySettingsSchema.parse(await (await app.request('/api/currency-settings', { headers: { Cookie: ownerA } })).json());
-        expect(usedSettings.rates[0]?.usageCount).toBe(1);
+        expect(usedSettings.rates[0]?.usageCount).toBe(4);
         expect((await app.request(`/api/exchange-rates/${usedSettings.rates[0]!.id}`, { method: 'DELETE', headers: { Cookie: ownerA } })).status).toBe(409);
 
         const duplicate = await app.request('/api/exchange-rates', { method: 'POST', headers: { ...headers, Cookie: ownerA }, body: JSON.stringify({ currencyCode: 'USD', effectiveDate: '2026-10-01', rate: '1.7' }) });

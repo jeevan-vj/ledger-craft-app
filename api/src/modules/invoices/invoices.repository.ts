@@ -45,8 +45,8 @@ function toDto(
     date: row.date,
     dueDate: row.dueDate,
     paymentTermDays: row.paymentTermDays ?? null,
-    subtotal: roundMoney(row.subtotal),
-    taxAmount: roundMoney(row.taxAmount),
+    subtotal: row.subtotal,
+    taxAmount: row.taxAmount,
     discountType: row.discountType === 'percent' ? 'percent' : 'fixed',
     discountPercent: row.discountPercent == null ? null : roundMoney(row.discountPercent),
     discount: row.discount == null ? null : roundMoney(row.discount),
@@ -54,15 +54,21 @@ function toDto(
       row.additionalCharges == null ? null : roundMoney(row.additionalCharges),
     additionalChargesList: row.additionalChargesList ?? undefined,
     additionalChargesTotal: roundMoney(row.additionalChargesTotal ?? row.additionalCharges ?? 0),
-    total: roundMoney(row.total),
-    totalPaid: roundMoney(row.totalPaid),
-    balanceDue: roundMoney(row.balanceDue),
+    total: row.total,
+    totalPaid: row.totalPaid,
+    balanceDue: row.balanceDue,
     paymentStatus: row.paymentStatus,
     taxInclusive: row.taxInclusive,
     status: row.lifecycleStatus === 'cancelled' ? 'cancelled' : row.status,
     notes: row.notes ?? null,
     terms: row.terms ?? null,
     currency: row.currency,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
+    baseCurrency: row.baseCurrency,
+    baseSubtotal: row.baseSubtotal,
+    baseTaxAmount: row.baseTaxAmount,
+    baseTotal: row.baseTotal,
     customerName,
     items: lines,
     ...(sourceQuote ? { sourceQuoteId: sourceQuote.id, sourceQuoteNumber: sourceQuote.quoteNumber } : {}),
@@ -150,6 +156,12 @@ export async function insertInvoice(
     notes: string | null;
     terms: string | null;
     currency: string;
+    exchangeRate: string;
+    exchangeRateId: string | null;
+    baseCurrency: string;
+    baseSubtotal: string;
+    baseTaxAmount: string;
+    baseTotal: string;
     status: 'draft' | 'sent' | 'paid' | 'overdue';
     totals: ComputedInvoiceTotals;
   },
@@ -183,6 +195,12 @@ export async function insertInvoice(
       notes: input.notes,
       terms: input.terms,
       currency: input.currency,
+      exchangeRate: input.exchangeRate,
+      exchangeRateId: input.exchangeRateId,
+      baseCurrency: input.baseCurrency,
+      baseSubtotal: input.baseSubtotal,
+      baseTaxAmount: input.baseTaxAmount,
+      baseTotal: input.baseTotal,
     })
     .returning();
   if (!row) throw new Error('Failed to insert invoice');
@@ -203,6 +221,7 @@ export async function replaceInvoiceTotals(
     notes?: string | null;
     terms?: string | null;
     totals?: ComputedInvoiceTotals;
+    currencySnapshot?: { exchangeRate: string; exchangeRateId: string | null; baseCurrency: string; baseSubtotal: string; baseTaxAmount: string; baseTotal: string };
   },
 ): Promise<InvoiceDto | undefined> {
   const existing = await getInvoice(tx, organisationId, id);
@@ -234,6 +253,7 @@ export async function replaceInvoiceTotals(
             balanceDue: paid ? '0.00' : totals.total,
           }
         : {}),
+      ...(patch.currencySnapshot ?? {}),
       updatedAt: new Date(),
     })
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));

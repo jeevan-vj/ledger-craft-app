@@ -113,6 +113,13 @@ export async function findExactRate(tx: Database, organisationId: string, curren
   return row;
 }
 
+export async function getRateById(tx: Database, organisationId: string, id: string) {
+  const [row] = await tx.select().from(exchangeRates).where(and(
+    eq(exchangeRates.organisationId, organisationId), eq(exchangeRates.id, id),
+  )).limit(1);
+  return row;
+}
+
 export async function recordRateUsage(tx: Database, organisationId: string, exchangeRateId: string, documentType: 'invoice' | 'bill' | 'expense' | 'transfer', documentId: string) {
   await tx.insert(exchangeRateUsage).values({ organisationId, exchangeRateId, documentType, documentId });
 }

@@ -46,7 +46,9 @@ type DiscountInput = {
 export function computeInvoiceTotals(
   input: DiscountInput,
   defaultTaxRatePercent: string | number,
+  currencyPrecision = 2,
 ): ComputedInvoiceTotals {
+  const round = (value: Parameters<typeof roundMoney>[0]) => decimal(value).toFixed(currencyPrecision);
   const taxInclusive = input.taxInclusive ?? true;
   const taxRatePercent = decimal(input.taxRate ?? defaultTaxRatePercent);
 
@@ -87,13 +89,13 @@ export function computeInvoiceTotals(
       description: item.description,
       quantity: roundMoney(quantity),
       unit: item.unit ?? 'ea',
-      rate: roundMoney(rate),
+      rate: round(rate),
       rateUnit: item.rateUnit ?? item.unit ?? 'ea',
-      tax: roundMoney(tax),
-      total: roundMoney(taxInclusive ? discountedAmount : exclusive),
+      tax: round(tax),
+      total: round(taxInclusive ? discountedAmount : exclusive),
       discountType: lineDiscountType,
-      discountValue: item.discountValue == null ? null : roundMoney(lineDiscountValue),
-      discountAmount: roundMoney(lineDiscount),
+      discountValue: item.discountValue == null ? null : round(lineDiscountValue),
+      discountAmount: round(lineDiscount),
       taxes,
       exclusive,
       inclusive: taxInclusive ? discountedAmount : exclusive.add(tax),
@@ -128,14 +130,14 @@ export function computeInvoiceTotals(
 
   return {
     lines: lines.map(({ exclusive: _exclusive, inclusive: _inclusive, taxValue: _taxValue, ...line }) => line),
-    subtotal: roundMoney(subtotalNumber),
-    taxAmount: roundMoney(taxAmountNumber),
+    subtotal: round(subtotalNumber),
+    taxAmount: round(taxAmountNumber),
     discountType,
     discountPercent,
-    discount: discountAmount.compare(0) === 0 ? null : roundMoney(discountAmount),
+    discount: discountAmount.compare(0) === 0 ? null : round(discountAmount),
     additionalChargesList: input.additionalChargesList,
-    additionalCharges: additionalCharges.compare(0) === 0 ? null : roundMoney(additionalCharges),
-    total: roundMoney(totalNumber),
+    additionalCharges: additionalCharges.compare(0) === 0 ? null : round(additionalCharges),
+    total: round(totalNumber),
     taxInclusive,
   };
 }

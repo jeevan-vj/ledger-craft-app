@@ -31,6 +31,7 @@ import {
   type IdempotencyScope,
 } from '../invoices/idempotency';
 import { assertKeyOwned } from '../storage/keys';
+import { currencyRepository } from '../currency/currency.service';
 
 function applyAmount(balance: string, type: 'debit' | 'credit', amount: string) {
   return roundMoney(type === 'credit' ? decimal(balance).add(amount) : decimal(balance).sub(amount));
@@ -308,16 +309,37 @@ export async function createBankTransferForUser(
     if (!source || !destination || !source.isActive || !destination.isActive) {
       throw new HTTPException(400, { message: 'Active source and destination accounts are required' });
     }
+    const localization = await currencyRepository.getLocalization(tx, ctx.organisationId);
+    const sourceDefinition = await currencyRepository.getCurrency(tx, ctx.organisationId, source.currency);
+    const destinationDefinition = await currencyRepository.getCurrency(tx, ctx.organisationId, destination.currency);
+    if (!sourceDefinition?.enabled || !destinationDefinition?.enabled) throw new HTTPException(400, { message: 'Both account currencies must be enabled' });
+    const sourceAmount = decimal(input.amount).toFixed(sourceDefinition.precision);
+    let destinationAmount = sourceAmount;
+    let exchangeRate = '1';
+    let exchangeRateId: string | null = null;
     if (source.currency !== destination.currency) {
-      throw new HTTPException(400, { message: 'Cross-currency transfers require an explicit exchange-rate workflow' });
+      if (!input.exchangeRateId) throw new HTTPException(400, { message: 'Cross-currency transfers require an explicit persisted exchange rate' });
+      const rate = await currencyRepository.getRateById(tx, ctx.organisationId, input.exchangeRateId);
+      if (!rate || rate.effectiveDate > input.transactionDate) throw new HTTPException(400, { message: 'Exchange rate is missing or dated after the transfer' });
+      if (source.currency === localization.baseCurrency && rate.currencyCode === destination.currency && rate.baseCurrency === source.currency) {
+        destinationAmount = decimal(sourceAmount).div(rate.rate).toFixed(destinationDefinition.precision);
+      } else if (destination.currency === localization.baseCurrency && rate.currencyCode === source.currency && rate.baseCurrency === destination.currency) {
+        destinationAmount = decimal(sourceAmount).mul(rate.rate).toFixed(destinationDefinition.precision);
+      } else {
+        throw new HTTPException(400, { message: 'The selected rate must connect one transfer account to the organisation base currency' });
+      }
+      exchangeRate = rate.rate; exchangeRateId = rate.id;
     }
     const balances = {
-      source: applyAmount(source.currentBalance, 'debit', input.amount),
-      destination: applyAmount(destination.currentBalance, 'credit', input.amount),
+      source: decimal(source.currentBalance).sub(sourceAmount).toFixed(sourceDefinition.precision),
+      destination: decimal(destination.currentBalance).add(destinationAmount).toFixed(destinationDefinition.precision),
     };
-    const transfer = await repo.insertTransfer(tx, ctx, input, source.currency, balances);
+    const transfer = await repo.insertTransfer(tx, ctx, { ...input, amount: sourceAmount }, source.currency, balances, {
+      destinationCurrency: destination.currency, destinationAmount, exchangeRate, exchangeRateId,
+    });
     await repo.setAccountBalance(tx, ctx.organisationId, source.id, balances.source);
     await repo.setAccountBalance(tx, ctx.organisationId, destination.id, balances.destination);
+    if (exchangeRateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, exchangeRateId, 'transfer', transfer.id);
     if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: transfer });
     return transfer;
   });

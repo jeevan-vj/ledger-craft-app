@@ -68,6 +68,10 @@ function toTransferDto(
     transactionDate: row.transactionDate,
     amount: roundMoney(row.amount),
     currency: row.currency,
+    destinationCurrency: row.destinationCurrency,
+    destinationAmount: row.destinationAmount,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
     description: row.description,
     reference: row.reference ?? null,
     sourceTransaction,
@@ -270,6 +274,7 @@ export async function insertTransfer(
   input: CreateBankTransferRequest,
   currency: string,
   balances: { source: string; destination: string },
+  conversion: { destinationCurrency: string; destinationAmount: string; exchangeRate: string; exchangeRateId: string | null },
 ): Promise<BankTransferDto> {
   const description = input.description ?? 'Account transfer';
   const [transfer] = await tx.insert(bankTransfers).values({
@@ -280,6 +285,10 @@ export async function insertTransfer(
     transactionDate: input.transactionDate,
     amount: roundMoney(input.amount),
     currency,
+    destinationCurrency: conversion.destinationCurrency,
+    destinationAmount: conversion.destinationAmount,
+    exchangeRate: conversion.exchangeRate,
+    exchangeRateId: conversion.exchangeRateId,
     description,
     reference: input.reference ?? null,
   }).returning();
@@ -306,7 +315,7 @@ export async function insertTransfer(
     ...base, bankAccountId: input.sourceAccountId, type: 'debit', balance: roundMoney(balances.source),
   }).returning();
   const [destinationRow] = await tx.insert(bankTransactions).values({
-    ...base, bankAccountId: input.destinationAccountId, type: 'credit', balance: roundMoney(balances.destination),
+    ...base, amount: conversion.destinationAmount, bankAccountId: input.destinationAccountId, type: 'credit', balance: roundMoney(balances.destination),
   }).returning();
   if (!sourceRow || !destinationRow) throw new Error('Failed to insert transfer transactions');
   return toTransferDto(transfer, toTxDto(sourceRow), toTxDto(destinationRow));

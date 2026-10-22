@@ -4,10 +4,10 @@
 migration `0013_currency-localization.sql` adds tenant-scoped localization,
 financial-year settings, a precision-aware currency catalogue, explicit dated
 exchange rates, and immutable document-rate usage. Hono exposes canonical
-decimal DTOs; web and Expo expose responsive settings. Expenses snapshot exact
-transaction/base amounts and reject missing rates. Invoice, bill, transfer and
-report conversion remain explicit AKP-06 follow-up; realized/unrealized posting
-remains dependent on AKP-05 authoritative ledger rules.
+decimal DTOs; web and Expo expose responsive settings. Invoices, bills,
+expenses, and explicit-rate base/foreign transfers snapshot exact transaction
+and base amounts and reject missing rates. Base-currency reporting and
+realized/unrealized posting remain dependent on AKP-05 authoritative ledger rules.
 
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
 Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
