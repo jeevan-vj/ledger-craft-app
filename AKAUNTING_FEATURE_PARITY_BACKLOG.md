@@ -84,7 +84,7 @@ Acceptance criteria:
 Expected outcome: users can manage supplier obligations from vendor creation through bill settlement, with correct payables and tax accounting.
 
 Status (2026-10-23): **core complete locally.** Migration
-`0008_purchase-lifecycle.sql` adds vendor contact/default/import fields and
+`0009_purchase-lifecycle.sql` adds vendor contact/default/import fields and
 organisation-scoped bill attachments and immutable history. Hono now validates
 cancel/restore transitions, idempotent bill creation, exact split payment
 allocations, object ownership, vendor CSV preview/apply/export, and bill export.

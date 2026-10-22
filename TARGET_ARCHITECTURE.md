@@ -146,7 +146,7 @@ and the production smoke suite passes. No schema migration was needed;
 readiness remains `0004_purchases-payables.sql`.
 
 **Purchase lifecycle parity (implemented locally, 2026-10-23):** Shared
-contracts, Hono/SQLite migration `0008_purchase-lifecycle.sql`, web, and Expo now
+contracts, Hono/SQLite migration `0009_purchase-lifecycle.sql`, web, and Expo now
 cover the AKP-01 core lifecycle. Vendors have contact details, active state,
 defaults, notes, and stable import identifiers. Bills have organisation-scoped
 attachments, immutable history, validated cancel/restore, idempotent creation,
