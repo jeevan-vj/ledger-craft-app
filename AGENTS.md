@@ -1,5 +1,19 @@
 # AGENTS.md
 
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Invoice
+cancel/restore/archive and idempotent duplicate workflows now keep an immutable
+history and post balanced cancellation/restoration journals. Hono/SQLite owns
+exact line discounts and multiple taxes, private 1 MB PDF/image attachments,
+snapshot-scoped public attachment access, CSV preview/apply/export, and printable
+detail. Responsive web exposes the full lifecycle; Expo exposes lifecycle,
+history, line pricing, and image attachment actions. Existing templates,
+sharing, PDFs, payment terms, charges, bank details, and reminders remain intact.
+Recurring invoices remain AKP-04 and production email remains unavailable.
+All 39 API suites (118 tests), all 19 contract suites (65 tests), all 41 mobile
+Jest suites (185 tests), strict mobile TypeScript, the web production build,
+and iOS/Android production exports pass. Authenticated local Chrome proof passed
+at desktop and mobile web widths; authenticated native-device QA remains pending.
+
 Operating guide for EasyBizInvoice (`ledger-craft-app`). This file replaces `Agents.md`, `CLAUDE.md`, and `GEMINI.md`. There is no `.cursorrules` file.
 
 Spec: `TARGET_ARCHITECTURE.md`. Deployment runbook: `deploy/cloudflare.md`. Session skill: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`.

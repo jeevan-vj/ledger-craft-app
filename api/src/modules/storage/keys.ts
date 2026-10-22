@@ -4,6 +4,7 @@ import { apiError } from '../../http-error';
 
 const RECEIPT_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const LOGO_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const INVOICE_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'application/pdf']);
 const RECEIPT_MAX_BYTES = 1024 * 1024;
 const LOGO_MAX_BYTES = 1024 * 1024;
 
@@ -14,12 +15,12 @@ const EXT_BY_TYPE: Record<string, string> = {
   'application/pdf': 'pdf',
 };
 
-export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' {
-  return kind === 'receipt' ? 'receipts' : 'logos';
+export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' | 'invoices' {
+  return kind === 'receipt' ? 'receipts' : kind === 'invoice' ? 'invoices' : 'logos';
 }
 
 export function allowedContentTypes(kind: ObjectKind): Set<string> {
-  return kind === 'receipt' ? RECEIPT_TYPES : LOGO_TYPES;
+  return kind === 'receipt' ? RECEIPT_TYPES : kind === 'invoice' ? INVOICE_TYPES : LOGO_TYPES;
 }
 
 export function maxBytesForKind(kind: ObjectKind): number {

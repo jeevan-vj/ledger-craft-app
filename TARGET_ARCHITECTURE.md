@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
+Hono, per-organisation SQLite, responsive web, and Expo cover cancel/restore,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private invoice attachments, token-snapshot attachment
+access, CSV import/export, and printable detail. Cancellation and restoration
+use balanced journals and tenant-bound transactions. Existing invoice sharing,
+templates/PDFs, payment terms, charges, bank details, and reminders are
+preserved. Recurring invoices remain AKP-04; outbound production email is still
+intentionally unavailable.
+API/contracts/mobile tests, strict mobile TypeScript, the web production build,
+iOS/Android production exports, and authenticated responsive browser proof pass;
+authenticated native-device QA remains pending.
+
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
 run's head SHA. That conclusion includes every job in the CI workflow,

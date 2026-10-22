@@ -178,6 +178,17 @@ Acceptance criteria:
 
 ### AKP-07 — Complete invoice lifecycle and document fidelity (P1)
 
+Status (2026-10-23): implemented locally across contracts, Hono/SQLite,
+responsive web, and Expo. The slice includes balanced cancel/restore journals,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private PDF/image attachments with snapshot-scoped
+share-token access, CSV dry-run/apply/export, and printable detail. Expo covers
+critical lifecycle/history and image attachment actions; web also accepts PDFs
+and owns CSV administration. Authenticated native-device QA remains pending.
+Recurring invoices remain AKP-04 and production email remains unavailable.
+API/contracts/mobile tests, the web production build, strict mobile TypeScript,
+iOS/Android production exports, and authenticated responsive browser proof pass.
+
 Expected outcome: LedgerCraft supports the remaining Akaunting invoice-management operations without regressing sharing or PDFs.
 
 Acceptance criteria:

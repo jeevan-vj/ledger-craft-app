@@ -137,6 +137,10 @@ export interface LineItem {
   rateUnit: string;  // Unit the rate is specified in (e.g., per kg)
   tax?: number | null;
   total: number;
+  discountType?: 'fixed' | 'percent';
+  discountValue?: number | null;
+  discountAmount?: number;
+  taxes?: Array<{ id: string; name: string; rate: number }>;
   createdAt?: string;
   updatedAt?: string;
 }
@@ -174,11 +178,12 @@ export const ADDITIONAL_CHARGE_PRESETS: Record<AdditionalChargeType, { label: st
   custom: { label: 'Custom', icon: '🎯', description: 'Custom additional charge' }
 };
 
-export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue';
+export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 
 export interface Invoice {
   id: string;
   invoiceNumber: string;
+  externalId?: string | null;
   customerId: string;
   customer?: Customer;
   businessProfile?: BusinessProfile;
@@ -207,6 +212,7 @@ export interface Invoice {
   userId?: string; // Added for Supabase compatibility
   createdAt?: string;
   updatedAt?: string;
+  archivedAt?: string | null;
   public_viewed_at?: string | null;
   sourceQuoteId?: string;
   sourceQuoteNumber?: string;
