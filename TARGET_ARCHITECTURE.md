@@ -1,7 +1,7 @@
 # LedgerCraft target architecture
 
 **Currency/localization foundation (implemented locally, 2026-10-23):** SQLite
-migration `0013_currency-localization.sql` adds tenant-scoped localization,
+migration `0015_currency-localization.sql` adds tenant-scoped localization,
 financial-year settings, a precision-aware currency catalogue, explicit dated
 exchange rates, and immutable document-rate usage. Hono exposes canonical
 decimal DTOs; web and Expo expose responsive settings. Invoices, bills,
