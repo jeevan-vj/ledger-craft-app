@@ -28,6 +28,7 @@ import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { radius, space } from '@/theme/tokens';
+import { formatLineQuantity } from '@/utils/invoiceLineDisplay';
 import { formatMoney } from '@/utils/money';
 import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
@@ -303,7 +304,7 @@ export default function InvoiceDetailScreen() {
                 <Text style={styles.lineItemTotal}>{formatCurrency(item.total || 0, invoice.currency || 'NZD')}</Text>
               </View>
               <Text style={styles.lineItemDetails}>
-                {item.quantity || 0} {item.unit || 'unit'} × {formatCurrency(item.rate || 0, invoice.currency || 'NZD')}
+                {formatLineQuantity(item.quantity || 0, item.unit)} × {formatCurrency(item.rate || 0, invoice.currency || 'NZD')}
               </Text>
             </View>
           ))}

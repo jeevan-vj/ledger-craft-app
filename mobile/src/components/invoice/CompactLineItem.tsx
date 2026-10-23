@@ -19,6 +19,7 @@ import Animated, {
 import * as Haptics from 'expo-haptics';
 import { ModernInput } from '@/components/ui/ModernInput';
 import type { LineItem } from '@/types/invoice';
+import { formatLineQuantity } from '@/utils/invoiceLineDisplay';
 import { radius } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -110,8 +111,7 @@ export function CompactLineItem({
                   {item.description || 'Tap to add item'}
                 </Text>
                 <Text style={styles.details}>
-                  {item.quantity} × {formatCurrency(item.rate)}
-                  {item.unit && item.unit !== 'each' && ` (${item.unit})`}
+                  {formatLineQuantity(item.quantity, item.unit)} × {formatCurrency(item.rate)}
                 </Text>
               </View>
 

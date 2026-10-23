@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 import type { Invoice } from '@/types';
 import { invoiceTemplates, type InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
-import { createTemplateData, renderTemplateComponent } from '@/services/invoiceTemplateRenderer';
+import { createEmailCompatibleInvoiceHtml, createTemplateData, renderTemplateComponent } from '@/services/invoiceTemplateRenderer';
 
 vi.mock('@/hooks/use-mobile', () => ({ useIsMobile: () => true }));
 
@@ -37,6 +37,18 @@ const zeroRowsInvoice = {
   total: 290,
   currency: 'NZD',
   status: 'sent',
+} satisfies Invoice;
+
+const positiveRowsInvoice = {
+  ...zeroRowsInvoice,
+  taxAmount: 31.5,
+  discount: 10,
+  additionalCharges: 5,
+  additionalChargesList: [
+    { id: 'handling', type: 'handling' as const, label: 'Handling', calculationType: 'fixed' as const, amount: 0, isActive: true },
+    { id: 'delivery', type: 'delivery' as const, label: 'Delivery', calculationType: 'fixed' as const, amount: 5, isActive: true },
+  ],
+  total: 321.5,
 } satisfies Invoice;
 
 function strayZero(container: HTMLElement): boolean {
@@ -74,21 +86,10 @@ describe('invoice line item display', () => {
     },
   );
 
-  it('keeps positive tax, discount, and extra-charge rows and hides a zero charge', () => {
-    const invoice = {
-      ...zeroRowsInvoice,
-      taxAmount: 31.5,
-      discount: 10,
-      additionalCharges: 5,
-      additionalChargesList: [
-        { id: 'handling', type: 'handling' as const, label: 'Handling', calculationType: 'fixed' as const, amount: 0, isActive: true },
-        { id: 'delivery', type: 'delivery' as const, label: 'Delivery', calculationType: 'fixed' as const, amount: 5, isActive: true },
-      ],
-      total: 321.5,
-    } satisfies Invoice;
-
-    for (const template of ['classic', 'modernpro'] as const) {
-      const { container, unmount } = render(renderTemplateComponent(template, createTemplateData(invoice, null)));
+  it.each(templates)(
+    '%s keeps positive tax, discount, and extra-charge rows and hides a zero charge',
+    (template: InvoiceTemplateId) => {
+      const { container, unmount } = render(renderTemplateComponent(template, createTemplateData(positiveRowsInvoice, null)));
       const text = container.textContent ?? '';
       expect(text).toMatch(/Tax \(/);
       expect(text).toMatch(/Discount/);
@@ -99,6 +100,41 @@ describe('invoice line item display', () => {
       expect(text).toContain('1 kg');
       expect(text).not.toContain('/each');
       unmount();
-    }
+    },
+  );
+
+  it.each(templates)(
+    '%s keeps the tax row when prices include tax',
+    (template: InvoiceTemplateId) => {
+      const invoice = { ...positiveRowsInvoice, taxInclusive: true } satisfies Invoice;
+      const { container, unmount } = render(renderTemplateComponent(template, createTemplateData(invoice, null)));
+      const text = container.textContent ?? '';
+      expect(text).toMatch(/Tax \(/);
+      expect(text).toContain('NZ$31.50');
+      expect(text).not.toContain('NZ$0.00');
+      expect(strayZero(container)).toBe(false);
+      unmount();
+    },
+  );
+
+  it('escapes the unit in email HTML, hides a generic unit, and keeps a positive tax row', () => {
+    const invoice = {
+      ...zeroRowsInvoice,
+      items: [
+        line({ id: 'cake', description: 'Cake', quantity: 1, unit: 'kg', rate: 90, rateUnit: 'each' }),
+        line({ id: 'rolls', description: 'Rolls', quantity: 15, unit: 'each', rate: 3, rateUnit: 'each' }),
+        line({ id: 'mark', description: 'Note', quantity: 2, unit: '<img alt="x">', rate: 1, rateUnit: 'each' }),
+      ],
+      taxAmount: 15,
+      subtotal: 137,
+      total: 152,
+    } satisfies Invoice;
+
+    const html = createEmailCompatibleInvoiceHtml(invoice, null);
+    expect(html).toContain('1 kg');
+    expect(html).not.toContain('15 each');
+    expect(html).toContain('Tax (');
+    expect(html).toContain('2 &lt;img alt=&quot;x&quot;&gt;');
+    expect(html).not.toContain('<img');
   });
 });
