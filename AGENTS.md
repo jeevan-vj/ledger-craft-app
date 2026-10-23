@@ -1,7 +1,7 @@
 # AGENTS.md
 
 **Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
-`0013_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
+`0016_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
 and expense templates with daily, weekly, monthly, annual, and custom
 intervals, local time/timezone, end-date and occurrence limits, pause/resume/end
 state, and immutable run history. Ledger Durable Object alarms claim a unique

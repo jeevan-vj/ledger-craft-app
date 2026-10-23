@@ -148,7 +148,7 @@ Acceptance criteria:
 
 Expected outcome: users can schedule recurring invoices, bills, income, and expenses and can trust retries not to create duplicates.
 
-Status (implemented locally 2026-10-23): migration `0013_recurring-scheduler.sql`
+Status (implemented locally 2026-10-23): migration `0016_recurring-scheduler.sql`
 and shared contracts persist the four template kinds, interval/timezone/limit
 state, deterministic occurrence claims, retry metadata, generated-record links,
 and immutable run history. Ledger Durable Object alarms run catch-up without an

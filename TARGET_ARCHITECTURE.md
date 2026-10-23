@@ -1,7 +1,7 @@
 # LedgerCraft target architecture
 
 **Recurring scheduler (implemented locally, 2026-10-23):** Contracts, Hono,
-per-organisation SQLite migration `0013_recurring-scheduler.sql`, Ledger
+per-organisation SQLite migration `0016_recurring-scheduler.sql`, Ledger
 Durable Object alarms, responsive web, and Expo manage recurring invoices,
 bills, income, and expenses. Templates retain timezone/local-time and schedule
 limits; deterministic occurrence keys, transactional claims, run history, and
