@@ -15,13 +15,14 @@ Launch specialists with Task `subagent_type: generalPurpose` (explore for invent
 | --- | --- | --- | --- |
 | Knowledge Steward | this skill, knowledge-sync, architecture | `TARGET_ARCHITECTURE.md`, `AGENTS.md`, `.cursor/skills`, `.cursor/rules` | Feature code |
 | Platform | architecture, tdd | `pnpm-workspace.yaml`, Compose, Vite proxy, `api` bootstrap, CI | Domain SQL, screens |
-| Schema | schema-rebuild, tdd, architecture | Drizzle schema, SQL migrations, roles, RLS | React components, Hono routes |
+| Schema | schema-rebuild, tdd, architecture, invariants | Drizzle schema and `api/sqlite-migrations/` | React components, Hono routes, renumbering an applied SQL file |
 | Contracts | architecture, tdd, vertical-slice | `packages/contracts` Zod only | Drizzle, UI, env |
 | API | architecture, tdd, vertical-slice | `api/src/modules/*` | `src/**/*.tsx`, `mobile/**` |
 | Auth | architecture, tdd | Better Auth, memberships, Expo/web session config | Invoice math, styling |
 | Web | architecture, tdd, vertical-slice, project-guide UI | `src/` Query hooks and UI | Drizzle, mobile native |
 | Mobile | architecture, tdd, vertical-slice | `mobile/` | Web router, API SQL |
-| Verification | tdd, verify, verify-ui, architecture | Tests, live smoke, UI/PDF evidence | Shipping implementation without a failing test first; Playwright against hosted empty Supabase |
+| Verification | tdd, verify, verify-ui, invariants, architecture | Tests, CI-matching commands, UI/PDF evidence | Shipping without a failing test first; claiming CI without pasted output; Playwright against hosted Supabase |
+| Reviewer | reviewer, verify, invariants | A verdict and inline comments on someone else's pull request | Pushing, approving, merging, or reviewing a pull request this session authored |
 
 ## Prompt template
 
@@ -32,7 +33,7 @@ Wave: <W#>
 Goal: <one sentence>
 In scope: <paths>
 Out of scope: <paths and concerns>
-TDD: write/adjust failing tests first; real Postgres for SQL/RLS.
+TDD: write a failing test first. API tests use the temp SQLite file. Do not mock Drizzle for SQL.
 Handoff: list files changed, tests run, blockers, knowledge-sync needed.
 Do not commit unless asked.
 ```
@@ -48,7 +49,7 @@ Wave: W11
 Goal: Cut journals, chart-of-accounts writes, and payment reminders off supabase-js onto Hono.
 In scope: journal_entries, account templates/writes, reminder mailer
 Out of scope: TanStack Router, apps/ move, deleting @supabase/supabase-js
-TDD: write failing tests first; real Postgres for SQL/RLS.
+TDD: write a failing test first. API tests use the temp SQLite file. Do not mock Drizzle for SQL.
 Handoff: list files changed, tests run, blockers, knowledge-sync needed.
 Do not commit unless asked.
 ```
@@ -60,7 +61,7 @@ Wave: W9
 Goal: Consolidate clients onto the Hono boundary without mixing UI redesign, TanStack Router, and apps/ moves in one change.
 In scope: leftover supabase-js call sites, DataManager, feature flags
 Out of scope: new domains, replay Git SQL. Do not authorize product data with both Better Auth and Supabase sessions.
-TDD: write failing tests first; real Postgres for SQL/RLS.
+TDD: write a failing test first. API tests use the temp SQLite file. Do not mock Drizzle for SQL.
 Handoff: list files changed, tests run, blockers, knowledge-sync needed.
 Do not commit unless asked.
 ```

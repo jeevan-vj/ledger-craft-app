@@ -1,11 +1,13 @@
 ---
 name: ledgercraft-schema-rebuild
-description: Reconstruct LedgerCraft PostgreSQL from application TypeScript contracts after the live database was lost. Use when writing Drizzle schema, baselines, roles, RLS, or restoring tables the current clients expect.
+description: Historical notes for reconstructing LedgerCraft tables from application TypeScript after the hosted database was lost. Use when reading old Postgres or RLS plans. Current DDL is SQLite under api/sqlite-migrations; follow ledgercraft-invariants.
 ---
 
 # Schema rebuild
 
-The live `public` schema is gone. Git SQL is incomplete and internally conflicting. Application types are the contract.
+Current DDL is a numbered SQLite file in `api/sqlite-migrations/`, checksum-checked, and included from `deploy/api/migrations.generated.ts`. Follow `ledgercraft-invariants`. Do not apply the Postgres lanes below, and do not treat them as the verify-before-PR path.
+
+The hosted `public` schema is gone. Git SQL is incomplete and internally conflicting. Application types were the contract for that reconstruction.
 
 ## Sources of truth (priority)
 

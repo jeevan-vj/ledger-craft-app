@@ -8,7 +8,7 @@ alwaysApply: false
 
 Follow `.cursor/skills/ledgercraft-tdd/SKILL.md`.
 
-- Failing test before production code
-- Real PostgreSQL for SQL, constraints, transactions, RLS — do not mock Drizzle there
+- Failing test before production code, including bug fixes (`ledgercraft-tdd`)
+- API SQL tests use the temp SQLite file (`api/src/test/harness.ts`). Do not mock Drizzle there. Do not start Docker Postgres for them.
 - Invoice create: numbering, lines, totals, journal, idempotency in one transaction
 - Standard API error: `{ error: { code, message, requestId } }`

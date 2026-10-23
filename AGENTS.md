@@ -46,7 +46,9 @@ Leave `src/` and `mobile/` where they are until a change is only about moving th
 
 ## Software factory
 
-`docs/PIPELINE.md` is the label and risk contract. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, and the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `risk:high` is a migration under `api/sqlite-migrations/` or Drizzle, money/GST/invoice/quote calculation, Better Auth, `.github/workflows/` or release config, a secret, or a major dependency bump. `.github/CODEOWNERS` requests `@jeevan-vj` on those paths. An auto-merge gate is not implemented; `auto-merge-eligible` is only defined for `risk:low` after review.
+`docs/PIPELINE.md` is the label and risk contract. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, and the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `risk:high` is a migration under `api/sqlite-migrations/` or Drizzle, money/GST/invoice/quote calculation, Better Auth, `.github/workflows/` or release config, a secret, or a major dependency bump. `.github/CODEOWNERS` requests `@jeevan-vj` on those paths. An auto-merge gate is not implemented. `auto-merge-eligible` is only for `risk:low` after a different reviewer applies `review-passed`, and only when `ledgercraft-verify` also accepts the diff size, the CI jobs, and the CODEOWNERS check. The author does not apply `review-passed` or `auto-merge-eligible`.
+
+Before opening a pull request, follow `.cursor/skills/ledgercraft-verify/SKILL.md` and paste the command output. Draft pull request #63 proposes a lint-baseline file and warning ceilings. Until that merges, the web ceilings stay the numbers in `.github/workflows/ci.yml` (468 ESLint errors, 728 TypeScript errors). Pull request #15's experimental verification workflow is not on `main` and is not a required check.
 
 ## Commands
 
@@ -111,7 +113,7 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 - Client → Hono → use case → repository → Drizzle → SQLite.
 - DTOs come from `packages/contracts`. Clients do not import Drizzle types.
 - `user_id` and `organisation_id` come from the session or membership, not the request body.
-- Money stays exact decimal text. GST and invoice totals stay on the server helpers that already compute them.
+- Money stays exact decimal text. GST, invoice, and quote totals stay on `computeInvoiceTotals`. Rounding stays on `roundMoney`. See `.cursor/skills/ledgercraft-invariants/SKILL.md`.
 - New SQLite SQL is generated, reviewed, and appended under `api/sqlite-migrations/`. Applied files stay byte-for-byte. `pnpm db:generate` then `pnpm deploy:cloudflare` is the production path. There is no D1 migrate step.
 - `supabase/` remains in the tree. `TARGET_ARCHITECTURE.md`, `AI_CONVERSATION_IMPLEMENTATION.md`, and `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` still name `supabase/migrations/`. Those files are historical hints. Do not replay them, and do not replay `migrations/*.sql`, onto the current database.
 - Do not add `supabase.from`, the Storage SDK, Edge Functions, client `VITE_OPENAI_*`, or a second session system beside Better Auth.
@@ -123,9 +125,11 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 | --- | --- |
 | `.cursor/skills/ledgercraft-bootstrap/SKILL.md` | Session start |
 | `.cursor/skills/ledgercraft-architecture/SKILL.md` | API, database, auth, storage, email, AI |
-| `.cursor/skills/ledgercraft-tdd/SKILL.md` | Tests before production code |
-| `.cursor/skills/ledgercraft-verify/SKILL.md` | Prove a slice with tests and live HTTP |
-| `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Browser and invoice PDF |
+| `.cursor/skills/ledgercraft-tdd/SKILL.md` | Failing test before production code, including bug fixes |
+| `.cursor/skills/ledgercraft-verify/SKILL.md` | Before a pull request: the CI commands, risk label, and evidence |
+| `.cursor/skills/ledgercraft-invariants/SKILL.md` | Money, GST, totals, share tokens, idempotency, migrations |
+| `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Browser, phone-width screenshots, and invoice PDF |
+| `.cursor/skills/ledgercraft-reviewer/SKILL.md` | Independent review. Does not push, approve, or merge |
 | `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Web UI |
 | `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Expo UI |
 | `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS, TestFlight, App Store Connect |

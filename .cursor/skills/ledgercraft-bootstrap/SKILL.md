@@ -57,7 +57,8 @@ current architecture.
 1. Read `AGENTS.md`, `TARGET_ARCHITECTURE.md`, and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
 2. Continue the dependency-ordered AKP tasks; finish the remaining AKP-01 scope or begin AKP-02 only as a separate verified slice.
 3. For EAS iOS builds, TestFlight, or App Store Connect work, read `ledgercraft-mobile-release` before acting.
-4. Commit, push, or deploy only when the user asks.
+4. Before a pull request, follow `ledgercraft-verify` and paste the command output. Domain checks are `ledgercraft-invariants`. A different session reviews with `ledgercraft-reviewer`.
+5. Commit, push, or deploy only when the user asks.
 
 ## First command
 
@@ -111,13 +112,15 @@ Do not move `src/` → `apps/web` or `mobile/` → `apps/mobile` until every pro
 | Skill | When |
 | --- | --- |
 | `ledgercraft-architecture` | Any API, DB, auth, storage, email, AI |
-| `ledgercraft-tdd` | Implementing or testing a slice |
-| `ledgercraft-verify` | Prove a feature/wave works (tests + live HTTP) |
-| `ledgercraft-verify-ui` | Browser clicks, screenshots, invoice PDF |
+| `ledgercraft-tdd` | Implementing or testing a slice, and bug fixes (failing test first) |
+| `ledgercraft-verify` | Before a pull request: CI-matching commands, risk label, evidence |
+| `ledgercraft-invariants` | Money, GST, totals, share tokens, idempotency, SQLite migrations |
+| `ledgercraft-verify-ui` | Browser clicks, phone-width screenshots, invoice PDF |
+| `ledgercraft-reviewer` | Independent review. Does not push, approve, or merge |
 | `ledgercraft-web-ui` | Web React/Tailwind design and visual QA |
 | `ledgercraft-mobile-ui` | Expo/React Native design and device QA |
 | `ledgercraft-mobile-loop` | Repeated mobile backlog selection, implementation, verification, PR, and wait cycle |
-| `ledgercraft-schema-rebuild` | Tables, Drizzle, RLS, compatibility schema |
+| `ledgercraft-schema-rebuild` | Historical Postgres notes. Current DDL is SQLite (`ledgercraft-invariants`) |
 | `ledgercraft-vertical-slice` | Cutting over one domain to Hono |
 | `ledgercraft-agent-roster` | Launching Task subagents |
 | `ledgercraft-knowledge-sync` | End of a wave or when docs drift |
@@ -152,4 +155,4 @@ Parent chat = Orchestrator. Task `generalPurpose` + prompt in `ledgercraft-agent
 
 ## After any change
 
-Run `ledgercraft-knowledge-sync`. Write present-tense facts in `TARGET_ARCHITECTURE.md` and `AGENTS.md`.
+Run `ledgercraft-knowledge-sync` when status or commands changed, and write present-tense facts in `TARGET_ARCHITECTURE.md` and `AGENTS.md`. Before a pull request, run `ledgercraft-verify` and paste the output.

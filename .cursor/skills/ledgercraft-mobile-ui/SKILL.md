@@ -43,6 +43,6 @@ Do not copy server data into new Zustand state, change API/auth boundaries, or m
 
 ## Verification
 
-`mobile/` has its own npm dependency graph and is not currently in the pnpm workspace. Run the smallest relevant test from that directory. For syntax/type validation, use the project's available Expo/TypeScript command only when dependencies are installed; report the gap honestly otherwise.
+`mobile/` is not in the pnpm workspace. Before a pull request, run the Mobile job commands in `ledgercraft-verify` (Node 20: `npm ci`, `npm run lint`, `npx tsc --noEmit --pretty false`, `npm test -- --ci --watchAll=false`, and the iOS export). Paste the output. A missing install is `not run`, not a pass.
 
-For visual changes, inspect the shipped iOS device classes together: a current standard iPhone and one compact width. Also inspect Android when changing cross-platform layout or behavior. Exercise keyboard, loading, empty, error, and real-content states affected by the change. Perform one batched visual pass, one correction pass, then stop.
+For visual changes, inspect a current standard iPhone and one compact width, plus Android when the layout is shared. Exercise keyboard, loading, empty, error, and real-content states the change can hit. Perform one batched visual pass, one correction pass, then stop. A phone-width web screenshot does not replace device QA, and device QA does not replace the Mobile CI commands.
