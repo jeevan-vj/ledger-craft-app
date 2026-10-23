@@ -209,6 +209,15 @@ This paragraph records the earlier deployed baseline; the local 2026-10-23
 lifecycle work above supersedes its feature-gap list. Production deployment and
 authenticated native-device QA remain pending.
 
+**Configurable dashboards (implemented locally, 2026-10-23):** Shared report DTOs
+drive organisation-scoped Hono endpoints and the web/Expo dashboards. SQLite
+migration `0014_configurable-dashboards.sql` persists per-user widget
+visibility/order/size/default layout and saved report definitions inside each
+organisation. Date/comparison filters, exact-decimal summary/receivable/payable/
+cash/tax metrics, source-row drill-down, web URL filters, CSV/PDF/print actions,
+and mobile saved filters are implemented from AKP-05 report DTOs. Financial
+widgets are server-authoritative; recent activity remains explicitly operational.
+
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
 and private-use percentage fields through Hono/SQLite. New expenses default to

@@ -7,17 +7,19 @@ import { buildFinancialReport } from './reports.engine';
 import * as repo from './reports.repository';
 
 export async function financialReportForUser(db: Database, userId: string, query: FinancialReportQuery) {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => financialReportInTx(tx, ctx.organisationId, query));
+}
+
+export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery) {
     const [periodRows, openingRows, receivables, payables] = await Promise.all([
-      repo.ledgerRows(tx, ctx.organisationId, query), repo.ledgerRows(tx, ctx.organisationId, query, query.from),
-      repo.receivables(tx, ctx.organisationId, query), repo.payables(tx, ctx.organisationId, query),
+      repo.ledgerRows(tx, organisationId, query), repo.ledgerRows(tx, organisationId, query, query.from),
+      repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query),
     ]);
     let comparison;
     if (query.comparisonFrom && query.comparisonTo) {
-      comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, ctx.organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
+      comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
     }
     return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, receivables, payables, comparison }));
-  });
 }
 
 export async function generalLedgerForUser(db: Database, userId: string, query: FinancialReportQuery) {

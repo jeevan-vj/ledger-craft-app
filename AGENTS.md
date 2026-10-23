@@ -53,6 +53,14 @@ base currency is deliberately restricted to NZD until AKP-06 adds exchange-rate
 accounting. Category filtering is accepted by the shared query contract but is
 not yet applied to reports because journal lines do not carry category links.
 
+Configurable dashboards and saved reports are implemented locally through
+`api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and
+saved filters remain organisation scoped. Summary, receivable, payable, cash,
+and tax widgets map from the AKP-05 server-authoritative report DTO; only the
+recent-activity widget is explicitly operational. Web retains shareable URL
+filters plus CSV/PDF/print, while Expo uses the same DTO and saved layouts.
+Authenticated native-device QA and deployment remain pending.
+
 Invoice preview and PDF HTML use the loaded business profile theme. `resolveInvoiceTheme` in `mobile/src/utils/invoiceTheme.ts` fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. Classic, modern, minimal, executive, corporate, and modern pro templates paint with those tokens. Text on a brand fill switches to dark ink when white would be unreadable. Money and GST totals stay on the existing calculations.
 
 Quotes and estimates are a Hono slice on their own tables (`api/sqlite-migrations/0007_quotes.sql`). Contracts live in `packages/contracts/src/quote.ts`. Authenticated routes are under `/api/quotes`; public read and respond are `/api/public/quotes/:token` and `/api/public/quotes/:token/respond`. Quote rows do not post journals. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. Mobile provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE`; both clients present share-link delivery instead of claiming email delivery. Focused API, web, and mobile quote tests, full API/contracts/mobile suites, web build, and iOS/Android production exports pass; authenticated native-device QA remains pending.
