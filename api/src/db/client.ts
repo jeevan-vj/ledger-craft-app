@@ -5,7 +5,9 @@ import { accountTemplates, accounts, accountContacts, journalEntries, journalEnt
 import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
+  activeOrganisationSelections,
   authAccounts,
+  organisationInvitations,
   organisationMemberships,
   organisations,
   sessions,
@@ -43,6 +45,8 @@ export const schema = {
   verifications,
   organisations,
   organisationMemberships,
+  activeOrganisationSelections,
+  organisationInvitations,
   customers,
   businessProfiles,
   itemCategories,

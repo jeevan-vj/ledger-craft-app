@@ -33,7 +33,7 @@ export type Permission =
   | 'profile:update';
 
 // User roles (for future extensibility)
-export type UserRole = 'owner' | 'admin' | 'user' | 'viewer';
+export type UserRole = 'owner' | 'admin' | 'accountant' | 'member' | 'read_only';
 
 // Permission sets by role
 const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
@@ -59,7 +59,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'reports:generate', 'reports:view', 'reports:export',
     'profile:update'
   ],
-  user: [
+  accountant: [
     // Standard business operations
     'payments:create', 'payments:read', 'payments:update',
     'receipts:read', 'receipts:email',
@@ -70,7 +70,15 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     'reports:view',
     'profile:update'
   ],
-  viewer: [
+  member: [
+    'payments:create', 'payments:read', 'payments:update',
+    'receipts:read',
+    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:share',
+    'customers:create', 'customers:read', 'customers:update',
+    'expenses:create', 'expenses:read', 'expenses:update',
+    'accounts:read', 'reports:view', 'profile:update'
+  ],
+  read_only: [
     // Read-only access
     'payments:read',
     'receipts:read',
@@ -95,20 +103,12 @@ const FEATURE_REQUIREMENTS: Record<string, { permission: Permission; description
 };
 
 export const usePermissions = () => {
-  const { user } = useAuth();
+  const { user, me } = useAuth();
 
-  // For now, all authenticated users are treated as 'owner'
-  // This can be extended to read user role from user metadata or database
   const userRole: UserRole = useMemo(() => {
-    if (!user) return 'viewer';
-    
-    // In the future, you could read role from:
-    // - user.user_metadata?.role
-    // - user.app_metadata?.role
-    // - A separate user_profiles table
-    
-    return 'owner'; // Default to owner for single-tenant setup
-  }, [user]);
+    if (!user) return 'read_only';
+    return me?.membership.role ?? 'owner';
+  }, [me?.membership.role, user]);
 
   const userPermissions = useMemo(() => {
     return ROLE_PERMISSIONS[userRole] || [];

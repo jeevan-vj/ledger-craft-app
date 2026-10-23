@@ -550,6 +550,8 @@ There is one active identity provider at a time. The migration may stage Better 
 
 The current frontend `PermissionGuard` remains presentation only. The API repeats every permission check against the active organisation membership.
 
+**Current SQLite implementation (2026-10-23):** Identity storage owns organisations, active selections, memberships, and hashed invitations. Fixed roles map to a shared server permission catalogue, Hono checks protected domain requests before use cases, and dedicated organisation services guard team administration. Switching changes the trusted active membership used to select the organisation Ledger Durable Object; it never moves or combines ledger data. Custom roles and outbound invitation email are deferred explicitly.
+
 ---
 
 ## Client architecture

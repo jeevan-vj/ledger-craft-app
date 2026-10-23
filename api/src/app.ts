@@ -23,6 +23,8 @@ import { conversationRoutes } from './modules/conversations/conversations.routes
 import { journalRoutes } from './modules/journals/journals.routes';
 import { getBetterAuthTrustedOrigins } from './env';
 import { purchaseRoutes } from './modules/purchases/purchases.routes';
+import { authorizeProtectedRequest } from './modules/auth/authorize-request';
+import { organisationRoutes } from './modules/organisations/organisations.routes';
 import type { AppDependencies, AppEnv } from './types';
 
 export function createApp(deps: AppDependencies = {}) {
@@ -76,8 +78,11 @@ export function createApp(deps: AppDependencies = {}) {
     return auth.handler(c.req.raw);
   });
 
+  app.use('*', authorizeProtectedRequest);
+
   app.route('/', healthRoutes());
   app.route('/', sessionRoutes());
+  app.route('/', organisationRoutes());
   app.route('/', customerRoutes());
   app.route('/', businessProfileRoutes());
   app.route('/', itemRoutes());
