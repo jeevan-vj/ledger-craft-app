@@ -36,7 +36,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 
 | Capability | LedgerCraft status | Evidence and remaining gap |
 | --- | --- | --- |
-| Business dashboard | Partial | Dashboard and accounting pages exist; there is no saved dashboard/widget layout, payables widget, or date-filtered configurable dashboard comparable to Akaunting. |
+| Business dashboard | Partial | Date-filtered summary, receivables, payables, cash and tax widgets map from AKP-05 server-authoritative reports; recent activity is explicitly operational. Per-user layouts and saved report definitions persist in SQLite and sync to web/mobile. Expense-category dimensions and authenticated native-device QA remain. |
 | Products and services | Partial | Core item/category CRUD now includes hydrated category detail, active state, duplicate, atomic bulk actions, canonical CSV preview/apply/export, strict price/tax validation, profile-currency display, and sale-safe invoice selection. Media and per-item multi-tax behavior remain open. |
 | Customers | Partial | Organisation-scoped CRUD exists. Contact people, enable/disable, duplicate, bulk import/export, statements, and portal login are missing. |
 | Sales invoices | Partial | Create/list/detail/update, numbering, exact totals, templates, PDF, public share, payment capture, and reminders exist. Expo exposes separate public-link, PDF download/export, and PDF share actions plus an unauthenticated native public-invoice route. Android production App Link verification awaits its first signing credential. Delete/cancel/restore, duplicate, bulk import/export, attachments, line-level discounts/taxes, and recurring invoices are missing. Production email delivery is intentionally unavailable in the free deployment. |
@@ -51,7 +51,7 @@ File presence alone is not treated as feature completion. Mock-only UI, client-o
 | Chart of accounts and journals | Available | Account initialization/write and manual journal CRUD exist with exact values and organisation scoping. General-ledger/report authority remains client-heavy. |
 | Financial reports | Partial | P&L, balance sheet, cash flow, trial balance, receivables, and payables UI calculations exist. Reports are not server-authoritative, saved, pinnable, configurable by cash/accrual basis, or consistently printable/exportable. |
 | Tax | Partial | Tax configuration, returns, adjustments, and NZ GST/IRD workflows exceed Akaunting's basic summary in places. A reusable tax-rate catalogue, compound/withholding tax types, line-level tax assignment, and full settings CRUD are missing. |
-| Currencies and localization | Missing | Currency codes are stored on several records, but there is no currency catalogue, exchange rate, base/transaction currency accounting, locale/language, date/number formatting, or financial-year configuration. |
+| Currencies and localization | Partial | Migration `0015_currency-localization.sql` adds organisation base currency, a precision-aware catalogue, immutable dated rates and localization/financial-year settings. Web and Expo settings use canonical DTOs. Invoices, bills, expenses and explicit-rate base/foreign transfers snapshot exact transaction/base values and fail safely when a reviewed rate is missing. Base-currency reports and AKP-05 exchange-difference journals remain open. |
 | Company settings | Partial | Business identity, logo, invoice numbering, terms, bank details, template appearance, and default tax rate exist. Email templates, scheduling, defaults, localization, currencies, and richer invoice settings are missing. |
 | Companies/organisations | Partial | Organisation create/rename/archive, active switching, isolated ledgers, and responsive web/Expo management are implemented locally. Restore, ownership transfer, deployment, and authenticated native-device QA remain. |
 | Users and permissions | Partial | Fixed owner/admin/accountant/member/read-only roles, hashed email-bound invitation accept/revoke/refresh, membership lifecycle, and server-enforced domain permissions are implemented locally. Custom roles and outbound email delivery remain explicit follow-up work. |
@@ -167,6 +167,15 @@ Acceptance criteria:
 
 ### AKP-05 — Server-authoritative accounting and reports (P0)
 
+**Implemented locally (2026-10-23), with explicit AKP-06 follow-up.** Canonical
+exact-decimal postings, immutable posted journals, tenant-scoped Hono financial
+reports, responsive web workflows, and an Expo summary are complete through
+migration `0013_server-authoritative-reports.sql`. Date, cash/accrual,
+comparison, account/customer/vendor filtering and NZD base currency are
+validated. Multi-currency conversion remains AKP-06. Category filtering remains
+deferred until category dimensions are stored on journal lines; the query field
+is reserved but does not silently fabricate filtered totals.
+
 Expected outcome: invoices, bills, payments, expenses, transfers, and adjustments produce balanced postings, and every report is derived from the same ledger.
 
 Acceptance criteria:
@@ -181,6 +190,8 @@ Acceptance criteria:
 ### AKP-06 — Currency, exchange-rate, localization, and financial-year settings (P1)
 
 Expected outcome: multi-currency documents and reports remain mathematically auditable while users see localized dates and amounts.
+
+Implementation note (local, 2026-10-23): migration `0013` implements the settings/catalogue/rate foundation and exact invoice, bill, expense, and base/foreign transfer snapshots. Rate direction is explicitly “base units per one foreign unit”; used rates are immutable and API values remain canonical decimal strings. Cross-currency transfers require the caller to select a persisted reviewed rate and currently require one side to be the organisation base currency. Realized/unrealized exchange postings and base-currency financial reports depend on the authoritative ledger/report work in AKP-05 and are deliberately not synthesized client-side.
 
 Acceptance criteria:
 
@@ -244,6 +255,16 @@ Acceptance criteria:
 ### AKP-10 — Configurable dashboards and saved reports (P1)
 
 Expected outcome: users can configure a useful company dashboard and retain report definitions.
+
+**Implemented locally (2026-10-23):** Shared strict DTOs, migration
+`0014_configurable-dashboards.sql`, organisation/user-scoped Hono persistence,
+AKP-05 server-authoritative report mapping, per-user visibility/order/size/default
+layouts, and saved report create/rename/duplicate/pin/archive flows are in place.
+Web filters are URL-backed and web provides print, CSV and PDF output. Expo consumes
+the same report/filter DTOs, respects the saved widget layout, exposes date presets,
+and opens saved filters. Summary, receivable, payable, cash and tax widgets use
+the posted-ledger report DTO; recent activity is labelled operational. Expense-
+category dimensions and authenticated native-device QA remain open.
 
 Acceptance criteria:
 

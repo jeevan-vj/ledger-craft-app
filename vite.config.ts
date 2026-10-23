@@ -14,7 +14,7 @@ export default defineConfig(({ mode }) => ({
     port: 8080,
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:3001",
+        target: process.env.VITE_API_PROXY_TARGET ?? "http://127.0.0.1:3001",
         changeOrigin: true,
         // Quote preview imports the API totals helper. Its file lives under api/src,
         // so the browser asks for /api/src/... and that must stay a Vite module.

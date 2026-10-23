@@ -7,6 +7,7 @@ import {
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import { roundMoney } from '../invoices/money';
 import * as repo from './journals.repository';
@@ -50,6 +51,11 @@ export async function updateJournalEntryForUser(
   input: UpdateJournalEntryRequest,
 ): Promise<JournalEntryDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
+    if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
+    if (current.status !== 'draft' && input.status !== current.status) {
+      throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
+    }
     const updated = await repo.updateJournalEntry(tx, ctx.organisationId, id, input);
     if (!updated) throw new HTTPException(404, { message: 'Journal entry not found' });
     return updated;
@@ -58,6 +64,11 @@ export async function updateJournalEntryForUser(
 
 export async function deleteJournalEntryForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
+    if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
+    if (current.status !== 'draft') {
+      throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
+    }
     const deleted = await repo.deleteJournalEntry(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Journal entry not found' });
   });

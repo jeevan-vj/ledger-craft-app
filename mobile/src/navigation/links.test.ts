@@ -7,6 +7,7 @@ describe('mobile navigation links', () => {
     expect(mainTabs).toEqual(['Dashboard', 'Invoices', 'Customers', 'More']);
     const screens = moreMenuSections.flatMap((section) => section.rows.map((row) => row.screen));
     expect(screens).toEqual([
+      'Reports',
       'ItemList',
       'BankAccountList',
       'BusinessSettings',

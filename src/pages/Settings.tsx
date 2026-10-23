@@ -16,6 +16,7 @@ import ThemePicker from '@/components/business/ThemePicker';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { CompanyTeamPanel } from '@/components/organisations/CompanyTeamPanel';
 import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
+import { CurrencyLocalizationSettings } from '@/components/settings/CurrencyLocalizationSettings';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, { message: "Business name is required" }),
@@ -226,6 +227,7 @@ const Settings = () => {
             <TabsTrigger value="preferences">Preferences</TabsTrigger>
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="team">Company & team</TabsTrigger>
+            <TabsTrigger value="currency">Currency & locale</TabsTrigger>
           </TabsList>
         </div>
         <Form {...form}>
@@ -637,7 +639,7 @@ const Settings = () => {
               />
             </TabsContent>
             
-            {activeTab !== 'team' && <div className="mt-6">
+            {(activeTab === 'profile' || activeTab === 'preferences') && <div className="mt-6">
               <Button
                 type="submit"
                 className=""
@@ -654,6 +656,7 @@ const Settings = () => {
           </form>
         </Form>
         <TabsContent value="team" className="mt-4"><CompanyTeamPanel /></TabsContent>
+        <TabsContent value="currency" className="mt-4"><CurrencyLocalizationSettings /></TabsContent>
       </Tabs>
     </div>
   );

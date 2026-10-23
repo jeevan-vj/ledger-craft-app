@@ -15,7 +15,7 @@ import { withOrganisationTx } from '../auth/bind-organisation';
 import { assertKeyOwned } from '../storage/keys';
 import type { ObjectStore } from '../storage/object-store';
 import { createInvoiceInTx } from './invoices.service';
-import { postInvoiceJournal, postInvoiceReversalJournal } from './invoices.journal';
+import { hasInvoiceCancellationJournal, postInvoiceJournal, postInvoiceReversalJournal } from './invoices.journal';
 import * as repo from './invoices.repository';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from './idempotency';
 import { decimal } from './money';
@@ -46,7 +46,7 @@ export async function restoreInvoiceForUser(db: Database, userId: string, id: st
     const wasCancelled = invoice.status === 'cancelled';
     if (!wasCancelled && !invoice.archivedAt) return invoice;
     const restored = requireInvoice(await repo.restoreInvoice(tx, ctx.organisationId, id));
-    if (wasCancelled) await postInvoiceJournal(tx, ctx, {
+    if (wasCancelled && await hasInvoiceCancellationJournal(tx, ctx.organisationId, id)) await postInvoiceJournal(tx, ctx, {
       invoiceId: restored.id, invoiceNumber: restored.invoiceNumber, date: new Date().toISOString().slice(0, 10),
       subtotal: restored.subtotal, taxAmount: restored.taxAmount, total: restored.total,
     });

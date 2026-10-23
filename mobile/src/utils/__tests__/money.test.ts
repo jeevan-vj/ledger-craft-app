@@ -12,4 +12,9 @@ describe('formatMoney', () => {
   it('formats canonical decimal strings without losing precision', () => {
     expect(formatMoney('9007199254740993.25', 'NZD')).toBe('$9,007,199,254,740,993.25');
   });
+
+  it('respects zero- and three-decimal catalogue currencies', () => {
+    expect(formatMoney('1234.5', 'JPY')).toBe('¥1,235');
+    expect(formatMoney('1.2345', 'BHD')).toBe('1.235 BD');
+  });
 });

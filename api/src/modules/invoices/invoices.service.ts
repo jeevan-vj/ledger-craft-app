@@ -24,6 +24,7 @@ import * as invoicesRepo from './invoices.repository';
 import type { InvoiceMailer } from './mailer';
 import { formatInvoiceNumber } from './numbering';
 import { computeInvoiceTotals } from './totals';
+import { convertToBase, currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
 
 export { formatInvoiceNumber };
 
@@ -89,7 +90,8 @@ export async function createInvoiceInTx(
   // Client dueDate is authoritative. A mismatch against date + paymentTermDays is an override, not rewritten.
 
   const defaultTaxRate = profile.defaultTaxRate ?? '0';
-  const totals = computeInvoiceTotals(input, defaultTaxRate);
+  const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.date);
+  const totals = computeInvoiceTotals(input, defaultTaxRate, resolved.currency.precision);
   const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
   const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
     customerId: input.customerId,
@@ -99,23 +101,28 @@ export async function createInvoiceInTx(
     paymentTermDays,
     notes: input.notes ?? null,
     terms: input.terms ?? null,
-    currency: input.currency ?? 'NZD',
+    currency: resolved.currency.code,
+    exchangeRate: resolved.rate,
+    exchangeRateId: resolved.rateId,
+    baseCurrency: resolved.base.code,
+    baseSubtotal: convertToBase(totals.subtotal, resolved.rate, resolved.base.precision),
+    baseTaxAmount: convertToBase(totals.taxAmount, resolved.rate, resolved.base.precision),
+    baseTotal: convertToBase(totals.total, resolved.rate, resolved.base.precision),
     status,
     totals,
   });
 
-  await postInvoiceJournal(tx, ctx, {
-    invoiceId: invoice.id,
-    invoiceNumber: invoice.invoiceNumber,
-    date: invoice.date,
-    subtotal: invoice.subtotal,
-    taxAmount: invoice.taxAmount,
-    total: invoice.total,
-  });
+  if (invoice.status !== 'draft') {
+    await postInvoiceJournal(tx, ctx, {
+      invoiceId: invoice.id, invoiceNumber: invoice.invoiceNumber, date: invoice.date,
+      subtotal: invoice.subtotal, taxAmount: invoice.taxAmount, total: invoice.total,
+    });
+  }
 
   await invoicesRepo.recordHistory(tx, ctx, invoice.id, {
     action: 'created', fromStatus: null, toStatus: invoice.status,
   });
+  if (resolved.rateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, resolved.rateId, 'invoice', invoice.id);
 
   return invoice;
 }
@@ -156,6 +163,10 @@ export async function updateInvoiceForUser(
     const date = input.date ?? existing.date;
     const dueDate = input.dueDate ?? existing.dueDate;
     assertDueDateNotBeforeInvoiceDate(date, dueDate);
+    if (existing.exchangeRateId && input.date && input.date !== existing.date) {
+      throw new HTTPException(409, { message: 'Invoice date is locked after a foreign exchange rate is attached' });
+    }
+    const resolvedCurrency = await resolveDocumentCurrency(tx, ctx.organisationId, existing.currency, date);
 
     const shouldRecalc =
       input.items !== undefined ||
@@ -166,6 +177,9 @@ export async function updateInvoiceForUser(
       input.taxRate !== undefined ||
       input.additionalCharges !== undefined ||
       input.additionalChargesList !== undefined;
+    if (existing.status !== 'draft' && (shouldRecalc || input.date !== undefined)) {
+      throw apiError(409, 'INVOICE_POSTED', 'Posted invoices are immutable; create a reversal or adjustment');
+    }
 
     let totals = undefined;
     if (shouldRecalc) {
@@ -192,9 +206,17 @@ export async function updateInvoiceForUser(
             : input.additionalCharges !== undefined ? undefined : existing.additionalChargesList,
         },
         defaultTaxRate,
+        resolvedCurrency.currency.precision,
       );
     }
 
+    const currencySnapshot = totals ? {
+      exchangeRate: existing.exchangeRate, exchangeRateId: existing.exchangeRateId,
+      baseCurrency: existing.baseCurrency,
+      baseSubtotal: convertToBase(totals.subtotal, existing.exchangeRate, resolvedCurrency.base.precision),
+      baseTaxAmount: convertToBase(totals.taxAmount, existing.exchangeRate, resolvedCurrency.base.precision),
+      baseTotal: convertToBase(totals.total, existing.exchangeRate, resolvedCurrency.base.precision),
+    } : undefined;
     const updated = await invoicesRepo.replaceInvoiceTotals(tx, ctx.organisationId, id, {
       date: input.date,
       dueDate: input.dueDate,
@@ -202,12 +224,16 @@ export async function updateInvoiceForUser(
       notes: input.notes,
       terms: input.terms,
       totals,
+      currencySnapshot,
     });
     if (!updated) throw new HTTPException(404, { message: 'Invoice not found' });
 
     if (input.status && input.status !== updated.status) {
       const withStatus = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, input.status);
       if (!withStatus) throw new HTTPException(404, { message: 'Invoice not found' });
+      if (updated.status === 'draft' && withStatus.status !== 'draft') {
+        await postInvoiceJournal(tx, ctx, { invoiceId: withStatus.id, invoiceNumber: withStatus.invoiceNumber, date: withStatus.date, subtotal: withStatus.subtotal, taxAmount: withStatus.taxAmount, total: withStatus.total });
+      }
       await invoicesRepo.recordHistory(tx, ctx, id, {
         action: input.status === 'sent' ? 'sent' : 'updated',
         fromStatus: existing.status,
@@ -263,6 +289,7 @@ export async function sendInvoiceForUser(
     }
     const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
     if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
+    await postInvoiceJournal(tx, ctx, { invoiceId: sent.id, invoiceNumber: sent.invoiceNumber, date: sent.date, subtotal: sent.subtotal, taxAmount: sent.taxAmount, total: sent.total });
     await invoicesRepo.recordHistory(tx, ctx, id, { action: 'sent', fromStatus: prepared.invoice.status, toStatus: 'sent' });
     return sent;
   });
