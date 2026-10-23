@@ -114,7 +114,8 @@ export async function deleteVendor(tx: Database, organisationId: string, id: str
   return deleted.length > 0;
 }
 
-export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest) {
+export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest, currencyPrecision = 2) {
+  const round = (value: Parameters<typeof roundMoney>[0]) => decimal(value).toFixed(currencyPrecision);
   const taxInclusive = input.taxInclusive ?? true;
   const calculated = (input.lines ?? []).map((line) => {
     const gross = decimal(line.quantity).mul(line.unitPrice);
@@ -127,19 +128,19 @@ export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest)
     return {
       ...line,
       quantity: roundMoney(line.quantity),
-      unitPrice: roundMoney(line.unitPrice),
+      unitPrice: round(line.unitPrice),
       taxRate: roundMoney(line.taxRate ?? '15'),
-      subtotal: subtotal.toFixed(),
-      taxAmount: tax.toFixed(),
-      total: total.toFixed(),
+      subtotal: round(subtotal),
+      taxAmount: round(tax),
+      total: round(total),
       accountId: line.accountId ?? null,
     };
   });
   return {
     lines: calculated,
-    subtotal: calculated.reduce((sum, line) => sum.add(line.subtotal), decimal(0)).toFixed(),
-    taxAmount: calculated.reduce((sum, line) => sum.add(line.taxAmount), decimal(0)).toFixed(),
-    total: calculated.reduce((sum, line) => sum.add(line.total), decimal(0)).toFixed(),
+    subtotal: round(calculated.reduce((sum, line) => sum.add(line.subtotal), decimal(0))),
+    taxAmount: round(calculated.reduce((sum, line) => sum.add(line.taxAmount), decimal(0))),
+    total: round(calculated.reduce((sum, line) => sum.add(line.total), decimal(0))),
   };
 }
 
@@ -186,10 +187,16 @@ async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<
     paymentStatus: row.paymentStatus,
     displayStatus,
     currency: row.currency,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
+    baseCurrency: row.baseCurrency,
+    baseSubtotal: row.baseSubtotal,
+    baseTaxAmount: row.baseTaxAmount,
+    baseTotal: row.baseTotal,
     taxInclusive: row.taxInclusive,
-    subtotal: roundMoney(row.subtotal),
-    taxAmount: roundMoney(row.taxAmount),
-    total: roundMoney(row.total),
+    subtotal: row.subtotal,
+    taxAmount: row.taxAmount,
+    total: row.total,
     totalPaid: roundMoney(row.totalPaid),
     balanceDue: roundMoney(row.balanceDue),
     notes: row.notes ?? null,
@@ -241,8 +248,10 @@ export async function getBill(tx: Database, organisationId: string, id: string) 
   return row ? toBillDto(tx, row) : undefined;
 }
 
-export async function insertBill(tx: Database, ctx: OrganisationContext, input: CreateBillRequest) {
-  const totals = calculateBillLines(input);
+type BillCurrencySnapshot = { precision: number; exchangeRate: string; exchangeRateId: string | null; baseCurrency: string; basePrecision: number };
+
+export async function insertBill(tx: Database, ctx: OrganisationContext, input: CreateBillRequest, currency: BillCurrencySnapshot) {
+  const totals = calculateBillLines(input, currency.precision);
   const [row] = await tx.insert(bills).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
@@ -252,6 +261,12 @@ export async function insertBill(tx: Database, ctx: OrganisationContext, input: 
     issueDate: input.issueDate,
     dueDate: input.dueDate,
     currency: input.currency ?? 'NZD',
+    exchangeRate: currency.exchangeRate,
+    exchangeRateId: currency.exchangeRateId,
+    baseCurrency: currency.baseCurrency,
+    baseSubtotal: decimal(totals.subtotal).mul(currency.exchangeRate).toFixed(currency.basePrecision),
+    baseTaxAmount: decimal(totals.taxAmount).mul(currency.exchangeRate).toFixed(currency.basePrecision),
+    baseTotal: decimal(totals.total).mul(currency.exchangeRate).toFixed(currency.basePrecision),
     taxInclusive: input.taxInclusive ?? true,
     subtotal: totals.subtotal,
     taxAmount: totals.taxAmount,
@@ -268,7 +283,7 @@ export async function insertBill(tx: Database, ctx: OrganisationContext, input: 
   return toBillDto(tx, row);
 }
 
-export async function updateBill(tx: Database, organisationId: string, id: string, input: UpdateBillRequest) {
+export async function updateBill(tx: Database, organisationId: string, id: string, input: UpdateBillRequest, currency: BillCurrencySnapshot) {
   const [existing] = await tx.select().from(bills)
     .where(and(eq(bills.organisationId, organisationId), eq(bills.id, id)));
   if (!existing) return undefined;
@@ -281,11 +296,15 @@ export async function updateBill(tx: Database, organisationId: string, id: strin
   if (input.taxInclusive !== undefined) patch.taxInclusive = input.taxInclusive;
   if (input.notes !== undefined) patch.notes = input.notes;
   if (input.lines !== undefined) {
-    const totals = calculateBillLines({ ...input, taxInclusive: input.taxInclusive ?? existing.taxInclusive });
+    const totals = calculateBillLines({ ...input, taxInclusive: input.taxInclusive ?? existing.taxInclusive }, currency.precision);
     patch.subtotal = totals.subtotal;
     patch.taxAmount = totals.taxAmount;
     patch.total = totals.total;
     patch.balanceDue = decimal(totals.total).sub(existing.totalPaid).toFixed();
+    patch.exchangeRate = currency.exchangeRate; patch.exchangeRateId = currency.exchangeRateId; patch.baseCurrency = currency.baseCurrency;
+    patch.baseSubtotal = decimal(totals.subtotal).mul(currency.exchangeRate).toFixed(currency.basePrecision);
+    patch.baseTaxAmount = decimal(totals.taxAmount).mul(currency.exchangeRate).toFixed(currency.basePrecision);
+    patch.baseTotal = decimal(totals.total).mul(currency.exchangeRate).toFixed(currency.basePrecision);
     await tx.delete(billLines).where(and(eq(billLines.organisationId, organisationId), eq(billLines.billId, id)));
     for (const [index, line] of totals.lines.entries()) {
       await tx.insert(billLines).values({ ...line, organisationId, billId: id, lineOrder: index + 1 });

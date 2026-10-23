@@ -27,6 +27,7 @@ import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
 import { reportRoutes } from './modules/reports/reports.routes';
 import { authorizeProtectedRequest } from './modules/auth/authorize-request';
 import { organisationRoutes } from './modules/organisations/organisations.routes';
+import { currencyRoutes } from './modules/currency/currency.routes';
 import type { AppDependencies, AppEnv } from './types';
 
 export function createApp(deps: AppDependencies = {}) {
@@ -102,6 +103,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', conversationRoutes());
   app.route('/', journalRoutes());
   app.route('/', purchaseRoutes());
+  app.route('/', currencyRoutes());
   // Financial statements are registered before /reports/:type widget runs.
   app.route('/', reportRoutes());
   app.route('/', dashboardRoutes());

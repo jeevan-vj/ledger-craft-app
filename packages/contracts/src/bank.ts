@@ -149,6 +149,7 @@ export const createBankTransferRequestSchema = z
     amount: positiveMoney,
     description: z.string().trim().min(1).optional(),
     reference: z.string().trim().min(1).nullable().optional(),
+    exchangeRateId: z.string().uuid().optional(),
   })
   .strict();
 
@@ -188,6 +189,10 @@ export const bankTransferSchema = z.object({
   transactionDate: dateOnly,
   amount: money,
   currency: z.string().min(1),
+  destinationCurrency: z.string().min(1).default('NZD'),
+  destinationAmount: money.default('0'),
+  exchangeRate: money.default('1'),
+  exchangeRateId: z.string().uuid().nullable().default(null),
   description: z.string().min(1),
   reference: z.string().nullable(),
   sourceTransaction: bankTransactionSchema,

@@ -13,7 +13,6 @@ import type { Database } from '../../db/client';
 import { accounts } from '../../db/schema/accounts';
 import { customers } from '../../db/schema/customers';
 import { expenseCategories, expenses } from '../../db/schema/expenses';
-import { roundMoney } from '../invoices/money';
 
 function toCategoryDto(row: typeof expenseCategories.$inferSelect): ExpenseCategoryDto {
   return expenseCategorySchema.parse({
@@ -33,9 +32,14 @@ function toExpenseDto(
   return expenseSchema.parse({
     id: row.id,
     description: row.description,
-    amount: roundMoney(row.amount),
-    taxAmount: roundMoney(row.taxAmount),
+    amount: row.amount,
+    taxAmount: row.taxAmount,
     currency: row.currency,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
+    baseCurrency: row.baseCurrency,
+    baseAmount: row.baseAmount,
+    baseTaxAmount: row.baseTaxAmount,
     expenseDate: row.expenseDate,
     status: row.status,
     isBillable: row.isBillable,
@@ -183,6 +187,7 @@ export async function insertExpense(
   tx: Database,
   ctx: { organisationId: string; userId: string },
   input: CreateExpenseRequest,
+  currency: { amount: string; taxAmount: string; exchangeRate: string; exchangeRateId: string | null; baseCurrency: string; baseAmount: string; baseTaxAmount: string },
 ): Promise<ExpenseDto> {
   const [row] = await tx
     .insert(expenses)
@@ -190,9 +195,14 @@ export async function insertExpense(
       organisationId: ctx.organisationId,
       userId: ctx.userId,
       description: input.description,
-      amount: roundMoney(input.amount),
-      taxAmount: roundMoney(input.taxAmount ?? '0'),
+      amount: currency.amount,
+      taxAmount: currency.taxAmount,
       currency: input.currency ?? 'NZD',
+      exchangeRate: currency.exchangeRate,
+      exchangeRateId: currency.exchangeRateId,
+      baseCurrency: currency.baseCurrency,
+      baseAmount: currency.baseAmount,
+      baseTaxAmount: currency.baseTaxAmount,
       expenseDate: input.expenseDate,
       status: input.status ?? 'pending',
       isBillable: input.isBillable ?? false,
@@ -218,13 +228,17 @@ export async function updateExpense(
   organisationId: string,
   id: string,
   input: UpdateExpenseRequest,
+  currency?: { amount: string; taxAmount: string; exchangeRate: string; exchangeRateId: string | null; baseCurrency: string; baseAmount: string; baseTaxAmount: string },
 ): Promise<ExpenseDto | undefined> {
   const existing = await getExpense(tx, organisationId, id);
   if (!existing) return undefined;
   const patch: Partial<typeof expenses.$inferInsert> = { updatedAt: new Date() };
   if (input.description !== undefined) patch.description = input.description;
-  if (input.amount !== undefined) patch.amount = roundMoney(input.amount);
-  if (input.taxAmount !== undefined) patch.taxAmount = roundMoney(input.taxAmount);
+  if (currency) {
+    patch.amount = currency.amount; patch.taxAmount = currency.taxAmount; patch.exchangeRate = currency.exchangeRate;
+    patch.exchangeRateId = currency.exchangeRateId; patch.baseCurrency = currency.baseCurrency;
+    patch.baseAmount = currency.baseAmount; patch.baseTaxAmount = currency.baseTaxAmount;
+  }
   if (input.currency !== undefined) patch.currency = input.currency;
   if (input.expenseDate !== undefined) patch.expenseDate = input.expenseDate;
   if (input.status !== undefined) patch.status = input.status;
