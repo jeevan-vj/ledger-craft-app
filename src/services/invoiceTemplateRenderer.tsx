@@ -1,6 +1,7 @@
 import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
+import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
 import { invoiceDocumentLabels, resolveDocumentLabels, type DocumentLabels } from '@/components/invoice/preview/documentLabels';
 import { InvoiceTemplateId } from '../components/invoice/templates/InvoiceTemplates';
@@ -109,11 +110,11 @@ export const createEmailCompatibleInvoiceHtml = (
 ): string => {
   const templateData = createTemplateData(invoice, businessProfile, labels);
   const copy = templateData.labels ?? invoiceDocumentLabels;
-  const escapeBankValue = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
+  const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
   const bankRows = [
     ['Account name:', businessProfile?.bankAccountName?.trim()],
     ['Account number:', businessProfile?.bankAccountNumber?.trim()],
-  ].filter(([, value]) => value).map(([label, value]) => `<tr><td style="padding:4px 12px 4px 0;">${label}</td><td style="overflow-wrap:anywhere;">${escapeBankValue(value!)}</td></tr>`).join('');
+  ].filter(([, value]) => value).map(([label, value]) => `<tr><td style="padding:4px 12px 4px 0;">${label}</td><td style="overflow-wrap:anywhere;">${escapeHtml(value!)}</td></tr>`).join('');
 
   
   return `
@@ -195,7 +196,7 @@ export const createEmailCompatibleInvoiceHtml = (
             ${invoice.items.map((item, index) => `
               <tr style="background-color: ${index % 2 === 0 ? '#f8fafc' : '#ffffff'};">
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; color: #111827;">${item.description}</td>
-                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #111827;">${item.quantity}</td>
+                <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: center; color: #111827;">${escapeHtml(formatLineQuantity(item.quantity, item.unit))}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #111827;">${invoice.currency}${item.rate.toFixed(2)}</td>
                 <td style="padding: 12px; border-bottom: 1px solid #e5e7eb; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${item.total.toFixed(2)}</td>
               </tr>
@@ -216,19 +217,19 @@ export const createEmailCompatibleInvoiceHtml = (
                     <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Subtotal:</td>
                     <td style="padding: 8px 0; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${invoice.subtotal.toFixed(2)}</td>
                   </tr>
-                  ${invoice.taxAmount > 0 ? `
+                  ${showPositiveAmount(invoice.taxAmount) ? `
                     <tr>
                       <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Tax (${templateData.taxRate}%):</td>
                       <td style="padding: 8px 0; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${invoice.taxAmount.toFixed(2)}</td>
                     </tr>
                   ` : ''}
-                  ${invoice.discount > 0 ? `
+                  ${showPositiveAmount(invoice.discount) ? `
                     <tr>
                       <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Discount:</td>
                       <td style="padding: 8px 0; text-align: right; color: #dc2626; font-weight: bold;">-${invoice.currency}${invoice.discount.toFixed(2)}</td>
                     </tr>
                   ` : ''}
-                  ${invoice.additionalChargesTotal > 0 ? `
+                  ${showPositiveAmount(invoice.additionalChargesTotal) ? `
                     <tr>
                       <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Additional Charges:</td>
                       <td style="padding: 8px 0; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${invoice.additionalChargesTotal.toFixed(2)}</td>

@@ -22,6 +22,7 @@ import { CustomerCombobox } from "@/components/ui/customer-combobox";
 import { Textarea } from "@/components/ui/textarea";
 import { CalendarIcon, Plus, Trash2, Download, Save, ArrowLeft, Eye, ChevronsUpDown, Edit, Check, Circle, Weight, UserPlus, Send } from 'lucide-react';
 import { generateInvoicePdf } from "@/utils/pdfUtils";
+import { formatLineQuantity } from "@/utils/invoiceLineDisplay";
 import { formatCurrency, formatDate, invoiceDiscountLabel } from "@/utils/invoiceUtils";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
@@ -1546,7 +1547,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                         <div className="flex-1">
                                           <div className="font-medium">{item.description || "Untitled Item"}</div>
                                           <div className="text-sm text-muted-foreground">
-                                            {item.quantity} × {formatCurrency(item.rate, form.getValues('currency'))}
+                                            {formatLineQuantity(item.quantity, item.unit)} × {formatCurrency(item.rate, form.getValues('currency'))}
                                           </div>
                                         </div>
                                         <div className="text-right">
