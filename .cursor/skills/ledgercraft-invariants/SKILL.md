@@ -23,9 +23,11 @@ Tick every item the diff can affect. A new formula, a second totals helper, or a
 
 ## Idempotency
 
-- Invoice create, quote create, and accepted-quote conversion use `Idempotency-Key` through `api/src/modules/invoices/idempotency.ts`.
-- The scope is organisation, user, method, path, and key. The same key with the same body returns the stored response. The same key with a different body is 409 `IDEMPOTENCY_CONFLICT`.
-- Do not add a second key table or skip the key on a retryable create.
+- `Idempotency-Key` is optional. `parseIdempotencyKey` returns undefined when the header is absent, and invoice create, quote create, and quote convert continue without a record.
+- Send the header on retries. When it is present, the scope is organisation, user, method, path, and key, through `api/src/modules/invoices/idempotency.ts`.
+- Invoice create and quote create hash the request body. The same key and the same body return the stored response. A different body with that key is 409 `IDEMPOTENCY_CONFLICT`.
+- Accepted-quote conversion hashes `{}` in `api/src/modules/quotes/quotes.routes.ts`. A different body does not 409 on convert.
+- Do not add a second key table. Do not require the header. Clients today omit it. Making the header mandatory is a follow-up, not current behaviour.
 
 ## Share tokens and public pages
 

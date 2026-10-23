@@ -27,11 +27,19 @@ Reinstall after switching to Node 24 before the API job.
 
 ## Commands
 
-Paste each result. `not run` is allowed only with the reason. `pass` without a log is a fail.
+Paste each result into the evidence table. The table is required on every pull request, including docs and skills. A missing table, an empty table, or `pass` with no command output is a blocker.
+
+`not run` is not a pass. Use it only for one of these reasons, and paste the evidence named there:
+
+1. **node-major** — the Node major for that job cannot be installed. Paste `node -v`, the install command, and the error.
+2. **tool-missing** — a tool that command needs is not on this machine and cannot be installed. Name the tool and paste the command plus the error. This does not cover a CI job you did not try.
+3. **billing** — after push, the GitHub job was not started because recent account payments have failed or a spending limit needs to be increased. Paste the annotation and stop. Do not edit a workflow.
+
+Any other skip, including "docs only" or "the unit test passed", is a blocker. A `not run` row stays a blocker until the matching GitHub CI job is green.
 
 ### 1. Web lint (Node 22)
 
-Job **Web lint**. `pnpm lint` is `eslint .`. The lint step is allowed to exit non-zero. The job fails only when the error count is above **468**. Warnings are printed and are not a failure on `main`. Do not raise 468.
+Job **Web lint**. `pnpm lint` is `eslint .`. The lint step is allowed to exit non-zero. The job fails only when the error count is above **468**. Warnings are printed and are not a failure on `main`. Do not raise 468. Editing `.github/scripts/ci-baseline-gate.mjs` so a higher count still exits 0 is `risk:high`, the same as raising the ceiling.
 
 ```bash
 pnpm lint > /tmp/web-lint.txt 2>&1; echo "lint_exit:$?"
@@ -137,30 +145,33 @@ Health is `{ "status": "ok" }`. Unauthenticated `/api/me` is 401 `{ error: { cod
 
 ## Risk label
 
-`docs/PIPELINE.md` is the contract. Highest matching rule wins. Explain the choice in the pull request. Apply labels when the token can write them; if it cannot, list them in the body as not applied.
+`docs/PIPELINE.md` is the only path list and the only stage-6 rule. Highest matching rule wins. Explain the choice in the pull request. Apply labels when the token can write them. If it cannot, list them in the body as not applied.
 
 | Label | When |
 | --- | --- |
-| `risk:high` | Any path in the high-risk list below, a secret, or a major dependency bump |
-| `risk:medium` | Product behaviour that matches none of the high-risk list |
-| `risk:low` | Docs, copy, or a local change that matches none of the high-risk list |
+| `risk:high` | Any path in the `docs/PIPELINE.md` risk list, including this skill, `ledgercraft-reviewer`, `ledgercraft-invariants`, the pull request template, a lint or typecheck baseline, and `.github/scripts/ci-baseline-gate.mjs` |
+| `risk:medium` | Product behaviour that matches none of that list |
+| `risk:low` | Docs, copy, or a local change that matches none of that list |
 
-High-risk paths (also requested in `.github/CODEOWNERS`):
-
-- Migrations and Drizzle: `api/sqlite-migrations/`, `api/src/db/schema/`, `api/src/db/migrate.ts`, `api/drizzle.config.ts`, `api/drizzle.sqlite.config.ts`, `scripts/generate-sqlite-migrations.mjs`
-- Money, GST, invoice, or quote totals. Invoice and quote totals both use `computeInvoiceTotals` (`api/src/modules/invoices/totals.ts`; quotes call it from `api/src/modules/quotes/quotes.service.ts`). Rounding is `roundMoney` in `api/src/modules/invoices/money.ts`. Bill lines use `calculateBillLines` in `api/src/modules/purchases/purchases.repository.ts`. Inline client totals listed in CODEOWNERS count too.
-- Auth: `api/src/modules/auth/`, `api/src/app.ts`, `api/src/index.ts`, `api/src/cloudflare/worker.ts`, `api/src/env.ts`
-- Workflows and release: `.github/workflows/`, `wrangler.toml`, `deploy/api/wrangler.jsonc`, `deploy/cloudflare.md`, `functions/api/`, `mobile/eas.json`, `scripts/deploy-cloudflare.mjs`, and the other release scripts named in CODEOWNERS
+Do not copy the paths into this skill. A second list will drift.
 
 Also apply one `type:*`, the `area:*` values that fit, one `priority:*`, and one `size:*`. Set `agent:review` when the pull request is ready. Do not set `review-passed` or `auto-merge-eligible` on your own pull request.
 
-`auto-merge-eligible` may be applied only by the reviewer skill, and only when all of these hold. The GitHub merge gate is not implemented.
+`auto-merge-eligible` may be applied only by the reviewer skill, and only when every stage-6 condition in `docs/PIPELINE.md` holds. `review-passed` plus `risk:low` is not enough. The GitHub merge gate is not implemented. The conditions are:
 
 - `risk:low`, and no changed file matches a CODEOWNERS path
 - every CI job in this skill is green
 - `review-passed` was applied by a different agent session
 - no unresolved review threads
-- under 300 changed lines and 15 changed files (`git diff --numstat origin/main`)
+- line count under 300 and file count under 15
+
+Count lines and files with three dots, from the merge base to `HEAD`:
+
+```bash
+git diff --numstat origin/main...HEAD
+```
+
+Sum both numeric columns on every row. That sum is the line count. The number of rows is the file count. A row `409 165 path` is 574 lines, not 409. Two-dot `git diff --numstat origin/main` is the wrong command: it includes commits that landed on main after the branch point.
 
 `risk:medium` and `risk:high` stay `needs-human`. A person merges them.
 
@@ -187,8 +198,8 @@ UI changes: phone 390×844, and 1440×900 when layout changed. Embed the images.
 ### Risk
 - Label: `risk:` because …
 - CODEOWNERS paths: none, or the list
-- Diff: <files> files, <added>+<deleted> lines
-- `auto-merge-eligible`: no, until a different reviewer applies it
+- Diff: `git diff --numstat origin/main...HEAD` — file count is the row count, line count is the sum of both columns
+- `auto-merge-eligible`: no, until a different reviewer applies it and every stage-6 condition holds
 
 ### Rollback
 `git revert` of this pull request. Migrations have no down script; name the SQL file and say production objects keep it.
@@ -200,7 +211,7 @@ Human steps, or none. Release to Cloudflare runs only after CI succeeds on `main
 ## Do not
 
 - Weaken, skip, or delete a test to get a green run
-- Raise 468, 728, or any later baseline file to absorb a new diagnostic
+- Raise 468, 728, or any later baseline file, or edit `.github/scripts/ci-baseline-gate.mjs` so a higher count exits 0
 - Wrap the failing call in a broad `try/catch` that hides the error
 - Edit a snapshot, fixture, or golden file so the assertion passes
 - Touch files that the change does not need

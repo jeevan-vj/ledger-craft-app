@@ -3,7 +3,7 @@
 # Labels that are not listed here are left in place.
 #
 # GitHub limits a label description to 100 characters.
-# The full risk:high rule is in docs/PIPELINE.md and the pull request template.
+# The full risk:high rule is in docs/PIPELINE.md. The pull request template points at that list.
 - name: "type:bug"
   color: "d73a4a"
   description: "Something is broken or incorrect."
@@ -70,7 +70,7 @@
 
 - name: "risk:low"
   color: "216e39"
-  description: "No high-risk rule applies. Eligible for the auto-merge gate after review."
+  description: "No high-risk path. Auto-merge still needs every PIPELINE stage-6 gate."
 - name: "risk:medium"
   color: "e36209"
   description: "Behaviour change that does not match a high-risk rule. A person merges it."
@@ -95,4 +95,4 @@
   description: "A person has to decide before this continues."
 - name: "auto-merge-eligible"
   color: "0366d6"
-  description: "Review passed and risk is low. Only then may the merge gate auto-merge."
+  description: "Every PIPELINE.md stage-6 gate holds. Review and risk:low are not enough."

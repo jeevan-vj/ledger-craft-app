@@ -13,7 +13,7 @@ Review from a session that did not write the change. Read the diff against the b
 2. **Security.** `user_id` and `organisation_id` come from the session or membership, not the body. No new `supabase.from`, client secret, or second auth session. Share tokens stay out of logs and Sentry (`ledgercraft-invariants`).
 3. **Invariants.** Tick every invariant the diff can touch. A new totals path, float GST, edited migration, or public page without `no-referrer` is a blocker.
 4. **Tests.** Assertions check the behaviour (the amount, the status, the redacted token), not only that a mock was called. For a bug fix, the new test must fail on the unfixed code for the reported reason. A test added after the fix, or a snapshot updated to match the new output with no behaviour assertion, is a blocker.
-5. **Evidence.** The verification table in the pull request contains real command output from `ledgercraft-verify`. Empty checkboxes, or "pass" with no exit code, are a blocker on a code change. A skipped job needs a reason that matches the skill.
+5. **Evidence.** Every pull request, including docs and skills, has the verification table from `ledgercraft-verify` filled with command output. A missing table, an empty table, or "pass" with no exit code is a blocker. A `not run` row is a blocker unless the reason is `node-major`, `tool-missing`, or `billing` as that skill defines them, and the matching GitHub job is green.
 6. **Scope.** Unrelated files, a raised lint or typecheck baseline, a deleted assertion, or a broad `try/catch` around the failing path are blockers.
 7. **Risk.** The author's `risk:*` label matches the diff. `risk:low` on a CODEOWNERS path is a blocker.
 
@@ -40,8 +40,8 @@ Why: <risk label, CI state, threads, diff size, CODEOWNERS>
 `pass` means there are no blockers and no should-fix items. Nits can remain.
 
 - On `pass`, apply `review-passed` and remove `agent:review` when the token can write labels.
-- Apply `auto-merge-eligible` only when `ledgercraft-verify` says all of its low-risk gates hold: `risk:low`, green CI jobs from that skill, no unresolved threads, under 300 lines and 15 files, no CODEOWNERS path, and you are not the author.
-- Otherwise do not apply `auto-merge-eligible`. `risk:medium` and `risk:high` get `needs-human`. The merge gate is not in this repository. Do not merge to finish the review.
+- Apply `auto-merge-eligible` only when every stage-6 condition in `docs/PIPELINE.md` holds: `risk:low`, green CI jobs, `review-passed` from a different agent, no unresolved threads, line count under 300 and file count under 15 from `git diff --numstat origin/main...HEAD` (sum both columns), and no CODEOWNERS path. `review-passed` plus `risk:low` is not enough. You must not be the author.
+- Otherwise do not apply `auto-merge-eligible`. `risk:medium` and `risk:high` get `needs-human`. A diff that touches the verify skill, this skill, `ledgercraft-invariants`, `docs/PIPELINE.md`, the pull request template, a lint or typecheck baseline, or `.github/scripts/ci-baseline-gate.mjs` is `risk:high`. The merge gate is not in this repository. Do not merge to finish the review.
 
 ## Inline comments
 
