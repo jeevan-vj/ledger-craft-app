@@ -348,6 +348,25 @@ export {
 } from './journal';
 
 export {
+  accountStatementResponseSchema,
+  agingItemSchema,
+  financialReportQuerySchema,
+  financialReportResponseSchema,
+  generalLedgerLineSchema,
+  generalLedgerResponseSchema,
+  reportAccountRowSchema,
+  reportBasisSchema,
+  reportComparisonSchema,
+  reportMetaSchema,
+  trialBalanceRowSchema,
+  type AccountStatementResponse,
+  type FinancialReportQuery,
+  type FinancialReportResponse,
+  type GeneralLedgerResponse,
+  type ReportBasis,
+} from './report';
+
+export {
   billLineInputSchema,
   billLineSchema,
   billListResponseSchema,

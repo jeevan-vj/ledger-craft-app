@@ -32,7 +32,12 @@ describe('invoice lifecycle', () => {
     await withTestDb(async () => {
       const { db, sql } = createDb(getDatabaseUrl());
       try {
-        const app = createApp({ auth: createAuth(db), db, objectStore: createMemoryObjectStore() });
+        const app = createApp({
+          auth: createAuth(db),
+          db,
+          objectStore: createMemoryObjectStore(),
+          invoiceMailer: { sendInvoice: async () => undefined },
+        });
         const owner = await signUp(app, 'Lifecycle Owner');
         const other = await signUp(app, 'Other Owner');
         const customerId = await seed(app, owner);
@@ -47,6 +52,12 @@ describe('invoice lifecycle', () => {
         const invoice = await created.json() as any;
         expect(invoice.items[0]).toMatchObject({ discountAmount: '20.00', tax: '31.50', total: '180.00' });
         expect(invoice).toMatchObject({ subtotal: '180.00', taxAmount: '31.50', total: '211.50' });
+
+        const sent = await app.request(`/api/invoices/${invoice.id}/send`, {
+          method: 'POST', headers: ownerHeaders, body: '{}',
+        });
+        expect(sent.status).toBe(200);
+        expect((await sent.json() as any).status).toBe('sent');
 
         const leaked = await app.request(`/api/invoices/${invoice.id}/history`, { headers: { Cookie: other } });
         expect(leaked.status).toBe(404);
@@ -77,7 +88,7 @@ describe('invoice lifecycle', () => {
         ) as Array<{ count: number; debit: string; credit: string }>;
         expect(reversals[0]).toEqual({ count: 1, debit: '211.50', credit: '211.50' });
         const restore = await app.request(`/api/invoices/${invoice.id}/restore`, { method: 'POST', headers: ownerHeaders, body: '{}' });
-        expect((await restore.json() as any).status).toBe('draft');
+        expect((await restore.json() as any).status).toBe('sent');
 
         const history = await app.request(`/api/invoices/${invoice.id}/history`, { headers: ownerHeaders });
         const actions = (await history.json() as any).history.map((event: any) => event.action);
