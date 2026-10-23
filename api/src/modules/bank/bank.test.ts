@@ -279,4 +279,86 @@ describe('bank routes', () => {
       }
     });
   });
+
+  it('allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const ownerA = await signUp(app, 'Allocation Owner A');
+        const ownerB = await signUp(app, 'Allocation Owner B');
+        const accountResponse = await app.request('/api/bank-accounts', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ accountName: 'Operating', accountNumber: '01-0001', bankName: 'Ledger Bank', accountType: 'checking', openingBalance: '0.00' }),
+        });
+        const account = bankAccountSchema.parse(await accountResponse.json());
+        const customerResponse = await app.request('/api/customers', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ name: 'Allocation Customer', email: 'allocation@example.com', country: 'NZ' }),
+        });
+        const customer = await customerResponse.json() as { id: string };
+        const invoiceResponse = await app.request('/api/invoices', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({
+            customerId: customer.id, date: '2026-10-23', dueDate: '2026-11-23',
+            taxInclusive: false, taxRate: '15', items: [{ description: 'Advisory', quantity: '1', rate: '100.00' }],
+          }),
+        });
+        const invoice = await invoiceResponse.json() as { id: string; invoiceNumber: string; balanceDue: string };
+        expect(invoice.balanceDue).toBe('115.00');
+
+        const transactionResponse = await app.request('/api/bank-transactions', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ bankAccountId: account.id, transactionDate: '2026-10-23', description: 'Customer deposit', amount: '100.00', type: 'credit' }),
+        });
+        const transaction = bankTransactionSchema.parse(await transactionResponse.json());
+        const invalidSplit = await app.request(`/api/bank-transactions/${transaction.id}/details`, {
+          method: 'PUT', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ splits: [{ category: 'Sales', amount: '99.99' }], documentConnections: [], attachments: [] }),
+        });
+        expect(invalidSplit.status).toBe(400);
+
+        const allocatedResponse = await app.request(`/api/bank-transactions/${transaction.id}/details`, {
+          method: 'PUT', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({
+            splits: [{ category: 'Consulting', amount: '60.00' }, { category: 'Retainer', amount: '40.00' }],
+            documentConnections: [{ documentType: 'invoice', documentId: invoice.id, amount: '60.00' }],
+            attachments: [],
+          }),
+        });
+        expect(allocatedResponse.status).toBe(200);
+        const allocated = bankTransactionSchema.parse(await allocatedResponse.json());
+        expect(allocated.splits.map((split) => split.amount)).toEqual(['60.00', '40.00']);
+        expect(allocated.documentConnections[0]).toMatchObject({ documentNumber: invoice.invoiceNumber, amount: '60.00' });
+        const paidInvoice = await (await app.request(`/api/invoices/${invoice.id}`, { headers: { Cookie: ownerA.cookie } })).json() as { totalPaid: string; balanceDue: string };
+        expect(paidInvoice).toMatchObject({ totalPaid: '60.00', balanceDue: '55.00' });
+
+        const secondResponse = await app.request('/api/bank-transactions', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ bankAccountId: account.id, transactionDate: '2026-10-23', description: 'Oversized deposit', amount: '200.00', type: 'credit' }),
+        });
+        const second = bankTransactionSchema.parse(await secondResponse.json());
+        const overAllocated = await app.request(`/api/bank-transactions/${second.id}/details`, {
+          method: 'PUT', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ splits: [], documentConnections: [{ documentType: 'invoice', documentId: invoice.id, amount: '55.01' }], attachments: [] }),
+        });
+        expect(overAllocated.status).toBe(400);
+
+        const duplicateResponse = await app.request(`/api/bank-transactions/${transaction.id}/duplicate`, {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie }, body: JSON.stringify({ transactionDate: '2026-10-24' }),
+        });
+        expect(duplicateResponse.status).toBe(201);
+        expect(bankTransactionSchema.parse(await duplicateResponse.json())).toMatchObject({ description: 'Customer deposit (copy)', balance: '400.00' });
+        const csv = await app.request(`/api/bank-transactions/export.csv?bankAccountId=${account.id}`, { headers: { Cookie: ownerA.cookie } });
+        expect(csv.status).toBe(200);
+        expect(csv.headers.get('content-type')).toContain('text/csv');
+        expect(await csv.text()).toContain('Customer deposit (copy)');
+        const foreign = await app.request(`/api/bank-transactions/${transaction.id}`, { headers: { Cookie: ownerB.cookie } });
+        expect(foreign.status).toBe(404);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });

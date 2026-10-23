@@ -1,5 +1,16 @@
 # LedgerCraft target architecture
 
+**Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
+migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
+transaction splits, invoice/bill connections, and 1 MB attachment metadata.
+Connections atomically update document balances and reject direction, currency,
+tenant, transaction-total, and document-balance violations. Web adds transaction
+detail/allocation, attachments, duplicate, print/PDF, and CSV export. Expo adds
+native CSV statement selection, exact-text parsing, preview, duplicate skipping,
+and import. Focused contract/API/web/mobile tests, migration verification, and
+strict mobile TypeScript pass. Authenticated native-device QA and deployment
+remain open.
+
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
 run's head SHA. That conclusion includes every job in the CI workflow,
@@ -90,14 +101,16 @@ no errors, and iOS/Android production exports pass. Native visual QA remains
 open because no local iOS simulator runtime is installed and EAS Simulator is
 unavailable for the account.
 
-**Mobile banking management (implemented locally, 2026-10-19):** Expo now
+**Mobile banking management (implemented locally, updated 2026-10-23):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
 transaction history from More through Hono. Dirty bank-account forms are
 protected from dismissal. Strict TypeScript, 20 Jest suites (78 tests), lint
-with no errors, and iOS/Android production exports pass. Authenticated device QA
-remains open; manual transactions, transfers, splits, attachments, and mobile
-import remain in AKP-02.
+with no errors, and iOS/Android production exports pass. Manual transactions and
+transfers are implemented, and native CSV statement selection, exact-text
+preview, duplicate skipping, and import are now available. Split, attachment,
+and document allocation editing remains web-only. Authenticated device QA is
+open.
 
 **Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
 item list/filter, create, detail, edit, delete-attempt, active-state, category,

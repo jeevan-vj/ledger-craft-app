@@ -1,4 +1,5 @@
 import { apiRequest } from '@/features/auth/api/http';
+import type { StatementTransactionInput } from '@/features/banking/model/statementImport';
 
 export type BankAccountType = 'checking' | 'savings' | 'credit_card' | 'business';
 
@@ -44,6 +45,9 @@ export interface BankTransactionDto {
   paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
   counterparty: string | null;
   transferId: string | null;
+  splits: { id: string; category: string; description: string | null; amount: string }[];
+  documentConnections: { id: string; documentType: 'invoice' | 'bill'; documentId: string; documentNumber: string; amount: string }[];
+  attachments: { id: string; objectKey: string; filename: string; contentType: string; size: number }[];
   createdAt: string;
   updatedAt: string;
 }
@@ -85,6 +89,20 @@ export interface BankTransferDto {
   updatedAt: string;
 }
 
+export interface BankStatementImportRequest {
+  bankAccountId: string;
+  fileName: string;
+  fileType: 'csv';
+  skipDuplicates: boolean;
+  transactions: StatementTransactionInput[];
+}
+
+export interface BankStatementImportResponse {
+  importedCount: number;
+  duplicatesSkipped: number;
+  transactions: BankTransactionDto[];
+}
+
 export const bankingApi = {
   async listAccounts(): Promise<BankAccountDto[]> {
     return (await apiRequest<{ bankAccounts: BankAccountDto[] }>('/api/bank-accounts', { method: 'GET' })).bankAccounts;
@@ -116,6 +134,9 @@ export const bankingApi = {
   },
   async removeTransaction(id: string): Promise<void> {
     await apiRequest<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
+  },
+  importTransactions(input: BankStatementImportRequest): Promise<BankStatementImportResponse> {
+    return apiRequest('/api/bank-transactions/import', { method: 'POST', body: JSON.stringify(input) });
   },
   createTransfer(input: BankTransferWriteRequest, idempotencyKey: string): Promise<BankTransferDto> {
     return apiRequest('/api/bank-transfers', {

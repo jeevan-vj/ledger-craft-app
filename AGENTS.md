@@ -18,6 +18,13 @@ Shared Zod DTOs live in `packages/contracts`. Web imports them as `@ledgercraft/
 
 Business Settings → Appearance edits the invoice palette. It offers the six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface. The live preview follows the draft. Invalid hex is rejected before save. Save calls `updateBusinessProfile({ theme })` with the contract colours only, so `name` is not sent. Onboarding still starts from the installed professional palette, including `background`. The editor was checked in Chrome through Expo web. See `mobile/src/components/business/ThemeEditor.tsx`.
 
+Banking parity uses migration `0010_banking-parity-completion.sql` for
+tenant-scoped exact-money transaction splits, invoice/bill connections, and
+attachment metadata. Web transaction detail supports allocation, 1 MB SQLite
+attachments, duplicate, print/PDF, and CSV export. Expo supports native CSV
+statement selection, exact-text preview, duplicate skipping, and import. Do not
+claim authenticated native-device QA until it has been run.
+
 Invoice preview and PDF HTML use the loaded business profile theme. `resolveInvoiceTheme` in `mobile/src/utils/invoiceTheme.ts` fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. Classic, modern, minimal, executive, corporate, and modern pro templates paint with those tokens. Text on a brand fill switches to dark ink when white would be unreadable. Money and GST totals stay on the existing calculations.
 
 Quotes and estimates are a Hono slice on their own tables (`api/sqlite-migrations/0007_quotes.sql`). Contracts live in `packages/contracts/src/quote.ts`. Authenticated routes are under `/api/quotes`; public read and respond are `/api/public/quotes/:token` and `/api/public/quotes/:token/respond`. Quote rows do not post journals. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. Mobile provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE`; both clients present share-link delivery instead of claiming email delivery. Focused API, web, and mobile quote tests, full API/contracts/mobile suites, web build, and iOS/Android production exports pass; authenticated native-device QA remains pending.

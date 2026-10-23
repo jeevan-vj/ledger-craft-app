@@ -7,6 +7,8 @@ import {
   type BankAccountListResponse,
   type BankTransactionListResponse,
   type BankTransactionDto,
+  type BankTransactionDetailsRequest,
+  type DuplicateBankTransactionRequest,
   type BankTransferDto,
   type CreateBankTransactionRequest,
   type CreateBankTransferRequest,
@@ -20,6 +22,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './bank.repository';
+import * as detailsRepo from './bank-details.repository';
 import { decimal, roundMoney } from '../invoices/money';
 import {
   assertReplayMatches,
@@ -27,6 +30,7 @@ import {
   insertIdempotencyRecord,
   type IdempotencyScope,
 } from '../invoices/idempotency';
+import { assertKeyOwned } from '../storage/keys';
 
 function applyAmount(balance: string, type: 'debit' | 'credit', amount: string) {
   return roundMoney(type === 'credit' ? decimal(balance).add(amount) : decimal(balance).sub(amount));
@@ -92,7 +96,8 @@ export async function listBankTransactionsForUser(
 ): Promise<BankTransactionListResponse> {
   return withOrganisationTx(db, userId, async (tx, ctx) =>
     bankTransactionListResponseSchema.parse({
-      transactions: await repo.listTransactions(tx, ctx.organisationId, filters),
+      transactions: await Promise.all((await repo.listTransactions(tx, ctx.organisationId, filters))
+        .map((transaction) => detailsRepo.hydrateTransaction(tx, ctx.organisationId, transaction))),
     }),
   );
 }
@@ -105,7 +110,7 @@ export async function getBankTransactionForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const transaction = await repo.getTransaction(tx, ctx.organisationId, id);
     if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
-    return transaction;
+    return detailsRepo.hydrateTransaction(tx, ctx.organisationId, transaction);
   });
 }
 
@@ -136,6 +141,9 @@ export async function updateBankTransactionForUser(
     if (existing.source !== 'manual' || existing.isReconciled) {
       throw new HTTPException(409, { message: 'Only unreconciled manual transactions can be edited' });
     }
+    if ((input.amount !== undefined || input.type !== undefined) && await detailsRepo.hasDetails(tx, ctx.organisationId, id)) {
+      throw new HTTPException(409, { message: 'Remove transaction splits and document connections before changing amount or direction' });
+    }
     const account = await repo.getAccount(tx, ctx.organisationId, existing.bankAccountId);
     if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
     const withoutExisting = reverseAmount(account.currentBalance, existing.type, existing.amount);
@@ -156,6 +164,9 @@ export async function deleteBankTransactionForUser(db: Database, userId: string,
     if (existing.source !== 'manual' || existing.isReconciled) {
       throw new HTTPException(409, { message: 'Only unreconciled manual transactions can be deleted' });
     }
+    if (await detailsRepo.hasDetails(tx, ctx.organisationId, id)) {
+      throw new HTTPException(409, { message: 'Transactions with splits, document connections, or attachments cannot be deleted' });
+    }
     const account = await repo.getAccount(tx, ctx.organisationId, existing.bankAccountId);
     if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
     const balance = reverseAmount(account.currentBalance, existing.type, existing.amount);
@@ -164,6 +175,113 @@ export async function deleteBankTransactionForUser(db: Database, userId: string,
     }
     await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
   });
+}
+
+export async function saveBankTransactionDetailsForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: BankTransactionDetailsRequest,
+): Promise<BankTransactionDto> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const transaction = await repo.getTransaction(tx, ctx.organisationId, id);
+    if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
+    if (transaction.source === 'transfer') throw new HTTPException(409, { message: 'Transfer legs cannot be split or connected to documents' });
+    if (await detailsRepo.hasDetails(tx, ctx.organisationId, id)) {
+      throw new HTTPException(409, { message: 'Transaction details have already been allocated' });
+    }
+    const account = await repo.getAccount(tx, ctx.organisationId, transaction.bankAccountId);
+    if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
+    for (const attachment of input.attachments) assertKeyOwned(attachment.objectKey, ctx.organisationId);
+
+    const splitTotal = input.splits.reduce((sum, split) => sum.add(split.amount), decimal(0));
+    if (input.splits.length && splitTotal.compare(transaction.amount) !== 0) {
+      throw new HTTPException(400, { message: 'Split amounts must equal the transaction amount exactly' });
+    }
+    const connectionTotal = input.documentConnections.reduce((sum, connection) => sum.add(connection.amount), decimal(0));
+    if (connectionTotal.compare(transaction.amount) > 0) {
+      throw new HTTPException(400, { message: 'Document connections cannot exceed the transaction amount' });
+    }
+    const uniqueDocuments = new Set(input.documentConnections.map((connection) => `${connection.documentType}:${connection.documentId}`));
+    if (uniqueDocuments.size !== input.documentConnections.length) {
+      throw new HTTPException(400, { message: 'A document can only be connected once per transaction' });
+    }
+
+    const documents = [] as Array<{
+      input: BankTransactionDetailsRequest['documentConnections'][number];
+      document: NonNullable<Awaited<ReturnType<typeof detailsRepo.getDocument>>>;
+    }>;
+    for (const connection of input.documentConnections) {
+      if ((connection.documentType === 'invoice' && transaction.type !== 'credit') ||
+          (connection.documentType === 'bill' && transaction.type !== 'debit')) {
+        throw new HTTPException(400, { message: 'Income connects to invoices and expenses connect to bills' });
+      }
+      const document = await detailsRepo.getDocument(tx, ctx.organisationId, connection.documentType, connection.documentId);
+      if (!document) throw new HTTPException(404, { message: `${connection.documentType === 'invoice' ? 'Invoice' : 'Bill'} not found` });
+      if (document.currency !== account.currency) throw new HTTPException(400, { message: 'Document and bank account currencies must match' });
+      if (connection.documentType === 'bill' && document.status !== 'received') {
+        throw new HTTPException(409, { message: 'Only received bills can be connected' });
+      }
+      if (decimal(connection.amount).compare(document.balanceDue) > 0) {
+        throw new HTTPException(400, { message: 'Connection exceeds the document balance' });
+      }
+      documents.push({ input: connection, document });
+    }
+
+    await detailsRepo.insertDetails(tx, ctx.organisationId, id, input);
+    for (const { input: connection, document } of documents) {
+      await detailsRepo.setConnectionDocumentNumber(tx, ctx.organisationId, id, connection.documentType, connection.documentId, document.number);
+      await detailsRepo.applyDocumentAllocation(tx, ctx.organisationId, connection.documentType, connection.documentId, {
+        totalPaid: roundMoney(decimal(document.totalPaid).add(connection.amount)),
+        balanceDue: roundMoney(decimal(document.balanceDue).sub(connection.amount)),
+      });
+    }
+    return detailsRepo.hydrateTransaction(tx, ctx.organisationId, transaction);
+  });
+}
+
+export async function duplicateBankTransactionForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: DuplicateBankTransactionRequest,
+): Promise<BankTransactionDto> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const existing = await repo.getTransaction(tx, ctx.organisationId, id);
+    if (!existing) throw new HTTPException(404, { message: 'Bank transaction not found' });
+    if (existing.source === 'transfer') throw new HTTPException(409, { message: 'Transfer legs cannot be duplicated' });
+    const account = await repo.getAccount(tx, ctx.organisationId, existing.bankAccountId);
+    if (!account || !account.isActive) throw new HTTPException(409, { message: 'Active bank account not found' });
+    const balance = applyAmount(account.currentBalance, existing.type, existing.amount);
+    const duplicate = await repo.insertManualTransaction(tx, ctx, {
+      bankAccountId: existing.bankAccountId,
+      transactionDate: input.transactionDate ?? existing.transactionDate,
+      description: `${existing.description} (copy)`,
+      reference: existing.reference,
+      amount: existing.amount,
+      type: existing.type,
+      category: existing.category,
+      counterparty: existing.counterparty,
+      paymentMethod: existing.paymentMethod,
+      notes: existing.notes,
+    }, balance);
+    await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
+    return duplicate;
+  });
+}
+
+function csvCell(value: string | null) {
+  const text = value ?? '';
+  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+}
+
+export async function exportBankTransactionsCsvForUser(db: Database, userId: string, bankAccountId?: string): Promise<string> {
+  const result = await listBankTransactionsForUser(db, userId, { bankAccountId });
+  const header = ['Date', 'Description', 'Counterparty', 'Reference', 'Direction', 'Amount', 'Category', 'Source', 'Reconciled'];
+  return [header.join(','), ...result.transactions.map((transaction) => [
+    transaction.transactionDate, transaction.description, transaction.counterparty, transaction.reference,
+    transaction.type, transaction.amount, transaction.category, transaction.source, transaction.isReconciled ? 'yes' : 'no',
+  ].map((value) => csvCell(String(value ?? ''))).join(','))].join('\n');
 }
 
 export async function createBankTransferForUser(

@@ -10,6 +10,29 @@ const transactionType = z.enum(['debit', 'credit']);
 const transactionSource = z.enum(['import', 'manual', 'transfer']);
 const paymentMethod = z.enum(['bank_transfer', 'cash', 'card', 'cheque', 'other']);
 
+export const bankTransactionSplitSchema = z.object({
+  id: z.string().uuid(),
+  category: z.string().min(1),
+  description: z.string().nullable(),
+  amount: money,
+});
+
+export const bankTransactionDocumentConnectionSchema = z.object({
+  id: z.string().uuid(),
+  documentType: z.enum(['invoice', 'bill']),
+  documentId: z.string().uuid(),
+  documentNumber: z.string().min(1),
+  amount: money,
+});
+
+export const bankTransactionAttachmentSchema = z.object({
+  id: z.string().uuid(),
+  objectKey: z.string().min(1),
+  filename: z.string().min(1),
+  contentType: z.string().min(1),
+  size: z.number().int().nonnegative().max(1_048_576),
+});
+
 export const bankAccountSchema = z.object({
   id: z.string().uuid(),
   accountName: z.string().min(1),
@@ -60,6 +83,9 @@ export const bankTransactionSchema = z.object({
   paymentMethod: paymentMethod.nullable(),
   counterparty: z.string().nullable(),
   transferId: z.string().uuid().nullable(),
+  splits: z.array(bankTransactionSplitSchema).default([]),
+  documentConnections: z.array(bankTransactionDocumentConnectionSchema).default([]),
+  attachments: z.array(bankTransactionAttachmentSchema).default([]),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -126,6 +152,35 @@ export const createBankTransferRequestSchema = z
   })
   .strict();
 
+const splitInput = z.object({
+  category: z.string().trim().min(1),
+  description: z.string().trim().min(1).nullable().optional(),
+  amount: positiveMoney,
+}).strict();
+
+const documentConnectionInput = z.object({
+  documentType: z.enum(['invoice', 'bill']),
+  documentId: z.string().uuid(),
+  amount: positiveMoney,
+}).strict();
+
+const attachmentInput = z.object({
+  objectKey: z.string().min(1),
+  filename: z.string().trim().min(1).max(255),
+  contentType: z.string().min(1),
+  size: z.number().int().positive().max(1_048_576),
+}).strict();
+
+export const bankTransactionDetailsRequestSchema = z.object({
+  splits: z.array(splitInput).max(50).default([]),
+  documentConnections: z.array(documentConnectionInput).max(50).default([]),
+  attachments: z.array(attachmentInput).max(10).default([]),
+}).strict();
+
+export const duplicateBankTransactionRequestSchema = z.object({
+  transactionDate: dateOnly.optional(),
+}).strict();
+
 export const bankTransferSchema = z.object({
   id: z.string().uuid(),
   sourceAccountId: z.string().uuid(),
@@ -146,6 +201,11 @@ export type CreateBankAccountRequest = z.infer<typeof createBankAccountRequestSc
 export type UpdateBankAccountRequest = z.infer<typeof updateBankAccountRequestSchema>;
 export type BankAccountListResponse = z.infer<typeof bankAccountListResponseSchema>;
 export type BankTransactionDto = z.infer<typeof bankTransactionSchema>;
+export type BankTransactionSplitDto = z.infer<typeof bankTransactionSplitSchema>;
+export type BankTransactionDocumentConnectionDto = z.infer<typeof bankTransactionDocumentConnectionSchema>;
+export type BankTransactionAttachmentDto = z.infer<typeof bankTransactionAttachmentSchema>;
+export type BankTransactionDetailsRequest = z.infer<typeof bankTransactionDetailsRequestSchema>;
+export type DuplicateBankTransactionRequest = z.infer<typeof duplicateBankTransactionRequestSchema>;
 export type ImportBankTransactionsRequest = z.infer<typeof importBankTransactionsRequestSchema>;
 export type BankTransactionListResponse = z.infer<typeof bankTransactionListResponseSchema>;
 export type ImportBankTransactionsResponse = z.infer<typeof importBankTransactionsResponseSchema>;

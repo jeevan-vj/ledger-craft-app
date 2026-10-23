@@ -108,16 +108,17 @@ Acceptance criteria:
 
 Expected outcome: users can record and manage income, expenses, and transfers without relying on imported statements.
 
-Status (2026-10-19): **partial.** Exact-decimal manual income/expense create,
-update and delete now adjust account balances atomically. First-class idempotent
-same-currency transfers atomically post equal and opposite reconciled legs and
-reject same-account, cross-currency, inactive-account, and cross-organisation
-requests. Web and Expo forms/activity history are implemented. Contract/API/
-client tests, migration verification, strict mobile TypeScript, mobile lint with
-no errors, web/mobile builds, iOS/Android production exports, concurrent-write
-coverage, and an authenticated browser flow pass. Authenticated native device
-QA plus split allocation, attachments, document connections, duplicate,
-print/PDF, CSV export, and mobile statement import remain open.
+Status (2026-10-23): **implemented locally.** Exact-decimal manual income/
+expense writes and idempotent same-currency transfers update balances atomically.
+Migration `0010_banking-parity-completion.sql` adds tenant-scoped transaction
+splits, document connections, and attachment metadata. Income can be connected
+to invoices and expenses to received bills without exceeding either the bank
+transaction or remaining document balance. Web supports allocation, SQLite
+attachments capped at 1 MB, duplicate, printable/PDF detail, and CSV export.
+Expo adds an exact-text CSV parser, native file picker, preview, duplicate
+skipping, and statement import. Focused contracts, API, web, and mobile tests,
+migration verification, strict mobile TypeScript, and focused lint pass.
+Authenticated native-device QA and deployment remain open.
 
 Acceptance criteria:
 

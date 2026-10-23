@@ -14,16 +14,18 @@ const EXT_BY_TYPE: Record<string, string> = {
   'application/pdf': 'pdf',
 };
 
-export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' {
-  return kind === 'receipt' ? 'receipts' : 'logos';
+export function kindFolder(kind: ObjectKind): 'receipts' | 'logos' | 'bank-attachments' {
+  if (kind === 'receipt') return 'receipts';
+  if (kind === 'bank_attachment') return 'bank-attachments';
+  return 'logos';
 }
 
 export function allowedContentTypes(kind: ObjectKind): Set<string> {
-  return kind === 'receipt' ? RECEIPT_TYPES : LOGO_TYPES;
+  return kind === 'receipt' || kind === 'bank_attachment' ? RECEIPT_TYPES : LOGO_TYPES;
 }
 
 export function maxBytesForKind(kind: ObjectKind): number {
-  return kind === 'receipt' ? RECEIPT_MAX_BYTES : LOGO_MAX_BYTES;
+  return kind === 'receipt' || kind === 'bank_attachment' ? RECEIPT_MAX_BYTES : LOGO_MAX_BYTES;
 }
 
 export function extensionForContentType(contentType: string, filename: string): string {
