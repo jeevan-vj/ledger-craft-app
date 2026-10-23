@@ -73,8 +73,8 @@ export default function BillForm() {
             <div className="space-y-2"><Label>Vendor</Label><Select value={form.vendorId} onValueChange={(vendorId) => {
               const vendor = vendors.data?.find((item) => item.id === vendorId);
               const due = new Date(`${form.issueDate}T00:00:00`); due.setDate(due.getDate() + (vendor?.paymentTermDays ?? 20));
-              setForm({ ...form, vendorId, dueDate: due.toISOString().slice(0, 10) });
-            }}><SelectTrigger><SelectValue placeholder="Choose a vendor" /></SelectTrigger><SelectContent>{vendors.data?.map((vendor) => <SelectItem key={vendor.id} value={vendor.id}>{vendor.name}</SelectItem>)}</SelectContent></Select></div>
+              setForm({ ...form, vendorId, dueDate: due.toISOString().slice(0, 10), lines: form.lines.map((line) => ({ ...line, accountId: line.accountId ?? vendor?.defaultAccountId ?? null, taxRate: line.taxRate === '15' ? vendor?.defaultTaxRate ?? line.taxRate : line.taxRate })) });
+            }}><SelectTrigger><SelectValue placeholder="Choose a vendor" /></SelectTrigger><SelectContent>{vendors.data?.filter((vendor) => vendor.isActive || vendor.id === form.vendorId).map((vendor) => <SelectItem key={vendor.id} value={vendor.id}>{vendor.name}</SelectItem>)}</SelectContent></Select></div>
             <div className="space-y-2"><Label htmlFor="vendor-reference">Vendor reference</Label><Input id="vendor-reference" value={form.vendorReference ?? ''} onChange={(event) => setForm({ ...form, vendorReference: event.target.value || null })} /></div>
             <div className="space-y-2"><Label htmlFor="bill-date">Bill date</Label><Input id="bill-date" type="date" required value={form.issueDate} onChange={(event) => setForm({ ...form, issueDate: event.target.value })} /></div>
             <div className="space-y-2"><Label htmlFor="bill-due-date">Due date</Label><Input id="bill-due-date" type="date" required value={form.dueDate} onChange={(event) => setForm({ ...form, dueDate: event.target.value })} /></div>
