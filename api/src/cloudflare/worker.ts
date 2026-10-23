@@ -13,6 +13,7 @@ import { isSentryDebugRouteEnabled, SENTRY_DEBUG_PATH, sentrySdkOptions } from '
 import { createSentryReporter, tagActiveRequest } from '../observability/sentry-reporter';
 import { publicLedgerOrganisationId } from './public-routes';
 import { durableDatabase, durableObjectStore, migrateStorage } from './storage';
+import { runDue } from '../modules/recurring/recurring.service';
 
 setErrorReporter(createSentryReporter());
 
@@ -130,11 +131,17 @@ class LedgerBase extends DurableObject<Env> {
         objectStore:durableObjectStore(this.ctx.storage),
         invoiceMailer:createUnavailableInvoiceMailer(),
         actorUserId: userId,
+        scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
       });
       return app.fetch(request);
     } catch (error) {
       return reportFailure(error, report);
     }
+  }
+
+  async alarm(): Promise<void> {
+    const result = await runDue(this.db, new Date(), 100);
+    if (result.nextAlarmAt) await this.ctx.storage.setAlarm(new Date(result.nextAlarmAt).getTime());
   }
 }
 

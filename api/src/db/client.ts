@@ -36,6 +36,7 @@ import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
 import { billLines, billPayments, bills, vendors } from './schema/purchases';
+import { recurringRuns, recurringTemplates } from './schema/recurring';
 import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from './schema/currency';
 import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
 
@@ -90,6 +91,8 @@ export const schema = {
   bills,
   billLines,
   billPayments,
+  recurringTemplates,
+  recurringRuns,
   organisationLocalizationSettings,
   organisationCurrencies,
   exchangeRates,

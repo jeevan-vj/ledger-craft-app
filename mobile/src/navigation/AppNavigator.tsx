@@ -23,6 +23,7 @@ import BillFormScreen from '@/screens/purchases/BillFormScreen';
 import SettingsScreen from '@/screens/settings/SettingsScreen';
 import BusinessSettingsScreen from '@/screens/settings/BusinessSettingsScreen';
 import CompanyTeamScreen from '@/screens/settings/CompanyTeamScreen';
+import RecurringSchedulesScreen from '@/screens/settings/RecurringSchedulesScreen';
 import ItemListScreen from '@/screens/items/ItemListScreen';
 import ItemFormScreen from '@/screens/items/ItemFormScreen';
 import ItemDetailScreen from '@/screens/items/ItemDetailScreen';
@@ -81,6 +82,7 @@ function MoreNavigator() {
     <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
     <MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} />
     <MoreStack.Screen name="CompanyTeam" component={CompanyTeamScreen} options={{ ...detail, title: 'Company & team' }} />
+    <MoreStack.Screen name="RecurringSchedules" component={RecurringSchedulesScreen} options={{ ...detail, title: 'Recurring schedules' }} />
     <MoreStack.Screen name="ItemList" component={ItemListScreen} options={{ title: 'Items' }} />
     <MoreStack.Screen name="ItemCreate" component={ItemFormScreen} options={{ ...form, title: 'New item' }} />
     <MoreStack.Screen name="ItemEdit" component={ItemFormScreen} options={{ ...form, title: 'Edit item' }} />

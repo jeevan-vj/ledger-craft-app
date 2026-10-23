@@ -82,6 +82,31 @@ export {
 } from './organisation';
 
 export {
+  createRecurringTemplateRequestSchema,
+  recurringFrequencySchema,
+  recurringKindSchema,
+  recurringPayloadSchema,
+  recurringRunListResponseSchema,
+  recurringRunSchema,
+  recurringScheduleSchema,
+  recurringStatusSchema,
+  recurringTemplateListResponseSchema,
+  recurringTemplateSchema,
+  runRecurringDueRequestSchema,
+  runRecurringDueResponseSchema,
+  updateRecurringTemplateRequestSchema,
+  type CreateRecurringTemplateRequest,
+  type RecurringKind,
+  type RecurringPayload,
+  type RecurringRunDto,
+  type RecurringSchedule,
+  type RecurringTemplateDto,
+  type RunRecurringDueRequest,
+  type RunRecurringDueResponse,
+  type UpdateRecurringTemplateRequest,
+} from './recurring';
+
+export {
   createCustomerRequestSchema,
   customerListResponseSchema,
   customerSchema,

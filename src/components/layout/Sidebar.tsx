@@ -23,6 +23,7 @@ import {
   Upload,
   Landmark,
   Truck,
+  CalendarClock,
   type LucideIcon,
 } from 'lucide-react';
 import AppVersion from '@/components/common/AppVersion';
@@ -88,6 +89,7 @@ const NAV_ITEMS: NavItem[] = [
       { name: 'Journal Entries', path: '/journal-entries', icon: FileText },
     ],
   },
+  { name: 'Recurring', path: '/recurring', icon: CalendarClock, permission: 'settings:manage' },
   { name: 'Settings', path: '/settings', icon: Settings, permission: 'settings:manage' },
 ];
 

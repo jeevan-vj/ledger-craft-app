@@ -148,13 +148,21 @@ Acceptance criteria:
 
 Expected outcome: users can schedule recurring invoices, bills, income, and expenses and can trust retries not to create duplicates.
 
+Status (implemented locally 2026-10-23): migration `0016_recurring-scheduler.sql`
+and shared contracts persist the four template kinds, interval/timezone/limit
+state, deterministic occurrence claims, retry metadata, generated-record links,
+and immutable run history. Ledger Durable Object alarms run catch-up without an
+external scheduler. Responsive web and Expo expose create, status, run history,
+pause/resume, and end workflows. Production email stays unavailable and is
+reported as such; deployment and authenticated native-device QA remain pending.
+
 Acceptance criteria:
 
 - Store recurrence templates with daily, weekly, monthly, annual, and custom intervals; start/end/occurrence limits; timezone; next-run state; and pause/end controls.
 - Generate normal invoices, bills, or transactions through the same application use cases as manual creation.
 - Use deterministic occurrence keys so retries, Worker restarts, and concurrent alarms cannot duplicate a period.
 - Record run history, failure reason, next attempt, and generated document links.
-- Auto-send only when a mail provider is configured; otherwise create the document and surface an honest delivery status.
+- Auto-send only when a mail provider is configured; otherwise create the document and surface an honest delivery status. Implemented with `unavailable` delivery status in the free deployment.
 - Verify month-end, leap-year, timezone/DST, catch-up, pause/resume, and idempotent retry behavior.
 
 ### AKP-05 — Server-authoritative accounting and reports (P0)
