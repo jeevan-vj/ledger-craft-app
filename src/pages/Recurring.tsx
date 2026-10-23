@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import type { RecurringKind, RecurringRunDto, RecurringTemplateDto } from '@ledgercraft/contracts';
+import { recurringFrequencySchema, type RecurringKind, type RecurringPayload, type RecurringRunDto, type RecurringTemplateDto } from '@ledgercraft/contracts';
 import { CalendarClock, Pause, Play, Plus, Square } from 'lucide-react';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -15,9 +15,9 @@ export default function Recurring() {
   const load = async () => { const [templateData, runData] = await Promise.all([recurringApi.list(), recurringApi.runs()]); setTemplates(templateData.templates); setRuns(runData.runs); };
   useEffect(() => { void load().catch((e) => setError(e instanceof Error ? e.message : 'Unable to load schedules')); }, []);
   const create = async () => { setBusy(true); setError(''); try {
-    const date = form.startDate; const base = { name: form.name, schedule: { frequency: form.frequency as any, interval: Number(form.interval), startDate: date, timezone: form.timezone, localTime: '09:00' } };
-    const payload = form.kind === 'invoice' ? { kind: 'invoice' as const, input: { customerId: form.referenceId, date, dueDate: date, items: [{ description: form.description, quantity: '1', rate: form.amount }] } } : form.kind === 'bill' ? { kind: 'bill' as const, input: { vendorId: form.referenceId, billNumber: `REC-${date}`, issueDate: date, dueDate: date, lines: [{ description: form.description, quantity: '1', unitPrice: form.amount, taxRate: '0' }] } } : form.kind === 'income' ? { kind: 'income' as const, input: { bankAccountId: form.referenceId, transactionDate: date, description: form.description, amount: form.amount, type: 'credit' as const } } : { kind: 'expense' as const, input: { description: form.description, amount: form.amount, expenseDate: date } };
-    await recurringApi.create({ ...base, payload } as any); await load();
+    const date = form.startDate; const base = { name: form.name, schedule: { frequency: recurringFrequencySchema.parse(form.frequency), interval: Number(form.interval), startDate: date, timezone: form.timezone, localTime: '09:00' } };
+    const payload: RecurringPayload = form.kind === 'invoice' ? { kind: 'invoice', input: { customerId: form.referenceId, date, dueDate: date, items: [{ description: form.description, quantity: '1', rate: form.amount }] } } : form.kind === 'bill' ? { kind: 'bill', input: { vendorId: form.referenceId, issueDate: date, dueDate: date, lines: [{ description: form.description, quantity: '1', unitPrice: form.amount, taxRate: '0' }] } } : form.kind === 'income' ? { kind: 'income', input: { bankAccountId: form.referenceId, transactionDate: date, description: form.description, amount: form.amount, type: 'credit' } } : { kind: 'expense', input: { description: form.description, amount: form.amount, expenseDate: date } };
+    await recurringApi.create({ ...base, payload }); await load();
   } catch (e) { setError(e instanceof Error ? e.message : 'Unable to create schedule'); } finally { setBusy(false); } };
   const action = async (id: string, value: 'pause' | 'resume' | 'end') => { await recurringApi.action(id, value); await load(); };
   return <div className="mx-auto max-w-6xl space-y-6 px-4 py-6 sm:px-6">
