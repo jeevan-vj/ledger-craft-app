@@ -5,6 +5,35 @@ export {
 } from './error';
 
 export {
+  createSavedReportRequestSchema,
+  dashboardComparisonSchema,
+  dashboardLayoutListResponseSchema,
+  dashboardLayoutSchema,
+  dashboardResponseSchema,
+  dashboardWidgetKindSchema,
+  dashboardWidgetPreferenceSchema,
+  reportAuthoritySchema,
+  reportFiltersSchema,
+  reportMetricSchema,
+  reportResultSchema,
+  reportRowSchema,
+  saveDashboardLayoutRequestSchema,
+  savedReportDefinitionSchema,
+  savedReportListResponseSchema,
+  updateSavedReportRequestSchema,
+  type CreateSavedReportRequest,
+  type DashboardLayoutDto,
+  type DashboardResponse,
+  type DashboardWidgetKind,
+  type DashboardWidgetPreference,
+  type ReportFilters,
+  type ReportResultDto,
+  type SaveDashboardLayoutRequest,
+  type SavedReportDefinitionDto,
+  type UpdateSavedReportRequest,
+} from './dashboard';
+
+export {
   healthzResponseSchema,
   readyzNotReadyResponseSchema,
   readyzOkResponseSchema,
@@ -346,6 +375,25 @@ export {
   type JournalEntryListResponse,
   type UpdateJournalEntryRequest,
 } from './journal';
+
+export {
+  accountStatementResponseSchema,
+  agingItemSchema,
+  financialReportQuerySchema,
+  financialReportResponseSchema,
+  generalLedgerLineSchema,
+  generalLedgerResponseSchema,
+  reportAccountRowSchema,
+  reportBasisSchema,
+  reportComparisonSchema,
+  reportMetaSchema,
+  trialBalanceRowSchema,
+  type AccountStatementResponse,
+  type FinancialReportQuery,
+  type FinancialReportResponse,
+  type GeneralLedgerResponse,
+  type ReportBasis,
+} from './report';
 
 export {
   billLineInputSchema,

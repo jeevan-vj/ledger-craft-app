@@ -14,6 +14,21 @@ import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './expenses.repository';
 import { convertToBase, resolveDocumentCurrency, roundAt, currencyRepository } from '../currency/currency.service';
+import { postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
+
+async function postApprovedExpense(tx: Database, ctx: { organisationId: string; userId: string }, expense: ExpenseDto) {
+  if (expense.status !== 'approved') return;
+  const expenseId = await systemAccount(tx, ctx, '5000');
+  const gstId = await systemAccount(tx, ctx, '2150');
+  const cashId = expense.accountId ?? await systemAccount(tx, ctx, '1110');
+  const gross = expense.baseAmount;
+  const tax = expense.baseTaxAmount;
+  const net = decimal(gross).sub(tax);
+  const lines = [{ accountId: expenseId, description: expense.description, debit: net.toFixed(), credit: '0' }];
+  if (decimal(tax).compare(0) > 0) lines.push({ accountId: gstId, description: `GST - ${expense.description}`, debit: tax, credit: '0' });
+  lines.push({ accountId: cashId, description: expense.description, debit: '0', credit: gross });
+  await postBalancedEntry(tx, ctx, { date: expense.expenseDate, description: expense.description, referenceType: 'expense', referenceId: expense.id, lines });
+}
 
 async function assertRefs(
   tx: Database,
@@ -68,6 +83,7 @@ export async function createExpenseForUser(
       baseTaxAmount: convertToBase(taxAmount, resolved.rate, resolved.base.precision),
     });
     if (resolved.rateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, resolved.rateId, 'expense', expense.id);
+    await postApprovedExpense(tx, ctx, expense);
     return expense;
   });
 }
@@ -85,24 +101,39 @@ export async function updateExpenseForUser(
     await assertRefs(tx, ctx.organisationId, input);
     const existing = await repo.getExpense(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Expense not found' });
+    if (existing.status === 'approved' && Object.keys(input).some((key) => key !== 'notes')) {
+      throw new HTTPException(409, { message: 'Approved expenses are immutable; reject and record a corrected expense' });
+    }
     if (existing.exchangeRateId && ((input.currency && input.currency !== existing.currency) || (input.expenseDate && input.expenseDate !== existing.expenseDate))) {
       throw new HTTPException(409, { message: 'Currency and date are locked after a foreign exchange rate is attached' });
     }
-    const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency ?? existing.currency, input.expenseDate ?? existing.expenseDate);
-    const amount = roundAt(input.amount ?? existing.amount, resolved.currency.precision);
-    const taxAmount = roundAt(input.taxAmount ?? existing.taxAmount, resolved.currency.precision);
-    const expense = await repo.updateExpense(tx, ctx.organisationId, id, input, {
-      amount, taxAmount, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
-      baseCurrency: resolved.base.code, baseAmount: convertToBase(amount, resolved.rate, resolved.base.precision),
-      baseTaxAmount: convertToBase(taxAmount, resolved.rate, resolved.base.precision),
-    });
+    const resolved = existing.status === 'approved'
+      ? null
+      : await resolveDocumentCurrency(tx, ctx.organisationId, input.currency ?? existing.currency, input.expenseDate ?? existing.expenseDate);
+    const snapshot = resolved
+      ? (() => {
+          const amount = roundAt(input.amount ?? existing.amount, resolved.currency.precision);
+          const taxAmount = roundAt(input.taxAmount ?? existing.taxAmount, resolved.currency.precision);
+          return {
+            amount, taxAmount, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
+            baseCurrency: resolved.base.code, baseAmount: convertToBase(amount, resolved.rate, resolved.base.precision),
+            baseTaxAmount: convertToBase(taxAmount, resolved.rate, resolved.base.precision),
+          };
+        })()
+      : undefined;
+    const expense = await repo.updateExpense(tx, ctx.organisationId, id, input, snapshot);
     if (!expense) throw new HTTPException(404, { message: 'Expense not found' });
+    await postApprovedExpense(tx, ctx, expense);
     return expense;
   });
 }
 
 export async function deleteExpenseForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const current = await repo.getExpense(tx, ctx.organisationId, id);
+    if (current?.status === 'approved') {
+      await reversePosting(tx, ctx, { referenceType: 'expense', referenceId: id, reversalType: 'expense_reversal', date: new Date().toISOString().slice(0, 10), description: `Reverse expense ${current.description}` });
+    }
     const deleted = await repo.deleteExpense(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Expense not found' });
   });

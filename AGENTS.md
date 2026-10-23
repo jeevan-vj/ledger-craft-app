@@ -48,6 +48,27 @@ attachments, duplicate, print/PDF, and CSV export. Expo supports native CSV
 statement selection, exact-text preview, duplicate skipping, and import. Do not
 claim authenticated native-device QA until it has been run.
 
+Server-authoritative accounting and reporting is implemented locally through
+`api/sqlite-migrations/0013_server-authoritative-reports.sql`. Posted invoices,
+payments, approved expenses, bank transactions, transfers, received bills, bill
+payments, and manual adjustments share exact-decimal journal rules; drafts are
+excluded and posted journals are immutable at both service and SQLite-trigger
+boundaries. Hono exposes financial statements, general ledger, and account
+statements with organisation isolation, date/basis/comparison and relevant
+account/customer/vendor filters. Web provides responsive statements, ledger,
+aging, tax and CSV workflows; Expo provides native period/basis summaries. The
+base currency is deliberately restricted to NZD until AKP-06 adds exchange-rate
+accounting. Category filtering is accepted by the shared query contract but is
+not yet applied to reports because journal lines do not carry category links.
+
+Configurable dashboards and saved reports are implemented locally through
+`api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and
+saved filters remain organisation scoped. Summary, receivable, payable, cash,
+and tax widgets map from the AKP-05 server-authoritative report DTO; only the
+recent-activity widget is explicitly operational. Web retains shareable URL
+filters plus CSV/PDF/print, while Expo uses the same DTO and saved layouts.
+Authenticated native-device QA and deployment remain pending.
+
 Invoice preview and PDF HTML use the loaded business profile theme. `resolveInvoiceTheme` in `mobile/src/utils/invoiceTheme.ts` fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. Classic, modern, minimal, executive, corporate, and modern pro templates paint with those tokens. Text on a brand fill switches to dark ink when white would be unreadable. Money and GST totals stay on the existing calculations.
 
 Quotes and estimates are a Hono slice on their own tables (`api/sqlite-migrations/0007_quotes.sql`). Contracts live in `packages/contracts/src/quote.ts`. Authenticated routes are under `/api/quotes`; public read and respond are `/api/public/quotes/:token` and `/api/public/quotes/:token/respond`. Quote rows do not post journals. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. Mobile provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE`; both clients present share-link delivery instead of claiming email delivery. Focused API, web, and mobile quote tests, full API/contracts/mobile suites, web build, and iOS/Android production exports pass; authenticated native-device QA remains pending.
@@ -157,6 +178,7 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 - `user_id` and `organisation_id` come from the session or membership, not the request body.
 - Money stays exact decimal text. GST and invoice totals stay on the server helpers that already compute them.
 - New SQLite SQL is generated, reviewed, and appended under `api/sqlite-migrations/`. Applied files stay byte-for-byte. `pnpm db:generate` then `pnpm deploy:cloudflare` is the production path. There is no D1 migrate step.
+- Reports must derive from posted `journal_entries` and `journal_entry_lines`; do not reintroduce client-calculated production report totals.
 - `supabase/` remains in the tree. `TARGET_ARCHITECTURE.md`, `AI_CONVERSATION_IMPLEMENTATION.md`, and `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` still name `supabase/migrations/`. Those files are historical hints. Do not replay them, and do not replay `migrations/*.sql`, onto the current database.
 - Do not add `supabase.from`, the Storage SDK, Edge Functions, client `VITE_OPENAI_*`, or a second session system beside Better Auth.
 - `api/.data/` is the local object-store default (`OBJECT_STORE_DIR` or `api/.data/objects`). It is gitignored.

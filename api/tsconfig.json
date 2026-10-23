@@ -10,6 +10,10 @@
     "esModuleInterop": true,
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    "baseUrl": "..",
+    "paths": {
+      "@ledgercraft/contracts": ["packages/contracts/src/index.ts"]
+    },
     "types": ["node"]
   },
   "include": ["src", "../deploy/api/env.d.ts", "drizzle.config.ts", "vitest.config.ts"]

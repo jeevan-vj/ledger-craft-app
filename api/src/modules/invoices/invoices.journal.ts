@@ -52,6 +52,16 @@ export async function postInvoiceJournal(
     total: string;
   },
 ): Promise<void> {
+  const [existing] = await tx
+    .select({ id: journalEntries.id })
+    .from(journalEntries)
+    .where(and(
+      eq(journalEntries.organisationId, ctx.organisationId),
+      eq(journalEntries.referenceType, 'invoice'),
+      eq(journalEntries.referenceId, input.invoiceId),
+    ));
+  if (existing) return;
+
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
@@ -120,6 +130,12 @@ export async function postInvoiceReversalJournal(
   ctx: { organisationId: string; userId: string },
   input: { invoiceId: string; invoiceNumber: string; date: string; taxAmount: string; total: string },
 ): Promise<void> {
+  const [original] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId),
+    eq(journalEntries.referenceType, 'invoice'),
+    eq(journalEntries.referenceId, input.invoiceId),
+  ));
+  if (!original) return;
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
@@ -147,4 +163,17 @@ export async function postInvoiceReversalJournal(
     organisationId: ctx.organisationId, journalEntryId: entry.id, accountId: line.accountId,
     description: line.description, debitAmount: line.debit, creditAmount: line.credit, lineOrder: line.order,
   });
+}
+
+export async function hasInvoiceCancellationJournal(
+  tx: Database,
+  organisationId: string,
+  invoiceId: string,
+): Promise<boolean> {
+  const [entry] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+    eq(journalEntries.organisationId, organisationId),
+    eq(journalEntries.referenceType, 'invoice_cancellation'),
+    eq(journalEntries.referenceId, invoiceId),
+  ));
+  return Boolean(entry);
 }

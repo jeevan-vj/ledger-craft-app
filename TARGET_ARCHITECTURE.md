@@ -218,6 +218,15 @@ This paragraph records the earlier deployed baseline; the local 2026-10-23
 lifecycle work above supersedes its feature-gap list. Production deployment and
 authenticated native-device QA remain pending.
 
+**Configurable dashboards (implemented locally, 2026-10-23):** Shared report DTOs
+drive organisation-scoped Hono endpoints and the web/Expo dashboards. SQLite
+migration `0014_configurable-dashboards.sql` persists per-user widget
+visibility/order/size/default layout and saved report definitions inside each
+organisation. Date/comparison filters, exact-decimal summary/receivable/payable/
+cash/tax metrics, source-row drill-down, web URL filters, CSV/PDF/print actions,
+and mobile saved filters are implemented from AKP-05 report DTOs. Financial
+widgets are server-authoritative; recent activity remains explicitly operational.
+
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
 and private-use percentage fields through Hono/SQLite. New expenses default to
@@ -314,6 +323,18 @@ Wrangler commands, migration behavior and verification evidence.
 **W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
 
 **Quotes and estimates (2026-10-23).** The API stores one quote entity (`kind` is `quote` or `estimate`) in `quotes`, `quote_line_items`, and `shared_quotes` via reviewed migration `api/sqlite-migrations/0007_quotes.sql`. Numbering is `QUO-{YYYY}-{SEQ}` on its own sequence. Default validity is 30 days. Both are columns on `business_profiles`. Quote reads and writes do not post journal entries and do not change GST, receivables, or revenue. Conversion, only from `accepted`, creates a draft invoice through the existing invoice transaction, dated today in Pacific/Auckland, with the quote's stored tax rate and matching totals. Public share links accept or decline with a typed name. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE` until a mailer implements `sendQuote`. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. The mobile app provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. Focused quote tests, full API/contracts/mobile suites, the web production build, and iOS/Android production exports pass. Authenticated native-device QA remains pending.
+
+**Server-authoritative accounting and reports (2026-10-23).** Operational
+money changes post balanced, exact-decimal journal entries inside the same
+organisation transaction. Draft documents do not post. Posted journals cannot
+be edited or deleted; corrections use reversing postings. Financial statements,
+general ledger, account statements, aging, sales/purchase and tax summaries are
+calculated by Hono from posted journal lines, never trusted from client totals.
+Migration `0013_server-authoritative-reports.sql` adds the reporting indexes and
+posted-journal immutability triggers. Query contracts validate date range, cash/accrual basis, comparison period and
+tenant-scoped filters. Base currency is NZD-only until AKP-06 supplies exchange
+rates, and category filtering remains deferred until category dimensions are
+represented on journal lines.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 

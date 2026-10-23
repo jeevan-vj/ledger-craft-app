@@ -23,6 +23,8 @@ import { conversationRoutes } from './modules/conversations/conversations.routes
 import { journalRoutes } from './modules/journals/journals.routes';
 import { getBetterAuthTrustedOrigins } from './env';
 import { purchaseRoutes } from './modules/purchases/purchases.routes';
+import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
+import { reportRoutes } from './modules/reports/reports.routes';
 import { authorizeProtectedRequest } from './modules/auth/authorize-request';
 import { organisationRoutes } from './modules/organisations/organisations.routes';
 import { currencyRoutes } from './modules/currency/currency.routes';
@@ -102,6 +104,9 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', journalRoutes());
   app.route('/', purchaseRoutes());
   app.route('/', currencyRoutes());
+  // Financial statements are registered before /reports/:type widget runs.
+  app.route('/', reportRoutes());
+  app.route('/', dashboardRoutes());
 
   if (process.env.NODE_ENV === 'test') {
     app.get('/api/__test/boom', () => {

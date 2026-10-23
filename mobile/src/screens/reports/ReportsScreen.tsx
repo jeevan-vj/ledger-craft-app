@@ -1,0 +1,50 @@
+import React, { useMemo, useState } from 'react';
+import { ActivityIndicator, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Feather } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
+import { AppPressable, Card, EmptyState } from '@/components/ui';
+import { reportsApi, type ReportBasis } from '@/features/reports/api/reportsApi';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
+import { radius, space, useTheme } from '@/theme';
+
+type Period = 'month' | 'year';
+const iso = (date: Date) => date.toISOString().slice(0, 10);
+function periodDates(period: Period) {
+  const now = new Date();
+  return { from: period === 'month' ? iso(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))) : `${now.getUTCFullYear()}-01-01`, to: iso(now) };
+}
+
+export default function ReportsScreen() {
+  const theme = useTheme(); const { bottomPadding } = useTabScreenInsets();
+  const [period, setPeriod] = useState<Period>('year'); const [basis, setBasis] = useState<ReportBasis>('accrual');
+  const dates = useMemo(() => periodDates(period), [period]);
+  const report = useQuery({ queryKey: ['reports', dates, basis], queryFn: () => reportsApi.financial({ ...dates, basis, baseCurrency: 'NZD' }) });
+  const money = (value: string) => new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD' }).format(Number(value));
+  const data = report.data;
+  const empty = data && !data.trialBalance.rows.length && !data.receivablesAging.items.length && !data.payablesAging.items.length;
+  const choices = <View style={[styles.segment, { backgroundColor: theme.colors.fill }]}>{(['accrual', 'cash'] as const).map((value) => <AppPressable key={value} accessibilityRole="button" accessibilityState={{ selected: basis === value }} onPress={() => setBasis(value)} style={[styles.segmentButton, basis === value && { backgroundColor: theme.colors.accent }]}><Text style={[theme.type.callout, { color: basis === value ? theme.colors.accentForeground : theme.colors.text }]}>{value === 'accrual' ? 'Accrual' : 'Cash'}</Text></AppPressable>)}</View>;
+  return <ScrollView contentInsetAdjustmentBehavior="automatic" style={{ backgroundColor: theme.colors.background }} contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]} refreshControl={<RefreshControl refreshing={report.isFetching} onRefresh={() => report.refetch()} tintColor={theme.colors.accentText} />}>
+    <View style={styles.header}><View><Text style={theme.type.title}>Financial reports</Text><Text style={theme.type.subhead}>Server-calculated from posted journals</Text></View><Feather name="bar-chart-2" size={28} color={theme.colors.accentText} /></View>
+    <View style={styles.controls}><View style={[styles.segment, { backgroundColor: theme.colors.fill }]}>{(['month', 'year'] as const).map((value) => <AppPressable key={value} accessibilityRole="button" accessibilityState={{ selected: period === value }} onPress={() => setPeriod(value)} style={[styles.segmentButton, period === value && { backgroundColor: theme.colors.accent }]}><Text style={[theme.type.callout, { color: period === value ? theme.colors.accentForeground : theme.colors.text }]}>{value === 'month' ? 'This month' : 'This year'}</Text></AppPressable>)}</View>{choices}</View>
+    {report.isLoading ? <View style={styles.state}><ActivityIndicator color={theme.colors.accentText} /><Text style={[theme.type.subhead, styles.stateText]}>Calculating reports…</Text></View> : null}
+    {report.isError ? <EmptyState title="Reports unavailable" description={report.error instanceof Error ? report.error.message : 'Check your connection and try again.'} actionLabel="Try again" onAction={() => report.refetch()} /> : null}
+    {empty ? <EmptyState title="No posted activity" description="Draft documents stay out of reports. Post an invoice, bill, expense, or transaction to see it here." /> : null}
+    {data && !empty ? <>
+      <View style={styles.metrics}>{[
+        ['Revenue', data.profitLoss.revenue], ['Expenses', data.profitLoss.expenses], ['Net income', data.profitLoss.netIncome], ['Closing cash', data.cashFlow.closingCash],
+      ].map(([label, value]) => <Card key={label} style={styles.metric}><Text style={theme.type.caption}>{label}</Text><Text style={[theme.type.headline, styles.money]}>{money(value)}</Text></Card>)}</View>
+      <Text style={[theme.type.headline, styles.sectionTitle]}>Financial position</Text>
+      <Card style={styles.list}>{[
+        ['Assets', data.balanceSheet.assets], ['Liabilities', data.balanceSheet.liabilities], ['Equity', data.balanceSheet.equity], ['Trial balance', data.trialBalance.balanced ? 'Balanced' : 'Review required'],
+      ].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={[theme.type.callout, { color: label === 'Trial balance' ? (data.trialBalance.balanced ? theme.colors.success : theme.colors.danger) : theme.colors.text }]}>{label === 'Trial balance' ? value : money(value)}</Text></View>)}</Card>
+      <Text style={[theme.type.headline, styles.sectionTitle]}>What is owed</Text>
+      <Card style={styles.list}>{[['Receivables', data.receivablesAging.total], ['Payables', data.payablesAging.total], ['GST payable', data.taxSummary.netPayable]].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={theme.type.callout}>{money(value)}</Text></View>)}</Card>
+      <Text style={[theme.type.caption, styles.footnote]}>Generated {new Date(data.meta.generatedAt).toLocaleString()} · NZD · Draft documents excluded</Text>
+    </> : null}
+  </ScrollView>;
+}
+
+const styles = StyleSheet.create({
+  content: { paddingHorizontal: space.screen, paddingTop: space.lg, gap: space.lg }, header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, controls: { gap: space.sm }, segment: { flexDirection: 'row', borderRadius: radius.pill, padding: 4 }, segmentButton: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, paddingHorizontal: 12 },
+  state: { alignItems: 'center', paddingVertical: 48 }, stateText: { marginTop: 12 }, metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md }, metric: { width: '47%', minHeight: 96, justifyContent: 'center' }, money: { marginTop: 8, fontVariant: ['tabular-nums'] }, sectionTitle: { marginTop: space.md }, list: { padding: 0, overflow: 'hidden' }, row: { minHeight: 56, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md }, footnote: { textAlign: 'center', marginTop: space.md },
+});
