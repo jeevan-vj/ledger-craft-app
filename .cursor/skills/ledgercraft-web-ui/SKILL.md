@@ -37,11 +37,6 @@ Do not change routing, API boundaries, auth, data flow, or repository layout as 
 
 ## Verification
 
-Run the smallest relevant tests plus:
+Run the focused test, then the CI commands in `ledgercraft-verify` before a pull request. `pnpm type-check` is not the web CI gate: the job allows a recorded error ceiling and fails only when the count rises. Do not treat a non-zero `tsc` exit, by itself, as a failed pull request, and do not edit the ceiling.
 
-```bash
-pnpm type-check
-pnpm exec vite build
-```
-
-For layout or styling changes, also use `ledgercraft-verify-ui` and inspect the affected flow at 1440×900 and 390×844. Check both web themes when shared tokens or theme-aware components changed. Perform one batched visual pass, one correction pass, then stop.
+For a UI change, follow `ledgercraft-verify-ui`: phone width 390×844 with a screenshot, and 1440×900 when layout changed. Check both web themes when shared tokens or theme-aware components changed. Perform one batched visual pass, one correction pass, then stop.

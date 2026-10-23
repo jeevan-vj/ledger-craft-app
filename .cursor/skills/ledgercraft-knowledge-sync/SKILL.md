@@ -39,6 +39,7 @@ Do not write "will" as if it already shipped.
 
 - Keep each `SKILL.md` under 500 lines
 - Descriptions: third person, WHAT + WHEN, trigger terms
+- Verification before a pull request stays in `ledgercraft-verify`. Do not add a second verify-pr skill.
 - If a skill is wrong, patch it in the same PR as the code that proved it wrong
 - Delete skills that describe abandoned procedures
 
