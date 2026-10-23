@@ -24,8 +24,8 @@ export const reportFiltersSchema = z.object({
 });
 
 export const reportAuthoritySchema = z.object({
-  status: z.literal('provisional'),
-  dependency: z.literal('AKP-05'),
+  status: z.enum(['authoritative', 'operational']),
+  source: z.enum(['posted_ledger', 'operational_records']),
   message: z.string().min(1),
 });
 

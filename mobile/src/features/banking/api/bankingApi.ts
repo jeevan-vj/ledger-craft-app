@@ -1,4 +1,5 @@
 import { apiRequest } from '@/features/auth/api/http';
+import type { StatementTransactionInput } from '@/features/banking/model/statementImport';
 
 export type BankAccountType = 'checking' | 'savings' | 'credit_card' | 'business';
 
@@ -40,8 +41,66 @@ export interface BankTransactionDto {
   merchant: string | null;
   isReconciled: boolean;
   notes: string | null;
+  source: 'import' | 'manual' | 'transfer';
+  paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
+  counterparty: string | null;
+  transferId: string | null;
+  splits: { id: string; category: string; description: string | null; amount: string }[];
+  documentConnections: { id: string; documentType: 'invoice' | 'bill'; documentId: string; documentNumber: string; amount: string }[];
+  attachments: { id: string; objectKey: string; filename: string; contentType: string; size: number }[];
   createdAt: string;
   updatedAt: string;
+}
+
+export interface BankTransactionWriteRequest {
+  bankAccountId: string;
+  transactionDate: string;
+  description: string;
+  reference?: string | null;
+  amount: string;
+  type: 'debit' | 'credit';
+  category?: string | null;
+  counterparty?: string | null;
+  paymentMethod?: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
+  notes?: string | null;
+}
+
+export interface BankTransferWriteRequest {
+  sourceAccountId: string;
+  destinationAccountId: string;
+  transactionDate: string;
+  amount: string;
+  description?: string;
+  reference?: string | null;
+}
+
+export interface BankTransferDto {
+  id: string;
+  sourceAccountId: string;
+  destinationAccountId: string;
+  transactionDate: string;
+  amount: string;
+  currency: string;
+  description: string;
+  reference: string | null;
+  sourceTransaction: BankTransactionDto;
+  destinationTransaction: BankTransactionDto;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BankStatementImportRequest {
+  bankAccountId: string;
+  fileName: string;
+  fileType: 'csv';
+  skipDuplicates: boolean;
+  transactions: StatementTransactionInput[];
+}
+
+export interface BankStatementImportResponse {
+  importedCount: number;
+  duplicatesSkipped: number;
+  transactions: BankTransactionDto[];
 }
 
 export const bankingApi = {
@@ -63,5 +122,27 @@ export const bankingApi = {
   async listTransactions(bankAccountId?: string): Promise<BankTransactionDto[]> {
     const query = bankAccountId ? `?bankAccountId=${encodeURIComponent(bankAccountId)}` : '';
     return (await apiRequest<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query}`, { method: 'GET' })).transactions;
+  },
+  getTransaction(id: string): Promise<BankTransactionDto> {
+    return apiRequest(`/api/bank-transactions/${id}`, { method: 'GET' });
+  },
+  createTransaction(input: BankTransactionWriteRequest): Promise<BankTransactionDto> {
+    return apiRequest('/api/bank-transactions', { method: 'POST', body: JSON.stringify(input) });
+  },
+  updateTransaction(id: string, input: Partial<Omit<BankTransactionWriteRequest, 'bankAccountId'>>): Promise<BankTransactionDto> {
+    return apiRequest(`/api/bank-transactions/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+  },
+  async removeTransaction(id: string): Promise<void> {
+    await apiRequest<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
+  },
+  importTransactions(input: BankStatementImportRequest): Promise<BankStatementImportResponse> {
+    return apiRequest('/api/bank-transactions/import', { method: 'POST', body: JSON.stringify(input) });
+  },
+  createTransfer(input: BankTransferWriteRequest, idempotencyKey: string): Promise<BankTransferDto> {
+    return apiRequest('/api/bank-transfers', {
+      method: 'POST',
+      headers: { 'Idempotency-Key': idempotencyKey },
+      body: JSON.stringify(input),
+    });
   },
 };

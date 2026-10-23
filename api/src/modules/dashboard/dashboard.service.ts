@@ -14,7 +14,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './dashboard.repository';
-import { buildReport } from './dashboard.reports';
+import { buildReport, buildReports } from './dashboard.reports';
 
 const widgetKinds = dashboardWidgetKindSchema.options;
 
@@ -54,7 +54,7 @@ export async function getDashboardForUser(db: Database, userId: string, requeste
       to: requested.to ?? layout.filters.to,
       comparison: requested.comparison ?? layout.filters.comparison,
     });
-    const reports = await Promise.all(widgetKinds.map((kind) => buildReport(tx, ctx.organisationId, kind, filters)));
+    const reports = await buildReports(tx, ctx.organisationId, filters);
     return dashboardResponseSchema.parse({ layout: { ...layout, filters }, reports });
   });
 }

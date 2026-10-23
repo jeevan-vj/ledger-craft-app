@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const objectKindSchema = z.enum(['receipt', 'logo']);
+export const objectKindSchema = z.enum(['receipt', 'logo', 'invoice', 'bank_attachment']);
 
 export const uploadObjectRequestSchema = z
   .object({

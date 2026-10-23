@@ -4,6 +4,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { organisations } from '../../db/schema/identity';
 import { withOrganisationTx } from './bind-organisation';
+import { permissionsForRole } from './permissions';
 
 export async function getMe(
   db: Database,
@@ -22,6 +23,7 @@ export async function getMe(
       user: { id: user.id, email: user.email, name: user.name },
       organisation: { id: organisation.id, name: organisation.name },
       membership: { role: ctx.role },
+      permissions: permissionsForRole(ctx.role),
     });
   });
 }

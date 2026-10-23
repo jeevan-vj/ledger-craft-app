@@ -22,4 +22,16 @@ describe('purchasesApi', () => {
     await purchasesApi.receiveBill('bill-id');
     expect(fetchMock).toHaveBeenCalledWith('/api/bills/bill-id/receive', expect.objectContaining({ method: 'POST' }));
   });
+
+  it('cancels, restores, and exports purchase records through explicit endpoints', async () => {
+    const fetchMock = vi.spyOn(globalThis, 'fetch')
+      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'bill-id' }), { status: 200 }))
+      .mockResolvedValueOnce(new Response(JSON.stringify({ id: 'bill-id' }), { status: 200 }))
+      .mockResolvedValueOnce(new Response('billNumber,total\nBILL-1,10.00', { status: 200 }));
+    await purchasesApi.cancelBill('bill-id');
+    await purchasesApi.restoreBill('bill-id');
+    await expect(purchasesApi.exportBills()).resolves.toContain('BILL-1');
+    expect(fetchMock).toHaveBeenNthCalledWith(1, '/api/bills/bill-id/cancel', expect.objectContaining({ method: 'POST' }));
+    expect(fetchMock).toHaveBeenNthCalledWith(2, '/api/bills/bill-id/restore', expect.objectContaining({ method: 'POST' }));
+  });
 });

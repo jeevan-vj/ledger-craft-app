@@ -74,7 +74,7 @@ export default function DashboardScreen() {
       setSavedReports(nextSavedReports);
       setReportError(null);
     } catch (loadError) {
-      console.error('Error loading operational reports:', loadError);
+      console.error('Error loading business reports:', loadError);
       setReportError('Business reports could not be loaded.');
     }
     try {
@@ -117,7 +117,7 @@ export default function DashboardScreen() {
       .map((item) => dashboard.reports.find((report) => report.type === item.kind))
       .filter((report): report is DashboardResponse['reports'][number] => Boolean(report));
   }, [dashboard]);
-  const balance = dashboard?.reports.find((report) => report.type === 'cash')?.metrics.find((metric) => metric.label === 'Account balance')?.value
+  const balance = dashboard?.reports.find((report) => report.type === 'cash')?.metrics.find((metric) => metric.label === 'Closing cash')?.value
     ?? dashboard?.reports.find((report) => report.type === 'receivables')?.metrics[0]?.value
     ?? String(totalOutstanding || totalPaid);
   const workItems = useMemo(() => {
@@ -191,7 +191,7 @@ export default function DashboardScreen() {
     </View>
 
     <View style={styles.balanceRow}>
-      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Operational balance</Text><Text selectable style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Operational balance ${formatMoney(balance, 'NZD')}` : 'Operational balance hidden'}>{balanceVisible ? formatMoney(balance, 'NZD') : '••••••'}</Text></View>
+      <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Closing cash</Text><Text selectable style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Closing cash ${formatMoney(balance, 'NZD')}` : 'Closing cash hidden'}>{balanceVisible ? formatMoney(balance, 'NZD') : '••••••'}</Text></View>
       <View style={styles.balanceActions}><CircleIconButton icon={balanceVisible ? 'eye-off' : 'eye'} label={balanceVisible ? 'Hide balance' : 'Show balance'} onPress={() => setBalanceVisible((visible) => !visible)} /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
     </View>
 
@@ -216,7 +216,7 @@ export default function DashboardScreen() {
 
     <View style={styles.sectionHead}>
       <Text style={theme.type.headline}>Business reports</Text>
-      <Text selectable style={theme.type.footnote}>Provisional · AKP-05</Text>
+      <Text selectable style={theme.type.footnote}>Posted ledger</Text>
     </View>
     <View style={styles.periods}>
       <PillButton label="30 days" variant="secondary" onPress={() => applyPeriod(30)} />
@@ -231,6 +231,7 @@ export default function DashboardScreen() {
       <Text style={[theme.type.subhead, { color: theme.colors.textSecondary, textTransform: 'capitalize' }]}>{report.type}</Text>
       {report.metrics.map((metric) => <View key={metric.key} style={styles.reportMetric}><Text selectable style={theme.type.footnote}>{metric.label}</Text><Text selectable style={[theme.type.headline, styles.tabular]}>{report.type === 'activity' ? Number(metric.value).toFixed(0) : formatMoney(metric.value, metric.currency)}</Text></View>)}
       {report.rows.length === 0 ? <Text style={[theme.type.footnote, { marginTop: 12 }]}>No source activity in this period.</Text> : <Text style={[theme.type.footnote, { marginTop: 12 }]}>{report.rows.length} source record{report.rows.length === 1 ? '' : 's'}</Text>}
+      <Text style={[theme.type.footnote, { marginTop: 12 }]}>{report.authority.status === 'authoritative' ? 'Server-authoritative · Posted ledger' : 'Operational activity'}</Text>
     </Card>)}</View> : !reportError ? <DashedSetupCard title="No dashboard widgets" description="Configure visible widgets on the web; your personal layout syncs here." icon="bar-chart-2" /> : null}
 
     <Text style={[theme.type.headline, styles.sectionTitle]}>Quotes</Text>

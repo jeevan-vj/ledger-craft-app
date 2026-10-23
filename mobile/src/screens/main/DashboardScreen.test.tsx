@@ -56,8 +56,10 @@ const dashboardPayload = {
   },
   reports: widgetKinds.map((type) => ({
     type, filters: reportFilters,
-    authority: { status: 'provisional' as const, dependency: 'AKP-05' as const, message: 'Pending ledger authority.' },
-    metrics: [{ key: `${type}-total`, label: type === 'cash' ? 'Account balance' : 'Total', value: type === 'cash' ? '1234.56' : '12.34', comparisonValue: '10.00', currency: 'NZD' }],
+    authority: type === 'activity'
+      ? { status: 'operational' as const, source: 'operational_records' as const, message: 'Recent activity.' }
+      : { status: 'authoritative' as const, source: 'posted_ledger' as const, message: 'Posted ledger.' },
+    metrics: [{ key: `${type}-total`, label: type === 'cash' ? 'Closing cash' : 'Total', value: type === 'cash' ? '1234.56' : '12.34', comparisonValue: '10.00', currency: 'NZD' }],
     rows: [],
   })),
 };
@@ -79,11 +81,11 @@ describe('Home quick actions', () => {
     });
   });
 
-  it('renders the shared server report widgets and AKP-05 authority label', async () => {
+  it('renders the shared server-authoritative report widgets', async () => {
     const screen = render(<DashboardScreen />);
     expect(await screen.findByText('Business reports')).toBeTruthy();
-    expect(screen.getByText('Provisional · AKP-05')).toBeTruthy();
-    expect(screen.getByLabelText('Operational balance $1,234.56')).toBeTruthy();
+    expect(screen.getByText('Posted ledger')).toBeTruthy();
+    expect(screen.getByLabelText('Closing cash $1,234.56')).toBeTruthy();
     expect(screen.getByText('receivables')).toBeTruthy();
   });
 

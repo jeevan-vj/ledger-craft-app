@@ -35,7 +35,7 @@ describe('dashboard and saved report routes', () => {
     expect(errorEnvelopeSchema.parse(await response.json()).error.code).toBe('UNAUTHORIZED');
   });
 
-  it('calculates exact operational reports and isolates personal layouts and saved reports', async () => {
+  it('uses ledger-authoritative reports and isolates personal layouts and saved reports', async () => {
     await assertLocalDatabaseReachable();
     await withTestDb(async () => {
       const { db, sql } = createDb(getDatabaseUrl());
@@ -65,16 +65,31 @@ describe('dashboard and saved report routes', () => {
         await sql.unsafe(`INSERT INTO bank_transactions (id, organisation_id, user_id, bank_account_id, transaction_date, description, amount, type) VALUES (?, ?, ?, ?, '2026-10-13', 'Deposit', '50.10', 'credit')`, [crypto.randomUUID(), organisationId, userId, accountId]);
         await sql.unsafe(`INSERT INTO bank_transactions (id, organisation_id, user_id, bank_account_id, transaction_date, description, amount, type) VALUES (?, ?, ?, ?, '2026-10-14', 'Fee', '0.05', 'debit')`, [crypto.randomUUID(), organisationId, userId, accountId]);
 
+        const initialized = await app.request('/api/accounts/initialize', { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA }, body: '{}' });
+        const accounts = (await initialized.json() as { accounts: Array<{ id: string; accountNumber: string | null }> }).accounts;
+        const bankAccount = accounts.find((account) => account.accountNumber === '1110')!;
+        const revenueAccount = accounts.find((account) => account.accountNumber === '4000')!;
+        const expenseAccountResponse = await app.request('/api/accounts', { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA }, body: JSON.stringify({ name: 'Operating expenses', type: 'expense', accountNumber: '5000', accountClass: 'expense' }) });
+        const expenseAccount = await expenseAccountResponse.json() as { id: string };
+        const post = async (description: string, debitAccountId: string, creditAccountId: string, amount: string) => {
+          const created = await app.request('/api/journal-entries', { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA }, body: JSON.stringify({ description, entryDate: '2026-10-15', debitAccountId, creditAccountId, amount }) });
+          const entry = await created.json() as { id: string };
+          expect((await app.request(`/api/journal-entries/${entry.id}`, { method: 'PATCH', headers: { ...jsonHeaders, Cookie: ownerA }, body: JSON.stringify({ status: 'posted' }) })).status).toBe(200);
+        };
+        await post('Authoritative sale', bankAccount.id, revenueAccount.id, '120.10');
+        await post('Authoritative expense', expenseAccount.id, bankAccount.id, '10.01');
+
         const dashboardResponse = await app.request('/api/dashboard?from=2026-10-01&to=2026-10-31&comparison=none', { headers: { Cookie: ownerA } });
         expect(dashboardResponse.status).toBe(200);
         const dashboard = dashboardResponseSchema.parse(await dashboardResponse.json());
         expect(dashboard.reports).toHaveLength(6);
-        expect(dashboard.reports.every((report) => report.authority.dependency === 'AKP-05')).toBe(true);
+        expect(dashboard.reports.filter((report) => report.type !== 'activity').every((report) => report.authority.source === 'posted_ledger')).toBe(true);
+        expect(dashboard.reports.find((report) => report.type === 'activity')?.authority.status).toBe('operational');
         expect(dashboard.reports.find((report) => report.type === 'summary')?.metrics.map((item) => item.value)).toEqual(['120.10', '10.01', '110.09']);
         expect(dashboard.reports.find((report) => report.type === 'receivables')?.metrics[0]?.value).toBe('70.05');
         expect(dashboard.reports.find((report) => report.type === 'payables')?.metrics[0]?.value).toBe('40.02');
-        expect(dashboard.reports.find((report) => report.type === 'cash')?.metrics.map((item) => item.value)).toEqual(['50.10', '0.05', '50.05', '100.05']);
-        expect(dashboard.reports.find((report) => report.type === 'tax')?.metrics.map((item) => item.value)).toEqual(['15.66', '1.31', '14.35']);
+        expect(dashboard.reports.find((report) => report.type === 'cash')?.metrics.map((item) => item.value)).toEqual(['120.10', '10.01', '110.09', '110.09']);
+        expect(dashboard.reports.find((report) => report.type === 'tax')?.metrics.map((item) => item.value)).toEqual(['15.66', '5.22', '10.44']);
 
         const hiddenActivity = dashboard.layout.widgets.map((widget) => widget.kind === 'activity' ? { ...widget, visible: false } : widget);
         const layoutResponse = await app.request('/api/dashboard-layouts', {

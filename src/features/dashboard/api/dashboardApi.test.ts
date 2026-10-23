@@ -5,7 +5,7 @@ const filters = { from: '2026-10-01', to: '2026-10-31', comparison: 'previous_pe
 const widgets = ['summary', 'receivables', 'payables', 'cash', 'tax', 'activity'].map((kind, order) => ({ kind, order, visible: true, size: 'medium' }));
 const payload = {
   layout: { id: crypto.randomUUID(), name: 'Mine', isDefault: true, filters, widgets, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-  reports: widgets.map(({ kind }) => ({ type: kind, filters, authority: { status: 'provisional', dependency: 'AKP-05', message: 'Pending ledger authority.' }, metrics: [], rows: [] })),
+  reports: widgets.map(({ kind }) => ({ type: kind, filters, authority: kind === 'activity' ? { status: 'operational', source: 'operational_records', message: 'Recent activity.' } : { status: 'authoritative', source: 'posted_ledger', message: 'Posted ledger.' }, metrics: [], rows: [] })),
 };
 
 afterEach(() => vi.restoreAllMocks());

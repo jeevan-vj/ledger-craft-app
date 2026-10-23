@@ -9,6 +9,10 @@ export interface LineItem {
   rate: number;
   total: number;
   tax?: number;
+  discountType?: 'fixed' | 'percent';
+  discountValue?: number | null;
+  discountAmount?: number;
+  taxes?: { id: string; name: string; rate: number }[];
 }
 
 export interface AdditionalCharge {
@@ -71,6 +75,7 @@ export interface BusinessProfile {
 export interface Invoice {
   id: string;
   invoiceNumber: string;
+  externalId?: string | null;
   customerId: string;
   customer?: Customer;
   businessProfile?: BusinessProfile;
@@ -98,4 +103,5 @@ export interface Invoice {
   userId?: string;
   createdAt?: string;
   updatedAt?: string;
+  archivedAt?: string | null;
 }

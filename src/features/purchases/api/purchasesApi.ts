@@ -3,7 +3,10 @@ import type {
   BankAccountListResponse,
   BillDto,
   BillListResponse,
-  BillPaymentDto,
+  BillPaymentBatchDto,
+  BillAttachmentDto,
+  AttachBillObjectRequest,
+  ImportVendorsRequest,
   CreateBillRequest,
   CreateVendorRequest,
   RecordBillPaymentRequest,
@@ -21,6 +24,15 @@ export class PurchasesApiError extends Error {
     this.name = 'PurchasesApiError';
     this.requestId = requestId;
   }
+}
+
+async function requestText(path: string): Promise<string> {
+  const response = await fetch(path, { credentials: 'include' });
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new PurchasesApiError(failure.message, failure.status, failure.requestId);
+  }
+  return response.text();
 }
 
 async function request<T>(path: string, init?: RequestInit): Promise<T> {
@@ -57,7 +69,7 @@ export const purchasesApi = {
     return request<BillDto>(`/api/bills/${id}`);
   },
   createBill(input: CreateBillRequest) {
-    return request<BillDto>('/api/bills', { method: 'POST', body: JSON.stringify(input) });
+    return request<BillDto>('/api/bills', { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify(input) });
   },
   updateBill(id: string, input: UpdateBillRequest) {
     return request<BillDto>(`/api/bills/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
@@ -71,8 +83,25 @@ export const purchasesApi = {
   voidBill(id: string) {
     return request<BillDto>(`/api/bills/${id}/void`, { method: 'POST' });
   },
+  cancelBill(id: string) {
+    return request<BillDto>(`/api/bills/${id}/cancel`, { method: 'POST' });
+  },
+  restoreBill(id: string) {
+    return request<BillDto>(`/api/bills/${id}/restore`, { method: 'POST' });
+  },
   recordPayment(id: string, input: RecordBillPaymentRequest) {
-    return request<BillPaymentDto>(`/api/bills/${id}/payments`, { method: 'POST', body: JSON.stringify(input) });
+    return request<BillPaymentBatchDto>(`/api/bills/${id}/payments`, { method: 'POST', body: JSON.stringify(input) });
+  },
+  attachObject(id: string, input: AttachBillObjectRequest) {
+    return request<BillAttachmentDto>(`/api/bills/${id}/attachments`, { method: 'POST', body: JSON.stringify(input) });
+  },
+  removeAttachment(id: string, attachmentId: string) {
+    return request<void>(`/api/bills/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
+  },
+  exportVendors() { return requestText('/api/vendors-export.csv'); },
+  exportBills() { return requestText('/api/bills-export.csv'); },
+  importVendors(input: ImportVendorsRequest) {
+    return request<{ dryRun: boolean; validRows: number; appliedRows: number; errors: Array<{ row: number; message: string }> }>('/api/vendors/import', { method: 'POST', body: JSON.stringify(input) });
   },
   async listAccounts() {
     return (await request<AccountListResponse>('/api/accounts')).accounts;

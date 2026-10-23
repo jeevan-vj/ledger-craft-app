@@ -374,7 +374,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
       });
       const newItems = initialValues.items && initialValues.items.length > 0
         ? initialValues.items
-        : [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, total: 0 }];
+        : [{ id: "1", description: "", quantity: 1, unit: "each", rate: 0, rateUnit: "each", total: 0 }];
       setItems(newItems);
       setInitialItemsJSON(JSON.stringify(newItems));
       
@@ -756,7 +756,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                 // Pass the currentItemIndex to handleCreateNewItem
                 onCreateNewItem={() => handleCreateNewItem(currentItemIndex)}
                 buttonClassName="w-full justify-start text-primary border border-primary font-semibold"
-                refetch={refetchItemsTrigger}
+                refetch={() => setRefetchItemsTrigger((value) => value + 1)}
               />
             </div>
 
@@ -810,6 +810,21 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
               </Select>
             </div>
           </div>
+          {!isQuote ? (
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Line discount %</label>
+                <Input type="number" min="0" max="100" step="0.01" value={currentItem.discountValue ?? ''} onChange={e => {
+                  updateItem(currentItemIndex, 'discountType', 'percent');
+                  updateItem(currentItemIndex, 'discountValue', e.target.value === '' ? null : Number(e.target.value));
+                }} placeholder="0" inputMode="decimal" />
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Line tax %</label>
+                <Input type="number" min="0" max="100" step="0.01" value={currentItem.taxes?.[0]?.rate ?? ''} onChange={e => updateItem(currentItemIndex, 'taxes', e.target.value === '' ? [] : [{ id: 'line-tax', name: 'Tax', rate: Number(e.target.value) }])} placeholder="Use invoice default" inputMode="decimal" />
+              </div>
+            </div>
+          ) : null}
           <div className="grid grid-cols-2 gap-2">
             <div className="space-y-2">
               <label className="text-sm font-medium">Rate</label>
@@ -1617,7 +1632,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                                                       onCreateNewItem={() => handleCreateNewItem(index)}
                                                       buttonClassName="h-6 w-6 p-0"
                                                       iconOnly
-                                                      refetch={refetchItemsTrigger}
+                                                      refetch={() => setRefetchItemsTrigger((value) => value + 1)}
                                                     />
                                                   </div>
                                                 </div>

@@ -15,6 +15,11 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
               InvoiceDetail: 'invoices/:invoiceId',
             },
           },
+          More: {
+            screens: {
+              CompanyTeam: 'settings',
+            },
+          },
         },
       },
     },
@@ -25,6 +30,16 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
 export const mainTabs = ['Dashboard', 'Invoices', 'Customers', 'More'] as const;
 
 export const moreMenuSections = [
+  {
+    title: 'Accounting',
+    rows: [
+      {
+        label: 'Financial reports',
+        subtitle: 'Profit, cash, balances and aging',
+        screen: 'Reports',
+      },
+    ],
+  },
   {
     title: 'Sales',
     rows: [
@@ -52,6 +67,11 @@ export const moreMenuSections = [
         label: 'Business profile',
         subtitle: 'Details, GST, invoices and quotes',
         screen: 'BusinessSettings',
+      },
+      {
+        label: 'Company & team',
+        subtitle: 'Switch companies, roles and invitations',
+        screen: 'CompanyTeam',
       },
     ],
   },
@@ -89,6 +109,7 @@ type CustomerDestination =
 
 type MoreDestination =
   | { name: 'BusinessSettings' }
+  | { name: 'CompanyTeam'; params?: { invite?: string } }
   | { name: 'ItemList' }
   | { name: 'BankAccountList' }
   | { name: 'ExpenseList' }

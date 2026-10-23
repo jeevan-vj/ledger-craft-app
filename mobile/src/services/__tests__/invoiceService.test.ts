@@ -178,6 +178,22 @@ describe('InvoiceService (Hono)', () => {
     );
   });
 
+  it('uses dedicated lifecycle endpoints for cancel, restore and duplicate', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse({ ...invoiceDto, status: 'cancelled' }))
+      .mockResolvedValueOnce(jsonResponse(invoiceDto))
+      .mockResolvedValueOnce(jsonResponse({ ...invoiceDto, id: '99999999-9999-9999-9999-999999999999', invoiceNumber: 'INV-2026-0002' }, 201));
+
+    await invoiceService.updateInvoiceStatus(invoiceDto.id, 'cancelled');
+    await invoiceService.restoreInvoice(invoiceDto.id);
+    const copy = await invoiceService.duplicateInvoice(invoiceDto.id);
+
+    expect(copy.invoiceNumber).toBe('INV-2026-0002');
+    expect(global.fetch).toHaveBeenNthCalledWith(1, expect.stringContaining(`/invoices/${invoiceDto.id}/cancel`), expect.objectContaining({ method: 'POST' }));
+    expect(global.fetch).toHaveBeenNthCalledWith(2, expect.stringContaining(`/invoices/${invoiceDto.id}/restore`), expect.objectContaining({ method: 'POST' }));
+    expect(global.fetch).toHaveBeenNthCalledWith(3, expect.stringContaining(`/invoices/${invoiceDto.id}/duplicate`), expect.objectContaining({ method: 'POST' }));
+  });
+
   it('returns null for an invalid or expired public share token', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce(
       jsonResponse({ error: { message: 'Invoice not found' } }, 404),

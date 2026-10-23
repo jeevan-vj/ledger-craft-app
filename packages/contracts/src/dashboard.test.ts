@@ -31,11 +31,13 @@ describe('dashboard contracts', () => {
     expect(createSavedReportRequestSchema.safeParse({ name: 'Leak', reportType: 'cash', filters, organisationId: crypto.randomUUID() }).success).toBe(false);
   });
 
-  it('marks operational dashboard figures as provisional until AKP-05', () => {
+  it('distinguishes ledger-authoritative widgets from operational activity', () => {
     const reports = widgets.map(({ kind }) => ({
       type: kind,
       filters,
-      authority: { status: 'provisional', dependency: 'AKP-05', message: 'Operational data; ledger authority is pending.' },
+      authority: kind === 'activity'
+        ? { status: 'operational', source: 'operational_records', message: 'Recent source-record activity.' }
+        : { status: 'authoritative', source: 'posted_ledger', message: 'Calculated from posted journal entries.' },
       metrics: [{ key: 'total', label: 'Total', value: '12.34', comparisonValue: '10.00', currency: 'NZD' }],
       rows: [],
     }));
@@ -43,6 +45,7 @@ describe('dashboard contracts', () => {
       layout: { id: crypto.randomUUID(), name: 'Default', isDefault: true, filters, widgets, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
       reports,
     });
-    expect(parsed.reports.every((report) => report.authority.dependency === 'AKP-05')).toBe(true);
+    expect(parsed.reports.filter((report) => report.type !== 'activity').every((report) => report.authority.status === 'authoritative')).toBe(true);
+    expect(parsed.reports.find((report) => report.type === 'activity')?.authority.status).toBe('operational');
   });
 });

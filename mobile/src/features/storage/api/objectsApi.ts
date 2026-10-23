@@ -9,7 +9,7 @@ interface ObjectDto {
   url: string;
   contentType: string;
   size: number;
-  kind: 'receipt' | 'logo';
+  kind: 'receipt' | 'logo' | 'invoice';
 }
 
 export function objectKeyFromUrl(urlOrPath: string): string {
@@ -21,7 +21,7 @@ export function objectKeyFromUrl(urlOrPath: string): string {
 
 export const objectsApi = {
   async upload(input: {
-    kind: 'receipt' | 'logo';
+    kind: 'receipt' | 'logo' | 'invoice';
     filename: string;
     contentType: string;
     contentBase64: string;
