@@ -36,6 +36,8 @@ import { useTheme } from '@/theme';
 import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
 import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
+import * as ImagePicker from 'expo-image-picker';
+import { objectsApi } from '@/features/storage/api/objectsApi';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
@@ -62,6 +64,8 @@ export default function InvoiceDetailScreen() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
+  const [history, setHistory] = useState<{ id: string; action: string; createdAt: string }[]>([]);
+  const [attachments, setAttachments] = useState<{ id: string; filename: string; size: number }[]>([]);
 
   useEffect(() => {
     loadData();
@@ -93,6 +97,12 @@ export default function InvoiceDetailScreen() {
         }),
       ]);
       setInvoice(invoiceData);
+      const [events, files] = await Promise.all([
+        invoiceService.getInvoiceHistory(invoiceId),
+        invoiceService.getInvoiceAttachments(invoiceId),
+      ]);
+      setHistory(events);
+      setAttachments(files);
       setBusinessProfile(profileData);
       if (!invoiceData) setLoadError(null);
     } catch (error) {
@@ -165,6 +175,47 @@ export default function InvoiceDetailScreen() {
     setPaymentModalVisible(true);
   };
 
+  const handleDuplicate = async () => {
+    try {
+      const duplicate = await invoiceService.duplicateInvoice(invoiceId);
+      navigation.push('InvoiceDetail', { invoiceId: duplicate.id });
+    } catch { Alert.alert('Could not duplicate invoice', 'Please try again.'); }
+  };
+
+  const handleRestore = async () => {
+    try { setInvoice(await invoiceService.restoreInvoice(invoiceId)); await loadData(); }
+    catch { Alert.alert('Could not restore invoice', 'Please try again.'); }
+  };
+
+  const handleArchive = () => Alert.alert('Archive invoice?', 'Draft and cancelled invoices can be restored later.', [
+    { text: 'Keep invoice', style: 'cancel' },
+    { text: 'Archive', style: 'destructive', onPress: async () => {
+      try { await invoiceService.archiveInvoice(invoiceId); navigation.goBack(); }
+      catch { Alert.alert('Could not archive invoice', 'Cancel an issued invoice before archiving it.'); }
+    } },
+  ]);
+
+  const handleAttachImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], base64: true, quality: 0.8 });
+      if (result.canceled) return;
+      const asset = result.assets[0];
+      if (!asset?.base64) throw new Error('The selected image could not be read');
+      const filename = asset.fileName ?? `invoice-${invoiceId}.jpg`;
+      const uploaded = await objectsApi.upload({
+        kind: 'invoice',
+        filename,
+        contentType: asset.mimeType ?? 'image/jpeg',
+        contentBase64: asset.base64,
+      });
+      await invoiceService.attachInvoiceFile(invoiceId, { objectKey: uploaded.key, filename });
+      await loadData();
+    } catch (error) {
+      console.error('Error attaching invoice image:', error);
+      Alert.alert('Could not attach image', 'Use a JPG, PNG or WebP image smaller than 1 MB.');
+    }
+  };
+
   if (loading) {
     return (
       <View style={styles.centerContainer}>
@@ -208,6 +259,30 @@ export default function InvoiceDetailScreen() {
               {getStatusLabel(invoice.status)}
             </Text>
           </Text>
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Invoice lifecycle</Text>
+          <AppPressable accessibilityRole="button" accessibilityLabel="Duplicate invoice" onPress={handleDuplicate} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+            <Text style={styles.lifecycleLabel}>Duplicate as new draft</Text><Feather name="copy" size={18} color={palette.accentText} />
+          </AppPressable>
+          {invoice.status === 'cancelled' ? (
+            <AppPressable accessibilityRole="button" accessibilityLabel="Restore invoice" onPress={handleRestore} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+              <Text style={styles.lifecycleLabel}>Restore invoice</Text><Feather name="rotate-ccw" size={18} color={palette.accentText} />
+            </AppPressable>
+          ) : (
+            <AppPressable accessibilityRole="button" accessibilityLabel="Cancel invoice" onPress={() => handleStatusChange('cancelled')} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+              <Text style={styles.lifecycleLabel}>Cancel invoice</Text><Feather name="x-circle" size={18} color={palette.danger} />
+            </AppPressable>
+          )}
+          <AppPressable accessibilityRole="button" accessibilityLabel="Archive invoice" onPress={handleArchive} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+            <Text style={styles.lifecycleLabel}>Archive invoice</Text><Feather name="archive" size={18} color={palette.textSecondary} />
+          </AppPressable>
+          <AppPressable accessibilityRole="button" accessibilityLabel="Attach invoice image" onPress={handleAttachImage} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+            <Text style={styles.lifecycleLabel}>Attach image</Text><Feather name="paperclip" size={18} color={palette.accentText} />
+          </AppPressable>
+          {attachments.length ? <Text style={styles.lifecycleMeta}>{attachments.length} private attachment{attachments.length === 1 ? '' : 's'} · {attachments.map((file) => file.filename).join(', ')}</Text> : null}
+          {history.length ? <Text style={styles.lifecycleMeta}>Latest: {history[0]!.action.replace('_', ' ')}</Text> : null}
         </View>
 
         <View style={styles.card}>
@@ -544,6 +619,16 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 13,
     color: palette.textSecondary,
   },
+  lifecycleAction: {
+    minHeight: 48,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: palette.separator,
+  },
+  lifecycleLabel: { fontSize: 16, fontWeight: '600', color: palette.text },
+  lifecycleMeta: { marginTop: space.sm, fontSize: 13, color: palette.textSecondary },
   summaryRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',

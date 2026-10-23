@@ -12,6 +12,7 @@ export const invoices = sqliteTable('invoices', {
   organisationId: text('organisation_id').notNull().references(() => organisations.id),
   userId: text('user_id').notNull().references(() => users.id),
   invoiceNumber: text('invoice_number').notNull(),
+  externalId: text('external_id'),
   customerId: text('customer_id').notNull(),
   date: text('date').notNull(),
   dueDate: text('due_date').notNull(),
@@ -30,6 +31,9 @@ export const invoices = sqliteTable('invoices', {
   paymentStatus: text('payment_status').notNull().default('unpaid'),
   taxInclusive: integer('tax_inclusive', { mode: 'boolean' }).notNull().default(true),
   status: text('status').notNull().default('draft'),
+  lifecycleStatus: text('lifecycle_status').notNull().default('active'),
+  preCancelStatus: text('pre_cancel_status'),
+  archivedAt: timestamptz('archived_at'),
   notes: text('notes'),
   terms: text('terms'),
   currency: text('currency').notNull().default('NZD'),
@@ -44,11 +48,13 @@ export const invoices = sqliteTable('invoices', {
   check('invoices_total_paid_check', sql`total_paid <> '' AND total_paid NOT GLOB '*[^0-9.]*' AND total_paid GLOB '[0-9]*' AND total_paid NOT LIKE '%.' AND length(total_paid) - length(replace(total_paid, '.', '')) <= 1`),
   check('invoices_payment_status_check', sql`payment_status IN ('unpaid', 'partially_paid', 'paid', 'overdue', 'cancelled')`),
   check('invoices_status_check', sql`status IN ('draft', 'sent', 'paid', 'overdue')`),
+  check('invoices_lifecycle_status_check', sql`lifecycle_status IN ('active', 'cancelled')`),
   check('invoices_discount_type_check', sql`discount_type IN ('fixed', 'percent')`),
   check('invoices_payment_term_days_check', sql`payment_term_days >= 0 AND payment_term_days <= 365`),
   uniqueIndex('invoices_org_id_uidx').on(table.organisationId, table.id),
   index('invoices_org_idx').on(table.organisationId),
   uniqueIndex('invoices_organisationId_invoiceNumber_uidx').on(table.organisationId, table.invoiceNumber),
+  uniqueIndex('invoices_org_external_id_uidx').on(table.organisationId, table.externalId),
   foreignKey({ columns: [table.organisationId, table.customerId], foreignColumns: [customers.organisationId, customers.id] }).onDelete('restrict'),
 ]);
 
@@ -63,6 +69,10 @@ export const lineItems = sqliteTable('line_items', {
   rateUnit: text('rate_unit').notNull().default('ea'),
   tax: money('tax'),
   total: money('total').notNull(),
+  discountType: text('discount_type').notNull().default('fixed'),
+  discountValue: money('discount_value'),
+  discountAmount: money('discount_amount').notNull().default('0'),
+  taxes: text('taxes', { mode: 'json' }),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
@@ -71,5 +81,38 @@ export const lineItems = sqliteTable('line_items', {
   check('line_items_total_check', sql`total <> '' AND total NOT GLOB '*[^0-9.]*' AND total GLOB '[0-9]*' AND total NOT LIKE '%.' AND length(total) - length(replace(total, '.', '')) <= 1`),
   uniqueIndex('line_items_org_id_uidx').on(table.organisationId, table.id),
   index('line_items_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.invoiceId], foreignColumns: [invoices.organisationId, invoices.id] }).onDelete('cascade'),
+]);
+
+export const invoiceHistory = sqliteTable('invoice_history', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  invoiceId: text('invoice_id').notNull(),
+  actorUserId: text('actor_user_id').notNull().references(() => users.id),
+  action: text('action').notNull(),
+  fromStatus: text('from_status'),
+  toStatus: text('to_status'),
+  reason: text('reason'),
+  metadata: text('metadata', { mode: 'json' }),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  index('invoice_history_org_invoice_idx').on(table.organisationId, table.invoiceId),
+  foreignKey({ columns: [table.organisationId, table.invoiceId], foreignColumns: [invoices.organisationId, invoices.id] }).onDelete('cascade'),
+]);
+
+export const invoiceAttachments = sqliteTable('invoice_attachments', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  invoiceId: text('invoice_id').notNull(),
+  objectKey: text('object_key').notNull(),
+  filename: text('filename').notNull(),
+  contentType: text('content_type').notNull(),
+  size: integer('size').notNull(),
+  createdBy: text('created_by').notNull().references(() => users.id),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  uniqueIndex('invoice_attachments_org_id_uidx').on(table.organisationId, table.id),
+  uniqueIndex('invoice_attachments_org_key_uidx').on(table.organisationId, table.objectKey),
+  index('invoice_attachments_org_invoice_idx').on(table.organisationId, table.invoiceId),
   foreignKey({ columns: [table.organisationId, table.invoiceId], foreignColumns: [invoices.organisationId, invoices.id] }).onDelete('cascade'),
 ]);

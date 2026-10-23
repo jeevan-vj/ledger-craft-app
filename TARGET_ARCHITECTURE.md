@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
+Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private invoice attachments, token-snapshot attachment
+access, CSV import/export, and printable detail. Cancellation and restoration
+use balanced journals and tenant-bound transactions. Existing invoice sharing,
+templates/PDFs, payment terms, charges, bank details, and reminders are
+preserved. Recurring invoices remain AKP-04; outbound production email is still
+intentionally unavailable.
+API/contracts/mobile tests, strict mobile TypeScript, the web production build,
+iOS/Android production exports, and authenticated responsive browser proof pass;
+authenticated native-device QA remains pending.
+
 **Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
 migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
 transaction splits, invoice/bill connections, and 1 MB attachment metadata.

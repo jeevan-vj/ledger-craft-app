@@ -116,7 +116,7 @@ const mapSupabaseInvoiceToInvoice = (invoice: SupabaseInvoice | any, items: Supa
   public_viewed_at: invoice.public_viewed_at || undefined
 });
 
-const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at', 'public_viewed_at'>> => {
+const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at' | 'public_viewed_at'>> => {
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 
@@ -722,6 +722,10 @@ export const invoiceService = {
   },
 
   async deleteInvoice(id: string): Promise<void> {
+    if (invoicesApiEnabled()) {
+      await invoicesApi.archive(id);
+      return;
+    }
     const { error } = await supabase
       .from('invoices')
       .delete()
@@ -735,7 +739,7 @@ export const invoiceService = {
   
   async updateInvoiceStatus(id: string, status: Invoice['status']): Promise<Invoice> {
     if (invoicesApiEnabled()) {
-      return invoicesApi.updateStatus(id, status);
+      return status === 'cancelled' ? invoicesApi.cancel(id) : invoicesApi.updateStatus(id, status);
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user?.id) {

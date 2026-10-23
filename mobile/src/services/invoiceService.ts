@@ -427,11 +427,12 @@ export class InvoiceService {
   // Update invoice status only
   async updateInvoiceStatus(
     id: string,
-    status: 'draft' | 'sent' | 'paid' | 'overdue'
+    status: 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled'
   ): Promise<void> {
     try {
       if (invoicesApiEnabled()) {
-        await invoicesApi.updateStatus(id, status);
+        if (status === 'cancelled') await invoicesApi.cancel(id);
+        else await invoicesApi.updateStatus(id, status);
         return;
       }
 
@@ -456,6 +457,13 @@ export class InvoiceService {
       throw error;
     }
   }
+
+  async restoreInvoice(id: string): Promise<Invoice> { return invoicesApi.restore(id); }
+  async archiveInvoice(id: string): Promise<Invoice> { return invoicesApi.archive(id); }
+  async duplicateInvoice(id: string): Promise<Invoice> { return invoicesApi.duplicate(id); }
+  async getInvoiceHistory(id: string) { return invoicesApi.history(id); }
+  async getInvoiceAttachments(id: string) { return invoicesApi.attachments(id); }
+  async attachInvoiceFile(id: string, input: { objectKey: string; filename: string }) { return invoicesApi.attach(id, input); }
 }
 
 export const invoiceService = new InvoiceService();

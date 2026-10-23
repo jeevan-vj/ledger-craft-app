@@ -11,6 +11,10 @@ export type ComputedInvoiceTotals = {
     rateUnit: string;
     tax: string;
     total: string;
+    discountType: 'fixed' | 'percent';
+    discountValue: string | null;
+    discountAmount: string;
+    taxes: Array<{ id: string; name: string; rate: string }>;
   }>;
   subtotal: string;
   taxAmount: string;
@@ -45,7 +49,6 @@ export function computeInvoiceTotals(
 ): ComputedInvoiceTotals {
   const taxInclusive = input.taxInclusive ?? true;
   const taxRatePercent = decimal(input.taxRate ?? defaultTaxRatePercent);
-  const taxRate = taxRatePercent.div(100);
 
   const discountType = input.discountType ?? 'fixed';
 
@@ -53,14 +56,31 @@ export function computeInvoiceTotals(
     const quantity = decimal(item.quantity);
     const rate = decimal(item.rate);
     const lineAmount = quantity.mul(rate);
-    let exclusive = lineAmount;
+    const lineDiscountType = item.discountType ?? 'fixed';
+    const lineDiscountValue = decimal(item.discountValue);
+    const lineDiscount = lineDiscountType === 'percent'
+      ? lineAmount.mul(lineDiscountValue).div(100)
+      : lineDiscountValue;
+    if (lineDiscountValue.compare(0) < 0 || (lineDiscountType === 'percent' && lineDiscountValue.compare(100) > 0)) {
+      throw apiError(400, 'VALIDATION_ERROR', 'Line discount is invalid');
+    }
+    if (lineDiscount.compare(lineAmount) > 0) throw apiError(400, 'VALIDATION_ERROR', "Line discount can't exceed the line amount");
+    const discountedAmount = lineAmount.sub(lineDiscount);
+    const taxes = (item.taxes ?? (taxRatePercent.compare(0) > 0 ? [{ id: 'default', name: 'Tax', rate: taxRatePercent.toFixed() }] : []))
+      .map((assignment, index) => ({
+        id: assignment.id ?? `tax-${index + 1}`,
+        name: assignment.name ?? 'Tax',
+        rate: assignment.rate ?? '0',
+      }));
+    const combinedTaxRate = taxes.reduce((sum, assignment) => sum.add(decimal(assignment.rate)), decimal(0)).div(100);
+    let exclusive = discountedAmount;
     let tax = decimal(0);
-    if (taxRate.compare(0) > 0) {
+    if (combinedTaxRate.compare(0) > 0) {
       if (taxInclusive) {
-        exclusive = lineAmount.div(taxRate.add(1));
-        tax = lineAmount.sub(exclusive);
+        exclusive = discountedAmount.div(combinedTaxRate.add(1));
+        tax = discountedAmount.sub(exclusive);
       } else {
-        tax = lineAmount.mul(taxRate);
+        tax = discountedAmount.mul(combinedTaxRate);
       }
     }
     return {
@@ -70,9 +90,13 @@ export function computeInvoiceTotals(
       rate: roundMoney(rate),
       rateUnit: item.rateUnit ?? item.unit ?? 'ea',
       tax: roundMoney(tax),
-      total: roundMoney(taxInclusive ? lineAmount : exclusive),
+      total: roundMoney(taxInclusive ? discountedAmount : exclusive),
+      discountType: lineDiscountType,
+      discountValue: item.discountValue == null ? null : roundMoney(lineDiscountValue),
+      discountAmount: roundMoney(lineDiscount),
+      taxes,
       exclusive,
-      inclusive: taxInclusive ? lineAmount : exclusive.add(tax),
+      inclusive: taxInclusive ? discountedAmount : exclusive.add(tax),
       taxValue: tax,
     };
   });
@@ -91,12 +115,14 @@ export function computeInvoiceTotals(
 
   let taxAmountNumber: Decimal;
   let totalNumber: Decimal;
+  const rawLineTax = lines.reduce((sum, line) => sum.add(line.taxValue), decimal(0));
+  const discountRatio = discountBase.compare(0) === 0 ? decimal(0) : discountAmount.div(discountBase);
   if (taxInclusive) {
-    taxAmountNumber = lines.reduce((sum, line) => sum.add(line.taxValue), decimal(0));
+    taxAmountNumber = rawLineTax.mul(decimal(1).sub(discountRatio));
     totalNumber = inclusiveSubtotal.sub(discountAmount).add(additionalCharges);
   } else {
     const taxable = subtotalNumber.sub(discountAmount);
-    taxAmountNumber = taxRate.compare(0) > 0 ? taxable.mul(taxRate) : decimal(0);
+    taxAmountNumber = rawLineTax.mul(decimal(1).sub(discountRatio));
     totalNumber = taxable.add(taxAmountNumber).add(additionalCharges);
   }
 

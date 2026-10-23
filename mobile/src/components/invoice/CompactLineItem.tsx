@@ -206,6 +206,18 @@ export function CompactLineItem({
                 placeholder="e.g., hours, items"
               />
 
+              <View style={styles.row}>
+                <View style={styles.halfWidth}>
+                  <ModernInput label="Discount %" value={item.discountValue == null ? '' : String(item.discountValue)} onChangeText={(text) => {
+                    onUpdate(index, 'discountType', 'percent');
+                    onUpdate(index, 'discountValue', text === '' ? null : Number(text) || 0);
+                  }} keyboardType="decimal-pad" placeholder="0" />
+                </View>
+                <View style={styles.halfWidth}>
+                  <ModernInput label="Tax %" value={item.taxes?.[0] ? String(item.taxes[0].rate) : ''} onChangeText={(text) => onUpdate(index, 'taxes', text === '' ? [] : [{ id: 'line-tax', name: 'Tax', rate: Number(text) || 0 }])} keyboardType="decimal-pad" placeholder="Default" />
+                </View>
+              </View>
+
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Total</Text>
                 <Text style={styles.totalValue}>{formatCurrency(item.total)}</Text>
