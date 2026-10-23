@@ -22,11 +22,11 @@ Read, in order:
 2. **Pick** — choose the smallest dependency-ordered mobile gap whose Hono contract already exists. Prefer a complete user journey over a broad screen inventory. Record the selected acceptance boundary and explicit non-goals in the PR.
 3. **Red** — add a failing test for the transport or form/domain rule before production code.
 4. **Green** — implement through the existing authenticated API client, TanStack Query, React Navigation, and mobile design primitives. Keep exact money as decimal text across API/form boundaries.
-5. **Verify** — run focused tests, strict TypeScript, the full mobile Jest suite, lint, and iOS/Android production exports. Perform authenticated native QA only when a safe test session is available; otherwise name it as pending.
+5. **Verify** — follow `ledgercraft-verify` and paste the output. The Mobile CI job is Node 20 lint, `tsc`, Jest, and the iOS export. Android export is extra. Perform authenticated native QA only when a safe test session is available; otherwise name it as pending.
 6. **Sync** — update present-tense status in `TARGET_ARCHITECTURE.md`, `AGENTS.md`, bootstrap, and the parity backlog when capability status changed.
 7. **Review** — inspect the complete diff against the intended base. Fix correctness, accessibility, error/empty/loading states, and any new lint warnings.
 8. **PR** — only when the initiating user or automation prompt authorizes GitHub writes: commit, push the feature branch, open one PR, attach it to the task, and report verification plus remaining gaps.
-9. **Wait** — do not pick another feature until that PR is merged or explicitly abandoned. On later runs, repair actionable CI/review failures before new work.
+9. **Wait** — do not pick another feature until that PR is merged or explicitly abandoned. Do not end a run while CI is pending. If a job fails immediately with a GitHub billing or spending-limit annotation, report it and stop. On later runs, repair actionable CI/review failures before new work. Do not raise a lint baseline or weaken a test to clear a red job.
 
 ## Selection rules
 

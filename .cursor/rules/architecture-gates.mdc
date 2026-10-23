@@ -16,4 +16,4 @@ Follow `TARGET_ARCHITECTURE.md` and `.cursor/skills/ledgercraft-architecture/SKI
 - After each wave: run `.cursor/skills/ledgercraft-knowledge-sync/SKILL.md`
 - Launch specialists via `.cursor/skills/ledgercraft-agent-roster/SKILL.md`
 - Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`
-- Feature proof: `.cursor/skills/ledgercraft-verify/SKILL.md`
+- Feature proof, before a pull request: `.cursor/skills/ledgercraft-verify/SKILL.md`. Invariants: `ledgercraft-invariants`. Independent review: `ledgercraft-reviewer`.
