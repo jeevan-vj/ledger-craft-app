@@ -52,6 +52,16 @@ export async function postInvoiceJournal(
     total: string;
   },
 ): Promise<void> {
+  const [existing] = await tx
+    .select({ id: journalEntries.id })
+    .from(journalEntries)
+    .where(and(
+      eq(journalEntries.organisationId, ctx.organisationId),
+      eq(journalEntries.referenceType, 'invoice'),
+      eq(journalEntries.referenceId, input.invoiceId),
+    ));
+  if (existing) return;
+
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
