@@ -102,8 +102,9 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', conversationRoutes());
   app.route('/', journalRoutes());
   app.route('/', purchaseRoutes());
-  app.route('/', dashboardRoutes());
+  // Financial statements are registered before /reports/:type widget runs.
   app.route('/', reportRoutes());
+  app.route('/', dashboardRoutes());
 
   if (process.env.NODE_ENV === 'test') {
     app.get('/api/__test/boom', () => {
