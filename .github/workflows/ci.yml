@@ -124,9 +124,9 @@ jobs:
       - name: API tests, contracts, and typecheck
         run: pnpm test:api && pnpm test:contracts && pnpm type-check:api
 
-  # Node's built-in test runner only. No pnpm install: the readiness checker
-  # and its tests use node:test, node:fs, and fetch. Runs on pull requests
-  # and on pushes to main, same as the jobs above.
+  # Node's built-in test runner only. No pnpm install: the readiness and parity
+  # checkers use Node built-ins. Report mode exposes open parity work without
+  # turning normal CI red; strict mode is reserved for parity release enforcement.
   release-readiness:
     name: Release readiness script
     runs-on: ubuntu-latest
@@ -137,10 +137,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: API readiness checker
-        run: node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs
+      - name: Release checker tests
+        run: node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
       - name: Web source map upload checker
         run: node --test scripts/upload-web-sourcemaps.test.mjs
+      - name: Akaunting core parity report
+        run: node scripts/verify-akaunting-core.mjs --report
 
   web-build:
     name: Web build
