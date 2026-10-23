@@ -21,12 +21,17 @@ export const vendors = sqliteTable('vendors', {
   paymentTermDays: integer('payment_term_days').notNull().default(20),
   notes: text('notes'),
   isActive: integer('is_active', { mode: 'boolean' }).notNull().default(true),
+  contactName: text('contact_name'),
+  defaultAccountId: text('default_account_id'),
+  defaultTaxRate: money('default_tax_rate').notNull().default('15'),
+  importIdentifier: text('import_identifier'),
   createdAt: timestamp('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamp('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
   check('vendors_payment_term_days_check', sql`${table.paymentTermDays} >= 0 AND ${table.paymentTermDays} <= 365`),
   uniqueIndex('vendors_org_id_uidx').on(table.organisationId, table.id),
   index('vendors_org_name_idx').on(table.organisationId, table.name),
+  uniqueIndex('vendors_org_import_identifier_uidx').on(table.organisationId, table.importIdentifier),
 ]);
 
 export const bills = sqliteTable('bills', {
@@ -41,6 +46,12 @@ export const bills = sqliteTable('bills', {
   lifecycleStatus: text('lifecycle_status').notNull().default('draft'),
   paymentStatus: text('payment_status').notNull().default('unpaid'),
   currency: text('currency').notNull().default('NZD'),
+  exchangeRate: text('exchange_rate').notNull().default('1'),
+  exchangeRateId: text('exchange_rate_id'),
+  baseCurrency: text('base_currency').notNull().default('NZD'),
+  baseSubtotal: money('base_subtotal').notNull().default('0'),
+  baseTaxAmount: money('base_tax_amount').notNull().default('0'),
+  baseTotal: money('base_total').notNull().default('0'),
   taxInclusive: integer('tax_inclusive', { mode: 'boolean' }).notNull().default(true),
   subtotal: money('subtotal').notNull(),
   taxAmount: money('tax_amount').notNull(),
@@ -110,4 +121,35 @@ export const billPayments = sqliteTable('bill_payments', {
   index('bill_payments_org_bill_idx').on(table.organisationId, table.billId),
   foreignKey({ columns: [table.organisationId, table.billId], foreignColumns: [bills.organisationId, bills.id] }).onDelete('restrict'),
   foreignKey({ columns: [table.organisationId, table.bankAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('restrict'),
+]);
+
+export const billAttachments = sqliteTable('bill_attachments', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  billId: text('bill_id').notNull(),
+  objectKey: text('object_key').notNull(),
+  filename: text('filename').notNull(),
+  contentType: text('content_type').notNull(),
+  size: integer('size').notNull(),
+  createdAt: timestamp('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bill_attachments_size_check', sql`${table.size} >= 0 AND ${table.size} <= 1048576`),
+  uniqueIndex('bill_attachments_org_id_uidx').on(table.organisationId, table.id),
+  uniqueIndex('bill_attachments_org_object_uidx').on(table.organisationId, table.objectKey),
+  foreignKey({ columns: [table.organisationId, table.billId], foreignColumns: [bills.organisationId, bills.id] }).onDelete('cascade'),
+]);
+
+export const billHistory = sqliteTable('bill_history', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  billId: text('bill_id').notNull(),
+  event: text('event').notNull(),
+  summary: text('summary').notNull(),
+  createdAt: timestamp('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bill_history_event_check', sql`${table.event} IN ('created','updated','received','cancelled','restored','payment_recorded','attachment_added','attachment_removed')`),
+  uniqueIndex('bill_history_org_id_uidx').on(table.organisationId, table.id),
+  index('bill_history_org_bill_idx').on(table.organisationId, table.billId, table.createdAt),
+  foreignKey({ columns: [table.organisationId, table.billId], foreignColumns: [bills.organisationId, bills.id] }).onDelete('cascade'),
 ]);

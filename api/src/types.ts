@@ -16,6 +16,7 @@ export type AppEnv = {
     objectStore?: ObjectStore;
     receiptScanner?: ReceiptScanner;
     chatCompleter?: ChatCompleter;
+    scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
   };
 };
 
@@ -28,4 +29,5 @@ export type AppDependencies = {
   objectStore?: ObjectStore;
   receiptScanner?: ReceiptScanner;
   chatCompleter?: ChatCompleter;
+  scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
 };

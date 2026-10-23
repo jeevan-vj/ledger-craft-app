@@ -1,8 +1,37 @@
 import { z } from 'zod';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
+const positiveMoney = money.refine((value) => !value.startsWith('-') && !/^0+(?:\.0+)?$/.test(value), {
+  message: 'Amount must be greater than zero',
+});
+const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const accountType = z.enum(['checking', 'savings', 'credit_card', 'business']);
 const transactionType = z.enum(['debit', 'credit']);
+const transactionSource = z.enum(['import', 'manual', 'transfer']);
+const paymentMethod = z.enum(['bank_transfer', 'cash', 'card', 'cheque', 'other']);
+
+export const bankTransactionSplitSchema = z.object({
+  id: z.string().uuid(),
+  category: z.string().min(1),
+  description: z.string().nullable(),
+  amount: money,
+});
+
+export const bankTransactionDocumentConnectionSchema = z.object({
+  id: z.string().uuid(),
+  documentType: z.enum(['invoice', 'bill']),
+  documentId: z.string().uuid(),
+  documentNumber: z.string().min(1),
+  amount: money,
+});
+
+export const bankTransactionAttachmentSchema = z.object({
+  id: z.string().uuid(),
+  objectKey: z.string().min(1),
+  filename: z.string().min(1),
+  contentType: z.string().min(1),
+  size: z.number().int().nonnegative().max(1_048_576),
+});
 
 export const bankAccountSchema = z.object({
   id: z.string().uuid(),
@@ -50,6 +79,13 @@ export const bankTransactionSchema = z.object({
   merchant: z.string().nullable(),
   isReconciled: z.boolean(),
   notes: z.string().nullable(),
+  source: transactionSource,
+  paymentMethod: paymentMethod.nullable(),
+  counterparty: z.string().nullable(),
+  transferId: z.string().uuid().nullable(),
+  splits: z.array(bankTransactionSplitSchema).default([]),
+  documentConnections: z.array(bankTransactionDocumentConnectionSchema).default([]),
+  attachments: z.array(bankTransactionAttachmentSchema).default([]),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -85,11 +121,100 @@ export const importBankTransactionsResponseSchema = z.object({
   transactions: z.array(bankTransactionSchema),
 });
 
+export const createBankTransactionRequestSchema = z
+  .object({
+    bankAccountId: z.string().uuid(),
+    transactionDate: dateOnly,
+    description: z.string().trim().min(1),
+    reference: z.string().trim().min(1).nullable().optional(),
+    amount: positiveMoney,
+    type: transactionType,
+    category: z.string().trim().min(1).nullable().optional(),
+    counterparty: z.string().trim().min(1).nullable().optional(),
+    paymentMethod: paymentMethod.nullable().optional(),
+    notes: z.string().trim().min(1).nullable().optional(),
+  })
+  .strict();
+
+export const updateBankTransactionRequestSchema = createBankTransactionRequestSchema
+  .omit({ bankAccountId: true })
+  .partial()
+  .refine((input) => Object.keys(input).length > 0, { message: 'At least one field is required' });
+
+export const createBankTransferRequestSchema = z
+  .object({
+    sourceAccountId: z.string().uuid(),
+    destinationAccountId: z.string().uuid(),
+    transactionDate: dateOnly,
+    amount: positiveMoney,
+    description: z.string().trim().min(1).optional(),
+    reference: z.string().trim().min(1).nullable().optional(),
+    exchangeRateId: z.string().uuid().optional(),
+  })
+  .strict();
+
+const splitInput = z.object({
+  category: z.string().trim().min(1),
+  description: z.string().trim().min(1).nullable().optional(),
+  amount: positiveMoney,
+}).strict();
+
+const documentConnectionInput = z.object({
+  documentType: z.enum(['invoice', 'bill']),
+  documentId: z.string().uuid(),
+  amount: positiveMoney,
+}).strict();
+
+const attachmentInput = z.object({
+  objectKey: z.string().min(1),
+  filename: z.string().trim().min(1).max(255),
+  contentType: z.string().min(1),
+  size: z.number().int().positive().max(1_048_576),
+}).strict();
+
+export const bankTransactionDetailsRequestSchema = z.object({
+  splits: z.array(splitInput).max(50).default([]),
+  documentConnections: z.array(documentConnectionInput).max(50).default([]),
+  attachments: z.array(attachmentInput).max(10).default([]),
+}).strict();
+
+export const duplicateBankTransactionRequestSchema = z.object({
+  transactionDate: dateOnly.optional(),
+}).strict();
+
+export const bankTransferSchema = z.object({
+  id: z.string().uuid(),
+  sourceAccountId: z.string().uuid(),
+  destinationAccountId: z.string().uuid(),
+  transactionDate: dateOnly,
+  amount: money,
+  currency: z.string().min(1),
+  destinationCurrency: z.string().min(1).default('NZD'),
+  destinationAmount: money.default('0'),
+  exchangeRate: money.default('1'),
+  exchangeRateId: z.string().uuid().nullable().default(null),
+  description: z.string().min(1),
+  reference: z.string().nullable(),
+  sourceTransaction: bankTransactionSchema,
+  destinationTransaction: bankTransactionSchema,
+  createdAt: z.string().min(1),
+  updatedAt: z.string().min(1),
+});
+
 export type BankAccountDto = z.infer<typeof bankAccountSchema>;
 export type CreateBankAccountRequest = z.infer<typeof createBankAccountRequestSchema>;
 export type UpdateBankAccountRequest = z.infer<typeof updateBankAccountRequestSchema>;
 export type BankAccountListResponse = z.infer<typeof bankAccountListResponseSchema>;
 export type BankTransactionDto = z.infer<typeof bankTransactionSchema>;
+export type BankTransactionSplitDto = z.infer<typeof bankTransactionSplitSchema>;
+export type BankTransactionDocumentConnectionDto = z.infer<typeof bankTransactionDocumentConnectionSchema>;
+export type BankTransactionAttachmentDto = z.infer<typeof bankTransactionAttachmentSchema>;
+export type BankTransactionDetailsRequest = z.infer<typeof bankTransactionDetailsRequestSchema>;
+export type DuplicateBankTransactionRequest = z.infer<typeof duplicateBankTransactionRequestSchema>;
 export type ImportBankTransactionsRequest = z.infer<typeof importBankTransactionsRequestSchema>;
 export type BankTransactionListResponse = z.infer<typeof bankTransactionListResponseSchema>;
 export type ImportBankTransactionsResponse = z.infer<typeof importBankTransactionsResponseSchema>;
+export type CreateBankTransactionRequest = z.infer<typeof createBankTransactionRequestSchema>;
+export type UpdateBankTransactionRequest = z.infer<typeof updateBankTransactionRequestSchema>;
+export type CreateBankTransferRequest = z.infer<typeof createBankTransferRequestSchema>;
+export type BankTransferDto = z.infer<typeof bankTransferSchema>;

@@ -31,6 +31,8 @@ Useful pages:
 These identifiers are configuration, not authorization to build, submit, invite
 testers, or release. EAS builds consume plan capacity and store submissions
 change external state. Perform each mutation only when the user requests it.
+An EAS build is not the Mobile CI job. Before a pull request, run the Node 20
+lint, typecheck, Jest, and iOS export commands in `ledgercraft-verify`.
 
 ## Current known release
 

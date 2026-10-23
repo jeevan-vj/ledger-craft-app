@@ -10,6 +10,48 @@ red until every required capability is available. The Akaunting baseline is
 pinned by full commit SHA and can change only through the reviewed process in
 `docs/akaunting-parity-gate.md`.
 
+**Recurring scheduler (implemented locally, 2026-10-23):** Contracts, Hono,
+per-organisation SQLite migration `0016_recurring-scheduler.sql`, Ledger
+Durable Object alarms, responsive web, and Expo manage recurring invoices,
+bills, income, and expenses. Templates retain timezone/local-time and schedule
+limits; deterministic occurrence keys, transactional claims, run history, and
+retry metadata protect catch-up and concurrent execution. Generation reuses
+the manual application services and exact-money contracts. Production email is
+not configured, so generated invoices expose an honest unavailable delivery
+status. Deployment and authenticated native-device QA remain pending.
+
+**Currency/localization foundation (implemented locally, 2026-10-23):** SQLite
+migration `0015_currency-localization.sql` adds tenant-scoped localization,
+financial-year settings, a precision-aware currency catalogue, explicit dated
+exchange rates, and immutable document-rate usage. Hono exposes canonical
+decimal DTOs; web and Expo expose responsive settings. Invoices, bills,
+expenses, and explicit-rate base/foreign transfers snapshot exact transaction
+and base amounts and reject missing rates. Base-currency reporting and
+realized/unrealized posting remain dependent on AKP-05 authoritative ledger rules.
+
+**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
+Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
+policy-based archive, idempotent duplicate, immutable history, exact line
+discounts/multiple taxes, private invoice attachments, token-snapshot attachment
+access, CSV import/export, and printable detail. Cancellation and restoration
+use balanced journals and tenant-bound transactions. Existing invoice sharing,
+templates/PDFs, payment terms, charges, bank details, and reminders are
+preserved. Outbound production email is still intentionally unavailable.
+API/contracts/mobile tests, strict mobile TypeScript, the web production build,
+iOS/Android production exports, and authenticated responsive browser proof pass;
+authenticated native-device QA remains pending.
+
+**Banking parity completion (implemented locally, 2026-10-23):** Hono/SQLite
+migration `0010_banking-parity-completion.sql` adds tenant-scoped exact-money
+transaction splits, invoice/bill connections, and 1 MB attachment metadata.
+Connections atomically update document balances and reject direction, currency,
+tenant, transaction-total, and document-balance violations. Web adds transaction
+detail/allocation, attachments, duplicate, print/PDF, and CSV export. Expo adds
+native CSV statement selection, exact-text parsing, preview, duplicate skipping,
+and import. Focused contract/API/web/mobile tests, migration verification, and
+strict mobile TypeScript pass. Authenticated native-device QA and deployment
+remain open.
+
 **Production release gate:** `.github/workflows/release.yml` deploys to
 Cloudflare after the `CI` workflow succeeds on a push to `main`, using that
 run's head SHA. That conclusion includes every job in the CI workflow,
@@ -100,14 +142,16 @@ no errors, and iOS/Android production exports pass. Native visual QA remains
 open because no local iOS simulator runtime is installed and EAS Simulator is
 unavailable for the account.
 
-**Mobile banking management (implemented locally, 2026-10-19):** Expo now
+**Mobile banking management (implemented locally, updated 2026-10-23):** Expo now
 provides bank-account list/filter, create, detail, edit, delete-attempt,
 active-state, exact opening/current balances, and per-account imported
 transaction history from More through Hono. Dirty bank-account forms are
 protected from dismissal. Strict TypeScript, 20 Jest suites (78 tests), lint
-with no errors, and iOS/Android production exports pass. Authenticated device QA
-remains open; manual transactions, transfers, splits, attachments, and mobile
-import remain in AKP-02.
+with no errors, and iOS/Android production exports pass. Manual transactions and
+transfers are implemented, and native CSV statement selection, exact-text
+preview, duplicate skipping, and import are now available. Split, attachment,
+and document allocation editing remains web-only. Authenticated device QA is
+open.
 
 **Mobile item catalogue (implemented locally, 2026-10-19):** Expo now exposes
 item list/filter, create, detail, edit, delete-attempt, active-state, category,
@@ -155,6 +199,19 @@ create/save/download/file/reload browser flow pass. Frontend build
 and the production smoke suite passes. No schema migration was needed;
 readiness remains `0004_purchases-payables.sql`.
 
+**Purchase lifecycle parity (implemented locally, 2026-10-23):** Shared
+contracts, Hono/SQLite migration `0009_purchase-lifecycle.sql`, web, and Expo now
+cover the AKP-01 core lifecycle. Vendors have contact details, active state,
+defaults, notes, and stable import identifiers. Bills have organisation-scoped
+attachments, immutable history, validated cancel/restore, idempotent creation,
+and atomic exact-decimal split payments. Web adds canonical vendor CSV
+preview/apply/export and bill export. Expo applies active vendor defaults and
+supports split payments, cancel/restore, attachment capture, and history.
+Contract/API/web/mobile tests, the web build, iOS/Android production exports,
+and an authenticated desktop plus 390 px browser flow pass. Deployment and
+authenticated native-device QA remain pending. Recurring bills are an optional
+AKP-04 extension.
+
 **Mobile purchases/payables (TestFlight submitted, 2026-10-04):** Expo now has
 a native Purchases tab for vendor and bill browsing, bill draft create/edit and
 detail, receive/void actions, and exact-decimal partial/full payment capture
@@ -162,9 +219,9 @@ against bank accounts. Focused API-client tests and iOS/Android Expo production
 exports pass. EAS production iOS archive build 2
 (`170b1d99-61c0-4616-8ccd-e3a111c10f21`) finished successfully and submission
 `1b89f039-ccbc-4af5-8e7f-81874f082f54` was uploaded to App Store Connect for
-TestFlight. Apple processing and authenticated device QA remain pending;
-attachments, history, cancel/restore, split allocations, import/export, and
-recurring bills remain open in AKP-01.
+TestFlight. This paragraph records the earlier deployed baseline; the local
+2026-10-23 lifecycle work above supersedes its feature-gap list. Authenticated
+device QA remains pending.
 
 **Purchases/payables slice (deployed, 2026-10-03):** Vendor CRUD and
 draft/receive/void/pay bill workflows now run through shared Zod contracts,
@@ -176,8 +233,18 @@ system and adapt to mobile web. Migration `0004_purchases-payables.sql` is
 reviewed, checksum tracked and applied in production. Frontend build
 `2fb57d9d033e` and Worker `383a4429-5305-412d-b95b-70ac37cb2bd6` are published.
 Release gates, live smoke checks, and authenticated Browser purchase flows pass.
-Attachments, history, cancel/restore, split allocations, import/export,
-recurring bills, and final native device QA remain in AKP-01.
+This paragraph records the earlier deployed baseline; the local 2026-10-23
+lifecycle work above supersedes its feature-gap list. Production deployment and
+authenticated native-device QA remain pending.
+
+**Configurable dashboards (implemented locally, 2026-10-23):** Shared report DTOs
+drive organisation-scoped Hono endpoints and the web/Expo dashboards. SQLite
+migration `0014_configurable-dashboards.sql` persists per-user widget
+visibility/order/size/default layout and saved report definitions inside each
+organisation. Date/comparison filters, exact-decimal summary/receivable/payable/
+cash/tax metrics, source-row drill-down, web URL filters, CSV/PDF/print actions,
+and mobile saved filters are implemented from AKP-05 report DTOs. Financial
+widgets are server-authoritative; recent activity remains explicitly operational.
 
 **Expense flow repair (deployed, 2026-10-03):** Web expense create/edit/reload now
 persists the existing IRD GST treatment, exemption reason, claimable percentage
@@ -275,6 +342,18 @@ Wrangler commands, migration behavior and verification evidence.
 **W1–W13 verified (2026-09-11).** Web and mobile email login/signup are Better Auth. Live auth routes no longer call Supabase Auth. Tax/IRD/GST period screens read Hono invoice/expense/tax rows when flags are on. Hono slices: customers, business profile, items, invoices (send + remind), expenses, payments, accounts list/write/initialize, journals, bank, recon persist, tax config/returns, objects, receipts, receipt-scan, conversations, `POST /api/ai/chat`. `@supabase/supabase-js` is removed from web and mobile; hosted project URL/anon key and Edge Function URLs are gone. Vitest still sets domain flags `false` so leftover `supabase.from` call sites hit a local stub, not a hosted project. **Next:** TanStack Router / `apps/` only after you are ready to delete the remaining stubbed client SQL. Pickup: `AGENTS.md` § Reconstruction agents. Cloudflare: see the current free SQLite architecture above and `deploy/cloudflare.md`.
 
 **Quotes and estimates (2026-10-23).** The API stores one quote entity (`kind` is `quote` or `estimate`) in `quotes`, `quote_line_items`, and `shared_quotes` via reviewed migration `api/sqlite-migrations/0007_quotes.sql`. Numbering is `QUO-{YYYY}-{SEQ}` on its own sequence. Default validity is 30 days. Both are columns on `business_profiles`. Quote reads and writes do not post journal entries and do not change GST, receivables, or revenue. Conversion, only from `accepted`, creates a draft invoice through the existing invoice transaction, dated today in Pacific/Auckland, with the quote's stored tax rate and matching totals. Public share links accept or decline with a typed name. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE` until a mailer implements `sendQuote`. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. The mobile app provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. Focused quote tests, full API/contracts/mobile suites, the web production build, and iOS/Android production exports pass. Authenticated native-device QA remains pending.
+
+**Server-authoritative accounting and reports (2026-10-23).** Operational
+money changes post balanced, exact-decimal journal entries inside the same
+organisation transaction. Draft documents do not post. Posted journals cannot
+be edited or deleted; corrections use reversing postings. Financial statements,
+general ledger, account statements, aging, sales/purchase and tax summaries are
+calculated by Hono from posted journal lines, never trusted from client totals.
+Migration `0013_server-authoritative-reports.sql` adds the reporting indexes and
+posted-journal immutability triggers. Query contracts validate date range, cash/accrual basis, comparison period and
+tenant-scoped filters. Base currency is NZD-only until AKP-06 supplies exchange
+rates, and category filtering remains deferred until category dimensions are
+represented on journal lines.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 
@@ -532,6 +611,8 @@ Do not assume GoTrue password hashes are either compatible or incompatible. Test
 There is one active identity provider at a time. The migration may stage Better Auth tables while Supabase Auth remains authoritative, but clients must not have two competing session systems. The cutover happens only after every protected data path uses Hono.
 
 The current frontend `PermissionGuard` remains presentation only. The API repeats every permission check against the active organisation membership.
+
+**Current SQLite implementation (2026-10-23):** Identity storage owns organisations, active selections, memberships, and hashed invitations. Fixed roles map to a shared server permission catalogue, Hono checks protected domain requests before use cases, and dedicated organisation services guard team administration. Switching changes the trusted active membership used to select the organisation Ledger Durable Object; it never moves or combines ledger data. Custom roles and outbound invitation email are deferred explicitly.
 
 ---
 

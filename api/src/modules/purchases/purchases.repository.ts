@@ -1,12 +1,14 @@
 import {
   billPaymentSchema,
+  billAttachmentSchema,
+  billHistorySchema,
   billSchema,
   vendorSchema,
   type BillDto,
   type BillPaymentDto,
   type CreateBillRequest,
   type CreateVendorRequest,
-  type RecordBillPaymentRequest,
+  type AttachBillObjectRequest,
   type UpdateBillRequest,
   type UpdateVendorRequest,
   type VendorDto,
@@ -15,7 +17,7 @@ import { and, asc, desc, eq, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { accounts } from '../../db/schema/accounts';
 import { bankAccounts } from '../../db/schema/bank';
-import { billLines, billPayments, bills, vendors } from '../../db/schema/purchases';
+import { billAttachments, billHistory, billLines, billPayments, bills, vendors } from '../../db/schema/purchases';
 import { decimal, roundMoney } from '../invoices/money';
 
 type OrganisationContext = { organisationId: string; userId: string };
@@ -31,6 +33,10 @@ function toVendor(row: typeof vendors.$inferSelect): VendorDto {
     paymentTermDays: row.paymentTermDays,
     notes: row.notes ?? null,
     isActive: row.isActive,
+    contactName: row.contactName ?? null,
+    defaultAccountId: row.defaultAccountId ?? null,
+    defaultTaxRate: roundMoney(row.defaultTaxRate),
+    importIdentifier: row.importIdentifier ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -48,6 +54,14 @@ export async function getVendor(tx: Database, organisationId: string, id: string
   return row ? toVendor(row) : undefined;
 }
 
+export async function getVendorByImportIdentifier(tx: Database, organisationId: string, importIdentifier: string) {
+  const [row] = await tx.select().from(vendors).where(and(
+    eq(vendors.organisationId, organisationId),
+    eq(vendors.importIdentifier, importIdentifier),
+  ));
+  return row ? toVendor(row) : undefined;
+}
+
 export async function insertVendor(tx: Database, ctx: OrganisationContext, input: CreateVendorRequest) {
   const [row] = await tx.insert(vendors).values({
     organisationId: ctx.organisationId,
@@ -60,6 +74,10 @@ export async function insertVendor(tx: Database, ctx: OrganisationContext, input
     paymentTermDays: input.paymentTermDays ?? 20,
     notes: input.notes ?? null,
     isActive: input.isActive ?? true,
+    contactName: input.contactName ?? null,
+    defaultAccountId: input.defaultAccountId ?? null,
+    defaultTaxRate: input.defaultTaxRate ?? '15',
+    importIdentifier: input.importIdentifier ?? null,
   }).returning();
   if (!row) throw new Error('Failed to create vendor');
   return toVendor(row);
@@ -80,6 +98,10 @@ export async function updateVendor(
   if (input.paymentTermDays !== undefined) patch.paymentTermDays = input.paymentTermDays;
   if (input.notes !== undefined) patch.notes = input.notes;
   if (input.isActive !== undefined) patch.isActive = input.isActive;
+  if (input.contactName !== undefined) patch.contactName = input.contactName;
+  if (input.defaultAccountId !== undefined) patch.defaultAccountId = input.defaultAccountId;
+  if (input.defaultTaxRate !== undefined) patch.defaultTaxRate = input.defaultTaxRate;
+  if (input.importIdentifier !== undefined) patch.importIdentifier = input.importIdentifier;
   const [row] = await tx.update(vendors).set(patch)
     .where(and(eq(vendors.organisationId, organisationId), eq(vendors.id, id))).returning();
   return row ? toVendor(row) : undefined;
@@ -92,7 +114,8 @@ export async function deleteVendor(tx: Database, organisationId: string, id: str
   return deleted.length > 0;
 }
 
-export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest) {
+export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest, currencyPrecision = 2) {
+  const round = (value: Parameters<typeof roundMoney>[0]) => decimal(value).toFixed(currencyPrecision);
   const taxInclusive = input.taxInclusive ?? true;
   const calculated = (input.lines ?? []).map((line) => {
     const gross = decimal(line.quantity).mul(line.unitPrice);
@@ -105,19 +128,19 @@ export function calculateBillLines(input: CreateBillRequest | UpdateBillRequest)
     return {
       ...line,
       quantity: roundMoney(line.quantity),
-      unitPrice: roundMoney(line.unitPrice),
+      unitPrice: round(line.unitPrice),
       taxRate: roundMoney(line.taxRate ?? '15'),
-      subtotal: subtotal.toFixed(),
-      taxAmount: tax.toFixed(),
-      total: total.toFixed(),
+      subtotal: round(subtotal),
+      taxAmount: round(tax),
+      total: round(total),
       accountId: line.accountId ?? null,
     };
   });
   return {
     lines: calculated,
-    subtotal: calculated.reduce((sum, line) => sum.add(line.subtotal), decimal(0)).toFixed(),
-    taxAmount: calculated.reduce((sum, line) => sum.add(line.taxAmount), decimal(0)).toFixed(),
-    total: calculated.reduce((sum, line) => sum.add(line.total), decimal(0)).toFixed(),
+    subtotal: round(calculated.reduce((sum, line) => sum.add(line.subtotal), decimal(0))),
+    taxAmount: round(calculated.reduce((sum, line) => sum.add(line.taxAmount), decimal(0))),
+    total: round(calculated.reduce((sum, line) => sum.add(line.total), decimal(0))),
   };
 }
 
@@ -128,16 +151,26 @@ async function nextBillNumber(tx: Database, organisationId: string): Promise<str
 }
 
 async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<BillDto> {
-  const [vendor, lines] = await Promise.all([
+  const [vendor, lines, payments, attachments, history] = await Promise.all([
     getVendor(tx, row.organisationId, row.vendorId),
     tx.select({ line: billLines, accountName: accounts.name }).from(billLines)
       .leftJoin(accounts, and(eq(accounts.organisationId, row.organisationId), eq(accounts.id, billLines.accountId)))
       .where(and(eq(billLines.organisationId, row.organisationId), eq(billLines.billId, row.id)))
       .orderBy(asc(billLines.lineOrder)),
+    tx.select({ payment: billPayments, bankName: bankAccounts.accountName }).from(billPayments)
+      .leftJoin(bankAccounts, and(eq(bankAccounts.organisationId, row.organisationId), eq(bankAccounts.id, billPayments.bankAccountId)))
+      .where(and(eq(billPayments.organisationId, row.organisationId), eq(billPayments.billId, row.id)))
+      .orderBy(desc(billPayments.createdAt)),
+    tx.select().from(billAttachments)
+      .where(and(eq(billAttachments.organisationId, row.organisationId), eq(billAttachments.billId, row.id)))
+      .orderBy(desc(billAttachments.createdAt)),
+    tx.select().from(billHistory)
+      .where(and(eq(billHistory.organisationId, row.organisationId), eq(billHistory.billId, row.id)))
+      .orderBy(desc(billHistory.createdAt)),
   ]);
   if (!vendor) throw new Error('Bill vendor missing');
   const today = new Date().toISOString().slice(0, 10);
-  const displayStatus = row.lifecycleStatus === 'void' ? 'void'
+  const displayStatus = row.lifecycleStatus === 'void' ? 'cancelled'
     : row.lifecycleStatus === 'draft' ? 'draft'
       : row.paymentStatus === 'paid' ? 'paid'
         : row.paymentStatus === 'partial' ? 'partial'
@@ -154,10 +187,16 @@ async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<
     paymentStatus: row.paymentStatus,
     displayStatus,
     currency: row.currency,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
+    baseCurrency: row.baseCurrency,
+    baseSubtotal: row.baseSubtotal,
+    baseTaxAmount: row.baseTaxAmount,
+    baseTotal: row.baseTotal,
     taxInclusive: row.taxInclusive,
-    subtotal: roundMoney(row.subtotal),
-    taxAmount: roundMoney(row.taxAmount),
-    total: roundMoney(row.total),
+    subtotal: row.subtotal,
+    taxAmount: row.taxAmount,
+    total: row.total,
     totalPaid: roundMoney(row.totalPaid),
     balanceDue: roundMoney(row.balanceDue),
     notes: row.notes ?? null,
@@ -172,6 +211,25 @@ async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<
       total: roundMoney(line.total),
       accountId: line.accountId ?? null,
       accountName: accountName ?? null,
+    })),
+    payments: payments.map(({ payment, bankName }) => billPaymentSchema.parse({
+      id: payment.id,
+      billId: payment.billId,
+      bankAccountId: payment.bankAccountId,
+      bankAccountName: bankName ?? 'Bank account',
+      amount: roundMoney(payment.amount),
+      paymentDate: payment.paymentDate,
+      referenceNumber: payment.referenceNumber ?? null,
+      notes: payment.notes ?? null,
+      createdAt: payment.createdAt.toISOString(),
+    })),
+    attachments: attachments.map((attachment) => billAttachmentSchema.parse({
+      ...attachment,
+      createdAt: attachment.createdAt.toISOString(),
+    })),
+    history: history.map((entry) => billHistorySchema.parse({
+      ...entry,
+      createdAt: entry.createdAt.toISOString(),
     })),
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
@@ -190,8 +248,10 @@ export async function getBill(tx: Database, organisationId: string, id: string) 
   return row ? toBillDto(tx, row) : undefined;
 }
 
-export async function insertBill(tx: Database, ctx: OrganisationContext, input: CreateBillRequest) {
-  const totals = calculateBillLines(input);
+type BillCurrencySnapshot = { precision: number; exchangeRate: string; exchangeRateId: string | null; baseCurrency: string; basePrecision: number };
+
+export async function insertBill(tx: Database, ctx: OrganisationContext, input: CreateBillRequest, currency: BillCurrencySnapshot) {
+  const totals = calculateBillLines(input, currency.precision);
   const [row] = await tx.insert(bills).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
@@ -201,6 +261,12 @@ export async function insertBill(tx: Database, ctx: OrganisationContext, input: 
     issueDate: input.issueDate,
     dueDate: input.dueDate,
     currency: input.currency ?? 'NZD',
+    exchangeRate: currency.exchangeRate,
+    exchangeRateId: currency.exchangeRateId,
+    baseCurrency: currency.baseCurrency,
+    baseSubtotal: decimal(totals.subtotal).mul(currency.exchangeRate).toFixed(currency.basePrecision),
+    baseTaxAmount: decimal(totals.taxAmount).mul(currency.exchangeRate).toFixed(currency.basePrecision),
+    baseTotal: decimal(totals.total).mul(currency.exchangeRate).toFixed(currency.basePrecision),
     taxInclusive: input.taxInclusive ?? true,
     subtotal: totals.subtotal,
     taxAmount: totals.taxAmount,
@@ -213,10 +279,11 @@ export async function insertBill(tx: Database, ctx: OrganisationContext, input: 
   for (const [index, line] of totals.lines.entries()) {
     await tx.insert(billLines).values({ ...line, organisationId: ctx.organisationId, billId: row.id, lineOrder: index + 1 });
   }
+  await appendBillHistory(tx, ctx, row.id, 'created', 'Bill created');
   return toBillDto(tx, row);
 }
 
-export async function updateBill(tx: Database, organisationId: string, id: string, input: UpdateBillRequest) {
+export async function updateBill(tx: Database, organisationId: string, id: string, input: UpdateBillRequest, currency: BillCurrencySnapshot) {
   const [existing] = await tx.select().from(bills)
     .where(and(eq(bills.organisationId, organisationId), eq(bills.id, id)));
   if (!existing) return undefined;
@@ -229,11 +296,15 @@ export async function updateBill(tx: Database, organisationId: string, id: strin
   if (input.taxInclusive !== undefined) patch.taxInclusive = input.taxInclusive;
   if (input.notes !== undefined) patch.notes = input.notes;
   if (input.lines !== undefined) {
-    const totals = calculateBillLines({ ...input, taxInclusive: input.taxInclusive ?? existing.taxInclusive });
+    const totals = calculateBillLines({ ...input, taxInclusive: input.taxInclusive ?? existing.taxInclusive }, currency.precision);
     patch.subtotal = totals.subtotal;
     patch.taxAmount = totals.taxAmount;
     patch.total = totals.total;
     patch.balanceDue = decimal(totals.total).sub(existing.totalPaid).toFixed();
+    patch.exchangeRate = currency.exchangeRate; patch.exchangeRateId = currency.exchangeRateId; patch.baseCurrency = currency.baseCurrency;
+    patch.baseSubtotal = decimal(totals.subtotal).mul(currency.exchangeRate).toFixed(currency.basePrecision);
+    patch.baseTaxAmount = decimal(totals.taxAmount).mul(currency.exchangeRate).toFixed(currency.basePrecision);
+    patch.baseTotal = decimal(totals.total).mul(currency.exchangeRate).toFixed(currency.basePrecision);
     await tx.delete(billLines).where(and(eq(billLines.organisationId, organisationId), eq(billLines.billId, id)));
     for (const [index, line] of totals.lines.entries()) {
       await tx.insert(billLines).values({ ...line, organisationId, billId: id, lineOrder: index + 1 });
@@ -263,11 +334,17 @@ export async function markBillVoid(tx: Database, organisationId: string, id: str
   return row ? toBillDto(tx, row) : undefined;
 }
 
+export async function markBillRestored(tx: Database, organisationId: string, id: string) {
+  const [row] = await tx.update(bills).set({ lifecycleStatus: 'received', voidedAt: null, updatedAt: new Date() })
+    .where(and(eq(bills.organisationId, organisationId), eq(bills.id, id))).returning();
+  return row ? toBillDto(tx, row) : undefined;
+}
+
 export async function insertPayment(
   tx: Database,
   ctx: OrganisationContext,
   bill: BillDto,
-  input: RecordBillPaymentRequest,
+  input: { bankAccountId: string; amount: string; paymentDate: string; referenceNumber?: string | null; notes?: string | null },
 ): Promise<BillPaymentDto> {
   const [row] = await tx.insert(billPayments).values({
     organisationId: ctx.organisationId,
@@ -314,4 +391,29 @@ export async function hasAccount(tx: Database, organisationId: string, id: strin
   const [row] = await tx.select({ id: accounts.id }).from(accounts)
     .where(and(eq(accounts.organisationId, organisationId), eq(accounts.id, id)));
   return Boolean(row);
+}
+
+export async function appendBillHistory(
+  tx: Database,
+  ctx: OrganisationContext,
+  billId: string,
+  event: typeof billHistory.$inferInsert.event,
+  summary: string,
+) {
+  await tx.insert(billHistory).values({ organisationId: ctx.organisationId, userId: ctx.userId, billId, event, summary });
+}
+
+export async function attachObject(tx: Database, ctx: OrganisationContext, billId: string, input: AttachBillObjectRequest) {
+  const [row] = await tx.insert(billAttachments).values({ organisationId: ctx.organisationId, billId, ...input }).returning();
+  if (!row) throw new Error('Failed to attach file');
+  return billAttachmentSchema.parse({ ...row, createdAt: row.createdAt.toISOString() });
+}
+
+export async function removeAttachment(tx: Database, organisationId: string, billId: string, attachmentId: string) {
+  const rows = await tx.delete(billAttachments).where(and(
+    eq(billAttachments.organisationId, organisationId),
+    eq(billAttachments.billId, billId),
+    eq(billAttachments.id, attachmentId),
+  )).returning();
+  return rows[0];
 }

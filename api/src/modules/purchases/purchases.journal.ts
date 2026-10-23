@@ -155,3 +155,29 @@ export async function reverseBill(tx: Database, ctx: OrganisationContext, bill: 
   await tx.update(journalEntries).set({ status: 'reversed', updatedAt: new Date() })
     .where(and(eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.id, source.id)));
 }
+
+export async function restoreBill(tx: Database, ctx: OrganisationContext, bill: BillDto) {
+  const [voidEntry] = await tx.select().from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId),
+    eq(journalEntries.referenceType, 'bill_void'),
+    eq(journalEntries.referenceId, bill.id),
+  ));
+  if (!voidEntry) throw new HTTPException(409, { message: 'Bill cancellation journal is missing' });
+  const voidLines = await tx.select().from(journalEntryLines).where(and(
+    eq(journalEntryLines.organisationId, ctx.organisationId),
+    eq(journalEntryLines.journalEntryId, voidEntry.id),
+  ));
+  await post(tx, ctx, {
+    date: new Date().toISOString().slice(0, 10),
+    description: `Restore ${bill.billNumber}`,
+    referenceType: 'bill_restore',
+    referenceId: bill.id,
+    total: bill.total,
+    lines: voidLines.map((line) => ({
+      accountId: line.accountId,
+      description: `Restore ${line.description ?? bill.billNumber}`,
+      debit: line.creditAmount,
+      credit: line.debitAmount,
+    })),
+  });
+}

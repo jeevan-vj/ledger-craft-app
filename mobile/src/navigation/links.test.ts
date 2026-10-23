@@ -6,7 +6,16 @@ describe('mobile navigation links', () => {
   it('keeps customers as a tab and expenses and purchases under More', () => {
     expect(mainTabs).toEqual(['Dashboard', 'Invoices', 'Customers', 'More']);
     const screens = moreMenuSections.flatMap((section) => section.rows.map((row) => row.screen));
-    expect(screens).toEqual(['ItemList', 'BankAccountList', 'BusinessSettings', 'ExpenseList', 'PurchaseList']);
+    expect(screens).toEqual([
+      'Reports',
+      'ItemList',
+      'BankAccountList',
+      'BusinessSettings',
+      'CompanyTeam',
+      'RecurringSchedules',
+      'ExpenseList',
+      'PurchaseList',
+    ]);
     expect(screens).not.toContain('CustomerList');
   });
 

@@ -14,10 +14,13 @@ type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsLis
 
 const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['name']> = {
   BusinessSettings: 'briefcase',
+  CompanyTeam: 'users',
+  RecurringSchedules: 'repeat',
   ItemList: 'tag',
   BankAccountList: 'dollar-sign',
   ExpenseList: 'credit-card',
   PurchaseList: 'shopping-bag',
+  Reports: 'bar-chart-2',
 };
 
 export default function SettingsScreen() {

@@ -20,6 +20,7 @@ interface AuthContextValue {
   readonly loading: boolean;
   readonly hasCompletedOnboarding: boolean;
   readonly onboardingChecked: boolean;
+  readonly me: MeResponse | null;
   readonly signUp: (
     email: string,
     password: string,
@@ -59,17 +60,20 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [hasCompletedOnboarding, setHasCompletedOnboarding] = useState(false);
   const [onboardingChecked, setOnboardingChecked] = useState(false);
+  const [me, setMe] = useState<MeResponse | null>(null);
   const navigate = useNavigate();
 
   const applySession = useCallback((me: MeResponse | null) => {
     if (!me) {
       setSentryUser(null);
+      setMe(null);
       setUser(null);
       setHasCompletedOnboarding(false);
       setOnboardingChecked(true);
       return;
     }
     setSentryUser(me.user.id);
+    setMe(me);
     setUser(toAuthUser(me));
     // Business profile is still on supabase-js. A Better Auth session is enough to enter the app.
     setHasCompletedOnboarding(true);
@@ -173,6 +177,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       hasCompletedOnboarding,
       onboardingChecked,
+      me,
       signUp,
       signIn,
       signInWithGoogle,
@@ -187,6 +192,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       hasCompletedOnboarding,
       onboardingChecked,
+      me,
       signUp,
       signIn,
       signInWithGoogle,

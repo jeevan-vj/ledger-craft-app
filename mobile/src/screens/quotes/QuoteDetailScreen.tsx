@@ -40,6 +40,7 @@ import { businessProfileService } from '@/services/businessProfileService';
 import { space } from '@/theme/tokens';
 import { quoteDocumentLabels } from '@/utils/invoiceTemplates';
 import { downloadInvoicePDF } from '@/utils/pdfUtils';
+import { formatLineQuantity } from '@/utils/invoiceLineDisplay';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
@@ -205,7 +206,7 @@ export default function QuoteDetailScreen() {
             <ListRow
               key={item.id}
               label={item.description}
-              subtitle={`${item.quantity} ${item.unit} × ${formatMoney(item.rate, quote.currency)}`}
+              subtitle={`${formatLineQuantity(item.quantity, item.unit)} × ${formatMoney(item.rate, quote.currency)}`}
               value={formatMoney(item.total, quote.currency)}
               showChevron={false}
             />

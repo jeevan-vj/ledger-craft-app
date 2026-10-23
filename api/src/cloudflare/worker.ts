@@ -1,9 +1,9 @@
 import { DurableObject } from 'cloudflare:workers';
 import * as Sentry from '@sentry/cloudflare';
 import type { CloudflareOptions } from '@sentry/cloudflare';
-import { eq } from 'drizzle-orm';
+import { and, eq, isNull } from 'drizzle-orm';
 import { createApp } from '../app';
-import { organisationMemberships, organisations, users } from '../db/schema/identity';
+import { activeOrganisationSelections, organisationMemberships, organisations, users } from '../db/schema/identity';
 import { createAuth, type Auth } from '../modules/auth/auth';
 import { createUnavailableInvoiceMailer } from '../modules/invoices/mailer';
 import { bindRequestId, failureResponse, resolveRequestId } from '../observability/request-id';
@@ -13,6 +13,7 @@ import { isSentryDebugRouteEnabled, SENTRY_DEBUG_PATH, sentrySdkOptions } from '
 import { createSentryReporter, tagActiveRequest } from '../observability/sentry-reporter';
 import { publicLedgerOrganisationId } from './public-routes';
 import { durableDatabase, durableObjectStore, migrateStorage } from './storage';
+import { runDue } from '../modules/recurring/recurring.service';
 
 setErrorReporter(createSentryReporter());
 
@@ -76,9 +77,17 @@ class IdentityBase extends DurableObject<Env> {
       }
       const session = await this.auth.api.getSession({headers:request.headers});
       if (!session) return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
-      const [member] = await this.db.select().from(organisationMemberships).where(eq(organisationMemberships.userId, session.user.id));
+      if (path === '/api/me' || path.startsWith('/api/organisations') || path.startsWith('/api/invitations')) {
+        return createApp({ db: this.db, auth: this.auth }).fetch(request);
+      }
+      const memberships = await this.db.select({ membership: organisationMemberships, organisation: organisations })
+        .from(organisationMemberships)
+        .innerJoin(organisations, eq(organisations.id, organisationMemberships.organisationId))
+        .where(and(eq(organisationMemberships.userId, session.user.id), isNull(organisationMemberships.removedAt), isNull(organisations.archivedAt)));
+      const [selection] = await this.db.select().from(activeOrganisationSelections).where(eq(activeOrganisationSelections.userId, session.user.id));
+      const member = memberships.find((row) => row.membership.organisationId === selection?.organisationId)?.membership ?? memberships[0]?.membership;
       if (!member) return failureResponse(403, 'FORBIDDEN', 'No organisation membership', requestId);
-      const [org] = await this.db.select().from(organisations).where(eq(organisations.id, member.organisationId));
+      const org = memberships.find((row) => row.organisation.id === member.organisationId)?.organisation;
       if (!org) return failureResponse(403, 'FORBIDDEN', 'Organisation not found', requestId);
       return this.env.LEDGERS.getByName(org.id).dispatch(request, {
         user:session.user, organisation:org, membership:member,
@@ -109,7 +118,8 @@ class LedgerBase extends DurableObject<Env> {
         await this.db.transaction(async (db) => {
           await db.insert(users).values(identity.user).onConflictDoNothing();
           await db.insert(organisations).values(identity.organisation).onConflictDoNothing();
-          await db.insert(organisationMemberships).values({id:identity.membership.id, userId:identity.user.id, organisationId:identity.organisation.id, role:identity.membership.role}).onConflictDoNothing();
+          await db.insert(organisationMemberships).values({id:identity.membership.id, userId:identity.user.id, organisationId:identity.organisation.id, role:identity.membership.role})
+            .onConflictDoUpdate({ target: [organisationMemberships.organisationId, organisationMemberships.userId], set: { role: identity.membership.role, removedAt: null } });
         });
       } else if (!publicLedgerOrganisationId(path)) {
         return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
@@ -121,11 +131,17 @@ class LedgerBase extends DurableObject<Env> {
         objectStore:durableObjectStore(this.ctx.storage),
         invoiceMailer:createUnavailableInvoiceMailer(),
         actorUserId: userId,
+        scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
       });
       return app.fetch(request);
     } catch (error) {
       return reportFailure(error, report);
     }
+  }
+
+  async alarm(): Promise<void> {
+    const result = await runDue(this.db, new Date(), 100);
+    if (result.nextAlarmAt) await this.ctx.storage.setAlarm(new Date(result.nextAlarmAt).getTime());
   }
 }
 

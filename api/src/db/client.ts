@@ -5,17 +5,27 @@ import { accountTemplates, accounts, accountContacts, journalEntries, journalEnt
 import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
+  activeOrganisationSelections,
   authAccounts,
+  organisationInvitations,
   organisationMemberships,
   organisations,
   sessions,
   users,
   verifications,
 } from './schema/identity';
-import { invoices, lineItems } from './schema/invoices';
+import { invoiceAttachments, invoiceHistory, invoices, lineItems } from './schema/invoices';
 import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
-import { bankAccounts, bankTransactions, transactionImportBatches } from './schema/bank';
+import {
+  bankAccounts,
+  bankTransactionAttachments,
+  bankTransactionDocumentConnections,
+  bankTransactionSplits,
+  bankTransactions,
+  bankTransfers,
+  transactionImportBatches,
+} from './schema/bank';
 import { expenseCategories, expenses } from './schema/expenses';
 import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
@@ -26,6 +36,9 @@ import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
 import { sharedInvoices } from './schema/shared-invoices';
 import { billLines, billPayments, bills, vendors } from './schema/purchases';
+import { recurringRuns, recurringTemplates } from './schema/recurring';
+import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from './schema/currency';
+import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
 
 export const schema = {
   rlsProbe,
@@ -35,12 +48,16 @@ export const schema = {
   verifications,
   organisations,
   organisationMemberships,
+  activeOrganisationSelections,
+  organisationInvitations,
   customers,
   businessProfiles,
   itemCategories,
   items,
   invoices,
   lineItems,
+  invoiceHistory,
+  invoiceAttachments,
   quotes,
   quoteLineItems,
   sharedQuotes,
@@ -57,6 +74,10 @@ export const schema = {
   conversationMessages,
   bankAccounts,
   bankTransactions,
+  bankTransactionSplits,
+  bankTransactionDocumentConnections,
+  bankTransactionAttachments,
+  bankTransfers,
   transactionImportBatches,
   reconciliationSessions,
   reconciliationMatches,
@@ -70,6 +91,14 @@ export const schema = {
   bills,
   billLines,
   billPayments,
+  recurringTemplates,
+  recurringRuns,
+  organisationLocalizationSettings,
+  organisationCurrencies,
+  exchangeRates,
+  exchangeRateUsage,
+  dashboardLayouts,
+  savedReportDefinitions,
 };
 
 

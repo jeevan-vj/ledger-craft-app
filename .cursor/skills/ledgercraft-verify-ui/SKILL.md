@@ -1,40 +1,39 @@
 ---
 name: ledgercraft-verify-ui
-description: Browser and invoice-PDF verification for LedgerCraft. Use when taking screenshots, clicking through login/create/preview, downloading PDFs, or checking that a web feature works in the running Vite app.
+description: Browser and invoice-PDF verification for LedgerCraft. Use when a web UI change needs screenshots, a phone-width check, login, create, preview, or a downloaded PDF in the Vite app.
 ---
 
 # LedgerCraft verify UI
 
-One screenshot is not verification. Drive the flow, then capture evidence.
+Run `ledgercraft-verify` first. One screenshot of a static render is not verification. Drive the flow, then capture it.
 
-Read `ledgercraft-verify` for automated + HTTP gates first. Start `pnpm dev:api` and `pnpm dev` (Vite **8080**).
+Start `pnpm dev:api` and `pnpm dev` (Vite **8080**). Save files under `/tmp/ledgercraft-verify-<feature>/` and embed them in the pull request.
 
 ## Browser
 
-- Isolated context (do not reuse unrelated tabs).
-- Desktop **1440×900** and one mobile width (**390×844**) when layout changed.
-- Dismiss the PWA "New Version Available" overlay before clicking anything:
+- Use a fresh context. Do not reuse an unrelated signed-in tab.
+- Every UI change: phone width **390×844**. Take a screenshot of the changed state, not only the first paint.
+- Layout or styling changes: also **1440×900**.
+- Dismiss the PWA overlay before clicking:
 
 ```js
 document.querySelector('[aria-label="Dismiss update prompt"]')?.click()
 ```
 
-- Exercise empty, error, and happy paths that the change can hit.
-- Hunt regressions on other routes that share the same state.
+- Exercise the empty, error, and success states this change can hit.
+- Open the other routes that read the same state and check they still agree.
 
-## Auth for UI
+## Auth
 
-Prefer a **real local Better Auth** user: sign up on `/signup`, confirm `/api/me`, then use the app.
+Sign up on `/signup` with local Better Auth, confirm `/api/me`, then use the app.
 
-Mock Supabase `sb-*-auth-token` + `**/rest/v1/**` only when the screen still depends on `supabase-js` or hosted Auth is empty. Label that evidence **UI-only, not Hono persistence**.
+A mocked session is evidence only when the screen cannot reach Hono yet. Label it **UI-only, not Hono persistence**. Do not point a browser test at hosted Supabase.
 
-Never point Playwright at hosted empty Supabase as the system under test.
+## Invoice create to PDF
 
-## Invoice create → PDF
+The Edit **Preview** tab unmounts the form before preview can read it. Click the footer Preview button (`div.hidden.sm:block` on desktop).
 
-The Edit **Preview tab** unmounts the form before `generatePreview` can read values. Click the **footer** Preview button (`div.hidden.sm:block` on desktop).
-
-Playwright `getByRole('button', { name: /download pdf/i })` often misses the control. Click in-page:
+Playwright `getByRole('button', { name: /download pdf/i })` often misses the control. Click in page:
 
 ```js
 [...document.querySelectorAll('button')]
@@ -42,13 +41,12 @@ Playwright `getByRole('button', { name: /download pdf/i })` often misses the con
   ?.click()
 ```
 
-Wait for the download. Then:
+Wait for the file, then check:
 
-1. Magic bytes `%PDF`.
-2. Size > 1 KB.
-3. Filename contains the invoice number (`Invoice-INV-….pdf`).
-4. Thumbnail the first page (`qlmanage -t -s 1600 -o <dir> <file.pdf>` on macOS). html2canvas PDFs have almost no extractable text — **visual** check against the preview.
-5. Confirm buyer, line, total, dates, notes/terms match the preview.
+1. `head -c 5` prints `%PDF-`. (`head -c 4` prints `%PDF`.)
+2. Size is greater than 1 KB.
+3. The filename contains the invoice number (`Invoice-INV-….pdf`).
+4. Buyer, line, total, dates, and notes match the on-screen preview. html2canvas PDFs have almost no text to extract, so compare the preview screenshot. Render a page image with `pdftoppm` when it is installed. `qlmanage` is macOS-only and is not required.
 
 ## Invoice form selectors
 
@@ -56,17 +54,13 @@ Wait for the download. Then:
 | --- | --- |
 | Number | `[data-testid="invoice-number"]` |
 | Customer | `[data-testid="customer-select"]` |
-| Line description / qty / rate | `[data-testid="item-description-0"]` etc. |
+| Line description / qty / rate | `[data-testid="item-description-0"]` and the matching qty and rate ids |
 | Total | `[data-testid="invoice-total"]` |
 | Generate preview | footer button named Preview, not the tab |
 | PDF | button whose text includes `Download PDF` |
 
-## Output
+## Report
 
-Keep files in `/tmp/ledgercraft-verify-<feature>/`:
-
-- `01-*.png` form
-- `02-preview.png` on-screen invoice
-- `Invoice-*.pdf` + `.png` thumbnail
-
-Report persistence honestly (Hono row vs mocked REST).
+- `390.png` for the phone width, and `1440.png` when you took the desktop pass
+- `02-preview.png` and the PDF when the change touches an invoice or quote document
+- Whether the row came from Hono or from a mock

@@ -63,6 +63,7 @@ export function statusInk(
   colors: Pick<StatusPalette, 'textSecondary' | 'danger' | 'success' | 'accentText'>,
 ): string {
   if (status === 'overdue') return colors.danger;
+  if (status === 'cancelled') return colors.danger;
   if (status === 'paid') return colors.success;
   if (status === 'sent') return colors.accentText;
   return colors.textSecondary;
@@ -93,6 +94,7 @@ export const getStatusIcon = (status: string): StatusIconName => {
 };
 
 export const getStatusLabel = (status: string): string => {
+  if (status === 'cancelled') return 'Cancelled';
   const option = STATUS_OPTIONS.find((opt) => opt.value === status);
   return option?.label || status;
 };

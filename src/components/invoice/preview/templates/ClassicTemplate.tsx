@@ -2,6 +2,7 @@ import { BankPaymentDetails } from '../BankPaymentDetails';
 import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { Invoice } from '@/types';
+import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -171,8 +172,8 @@ const ClassicTemplate = ({
                     </div>
                   )}
                 </td>
-                <td className="py-2 px-1 text-right">{item.quantity} {item.unit}</td>
-                <td className="py-2 px-1 text-right">{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
+                <td className="py-2 px-1 text-right">{formatLineQuantity(item.quantity, item.unit)}</td>
+                <td className="py-2 px-1 text-right">{formatCurrency(item.rate, invoice.currency)}</td>
                 <td className="py-2 px-2 text-right">{formatCurrency(item.quantity * item.rate, invoice.currency)}</td>
               </tr>
             ))}
@@ -188,7 +189,7 @@ const ClassicTemplate = ({
             <span>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
           </div>
           
-          {tax > 0 && (
+          {showPositiveAmount(tax) && (
             <div className="flex justify-between py-1">
               <span className="font-semibold">Tax ({taxRate}%):</span>
               <span>{formatCurrency(tax, invoice.currency)}</span>
@@ -203,6 +204,7 @@ const ClassicTemplate = ({
                 const chargeAmount = charge.calculationType === 'percentage' 
                   ? (invoice.subtotal * charge.amount) / 100
                   : charge.amount;
+                if (!showPositiveAmount(chargeAmount)) return null;
                 
                 return (
                   <div key={index} className="flex justify-between py-1">
@@ -214,7 +216,7 @@ const ClassicTemplate = ({
             </>
           ) : (
             /* Fallback to legacy additional charges */
-            invoice.additionalCharges > 0 && (
+            showPositiveAmount(invoice.additionalCharges) && (
               <div className="flex justify-between py-1">
                 <span className="font-semibold">Additional Charges:</span>
                 <span>{formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
@@ -222,7 +224,7 @@ const ClassicTemplate = ({
             )
           )}
           
-              {invoice.discount && invoice.discount > 0 && (
+              {showPositiveAmount(invoice.discount) && (
             <div className="flex justify-between py-1">
               <span className="font-semibold">{invoiceDiscountLabel(invoice)}:</span>
               <span>-{formatCurrency(invoice.discount, invoice.currency)}</span>

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest';
 import {
   createInvoiceRequestSchema,
+  importInvoicesRequestSchema,
+  invoiceAttachmentSchema,
+  invoiceLifecycleActionRequestSchema,
   updateInvoiceRequestSchema,
   createShareInvoiceRequestSchema,
   invoiceSchema,
@@ -156,6 +159,35 @@ describe('invoice contracts', () => {
         },
       }).success,
     ).toBe(true);
+  });
+});
+
+describe('invoice lifecycle contracts', () => {
+  it('accepts line discounts and multiple taxes without client totals', () => {
+    const parsed = createInvoiceRequestSchema.parse({
+      customerId: crypto.randomUUID(), date: '2026-10-23', dueDate: '2026-11-23',
+      items: [{
+        description: 'Implementation', quantity: '2', rate: '100',
+        discountType: 'percent', discountValue: '10',
+        taxes: [
+          { id: 'gst', name: 'GST', rate: '15' },
+          { id: 'levy', name: 'Levy', rate: '2.5' },
+        ],
+      }],
+    });
+    expect(parsed.items[0]?.taxes).toHaveLength(2);
+  });
+
+  it('validates lifecycle, attachment and import DTOs', () => {
+    expect(invoiceLifecycleActionRequestSchema.parse({ reason: 'Customer request' }).reason).toBe('Customer request');
+    expect(invoiceAttachmentSchema.parse({
+      id: crypto.randomUUID(), invoiceId: crypto.randomUUID(), filename: 'brief.pdf',
+      contentType: 'application/pdf', size: 123, createdAt: new Date().toISOString(),
+    }).filename).toBe('brief.pdf');
+    expect(importInvoicesRequestSchema.parse({ dryRun: true, rows: [{
+      externalId: 'legacy-1', customerId: crypto.randomUUID(), date: '2026-10-23',
+      dueDate: '2026-11-23', currency: 'NZD', items: [{ description: 'Work', quantity: '1', rate: '20' }],
+    }] }).rows).toHaveLength(1);
   });
 });
 

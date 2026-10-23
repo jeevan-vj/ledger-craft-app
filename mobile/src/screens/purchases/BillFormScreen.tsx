@@ -45,7 +45,7 @@ const emptyBill = (): BillWriteRequest => ({
 
 export default function BillFormScreen() {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const route = useRoute<Route>();
@@ -192,7 +192,19 @@ export default function BillFormScreen() {
       </ScrollView>
 
       <SelectionSheet visible={vendorPicker} title="Vendor" searchPlaceholder="Search vendors" searchQuery={search} onSearchChange={setSearch} onClose={() => setVendorPicker(false)} loading={vendors.isLoading} empty={(vendors.data ?? []).length === 0} emptyTitle="No vendors" emptyDescription="Create a vendor on the web first.">
-        {(vendors.data ?? []).filter((vendor) => vendor.isActive && (!search || vendor.name.toLowerCase().includes(search.toLowerCase()))).map((vendor) => <SelectionRow key={vendor.id} title={vendor.name} subtitle={`${vendor.paymentTermDays} day terms`} selected={vendor.id === form.vendorId} onPress={() => { setForm({ ...form, vendorId: vendor.id, dueDate: plusDays(form.issueDate, vendor.paymentTermDays) }); setVendorPicker(false); }} />)}
+        {(vendors.data ?? []).filter((vendor) => vendor.isActive && (!search || vendor.name.toLowerCase().includes(search.toLowerCase()))).map((vendor) => <SelectionRow key={vendor.id} title={vendor.name} subtitle={`${vendor.paymentTermDays} day terms`} selected={vendor.id === form.vendorId} onPress={() => {
+          setForm((current) => ({
+            ...current,
+            vendorId: vendor.id,
+            dueDate: plusDays(current.issueDate, vendor.paymentTermDays),
+            lines: current.lines.map((line) => ({
+              ...line,
+              accountId: line.accountId ?? vendor.defaultAccountId,
+              taxRate: vendor.defaultTaxRate,
+            })),
+          }));
+          setVendorPicker(false);
+        }} />)}
       </SelectionSheet>
       <SelectionSheet visible={accountLine !== null} title="Account" searchPlaceholder="Search accounts" searchQuery={search} onSearchChange={setSearch} onClose={() => setAccountLine(null)} loading={accounts.isLoading} empty={eligibleAccounts.length === 0} emptyTitle="No expense accounts" emptyDescription="Initialize the chart of accounts before receiving bills.">
         {eligibleAccounts.filter((account) => !search || account.name.toLowerCase().includes(search.toLowerCase())).map((account) => <SelectionRow key={account.id} title={account.name} subtitle={account.accountNumber ?? account.accountClass ?? account.type} selected={accountLine !== null && form.lines[accountLine]?.accountId === account.id} onPress={() => { if (accountLine !== null) updateLine(accountLine, { accountId: account.id }); setAccountLine(null); }} />)}

@@ -31,8 +31,9 @@ import {
 import { DEFAULT_THEME } from '@/types/onboarding';
 import { quoteSettingsError } from '@/features/quotes/quoteModel';
 import type { QuoteKind } from '@/types/quote';
+import { CurrencyLocalizationEditor } from '@/components/business/CurrencyLocalizationEditor';
 
-type TabType = 'profile' | 'preferences' | 'appearance';
+type TabType = 'profile' | 'preferences' | 'appearance' | 'currency';
 
 export default function BusinessSettingsScreen() {
   const insets = useSafeAreaInsets();
@@ -310,6 +311,16 @@ export default function BusinessSettingsScreen() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        style={[styles.tab, activeTab === 'currency' && styles.tabActive]}
+        onPress={() => setActiveTab('currency')}
+        activeOpacity={0.7}
+        accessibilityRole="tab"
+        accessibilityLabel="Currency and locale"
+        accessibilityState={{ selected: activeTab === 'currency' }}
+      >
+        <Text style={[styles.tabText, activeTab === 'currency' && styles.tabTextActive]}>Currency</Text>
+      </TouchableOpacity>
+      <TouchableOpacity
         style={[styles.tab, activeTab === 'preferences' && styles.tabActive]}
         onPress={() => setActiveTab('preferences')}
         activeOpacity={0.7}
@@ -577,10 +588,11 @@ export default function BusinessSettingsScreen() {
         {activeTab === 'profile' && renderProfileTab()}
         {activeTab === 'preferences' && renderPreferencesTab()}
         {activeTab === 'appearance' && renderAppearanceTab()}
+        {activeTab === 'currency' && <CurrencyLocalizationEditor />}
       </ScrollView>
 
       <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-        {activeTab === 'appearance' ? (
+        {activeTab === 'currency' ? null : activeTab === 'appearance' ? (
           <AppPressable
             style={({ pressed }) => [
               styles.saveButton,

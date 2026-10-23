@@ -11,6 +11,7 @@ export const sharedInvoices = sqliteTable('shared_invoices', {
   originalInvoiceId: text('original_invoice_id').notNull(),
   invoiceData: text('invoice_data', { mode: 'json' }).notNull(),
   templateData: text('template_data', { mode: 'json' }).notNull(),
+  attachmentIds: text('attachment_ids', { mode: 'json' }).notNull().default([]),
   shareToken: text('share_token').notNull().unique(),
   expiresAt: timestamptz('expires_at'),
   accessCount: integer('access_count').notNull().default(0),

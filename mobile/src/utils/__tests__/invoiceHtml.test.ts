@@ -228,6 +228,41 @@ describe('generateInvoiceHTML', () => {
     expect(html).toContain('&lt;img src=x onerror=&quot;globalThis.pwned=true&quot;&gt; O&#39;Reilly &amp; Co');
     expect(html).toContain('src="https://example.com/logo.png&quot; onerror=&quot;globalThis.pwned=true"');
   });
+
+  it.each(['classic', 'modern', 'minimal', 'executive', 'corporate', 'modernpro'] as const)(
+    'shows a meaningful unit once and hides a zero discount on the %s template',
+    (templateId) => {
+      const html = generateInvoiceHTML(
+        {
+          ...invoice,
+          discount: 0,
+          additionalCharges: 0,
+          taxAmount: 0,
+          items: [
+            { id: 'line-1', description: 'Chicken Rolls', quantity: 15, unit: 'each', rate: 3, total: 45 },
+            { id: 'line-2', description: 'Cake 1kg', quantity: 1, unit: 'kg', rate: 90, total: 90 },
+            { id: 'line-3', description: 'Prep', quantity: 2, unit: 'hrs', rate: 40, total: 80 },
+          ],
+        },
+        undefined,
+        templateId,
+      );
+
+      expect(html).toContain('>15<');
+      expect(html).not.toContain('15 each');
+      expect(html).not.toContain('/each');
+      expect(html).toContain('1 kg');
+      expect(html).toContain('2 hrs');
+      expect(html.match(/1 kg/g)).toHaveLength(1);
+      expect(html.match(/2 hrs/g)).toHaveLength(1);
+      expect(html).not.toContain('Discount:');
+      expect(html).not.toContain('Additional Charges:');
+      expect(html).not.toContain('GST');
+      expect(html).toContain('$45.00');
+      expect(html).toContain('$90.00');
+      expect(html).toContain('$80.00');
+    },
+  );
 });
 
 const templates = ['classic', 'modern', 'minimal', 'executive', 'corporate', 'modernpro'] as const;

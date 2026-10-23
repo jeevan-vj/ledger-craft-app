@@ -52,6 +52,16 @@ export async function postInvoiceJournal(
     total: string;
   },
 ): Promise<void> {
+  const [existing] = await tx
+    .select({ id: journalEntries.id })
+    .from(journalEntries)
+    .where(and(
+      eq(journalEntries.organisationId, ctx.organisationId),
+      eq(journalEntries.referenceType, 'invoice'),
+      eq(journalEntries.referenceId, input.invoiceId),
+    ));
+  if (existing) return;
+
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
@@ -113,4 +123,57 @@ export async function postInvoiceJournal(
       lineOrder: line.order,
     });
   }
+}
+
+export async function postInvoiceReversalJournal(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: { invoiceId: string; invoiceNumber: string; date: string; taxAmount: string; total: string },
+): Promise<void> {
+  const [original] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId),
+    eq(journalEntries.referenceType, 'invoice'),
+    eq(journalEntries.referenceId, input.invoiceId),
+  ));
+  if (!original) return;
+  const arId = await getOrCreateAccount(tx, ctx, '1200');
+  const gstId = await getOrCreateAccount(tx, ctx, '2200');
+  const salesId = await getOrCreateAccount(tx, ctx, '4000');
+  const [{ count }] = await tx.select({ count: sql<number>`count(*)` }).from(journalEntries)
+    .where(eq(journalEntries.organisationId, ctx.organisationId));
+  const [entry] = await tx.insert(journalEntries).values({
+    organisationId: ctx.organisationId, userId: ctx.userId,
+    entryNumber: `JE-${input.date.slice(0, 4)}-${String(Number(count) + 1).padStart(3, '0')}`,
+    entryDate: input.date, description: `Cancellation of Invoice ${input.invoiceNumber}`,
+    referenceType: 'invoice_cancellation', referenceId: input.invoiceId,
+    totalAmount: input.total, status: 'posted',
+  }).returning();
+  if (!entry) throw new HTTPException(500, { message: 'Failed to reverse invoice journal' });
+  const tax = decimal(input.taxAmount);
+  const sales = decimal(input.total).sub(tax).toFixed();
+  const lines = [
+    { accountId: salesId, description: `Reverse sales - Invoice ${input.invoiceNumber}`, debit: sales, credit: '0.00', order: 1 },
+    ...(tax.compare(0) > 0 ? [{ accountId: gstId, description: `Reverse GST - Invoice ${input.invoiceNumber}`, debit: input.taxAmount, credit: '0.00', order: 2 }] : []),
+    { accountId: arId, description: `Reverse receivable - Invoice ${input.invoiceNumber}`, debit: '0.00', credit: input.total, order: 3 },
+  ];
+  const debit = lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
+  const credit = lines.reduce((sum, line) => sum.add(line.credit), decimal(0));
+  if (debit.compare(credit) !== 0) throw new HTTPException(500, { message: 'Cancellation journal is unbalanced' });
+  for (const line of lines) await tx.insert(journalEntryLines).values({
+    organisationId: ctx.organisationId, journalEntryId: entry.id, accountId: line.accountId,
+    description: line.description, debitAmount: line.debit, creditAmount: line.credit, lineOrder: line.order,
+  });
+}
+
+export async function hasInvoiceCancellationJournal(
+  tx: Database,
+  organisationId: string,
+  invoiceId: string,
+): Promise<boolean> {
+  const [entry] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+    eq(journalEntries.organisationId, organisationId),
+    eq(journalEntries.referenceType, 'invoice_cancellation'),
+    eq(journalEntries.referenceId, invoiceId),
+  ));
+  return Boolean(entry);
 }

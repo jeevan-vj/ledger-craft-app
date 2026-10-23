@@ -1,5 +1,6 @@
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
+import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { invoiceDocumentCss, resolveInvoiceTheme } from '@/utils/invoiceTheme';
 import { formatMoney } from '@/utils/money';
 
@@ -177,19 +178,19 @@ function renderInvoiceTotals(invoice: Invoice, labels: DocumentLabels = invoiceD
         <span class="total-label">Subtotal:</span>
         <span class="total-value">${formatCurrency(invoice.subtotal, currency)}</span>
       </div>
-      ${invoice.taxAmount > 0 ? `
+      ${showPositiveAmount(invoice.taxAmount) ? `
         <div class="total-row">
           <span class="total-label">${invoiceTaxLabel(invoice)}</span>
           <span class="total-value">${formatCurrency(invoice.taxAmount, currency)}</span>
         </div>
       ` : ''}
-      ${discount > 0 ? `
+      ${showPositiveAmount(discount) ? `
         <div class="total-row">
           <span class="total-label">Discount:</span>
           <span class="total-value discount-value" style="color: var(--inv-accent)">-${formatCurrency(discount, currency)}</span>
         </div>
       ` : ''}
-      ${additionalCharges > 0 ? `
+      ${showPositiveAmount(additionalCharges) ? `
         <div class="total-row">
           <span class="total-label">Additional Charges:</span>
           <span class="total-value">${formatCurrency(additionalCharges, currency)}</span>
@@ -372,7 +373,6 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
           tbody tr { border-bottom: 1px solid var(--inv-background); }
           td { padding: 12px; font-size: 13px; }
           .item-description { font-weight: 600; color: var(--inv-text); }
-          .item-unit { color: var(--inv-text-light); font-size: 11px; }
           .totals-section {
             margin-left: auto;
             width: 300px;
@@ -492,9 +492,8 @@ function generateClassicHTML(invoice: Invoice, businessProfile?: BusinessProfile
                 <tr>
                   <td>
                     <div class="item-description">${item.description}</div>
-                    <div class="item-unit">${item.unit}</div>
                   </td>
-                  <td style="text-align: center;">${item.quantity}</td>
+                  <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                   <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                   <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                 </tr>
@@ -645,7 +644,6 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile,
           tbody tr:hover { background-color: var(--inv-background); }
           td { padding: 14px 12px; font-size: 13px; }
           .item-description { font-weight: 600; color: var(--inv-text); }
-          .item-unit { color: var(--inv-text-light); font-size: 11px; margin-top: 2px; }
           .totals-section {
             margin-left: auto;
             width: 320px;
@@ -746,9 +744,8 @@ function generateModernHTML(invoice: Invoice, businessProfile?: BusinessProfile,
                   <tr>
                     <td>
                       <div class="item-description">${item.description}</div>
-                      <div class="item-unit">${item.unit}</div>
                     </td>
-                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                     <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                     <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                   </tr>
@@ -958,7 +955,7 @@ function generateMinimalHTML(invoice: Invoice, businessProfile?: BusinessProfile
                   <td>
                     <div class="item-description">${item.description}</div>
                   </td>
-                  <td style="text-align: center;">${item.quantity}</td>
+                  <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                   <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                   <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                 </tr>
@@ -1187,7 +1184,7 @@ function generateExecutiveHTML(invoice: Invoice, businessProfile?: BusinessProfi
                   <td>
                     <div class="item-description">${item.description}</div>
                   </td>
-                  <td style="text-align: center;">${item.quantity} ${item.unit}</td>
+                  <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                   <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                   <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                 </tr>
@@ -1339,11 +1336,6 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
           .item-description {
             font-weight: 600;
             color: var(--inv-text);
-            margin-bottom: 4px;
-          }
-          .item-unit {
-            color: var(--inv-text-light);
-            font-size: 12px;
           }
           .totals-section {
             margin-left: auto;
@@ -1448,9 +1440,8 @@ function generateCorporateHTML(invoice: Invoice, businessProfile?: BusinessProfi
                   <tr>
                     <td>
                       <div class="item-description">${item.description}</div>
-                      <div class="item-unit">${item.unit}</div>
                     </td>
-                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                     <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                     <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                   </tr>
@@ -1639,11 +1630,6 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
           .item-description {
             font-weight: 600;
             color: var(--inv-text);
-            margin-bottom: 4px;
-          }
-          .item-unit {
-            color: var(--inv-text-light);
-            font-size: 12px;
           }
           .totals-section {
             margin-left: auto;
@@ -1748,9 +1734,8 @@ function generateModernProHTML(invoice: Invoice, businessProfile?: BusinessProfi
                   <tr>
                     <td>
                       <div class="item-description">${item.description}</div>
-                      <div class="item-unit">${item.unit}</div>
                     </td>
-                    <td style="text-align: center;">${item.quantity}</td>
+                    <td style="text-align: center;">${formatLineQuantity(item.quantity, item.unit)}</td>
                     <td style="text-align: right;">${formatCurrency(item.rate, invoice.currency)}</td>
                     <td style="text-align: right;">${formatCurrency(item.total, invoice.currency)}</td>
                   </tr>

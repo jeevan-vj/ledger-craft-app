@@ -1,15 +1,20 @@
 import {
   bankAccountSchema,
   bankTransactionSchema,
+  bankTransferSchema,
   type BankAccountDto,
   type BankTransactionDto,
+  type BankTransferDto,
+  type CreateBankTransactionRequest,
+  type CreateBankTransferRequest,
   type CreateBankAccountRequest,
   type ImportBankTransactionsRequest,
   type UpdateBankAccountRequest,
+  type UpdateBankTransactionRequest,
 } from '@ledgercraft/contracts';
 import { and, desc, eq, gte, lte } from 'drizzle-orm';
 import type { Database } from '../../db/client';
-import { bankAccounts, bankTransactions, transactionImportBatches } from '../../db/schema/bank';
+import { bankAccounts, bankTransactions, bankTransfers, transactionImportBatches } from '../../db/schema/bank';
 import { roundMoney } from '../invoices/money';
 
 function toAccountDto(row: typeof bankAccounts.$inferSelect): BankAccountDto {
@@ -28,7 +33,7 @@ function toAccountDto(row: typeof bankAccounts.$inferSelect): BankAccountDto {
   });
 }
 
-function toTxDto(row: typeof bankTransactions.$inferSelect): BankTransactionDto {
+export function toTxDto(row: typeof bankTransactions.$inferSelect): BankTransactionDto {
   return bankTransactionSchema.parse({
     id: row.id,
     bankAccountId: row.bankAccountId,
@@ -42,6 +47,35 @@ function toTxDto(row: typeof bankTransactions.$inferSelect): BankTransactionDto 
     merchant: row.merchant ?? null,
     isReconciled: row.isReconciled,
     notes: row.notes ?? null,
+    source: row.source,
+    paymentMethod: row.paymentMethod ?? null,
+    counterparty: row.counterparty ?? null,
+    transferId: row.transferId ?? null,
+    createdAt: row.createdAt.toISOString(),
+    updatedAt: row.updatedAt.toISOString(),
+  });
+}
+
+function toTransferDto(
+  row: typeof bankTransfers.$inferSelect,
+  sourceTransaction: BankTransactionDto,
+  destinationTransaction: BankTransactionDto,
+): BankTransferDto {
+  return bankTransferSchema.parse({
+    id: row.id,
+    sourceAccountId: row.sourceAccountId,
+    destinationAccountId: row.destinationAccountId,
+    transactionDate: row.transactionDate,
+    amount: roundMoney(row.amount),
+    currency: row.currency,
+    destinationCurrency: row.destinationCurrency,
+    destinationAmount: row.destinationAmount,
+    exchangeRate: row.exchangeRate,
+    exchangeRateId: row.exchangeRateId ?? null,
+    description: row.description,
+    reference: row.reference ?? null,
+    sourceTransaction,
+    destinationTransaction,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -126,6 +160,20 @@ export async function deleteAccount(tx: Database, organisationId: string, id: st
   return deleted.length > 0;
 }
 
+export async function setAccountBalance(
+  tx: Database,
+  organisationId: string,
+  id: string,
+  currentBalance: string,
+): Promise<BankAccountDto | undefined> {
+  const [row] = await tx
+    .update(bankAccounts)
+    .set({ currentBalance: roundMoney(currentBalance), updatedAt: new Date() })
+    .where(and(eq(bankAccounts.id, id), eq(bankAccounts.organisationId, organisationId)))
+    .returning();
+  return row ? toAccountDto(row) : undefined;
+}
+
 export async function listTransactions(
   tx: Database,
   organisationId: string,
@@ -156,6 +204,139 @@ export async function getTransaction(
     .from(bankTransactions)
     .where(and(eq(bankTransactions.id, id), eq(bankTransactions.organisationId, organisationId)));
   return row ? toTxDto(row) : undefined;
+}
+
+export async function insertManualTransaction(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: CreateBankTransactionRequest,
+  balance: string,
+): Promise<BankTransactionDto> {
+  const [row] = await tx.insert(bankTransactions).values({
+    organisationId: ctx.organisationId,
+    userId: ctx.userId,
+    bankAccountId: input.bankAccountId,
+    transactionDate: input.transactionDate,
+    description: input.description,
+    reference: input.reference ?? null,
+    amount: roundMoney(input.amount),
+    type: input.type,
+    balance: roundMoney(balance),
+    category: input.category ?? null,
+    merchant: input.counterparty ?? null,
+    counterparty: input.counterparty ?? null,
+    paymentMethod: input.paymentMethod ?? null,
+    notes: input.notes ?? null,
+    source: 'manual',
+    isReconciled: false,
+  }).returning();
+  if (!row) throw new Error('Failed to insert bank transaction');
+  return toTxDto(row);
+}
+
+export async function updateManualTransaction(
+  tx: Database,
+  organisationId: string,
+  id: string,
+  input: UpdateBankTransactionRequest,
+  balance: string,
+): Promise<BankTransactionDto | undefined> {
+  const patch: Partial<typeof bankTransactions.$inferInsert> = { balance: roundMoney(balance), updatedAt: new Date() };
+  if (input.transactionDate !== undefined) patch.transactionDate = input.transactionDate;
+  if (input.description !== undefined) patch.description = input.description;
+  if (input.reference !== undefined) patch.reference = input.reference;
+  if (input.amount !== undefined) patch.amount = roundMoney(input.amount);
+  if (input.type !== undefined) patch.type = input.type;
+  if (input.category !== undefined) patch.category = input.category;
+  if (input.counterparty !== undefined) { patch.counterparty = input.counterparty; patch.merchant = input.counterparty; }
+  if (input.paymentMethod !== undefined) patch.paymentMethod = input.paymentMethod;
+  if (input.notes !== undefined) patch.notes = input.notes;
+  const [row] = await tx.update(bankTransactions).set(patch).where(and(
+    eq(bankTransactions.id, id),
+    eq(bankTransactions.organisationId, organisationId),
+    eq(bankTransactions.source, 'manual'),
+  )).returning();
+  return row ? toTxDto(row) : undefined;
+}
+
+export async function deleteManualTransaction(tx: Database, organisationId: string, id: string): Promise<boolean> {
+  const rows = await tx.delete(bankTransactions).where(and(
+    eq(bankTransactions.id, id),
+    eq(bankTransactions.organisationId, organisationId),
+    eq(bankTransactions.source, 'manual'),
+  )).returning({ id: bankTransactions.id });
+  return rows.length > 0;
+}
+
+export async function insertTransfer(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: CreateBankTransferRequest,
+  currency: string,
+  balances: { source: string; destination: string },
+  conversion: { destinationCurrency: string; destinationAmount: string; exchangeRate: string; exchangeRateId: string | null },
+): Promise<BankTransferDto> {
+  const description = input.description ?? 'Account transfer';
+  const [transfer] = await tx.insert(bankTransfers).values({
+    organisationId: ctx.organisationId,
+    userId: ctx.userId,
+    sourceAccountId: input.sourceAccountId,
+    destinationAccountId: input.destinationAccountId,
+    transactionDate: input.transactionDate,
+    amount: roundMoney(input.amount),
+    currency,
+    destinationCurrency: conversion.destinationCurrency,
+    destinationAmount: conversion.destinationAmount,
+    exchangeRate: conversion.exchangeRate,
+    exchangeRateId: conversion.exchangeRateId,
+    description,
+    reference: input.reference ?? null,
+  }).returning();
+  if (!transfer) throw new Error('Failed to insert bank transfer');
+  const base = {
+    organisationId: ctx.organisationId,
+    userId: ctx.userId,
+    transactionDate: input.transactionDate,
+    description,
+    reference: input.reference ?? null,
+    amount: roundMoney(input.amount),
+    category: 'Transfer',
+    merchant: null,
+    counterparty: null,
+    paymentMethod: 'bank_transfer',
+    notes: null,
+    source: 'transfer',
+    transferId: transfer.id,
+    // The two legs reconcile each other inside the same atomic transfer and
+    // must not be offered for matching to an invoice, expense, or payment.
+    isReconciled: true,
+  } as const;
+  const [sourceRow] = await tx.insert(bankTransactions).values({
+    ...base, bankAccountId: input.sourceAccountId, type: 'debit', balance: roundMoney(balances.source),
+  }).returning();
+  const [destinationRow] = await tx.insert(bankTransactions).values({
+    ...base, amount: conversion.destinationAmount, bankAccountId: input.destinationAccountId, type: 'credit', balance: roundMoney(balances.destination),
+  }).returning();
+  if (!sourceRow || !destinationRow) throw new Error('Failed to insert transfer transactions');
+  return toTransferDto(transfer, toTxDto(sourceRow), toTxDto(destinationRow));
+}
+
+export async function getTransfer(
+  tx: Database,
+  organisationId: string,
+  id: string,
+): Promise<BankTransferDto | undefined> {
+  const [transfer] = await tx.select().from(bankTransfers).where(and(
+    eq(bankTransfers.id, id), eq(bankTransfers.organisationId, organisationId),
+  ));
+  if (!transfer) return undefined;
+  const legs = await tx.select().from(bankTransactions).where(and(
+    eq(bankTransactions.organisationId, organisationId), eq(bankTransactions.transferId, id),
+  ));
+  const source = legs.find((row) => row.bankAccountId === transfer.sourceAccountId);
+  const destination = legs.find((row) => row.bankAccountId === transfer.destinationAccountId);
+  if (!source || !destination) throw new Error('Transfer is missing a transaction leg');
+  return toTransferDto(transfer, toTxDto(source), toTxDto(destination));
 }
 
 export async function markTransactionReconciled(
@@ -210,6 +391,7 @@ export async function importTransactions(
         category: row.category ?? null,
         merchant: row.merchant ?? null,
         isReconciled: false,
+        source: 'import',
       })
       .returning();
     if (!saved) throw new Error('Failed to insert bank transaction');
