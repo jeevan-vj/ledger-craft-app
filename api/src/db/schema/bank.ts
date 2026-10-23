@@ -26,6 +26,28 @@ export const bankAccounts = sqliteTable('bank_accounts', {
   index('bank_accounts_org_idx').on(table.organisationId),
 ]);
 
+export const bankTransfers = sqliteTable('bank_transfers', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  sourceAccountId: text('source_account_id').notNull(),
+  destinationAccountId: text('destination_account_id').notNull(),
+  transactionDate: text('transaction_date').notNull(),
+  amount: money('amount').notNull(),
+  currency: text('currency').notNull(),
+  description: text('description').notNull(),
+  reference: text('reference'),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bank_transfers_distinct_accounts_check', sql`source_account_id <> destination_account_id`),
+  check('bank_transfers_amount_check', sql`amount <> '' AND amount NOT GLOB '*[^0-9.]*' AND amount GLOB '[0-9]*' AND amount NOT LIKE '%.' AND length(amount) - length(replace(amount, '.', '')) <= 1 AND trim(amount, '0.') <> ''`),
+  uniqueIndex('bank_transfers_org_id_uidx').on(table.organisationId, table.id),
+  index('bank_transfers_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.sourceAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('restrict'),
+  foreignKey({ columns: [table.organisationId, table.destinationAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('restrict'),
+]);
+
 export const bankTransactions = sqliteTable('bank_transactions', {
   id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),
@@ -41,13 +63,21 @@ export const bankTransactions = sqliteTable('bank_transactions', {
   merchant: text('merchant'),
   isReconciled: integer('is_reconciled', { mode: 'boolean' }).notNull().default(false),
   notes: text('notes'),
+  source: text('source').notNull().default('import'),
+  paymentMethod: text('payment_method'),
+  counterparty: text('counterparty'),
+  transferId: text('transfer_id'),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
   check('bank_transactions_type_check', sql`type IN ('debit', 'credit')`),
+  check('bank_transactions_source_check', sql`source IN ('import', 'manual', 'transfer')`),
+  check('bank_transactions_payment_method_check', sql`payment_method IS NULL OR payment_method IN ('bank_transfer', 'cash', 'card', 'cheque', 'other')`),
   uniqueIndex('bank_transactions_org_id_uidx').on(table.organisationId, table.id),
   index('bank_transactions_org_idx').on(table.organisationId),
+  index('bank_transactions_transfer_idx').on(table.organisationId, table.transferId),
   foreignKey({ columns: [table.organisationId, table.bankAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('cascade'),
+  foreignKey({ columns: [table.organisationId, table.transferId], foreignColumns: [bankTransfers.organisationId, bankTransfers.id] }).onDelete('restrict'),
 ]);
 
 export const transactionImportBatches = sqliteTable('transaction_import_batches', {

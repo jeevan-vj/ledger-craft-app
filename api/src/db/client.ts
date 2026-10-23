@@ -15,7 +15,7 @@ import {
 import { invoices, lineItems } from './schema/invoices';
 import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
-import { bankAccounts, bankTransactions, transactionImportBatches } from './schema/bank';
+import { bankAccounts, bankTransactions, bankTransfers, transactionImportBatches } from './schema/bank';
 import { expenseCategories, expenses } from './schema/expenses';
 import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
@@ -57,6 +57,7 @@ export const schema = {
   conversationMessages,
   bankAccounts,
   bankTransactions,
+  bankTransfers,
   transactionImportBatches,
   reconciliationSessions,
   reconciliationMatches,
