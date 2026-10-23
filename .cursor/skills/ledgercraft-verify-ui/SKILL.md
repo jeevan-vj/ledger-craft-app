@@ -43,7 +43,7 @@ Playwright `getByRole('button', { name: /download pdf/i })` often misses the con
 
 Wait for the file, then check:
 
-1. First bytes are `%PDF` (`head -c 5`).
+1. `head -c 5` prints `%PDF-`. (`head -c 4` prints `%PDF`.)
 2. Size is greater than 1 KB.
 3. The filename contains the invoice number (`Invoice-INV-….pdf`).
 4. Buyer, line, total, dates, and notes match the on-screen preview. html2canvas PDFs have almost no text to extract, so compare the preview screenshot. Render a page image with `pdftoppm` when it is installed. `qlmanage` is macOS-only and is not required.

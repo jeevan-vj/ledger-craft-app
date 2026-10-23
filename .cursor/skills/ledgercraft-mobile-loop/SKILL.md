@@ -1,6 +1,6 @@
 ---
 name: ledgercraft-mobile-loop
-description: Run LedgerCraft's repeatable mobile parity loop: select one safe backlog slice, implement it test-first, verify Expo, and prepare one reviewable pull request. Use for autonomous or scheduled mobile feature progression.
+description: "Run LedgerCraft's repeatable mobile parity loop: select one safe backlog slice, implement it test-first, verify Expo, and prepare one reviewable pull request. Use for autonomous or scheduled mobile feature progression."
 ---
 
 # LedgerCraft mobile feature loop
