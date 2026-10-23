@@ -8,6 +8,7 @@ import {
 } from 'react-native';
 import type { Invoice } from '@/types/invoice';
 import type { BusinessProfile } from '@/services/businessProfileService';
+import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 
 interface InvoicePreviewProps {
   invoice: Invoice;
@@ -127,9 +128,8 @@ export default function InvoicePreview({ invoice, businessProfile }: InvoicePrev
             <View key={item.id} style={styles.tableRow}>
               <View style={styles.descriptionColumn}>
                 <Text style={styles.itemDescription}>{item.description}</Text>
-                <Text style={styles.itemUnit}>{item.unit}</Text>
               </View>
-              <Text style={[styles.tableCellText, styles.qtyColumn]}>{item.quantity}</Text>
+              <Text style={[styles.tableCellText, styles.qtyColumn]}>{formatLineQuantity(item.quantity, item.unit)}</Text>
               <Text style={[styles.tableCellText, styles.rateColumn]}>
                 {formatCurrency(item.rate, invoice.currency)}
               </Text>
@@ -147,25 +147,25 @@ export default function InvoicePreview({ invoice, businessProfile }: InvoicePrev
             <Text style={styles.totalValue}>{formatCurrency(invoice.subtotal, invoice.currency)}</Text>
           </View>
 
-          {invoice.taxAmount > 0 && (
+          {showPositiveAmount(invoice.taxAmount) && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Tax:</Text>
               <Text style={styles.totalValue}>{formatCurrency(invoice.taxAmount, invoice.currency)}</Text>
             </View>
           )}
 
-          {invoice.discount && invoice.discount > 0 && (
+          {showPositiveAmount(invoice.discount) && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Discount:</Text>
-              <Text style={styles.totalValue}>-{formatCurrency(invoice.discount, invoice.currency)}</Text>
+              <Text style={styles.totalValue}>-{formatCurrency(Number(invoice.discount), invoice.currency)}</Text>
             </View>
           )}
 
-          {invoice.additionalCharges && invoice.additionalCharges > 0 && (
+          {showPositiveAmount(invoice.additionalCharges) && (
             <View style={styles.totalRow}>
               <Text style={styles.totalLabel}>Additional Charges:</Text>
               <Text style={styles.totalValue}>
-                {formatCurrency(invoice.additionalCharges, invoice.currency)}
+                {formatCurrency(Number(invoice.additionalCharges), invoice.currency)}
               </Text>
             </View>
           )}
@@ -352,11 +352,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#0f172a',
-    marginBottom: 2,
-  },
-  itemUnit: {
-    fontSize: 12,
-    color: '#64748b',
   },
   tableCellText: {
     fontSize: 14,

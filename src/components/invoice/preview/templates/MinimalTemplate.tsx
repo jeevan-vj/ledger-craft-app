@@ -3,6 +3,7 @@ import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
 import { Invoice, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { Card, CardContent } from "@/components/ui/card";
+import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { formatCurrency, invoiceDiscountLabel } from '@/utils/invoiceUtils';
 import { useIsMobile } from '@/hooks/use-mobile';
 
@@ -133,8 +134,8 @@ const MinimalTemplate = ({
                         </div>
                       )}
                     </td>
-                    <td className="py-2 sm:py-3 text-right" style={{ color: theme.text }}>{item.quantity} {item.unit}</td>
-                    <td className="py-2 sm:py-3 text-right" style={{ color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}/{item.rateUnit || item.unit}</td>
+                    <td className="py-2 sm:py-3 text-right" style={{ color: theme.text }}>{formatLineQuantity(item.quantity, item.unit)}</td>
+                    <td className="py-2 sm:py-3 text-right" style={{ color: theme.text }}>{formatCurrency(item.rate, invoice.currency)}</td>
                     <td className="py-2 sm:py-3 text-right" style={{ color: theme.text }}>{formatCurrency(item.quantity * item.rate, invoice.currency)}</td>
                   </tr>
                 ))}
@@ -149,10 +150,12 @@ const MinimalTemplate = ({
                 <span className="text-xs sm:text-sm" style={{ color: theme.textLight }}>Subtotal</span>
                 <span className="text-xs sm:text-sm" style={{ color: theme.text }}>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
               </div>
+              {showPositiveAmount(tax) && (
               <div className="flex justify-between w-36 sm:w-48">
                 <span className="text-xs sm:text-sm" style={{ color: theme.textLight }}>Tax ({taxRate}%)</span>
                 <span className="text-xs sm:text-sm" style={{ color: theme.text }}>{formatCurrency(tax, invoice.currency)}</span>
               </div>
+              )}
               
               {/* Individual Additional Charges */}
               {invoice.additionalChargesList && invoice.additionalChargesList.length > 0 ? (
@@ -162,6 +165,7 @@ const MinimalTemplate = ({
                     const chargeAmount = charge.calculationType === 'percentage' 
                       ? (invoice.subtotal * charge.amount) / 100
                       : charge.amount;
+                    if (!showPositiveAmount(chargeAmount)) return null;
                     
                     return (
                       <div key={index} className="flex justify-between w-36 sm:w-48">
@@ -173,7 +177,7 @@ const MinimalTemplate = ({
                 </>
               ) : (
                 /* Fallback to legacy additional charges */
-                invoice.additionalCharges && invoice.additionalCharges > 0 && (
+                showPositiveAmount(invoice.additionalCharges) && (
                   <div className="flex justify-between w-36 sm:w-48">
                     <span className="text-xs sm:text-sm" style={{ color: theme.textLight }}>Additional Charges</span>
                     <span className="text-xs sm:text-sm" style={{ color: theme.text }}>{formatCurrency(invoice.additionalCharges, invoice.currency)}</span>
@@ -181,7 +185,7 @@ const MinimalTemplate = ({
                 )
               )}
               
-              {invoice.discount && invoice.discount > 0 && (
+              {showPositiveAmount(invoice.discount) && (
                 <div className="flex justify-between w-36 sm:w-48">
                   <span className="text-xs sm:text-sm" style={{ color: theme.textLight }}>{invoiceDiscountLabel(invoice)}</span>
                   <span className="text-xs sm:text-sm" style={{ color: theme.accent }}>-{formatCurrency(invoice.discount, invoice.currency)}</span>
