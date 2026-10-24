@@ -6,8 +6,7 @@ const path = require('node:path');
 const EAS = ['--yes', 'eas-cli@25.3.0'];
 const RESERVED = new Set(['--channel', '--branch', '--environment', '--input-dir', '--output-dir', '--skip-bundler', '--auto']);
 
-function publishUpdate(channel, args, { env = process.env, cwd = path.resolve(__dirname, '..'), run = spawnSync } = {}) {
-  if (!['preview', 'production'].includes(channel)) throw new Error('Choose preview or production.');
+function parsePublishArgs(args) {
   let platform = 'all';
   const publishArgs = [];
   for (let i = 0; i < args.length; i++) {
@@ -20,6 +19,24 @@ function publishUpdate(channel, args, { env = process.env, cwd = path.resolve(__
     publishArgs.push(arg);
     if (RESERVED.has(arg.split('=')[0])) throw new Error(`Unsupported publishing override: ${arg.split('=')[0]}`);
   }
+  return { platform, publishArgs };
+}
+
+function verifySourceMaps(cwd, platforms) {
+  const output = path.join(cwd, 'dist');
+  const metadataPath = path.join(output, 'metadata.json');
+  const metadata = fs.existsSync(metadataPath) ? JSON.parse(fs.readFileSync(metadataPath, 'utf8')) : {};
+  for (const target of platforms) {
+    const bundle = metadata.fileMetadata?.[target]?.bundle;
+    if (!bundle || !fs.existsSync(path.join(output, `${bundle}.map`))) {
+      throw new Error(`Expo export is missing ${target} source maps; update was not published.`);
+    }
+  }
+}
+
+function publishUpdate(channel, args, { env = process.env, cwd = path.resolve(__dirname, '..'), run = spawnSync } = {}) {
+  if (!['preview', 'production'].includes(channel)) throw new Error('Choose preview or production.');
+  const { platform, publishArgs } = parsePublishArgs(args);
   const upload = channel === 'production' || Boolean(env.SENTRY_AUTH_TOKEN);
   if (upload && !env.SENTRY_AUTH_TOKEN?.trim()) {
     throw new Error('Production updates require SENTRY_AUTH_TOKEN in the publishing process. EAS Build secrets are not available to local EAS Update.');
@@ -47,15 +64,7 @@ function publishUpdate(channel, args, { env = process.env, cwd = path.resolve(__
     const uploader = require.resolve('@sentry/react-native/scripts/expo-upload-sourcemaps.js');
     fs.rmSync(path.join(cwd, 'dist'), { recursive: true, force: true });
     execute('npx', [...EAS, 'env:exec', channel, `npx expo export ${exportPlatforms} --source-maps --output-dir dist`, '--non-interactive'], 'Expo export');
-    const output = path.join(cwd, 'dist');
-    const metadataPath = path.join(output, 'metadata.json');
-    const metadata = fs.existsSync(metadataPath) ? JSON.parse(fs.readFileSync(metadataPath, 'utf8')) : {};
-    for (const target of platforms) {
-      const bundle = metadata.fileMetadata?.[target]?.bundle;
-      if (!bundle || !fs.existsSync(path.join(output, `${bundle}.map`))) {
-        throw new Error(`Expo export is missing ${target} source maps; update was not published.`);
-      }
-    }
+    verifySourceMaps(cwd, platforms);
     execute(process.execPath, [uploader, 'dist'], 'Sentry source-map upload');
     updateArgs.push('--skip-bundler', '--input-dir', 'dist');
   }

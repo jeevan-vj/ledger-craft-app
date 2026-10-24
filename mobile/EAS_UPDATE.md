@@ -114,7 +114,8 @@ The initial Apple submission `631ff91e-d16b-46e5-89d9-367b56f8dc23` was canceled
 Retry `9be08bd5-7636-4c27-a5d4-29100d3714ba` finished successfully using the same
 build 11 archive and existing credentials. App Store Connect confirms build 11
 is `VALID` and `IN_BETA_TESTING` for internal testers. Installation of build 11
-is confirmed. The subsequent OTA is published; device application is pending the unlocked-phone check.
+is confirmed. The subsequent OTA has been downloaded and successfully launched on
+the same build; see the device evidence below.
 
 Verification: mobile lint and TypeScript passed; all 49 Jest suites / 223 tests
 passed before the build, and the later Sentry-region regression test passed
@@ -137,4 +138,13 @@ The paired iPhone reports installed version 1.0.0 / build 11. Before publication
 its Expo database contained embedded update `6e274265-fcba-4880-969e-8f7459db228c`
 with one successful launch and zero failed launches. Automated UI inspection is
 blocked by disabled Mac developer-tool access. The first post-publication launch
-was denied because the phone was locked; OTA application has not yet been verified.
+was denied because the phone was locked. After unlocking on 2026-10-25, two
+controlled relaunches succeeded. The on-device Expo database contains the exact
+published update `01a16d83-7867-77c0-a92a-a79e37ca9b95` with
+`successful_launch_count=2` and `failed_launch_count=0`. A fresh installed-app
+query still reports version 1.0.0 / build 11. This verifies OTA download and
+execution without another native installation. The user confirmed the old footer
+before the check; visual confirmation of the new footer remains pending.
+
+This is startup/delivery verification, not a full authenticated product regression
+or an offline-device test. No financial data was modified during this check.
