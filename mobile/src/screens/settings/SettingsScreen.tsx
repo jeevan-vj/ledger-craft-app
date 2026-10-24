@@ -66,7 +66,7 @@ export default function SettingsScreen() {
     />
 
     <AppPressable accessibilityRole="button" accessibilityLabel="Sign out" onPress={confirmSignOut} style={({ pressed }) => [styles.signOut, { borderColor: theme.colors.border }, pressed && { opacity: 0.65 }]}><Text style={{ color: theme.colors.danger, fontWeight: '700', fontSize: 16 }}>Sign out</Text></AppPressable>
-    <Text style={[theme.type.caption, styles.version]}>LedgerCraft · Version 1.0.0</Text>
+    <Text style={[theme.type.caption, styles.version]}>easybizinvoice · Version 1.0.0</Text>
   </ScrollView>;
 }
 

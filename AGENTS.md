@@ -1,5 +1,7 @@
 # AGENTS.md
 
+Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
+
 **Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
 `0016_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
 and expense templates with daily, weekly, monthly, annual, and custom
@@ -223,6 +225,7 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 | `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Web UI |
 | `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Expo UI |
 | `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS, TestFlight, App Store Connect |
+| `.cursor/skills/ledgercraft-eas-update/SKILL.md` | Compatible mobile OTA changes, publishing, device verification, rollback |
 | `.cursor/skills/ledgercraft-mobile-loop/SKILL.md` | Repeated mobile backlog cycle |
 | `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema reconstruction |
 | `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |

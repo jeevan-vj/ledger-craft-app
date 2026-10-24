@@ -1,8 +1,15 @@
+const appJson = require('./app.json');
+const EAS_PROJECT_ID = '7148323b-502c-447e-96c3-a5c1704c40c9';
+
 module.exports = {
   expo: {
     name: 'easybizinvoice',
     slug: 'easybizinvoice-mobile',
-    version: '1.0.0',
+    version: appJson.expo.version,
+    runtimeVersion: { policy: 'fingerprint' },
+    updates: {
+      url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
+    },
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
@@ -15,6 +22,7 @@ module.exports = {
     ios: {
       supportsTablet: true,
       bundleIdentifier: 'com.easybizinvoice.app',
+      buildNumber: appJson.expo.ios.buildNumber,
       associatedDomains: ['applinks:easybiz.iamjeevan.com'],
       config: {
         usesNonExemptEncryption: false,
@@ -56,7 +64,7 @@ module.exports = {
         '@sentry/react-native/expo',
         {
           url: 'https://us.sentry.io/',
-          organization: process.env.SENTRY_ORG,
+          organization: 'ledgercraft',
           project: process.env.SENTRY_PROJECT || 'ledgercraft-mobile',
         },
       ],
@@ -65,7 +73,7 @@ module.exports = {
     scheme: 'easybizinvoice',
     extra: {
       eas: {
-        projectId: '7148323b-502c-447e-96c3-a5c1704c40c9',
+        projectId: EAS_PROJECT_ID,
       },
     },
   },
