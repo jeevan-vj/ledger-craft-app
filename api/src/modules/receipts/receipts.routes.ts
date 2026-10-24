@@ -1,4 +1,4 @@
-import { createPaymentReceiptRequestSchema } from '@ledgercraft/contracts';
+import { createPaymentReceiptRequestSchema, paymentReceiptListQuerySchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
@@ -10,7 +10,13 @@ export function receiptRoutes() {
   for (const prefix of ['', '/api'] as const) {
     routes.get(`${prefix}/receipts`, async (c) => {
       const { db, user } = await requireSession(c);
-      return c.json(await receiptsService.listReceiptsForUser(db, user.id));
+      const paymentId = c.req.query('paymentId');
+      const invoiceId = c.req.query('invoiceId');
+      const query = paymentReceiptListQuerySchema.parse({
+        ...(paymentId ? { paymentId } : {}),
+        ...(invoiceId ? { invoiceId } : {}),
+      });
+      return c.json(await receiptsService.listReceiptsForUser(db, user.id, query));
     });
 
     routes.get(`${prefix}/receipts/:id`, async (c) => {

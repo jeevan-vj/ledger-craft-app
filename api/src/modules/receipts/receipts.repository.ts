@@ -1,8 +1,9 @@
 import {
   paymentReceiptSchema,
   type PaymentReceiptDto,
+  type PaymentReceiptListQuery,
 } from '@ledgercraft/contracts';
-import { and, desc, eq, gte, lt } from 'drizzle-orm';
+import { and, desc, eq, gte, lt, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { receipts } from '../../db/schema/receipts';
 
@@ -19,11 +20,20 @@ function toDto(row: typeof receipts.$inferSelect): PaymentReceiptDto {
   });
 }
 
-export async function listReceipts(tx: Database, organisationId: string): Promise<PaymentReceiptDto[]> {
+export async function listReceipts(
+  tx: Database,
+  organisationId: string,
+  filter: PaymentReceiptListQuery = {},
+): Promise<PaymentReceiptDto[]> {
+  const conditions = [eq(receipts.organisationId, organisationId)];
+  if (filter.paymentId) conditions.push(eq(receipts.paymentId, filter.paymentId));
+  if (filter.invoiceId) {
+    conditions.push(sql`json_extract(${receipts.receiptData}, '$.invoiceId') = ${filter.invoiceId}`);
+  }
   const rows = await tx
     .select()
     .from(receipts)
-    .where(eq(receipts.organisationId, organisationId))
+    .where(and(...conditions))
     .orderBy(desc(receipts.createdAt));
   return rows.map(toDto);
 }

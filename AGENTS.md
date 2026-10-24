@@ -1,5 +1,7 @@
 # AGENTS.md
 
+**Payment idempotency and receipt filters (implemented locally, 2026-10-24):** `POST /api/payments` accepts an optional `Idempotency-Key`. The existing `idempotency_keys` helper in `api/src/modules/invoices/idempotency.ts` scopes that key to the organisation, user, method, and path. The same key and body return the original payment and do not create a second payment or journal entry. A different body returns 409 `IDEMPOTENCY_CONFLICT`. `GET /api/receipts` accepts optional `paymentId` and `invoiceId` filters and stays organisation-scoped. Payment maths, balance recalculation, `PAYMENT_EXCEEDS_BALANCE`, and journal posting are unchanged. No migration was added.
+
 **Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
 `0016_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
 and expense templates with daily, weekly, monthly, annual, and custom

@@ -358,11 +358,13 @@ export {
 export {
   createPaymentReceiptRequestSchema,
   paymentReceiptDataSchema,
+  paymentReceiptListQuerySchema,
   paymentReceiptListResponseSchema,
   paymentReceiptSchema,
   type CreatePaymentReceiptRequest,
   type PaymentReceiptDataDto,
   type PaymentReceiptDto,
+  type PaymentReceiptListQuery,
   type PaymentReceiptListResponse,
 } from './receipt';
 

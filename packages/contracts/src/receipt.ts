@@ -41,7 +41,15 @@ export const paymentReceiptListResponseSchema = z.object({
   receipts: z.array(paymentReceiptSchema),
 });
 
+export const paymentReceiptListQuerySchema = z
+  .object({
+    paymentId: z.string().uuid().optional(),
+    invoiceId: z.string().uuid().optional(),
+  })
+  .strict();
+
 export type PaymentReceiptDto = z.infer<typeof paymentReceiptSchema>;
 export type PaymentReceiptDataDto = z.infer<typeof paymentReceiptDataSchema>;
 export type CreatePaymentReceiptRequest = z.infer<typeof createPaymentReceiptRequestSchema>;
 export type PaymentReceiptListResponse = z.infer<typeof paymentReceiptListResponseSchema>;
+export type PaymentReceiptListQuery = z.infer<typeof paymentReceiptListQuerySchema>;

@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { createPaymentReceiptRequestSchema, paymentReceiptSchema } from './receipt';
+import {
+  createPaymentReceiptRequestSchema,
+  paymentReceiptListQuerySchema,
+  paymentReceiptSchema,
+} from './receipt';
 
 describe('receipt contracts', () => {
   it('rejects ownership ids on create', () => {
@@ -41,5 +45,25 @@ describe('receipt contracts', () => {
     expect(receipt.receiptData.amountPaid).toBe('115.00');
     expect(receipt.receiptData.customerName).toBe('Kauri Studio');
     expect(receipt.receiptData.invoiceDueDate).toBe('2026-10-31');
+  });
+
+  it('accepts optional payment and invoice filters and rejects other ids', () => {
+    expect(paymentReceiptListQuerySchema.parse({})).toEqual({});
+    expect(
+      paymentReceiptListQuerySchema.parse({
+        paymentId: '22222222-2222-2222-2222-222222222222',
+        invoiceId: '33333333-3333-3333-3333-333333333333',
+      }),
+    ).toEqual({
+      paymentId: '22222222-2222-2222-2222-222222222222',
+      invoiceId: '33333333-3333-3333-3333-333333333333',
+    });
+    expect(paymentReceiptListQuerySchema.safeParse({ paymentId: 'not-a-uuid' }).success).toBe(false);
+    expect(paymentReceiptListQuerySchema.safeParse({ invoiceId: 'not-a-uuid' }).success).toBe(false);
+    expect(
+      paymentReceiptListQuerySchema.safeParse({
+        organisationId: '11111111-1111-1111-1111-111111111111',
+      }).success,
+    ).toBe(false);
   });
 });

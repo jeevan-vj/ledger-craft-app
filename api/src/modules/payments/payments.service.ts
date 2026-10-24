@@ -1,5 +1,6 @@
 import {
   paymentListResponseSchema,
+  paymentSchema,
   type CreatePaymentRequest,
   type PaymentDto,
   type PaymentListResponse,
@@ -9,6 +10,12 @@ import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as invoicesRepo from '../invoices/invoices.repository';
+import {
+  assertReplayMatches,
+  getIdempotencyRecord,
+  insertIdempotencyRecord,
+  type IdempotencyScope,
+} from '../invoices/idempotency';
 import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as repo from './payments.repository';
 import { bankLedgerAccount, postBalancedEntry, systemAccount } from '../accounting/posting';
@@ -50,8 +57,17 @@ export async function createPaymentForUser(
   db: Database,
   userId: string,
   input: CreatePaymentRequest,
+  idempotency?: IdempotencyScope,
 ): Promise<PaymentDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) {
+      const existing = await getIdempotencyRecord(tx, ctx, idempotency);
+      if (existing) {
+        assertReplayMatches(existing.requestHash, idempotency.requestHash);
+        return paymentSchema.parse(existing.responseBody);
+      }
+    }
+
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, input.invoiceId);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
     if (invoice.paymentStatus === 'cancelled') {
@@ -90,6 +106,9 @@ export async function createPaymentForUser(
         { accountId: receivableId, description: `Payment for ${invoice.invoiceNumber}`, debit: '0', credit: payment.amount },
       ],
     });
+    if (idempotency) {
+      await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: payment });
+    }
     return payment;
   });
 }

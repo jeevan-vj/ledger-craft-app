@@ -47,7 +47,7 @@ Organisation isolation is the membership bind plus repository predicates (`api/s
 ## Invoice and quote cases
 
 1. Another organisation cannot read or write the row.
-2. When `Idempotency-Key` is present, invoice create and quote create return the original result for the same body and 409 `IDEMPOTENCY_CONFLICT` for a different body. The header is optional. Quote convert hashes `{}`, so a different body does not 409.
+2. When `Idempotency-Key` is present, invoice create, quote create, and payment create return the original result for the same body and 409 `IDEMPOTENCY_CONFLICT` for a different body. The header is optional. Quote convert hashes `{}`, so a different body does not 409.
 3. Invoice, lines, sequence, and journal commit or roll back together.
 4. Client-supplied totals do not override `computeInvoiceTotals`.
 5. Share-token expiry and active rules do not leak other rows.
