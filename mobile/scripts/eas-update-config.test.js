@@ -1,12 +1,17 @@
-const { getConfig } = require('@expo/config');
+const { expo: exp } = require('../app.config.js');
+const { expo: staticConfig } = require('../app.json');
 const eas = require('../eas.json');
 
 describe('EAS Update release configuration', () => {
-  const { exp } = getConfig(require('path').resolve(__dirname, '..'), { skipPlugins: true });
 
   it('resolves the update server for the linked project in the dynamic config', () => {
     expect(exp.updates.url).toBe(`https://u.expo.dev/${exp.extra.eas.projectId}`);
-    expect(exp.runtimeVersion).toEqual({ policy: 'appVersion' });
+    expect(exp.runtimeVersion).toEqual({ policy: 'fingerprint' });
+  });
+
+  it('keeps static and dynamic release versions and build numbers aligned', () => {
+    expect(exp.version).toBe(staticConfig.version);
+    expect(exp.ios.buildNumber).toBe(staticConfig.ios.buildNumber);
   });
 
   it.each(['preview', 'production'])('isolates the %s release channel and environment', (profile) => {

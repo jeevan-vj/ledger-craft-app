@@ -1,10 +1,6 @@
 # LedgerCraft target architecture
 
-**EAS Update (configured locally, 2026-10-24):** Mobile uses `expo-updates`,
-separate preview/production channels and EAS environments, and the `appVersion`
-runtime policy. See `mobile/EAS_UPDATE.md` for publishing and compatibility rules.
-A new native build is required to enable updates on existing installations;
-store delivery and native-device OTA verification remain pending.
+Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
 
 **Akaunting core parity gate (implemented locally, 2026-10-23):**
 `docs/akaunting-core-capabilities.json` is the machine-readable contract for all

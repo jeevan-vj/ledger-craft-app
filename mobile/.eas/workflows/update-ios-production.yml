@@ -1,0 +1,39 @@
+# Run from mobile/ with:
+# npx --yes eas-cli@25.3.0 workflow:run .eas/workflows/update-ios-production.yml -F message="Describe the update"
+# Uses the production EAS environment, including its secret SENTRY_AUTH_TOKEN.
+# The managed update job controls its own CLI version and uploads Sentry maps
+# after publication. An upload failure fails the job but does not retract an OTA.
+name: Publish production iOS update
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        type: string
+        required: true
+        description: Description of the verified JavaScript or asset change
+
+jobs:
+  publish_ios:
+    name: Publish iOS update with Sentry source maps
+    type: update
+    environment: production
+    env:
+      SENTRY_ORG: ledgercraft
+      SENTRY_PROJECT: ledgercraft-mobile
+    params:
+      channel: production
+      platform: ios
+      message: ${{ inputs.message }}
+      upload_sentry_sourcemaps: true
+    hooks:
+      before_update:
+        - name: Require production monitoring configuration
+          run: |
+            node - <<'NODE'
+            for (const name of ['SENTRY_AUTH_TOKEN', 'EXPO_PUBLIC_SENTRY_DSN', 'EXPO_PUBLIC_API_URL']) {
+              if (!process.env[name]) {
+                throw new Error(`Missing required production environment variable: ${name}`);
+              }
+            }
+            NODE
