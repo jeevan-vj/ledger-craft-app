@@ -126,6 +126,7 @@ function renderModal(ui: React.ReactElement) {
 }
 
 describe('ShareInvoiceModal', () => {
+  beforeEach(() => { vi.clearAllMocks(); vi.mocked(invoicesApi.shares).mockResolvedValue([]); vi.mocked(invoicesApi.share).mockResolvedValue(permanent); });
   it('displays the actual permanent expiry when the API reuses a link despite a one-day request', async () => {
     renderModal(<ShareInvoiceModal {...defaultProps} />);
     fireEvent.click(await screen.findByRole('switch', { name: 'Link Expiration' }));
@@ -135,7 +136,6 @@ describe('ShareInvoiceModal', () => {
     expect(screen.queryByText('Expires in 1 day')).not.toBeInTheDocument();
     expect(screen.getByText(/Active link · No expiry/)).toBeInTheDocument();
   });
-  beforeEach(() => { vi.clearAllMocks(); vi.mocked(invoicesApi.shares).mockResolvedValue([]); vi.mocked(invoicesApi.share).mockResolvedValue(permanent); });
   it('creates a public link using the saved template and offers copy/open actions', async () => {
     renderModal(<ShareInvoiceModal {...defaultProps} />);
     fireEvent.click(await screen.findByRole('button', { name: 'Generate Share Link' }));

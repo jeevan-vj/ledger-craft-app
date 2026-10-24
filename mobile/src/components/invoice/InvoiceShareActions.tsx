@@ -12,7 +12,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ShareInvoiceResponse } from '@ledgercraft/contracts';
 import * as Clipboard from 'expo-clipboard';
@@ -31,10 +31,10 @@ import { useTheme } from '@/theme';
 type Action = 'link' | 'download' | 'pdf' | 'replace' | 'revoke' | null;
 
 interface InvoiceShareActionsProps {
-  visible: boolean;
-  invoice: Invoice;
-  businessProfile?: BusinessProfile;
-  onClose: () => void;
+  readonly visible: boolean;
+  readonly invoice: Invoice;
+  readonly businessProfile?: BusinessProfile;
+  readonly onClose: () => void;
 }
 
 export default function InvoiceShareActions(props: InvoiceShareActionsProps) {
@@ -222,25 +222,16 @@ function ShareActions({
           ))}
         </View>
 
-        <View style={styles.linkCard}>
-          {links.isPending ? <Text style={styles.subtitle}>Loading sharing status…</Text> : null}
-          {links.isError ? <>
-            <Text accessibilityRole="alert" style={styles.subtitle}>Unable to load sharing status. Please retry.</Text>
-            <Pressable accessibilityRole="button" accessibilityLabel="Retry sharing status" disabled={links.isFetching || busy !== null} onPress={() => void links.refetch()} style={styles.linkButton}><Text style={styles.linkButtonText}>Retry</Text></Pressable>
-          </> : null}
-          {links.isSuccess ? <>
-            <Text style={styles.rowTitle}>{current ? (current.expiresAt ? `Active · Expires ${new Date(current.expiresAt).toLocaleString()}` : 'Active · No expiry') : (links.data.length > 0 ? 'No active link for this template' : 'No active link')}</Text>
-            {revoked ? <Text style={styles.subtitle}>Access revoked. Existing links no longer work.</Text> : null}
-            <Text style={styles.rowSubtitle}>Links keep the invoice and business details from when they were created. Replace a link to publish current details.</Text>
-            <View style={styles.linkActions}>
-              {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Replace link" disabled={linkDisabled} onPress={replaceLink} style={styles.linkButton}><Text style={styles.linkButtonText}>Replace link</Text></Pressable> : null}
-              {(links.data?.length ?? 0) > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Revoke access" disabled={linkDisabled} onPress={revokeLinks} style={styles.linkButton}><Text style={styles.linkButtonText}>Revoke access</Text></Pressable> : null}
-            </View>
-          </> : null}
-          {error ? <Text accessibilityRole="alert" style={styles.subtitle}>{error}</Text> : null}
-          {busy === 'replace' || busy === 'revoke' ? <ActivityIndicator accessibilityLabel="Updating sharing access" color={palette.accentText} /> : null}
-          <Text style={styles.rowSubtitle}>Email delivery and reminders are unavailable. Use Share link to send the invoice yourself.</Text>
-        </View>
+        <ShareStatus
+          links={links}
+          current={current}
+          revoked={revoked}
+          error={error}
+          busy={busy}
+          linkDisabled={linkDisabled}
+          onReplace={replaceLink}
+          onRevoke={revokeLinks}
+        />
 
         {shareUrl ? (
           <View style={styles.linkCard}>
@@ -257,6 +248,50 @@ function ShareActions({
         ) : null}
       </ScrollView>
     </Modal>
+  );
+}
+
+function shareStatusLabel(current: ShareInvoiceResponse | undefined, hasLinks: boolean): string {
+  if (!current) return hasLinks ? 'No active link for this template' : 'No active link';
+  if (!current.expiresAt) return 'Active · No expiry';
+  return `Active · Expires ${new Date(current.expiresAt).toLocaleString()}`;
+}
+
+interface ShareStatusProps {
+  readonly links: UseQueryResult<ShareInvoiceResponse[], Error>;
+  readonly current: ShareInvoiceResponse | undefined;
+  readonly revoked: boolean;
+  readonly error: string | null;
+  readonly busy: Action;
+  readonly linkDisabled: boolean;
+  readonly onReplace: () => void;
+  readonly onRevoke: () => void;
+}
+
+function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onReplace, onRevoke }: ShareStatusProps) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
+  const palette = theme.colors;
+  return (
+    <View style={styles.linkCard}>
+      {links.isPending ? <Text style={styles.subtitle}>Loading sharing status…</Text> : null}
+      {links.isError ? <>
+        <Text accessibilityRole="alert" style={styles.subtitle}>Unable to load sharing status. Please retry.</Text>
+        <Pressable accessibilityRole="button" accessibilityLabel="Retry sharing status" disabled={links.isFetching || busy !== null} onPress={() => void links.refetch()} style={styles.linkButton}><Text style={styles.linkButtonText}>Retry</Text></Pressable>
+      </> : null}
+      {links.isSuccess ? <>
+        <Text style={styles.rowTitle}>{shareStatusLabel(current, links.data.length > 0)}</Text>
+        {revoked ? <Text style={styles.subtitle}>Access revoked. Existing links no longer work.</Text> : null}
+        <Text style={styles.rowSubtitle}>Links keep the invoice and business details from when they were created. Replace a link to publish current details.</Text>
+        <View style={styles.linkActions}>
+          {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Replace link" disabled={linkDisabled} onPress={onReplace} style={styles.linkButton}><Text style={styles.linkButtonText}>Replace link</Text></Pressable> : null}
+          {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Revoke access" disabled={linkDisabled} onPress={onRevoke} style={styles.linkButton}><Text style={styles.linkButtonText}>Revoke access</Text></Pressable> : null}
+        </View>
+      </> : null}
+      {error ? <Text accessibilityRole="alert" style={styles.subtitle}>{error}</Text> : null}
+      {busy === 'replace' || busy === 'revoke' ? <ActivityIndicator accessibilityLabel="Updating sharing access" color={palette.accentText} /> : null}
+      <Text style={styles.rowSubtitle}>Email delivery and reminders are unavailable. Use Share link to send the invoice yourself.</Text>
+    </View>
   );
 }
 
