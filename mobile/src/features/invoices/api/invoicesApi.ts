@@ -274,7 +274,7 @@ export const invoicesApi = {
     });
   },
 
-  async getShared(token: string): Promise<MobileSharedInvoiceSnapshot | null> {
+  async getShared(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {
     try {
       const dto = await apiRequest<{
         invoice: MobileInvoiceDto;
@@ -289,6 +289,9 @@ export const invoicesApi = {
     } catch (error) {
       if (error instanceof AuthApiError && error.status === 404) {
         return null;
+      }
+      if (error instanceof AuthApiError && (error.status === 410 || error.code === 'SHARE_INACTIVE')) {
+        return 'inactive';
       }
       throw error;
     }

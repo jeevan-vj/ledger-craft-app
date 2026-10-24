@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { friendlyApiText, isSchemaDiagnostic } from './apiErrorCopy';
 
 describe('friendly API copy', () => {
@@ -42,6 +43,15 @@ describe('friendly API copy', () => {
       code: 'VALIDATION_ERROR',
       message: "Discount can't exceed the subtotal",
     })).toBe("Something in your details didn't save. Please try again, and contact support if it keeps happening.");
+  });
+
+  it('keeps the inactive share-link message', () => {
+    expect(friendlyApiText({
+      status: 410,
+      code: 'SHARE_INACTIVE',
+      message: 'This link is no longer active',
+      requestId: 'req_share',
+    })).toBe('This link is no longer active. Ref: req_share');
   });
 
   it('keeps the actionable email-unavailable message', () => {

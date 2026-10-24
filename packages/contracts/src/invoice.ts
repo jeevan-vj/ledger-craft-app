@@ -217,14 +217,26 @@ export const createShareInvoiceRequestSchema = z
   .object({
     templateName: z.string().min(1).max(64).optional(),
     expiresAt: z.string().min(1).nullable().optional(),
+    replace: z.boolean().optional(),
   })
   .strict();
 
 export const shareInvoiceResponseSchema = z.object({
   shareToken: z.string().min(1),
+  templateName: z.string().min(1),
   expiresAt: z.string().nullable(),
   isActive: z.boolean(),
-});
+  accessCount: z.number().int().nonnegative(),
+  createdAt: z.string().min(1),
+}).strict();
+
+export const invoiceShareListResponseSchema = z.object({
+  shares: z.array(shareInvoiceResponseSchema),
+}).strict();
+
+export const revokeInvoiceSharesResponseSchema = z.object({
+  revoked: z.number().int().nonnegative(),
+}).strict();
 
 export const publicSharedInvoiceSchema = z.object({
   invoice: invoiceSchema,
@@ -242,6 +254,8 @@ export type InvoiceListResponse = z.infer<typeof invoiceListResponseSchema>;
 export type NextInvoiceNumberResponse = z.infer<typeof nextInvoiceNumberResponseSchema>;
 export type CreateShareInvoiceRequest = z.infer<typeof createShareInvoiceRequestSchema>;
 export type ShareInvoiceResponse = z.infer<typeof shareInvoiceResponseSchema>;
+export type InvoiceShareListResponse = z.infer<typeof invoiceShareListResponseSchema>;
+export type RevokeInvoiceSharesResponse = z.infer<typeof revokeInvoiceSharesResponseSchema>;
 export type PublicSharedInvoice = z.infer<typeof publicSharedInvoiceSchema>;
 export type InvoiceStatus = z.infer<typeof invoiceStatusSchema>;
 export type InvoiceHistoryDto = z.infer<typeof invoiceHistorySchema>;

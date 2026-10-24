@@ -25,18 +25,26 @@ export default function PublicInvoiceScreen() {
   const palette = theme.colors;
   const [snapshot, setSnapshot] = useState<MobileSharedInvoiceSnapshot | null>(null);
   const [loading, setLoading] = useState(true);
+  const [inactive, setInactive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState<'download' | 'share' | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
     setError(null);
+    setInactive(false);
     try {
       const next = await invoiceService.fetchSharedInvoice(route.params.shareToken);
-      if (!next) {
+      if (next === 'inactive') {
+        setInactive(true);
+        setSnapshot(null);
+        setError('This link is no longer active.');
+      } else if (!next) {
         setError('This invoice link is invalid, expired, or no longer active.');
+        setSnapshot(null);
+      } else {
+        setSnapshot(next);
       }
-      setSnapshot(next);
     } catch {
       setError('The shared invoice could not be loaded. Check your connection and try again.');
     } finally {
@@ -90,10 +98,10 @@ export default function PublicInvoiceScreen() {
       <SafeAreaView style={styles.center}>
         <EmptyState
           icon={<Feather name="file-minus" size={34} color={palette.textSecondary} />}
-          title="Invoice unavailable"
+          title={inactive ? 'Link no longer active' : 'Invoice unavailable'}
           description={error ?? 'This invoice is no longer available.'}
-          actionLabel="Try again"
-          onAction={load}
+          actionLabel={inactive ? undefined : 'Try again'}
+          onAction={inactive ? undefined : load}
         />
       </SafeAreaView>
     );

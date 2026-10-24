@@ -162,10 +162,11 @@ describe('InvoiceService (Hono)', () => {
 
     const share = await invoiceService.createShareLink(invoiceDto.id, 'classic');
     const snapshot = await invoiceService.fetchSharedInvoice(share.shareToken);
+    if (snapshot === 'inactive' || snapshot === null) throw new Error('expected a shared invoice');
 
     expect(share.shareToken).toBe('org-1_token-1');
-    expect(snapshot?.invoice.invoiceNumber).toBe('INV-2026-0001');
-    expect(snapshot?.businessProfile.bankAccountNumber).toBe('12-3456-7890123-00');
+    expect(snapshot.invoice.invoiceNumber).toBe('INV-2026-0001');
+    expect(snapshot.businessProfile.bankAccountNumber).toBe('12-3456-7890123-00');
     expect(global.fetch).toHaveBeenNthCalledWith(
       1,
       `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}/share`,
@@ -200,5 +201,25 @@ describe('InvoiceService (Hono)', () => {
     );
 
     await expect(invoiceService.fetchSharedInvoice('expired-token')).resolves.toBeNull();
+  });
+
+  it('treats a revoked or expired public share as inactive', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(
+      jsonResponse({
+        error: { code: 'SHARE_INACTIVE', message: 'This link is no longer active' },
+      }, 410),
+    );
+
+    await expect(invoiceService.fetchSharedInvoice('revoked-token')).resolves.toBe('inactive');
+  });
+
+  it('treats a SHARE_INACTIVE code as inactive even when the status is unexpected', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(
+      jsonResponse({
+        error: { code: 'SHARE_INACTIVE', message: 'This link is no longer active' },
+      }, 409),
+    );
+
+    await expect(invoiceService.fetchSharedInvoice('revoked-token')).resolves.toBe('inactive');
   });
 });

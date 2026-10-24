@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Download, FileText, AlertCircle, Loader2, Smartphone } from 'lucide-react';
-import { invoicesApi } from '@/features/invoices/api/invoicesApi';
+import { InvoicesApiError, invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { Invoice, BusinessProfile } from '@/types';
 import { applyNoReferrerPolicy } from '@/lib/referrerPolicy';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
@@ -19,6 +19,7 @@ const SharedInvoice: React.FC = () => {
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
+  const [inactive, setInactive] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [invoiceData, setInvoiceData] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
@@ -39,6 +40,7 @@ const SharedInvoice: React.FC = () => {
   useEffect(() => {
     let cancelled = false;
     setLoading(true);
+    setInactive(false);
     setError(null);
     setInvoiceData(null);
     const fetchSharedInvoice = async () => {
@@ -66,6 +68,12 @@ const SharedInvoice: React.FC = () => {
         setLoading(false);
       } catch (err) {
         if (cancelled) return;
+        if (err instanceof InvoicesApiError && (err.status === 410 || err.code === 'SHARE_INACTIVE')) {
+          setInactive(true);
+          setError('This link is no longer active');
+          setLoading(false);
+          return;
+        }
         console.error('Error fetching shared invoice:', err);
         setError('Failed to load invoice');
         setLoading(false);
@@ -111,6 +119,33 @@ const SharedInvoice: React.FC = () => {
           <Loader2 className="h-8 w-8 animate-spin mx-auto mb-4 text-primary" />
           <p className="text-muted-foreground">Loading invoice...</p>
         </div>
+      </div>
+    );
+  }
+
+  if (inactive) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="max-w-md w-full mx-4">
+          <CardHeader className="text-center">
+            <div className="mx-auto mb-4 bg-destructive/10 rounded-full p-3 w-fit">
+              <AlertCircle className="h-6 w-6 text-destructive" />
+            </div>
+            <CardTitle className="text-xl text-card-foreground">Link no longer active</CardTitle>
+          </CardHeader>
+          <CardContent className="text-center space-y-4">
+            <p className="text-foreground">This link is no longer active</p>
+            <p className="text-sm text-muted-foreground">
+              Ask the sender for a new link.
+            </p>
+            <Button
+              onClick={() => navigate('/')}
+              className="w-full"
+            >
+              Go to Homepage
+            </Button>
+          </CardContent>
+        </Card>
       </div>
     );
   }

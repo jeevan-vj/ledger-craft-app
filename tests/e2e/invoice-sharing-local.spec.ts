@@ -58,10 +58,13 @@ test('sender shares an invoice; a signed-out recipient views, reloads and downlo
     await page.setViewportSize({ width: 390, height: 844 });
     await expect(page.getByRole('button', { name: 'Download PDF', exact: true })).toBeInViewport();
     await page.screenshot({ path: `${artifacts}/recipient-mobile.png`, fullPage: true });
-    const expired = await send(`invoices/${invoice.id}/share`, { expiresAt: '2020-01-01T00:00:00.000Z' });
+    const expired = await send(`invoices/${invoice.id}/share`, { replace: true, expiresAt: '2020-01-01T00:00:00.000Z' });
     await page.goto(`/shared/invoice/${expired.shareToken}`);
-    await expect(page.getByText('Invoice Not Found', { exact: true })).toBeVisible();
+    await page.evaluate(() => document.querySelector<HTMLButtonElement>('[aria-label="Dismiss update prompt"]')?.click());
+    await expect(page.getByText('This link is no longer active', { exact: true })).toBeVisible();
+    await expect(page.getByText('Failed to load invoice')).toHaveCount(0);
     await expect(page.getByRole('button', { name: 'Download PDF', exact: true })).toHaveCount(0);
+    await page.screenshot({ path: `${artifacts}/recipient-inactive-mobile.png`, fullPage: true });
     await page.goto('/shared/invoice/invalid-token');
     await expect(page.getByText('Invoice Not Found', { exact: true })).toBeVisible();
   } finally {

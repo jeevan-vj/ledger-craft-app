@@ -607,15 +607,15 @@ describe('invoice routes', () => {
           method: 'POST',
           headers: { ...originHeaders, Cookie: ownerA.cookie },
           body: JSON.stringify({
-            templateName: 'classic',
+            templateName: 'modern',
             expiresAt: '2020-01-01T00:00:00.000Z',
           }),
         });
         expect(expired.status).toBe(201);
         const expiredShare = (await expired.json()) as { shareToken: string };
         const expiredView = await app.request(`/api/public/invoices/${expiredShare.shareToken}`);
-        expect(expiredView.status).toBe(404);
-        expect(errorEnvelopeSchema.parse(await expiredView.json()).error.code).toBe('NOT_FOUND');
+        expect(expiredView.status).toBe(410);
+        expect(errorEnvelopeSchema.parse(await expiredView.json()).error.code).toBe('SHARE_INACTIVE');
 
         const missing = await app.request('/api/public/invoices/does-not-exist-token');
         expect(missing.status).toBe(404);

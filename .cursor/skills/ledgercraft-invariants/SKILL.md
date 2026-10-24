@@ -31,7 +31,7 @@ Tick every item the diff can affect. A new formula, a second totals helper, or a
 
 ## Share tokens and public pages
 
-- Web scrubber: `src/lib/sentry/scrub.ts` redacts `/shared/invoice/`, `/shared/quote/`, and `/api/public/quotes/`.
+- Web scrubber: `src/lib/sentry/scrub.ts` redacts `/shared/invoice/`, `/shared/quote/`, `/api/public/quotes/`, and `/api/public/invoices/`.
 - Mobile scrubber: `mobile/src/observability/scrub.ts` redacts `shared/(invoice|quote)` and `api/public/(invoices|quotes)`, including `shareToken` query params.
 - API scrubber: `api/src/observability/scrub.ts` replaces public invoice and quote URLs with route templates and strips query strings.
 - A new public token URL needs all three scrubbers and a test where the raw token is absent from the Sentry event.

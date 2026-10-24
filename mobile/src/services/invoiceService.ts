@@ -15,7 +15,7 @@ export class InvoiceService {
     return invoicesApi.share(invoiceId, templateName);
   }
 
-  async fetchSharedInvoice(token: string): Promise<MobileSharedInvoiceSnapshot | null> {
+  async fetchSharedInvoice(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {
     return invoicesApi.getShared(token);
   }
 

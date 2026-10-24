@@ -7,7 +7,9 @@ import {
   updateInvoiceRequestSchema,
   createShareInvoiceRequestSchema,
   invoiceSchema,
+  invoiceShareListResponseSchema,
   publicSharedInvoiceSchema,
+  revokeInvoiceSharesResponseSchema,
   sendInvoiceRequestSchema,
   shareInvoiceResponseSchema,
 } from './invoice';
@@ -115,18 +117,42 @@ describe('invoice contracts', () => {
       createShareInvoiceRequestSchema.parse({
         templateName: 'classic',
         expiresAt: '2026-10-08T00:00:00.000Z',
+        replace: false,
       }).templateName,
     ).toBe('classic');
+    expect(createShareInvoiceRequestSchema.parse({ replace: true }).replace).toBe(true);
+    expect(createShareInvoiceRequestSchema.safeParse({ replace: 'yes' }).success).toBe(false);
     expect(
       createShareInvoiceRequestSchema.safeParse({ organisationId: invoice.customerId }).success,
     ).toBe(false);
   });
 
+  it('describes active shares and a revoke result without ownership ids', () => {
+    const share = shareInvoiceResponseSchema.parse({
+      shareToken: 'a1b2c3d4e5f6789012345678abcdef01',
+      templateName: 'classic',
+      expiresAt: null,
+      isActive: true,
+      accessCount: 2,
+      createdAt: '2026-10-24T00:00:00.000Z',
+    });
+    expect(share.templateName).toBe('classic');
+    expect(share.accessCount).toBe(2);
+    expect(invoiceShareListResponseSchema.parse({ shares: [share] }).shares).toEqual([share]);
+    expect(invoiceShareListResponseSchema.safeParse({ shares: [], organisationId: share.shareToken }).success).toBe(false);
+    expect(revokeInvoiceSharesResponseSchema.parse({ revoked: 0 }).revoked).toBe(0);
+    expect(revokeInvoiceSharesResponseSchema.safeParse({ revoked: -1 }).success).toBe(false);
+    expect(revokeInvoiceSharesResponseSchema.safeParse({ revoked: 1, organisationId: share.shareToken }).success).toBe(false);
+  });
+
   it('accepts a public shared invoice snapshot', () => {
     const shared = shareInvoiceResponseSchema.parse({
       shareToken: 'a1b2c3d4e5f6789012345678abcdef01',
+      templateName: 'classic',
       expiresAt: null,
       isActive: true,
+      accessCount: 0,
+      createdAt: '2026-10-24T00:00:00.000Z',
     });
     expect(shared.isActive).toBe(true);
     expect(
