@@ -15,6 +15,7 @@ const USER_FACING_CODES = new Set([
   'IDEMPOTENCY_CONFLICT',
   'FILE_TOO_LARGE',
   'EMAIL_UNAVAILABLE',
+  'SHARE_INACTIVE',
 ]);
 
 export const validationFailureCopy =

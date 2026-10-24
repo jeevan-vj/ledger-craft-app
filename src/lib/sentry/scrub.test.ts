@@ -66,6 +66,15 @@ describe('redactShareTokens', () => {
     );
   });
 
+  it('redacts public invoice API tokens', () => {
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/api/public/invoices/${TOKEN}`)).toBe(
+      'https://easybiz.iamjeevan.com/api/public/invoices/[redacted]',
+    );
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/api/public/invoices/${TOKEN}/attachments/file-1`)).toBe(
+      'https://easybiz.iamjeevan.com/api/public/invoices/[redacted]/attachments/file-1',
+    );
+  });
+
   it('redacts public quote tokens in page and API paths', () => {
     expect(redactShareTokens(`https://easybiz.iamjeevan.com/shared/quote/${TOKEN}`)).toBe(
       'https://easybiz.iamjeevan.com/shared/quote/[redacted]',
@@ -111,6 +120,18 @@ describe('scrubSentryEvent', () => {
     expect(scrubbed?.tags).toMatchObject({ requestId: 'req_123' });
     expect(scrubbed?.contexts?.replay).toBeUndefined();
     expect(scrubbed?.contexts?.app).toEqual({ name: 'EasyBizInvoice' });
+  });
+
+  it('removes a public invoice API token from the event', () => {
+    const invoiceEvent = event();
+    invoiceEvent.message = `GET /api/public/invoices/${TOKEN}`;
+    invoiceEvent.request = {
+      ...invoiceEvent.request,
+      url: `https://easybiz.iamjeevan.com/api/public/invoices/${TOKEN}`,
+    };
+    const scrubbed = scrubSentryEvent(invoiceEvent);
+    expect(JSON.stringify(scrubbed)).not.toContain(TOKEN);
+    expect(scrubbed?.request?.url).toBe('https://easybiz.iamjeevan.com/api/public/invoices/[redacted]');
   });
 
   it('drops replay events', () => {

@@ -272,8 +272,12 @@ that invoice. `POST /api/invoices/:id/shares/revoke` deactivates every active
 share on the invoice. `POST /api/invoices/:id/share` reuses the newest active
 share with the same template, and `{replace:true}` revokes and inserts in one
 transaction. A revoked or expired public token returns 410 `SHARE_INACTIVE`.
-A successful public read increments `access_count`. Unknown tokens stay 404.
-Deployment of this management behaviour is still pending.
+Web and Expo public invoice screens show that response as an inactive link,
+with no retry and no generic load error. A successful public read increments
+`access_count`. Unknown tokens stay 404. The web Sentry scrubber redacts
+`/api/public/invoices/` tokens. Deployment of this management behaviour is
+still pending. Public reads are not rate limited, and inactive attachment
+reads still return 404.
 
 **Invoice bank details (deployed, 2026-09-14):** Settings → Preferences stores
 separate account name and account number fields through Hono/SQLite migration
