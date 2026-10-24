@@ -1,13 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { TaxPositionCard } from '../TaxPositionCard';
 import { NextPaymentDue } from '../NextPaymentDue';
 import { ComplianceStatus } from '../ComplianceStatus';
 import { QuickActions } from '../QuickActions';
 
+const navigate = vi.fn();
+
 // Mock the router
 vi.mock('react-router-dom', () => ({
-  useNavigate: () => vi.fn(),
+  useNavigate: () => navigate,
 }));
 
 // Mock the auth hook
@@ -142,6 +144,17 @@ describe('Tax Overview Components', () => {
       expect(screen.getByText('Create Invoice')).toBeInTheDocument();
       expect(screen.getAllByText('Add Expense').length).toBeGreaterThan(0);
       expect(screen.getByText('GST Return')).toBeInTheDocument();
+    });
+
+    it('navigates to the registered GST return and tax settings routes', () => {
+      navigate.mockClear();
+      render(<QuickActions userId="test-user" />);
+
+      fireEvent.click(screen.getByText('Create GST Return'));
+      expect(navigate).toHaveBeenLastCalledWith('/ird-reports');
+
+      fireEvent.click(screen.getByText('Tax Settings'));
+      expect(navigate).toHaveBeenLastCalledWith('/tax-config');
     });
   });
 });
