@@ -1,5 +1,7 @@
 # Remote updates
 
+Agent workflow: [ledgercraft-eas-update](../.cursor/skills/ledgercraft-eas-update/SKILL.md).
+
 The SDK 54 app uses `expo-updates` with EAS project
 `7148323b-502c-447e-96c3-a5c1704c40c9`. The dynamic `app.config.js` is authoritative:
 updates use `https://u.expo.dev/7148323b-502c-447e-96c3-a5c1704c40c9`, and the runtime
