@@ -88,8 +88,7 @@ release startup flow.
 
 Confirm the published group in EAS matches the build's project, channel, runtime
 and platform. Record the group ID, build ID and device result with release
-evidence. Native-device OTA delivery has not been verified by this configuration
-PR, and no update is published as part of it.
+evidence. See the release evidence below for the current verification status.
 
 If a published update regresses, use the EAS dashboard to republish a known-good
 update for the same runtime, or use `eas update:republish` following its current
@@ -100,3 +99,22 @@ Do not disable Expo's anti-bricking measures or bypass runtime compatibility.
 References: [setup](https://docs.expo.dev/eas-update/getting-started/),
 [runtime versions](https://docs.expo.dev/eas-update/runtime-versions/),
 [rollback](https://docs.expo.dev/eas-update/rollbacks/).
+
+## Release evidence — 2026-10-24
+
+PR #79 contains the reviewed update configuration and publishing safeguards.
+iOS 1.0.0 (11) built successfully with EAS build
+`7768ffa6-3cc9-4ee5-8ab1-fe94248039d3`. The downloaded IPA was inspected: updates
+are enabled, startup checks are `ALWAYS`, the channel is `production`, and the
+update URL is the project above. Its embedded fingerprint is
+`f48c1c3779ac74efc71e926c2f472f18ea12bf19`; local build-profile and production
+update-environment fingerprint calculations match it.
+
+Apple submission `631ff91e-d16b-46e5-89d9-367b56f8dc23` is in progress. TestFlight
+availability, installation of build 11, and delivery of a subsequent JavaScript
+update are pending. No production OTA has been published for this runtime yet.
+
+Verification: mobile lint and TypeScript passed; all 49 Jest suites / 223 tests
+passed before the build, and the later Sentry-region regression test passed
+(all 11 publishing tests). The iOS production export passed. Native-device
+verification is distinct from these automated checks.
