@@ -110,9 +110,11 @@ update URL is the project above. Its embedded fingerprint is
 `f48c1c3779ac74efc71e926c2f472f18ea12bf19`; local build-profile and production
 update-environment fingerprint calculations match it.
 
-Apple submission `631ff91e-d16b-46e5-89d9-367b56f8dc23` is in progress. TestFlight
-availability, installation of build 11, and delivery of a subsequent JavaScript
-update are pending. No production OTA has been published for this runtime yet.
+The initial Apple submission `631ff91e-d16b-46e5-89d9-367b56f8dc23` was canceled.
+Retry `9be08bd5-7636-4c27-a5d4-29100d3714ba` finished successfully using the same
+build 11 archive and existing credentials. App Store Connect confirms build 11
+is `VALID` and `IN_BETA_TESTING` for internal testers. Installation of build 11
+and delivery of a subsequent JavaScript update are pending. No production OTA has been published for this runtime yet.
 
 Verification: mobile lint and TypeScript passed; all 49 Jest suites / 223 tests
 passed before the build, and the later Sentry-region regression test passed
