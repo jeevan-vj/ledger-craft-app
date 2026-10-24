@@ -144,7 +144,8 @@ published update `01a16d83-7867-77c0-a92a-a79e37ca9b95` with
 `successful_launch_count=2` and `failed_launch_count=0`. A fresh installed-app
 query still reports version 1.0.0 / build 11. This verifies OTA download and
 execution without another native installation. The user confirmed the old footer
-before the check; visual confirmation of the new footer remains pending.
+before the check and then confirmed “easybizinvoice · Version 1.0.0” after
+the OTA on 2026-10-25. Both device records and the user-observed UI verify the change.
 
 This is startup/delivery verification, not a full authenticated product regression
 or an offline-device test. No financial data was modified during this check.
