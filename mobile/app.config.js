@@ -45,6 +45,11 @@ module.exports = {
               host: 'easybiz.iamjeevan.com',
               pathPrefix: '/shared/invoice/',
             },
+            {
+              scheme: 'https',
+              host: 'easybiz.iamjeevan.com',
+              pathPrefix: '/shared/quote/',
+            },
           ],
           category: ['BROWSABLE', 'DEFAULT'],
         },

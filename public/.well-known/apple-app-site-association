@@ -5,7 +5,8 @@
       {
         "appID": "88282K637B.com.easybizinvoice.app",
         "paths": [
-          "/shared/invoice/*"
+          "/shared/invoice/*",
+          "/shared/quote/*"
         ]
       }
     ]
