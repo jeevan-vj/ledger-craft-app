@@ -64,7 +64,7 @@ current architecture.
 
 1. Read `AGENTS.md`, `TARGET_ARCHITECTURE.md`, and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`.
 2. Verify and release the local AKP-01 lifecycle slice, or continue with AKP-02 as a separate verified slice.
-3. For EAS iOS builds, TestFlight, or App Store Connect work, read `ledgercraft-mobile-release` before acting.
+3. For compatible mobile OTA releases, read `ledgercraft-eas-update`. For native builds, TestFlight, or App Store Connect work, read `ledgercraft-mobile-release`.
 4. Before a pull request, follow `ledgercraft-verify` and paste the command output. Domain checks are `ledgercraft-invariants`. A different session reviews with `ledgercraft-reviewer`.
 5. Commit, push, or deploy only when the user asks.
 
@@ -127,6 +127,7 @@ Do not move `src/` → `apps/web` or `mobile/` → `apps/mobile` until every pro
 | `ledgercraft-reviewer` | Independent review. Does not push, approve, or merge |
 | `ledgercraft-web-ui` | Web React/Tailwind design and visual QA |
 | `ledgercraft-mobile-ui` | Expo/React Native design and device QA |
+| `ledgercraft-eas-update` | Compatible mobile OTA publishing, runtime checks, device verification, rollback |
 | `ledgercraft-mobile-loop` | Repeated mobile backlog selection, implementation, verification, PR, and wait cycle |
 | `ledgercraft-schema-rebuild` | Historical Postgres notes. Current DDL is SQLite (`ledgercraft-invariants`) |
 | `ledgercraft-vertical-slice` | Cutting over one domain to Hono |

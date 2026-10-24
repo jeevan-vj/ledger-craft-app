@@ -17,3 +17,8 @@ npm run type-check
 Android EAS scripts in `mobile/package.json`: `npm run build:android`, `npm run build:android:preview`, `npm run build:android:development`, and `npm run submit:android`. Pull-request CI exports the iOS bundle with `npx expo export --platform ios` and sets `SENTRY_DISABLE_AUTO_UPLOAD=true`.
 
 Crash reporting uses `@sentry/react-native`. Preview and production profiles in `eas.json` set `EXPO_PUBLIC_SENTRY_DSN`. Local `npm start`, Jest, CI, and the development profiles leave the DSN unset. When you copy Expo values from the repository `.env.example` into `mobile/.env`, leave `EXPO_PUBLIC_SENTRY_DSN` unset. Setup, scrubbing, and the optional source-map token are in [SENTRY.md](./SENTRY.md).
+
+## Remote updates
+
+See [EAS Update](./EAS_UPDATE.md) for the one-time native rollout, preview and
+production publishing commands, compatibility rules, and device verification.
