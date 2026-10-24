@@ -114,9 +114,27 @@ The initial Apple submission `631ff91e-d16b-46e5-89d9-367b56f8dc23` was canceled
 Retry `9be08bd5-7636-4c27-a5d4-29100d3714ba` finished successfully using the same
 build 11 archive and existing credentials. App Store Connect confirms build 11
 is `VALID` and `IN_BETA_TESTING` for internal testers. Installation of build 11
-and delivery of a subsequent JavaScript update are pending. No production OTA has been published for this runtime yet.
+is confirmed. The subsequent OTA is published; device application is pending the unlocked-phone check.
 
 Verification: mobile lint and TypeScript passed; all 49 Jest suites / 223 tests
 passed before the build, and the later Sentry-region regression test passed
 (all 11 publishing tests). The iOS production export passed. Native-device
 verification is distinct from these automated checks.
+
+### Production OTA publication
+
+Commit `d93eeea4a3c99abf3ff74ca990445729cbf3ad55` changes only the Settings footer
+from “LedgerCraft · Version 1.0.0” to “easybizinvoice · Version 1.0.0”. All 49
+mobile test suites / 224 tests, TypeScript, focused lint, and the iOS export passed.
+Its production fingerprint remains `f48c1c3779ac74efc71e926c2f472f18ea12bf19`.
+
+EAS workflow `01a16d81-d680-738c-b4c9-31696ee28bd2` succeeded, including required
+Sentry source-map upload. It published iOS update
+`01a16d83-7867-77c0-a92a-a79e37ca9b95`, group
+`6ac6e257-f05b-495d-be22-ef3216621bca`, on production with the matching runtime.
+
+The paired iPhone reports installed version 1.0.0 / build 11. Before publication,
+its Expo database contained embedded update `6e274265-fcba-4880-969e-8f7459db228c`
+with one successful launch and zero failed launches. Automated UI inspection is
+blocked by disabled Mac developer-tool access. The first post-publication launch
+was denied because the phone was locked; OTA application has not yet been verified.
