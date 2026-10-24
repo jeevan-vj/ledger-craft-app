@@ -28,7 +28,7 @@ function publishUpdate(channel, args, { env = process.env, cwd = path.resolve(__
     ...env,
     SENTRY_ORG: 'ledgercraft',
     SENTRY_PROJECT: 'ledgercraft-mobile',
-    SENTRY_URL: 'https://sentry.io/',
+    SENTRY_URL: 'https://us.sentry.io/',
     // Upload explicitly before publication, rather than during bundling.
     SENTRY_DISABLE_AUTO_UPLOAD: 'true',
     SENTRY_ALLOW_FAILURE: 'false',

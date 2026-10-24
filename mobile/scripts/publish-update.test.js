@@ -34,6 +34,14 @@ describe('EAS update publishing', () => {
     expect(run.mock.calls[1][1][1]).toBe('dist');
     expect(run.mock.calls[2][1]).toEqual(['--yes', 'eas-cli@25.3.0', 'update', '--channel', 'production', '--environment', 'production', '--platform', 'all', '--skip-bundler', '--input-dir', 'dist', '--message', 'OTA check']);
   });
+  test('uploads source maps to the same Sentry region as the native app', () => {
+    exportMaps();
+    publishUpdate('production', [], options());
+    const sentryPlugin = require('../app.config').expo.plugins.find(
+      plugin => Array.isArray(plugin) && plugin[0] === '@sentry/react-native/expo',
+    );
+    expect(run.mock.calls[1][2].env.SENTRY_URL).toBe(sentryPlugin[1].url);
+  });
   test('iOS-only publication exports and publishes the same platform', () => {
     exportMaps();
     publishUpdate('production', ['--platform', 'ios', '--message', 'iOS check'], options());
