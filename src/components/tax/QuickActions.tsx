@@ -42,7 +42,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       title: 'Create GST Return',
       description: 'Generate quarterly GST return',
       icon: <FileText className="h-4 w-4" />,
-      action: () => navigate('/ird-reporting'),
+      action: () => navigate('/ird-reports'),
       variant: 'default',
       priority: 'high'
     },
@@ -69,7 +69,7 @@ export const QuickActions: React.FC<QuickActionsProps> = ({
       title: 'Tax Settings',
       description: 'Configure tax rates',
       icon: <Settings className="h-4 w-4" />,
-      action: () => navigate('/tax-configuration'),
+      action: () => navigate('/tax-config'),
       variant: 'outline',
       priority: 'medium'
     },
