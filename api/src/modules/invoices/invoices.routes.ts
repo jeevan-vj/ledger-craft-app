@@ -142,6 +142,16 @@ export function invoiceRoutes() {
       return c.json(await invoicesService.createInvoiceForUser(db, user.id, input, idempotency), 201);
     });
 
+    routes.get(`${prefix}/invoices/:id/shares`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await shareService.listSharesForUser(db, user.id, c.req.param('id')));
+    });
+
+    routes.post(`${prefix}/invoices/:id/shares/revoke`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await shareService.revokeSharesForUser(db, user.id, c.req.param('id')));
+    });
+
     routes.post(`${prefix}/invoices/:id/share`, async (c) => {
       const { db, user } = await requireSession(c);
       let body: unknown = {};
@@ -151,7 +161,8 @@ export function invoiceRoutes() {
         body = {};
       }
       const input = createShareInvoiceRequestSchema.parse(body ?? {});
-      return c.json(await shareService.createShareForUser(db, user.id, c.req.param('id'), input), 201);
+      const result = await shareService.createShareForUser(db, user.id, c.req.param('id'), input);
+      return c.json(result.share, result.created ? 201 : 200);
     });
 
     routes.post(`${prefix}/invoices/:id/send`, async (c) => {

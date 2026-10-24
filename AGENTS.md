@@ -12,6 +12,8 @@ included. Invoice delivery is recorded as unavailable when no mail provider is
 configured; no paid scheduler or email provider is required. Deployment and
 authenticated native-device QA remain pending.
 
+**Invoice share links (implemented locally, 2026-10-24):** `GET /api/invoices/:id/shares` lists that invoice's active, non-expired shares, newest first. `POST /api/invoices/:id/shares/revoke` sets `is_active` false on every active share for the invoice, including shares that are already expired. `POST /api/invoices/:id/share` returns the newest active share for the same template (200) instead of creating another link; `{replace:true}` deactivates those active shares and inserts the new snapshot in one transaction (201). A requested `expiresAt` does not bypass reuse. Revoked or expired `GET /api/public/invoices/:token` returns 410 `SHARE_INACTIVE` with the message `This link is no longer active`. An unknown token stays 404 `NOT_FOUND`. A successful public read increments `access_count`. Routes stay organisation-scoped and use the existing invoice read/write permissions. No migration. Web and mobile revoke/replace screens are not in this change.
+
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Invoice
 cancel/restore/archive and idempotent duplicate workflows now keep an immutable
 history and post balanced cancellation/restoration journals. SQLite migration
