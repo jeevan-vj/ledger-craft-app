@@ -16,7 +16,8 @@
       },
       "ios": {
         "simulator": true
-      }
+      },
+      "channel": "development"
     },
     "preview": {
       "distribution": "internal",
@@ -27,7 +28,9 @@
       },
       "android": {
         "buildType": "apk"
-      }
+      },
+      "channel": "preview",
+      "environment": "preview"
     },
     "production": {
       "android": {
@@ -38,14 +41,17 @@
         "EXPO_PUBLIC_SENTRY_DSN": "https://413f0f85e322945820964b612fb820f2@o4512292098342912.ingest.us.sentry.io/4512292104044544",
         "SENTRY_ORG": "ledgercraft",
         "SENTRY_PROJECT": "ledgercraft-mobile"
-      }
+      },
+      "channel": "production",
+      "environment": "production"
     },
     "development-device": {
       "developmentClient": true,
       "distribution": "internal",
       "env": {
         "SENTRY_PROJECT": "ledgercraft-mobile"
-      }
+      },
+      "channel": "development-device"
     }
   },
   "submit": {

@@ -3,6 +3,10 @@ module.exports = {
     name: 'easybizinvoice',
     slug: 'easybizinvoice-mobile',
     version: '1.0.0',
+    runtimeVersion: { policy: 'appVersion' },
+    updates: {
+      url: 'https://u.expo.dev/7148323b-502c-447e-96c3-a5c1704c40c9',
+    },
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',

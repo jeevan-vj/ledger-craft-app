@@ -1,5 +1,11 @@
 # AGENTS.md
 
+**EAS Update (configured locally, 2026-10-24):** Mobile uses `expo-updates`,
+separate preview/production channels and EAS environments, and the `appVersion`
+runtime policy. See `mobile/EAS_UPDATE.md` for publishing and compatibility rules.
+A new native build is required to enable updates on existing installations;
+store delivery and native-device OTA verification remain pending.
+
 **Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
 `0016_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
 and expense templates with daily, weekly, monthly, annual, and custom
