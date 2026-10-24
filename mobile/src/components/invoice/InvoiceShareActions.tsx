@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -6,11 +6,15 @@ import {
   Modal,
   Pressable,
   Share,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import type { ShareInvoiceResponse } from '@ledgercraft/contracts';
 import * as Clipboard from 'expo-clipboard';
 import { Feather } from '@expo/vector-icons';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
@@ -24,7 +28,7 @@ import { downloadInvoicePDF, shareInvoicePDF } from '@/utils/pdfUtils';
 import { control, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
-type Action = 'link' | 'download' | 'pdf' | null;
+type Action = 'link' | 'download' | 'pdf' | 'replace' | 'revoke' | null;
 
 interface InvoiceShareActionsProps {
   visible: boolean;
@@ -33,7 +37,11 @@ interface InvoiceShareActionsProps {
   onClose: () => void;
 }
 
-export default function InvoiceShareActions({
+export default function InvoiceShareActions(props: InvoiceShareActionsProps) {
+  return props.visible ? <ShareActions key={`${props.invoice.id}:${props.invoice.templateName ?? 'classic'}`} {...props} /> : null;
+}
+
+function ShareActions({
   visible,
   invoice,
   businessProfile,
@@ -44,34 +52,89 @@ export default function InvoiceShareActions({
   const palette = theme.colors;
   const template = (invoice.templateName as InvoiceTemplateId | undefined) ?? 'classic';
   const [busy, setBusy] = useState<Action>(null);
-  const [shareUrl, setShareUrl] = useState<string | null>(null);
-
+  const insets = useSafeAreaInsets();
+  const queryClient = useQueryClient();
+  const queryKey = ['invoice-shares', invoice.id];
+  const lock = useRef(false);
+  const links = useQuery({
+    queryKey,
+    queryFn: () => invoiceService.listShareLinks(invoice.id),
+    staleTime: 0,
+    gcTime: 0,
+    retry: false,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: () => !lock.current,
+    refetchOnReconnect: () => !lock.current,
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [revoked, setRevoked] = useState(false);
+  const [now, setNow] = useState(Date.now());
   useEffect(() => {
-    if (!visible) setBusy(null);
-  }, [visible]);
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+  const isActive = (share: ShareInvoiceResponse) => share.isActive && (!share.expiresAt || new Date(share.expiresAt).getTime() > now);
+  const current = links.data?.find((share) => share.templateName === template && isActive(share));
+  const shareUrl = current ? buildPublicInvoiceUrl(current.shareToken) : null;
+  const linkDisabled = busy !== null || links.isPending || links.isFetching || links.isError;
 
   const run = async (action: Exclude<Action, null>, work: () => Promise<void>) => {
-    if (busy) return;
+    if (lock.current) return;
+    lock.current = true;
     setBusy(action);
+    setError(null);
     try {
+      if (action === 'link' || action === 'replace' || action === 'revoke') await queryClient.cancelQueries({ queryKey });
       await work();
-    } catch (error) {
-      Alert.alert(
-        'Unable to complete action',
-        error instanceof Error ? error.message : 'Please try again.',
-      );
+    } catch {
+      // API/native exceptions may contain the private link; never display or log them.
+      setError('Unable to complete action. Please try again.');
+      // The server may have committed even if its response was lost. Reconcile
+      // before another action; a failed refresh keeps link controls disabled.
+      if (action === 'link' || action === 'replace' || action === 'revoke') {
+        await queryClient.invalidateQueries({ queryKey });
+      }
     } finally {
+      lock.current = false;
       setBusy(null);
     }
   };
 
-  const createLink = async (): Promise<string> => {
-    if (shareUrl) return shareUrl;
-    const share = await invoiceService.createShareLink(invoice.id, template);
-    const url = buildPublicInvoiceUrl(share.shareToken);
-    setShareUrl(url);
-    return url;
+  const remember = async (share: ShareInvoiceResponse, replace = false) => {
+    await queryClient.cancelQueries({ queryKey });
+    queryClient.setQueryData<ShareInvoiceResponse[]>(queryKey, (previous) => [
+      share, ...(replace ? [] : (previous ?? []).filter((item) => item.shareToken !== share.shareToken)),
+    ]);
+    setRevoked(false);
+    setNow(Date.now());
   };
+  const createLink = async (): Promise<string> => {
+    if (current && (!current.expiresAt || new Date(current.expiresAt).getTime() > Date.now())) {
+      return buildPublicInvoiceUrl(current.shareToken);
+    }
+    const share = await invoiceService.createShareLink(invoice.id, template);
+    await remember(share);
+    return buildPublicInvoiceUrl(share.shareToken);
+  };
+
+  const replaceLink = () => Alert.alert(
+    'Replace link?',
+    'Publish the current invoice and business details with no expiry. All existing links for this invoice will stop working.',
+    [{ text: 'Cancel', style: 'cancel' }, { text: 'Replace link', style: 'destructive', onPress: () => void run('replace', async () => {
+      const share = await invoiceService.createShareLink(invoice.id, template, { replace: true, expiresAt: null });
+      await remember(share, true);
+    }) }],
+  );
+  const revokeLinks = () => Alert.alert(
+    'Revoke access?',
+    'All existing links for this invoice, including other templates, will stop working. Copies already downloaded cannot be recalled.',
+    [{ text: 'Cancel', style: 'cancel' }, { text: 'Revoke access', style: 'destructive', onPress: () => void run('revoke', async () => {
+      await invoiceService.revokeShareLinks(invoice.id);
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData(queryKey, []);
+      setRevoked(true);
+    }) }],
+  );
 
   const shareLink = () => run('link', async () => {
     const url = await createLink();
@@ -86,23 +149,14 @@ export default function InvoiceShareActions({
     });
   });
 
-  const copyLink = async () => {
-    try {
-      const url = await createLink();
-      await Clipboard.setStringAsync(url);
-      Alert.alert('Link copied', 'The public invoice link is ready to paste.');
-    } catch (error) {
-      Alert.alert('Unable to copy link', error instanceof Error ? error.message : 'Please try again.');
-    }
-  };
+  const copyLink = () => run('link', async () => {
+    await Clipboard.setStringAsync(await createLink());
+    Alert.alert('Link copied', 'The public invoice link is ready to paste.');
+  });
 
-  const openLink = async () => {
-    try {
-      await Linking.openURL(await createLink());
-    } catch (error) {
-      Alert.alert('Unable to open link', error instanceof Error ? error.message : 'Please try again.');
-    }
-  };
+  const openLink = () => run('link', async () => {
+    await Linking.openURL(await createLink());
+  });
 
   const savePdf = () => run('download', async () => {
     const saved = await downloadInvoicePDF(invoice, businessProfile, template);
@@ -122,7 +176,7 @@ export default function InvoiceShareActions({
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
       <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Close share actions" />
-      <View style={styles.sheet}>
+      <ScrollView style={styles.sheet} contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }} contentInsetAdjustmentBehavior="automatic">
         <View style={styles.handle} />
         <View style={styles.headingRow}>
           <View>
@@ -144,12 +198,12 @@ export default function InvoiceShareActions({
             <TouchableOpacity
               key={row.key}
               onPress={row.onPress}
-              disabled={busy !== null}
+              disabled={row.key === 'link' ? linkDisabled : busy !== null}
               activeOpacity={0.65}
               accessibilityRole="button"
               accessibilityLabel={row.title}
               accessibilityHint={row.subtitle}
-              accessibilityState={{ busy: busy === row.key, disabled: busy !== null }}
+              accessibilityState={{ busy: busy === row.key, disabled: row.key === 'link' ? linkDisabled : busy !== null }}
               style={styles.row}
             >
               <View style={styles.iconWell}>
@@ -168,20 +222,40 @@ export default function InvoiceShareActions({
           ))}
         </View>
 
+        <View style={styles.linkCard}>
+          {links.isPending ? <Text style={styles.subtitle}>Loading sharing status…</Text> : null}
+          {links.isError ? <>
+            <Text accessibilityRole="alert" style={styles.subtitle}>Unable to load sharing status. Please retry.</Text>
+            <Pressable accessibilityRole="button" accessibilityLabel="Retry sharing status" disabled={links.isFetching || busy !== null} onPress={() => void links.refetch()} style={styles.linkButton}><Text style={styles.linkButtonText}>Retry</Text></Pressable>
+          </> : null}
+          {links.isSuccess ? <>
+            <Text style={styles.rowTitle}>{current ? (current.expiresAt ? `Active · Expires ${new Date(current.expiresAt).toLocaleString()}` : 'Active · No expiry') : (links.data.length > 0 ? 'No active link for this template' : 'No active link')}</Text>
+            {revoked ? <Text style={styles.subtitle}>Access revoked. Existing links no longer work.</Text> : null}
+            <Text style={styles.rowSubtitle}>Links keep the invoice and business details from when they were created. Replace a link to publish current details.</Text>
+            <View style={styles.linkActions}>
+              {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Replace link" disabled={linkDisabled} onPress={replaceLink} style={styles.linkButton}><Text style={styles.linkButtonText}>Replace link</Text></Pressable> : null}
+              {(links.data?.length ?? 0) > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Revoke access" disabled={linkDisabled} onPress={revokeLinks} style={styles.linkButton}><Text style={styles.linkButtonText}>Revoke access</Text></Pressable> : null}
+            </View>
+          </> : null}
+          {error ? <Text accessibilityRole="alert" style={styles.subtitle}>{error}</Text> : null}
+          {busy === 'replace' || busy === 'revoke' ? <ActivityIndicator accessibilityLabel="Updating sharing access" color={palette.accentText} /> : null}
+          <Text style={styles.rowSubtitle}>Email delivery and reminders are unavailable. Use Share link to send the invoice yourself.</Text>
+        </View>
+
         {shareUrl ? (
           <View style={styles.linkCard}>
             <Text numberOfLines={2} selectable style={styles.link}>{shareUrl}</Text>
             <View style={styles.linkActions}>
-              <Pressable onPress={copyLink} accessibilityRole="button" accessibilityLabel="Copy link" style={styles.linkButton}>
+              <Pressable disabled={linkDisabled} onPress={copyLink} accessibilityRole="button" accessibilityLabel="Copy link" style={styles.linkButton}>
                 <Text style={styles.linkButtonText}>Copy link</Text>
               </Pressable>
-              <Pressable onPress={openLink} accessibilityRole="link" accessibilityLabel="Open link" style={styles.linkButton}>
+              <Pressable disabled={linkDisabled} onPress={openLink} accessibilityRole="link" accessibilityLabel="Open link" style={styles.linkButton}>
                 <Text style={styles.linkButtonText}>Open link</Text>
               </Pressable>
             </View>
           </View>
         ) : null}
-      </View>
+      </ScrollView>
     </Modal>
   );
 }
@@ -194,7 +268,8 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     borderTopRightRadius: radius.xl,
     paddingHorizontal: space.screen,
     paddingTop: space.sm,
-    paddingBottom: 34,
+    maxHeight: '90%',
+    flexGrow: 0,
   },
   handle: { width: 36, height: 5, borderRadius: 3, backgroundColor: palette.separator, alignSelf: 'center', marginBottom: space.lg },
   headingRow: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: space.lg },
@@ -209,7 +284,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   rowSubtitle: { fontSize: 13, color: palette.textSecondary, marginTop: 2 },
   linkCard: { marginTop: space.lg, padding: space.md, borderRadius: radius.group, backgroundColor: palette.surfaceRaised, borderWidth: 1, borderColor: palette.border },
   link: { fontSize: 13, lineHeight: 18, color: palette.textSecondary },
-  linkActions: { flexDirection: 'row', gap: space.sm, marginTop: space.md },
+  linkActions: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm, marginTop: space.md },
   linkButton: { minHeight: control.touchTarget, paddingHorizontal: space.md, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, backgroundColor: palette.fill },
   linkButtonText: { color: palette.accentText, fontWeight: '600' },
 });

@@ -1,33 +1,19 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Copy, Calendar, Share2, Link2, Check, Mail } from 'lucide-react';
+import React, { useState } from 'react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import type { CreateShareInvoiceRequest, ShareInvoiceResponse } from '@ledgercraft/contracts';
+import { Copy, Share2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-} from '@/components/ui/dialog';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogCancel, AlertDialogAction } from '@/components/ui/alert-dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
-import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { Invoice, InvoiceTemplateName } from '@/types';
-import EmailInputModal from './EmailInputModal';
-import { emailService } from '@/services/emailService';
-import { pdfService } from '@/services/pdfService';
-import { renderTemplateToHtml, createTemplateElement } from '@/services/invoiceTemplateRenderer';
 import { businessProfileService } from '@/services/supabaseService';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
-import type { BusinessProfile } from '@/types';
 
 interface ShareInvoiceModalProps {
   open: boolean;
@@ -37,477 +23,144 @@ interface ShareInvoiceModalProps {
 }
 
 const TEMPLATE_OPTIONS = [
-  { value: 'classic', label: 'Classic' },
-  { value: 'modern', label: 'Modern' },
-  { value: 'minimal', label: 'Minimal' },
-  { value: 'executive', label: 'Executive' },
-  { value: 'corporate', label: 'Corporate' },
-  { value: 'modernPro', label: 'Modern Pro' },
+  ['classic', 'Classic'], ['modern', 'Modern'], ['minimal', 'Minimal'],
+  ['executive', 'Executive'], ['corporate', 'Corporate'], ['modernPro', 'Modern Pro'],
 ] as const;
 
-const ShareInvoiceModal: React.FC<ShareInvoiceModalProps> = ({
-  open,
-  onOpenChange,
-  invoice,
-  businessName,
-}) => {
+function ShareInvoiceControls({ invoice, businessName }: ShareInvoiceModalProps) {
   const { toast } = useToast();
-  const [isCreating, setIsCreating] = useState(false);
-  const [shareUrl, setShareUrl] = useState('');
-  const [showEmailModal, setShowEmailModal] = useState(false);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
-  
-  
+  const queryClient = useQueryClient();
   const [selectedTemplate, setSelectedTemplate] = useState<InvoiceTemplateName>(
-    (invoice.templateName as InvoiceTemplateName) || 'classic'
+    (invoice.templateName as InvoiceTemplateName) || 'classic',
   );
-  const [showTemplateSelection, setShowTemplateSelection] = useState(
-    !invoice.templateName
-  );
+  const [showTemplates, setShowTemplates] = useState(!invoice.templateName);
   const [enableExpiration, setEnableExpiration] = useState(false);
-  const [expirationDays, setExpirationDays] = useState(30);
+  const [expirationDays, setExpirationDays] = useState('30');
+  const [confirmReplace, setConfirmReplace] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [profile, setProfile] = useState<BusinessProfile | null>(null);
-  const urlInputRef = useRef<HTMLInputElement>(null);
-
-  useEffect(() => {
-    setSelectedTemplate((invoice.templateName as InvoiceTemplateName) || 'classic');
-    setShowTemplateSelection(!invoice.templateName);
-    setShareUrl('');
-    setCopied(false);
-  }, [invoice.id, invoice.templateName, open]);
-
-  useEffect(() => {
-    if (!open) {
-      return;
-    }
-
-    let cancelled = false;
-    businessProfileService
-      .getBusinessProfile()
-      .then((data) => {
-        if (!cancelled) {
-          setProfile(data);
-        }
-      })
-      .catch(() => {
-        if (!cancelled) {
-          setProfile(null);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-  }, [open]);
-
-  const handleCreateShareLink = async () => {
-    setIsCreating(true);
-    try {
-      const expiresAt = enableExpiration 
-        ? new Date(Date.now() + expirationDays * 24 * 60 * 60 * 1000).toISOString()
-        : undefined;
-
-      const sharedInvoice = await invoicesApi.share(invoice.id, {
-        templateName: selectedTemplate,
-        expiresAt,
-      });
-
-      const url = `${window.location.origin}/shared/invoice/${sharedInvoice.shareToken}`;
-      setShareUrl(url);
-
-      toast({
-        title: 'Share link created',
-        description: 'Invoice share link has been generated successfully.',
-      });
-    } catch (error) {
-      console.error('Error creating share link:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create share link. Please try again.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsCreating(false);
-    }
+  const [actionError, setActionError] = useState('');
+  const queryKey = ['invoice-shares', invoice.id];
+  const days = Number(expirationDays);
+  const validExpiry = !enableExpiration || (Number.isInteger(days) && days >= 1 && days <= 365);
+  const mutation = useMutation({
+    mutationFn: (input: CreateShareInvoiceRequest) => invoicesApi.share(invoice.id, input),
+    retry: false,
+    onMutate: async () => {
+      await queryClient.cancelQueries({ queryKey });
+    },
+    onSuccess: async (result, input) => {
+      // Discard any older list response before publishing the mutation result.
+      await queryClient.cancelQueries({ queryKey });
+      queryClient.setQueryData<ShareInvoiceResponse[]>(queryKey, previous => input.replace
+        ? [result] : [result, ...(previous ?? []).filter(share => share.shareToken !== result.shareToken)]);
+      setCopied(false);
+      setActionError('');
+      toast({ title: input.replace ? 'Share link replaced' : 'Share link ready', description: 'The link status below comes from the server.' });
+    },
+    onError: () => {
+      setActionError('Could not update the share link. Check the current links and try again.');
+      void queryClient.invalidateQueries({ queryKey });
+    },
+  });
+  const shares = useQuery({
+    queryKey, queryFn: () => invoicesApi.shares(invoice.id), retry: false,
+    gcTime: 0, staleTime: 30_000, refetchOnMount: 'always', refetchInterval: 30_000,
+    enabled: !mutation.isPending,
+  });
+  const profile = useQuery({ queryKey: ['business-profile'], queryFn: () => businessProfileService.getBusinessProfile() });
+  const current = shares.data?.find(share => share.templateName === selectedTemplate && share.isActive &&
+    (!share.expiresAt || Date.parse(share.expiresAt) > Date.now()));
+  const shareUrl = current ? `${window.location.origin}/shared/invoice/${current.shareToken}` : '';
+  const createLink = (replace = false) => {
+    if (!validExpiry) return;
+    setActionError('');
+    mutation.mutate({ templateName: selectedTemplate,
+      expiresAt: enableExpiration ? new Date(Date.now() + days * 86_400_000).toISOString() : undefined,
+      ...(replace ? { replace: true } : {}),
+    });
   };
-
-  const handleCopyLink = async () => {
-    if (!shareUrl) return;
-
+  const copyLink = async () => {
     try {
       await navigator.clipboard.writeText(shareUrl);
       setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-      toast({
-        title: 'Link copied',
-        description: 'Share link copied to clipboard.',
-      });
-    } catch (error) {
-      // Fallback for browsers that don't support clipboard API
-      if (urlInputRef.current) {
-        urlInputRef.current.select();
-        document.execCommand('copy');
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
-        toast({
-          title: 'Link copied',
-          description: 'Share link copied to clipboard.',
-        });
-      }
+      setActionError('');
+      toast({ title: 'Link copied' });
+    } catch {
+      setActionError('Could not copy the link. Select the link above and copy it manually.');
     }
   };
-
-  const handleNativeShare = async () => {
-    if (!shareUrl) return;
-
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Invoice ${invoice.invoiceNumber}`,
-          text: `View your invoice from ${businessName || 'us'}.`,
-          url: shareUrl,
-        });
-        toast({
-          title: 'Invoice shared successfully!',
-        });
-      } catch (error: unknown) {
-        if (error instanceof Error && error.name !== 'AbortError') {
-          console.error('Error sharing:', error);
-          toast({
-            title: 'Sharing failed',
-            description: 'Could not share the invoice.',
-            variant: 'destructive',
-          });
-        }
-      }
-    } else {
-      // Fallback to copy
-      handleCopyLink();
-    }
-  };
-
-  const handleSendEmail = () => {
-    setShowEmailModal(true);
-  };
-
-  const handleEmailConfirmed = async (email: string) => {
-    setIsSendingEmail(true);
+  const shareLink = async () => {
     try {
-      // Create a share link first if it doesn't exist
-      let url = shareUrl;
-      if (!url) {
-        const expiresAt = enableExpiration 
-          ? new Date(Date.now() + expirationDays * 24 * 60 * 60 * 1000).toISOString()
-          : undefined;
-
-        const sharedInvoice = await invoicesApi.share(invoice.id, {
-          templateName: selectedTemplate,
-          expiresAt,
-        });
-        url = `${window.location.origin}/shared/invoice/${sharedInvoice.shareToken}`;
-        setShareUrl(url);
-      }
-
-      if (invoicesApiEnabled()) {
-        await invoicesApi.send(invoice.id, { to: [email] });
-        toast({
-          title: 'Email sent successfully!',
-          description: `Invoice has been sent to ${email}`,
-        });
-        return;
-      }
-
-      // Get business profile for template rendering
-      const businessProfile = await businessProfileService.getBusinessProfile();
-
-      // Generate HTML using the actual invoice template
-      const invoiceHtml = await renderTemplateToHtml(invoice, selectedTemplate, businessProfile);
-
-      // Create template element for PDF generation
-      const templateElement = createTemplateElement(invoice, selectedTemplate, businessProfile);
-      document.body.appendChild(templateElement);
-
-      // Wait for fonts and images to load
-      await new Promise(resolve => setTimeout(resolve, 500));
-
-      // Generate PDF
-      let pdfBuffer;
-      try {
-        pdfBuffer = await pdfService.generateInvoicePDF(templateElement, invoice.invoiceNumber);
-      } catch (pdfError) {
-        console.warn('PDF generation failed:', pdfError);
-        // Continue without PDF attachment
-      } finally {
-        // Clean up template element
-        if (templateElement.cleanup) {
-          templateElement.cleanup();
-        } else if (templateElement.parentNode) {
-          templateElement.parentNode.removeChild(templateElement);
-        }
-      }
-
-      // Send email with the properly formatted invoice HTML
-      const result = await emailService.sendInvoiceEmail({
-        to: email,
-        invoiceNumber: invoice.invoiceNumber,
-        businessName: businessProfile?.name || businessName || 'Your Business',
-        customerName: invoice.customer?.name || 'Customer',
-        total: invoice.total,
-        currency: invoice.currency,
-        invoiceHtml: invoiceHtml,
-        pdfBuffer
-      });
-
-      if (result.success) {
-        toast({
-          title: 'Email sent successfully!',
-          description: `Invoice has been sent to ${email}`,
-        });
-      } else {
-        throw new Error(result.error || 'Failed to send email');
-      }
+      await navigator.share({ title: `Invoice ${invoice.invoiceNumber}`, text: `View your invoice from ${businessName || 'us'}.`, url: shareUrl });
+      toast({ title: 'Invoice shared successfully!' });
     } catch (error) {
-      console.error('Error sending email:', error);
-      toast({
-        title: 'Failed to send email',
-        description: error instanceof Error ? error.message : 'An error occurred while sending the email',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsSendingEmail(false);
+      if (!(typeof error === 'object' && error !== null && 'name' in error && error.name === 'AbortError')) {
+        setActionError('Could not share the invoice. Please try again or copy the link.');
+      }
     }
   };
-
-  const handleClose = () => {
-    setShareUrl('');
-    setCopied(false);
-    setShowEmailModal(false);
-    setIsSendingEmail(false);
-    onOpenChange(false);
-  };
-
-  return (
-    <Dialog open={open} onOpenChange={handleClose}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2">
-            <Share2 className="h-5 w-5" />
-            Share Invoice {invoice.invoiceNumber}
-          </DialogTitle>
-          <DialogDescription>
-            Create a secure link to share this invoice. Anyone with the link can view the invoice and download its PDF without an account.
-          </DialogDescription>
-        </DialogHeader>
-
-        <div className="space-y-4">
-          <ProfileCompletenessBanner profile={profile} />
-          {/* Template Selection - Only show if no template is saved */}
-          {showTemplateSelection && (
-            <div className="space-y-2">
-              <Label htmlFor="template">Template</Label>
-              <Select value={selectedTemplate} onValueChange={(value) => setSelectedTemplate(value as InvoiceTemplateName)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select template" />
-                </SelectTrigger>
-                <SelectContent>
-                  {TEMPLATE_OPTIONS.map((template) => (
-                    <SelectItem key={template.value} value={template.value}>
-                      {template.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-          )}
-          
-          {/* Show selected template info when template is pre-saved */}
-          {!showTemplateSelection && (
-            <div className="space-y-2">
-              <Label>Template</Label>
-              <div className="flex items-center justify-between p-3 border rounded-md bg-muted/50">
-                <span className="font-medium">
-                  {TEMPLATE_OPTIONS.find(t => t.value === selectedTemplate)?.label || selectedTemplate}
-                </span>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setShowTemplateSelection(true)}
-                  className="text-muted-foreground hover:text-foreground"
-                >
-                  Change
-                </Button>
-              </div>
-            </div>
-          )}
-
-          {/* Expiration Settings */}
-          <div className="space-y-3">
-            <div className="flex items-center justify-between">
-              <div className="space-y-1">
-                <Label htmlFor="expiration">Link Expiration</Label>
-                <p className="text-sm text-muted-foreground">
-                  Automatically disable the link after a certain time
-                </p>
-              </div>
-              <Switch 
-                id="expiration"
-                checked={enableExpiration} 
-                onCheckedChange={setEnableExpiration} 
-              />
-            </div>
-            
-            {enableExpiration && (
-              <div className="space-y-2">
-                <Label htmlFor="expiration-days">Expires in (days)</Label>
-                <Input
-                  id="expiration-days"
-                  type="number"
-                  min="1"
-                  max="365"
-                  value={expirationDays}
-                  onChange={(e) => setExpirationDays(Number(e.target.value))}
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Generate/Display Share Link or Send Email */}
-          {!shareUrl ? (
-            <div className="space-y-2">
-              <Button 
-                onClick={handleCreateShareLink} 
-                disabled={isCreating || isSendingEmail}
-                className="w-full"
-              >
-                {isCreating ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2" />
-                    Creating link...
-                  </>
-                ) : (
-                  <>
-                    <Link2 className="h-4 w-4 mr-2" />
-                    Generate Share Link
-                  </>
-                )}
-              </Button>
-              
-              <div className="text-center text-sm text-muted-foreground">or</div>
-              
-              <Button 
-                onClick={handleSendEmail} 
-                disabled={isCreating || isSendingEmail}
-                variant="outline"
-                className="w-full"
-              >
-                {isSendingEmail ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                    Sending email...
-                  </>
-                ) : (
-                  <>
-                    <Mail className="h-4 w-4 mr-2" />
-                    Send via Email
-                  </>
-                )}
-              </Button>
-            </div>
-          ) : (
-            <div className="space-y-3">
-              <div className="space-y-2">
-                <Label htmlFor="share-url">Share Link</Label>
-                <div className="flex gap-2">
-                  <Input
-                    ref={urlInputRef}
-                    id="share-url"
-                    value={shareUrl}
-                    readOnly
-                    className="font-mono text-sm"
-                  />
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    aria-label="Copy share link"
-                    onClick={handleCopyLink}
-                    className="shrink-0"
-                  >
-                    {copied ? (
-                      <Check className="h-4 w-4 text-green-600" />
-                    ) : (
-                      <Copy className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Button asChild variant="outline" className="w-full">
-                  <a href={shareUrl} target="_blank" rel="noopener noreferrer">Open invoice</a>
-                </Button>
-                <div className="flex gap-2">
-                  <Button
-                    variant="outline"
-                    onClick={handleCopyLink}
-                    className="flex-1"
-                  >
-                    <Copy className="h-4 w-4 mr-2" />
-                    Copy Link
-                  </Button>
-                  {navigator.share && (
-                    <Button
-                      onClick={handleNativeShare}
-                      className="flex-1"
-                    >
-                      <Share2 className="h-4 w-4 mr-2" />
-                      Share
-                    </Button>
-                  )}
-                </div>
-                
-                <Button 
-                  onClick={handleSendEmail} 
-                  disabled={isSendingEmail}
-                  variant="outline"
-                  className="w-full"
-                >
-                  {isSendingEmail ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-current mr-2" />
-                      Sending email...
-                    </>
-                  ) : (
-                    <>
-                      <Mail className="h-4 w-4 mr-2" />
-                      Send via Email
-                    </>
-                  )}
-                </Button>
-              </div>
-
-              {enableExpiration && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Calendar className="h-4 w-4" />
-                  <span>
-                    Expires in {expirationDays} day{expirationDays !== 1 ? 's' : ''}
-                  </span>
-                </div>
-              )}
-            </div>
-          )}
+  const busy = mutation.isPending || shares.isFetching;
+  return <div className="space-y-4">
+    <ProfileCompletenessBanner profile={profile.data ?? null} />
+    <div className="space-y-2">
+      <Label htmlFor="share-template">Template</Label>
+      {showTemplates ? <Select value={selectedTemplate} disabled={mutation.isPending} onValueChange={value => { setSelectedTemplate(value as InvoiceTemplateName); setCopied(false); }}>
+        <SelectTrigger id="share-template"><SelectValue /></SelectTrigger>
+        <SelectContent>{TEMPLATE_OPTIONS.map(([value, label]) => <SelectItem key={value} value={value}>{label}</SelectItem>)}</SelectContent>
+      </Select> : <div className="flex items-center justify-between rounded-md bg-muted/50 p-3">
+        <span>{TEMPLATE_OPTIONS.find(([value]) => value === selectedTemplate)?.[1]}</span>
+        <Button variant="ghost" size="sm" disabled={busy} onClick={() => setShowTemplates(true)}>Change</Button>
+      </div>}
+    </div>
+    {shares.isPending ? <p role="status">Loading current links…</p> : shares.isError ? <div role="alert" className="space-y-2">
+      <p>Could not load the current links.</p><Button variant="outline" onClick={() => shares.refetch()}>Retry loading links</Button>
+    </div> : <>
+      {current ? <div className="space-y-3">
+        <p className="text-sm font-medium">Active link · {current.expiresAt ? `Expires ${new Date(current.expiresAt).toLocaleString()}` : 'No expiry'}</p>
+        <p className="text-sm text-muted-foreground">This link keeps its original invoice and business details. Replace it to publish your current details or change its expiry.</p>
+        <Label htmlFor="share-url">Share Link</Label>
+        <Input id="share-url" value={shareUrl} readOnly className="font-mono text-sm" />
+        <div className="flex flex-wrap gap-2">
+          <Button variant="outline" disabled={busy} onClick={copyLink}><Copy className="mr-2 h-4 w-4" />{copied ? 'Copied' : 'Copy Link'}</Button>
+          {typeof navigator.share === 'function' && <Button disabled={busy} onClick={shareLink}><Share2 className="mr-2 h-4 w-4" />Share</Button>}
+          <Button asChild variant="outline"><a href={shareUrl} target="_blank" rel="noopener noreferrer">Open invoice</a></Button>
         </div>
-      </DialogContent>
-      
-      <EmailInputModal
-        open={showEmailModal}
-        onOpenChange={setShowEmailModal}
-        onEmailConfirmed={handleEmailConfirmed}
-        customerEmail={invoice.customer?.email}
-        invoiceNumber={invoice.invoiceNumber}
-      />
-    </Dialog>
-  );
-};
+      </div> : <p className="text-sm text-muted-foreground">No active link for this template.</p>}
+      <div className="space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <div><Label htmlFor="expiration">Link Expiration</Label><p className="text-sm text-muted-foreground">For the new or replacement link only.</p></div>
+          <Switch id="expiration" checked={enableExpiration} disabled={mutation.isPending} onCheckedChange={setEnableExpiration} />
+        </div>
+        {enableExpiration && <div className="space-y-2">
+          <Label htmlFor="expiration-days">Expires in (days)</Label>
+          <Input id="expiration-days" type="number" min="1" max="365" value={expirationDays} disabled={mutation.isPending} onChange={event => setExpirationDays(event.target.value)} />
+          {!validExpiry && <p role="alert" className="text-sm text-destructive">Enter a whole number from 1 to 365.</p>}
+        </div>}
+        <Button className="w-full" disabled={busy || !validExpiry} onClick={() => current ? setConfirmReplace(true) : createLink()}>
+          {mutation.isPending ? 'Updating link…' : current ? 'Replace link' : 'Generate Share Link'}
+        </Button>
+      </div>
+    </>}
+    {actionError && <p role="alert" className="text-sm text-destructive">{actionError}</p>}
+    <p className="text-sm text-muted-foreground">Email delivery is unavailable. Copy or share a link instead.</p>
+    <AlertDialog open={confirmReplace} onOpenChange={setConfirmReplace}>
+      <AlertDialogContent>
+        <AlertDialogHeader><AlertDialogTitle>Replace this invoice’s links?</AlertDialogTitle>
+          <AlertDialogDescription>All active links for this invoice will stop working, including links using other templates. The new link publishes the current invoice and business details. {enableExpiration ? `It will expire in ${days} day${days === 1 ? '' : 's'}.` : 'It will have no expiry.'}</AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter><AlertDialogCancel>Keep existing links</AlertDialogCancel><AlertDialogAction onClick={() => createLink(true)}>Replace and invalidate old links</AlertDialogAction></AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
+  </div>;
+}
 
-export default ShareInvoiceModal;
+export default function ShareInvoiceModal(props: ShareInvoiceModalProps) {
+  return <Dialog open={props.open} onOpenChange={props.onOpenChange}>
+    <DialogContent className="max-h-[90dvh] overflow-y-auto sm:max-w-md">
+      <DialogHeader><DialogTitle>Share Invoice {props.invoice.invoiceNumber}</DialogTitle>
+        <DialogDescription>Anyone with the link can view this invoice and download its PDF without an account.</DialogDescription>
+      </DialogHeader>
+      {props.open && <ShareInvoiceControls key={props.invoice.id} {...props} />}
+    </DialogContent>
+  </Dialog>;
+}

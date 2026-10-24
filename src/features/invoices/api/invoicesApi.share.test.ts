@@ -24,3 +24,18 @@ describe('public invoice share reads', () => {
     });
   });
 });
+
+
+describe('invoice share management transport', () => {
+  it('lists current server expiry and explicitly requests replacement only when supplied', async () => {
+    const share = { shareToken: 'private-token', templateName: 'modern', expiresAt: null, isActive: true, accessCount: 0, createdAt: '2026-10-24T00:00:00Z' };
+    const fetchMock = vi.fn().mockResolvedValueOnce(json({ shares: [share] })).mockImplementation(async () => json(share));
+    vi.stubGlobal('fetch', fetchMock);
+    expect(await invoicesApi.shares('invoice-id')).toEqual([share]);
+    expect(fetchMock).toHaveBeenLastCalledWith('/api/invoices/invoice-id/shares', expect.objectContaining({ credentials: 'include' }));
+    await invoicesApi.share('invoice-id', { templateName: 'modern' });
+    expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({ templateName: 'modern' });
+    await invoicesApi.share('invoice-id', { templateName: 'modern', replace: true, expiresAt: '2026-10-26T00:00:00Z' });
+    expect(JSON.parse(fetchMock.mock.calls[2][1].body)).toEqual({ templateName: 'modern', replace: true, expiresAt: '2026-10-26T00:00:00Z' });
+  });
+});

@@ -223,3 +223,25 @@ describe('InvoiceService (Hono)', () => {
     await expect(invoiceService.fetchSharedInvoice('revoked-token')).resolves.toBe('inactive');
   });
 });
+
+// Transport assertions complement the component confirmation/cancellation coverage.
+describe('invoice sharing controls transport', () => {
+  beforeEach(() => {
+    process.env.EXPO_PUBLIC_API_URL = 'http://127.0.0.1:3001';
+    global.fetch = jest.fn();
+  });
+
+  it('lists server status, opts into replacement explicitly, and revokes invoice-wide', async () => {
+    const share = { shareToken: 'private-token', templateName: 'modern', isActive: true, expiresAt: '2099-10-26T00:00:00Z', accessCount: 0, createdAt: '2026-10-25T00:00:00Z' };
+    jest.mocked(global.fetch)
+      .mockResolvedValueOnce(jsonResponse({ shares: [share] }) as Response)
+      .mockResolvedValueOnce(jsonResponse(share) as Response)
+      .mockResolvedValueOnce(jsonResponse({ revoked: 2 }) as Response);
+    await expect(invoiceService.listShareLinks('invoice/id')).resolves.toEqual([share]);
+    await expect(invoiceService.createShareLink('invoice/id', 'modern', { replace: true, expiresAt: null })).resolves.toEqual(share);
+    await expect(invoiceService.revokeShareLinks('invoice/id')).resolves.toEqual({ revoked: 2 });
+    expect(global.fetch).toHaveBeenNthCalledWith(1, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/shares', expect.objectContaining({ method: 'GET' }));
+    expect(global.fetch).toHaveBeenNthCalledWith(2, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/share', expect.objectContaining({ method: 'POST', body: JSON.stringify({ templateName: 'modern', replace: true, expiresAt: null }) }));
+    expect(global.fetch).toHaveBeenNthCalledWith(3, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/shares/revoke', expect.objectContaining({ method: 'POST', body: '{}' }));
+  });
+});

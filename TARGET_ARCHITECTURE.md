@@ -129,6 +129,17 @@ all 29 API suites (79 tests), all 18 contract suites (58 tests), and lint with
 no errors pass. Authenticated device QA and a production Worker deploy of this
 finish-setup fix remain open.
 
+**Invoice sharing controls (implemented locally, 2026-10-25):** Mobile loads
+active links from Hono and displays the server expiry/status. Copy/share reuse
+the same-template immutable snapshot. Explicit confirmed replacement publishes
+current invoice/profile details with no expiry and invalidates every old link;
+confirmed revocation removes access for all invoice links. Web expiry settings
+apply to new links or an explicitly confirmed replacement, and the UI displays
+the server result rather than the requested expiry. PDF actions remain intact;
+email/reminders remain unavailable. No API contract, money, migration, or tenant
+boundary changed. Authenticated native-device sharing/cancellation and signed
+Android app-link verification remain separate QA gaps.
+
 **Mobile invoice sharing (implemented locally, 2026-10-19):** Expo invoice
 detail now separates public-link sharing, PDF download/export, and PDF file
 sharing. Public links use the existing immutable Hono/SQLite snapshot and can
