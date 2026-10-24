@@ -1,5 +1,7 @@
 import type {
   CreateInvoiceRequest,
+  CreateShareInvoiceRequest,
+  InvoiceShareListResponse,
   InvoiceDto,
   InvoiceAttachmentDto,
   InvoiceHistoryDto,
@@ -283,9 +285,13 @@ export const invoicesApi = {
     );
   },
 
+  async shares(id: string): Promise<ShareInvoiceResponse[]> {
+    return (await request<InvoiceShareListResponse>(`/api/invoices/${id}/shares`)).shares;
+  },
+
   async share(
     id: string,
-    input: { templateName?: string; expiresAt?: string },
+    input: CreateShareInvoiceRequest,
   ): Promise<ShareInvoiceResponse> {
     return request<ShareInvoiceResponse>(`/api/invoices/${id}/share`, {
       method: 'POST',

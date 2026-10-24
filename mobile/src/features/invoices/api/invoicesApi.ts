@@ -1,3 +1,4 @@
+import type { CreateShareInvoiceRequest, InvoiceShareListResponse, RevokeInvoiceSharesResponse, ShareInvoiceResponse } from '@ledgercraft/contracts';
 import { apiRequest, AuthApiError } from '@/features/auth/api/http';
 import {
   toBusinessProfile,
@@ -60,11 +61,7 @@ export interface MobileInvoiceDto {
   archivedAt?: string | null;
 }
 
-export interface MobileShareInvoiceResponse {
-  shareToken: string;
-  expiresAt: string | null;
-  isActive: boolean;
-}
+export type MobileShareInvoiceResponse = ShareInvoiceResponse;
 
 export interface MobileSharedInvoiceSnapshot {
   invoice: Invoice;
@@ -267,11 +264,20 @@ export const invoicesApi = {
     });
   },
 
-  async share(id: string, templateName = 'classic'): Promise<MobileShareInvoiceResponse> {
+  async share(id: string, templateName = 'classic', options: Pick<CreateShareInvoiceRequest, 'replace' | 'expiresAt'> = {}): Promise<MobileShareInvoiceResponse> {
     return apiRequest<MobileShareInvoiceResponse>(`/api/invoices/${encodeURIComponent(id)}/share`, {
       method: 'POST',
-      body: JSON.stringify({ templateName }),
+      body: JSON.stringify({ templateName, ...options }),
     });
+  },
+
+  async listShares(id: string): Promise<ShareInvoiceResponse[]> {
+    const result = await apiRequest<InvoiceShareListResponse>(`/api/invoices/${encodeURIComponent(id)}/shares`, { method: 'GET' });
+    return result.shares;
+  },
+
+  async revokeShares(id: string): Promise<RevokeInvoiceSharesResponse> {
+    return apiRequest(`/api/invoices/${encodeURIComponent(id)}/shares/revoke`, { method: 'POST', body: '{}' });
   },
 
   async getShared(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {

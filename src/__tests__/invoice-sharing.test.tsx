@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
@@ -7,6 +8,7 @@ import { Invoice } from '@/types';
 
 vi.mock('@/features/invoices/api/invoicesApi', () => ({
   invoicesApi: {
+    shares: vi.fn().mockResolvedValue([]),
     share: vi.fn(),
     getShared: vi.fn(),
   },
@@ -69,9 +71,9 @@ const renderShareModal = (props = {}) => {
   };
 
   return render(
-    <BrowserRouter>
+    <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><BrowserRouter>
       <ShareInvoiceModal {...defaultProps} />
-    </BrowserRouter>
+    </BrowserRouter></QueryClientProvider>
   );
 };
 
@@ -81,18 +83,19 @@ describe('Invoice Sharing Feature', () => {
   });
 
   describe('ShareInvoiceModal', () => {
-    it('renders correctly with invoice information', () => {
+    it('renders correctly with invoice information', async () => {
       renderShareModal();
       
       expect(screen.getByText('Share Invoice INV-001')).toBeInTheDocument();
-      expect(screen.getByText(/Create a secure link to share this invoice/)).toBeInTheDocument();
+      expect(screen.getByText(/Anyone with the link can view this invoice/)).toBeInTheDocument();
       expect(screen.getByText('Template')).toBeInTheDocument();
-      expect(screen.getByText('Generate Share Link')).toBeInTheDocument();
+      expect(await screen.findByText('Generate Share Link')).toBeInTheDocument();
     });
 
     it('allows template selection', async () => {
       renderShareModal();
 
+      await screen.findByText('Generate Share Link');
       fireEvent.click(screen.getByText('Change'));
       
       const templateSelect = screen.getByRole('combobox');
@@ -105,10 +108,10 @@ describe('Invoice Sharing Feature', () => {
       });
     });
 
-    it('handles expiration settings', () => {
+    it('handles expiration settings', async () => {
       renderShareModal();
       
-      const expirationSwitch = screen.getByRole('switch');
+      const expirationSwitch = await screen.findByRole('switch');
       fireEvent.click(expirationSwitch);
       
       expect(screen.getByLabelText('Expires in (days)')).toBeInTheDocument();
@@ -117,13 +120,16 @@ describe('Invoice Sharing Feature', () => {
     it('creates share link when button is clicked', async () => {
       vi.mocked(invoicesApi.share).mockResolvedValue({
         shareToken: 'test-token-123',
+        templateName: 'classic',
+        createdAt: '2026-10-24T00:00:00Z',
+        accessCount: 0,
         expiresAt: null,
         isActive: true,
       });
 
       renderShareModal();
       
-      const generateButton = screen.getByText('Generate Share Link');
+      const generateButton = await screen.findByText('Generate Share Link');
       fireEvent.click(generateButton);
 
       await waitFor(() => {
@@ -137,13 +143,16 @@ describe('Invoice Sharing Feature', () => {
     it('displays share URL after generation', async () => {
       vi.mocked(invoicesApi.share).mockResolvedValue({
         shareToken: 'test-token-123',
+        templateName: 'classic',
+        createdAt: '2026-10-24T00:00:00Z',
+        accessCount: 0,
         expiresAt: null,
         isActive: true,
       });
 
       renderShareModal();
       
-      const generateButton = screen.getByText('Generate Share Link');
+      const generateButton = await screen.findByText('Generate Share Link');
       fireEvent.click(generateButton);
 
       await waitFor(() => {

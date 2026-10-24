@@ -1,3 +1,4 @@
+import type { CreateShareInvoiceRequest } from '@ledgercraft/contracts';
 import {
   invoicesApi,
   invoicesApiEnabled,
@@ -11,9 +12,13 @@ export class InvoiceService {
   async createShareLink(
     invoiceId: string,
     templateName = 'classic',
+    options: Pick<CreateShareInvoiceRequest, 'replace' | 'expiresAt'> = {},
   ): Promise<MobileShareInvoiceResponse> {
-    return invoicesApi.share(invoiceId, templateName);
+    return invoicesApi.share(invoiceId, templateName, options);
   }
+
+  async listShareLinks(invoiceId: string) { return invoicesApi.listShares(invoiceId); }
+  async revokeShareLinks(invoiceId: string) { return invoicesApi.revokeShares(invoiceId); }
 
   async fetchSharedInvoice(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {
     return invoicesApi.getShared(token);

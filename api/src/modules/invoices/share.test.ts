@@ -3,6 +3,7 @@ import {
   invoiceSchema,
   invoiceShareListResponseSchema,
   revokeInvoiceSharesResponseSchema,
+  publicSharedInvoiceSchema,
   shareInvoiceResponseSchema,
 } from '@ledgercraft/contracts';
 import { eq } from 'drizzle-orm';
@@ -238,6 +239,25 @@ describe('invoice share links', () => {
           body: JSON.stringify({ templateName: 'executive' }),
         })).json());
 
+        const updated = await app.request(`/api/invoices/${invoice.id}`, {
+          method: 'PATCH', headers, body: JSON.stringify({ notes: 'Updated details for recipient' }),
+        });
+        expect(updated.status).toBe(200);
+        const profileUpdate = await app.request('/api/business-profile', {
+          method: 'PUT', headers,
+          body: JSON.stringify({ name: 'Updated Kauri Studio', email: 'hello@kauristudio.nz', country: 'NZ', defaultTaxRate: '15' }),
+        });
+        expect(profileUpdate.status).toBe(200);
+        const expiresAt = new Date(Date.now() + 86400000).toISOString();
+        const reused = shareInvoiceResponseSchema.parse(await (await app.request(`/api/invoices/${invoice.id}/share`, {
+          method: 'POST', headers, body: JSON.stringify({ templateName: 'classic', expiresAt }),
+        })).json());
+        expect(reused.shareToken).toBe(first.shareToken);
+        expect(reused.expiresAt).toBeNull();
+        const original = publicSharedInvoiceSchema.parse(await (await app.request(`/api/public/invoices/${reused.shareToken}`)).json());
+        expect(original.invoice.notes).not.toBe('Updated details for recipient');
+        expect(original.businessProfile?.name).toBe('Kauri Studio Ltd');
+
         await sql.exec(`
           CREATE TRIGGER shared_invoices_reject_insert
           BEFORE INSERT ON shared_invoices
@@ -258,12 +278,17 @@ describe('invoice share links', () => {
         const replaced = await app.request(`/api/invoices/${invoice.id}/share`, {
           method: 'POST',
           headers,
-          body: JSON.stringify({ replace: true, templateName: 'classic' }),
+          body: JSON.stringify({ replace: true, templateName: 'classic', expiresAt }),
         });
         expect(replaced.status).toBe(201);
         const fresh = shareInvoiceResponseSchema.parse(await replaced.json());
         expect(fresh.shareToken).not.toBe(first.shareToken);
         expect(fresh.templateName).toBe('classic');
+        expect(fresh.expiresAt).toBe(expiresAt);
+        const refreshed = publicSharedInvoiceSchema.parse(await (await app.request(`/api/public/invoices/${fresh.shareToken}`)).json());
+        expect(refreshed.invoice.notes).toBe('Updated details for recipient');
+        expect(refreshed.businessProfile?.name).toBe('Updated Kauri Studio');
+        expect(refreshed.invoice.total).toBe(original.invoice.total);
         expect((await app.request(`/api/public/invoices/${first.shareToken}`)).status).toBe(410);
         expect((await app.request(`/api/public/invoices/${second.shareToken}`)).status).toBe(410);
         expect((await app.request(`/api/public/invoices/${fresh.shareToken}`)).status).toBe(200);
