@@ -191,4 +191,157 @@ describe('payment routes', () => {
       }
     });
   });
+
+  it('retried payment with the same Idempotency-Key returns the original payment', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const ownerA = await signUp(app, 'Owner Idempotent A');
+        const ownerB = await signUp(app, 'Owner Idempotent B');
+        const invoice = await seedInvoice(app, ownerA.cookie);
+        const payload = {
+          invoiceId: invoice.id,
+          paymentMethod: 'bank_transfer',
+          amount: '1000.00',
+          paymentDate: '2026-09-08',
+          referenceNumber: 'REF-RETRY',
+        };
+        const headers = {
+          ...originHeaders,
+          Cookie: ownerA.cookie,
+          'Idempotency-Key': 'payment-retry-1',
+        };
+
+        const first = await app.request('/api/payments', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload),
+        });
+        expect(first.status).toBe(201);
+        const original = paymentSchema.parse(await first.json());
+
+        const retry = await app.request('/api/payments', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify(payload),
+        });
+        expect(retry.status).toBe(201);
+        const replayed = paymentSchema.parse(await retry.json());
+        expect(replayed).toEqual(original);
+
+        const afterRetry = invoiceSchema.parse(
+          await (await app.request(`/api/invoices/${invoice.id}`, { headers: { Cookie: ownerA.cookie } })).json(),
+        );
+        expect(afterRetry.totalPaid).toBe('1000.00');
+        expect(afterRetry.balanceDue).toBe('4175.00');
+        const storedPayments = await sql.unsafe(
+          `SELECT id FROM payments WHERE organisation_id IS NOT NULL AND invoice_id = ?`,
+          [invoice.id],
+        );
+        expect(storedPayments).toHaveLength(1);
+        const paymentJournals = await sql.unsafe(
+          `SELECT id FROM journal_entries WHERE reference_type = 'invoice_payment' AND reference_id = ?`,
+          [original.id],
+        );
+        expect(paymentJournals).toHaveLength(1);
+
+        const conflict = await app.request('/api/payments', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({ ...payload, amount: '500.00' }),
+        });
+        expect(conflict.status).toBe(409);
+        expect(errorEnvelopeSchema.parse(await conflict.json()).error.code).toBe('IDEMPOTENCY_CONFLICT');
+        expect(
+          await sql.unsafe(`SELECT id FROM payments WHERE invoice_id = ?`, [invoice.id]),
+        ).toHaveLength(1);
+
+        const otherInvoice = await seedInvoice(app, ownerB.cookie);
+        const other = await app.request('/api/payments', {
+          method: 'POST',
+          headers: {
+            ...originHeaders,
+            Cookie: ownerB.cookie,
+            'Idempotency-Key': 'payment-retry-1',
+          },
+          body: JSON.stringify({
+            invoiceId: otherInvoice.id,
+            paymentMethod: 'cash',
+            amount: '250.00',
+            paymentDate: '2026-09-08',
+          }),
+        });
+        expect(other.status).toBe(201);
+        const otherPayment = paymentSchema.parse(await other.json());
+        expect(otherPayment.id).not.toBe(original.id);
+        const hidden = await app.request(`/api/payments/${original.id}`, {
+          headers: { Cookie: ownerB.cookie },
+        });
+        expect(hidden.status).toBe(404);
+        const stillOriginal = paymentSchema.parse(
+          await (
+            await app.request('/api/payments', {
+              method: 'POST',
+              headers,
+              body: JSON.stringify(payload),
+            })
+          ).json(),
+        );
+        expect(stillOriginal.id).toBe(original.id);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
+  it('concurrent payments with the same Idempotency-Key create one payment and one journal', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner Concurrent');
+        const invoice = await seedInvoice(app, owner.cookie);
+        const payload = {
+          invoiceId: invoice.id,
+          paymentMethod: 'bank_transfer',
+          amount: '1000.00',
+          paymentDate: '2026-09-08',
+        };
+        const headers = {
+          ...originHeaders,
+          Cookie: owner.cookie,
+          'Idempotency-Key': 'payment-concurrent-1',
+        };
+        const [first, second] = await Promise.all([
+          app.request('/api/payments', { method: 'POST', headers, body: JSON.stringify(payload) }),
+          app.request('/api/payments', { method: 'POST', headers, body: JSON.stringify(payload) }),
+        ]);
+        expect(first.status).toBe(201);
+        expect(second.status).toBe(201);
+        const firstPayment = paymentSchema.parse(await first.json());
+        const secondPayment = paymentSchema.parse(await second.json());
+        expect(secondPayment).toEqual(firstPayment);
+
+        const storedPayments = await sql.unsafe(`SELECT id FROM payments WHERE invoice_id = ?`, [invoice.id]);
+        expect(storedPayments).toHaveLength(1);
+        const paymentJournals = await sql.unsafe(
+          `SELECT id FROM journal_entries WHERE reference_type = 'invoice_payment' AND reference_id = ?`,
+          [firstPayment.id],
+        );
+        expect(paymentJournals).toHaveLength(1);
+        const paid = invoiceSchema.parse(
+          await (await app.request(`/api/invoices/${invoice.id}`, { headers: { Cookie: owner.cookie } })).json(),
+        );
+        expect(paid.totalPaid).toBe('1000.00');
+        expect(paid.balanceDue).toBe('4175.00');
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });

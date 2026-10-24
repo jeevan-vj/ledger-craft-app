@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Payment idempotency and receipt filters (implemented locally, 2026-10-24):**
+`POST /api/payments` accepts an optional `Idempotency-Key` and reuses the
+existing organisation- and user-scoped `idempotency_keys` helper. The same key
+and body return the stored payment without a second payment or journal. A
+different body returns 409 `IDEMPOTENCY_CONFLICT`. `GET /api/receipts` accepts
+optional `paymentId` and `invoiceId` filters inside the active organisation.
+Payment maths, balance recalculation, overpayment rejection, and journal
+posting are unchanged. No migration was added.
+
 Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
 
 **Akaunting core parity gate (implemented locally, 2026-10-23):**

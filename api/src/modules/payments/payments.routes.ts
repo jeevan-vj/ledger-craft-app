@@ -3,6 +3,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
+import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 import * as paymentsService from './payments.service';
 
 export function paymentRoutes() {
@@ -23,8 +24,18 @@ export function paymentRoutes() {
 
     routes.post(`${prefix}/payments`, async (c) => {
       const { db, user } = await requireSession(c);
-      const input = createPaymentRequestSchema.parse(await c.req.json());
-      return c.json(await paymentsService.createPaymentForUser(db, user.id, input), 201);
+      const body: unknown = await c.req.json();
+      const input = createPaymentRequestSchema.parse(body);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const idempotency = key
+        ? {
+            key,
+            method: 'POST',
+            path: '/api/payments',
+            requestHash: hashIdempotencyPayload(body),
+          }
+        : undefined;
+      return c.json(await paymentsService.createPaymentForUser(db, user.id, input, idempotency), 201);
     });
   }
 

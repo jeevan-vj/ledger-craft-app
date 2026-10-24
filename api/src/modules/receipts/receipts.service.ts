@@ -2,6 +2,7 @@ import {
   paymentReceiptListResponseSchema,
   type CreatePaymentReceiptRequest,
   type PaymentReceiptDto,
+  type PaymentReceiptListQuery,
   type PaymentReceiptListResponse,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
@@ -18,9 +19,13 @@ function receiptNumber(now: Date, sequence: number): string {
   return `REC-${year}${month}-${String(sequence).padStart(4, '0')}`;
 }
 
-export async function listReceiptsForUser(db: Database, userId: string): Promise<PaymentReceiptListResponse> {
+export async function listReceiptsForUser(
+  db: Database,
+  userId: string,
+  query: PaymentReceiptListQuery = {},
+): Promise<PaymentReceiptListResponse> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const rows = await repo.listReceipts(tx, ctx.organisationId);
+    const rows = await repo.listReceipts(tx, ctx.organisationId, query);
     return paymentReceiptListResponseSchema.parse({ receipts: rows });
   });
 }
