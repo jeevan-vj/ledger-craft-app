@@ -95,6 +95,7 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
       collected: money(outputGst), paid: money(inputGst), netPayable: money(netGst),
       outputGst: money(outputGst), inputGst: money(inputGst), netGst: money(netGst), position,
       gstAccounts, keyAccounts,
+      basis: 'invoice' as const,
       foreignCurrencyDocumentsExcluded: input.foreignCurrencyGstDocuments ?? 0,
       warnings: input.foreignCurrencyGstDocuments
         ? [`${input.foreignCurrencyGstDocuments} foreign-currency document(s) excluded from GST: amounts are not converted to ${query.baseCurrency}. Review them manually before filing.`]

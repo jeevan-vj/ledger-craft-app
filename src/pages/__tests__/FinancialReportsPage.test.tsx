@@ -29,11 +29,15 @@ const account = (accountNumber: string, accountName: string, accountClass: 'asse
   balance,
 });
 
-function financialReport(taxSummary: FinancialReportResponse['taxSummary']): FinancialReportResponse {
+type TaxSummaryFixture = Omit<FinancialReportResponse['taxSummary'], 'basis' | 'foreignCurrencyDocumentsExcluded' | 'warnings'>
+  & Partial<Pick<FinancialReportResponse['taxSummary'], 'foreignCurrencyDocumentsExcluded' | 'warnings'>>;
+
+function financialReport(fixture: TaxSummaryFixture, reportMeta: FinancialReportResponse['meta'] = meta): FinancialReportResponse {
+  const taxSummary: FinancialReportResponse['taxSummary'] = { basis: 'invoice', foreignCurrencyDocumentsExcluded: 0, warnings: [], ...fixture };
   const emptyAging = { total: '0.00', current: '0.00', days1To30: '0.00', days31To60: '0.00', days61To90: '0.00', over90: '0.00', items: [] };
   const emptySummary = { subtotal: '0.00', tax: '0.00', total: '0.00', paid: '0.00', outstanding: '0.00' };
   return {
-    meta,
+    meta: reportMeta,
     trialBalance: { rows: [], totalDebits: '0.00', totalCredits: '0.00', balanced: true },
     profitLoss: { rows: [], revenue: '0.00', expenses: '0.00', netIncome: '0.00' },
     balanceSheet: { rows: [], assets: '0.00', liabilities: '0.00', equity: '0.00', balanced: true },
@@ -122,5 +126,21 @@ describe('Financial reports GST return', () => {
     expect(within(position).getByText('No GST payable or refundable')).toBeInTheDocument();
     expect(within(position).getByText('$0.00')).toBeInTheDocument();
     expect(screen.getByText('Nil return')).toBeInTheDocument();
+  });
+
+  it('labels GST as invoice basis on a cash-basis report and surfaces foreign-currency warnings', async () => {
+    const user = userEvent.setup();
+    renderPage(financialReport({
+      collected: '30.00', paid: '0.00', netPayable: '30.00',
+      outputGst: '30.00', inputGst: '0.00', netGst: '30.00', position: 'payable',
+      gstAccounts: [], keyAccounts: [],
+      foreignCurrencyDocumentsExcluded: 1,
+      warnings: ['1 foreign-currency document(s) excluded from GST'],
+    }, { ...meta, basis: 'cash' }));
+
+    await user.click(await screen.findByRole('tab', { name: 'Tax' }));
+
+    expect(screen.getByTestId('gst-basis')).toHaveTextContent('GST calculated on the invoice basis (the cash-basis selection applies to the other reports, not GST)');
+    expect(screen.getByRole('alert')).toHaveTextContent('1 foreign-currency document(s) excluded from GST');
   });
 });

@@ -75,4 +75,14 @@ describe('mobile GST report', () => {
     const screen = renderScreen();
     expect(await screen.findByText(expectedLabel)).toBeTruthy();
   });
+
+  it('labels GST as invoice basis and shows foreign-currency warnings', async () => {
+    (reportsApi.financial as jest.Mock).mockResolvedValue({
+      ...report,
+      taxSummary: { ...report.taxSummary, basis: 'invoice', foreignCurrencyDocumentsExcluded: 1, warnings: ['1 foreign-currency document(s) excluded from GST'] },
+    });
+    const screen = renderScreen();
+    expect(await screen.findByText('GST calculated on the invoice basis')).toBeTruthy();
+    expect(screen.getByText('1 foreign-currency document(s) excluded from GST')).toBeTruthy();
+  });
 });

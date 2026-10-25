@@ -504,4 +504,32 @@ describe('NZ GST journals and IRD reporting scenario', () => {
       }
     });
   });
+
+  it('reports GST on the invoice basis for cash-basis and account-filtered reports', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'GST Basis Label');
+        await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-05-01', amount: '200.00', description: 'Unpaid sale' });
+        const accrual = await financialReport(app, org.cookie);
+        expectGst(accrual, '30.00', '0.00', '30.00', 'payable');
+        expect(accrual.taxSummary.basis).toBe('invoice');
+
+        const cash = await requestJson(app, '/api/reports/financial?from=2026-04-01&to=2026-06-30&basis=cash&baseCurrency=NZD', { headers: { Cookie: org.cookie } }, 200);
+        expectGst(cash, '30.00', '0.00', '30.00', 'payable');
+        expect(cash.taxSummary.basis).toBe('invoice');
+
+        const salesAccount = rowFor(accrual, '4000');
+        expect(salesAccount).toBeDefined();
+        const filtered = await requestJson(app, `/api/reports/financial?from=2026-04-01&to=2026-06-30&basis=accrual&baseCurrency=NZD&accountIds=${salesAccount!.accountId}`, { headers: { Cookie: org.cookie } }, 200);
+        expect(filtered.trialBalance.rows.map((row: Json) => row.accountNumber)).toEqual(['4000']);
+        expectGst(filtered, '30.00', '0.00', '30.00', 'payable');
+        await writeEvidence('basis-and-account-filter-financial-report.json', { cash: cash.taxSummary, filtered: filtered.taxSummary });
+      } finally {
+        await sql.end();
+      }
+    });
+  });
 });

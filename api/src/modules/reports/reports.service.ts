@@ -17,10 +17,11 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     ]);
     // GST is read from the journals that actually carry 2150/2200. Payment
     // journals do not allocate GST, so the report's cash filter is not a valid
-    // alternate GST basis: GST is always reported on the invoice basis.
-    const ledgerTaxRows = query.basis === 'accrual'
+    // alternate GST basis: GST is always reported on the invoice basis. The
+    // report's account filter narrows statements, never the GST return.
+    const ledgerTaxRows = query.basis === 'accrual' && !query.accountIds?.length
       ? periodRows
-      : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual' });
+      : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual', accountIds: undefined });
     const foreignIds = await repo.foreignCurrencyDocumentIds(tx, organisationId, query.baseCurrency);
     const excludedDocuments = new Set<string>();
     const taxRows = ledgerTaxRows.filter((row) => {

@@ -59,6 +59,8 @@ export default function ReportsScreen() {
           <Text selectable style={[theme.type.headline, styles.tabular, { color: data.taxSummary.position === 'payable' ? theme.colors.warning : data.taxSummary.position === 'refundable' ? theme.colors.success : theme.colors.text }]}>{money(gstDisplayAmount(data.taxSummary.netGst, data.taxSummary.position))}</Text>
         </View>
       </Card>
+      <Text testID="gst-basis" style={[theme.type.caption, styles.footnote]}>GST calculated on the invoice basis{basis === 'cash' ? ' (the cash-basis selection applies to the other reports, not GST)' : ''}</Text>
+      {(data.taxSummary.warnings ?? []).map((warning) => <Text key={warning} accessibilityRole="alert" style={[theme.type.caption, styles.footnote, { color: theme.colors.warning }]}>{warning}</Text>)}
       <Text style={[theme.type.caption, styles.footnote]}>Generated {new Date(data.meta.generatedAt).toLocaleString()} · NZD · Draft documents excluded</Text>
     </> : null}
   </ScrollView>;

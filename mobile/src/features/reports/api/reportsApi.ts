@@ -23,6 +23,9 @@ export interface FinancialReport {
     position: GstPosition;
     gstAccounts: ReportAccountRow[];
     keyAccounts: ReportAccountRow[];
+    basis?: 'invoice';
+    foreignCurrencyDocumentsExcluded?: number;
+    warnings?: string[];
   };
 }
 

@@ -56,11 +56,17 @@ function GstReturnPanel({ report }: { report: FinancialReportResponse }) {
         <div>
           <CardTitle id="gst-return-title">GST return (IRD)</CardTitle>
           <p className="mt-2 text-sm text-muted-foreground">{formatPeriodDate(meta.from)} – {formatPeriodDate(meta.to)}</p>
+          <p className="mt-1 text-sm text-muted-foreground" data-testid="gst-basis">
+            GST calculated on the invoice basis{meta.basis === 'cash' ? ' (the cash-basis selection applies to the other reports, not GST)' : ''}
+          </p>
         </div>
         <Badge variant={position.variant}>{position.badge}</Badge>
       </div>
     </CardHeader>
     <CardContent className="space-y-8">
+      {taxSummary.warnings.length ? <div role="alert" className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-sm">
+        {taxSummary.warnings.map((warning) => <p key={warning}>{warning}</p>)}
+      </div> : null}
       <dl className="grid overflow-hidden rounded-xl bg-muted/50 sm:grid-cols-3 sm:divide-x sm:divide-border">
         <div className="p-5">
           <dt className="text-sm text-muted-foreground">Output GST (sales)</dt>
