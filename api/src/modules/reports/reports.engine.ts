@@ -83,7 +83,11 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
   const position = netGst.compare(0) > 0 ? 'payable' : netGst.compare(0) < 0 ? 'refundable' : 'nil';
   const keyNumbers = new Set(['1200', '2100', '2150', '2200', '4000', '5000']);
   const gstAccounts = taxAccountRows.filter((row) => row.accountNumber === '2150' || row.accountNumber === '2200');
-  const keyAccounts = taxAccountRows.filter((row) => keyNumbers.has(row.accountNumber ?? '') || (input.taxRows ?? periodRows).some((source) => source.accountId === row.accountId && ['bank', 'cash'].includes(source.accountType)));
+  // Every revenue and expense account is listed (not just 4000/5000) so the
+  // underlying-balances table reconciles to the GST collected and paid.
+  const keyAccounts = taxAccountRows.filter((row) => keyNumbers.has(row.accountNumber ?? '')
+    || row.accountClass === 'revenue' || row.accountClass === 'expense'
+    || (input.taxRows ?? periodRows).some((source) => source.accountId === row.accountId && ['bank', 'cash'].includes(source.accountType)));
   return financialReportResponseSchema.parse({
     meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString() },
     trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), balanced: totalDebits.compare(totalCredits) === 0 },

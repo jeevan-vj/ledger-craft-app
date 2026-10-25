@@ -636,6 +636,11 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         const exemptReport = await financialReport(app, exempt.cookie);
         expectGst(exemptReport, '30.00', '15.00', '15.00', 'payable');
         expect(rowFor(exemptReport, '5000')?.balance).toBe('120.00');
+        const profitAndLossAccounts = (exemptReport.trialBalance.rows as Json[])
+          .filter((row) => row.accountClass === 'revenue' || row.accountClass === 'expense')
+          .map((row) => row.accountId).sort();
+        expect(profitAndLossAccounts.length).toBeGreaterThan(0);
+        expect((exemptReport.taxSummary.keyAccounts as Json[]).map((row) => row.accountId).filter((id) => profitAndLossAccounts.includes(id)).sort()).toEqual(profitAndLossAccounts);
         await writeEvidence('zero-rated-and-exempt-financial-report.json', { zeroRated: zeroRatedReport.taxSummary, exempt: exemptReport.taxSummary });
       } finally {
         await sql.end();
