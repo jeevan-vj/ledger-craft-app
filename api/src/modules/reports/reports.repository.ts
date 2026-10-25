@@ -24,7 +24,7 @@ export type LedgerRow = {
   credit: string;
 };
 
-const CASH_REFERENCE_TYPES = ['invoice_payment', 'bill_payment', 'expense', 'bank_transaction', 'bank_transfer', 'bank_transfer_out', 'bank_transfer_in'];
+const CASH_REFERENCE_TYPES = ['invoice_payment', 'bill_payment', 'expense', 'expense_reversal', 'bank_transaction', 'bank_transaction_reversal', 'bank_transfer', 'bank_transfer_out', 'bank_transfer_in'];
 
 export async function ledgerRows(
   tx: Database,
@@ -34,7 +34,7 @@ export async function ledgerRows(
 ): Promise<LedgerRow[]> {
   const conditions = [
     eq(journalEntries.organisationId, organisationId),
-    eq(journalEntries.status, 'posted'),
+    inArray(journalEntries.status, ['posted', 'reversed']),
     before ? lt(journalEntries.entryDate, before) : lte(journalEntries.entryDate, query.to),
   ];
   if (!before) conditions.push(gte(journalEntries.entryDate, query.from));

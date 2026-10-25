@@ -177,3 +177,49 @@ export async function hasInvoiceCancellationJournal(
   ));
   return Boolean(entry);
 }
+
+export async function postInvoiceRestoreJournal(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: { invoiceId: string; invoiceNumber: string; date: string; total: string },
+): Promise<void> {
+  const [existing] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId),
+    eq(journalEntries.referenceType, 'invoice_restore'),
+    eq(journalEntries.referenceId, input.invoiceId),
+  ));
+  if (existing) return;
+  const [cancellation] = await tx.select().from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId),
+    eq(journalEntries.referenceType, 'invoice_cancellation'),
+    eq(journalEntries.referenceId, input.invoiceId),
+  ));
+  if (!cancellation) throw new HTTPException(409, { message: 'Invoice cancellation journal is missing' });
+  const cancellationLines = await tx.select().from(journalEntryLines).where(and(
+    eq(journalEntryLines.organisationId, ctx.organisationId),
+    eq(journalEntryLines.journalEntryId, cancellation.id),
+  ));
+  const [{ count }] = await tx.select({ count: sql<number>`count(*)` }).from(journalEntries)
+    .where(eq(journalEntries.organisationId, ctx.organisationId));
+  const [entry] = await tx.insert(journalEntries).values({
+    organisationId: ctx.organisationId,
+    userId: ctx.userId,
+    entryNumber: `JE-${input.date.slice(0, 4)}-${String(Number(count) + 1).padStart(3, '0')}`,
+    entryDate: input.date,
+    description: `Restore Invoice ${input.invoiceNumber}`,
+    referenceType: 'invoice_restore',
+    referenceId: input.invoiceId,
+    totalAmount: input.total,
+    status: 'posted',
+  }).returning();
+  if (!entry) throw new HTTPException(500, { message: 'Failed to restore invoice journal' });
+  for (const [index, line] of cancellationLines.entries()) await tx.insert(journalEntryLines).values({
+    organisationId: ctx.organisationId,
+    journalEntryId: entry.id,
+    accountId: line.accountId,
+    description: `Restore ${line.description ?? input.invoiceNumber}`,
+    debitAmount: line.creditAmount,
+    creditAmount: line.debitAmount,
+    lineOrder: index + 1,
+  });
+}

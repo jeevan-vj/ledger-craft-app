@@ -5,6 +5,8 @@ import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
 import { createAuth } from '../auth/auth';
+import { buildFinancialReport } from './reports.engine';
+import type { LedgerRow } from './reports.repository';
 
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
 const cookie = (response: Response) => response.headers.getSetCookie().map((value) => value.split(';')[0]).join('; ');
@@ -34,7 +36,83 @@ async function seedPostedJournal(app: ReturnType<typeof createApp>, session: str
   return entry.id;
 }
 
+const accountIds = {
+  output: '10000000-0000-4000-8000-000000000001',
+  input: '10000000-0000-4000-8000-000000000002',
+} as const;
+
+function reportRow(input: Partial<LedgerRow> & Pick<LedgerRow, 'accountId' | 'accountNumber' | 'accountName' | 'accountType' | 'accountClass' | 'normalBalance' | 'debit' | 'credit'>): LedgerRow {
+  return {
+    journalEntryId: crypto.randomUUID(),
+    entryNumber: `JE-2026-${crypto.randomUUID().slice(0, 4)}`,
+    date: '2026-04-15',
+    description: 'GST test posting',
+    referenceType: 'test',
+    referenceId: crypto.randomUUID(),
+    currency: 'NZD',
+    ...input,
+  };
+}
+
+const outputGst = (debit: string, credit: string) => reportRow({
+  accountId: accountIds.output,
+  accountNumber: '2200',
+  accountName: 'GST Collected on Sales',
+  accountType: 'liability',
+  accountClass: 'liability',
+  normalBalance: 'credit',
+  debit,
+  credit,
+});
+
+const inputGst = (debit: string, credit: string) => reportRow({
+  accountId: accountIds.input,
+  accountNumber: '2150',
+  accountName: 'GST Paid on Purchases',
+  accountType: 'asset',
+  accountClass: 'asset',
+  normalBalance: 'debit',
+  debit,
+  credit,
+});
+
+function engineReport(periodRows: LedgerRow[]) {
+  return buildFinancialReport({
+    query: { from: '2026-04-01', to: '2026-06-30', basis: 'accrual', baseCurrency: 'NZD' },
+    periodRows,
+    openingRows: [],
+    receivables: [],
+    payables: [],
+  });
+}
+
 describe('server-authoritative reports', () => {
+  it('derives payable and refundable GST positions from ledger movements', () => {
+    const payable = engineReport([outputGst('0.00', '30.00'), inputGst('15.00', '0.00')]);
+    expect(payable.taxSummary).toMatchObject({
+      collected: '30.00', paid: '15.00', netPayable: '15.00',
+      outputGst: '30.00', inputGst: '15.00', netGst: '15.00', position: 'payable',
+    });
+    expect(payable.taxSummary.gstAccounts.map((row) => row.accountNumber)).toEqual(['2150', '2200']);
+
+    const refundable = engineReport([outputGst('0.00', '15.00'), inputGst('30.00', '0.00')]);
+    expect(refundable.taxSummary).toMatchObject({
+      outputGst: '15.00', inputGst: '30.00', netGst: '-15.00', position: 'refundable',
+    });
+  });
+
+  it('nets GST source and reversal movements to nil', () => {
+    const report = engineReport([
+      outputGst('0.00', '30.00'),
+      outputGst('30.00', '0.00'),
+      inputGst('15.00', '0.00'),
+      inputGst('0.00', '15.00'),
+    ]);
+    expect(report.taxSummary).toMatchObject({
+      outputGst: '0.00', inputGst: '0.00', netGst: '0.00', position: 'nil',
+    });
+  });
+
   it('requires authentication and validates period boundaries', async () => {
     const app = createApp();
     expect((await app.request('/api/reports/financial?from=2026-01-01&to=2026-12-31')).status).toBe(401);

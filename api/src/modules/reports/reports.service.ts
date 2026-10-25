@@ -11,15 +11,16 @@ export async function financialReportForUser(db: Database, userId: string, query
 }
 
 export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery) {
-    const [periodRows, openingRows, receivables, payables] = await Promise.all([
+    const [periodRows, openingRows, taxRows, receivables, payables] = await Promise.all([
       repo.ledgerRows(tx, organisationId, query), repo.ledgerRows(tx, organisationId, query, query.from),
+      query.basis === 'accrual' ? repo.ledgerRows(tx, organisationId, query) : repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual' }),
       repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query),
     ]);
     let comparison;
     if (query.comparisonFrom && query.comparisonTo) {
       comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
     }
-    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, receivables, payables, comparison }));
+    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, taxRows, receivables, payables, comparison }));
 }
 
 export async function generalLedgerForUser(db: Database, userId: string, query: FinancialReportQuery) {

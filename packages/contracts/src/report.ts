@@ -104,7 +104,17 @@ export const financialReportResponseSchema = z.object({
   payablesAging: agingSchema,
   salesSummary: documentSummarySchema,
   purchaseSummary: documentSummarySchema,
-  taxSummary: z.object({ collected: money, paid: money, netPayable: money }),
+  taxSummary: z.object({
+    collected: money,
+    paid: money,
+    netPayable: money,
+    outputGst: money,
+    inputGst: money,
+    netGst: money,
+    position: z.enum(['payable', 'refundable', 'nil']),
+    gstAccounts: z.array(reportAccountRowSchema),
+    keyAccounts: z.array(reportAccountRowSchema),
+  }),
   comparison: reportComparisonSchema.nullable(),
 });
 

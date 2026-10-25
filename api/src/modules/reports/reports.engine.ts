@@ -53,7 +53,7 @@ function summary(rows: DocumentRow[]) {
   return { subtotal: money(totals.subtotal), tax: money(totals.tax), total: money(totals.total), paid: money(totals.paid), outstanding: money(totals.outstanding) };
 }
 
-export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
+export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
   const { query, periodRows, openingRows } = input;
   const period = aggregate(periodRows); const opening = aggregate(openingRows);
   const rows = accountRows(periodRows);
@@ -76,6 +76,14 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
   const inflows = cashRows.reduce((sum, row) => sum.add(row.debit), zero()); const outflows = cashRows.reduce((sum, row) => sum.add(row.credit), zero()); const openingCash = openingCashRows.reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero());
   const comparisonRows = input.comparison?.rows ?? []; const comparisonAccounts = accountRows(comparisonRows); const compRevenue = comparisonAccounts.filter((row) => row.accountClass === 'revenue').reduce((sum, row) => sum.add(row.balance), zero()); const compExpenses = comparisonAccounts.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero());
   const sales = summary(input.receivables); const purchases = summary(input.payables);
+  const taxAccountRows = accountRows(input.taxRows ?? periodRows);
+  const outputGst = taxAccountRows.find((row) => row.accountNumber === '2200')?.balance ?? '0.00';
+  const inputGst = taxAccountRows.find((row) => row.accountNumber === '2150')?.balance ?? '0.00';
+  const netGst = decimal(outputGst).sub(inputGst);
+  const position = netGst.compare(0) > 0 ? 'payable' : netGst.compare(0) < 0 ? 'refundable' : 'nil';
+  const keyNumbers = new Set(['1200', '2100', '2150', '2200', '4000', '5000']);
+  const gstAccounts = taxAccountRows.filter((row) => row.accountNumber === '2150' || row.accountNumber === '2200');
+  const keyAccounts = taxAccountRows.filter((row) => keyNumbers.has(row.accountNumber ?? '') || (input.taxRows ?? periodRows).some((source) => source.accountId === row.accountId && ['bank', 'cash'].includes(source.accountType)));
   return financialReportResponseSchema.parse({
     meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString() },
     trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), balanced: totalDebits.compare(totalCredits) === 0 },
@@ -83,7 +91,11 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
     balanceSheet: { rows: accountRows([...openingRows, ...periodRows]).filter((row) => ['asset', 'liability', 'equity'].includes(row.accountClass)), assets: money(assets), liabilities: money(liabilities), equity: money(equity), balanced: assets.compare(liabilities.add(equity)) === 0 },
     cashFlow: { rows: accountRows(cashRows), openingCash: money(openingCash), inflows: money(inflows), outflows: money(outflows), netCashFlow: money(inflows.sub(outflows)), closingCash: money(openingCash.add(inflows).sub(outflows)) },
     receivablesAging: aging(input.receivables, query.to), payablesAging: aging(input.payables, query.to), salesSummary: sales, purchaseSummary: purchases,
-    taxSummary: { collected: sales.tax, paid: purchases.tax, netPayable: money(decimal(sales.tax).sub(purchases.tax)) },
+    taxSummary: {
+      collected: money(outputGst), paid: money(inputGst), netPayable: money(netGst),
+      outputGst: money(outputGst), inputGst: money(inputGst), netGst: money(netGst), position,
+      gstAccounts, keyAccounts,
+    },
     comparison: input.comparison ? { from: input.comparison.from, to: input.comparison.to, revenue: money(compRevenue), expenses: money(compExpenses), netIncome: money(compRevenue.sub(compExpenses)), netCashFlow: money(comparisonRows.filter((row) => ['bank', 'cash'].includes(row.accountType)).reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero())) } : null,
   });
 }
