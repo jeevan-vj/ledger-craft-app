@@ -1,5 +1,6 @@
 import { decimal } from './money';
-import { and, eq, sql } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
+import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
@@ -66,12 +67,7 @@ export async function postInvoiceJournal(
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
 
-  const year = input.date.slice(0, 4);
-  const [{ count }] = await tx
-    .select({ count: sql<number>`count(*)` })
-    .from(journalEntries)
-    .where(eq(journalEntries.organisationId, ctx.organisationId));
-  const entryNumber = `JE-${year}-${String(Number(count) + 1).padStart(3, '0')}`;
+  const entryNumber = await nextJournalEntryNumber(tx, ctx.organisationId, input.date);
 
   const [entry] = await tx
     .insert(journalEntries)
@@ -139,11 +135,9 @@ export async function postInvoiceReversalJournal(
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
   const salesId = await getOrCreateAccount(tx, ctx, '4000');
-  const [{ count }] = await tx.select({ count: sql<number>`count(*)` }).from(journalEntries)
-    .where(eq(journalEntries.organisationId, ctx.organisationId));
   const [entry] = await tx.insert(journalEntries).values({
     organisationId: ctx.organisationId, userId: ctx.userId,
-    entryNumber: `JE-${input.date.slice(0, 4)}-${String(Number(count) + 1).padStart(3, '0')}`,
+    entryNumber: await nextJournalEntryNumber(tx, ctx.organisationId, input.date),
     entryDate: input.date, description: `Cancellation of Invoice ${input.invoiceNumber}`,
     referenceType: 'invoice_cancellation', referenceId: input.invoiceId,
     totalAmount: input.total, status: 'posted',
@@ -199,12 +193,10 @@ export async function postInvoiceRestoreJournal(
     eq(journalEntryLines.organisationId, ctx.organisationId),
     eq(journalEntryLines.journalEntryId, cancellation.id),
   ));
-  const [{ count }] = await tx.select({ count: sql<number>`count(*)` }).from(journalEntries)
-    .where(eq(journalEntries.organisationId, ctx.organisationId));
   const [entry] = await tx.insert(journalEntries).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
-    entryNumber: `JE-${input.date.slice(0, 4)}-${String(Number(count) + 1).padStart(3, '0')}`,
+    entryNumber: await nextJournalEntryNumber(tx, ctx.organisationId, input.date),
     entryDate: input.date,
     description: `Restore Invoice ${input.invoiceNumber}`,
     referenceType: 'invoice_restore',

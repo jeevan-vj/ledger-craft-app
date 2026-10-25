@@ -152,8 +152,3 @@ export async function getOrgAccount(
     .where(and(eq(accounts.organisationId, organisationId), eq(accounts.id, accountId)));
   return row ?? null;
 }
-
-export async function countJournalEntries(tx: Database, organisationId: string): Promise<number> {
-  const rows = await tx.select({ id: journalEntries.id }).from(journalEntries).where(eq(journalEntries.organisationId, organisationId));
-  return rows.length;
-}

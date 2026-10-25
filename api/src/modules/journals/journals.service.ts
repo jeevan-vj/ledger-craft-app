@@ -9,6 +9,7 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
+import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { roundMoney } from '../invoices/money';
 import * as repo from './journals.repository';
 
@@ -37,9 +38,7 @@ export async function createJournalEntryForUser(
     const credit = await repo.getOrgAccount(tx, ctx.organisationId, input.creditAccountId);
     if (!debit || !credit) throw new HTTPException(404, { message: 'Account not found' });
     const amount = input.amount;
-    const year = input.entryDate.slice(0, 4);
-    const count = await repo.countJournalEntries(tx, ctx.organisationId);
-    const entryNumber = `JE-${year}-${String(count + 1).padStart(3, '0')}`;
+    const entryNumber = await nextJournalEntryNumber(tx, ctx.organisationId, input.entryDate);
     return repo.insertJournalEntry(tx, ctx, { ...input, amount: roundMoney(amount) }, entryNumber);
   });
 }
