@@ -4,12 +4,13 @@ import { Download, RefreshCw } from 'lucide-react';
 import type { FinancialReportQuery, FinancialReportResponse } from '@ledgercraft/contracts';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 const today = new Date();
 const initialFrom = `${today.getFullYear()}-01-01`;
@@ -29,6 +30,71 @@ function AccountTable({ rows, empty = 'No posted movements in this period.' }: {
 function AgingTable({ report, noun }: { report: FinancialReportResponse['receivablesAging']; noun: string }) {
   if (!report.items.length) return <div className="rounded-2xl bg-muted/40 px-6 py-12 text-center text-sm text-muted-foreground">No outstanding {noun} at the report date.</div>;
   return <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Document</TableHead><TableHead>Party</TableHead><TableHead>Due</TableHead><TableHead>Age</TableHead><TableHead className="text-right">Outstanding</TableHead></TableRow></TableHeader><TableBody>{report.items.map((item) => <TableRow key={item.id}><TableCell className="font-medium">{item.number}</TableCell><TableCell>{item.partyName}</TableCell><TableCell>{item.dueDate}</TableCell><TableCell>{item.bucket}</TableCell><TableCell className="text-right tabular-nums">{formatMoney(item.balanceDue)}</TableCell></TableRow>)}</TableBody></Table></div>;
+}
+
+const gstPositionContent: Record<FinancialReportResponse['taxSummary']['position'], { label: string; badge: string; variant: 'warning' | 'success' | 'secondary' }> = {
+  payable: { label: 'Net GST payable to IRD', badge: 'Payable', variant: 'warning' },
+  refundable: { label: 'Net GST refundable from IRD', badge: 'Refundable', variant: 'success' },
+  nil: { label: 'No GST payable or refundable', badge: 'Nil return', variant: 'secondary' },
+};
+
+function formatPeriodDate(value: string) {
+  return new Intl.DateTimeFormat('en-NZ', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${value}T00:00:00Z`));
+}
+
+function absoluteMoney(value: string) {
+  return value.startsWith('-') ? value.slice(1) : value;
+}
+
+function GstReturnPanel({ report }: { report: FinancialReportResponse }) {
+  const { taxSummary, meta } = report;
+  const position = gstPositionContent[taxSummary.position];
+
+  return <Card role="region" aria-labelledby="gst-return-title">
+    <CardHeader>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <CardTitle id="gst-return-title">GST return (IRD)</CardTitle>
+          <p className="mt-2 text-sm text-muted-foreground">{formatPeriodDate(meta.from)} – {formatPeriodDate(meta.to)}</p>
+        </div>
+        <Badge variant={position.variant}>{position.badge}</Badge>
+      </div>
+    </CardHeader>
+    <CardContent className="space-y-8">
+      <dl className="grid overflow-hidden rounded-xl bg-muted/50 sm:grid-cols-3 sm:divide-x sm:divide-border">
+        <div className="p-5">
+          <dt className="text-sm text-muted-foreground">Output GST (sales)</dt>
+          <dd className="mt-2 text-2xl font-bold tabular-nums">{formatMoney(taxSummary.outputGst)}</dd>
+        </div>
+        <div className="border-t border-border p-5 sm:border-t-0">
+          <dt className="text-sm text-muted-foreground">Input GST (purchases &amp; expenses)</dt>
+          <dd className="mt-2 text-2xl font-bold tabular-nums">{formatMoney(taxSummary.inputGst)}</dd>
+        </div>
+        <div className="border-t border-border p-5 sm:border-t-0" data-testid="net-gst-position">
+          <dt className="text-sm font-medium">{position.label}</dt>
+          <dd className={`mt-2 text-2xl font-bold tabular-nums ${taxSummary.position === 'refundable' ? 'text-success' : ''}`}>{formatMoney(absoluteMoney(taxSummary.netGst))}</dd>
+        </div>
+      </dl>
+
+      <div>
+        <div className="mb-4">
+          <h4 className="text-lg font-semibold">Underlying account balances</h4>
+          <p className="mt-1 text-sm text-muted-foreground">Period movements from posted and reversed journal entries on an {meta.basis} basis.</p>
+        </div>
+        {taxSummary.keyAccounts.length ? <Table>
+          <TableCaption className="sr-only">Underlying ledger account balances for this GST period</TableCaption>
+          <TableHeader><TableRow><TableHead>Account</TableHead><TableHead>Class</TableHead><TableHead className="text-right">Debit</TableHead><TableHead className="text-right">Credit</TableHead><TableHead className="text-right">Period balance</TableHead></TableRow></TableHeader>
+          <TableBody>{taxSummary.keyAccounts.map((row) => <TableRow key={row.accountId}>
+            <TableCell className="font-medium">{row.accountNumber ? `${row.accountNumber} · ` : ''}{row.accountName}</TableCell>
+            <TableCell className="capitalize text-muted-foreground">{row.accountClass}</TableCell>
+            <TableCell className="text-right tabular-nums">{formatMoney(row.debit)}</TableCell>
+            <TableCell className="text-right tabular-nums">{formatMoney(row.credit)}</TableCell>
+            <TableCell className="text-right font-semibold tabular-nums">{formatMoney(row.balance)}</TableCell>
+          </TableRow>)}</TableBody>
+        </Table> : <div className="rounded-xl bg-muted/40 px-6 py-10 text-center text-sm text-muted-foreground">No GST-related ledger movements in this period.</div>}
+      </div>
+    </CardContent>
+  </Card>;
 }
 
 function downloadCsv(report: FinancialReportResponse) {
@@ -67,7 +133,7 @@ export default function FinancialReportsPage() {
         <TabsContent value="cash-flow"><Card><CardHeader><CardTitle>Cash flow</CardTitle></CardHeader><CardContent className="space-y-5"><div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"><Metric label="Opening cash" value={data.cashFlow.openingCash} /><Metric label="Inflows" value={data.cashFlow.inflows} /><Metric label="Outflows" value={data.cashFlow.outflows} /><Metric label="Closing cash" value={data.cashFlow.closingCash} /></div><AccountTable rows={data.cashFlow.rows} /></CardContent></Card></TabsContent>
         <TabsContent value="receivables"><Card><CardHeader><CardTitle>Accounts receivable aging · {formatMoney(data.receivablesAging.total)}</CardTitle></CardHeader><CardContent><AgingTable report={data.receivablesAging} noun="receivables" /></CardContent></Card></TabsContent>
         <TabsContent value="payables"><Card><CardHeader><CardTitle>Accounts payable aging · {formatMoney(data.payablesAging.total)}</CardTitle></CardHeader><CardContent><AgingTable report={data.payablesAging} noun="payables" /></CardContent></Card></TabsContent>
-        <TabsContent value="tax"><Card><CardHeader><CardTitle>Tax summary</CardTitle></CardHeader><CardContent className="grid gap-4 sm:grid-cols-3"><Metric label="GST collected" value={data.taxSummary.collected} /><Metric label="GST paid" value={data.taxSummary.paid} /><Metric label="Net payable" value={data.taxSummary.netPayable} /></CardContent></Card></TabsContent>
+        <TabsContent value="tax"><GstReturnPanel report={data} /></TabsContent>
       </Tabs><p className="text-xs text-muted-foreground">Generated {new Date(data.meta.generatedAt).toLocaleString()} · {data.meta.basis} basis · {data.meta.baseCurrency}. Draft documents are excluded.</p></>}
   </div>;
 }
