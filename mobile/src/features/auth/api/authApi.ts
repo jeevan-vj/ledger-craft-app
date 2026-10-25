@@ -68,7 +68,10 @@ export async function signInEmail(input: { email: string; password: string }): P
 
 export async function signOutSession(): Promise<void> {
   try {
-    await apiRequest('/api/auth/sign-out', { method: 'POST' });
+    // apiFetch always sends Content-Type: application/json, and Better Auth parses the body as
+    // JSON whenever that header is set. An empty body is rejected with 400 "Invalid JSON in
+    // request body", so send an empty JSON object to get the session revoked on the server.
+    await apiRequest('/api/auth/sign-out', { method: 'POST', body: '{}' });
   } finally {
     await clearSessionCookies();
   }

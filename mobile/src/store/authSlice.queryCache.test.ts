@@ -30,6 +30,23 @@ describe('auth session cache isolation', () => {
     expect(store.getState().user).toBeNull();
   });
 
+  it('completes local sign out when the server sign-out request fails', async () => {
+    const authApi = jest.requireMock('@/features/auth/api/authApi') as {
+      signOutSession: jest.Mock;
+    };
+    authApi.signOutSession.mockRejectedValueOnce(new Error('Invalid JSON in request body'));
+    const store = createStore<AuthSlice>()(createAuthSlice);
+    store.setState({ user: { id: 'u1', email: 'a@example.com', user_metadata: {} }, permissions: ['invoices.read'] });
+    appQueryClient.setQueryData(['purchases', 'bills'], [{ id: 'bill-from-user-a' }]);
+
+    await expect(store.getState().signOut()).resolves.toBeUndefined();
+
+    expect(store.getState().user).toBeNull();
+    expect(store.getState().session).toBeNull();
+    expect(store.getState().permissions).toEqual([]);
+    expect(appQueryClient.getQueryData(['purchases', 'bills'])).toBeUndefined();
+  });
+
   it('keeps a newly created account in onboarding until a profile exists', async () => {
     const authApi = jest.requireMock('@/features/auth/api/authApi') as {
       signUpEmail: jest.Mock;
