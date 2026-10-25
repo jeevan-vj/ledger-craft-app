@@ -5,6 +5,7 @@ export interface ReportQuery { from: string; to: string; basis: ReportBasis; bas
 export interface ReportAccountRow { accountId: string; accountNumber: string | null; accountName: string; accountClass: 'asset' | 'liability' | 'equity' | 'revenue' | 'expense'; debit: string; credit: string; balance: string }
 export interface AgingItem { id: string; number: string; partyId: string; partyName: string; issueDate: string; dueDate: string; balanceDue: string; daysOverdue: number; bucket: 'current' | '1-30' | '31-60' | '61-90' | '90+' }
 export interface AgingReport { total: string; current: string; days1To30: string; days31To60: string; days61To90: string; over90: string; items: AgingItem[] }
+export type GstPosition = 'payable' | 'refundable' | 'nil';
 export interface FinancialReport {
   meta: ReportQuery & { generatedAt: string };
   trialBalance: { rows: (ReportAccountRow & { openingDebit: string; openingCredit: string; closingDebit: string; closingCredit: string })[]; totalDebits: string; totalCredits: string; balanced: boolean };
@@ -12,7 +13,20 @@ export interface FinancialReport {
   balanceSheet: { rows: ReportAccountRow[]; assets: string; liabilities: string; equity: string; balanced: boolean };
   cashFlow: { rows: ReportAccountRow[]; openingCash: string; inflows: string; outflows: string; netCashFlow: string; closingCash: string };
   receivablesAging: AgingReport; payablesAging: AgingReport;
-  taxSummary: { collected: string; paid: string; netPayable: string };
+  taxSummary: {
+    collected: string;
+    paid: string;
+    netPayable: string;
+    outputGst: string;
+    inputGst: string;
+    netGst: string;
+    position: GstPosition;
+    gstAccounts: ReportAccountRow[];
+    keyAccounts: ReportAccountRow[];
+    basis?: 'invoice';
+    foreignCurrencyDocumentsExcluded?: number;
+    warnings?: string[];
+  };
 }
 
 export const reportsApi = {

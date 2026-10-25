@@ -6,6 +6,7 @@ import { AppPressable, Card, EmptyState } from '@/components/ui';
 import { reportsApi, type ReportBasis } from '@/features/reports/api/reportsApi';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { radius, space, useTheme } from '@/theme';
+import { formatMoney } from '@/utils/money';
 
 type Period = 'month' | 'year';
 const iso = (date: Date) => date.toISOString().slice(0, 10);
@@ -14,12 +15,22 @@ function periodDates(period: Period) {
   return { from: period === 'month' ? iso(new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1))) : `${now.getUTCFullYear()}-01-01`, to: iso(now) };
 }
 
+function gstPositionCopy(position: 'payable' | 'refundable' | 'nil') {
+  if (position === 'payable') return 'Net GST payable to IRD';
+  if (position === 'refundable') return 'Net GST refundable from IRD';
+  return 'No GST payable or refundable';
+}
+
+function gstDisplayAmount(value: string, position: 'payable' | 'refundable' | 'nil') {
+  return position === 'refundable' && value.startsWith('-') ? value.slice(1) : value;
+}
+
 export default function ReportsScreen() {
   const theme = useTheme(); const { bottomPadding } = useTabScreenInsets();
   const [period, setPeriod] = useState<Period>('year'); const [basis, setBasis] = useState<ReportBasis>('accrual');
   const dates = useMemo(() => periodDates(period), [period]);
   const report = useQuery({ queryKey: ['reports', dates, basis], queryFn: () => reportsApi.financial({ ...dates, basis, baseCurrency: 'NZD' }) });
-  const money = (value: string) => new Intl.NumberFormat('en-NZ', { style: 'currency', currency: 'NZD' }).format(Number(value));
+  const money = (value: string) => formatMoney(value, 'NZD');
   const data = report.data;
   const empty = data && !data.trialBalance.rows.length && !data.receivablesAging.items.length && !data.payablesAging.items.length;
   const choices = <View style={[styles.segment, { backgroundColor: theme.colors.fill }]}>{(['accrual', 'cash'] as const).map((value) => <AppPressable key={value} accessibilityRole="button" accessibilityState={{ selected: basis === value }} onPress={() => setBasis(value)} style={[styles.segmentButton, basis === value && { backgroundColor: theme.colors.accent }]}><Text style={[theme.type.callout, { color: basis === value ? theme.colors.accentForeground : theme.colors.text }]}>{value === 'accrual' ? 'Accrual' : 'Cash'}</Text></AppPressable>)}</View>;
@@ -38,7 +49,18 @@ export default function ReportsScreen() {
         ['Assets', data.balanceSheet.assets], ['Liabilities', data.balanceSheet.liabilities], ['Equity', data.balanceSheet.equity], ['Trial balance', data.trialBalance.balanced ? 'Balanced' : 'Review required'],
       ].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={[theme.type.callout, { color: label === 'Trial balance' ? (data.trialBalance.balanced ? theme.colors.success : theme.colors.danger) : theme.colors.text }]}>{label === 'Trial balance' ? value : money(value)}</Text></View>)}</Card>
       <Text style={[theme.type.headline, styles.sectionTitle]}>What is owed</Text>
-      <Card style={styles.list}>{[['Receivables', data.receivablesAging.total], ['Payables', data.payablesAging.total], ['GST payable', data.taxSummary.netPayable]].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={theme.type.callout}>{money(value)}</Text></View>)}</Card>
+      <Card style={styles.list}>{[['Receivables', data.receivablesAging.total], ['Payables', data.payablesAging.total]].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={[theme.type.callout, styles.tabular]}>{money(value)}</Text></View>)}</Card>
+      <Text style={[theme.type.headline, styles.sectionTitle]}>GST return (IRD)</Text>
+      <Card style={styles.list}>
+        <View style={styles.row}><Text style={theme.type.body}>Output GST (sales)</Text><Text selectable style={[theme.type.callout, styles.tabular]}>{money(data.taxSummary.outputGst)}</Text></View>
+        <View style={[styles.row, { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>Input GST (purchases &amp; expenses)</Text><Text selectable style={[theme.type.callout, styles.tabular]}>{money(data.taxSummary.inputGst)}</Text></View>
+        <View style={[styles.row, styles.gstNetRow, { backgroundColor: theme.colors.fillMuted, borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}>
+          <Text style={theme.type.callout}>{gstPositionCopy(data.taxSummary.position)}</Text>
+          <Text selectable style={[theme.type.headline, styles.tabular, { color: data.taxSummary.position === 'payable' ? theme.colors.warning : data.taxSummary.position === 'refundable' ? theme.colors.success : theme.colors.text }]}>{money(gstDisplayAmount(data.taxSummary.netGst, data.taxSummary.position))}</Text>
+        </View>
+      </Card>
+      <Text testID="gst-basis" style={[theme.type.caption, styles.footnote]}>GST calculated on the invoice basis{basis === 'cash' ? ' (the cash-basis selection applies to the other reports, not GST)' : ''}</Text>
+      {(data.taxSummary.warnings ?? []).map((warning) => <Text key={warning} accessibilityRole="alert" style={[theme.type.caption, styles.footnote, { color: theme.colors.warning }]}>{warning}</Text>)}
       <Text style={[theme.type.caption, styles.footnote]}>Generated {new Date(data.meta.generatedAt).toLocaleString()} · NZD · Draft documents excluded</Text>
     </> : null}
   </ScrollView>;
@@ -46,5 +68,5 @@ export default function ReportsScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingHorizontal: space.screen, paddingTop: space.lg, gap: space.lg }, header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }, controls: { gap: space.sm }, segment: { flexDirection: 'row', borderRadius: radius.pill, padding: 4 }, segmentButton: { flex: 1, minHeight: 44, alignItems: 'center', justifyContent: 'center', borderRadius: radius.pill, paddingHorizontal: 12 },
-  state: { alignItems: 'center', paddingVertical: 48 }, stateText: { marginTop: 12 }, metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md }, metric: { width: '47%', minHeight: 96, justifyContent: 'center' }, money: { marginTop: 8, fontVariant: ['tabular-nums'] }, sectionTitle: { marginTop: space.md }, list: { padding: 0, overflow: 'hidden' }, row: { minHeight: 56, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md }, footnote: { textAlign: 'center', marginTop: space.md },
+  state: { alignItems: 'center', paddingVertical: 48 }, stateText: { marginTop: 12 }, metrics: { flexDirection: 'row', flexWrap: 'wrap', gap: space.md }, metric: { width: '47%', minHeight: 96, justifyContent: 'center' }, money: { marginTop: 8, fontVariant: ['tabular-nums'] }, tabular: { fontVariant: ['tabular-nums'] }, sectionTitle: { marginTop: space.md }, list: { padding: 0, overflow: 'hidden' }, row: { minHeight: 56, paddingHorizontal: space.lg, flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: space.md }, gstNetRow: { minHeight: 64 }, footnote: { textAlign: 'center', marginTop: space.md },
 });

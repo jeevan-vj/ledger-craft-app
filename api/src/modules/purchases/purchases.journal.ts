@@ -1,6 +1,8 @@
+import { organisationToday } from '../accounting/organisation-date';
 import type { BillDto, BillPaymentDto } from '@ledgercraft/contracts';
 import { and, eq, sql } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
+import { nextJournalEntryNumber } from '../accounting/entry-number';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { decimal } from '../invoices/money';
@@ -27,12 +29,6 @@ async function systemAccount(tx: Database, ctx: OrganisationContext, number: key
   return row.id;
 }
 
-async function nextEntryNumber(tx: Database, organisationId: string, date: string) {
-  const [{ count }] = await tx.select({ count: sql<number>`count(*)` }).from(journalEntries)
-    .where(eq(journalEntries.organisationId, organisationId));
-  return `JE-${date.slice(0, 4)}-${String(Number(count) + 1).padStart(3, '0')}`;
-}
-
 async function post(
   tx: Database,
   ctx: OrganisationContext,
@@ -57,7 +53,7 @@ async function post(
   const [entry] = await tx.insert(journalEntries).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
-    entryNumber: await nextEntryNumber(tx, ctx.organisationId, input.date),
+    entryNumber: await nextJournalEntryNumber(tx, ctx.organisationId, input.date),
     entryDate: input.date,
     description: input.description,
     referenceType: input.referenceType,
@@ -140,7 +136,7 @@ export async function reverseBill(tx: Database, ctx: OrganisationContext, bill: 
     eq(journalEntryLines.journalEntryId, source.id),
   ));
   await post(tx, ctx, {
-    date: new Date().toISOString().slice(0, 10),
+    date: await organisationToday(tx, ctx.organisationId),
     description: `Void ${bill.billNumber}`,
     referenceType: 'bill_void',
     referenceId: bill.id,
@@ -168,7 +164,7 @@ export async function restoreBill(tx: Database, ctx: OrganisationContext, bill: 
     eq(journalEntryLines.journalEntryId, voidEntry.id),
   ));
   await post(tx, ctx, {
-    date: new Date().toISOString().slice(0, 10),
+    date: await organisationToday(tx, ctx.organisationId),
     description: `Restore ${bill.billNumber}`,
     referenceType: 'bill_restore',
     referenceId: bill.id,

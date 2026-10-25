@@ -37,10 +37,24 @@ describe('report contracts', () => {
       payablesAging: { total: '0.00', current: '0.00', days1To30: '0.00', days31To60: '0.00', days61To90: '0.00', over90: '0.00', items: [] },
       salesSummary: { subtotal: '80.00', tax: '12.00', total: '92.00', paid: '92.00', outstanding: '0.00' },
       purchaseSummary: { subtotal: '20.00', tax: '3.00', total: '23.00', paid: '23.00', outstanding: '0.00' },
-      taxSummary: { collected: '12.00', paid: '3.00', netPayable: '9.00' },
+      taxSummary: {
+        collected: '12.00',
+        paid: '3.00',
+        netPayable: '9.00',
+        outputGst: '12.00',
+        inputGst: '3.00',
+        netGst: '9.00',
+        position: 'payable',
+        gstAccounts: [],
+        keyAccounts: [],
+      },
       comparison: null,
     });
     expect(result.success).toBe(true);
     expect(financialReportResponseSchema.safeParse({ ...result.data!, profitLoss: { ...result.data!.profitLoss, revenue: 80 } }).success).toBe(false);
+    expect(financialReportResponseSchema.safeParse({
+      ...result.data!,
+      taxSummary: { ...result.data!.taxSummary, position: 'owing' },
+    }).success).toBe(false);
   });
 });

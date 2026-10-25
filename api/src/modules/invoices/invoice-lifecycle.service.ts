@@ -1,3 +1,4 @@
+import { organisationToday } from '../accounting/organisation-date';
 import {
   invoiceSchema,
   type CreateInvoiceAttachmentRequest,
@@ -15,7 +16,7 @@ import { withOrganisationTx } from '../auth/bind-organisation';
 import { assertKeyOwned } from '../storage/keys';
 import type { ObjectStore } from '../storage/object-store';
 import { createInvoiceInTx } from './invoices.service';
-import { hasInvoiceCancellationJournal, postInvoiceJournal, postInvoiceReversalJournal } from './invoices.journal';
+import { hasInvoiceCancellationJournal, postInvoiceRestoreJournal, postInvoiceReversalJournal } from './invoices.journal';
 import * as repo from './invoices.repository';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from './idempotency';
 import { decimal } from './money';
@@ -32,7 +33,7 @@ export async function cancelInvoiceForUser(db: Database, userId: string, id: str
     if (decimal(invoice.totalPaid).compare(0) > 0) throw apiError(409, 'INVOICE_HAS_PAYMENTS', 'Reverse invoice payments before cancelling');
     await postInvoiceReversalJournal(tx, ctx, {
       invoiceId: invoice.id, invoiceNumber: invoice.invoiceNumber,
-      date: new Date().toISOString().slice(0, 10), taxAmount: invoice.taxAmount, total: invoice.total,
+      date: await organisationToday(tx, ctx.organisationId), taxAmount: invoice.taxAmount, total: invoice.total,
     });
     const cancelled = requireInvoice(await repo.cancelInvoice(tx, ctx.organisationId, id));
     await repo.recordHistory(tx, ctx, id, { action: 'cancelled', fromStatus: invoice.status, toStatus: 'cancelled', reason: input.reason });
@@ -46,9 +47,8 @@ export async function restoreInvoiceForUser(db: Database, userId: string, id: st
     const wasCancelled = invoice.status === 'cancelled';
     if (!wasCancelled && !invoice.archivedAt) return invoice;
     const restored = requireInvoice(await repo.restoreInvoice(tx, ctx.organisationId, id));
-    if (wasCancelled && await hasInvoiceCancellationJournal(tx, ctx.organisationId, id)) await postInvoiceJournal(tx, ctx, {
-      invoiceId: restored.id, invoiceNumber: restored.invoiceNumber, date: new Date().toISOString().slice(0, 10),
-      subtotal: restored.subtotal, taxAmount: restored.taxAmount, total: restored.total,
+    if (wasCancelled && await hasInvoiceCancellationJournal(tx, ctx.organisationId, id)) await postInvoiceRestoreJournal(tx, ctx, {
+      invoiceId: restored.id, invoiceNumber: restored.invoiceNumber, date: await organisationToday(tx, ctx.organisationId), total: restored.total,
     });
     await repo.recordHistory(tx, ctx, id, { action: 'restored', fromStatus: invoice.status, toStatus: restored.status, reason: input.reason });
     return restored;

@@ -811,7 +811,8 @@ export class SupabaseDataService {
     }
   }
 
-  async updateJournalEntryStatus(entryId: string, status: 'draft' | 'posted' | 'reversed'): Promise<void> {
+  // Reversal goes through a reversing entry, never a status update (API returns 409/400).
+  async updateJournalEntryStatus(entryId: string, status: 'draft' | 'posted'): Promise<void> {
     if (journalsApiEnabled()) {
       await journalsApi.update(entryId, { status });
       return;

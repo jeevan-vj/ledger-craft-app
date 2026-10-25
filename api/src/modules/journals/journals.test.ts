@@ -1,4 +1,4 @@
-import { errorEnvelopeSchema, journalEntrySchema } from '@ledgercraft/contracts';
+import { errorEnvelopeSchema, journalEntrySchema, updateJournalEntryRequestSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
@@ -39,6 +39,16 @@ async function seedAccounts(app: ReturnType<typeof createApp>, cookie: string) {
   const credit = body.accounts.find((account) => account.accountNumber === '4000');
   expect(debit && credit).toBeTruthy();
   return { debitId: debit!.id, creditId: credit!.id };
+}
+
+async function createDraft(app: ReturnType<typeof createApp>, cookie: string, accounts: { debitId: string; creditId: string }, description: string) {
+  const response = await app.request('/api/journal-entries', {
+    method: 'POST',
+    headers: { ...originHeaders, Cookie: cookie },
+    body: JSON.stringify({ description, entryDate: '2026-09-11', debitAccountId: accounts.debitId, creditAccountId: accounts.creditId, amount: '10.00' }),
+  });
+  expect(response.status, description).toBe(201);
+  return journalEntrySchema.parse(await response.json());
 }
 
 describe('journal routes', () => {
@@ -103,6 +113,54 @@ describe('journal routes', () => {
         });
         expect(hidden.status).toBe(404);
         expect(errorEnvelopeSchema.parse(await hidden.json()).error.code).toBe('NOT_FOUND');
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+  it('numbers new journals after a deleted draft without colliding with the unique entry number', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Numbering Owner');
+        const accounts = await seedAccounts(app, owner.cookie);
+        const first = await createDraft(app, owner.cookie, accounts, 'First draft');
+        const second = await createDraft(app, owner.cookie, accounts, 'Second draft');
+        const deleted = await app.request(`/api/journal-entries/${first.id}`, { method: 'DELETE', headers: { ...originHeaders, Cookie: owner.cookie } });
+        expect(deleted.status).toBeLessThan(300);
+        // count(*)+1 would reuse second.entryNumber here and hit the unique index.
+        const third = await createDraft(app, owner.cookie, accounts, 'Third draft');
+        expect(third.entryNumber).not.toBe(second.entryNumber);
+        expect(third.entryNumber).toBe('JE-2026-003');
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+  it('rejects moving a draft journal straight to reversed', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Reversal Owner');
+        const accounts = await seedAccounts(app, owner.cookie);
+        const draft = await createDraft(app, owner.cookie, accounts, 'Draft to reverse');
+        const response = await app.request(`/api/journal-entries/${draft.id}`, {
+          method: 'PATCH',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ status: 'reversed' }),
+        });
+        expect(response.status).toBe(400);
+        expect(updateJournalEntryRequestSchema.safeParse({ status: 'reversed' }).success).toBe(false);
+        const unchanged = await app.request(`/api/journal-entries/${draft.id}`, { headers: { Cookie: owner.cookie } });
+        expect(journalEntrySchema.parse(await unchanged.json()).status).toBe('draft');
+        const report = await app.request('/api/reports/financial?from=2026-01-01&to=2026-12-31&basis=accrual&baseCurrency=NZD', { headers: { Cookie: owner.cookie } });
+        expect(report.status).toBe(200);
+        const body = await report.json() as { trialBalance: { totalDebits: string } };
+        expect(body.trialBalance.totalDebits).toBe('0.00');
       } finally {
         await sql.end();
       }

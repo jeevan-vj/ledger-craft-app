@@ -104,7 +104,22 @@ export const financialReportResponseSchema = z.object({
   payablesAging: agingSchema,
   salesSummary: documentSummarySchema,
   purchaseSummary: documentSummarySchema,
-  taxSummary: z.object({ collected: money, paid: money, netPayable: money }),
+  taxSummary: z.object({
+    collected: money,
+    paid: money,
+    netPayable: money,
+    outputGst: money,
+    inputGst: money,
+    netGst: money,
+    position: z.enum(['payable', 'refundable', 'nil']),
+    gstAccounts: z.array(reportAccountRowSchema),
+    keyAccounts: z.array(reportAccountRowSchema),
+    /** GST is always taken from invoice-basis journals, even on a cash-basis report. */
+    basis: z.literal('invoice').default('invoice'),
+    /** Non-base-currency documents with GST lines left out of this return. */
+    foreignCurrencyDocumentsExcluded: z.number().int().nonnegative().default(0),
+    warnings: z.array(z.string()).default([]),
+  }),
   comparison: reportComparisonSchema.nullable(),
 });
 

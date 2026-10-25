@@ -65,3 +65,6 @@ deploy/*.local.env
 .data/
 
 .pnpm-store/
+
+# Local GST scenario verification artifacts
+.gst-evidence/
