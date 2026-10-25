@@ -215,8 +215,6 @@ it('lets a read-only member see links and reuse them without mutate actions', as
   expect(await view.findByText('classic · Created 25 Oct 2026 · 2 views')).toBeVisible();
   expect(view.queryByLabelText('Revoke all links')).toBeNull();
   expect(view.queryByLabelText('Replace link')).toBeNull();
-  expect(view.queryByLabelText('Send invoice')).toBeNull();
-  expect(view.queryByLabelText('Send reminder')).toBeNull();
   fireEvent.press(view.getByLabelText('Share link'));
   await waitFor(() => expect(Share.share).toHaveBeenCalled());
   expect(invoiceService.createShareLink).not.toHaveBeenCalled();

@@ -58,18 +58,33 @@ it('shows the EMAIL_UNAVAILABLE server message and a share-link action for send 
   expect(JSON.stringify(jest.mocked(Alert.alert).mock.calls)).not.toContain('Invoice sent');
 });
 
-it('does not offer share-link success when send fails offline or the member is read-only', async () => {
-  jest.mocked(invoiceService.sendInvoice).mockRejectedValueOnce(
-    new AuthApiError("Can't reach the API. Start it with pnpm dev:api (port 3001).", 0),
+it('shows a connection error when send or remind cannot reach the API', async () => {
+  const offlineError = new AuthApiError(
+    "Can't reach the API. Start it with pnpm dev:api (port 3001).",
+    0,
   );
+  jest.mocked(invoiceService.sendInvoice).mockRejectedValueOnce(offlineError);
+  jest.mocked(invoiceService.remindInvoice).mockRejectedValueOnce(offlineError);
   const offline = renderSection();
-  fireEvent.press(offline.getByLabelText('Send invoice'));
-  await waitFor(() => expect(Alert.alert).toHaveBeenCalled());
-  const buttons = jest.mocked(Alert.alert).mock.calls[0][2] ?? [];
-  expect(buttons.map((button) => button.text)).not.toContain('Share link instead');
-  expect(JSON.stringify(jest.mocked(Alert.alert).mock.calls)).not.toContain('Invoice sent');
-  expect(offline.onSent).not.toHaveBeenCalled();
 
+  fireEvent.press(offline.getByLabelText('Send invoice'));
+  await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+    'Email not sent',
+    'Check your connection and try again.',
+  ));
+
+  fireEvent.press(offline.getByLabelText('Send reminder'));
+  await waitFor(() => expect(jest.mocked(Alert.alert).mock.calls).toHaveLength(2));
+  expect(jest.mocked(Alert.alert).mock.calls[1]).toEqual([
+    'Email not sent',
+    'Check your connection and try again.',
+  ]);
+  expect(JSON.stringify(jest.mocked(Alert.alert).mock.calls)).not.toMatch(/pnpm|port 3001|Invoice sent|Reminder sent|Share link instead/);
+  expect(offline.onSent).not.toHaveBeenCalled();
+  expect(offline.onShareInstead).not.toHaveBeenCalled();
+});
+
+it('hides send and remind for a read-only member', () => {
   const hidden = renderSection(false);
   expect(hidden.queryByLabelText('Send invoice')).toBeNull();
   expect(hidden.queryByLabelText('Send reminder')).toBeNull();

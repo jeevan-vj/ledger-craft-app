@@ -304,7 +304,10 @@ and share, and confirms replace and revoke-all. A session without
 revoke, send, or remind. Dismissing the native share sheet is quiet. Public
 invoice and quote reads send no session cookie or auth header. Shared PDFs use
 the filename `Invoice-<number>.pdf`. Send and Remind show the server's 503
-`EMAIL_UNAVAILABLE` message and a Share link instead action. The mobile Sentry
+`EMAIL_UNAVAILABLE` message and a Share link instead action. An offline send
+or remind shows “Check your connection and try again.” and does not claim
+success. A failed mobile network call uses that connection copy instead of a
+local API start command. The mobile Sentry
 scrubber redacts public invoice and quote tokens in URLs and exception values.
 Deployment of this management behaviour is still pending. Public reads are not
 rate limited, and inactive attachment reads still return 404.

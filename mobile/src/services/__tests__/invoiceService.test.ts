@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { clearCookies, rememberSessionToken } from '@/features/auth/api/cookieJar';
+import { clearCookies, getCookieHeader, rememberSessionToken } from '@/features/auth/api/cookieJar';
 import { invoiceService } from '@/services/invoiceService';
 
 const invoiceDto = {
@@ -220,11 +220,17 @@ describe('InvoiceService (Hono)', () => {
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('better-auth.session_token=secret-session');
     await rememberSessionToken('secret-session');
     (SecureStore.setItemAsync as jest.Mock).mockClear();
-    (global.fetch as jest.Mock).mockResolvedValueOnce(
-      jsonResponse({
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ...jsonResponse({
         error: { code: 'SHARE_INACTIVE', message: 'This link is no longer active' },
       }, 410),
-    );
+      headers: {
+        get: (name: string) => (name.toLowerCase() === 'set-cookie'
+          ? 'better-auth.session_token=public-response-token; Path=/; HttpOnly'
+          : null),
+        getSetCookie: () => ['better-auth.session_token=public-response-token; Path=/; HttpOnly'],
+      },
+    });
 
     await expect(invoiceService.fetchSharedInvoice('org_secret-token')).resolves.toBe('inactive');
 
@@ -235,6 +241,8 @@ describe('InvoiceService (Hono)', () => {
     expect(headers.Authorization).toBeUndefined();
     expect(JSON.stringify(headers)).not.toContain('secret-session');
     expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
+    expect(await getCookieHeader()).toBe('better-auth.session_token=secret-session');
+    expect(await getCookieHeader()).not.toContain('public-response-token');
     expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
       'http://127.0.0.1:3001/api/public/invoices/org_secret-token',
     );

@@ -27,6 +27,8 @@ function requestOrigin(): string {
   return process.env.EXPO_PUBLIC_APP_ORIGIN ?? 'http://127.0.0.1:8081';
 }
 
+export const OFFLINE_MESSAGE = 'Check your connection and try again.';
+
 function friendlyStatus(status: number): string {
   if (status === 0 || status === 502 || status === 503) {
     return "Can't reach the account service. Make sure the API is running on port 3001.";
@@ -93,10 +95,7 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
       headers,
     });
   } catch {
-    const error = new AuthApiError(
-      "Can't reach the API. Start it with pnpm dev:api (port 3001).",
-      0,
-    );
+    const error = new AuthApiError(OFFLINE_MESSAGE, 0);
     captureApiError(error, 0);
     throw error;
   }
@@ -144,10 +143,7 @@ export async function publicApiRequest<T>(path: string, init?: RequestInit): Pro
       headers,
     });
   } catch {
-    const error = new AuthApiError(
-      "Can't reach the API. Start it with pnpm dev:api (port 3001).",
-      0,
-    );
+    const error = new AuthApiError(OFFLINE_MESSAGE, 0);
     captureApiError(error, 0);
     throw error;
   }

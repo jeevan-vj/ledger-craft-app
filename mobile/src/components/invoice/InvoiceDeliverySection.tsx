@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { AppPressable } from '@/components/ui/AppPressable';
-import { AuthApiError } from '@/features/auth/api/http';
+import { AuthApiError, OFFLINE_MESSAGE } from '@/features/auth/api/http';
 import { invoiceReminderRequest } from '@/features/invoices/invoiceSharing';
 import { invoiceService } from '@/services/invoiceService';
 import type { Invoice } from '@/types/invoice';
@@ -17,7 +17,14 @@ interface InvoiceDeliverySectionProps {
 }
 
 function safeDeliveryMessage(error: unknown): string {
-  if (error instanceof AuthApiError && !/https?:|shared\/(?:invoice|quote)|api\/public/i.test(error.message)) {
+  if (error instanceof AuthApiError && error.status === 0) {
+    return OFFLINE_MESSAGE;
+  }
+  if (
+    error instanceof AuthApiError
+    && error.message.trim()
+    && !/https?:|shared\/(?:invoice|quote)|api\/public|pnpm dev:api|port 3001/i.test(error.message)
+  ) {
     return error.message;
   }
   return 'The request did not finish. Nothing was sent.';
