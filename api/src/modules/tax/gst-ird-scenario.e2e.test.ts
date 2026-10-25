@@ -20,6 +20,8 @@ import { createAuth } from '../auth/auth';
 import { decimal, roundMoney } from '../invoices/money';
 
 type TestApp = ReturnType<typeof createApp>;
+// Loose JSON shape for reading nested API responses in this scenario test.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Json = Record<string, any>;
 
 const jsonHeaders = {
