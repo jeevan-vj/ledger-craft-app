@@ -1,3 +1,4 @@
+import { organisationToday } from '../accounting/organisation-date';
 import type { BillDto, BillPaymentDto } from '@ledgercraft/contracts';
 import { and, eq, sql } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
@@ -135,7 +136,7 @@ export async function reverseBill(tx: Database, ctx: OrganisationContext, bill: 
     eq(journalEntryLines.journalEntryId, source.id),
   ));
   await post(tx, ctx, {
-    date: new Date().toISOString().slice(0, 10),
+    date: await organisationToday(tx, ctx.organisationId),
     description: `Void ${bill.billNumber}`,
     referenceType: 'bill_void',
     referenceId: bill.id,
@@ -163,7 +164,7 @@ export async function restoreBill(tx: Database, ctx: OrganisationContext, bill: 
     eq(journalEntryLines.journalEntryId, voidEntry.id),
   ));
   await post(tx, ctx, {
-    date: new Date().toISOString().slice(0, 10),
+    date: await organisationToday(tx, ctx.organisationId),
     description: `Restore ${bill.billNumber}`,
     referenceType: 'bill_restore',
     referenceId: bill.id,

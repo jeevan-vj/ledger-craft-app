@@ -11,7 +11,7 @@
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
@@ -200,6 +200,8 @@ function expectGst(report: Json, output: string, input: string, net: string, pos
 }
 
 describe('NZ GST journals and IRD reporting scenario', () => {
+  afterEach(() => vi.useRealTimers());
+
   it.skip('posts credit-note GST adjustments (no Hono credit-note accounting document exists yet)', () => {
     // Enable this scenario when credit notes have a server-side document,
     // posting route, and reversal semantics rather than only a manual web field.
@@ -527,6 +529,43 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         expect(filtered.trialBalance.rows.map((row: Json) => row.accountNumber)).toEqual(['4000']);
         expectGst(filtered, '30.00', '0.00', '30.00', 'payable');
         await writeEvidence('basis-and-account-filter-financial-report.json', { cash: cash.taxSummary, filtered: filtered.taxSummary });
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+
+  it('dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'GST Timezone Cutover');
+        const invoice = await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-06-01', amount: '200.00', description: 'June sale' });
+        const bill = await createReceivedBill(app, org.headers, {
+          vendorId: org.vendorId, accountId: org.expenseAccountId, date: '2026-06-02', gross: '115.00', description: 'June purchase',
+        });
+
+        // 2026-06-30T12:30Z is still 30 June in UTC but 00:30 on 1 July in Auckland.
+        vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-06-30T12:30:00.000Z') });
+        await requestJson(app, `/api/invoices/${invoice.id}/cancel`, { method: 'POST', headers: org.headers, body: '{}' }, 200);
+        await requestJson(app, `/api/bills/${bill.id}/cancel`, { method: 'POST', headers: org.headers, body: '{}' }, 200);
+        vi.useRealTimers();
+
+        const ledger = await generalLedger(app, org.cookie, '2026-01-01', '2026-12-31');
+        const reversalDates = (ledger.lines as Json[])
+          .filter((line) => line.referenceType === 'invoice_cancellation' || line.referenceType === 'bill_void')
+          .map((line) => line.date);
+        expect(reversalDates.length).toBeGreaterThan(0);
+        expect(new Set(reversalDates)).toEqual(new Set(['2026-07-01']));
+
+        // June quarter keeps the original GST; the cancellation is a September-quarter adjustment.
+        const juneQuarter = await financialReport(app, org.cookie, '2026-04-01', '2026-06-30');
+        expectGst(juneQuarter, '30.00', '15.00', '15.00', 'payable');
+        const septemberQuarter = await financialReport(app, org.cookie, '2026-07-01', '2026-09-30');
+        expectGst(septemberQuarter, '-30.00', '-15.00', '-15.00', 'refundable');
+        await writeEvidence('timezone-cutover-financial-report.json', { juneQuarter: juneQuarter.taxSummary, septemberQuarter: septemberQuarter.taxSummary });
       } finally {
         await sql.end();
       }
