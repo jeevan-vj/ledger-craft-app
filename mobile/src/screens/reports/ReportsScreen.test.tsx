@@ -61,7 +61,7 @@ describe('mobile GST report', () => {
 
   it.each([
     ['payable', '15.00', 'Net GST payable to IRD'],
-    ['nil', '0.00', 'Net GST — nil return'],
+    ['nil', '0.00', 'No GST payable or refundable'],
   ] as const)('shows the %s GST position label', async (position, netGst, expectedLabel) => {
     (reportsApi.financial as jest.Mock).mockResolvedValue({
       ...report,

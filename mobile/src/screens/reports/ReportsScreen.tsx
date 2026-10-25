@@ -18,7 +18,7 @@ function periodDates(period: Period) {
 function gstPositionCopy(position: 'payable' | 'refundable' | 'nil') {
   if (position === 'payable') return 'Net GST payable to IRD';
   if (position === 'refundable') return 'Net GST refundable from IRD';
-  return 'Net GST — nil return';
+  return 'No GST payable or refundable';
 }
 
 function gstDisplayAmount(value: string, position: 'payable' | 'refundable' | 'nil') {
