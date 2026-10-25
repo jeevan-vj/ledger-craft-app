@@ -2,7 +2,8 @@ import { Platform } from 'react-native';
 import * as FileSystem from 'expo-file-system/legacy';
 import * as Print from 'expo-print';
 import type { Invoice } from '@/types/invoice';
-import { downloadInvoicePDF, generateInvoicePDF, invoiceFileName } from '../pdfUtils';
+import * as Sharing from 'expo-sharing';
+import { downloadInvoicePDF, generateInvoicePDF, invoiceFileName, shareInvoicePDF } from '../pdfUtils';
 
 jest.mock('expo-print', () => ({
   printToFileAsync: jest.fn(),
@@ -14,19 +15,27 @@ jest.mock('expo-sharing', () => ({
   shareAsync: jest.fn(() => Promise.resolve()),
 }));
 
-jest.mock('expo-file-system/legacy', () => ({
-  documentDirectory: null,
-  EncodingType: { Base64: 'base64' },
-  StorageAccessFramework: {
-    requestDirectoryPermissionsAsync: jest.fn(),
-    createFileAsync: jest.fn(),
-  },
-  readAsStringAsync: jest.fn(),
-  writeAsStringAsync: jest.fn(),
-  getInfoAsync: jest.fn(),
-  copyAsync: jest.fn(),
-  deleteAsync: jest.fn(),
-}));
+jest.mock('expo-file-system/legacy', () => {
+  const state: { documentDirectory: string | null } = { documentDirectory: null };
+  return {
+    get documentDirectory() {
+      return state.documentDirectory;
+    },
+    set documentDirectory(value: string | null) {
+      state.documentDirectory = value;
+    },
+    EncodingType: { Base64: 'base64' },
+    StorageAccessFramework: {
+      requestDirectoryPermissionsAsync: jest.fn(),
+      createFileAsync: jest.fn(),
+    },
+    readAsStringAsync: jest.fn(),
+    writeAsStringAsync: jest.fn(),
+    getInfoAsync: jest.fn(),
+    copyAsync: jest.fn(),
+    deleteAsync: jest.fn(),
+  };
+});
 
 const invoice = {
   id: 'invoice-1',
@@ -88,6 +97,40 @@ describe('mobile invoice PDF saving', () => {
       'JVBERi0xLjQ=',
       { encoding: 'base64' },
     );
+  });
+
+  it('shares a PDF named Invoice-<number>.pdf', async () => {
+    Object.assign(FileSystem, { documentDirectory: 'file:///docs/' });
+    jest.mocked(Print.printToFileAsync).mockResolvedValue({ uri: 'file:///cache/invoice.pdf' } as never);
+    jest.mocked(FileSystem.getInfoAsync).mockResolvedValue({ exists: false } as never);
+    jest.mocked(FileSystem.copyAsync).mockResolvedValue(undefined as never);
+    jest.mocked(FileSystem.deleteAsync).mockResolvedValue(undefined as never);
+
+    await shareInvoicePDF(invoice);
+
+    expect(Sharing.shareAsync).toHaveBeenCalledWith(
+      'file:///docs/Invoice-INV-2026-0042.pdf',
+      expect.objectContaining({ mimeType: 'application/pdf', UTI: 'com.adobe.pdf' }),
+    );
+  });
+
+  it('treats dismissing the PDF share sheet as cancellation', async () => {
+    Object.assign(FileSystem, { documentDirectory: null });
+    jest.mocked(Print.printToFileAsync).mockResolvedValue({ uri: 'file:///cache/invoice.pdf' } as never);
+    jest.mocked(Sharing.shareAsync).mockRejectedValueOnce(
+      Object.assign(new Error('The app share was cancelled'), { code: 'ERR_SHARING_CANCELLED' }),
+    );
+
+    await expect(shareInvoicePDF(invoice)).resolves.toBeUndefined();
+  });
+
+  it('treats dismissing the save sheet as cancellation', async () => {
+    Object.assign(FileSystem, { documentDirectory: null });
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'ios' });
+    jest.mocked(Print.printToFileAsync).mockResolvedValue({ uri: 'file:///cache/invoice.pdf' } as never);
+    jest.mocked(Sharing.shareAsync).mockRejectedValueOnce(new Error('User did not share'));
+
+    await expect(downloadInvoicePDF(invoice)).resolves.toBeNull();
   });
 
   it('treats closing the Android directory picker as cancellation', async () => {

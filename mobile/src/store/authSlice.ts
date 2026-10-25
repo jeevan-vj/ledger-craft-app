@@ -27,6 +27,7 @@ export type AuthSession = {
 export interface AuthSlice {
   user: AuthUser | null;
   session: AuthSession | null;
+  permissions: string[];
   loading: boolean;
   hasCompletedOnboarding: boolean;
   onboardingChecked: boolean;
@@ -63,6 +64,15 @@ function toAuthUser(me: MeResponse): AuthUser {
   };
 }
 
+function sessionFields(me: MeResponse) {
+  const user = toAuthUser(me);
+  return {
+    user,
+    session: { user },
+    permissions: [...(me.permissions ?? [])],
+  };
+}
+
 function toAuthError(error: unknown): { message: string } {
   if (error instanceof AuthApiError) {
     return { message: error.message };
@@ -76,6 +86,7 @@ function toAuthError(error: unknown): { message: string } {
 export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   user: null,
   session: null,
+  permissions: [],
   loading: true,
   hasCompletedOnboarding: false,
   onboardingChecked: false,
@@ -89,11 +100,9 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       if (!me) {
         throw new AuthApiError('Signed in, but no session was returned.', 401);
       }
-      const user = toAuthUser(me);
       const profile = await businessProfileApi.get();
       set({
-        user,
-        session: { user },
+        ...sessionFields(me),
         hasCompletedOnboarding: Boolean(profile),
         onboardingChecked: true,
         loading: false,
@@ -119,10 +128,8 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       if (!me) {
         throw new AuthApiError('Account created, but no session was returned.', 401);
       }
-      const user = toAuthUser(me);
       set({
-        user,
-        session: { user },
+        ...sessionFields(me),
         hasCompletedOnboarding: false,
         onboardingChecked: true,
         loading: false,
@@ -150,6 +157,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       set({
         user: null,
         session: null,
+        permissions: [],
         hasCompletedOnboarding: false,
         onboardingChecked: true,
         error: null,
@@ -175,16 +183,15 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       set({
         user: null,
         session: null,
+        permissions: [],
         hasCompletedOnboarding: false,
         onboardingChecked: true,
       });
       return;
     }
-    const user = toAuthUser(me);
     const profile = await businessProfileApi.get();
     set({
-      user,
-      session: { user },
+      ...sessionFields(me),
       hasCompletedOnboarding: Boolean(profile),
       onboardingChecked: true,
     });
@@ -201,11 +208,9 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
     try {
       const me = await getMe();
       if (me) {
-        const user = toAuthUser(me);
         const profile = await businessProfileApi.get();
         set({
-          user,
-          session: { user },
+          ...sessionFields(me),
           hasCompletedOnboarding: Boolean(profile),
           onboardingChecked: true,
           loading: false,
@@ -216,6 +221,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       set({
         user: null,
         session: null,
+        permissions: [],
         loading: false,
         onboardingChecked: true,
         hasCompletedOnboarding: false,

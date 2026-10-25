@@ -1,5 +1,5 @@
 import { captureApiError } from '@/observability/sentry';
-import { AuthApiError, parseError, rejectFailedResponse } from './http';
+import { apiRequest, AuthApiError, parseError, publicApiRequest, rejectFailedResponse } from './http';
 
 jest.mock('@/observability/sentry', () => ({
   captureApiError: jest.fn(),
@@ -41,6 +41,24 @@ describe('API error request ids', () => {
     });
 
     expect(captureApiError).toHaveBeenCalledWith(expect.any(AuthApiError), 500, 'req_500');
+  });
+
+  it('tells a person to check their connection when fetch fails', async () => {
+    global.fetch = jest.fn().mockRejectedValue(new TypeError('Network request failed'));
+
+    const authenticated = await apiRequest('/api/invoices').catch((error: unknown) => error);
+    const publicRead = await publicApiRequest('/api/public/invoices/token').catch((error: unknown) => error);
+
+    expect(authenticated).toMatchObject({
+      status: 0,
+      message: 'Check your connection and try again.',
+    });
+    expect(publicRead).toMatchObject({
+      status: 0,
+      message: 'Check your connection and try again.',
+    });
+    expect(String(authenticated)).not.toMatch(/pnpm dev:api|port 3001/);
+    expect(String(publicRead)).not.toMatch(/pnpm dev:api|port 3001/);
   });
 
   it('keeps the request id on client errors without reporting them', async () => {

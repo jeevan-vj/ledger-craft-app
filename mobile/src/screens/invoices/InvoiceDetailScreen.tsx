@@ -34,7 +34,10 @@ import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
 import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
+import { InvoiceDeliverySection } from '@/components/invoice/InvoiceDeliverySection';
 import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
+import { canWriteInvoices } from '@/features/auth/invoiceAccess';
+import { useStore } from '@/store';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import * as ImagePicker from 'expo-image-picker';
 import { objectsApi } from '@/features/storage/api/objectsApi';
@@ -53,6 +56,7 @@ export default function InvoiceDetailScreen() {
   const route = useRoute<InvoiceDetailRouteProp>();
   const { invoiceId } = route.params;
   const { tabBarClearance } = useTabScreenInsets();
+  const canWrite = useStore((state) => canWriteInvoices(state.permissions));
 
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
@@ -444,6 +448,13 @@ export default function InvoiceDetailScreen() {
           </View>
         )}
 
+        <InvoiceDeliverySection
+          invoice={invoice}
+          canSend={canWrite}
+          onShareInstead={() => setShareActionsVisible(true)}
+          onSent={() => { void loadInvoice(); }}
+        />
+
         <View style={{ paddingBottom: 8 }}>
           <ProfileCompletenessBanner
             profile={businessProfile}
@@ -503,6 +514,7 @@ export default function InvoiceDetailScreen() {
         visible={shareActionsVisible}
         invoice={invoice}
         businessProfile={businessProfile || undefined}
+        canManageShares={canWrite}
         onClose={() => setShareActionsVisible(false)}
       />
     </View>

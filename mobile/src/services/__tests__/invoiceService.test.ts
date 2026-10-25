@@ -1,3 +1,5 @@
+import * as SecureStore from 'expo-secure-store';
+import { clearCookies, getCookieHeader, rememberSessionToken } from '@/features/auth/api/cookieJar';
 import { invoiceService } from '@/services/invoiceService';
 
 const invoiceDto = {
@@ -213,6 +215,39 @@ describe('InvoiceService (Hono)', () => {
     await expect(invoiceService.fetchSharedInvoice('revoked-token')).resolves.toBe('inactive');
   });
 
+  it('reads a public invoice with the token only and does not send or store a session', async () => {
+    await clearCookies();
+    (SecureStore.getItemAsync as jest.Mock).mockResolvedValue('better-auth.session_token=secret-session');
+    await rememberSessionToken('secret-session');
+    (SecureStore.setItemAsync as jest.Mock).mockClear();
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ...jsonResponse({
+        error: { code: 'SHARE_INACTIVE', message: 'This link is no longer active' },
+      }, 410),
+      headers: {
+        get: (name: string) => (name.toLowerCase() === 'set-cookie'
+          ? 'better-auth.session_token=public-response-token; Path=/; HttpOnly'
+          : null),
+        getSetCookie: () => ['better-auth.session_token=public-response-token; Path=/; HttpOnly'],
+      },
+    });
+
+    await expect(invoiceService.fetchSharedInvoice('org_secret-token')).resolves.toBe('inactive');
+
+    const init = (global.fetch as jest.Mock).mock.calls[0][1] as RequestInit;
+    const headers = init.headers as Record<string, string>;
+    expect(init.credentials).toBe('omit');
+    expect(headers.Cookie).toBeUndefined();
+    expect(headers.Authorization).toBeUndefined();
+    expect(JSON.stringify(headers)).not.toContain('secret-session');
+    expect(SecureStore.setItemAsync).not.toHaveBeenCalled();
+    expect(await getCookieHeader()).toBe('better-auth.session_token=secret-session');
+    expect(await getCookieHeader()).not.toContain('public-response-token');
+    expect((global.fetch as jest.Mock).mock.calls[0][0]).toBe(
+      'http://127.0.0.1:3001/api/public/invoices/org_secret-token',
+    );
+  });
+
   it('treats a SHARE_INACTIVE code as inactive even when the status is unexpected', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce(
       jsonResponse({
@@ -243,5 +278,46 @@ describe('invoice sharing controls transport', () => {
     expect(global.fetch).toHaveBeenNthCalledWith(1, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/shares', expect.objectContaining({ method: 'GET' }));
     expect(global.fetch).toHaveBeenNthCalledWith(2, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/share', expect.objectContaining({ method: 'POST', body: JSON.stringify({ templateName: 'modern', replace: true, expiresAt: null }) }));
     expect(global.fetch).toHaveBeenNthCalledWith(3, 'http://127.0.0.1:3001/api/invoices/invoice%2Fid/shares/revoke', expect.objectContaining({ method: 'POST', body: '{}' }));
+  });
+
+  it('posts send and remind and keeps the EMAIL_UNAVAILABLE message', async () => {
+    const unavailable = {
+      error: {
+        code: 'EMAIL_UNAVAILABLE',
+        message: 'Email delivery is unavailable. Download or share the invoice instead.',
+      },
+    };
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(unavailable, 503))
+      .mockResolvedValueOnce(jsonResponse(unavailable, 503));
+
+    await expect(invoiceService.sendInvoice(invoiceDto.id)).rejects.toMatchObject({
+      status: 503,
+      code: 'EMAIL_UNAVAILABLE',
+      message: 'Email delivery is unavailable. Download or share the invoice instead.',
+    });
+    await expect(invoiceService.remindInvoice(invoiceDto.id, {
+      subject: 'Payment reminder for invoice INV-2026-0001',
+      html: '<p>Please pay invoice INV-2026-0001.</p>',
+      reminderType: 'gentle',
+    })).rejects.toMatchObject({ code: 'EMAIL_UNAVAILABLE' });
+
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
+      `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}/send`,
+      expect.objectContaining({ method: 'POST', body: '{}' }),
+    );
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}/remind`,
+      expect.objectContaining({
+        method: 'POST',
+        body: JSON.stringify({
+          subject: 'Payment reminder for invoice INV-2026-0001',
+          html: '<p>Please pay invoice INV-2026-0001.</p>',
+          reminderType: 'gentle',
+        }),
+      }),
+    );
   });
 });

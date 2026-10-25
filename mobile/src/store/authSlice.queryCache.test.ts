@@ -49,4 +49,29 @@ describe('auth session cache isolation', () => {
     expect(store.getState().hasCompletedOnboarding).toBe(false);
     expect(store.getState().onboardingChecked).toBe(true);
   });
+
+  it('keeps invoice write permission from the session and clears it on sign out', async () => {
+    const authApi = jest.requireMock('@/features/auth/api/authApi') as {
+      signInEmail: jest.Mock;
+      getMe: jest.Mock;
+    };
+    authApi.signInEmail.mockResolvedValue(undefined);
+    authApi.getMe.mockResolvedValue({
+      user: { id: 'u1', email: 'reader@example.com', name: 'Reader' },
+      organisation: { id: '11111111-1111-1111-1111-111111111111', name: 'Reader' },
+      membership: { role: 'read_only' },
+      permissions: ['invoices.read', 'customers.read'],
+    });
+    (businessProfileApi.get as jest.Mock).mockResolvedValue({ id: 'profile-1' });
+    const store = createStore<AuthSlice>()(createAuthSlice);
+
+    await store.getState().signIn('reader@example.com', 'password123');
+
+    expect(store.getState().permissions).toEqual(['invoices.read', 'customers.read']);
+    expect(store.getState().permissions).not.toContain('invoices.write');
+
+    await store.getState().signOut();
+
+    expect(store.getState().permissions).toEqual([]);
+  });
 });

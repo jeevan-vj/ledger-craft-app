@@ -19,6 +19,11 @@ export class InvoiceService {
 
   async listShareLinks(invoiceId: string) { return invoicesApi.listShares(invoiceId); }
   async revokeShareLinks(invoiceId: string) { return invoicesApi.revokeShares(invoiceId); }
+  async sendInvoice(invoiceId: string) { return invoicesApi.send(invoiceId); }
+  async remindInvoice(
+    invoiceId: string,
+    input: { subject: string; html: string; reminderType?: 'gentle' | 'firm' | 'final' },
+  ) { return invoicesApi.remind(invoiceId, input); }
 
   async fetchSharedInvoice(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {
     return invoicesApi.getShared(token);

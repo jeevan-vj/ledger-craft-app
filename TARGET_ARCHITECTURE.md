@@ -296,10 +296,21 @@ share with the same template, and `{replace:true}` revokes and inserts in one
 transaction. A revoked or expired public token returns 410 `SHARE_INACTIVE`.
 Web and Expo public invoice screens show that response as an inactive link,
 with no retry and no generic load error. A successful public read increments
-`access_count`. Unknown tokens stay 404. The web Sentry scrubber redacts
-`/api/public/invoices/` tokens. Deployment of this management behaviour is
-still pending. Public reads are not rate limited, and inactive attachment
-reads still return 404.
+`access_count`. Unknown tokens stay 404 and the Expo public screens show that
+as not found, with no retry. The Expo invoice screen lists each active link
+with its created date and view count, reuses the newest matching link for copy
+and share, and confirms replace and revoke-all. A session without
+`invoices.write` can see and reuse links, and does not see create, replace,
+revoke, send, or remind. Dismissing the native share sheet is quiet. Public
+invoice and quote reads send no session cookie or auth header. Shared PDFs use
+the filename `Invoice-<number>.pdf`. Send and Remind show the server's 503
+`EMAIL_UNAVAILABLE` message and a Share link instead action. An offline send
+or remind shows “Check your connection and try again.” and does not claim
+success. A failed mobile network call uses that connection copy instead of a
+local API start command. The mobile Sentry
+scrubber redacts public invoice and quote tokens in URLs and exception values.
+Deployment of this management behaviour is still pending. Public reads are not
+rate limited, and inactive attachment reads still return 404.
 
 **Invoice bank details (deployed, 2026-09-14):** Settings → Preferences stores
 separate account name and account number fields through Hono/SQLite migration

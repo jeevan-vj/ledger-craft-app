@@ -5,6 +5,7 @@ import { Platform } from 'react-native';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { generateInvoiceHTML, type DocumentLabels } from '@/utils/invoiceTemplates';
+import { isShareSheetDismissal } from '@/utils/shareSheet';
 
 const A4_WIDTH = 595;
 const A4_HEIGHT = 842;
@@ -95,12 +96,18 @@ export async function shareInvoicePDF(
 
     const uri = await generateInvoicePDF(invoice, businessProfile, templateId, options);
     const noun = documentNoun(options);
-    await Sharing.shareAsync(uri, {
-      mimeType: 'application/pdf',
-      dialogTitle: noun === 'invoice' ? `Share ${invoice.invoiceNumber}` : `Share ${options?.filePrefix} ${invoice.invoiceNumber}`,
-      UTI: 'com.adobe.pdf',
-    });
+    try {
+      await Sharing.shareAsync(uri, {
+        mimeType: 'application/pdf',
+        dialogTitle: noun === 'invoice' ? `Share ${invoice.invoiceNumber}` : `Share ${options?.filePrefix} ${invoice.invoiceNumber}`,
+        UTI: 'com.adobe.pdf',
+      });
+    } catch (error) {
+      if (isShareSheetDismissal(error)) return;
+      throw error;
+    }
   } catch (error) {
+    if (isShareSheetDismissal(error)) return;
     if (
       error instanceof Error &&
       (error.message === 'Sharing is not available on this device' ||
@@ -141,12 +148,17 @@ export async function downloadInvoicePDF(
   if (!(await Sharing.isAvailableAsync())) {
     throw new Error('Saving is not available on this device');
   }
-  await Sharing.shareAsync(uri, {
-    mimeType: 'application/pdf',
-    dialogTitle: documentNoun(options) === 'invoice'
-      ? `Save ${invoice.invoiceNumber} PDF`
-      : `Save ${options?.filePrefix} ${invoice.invoiceNumber} PDF`,
-    UTI: 'com.adobe.pdf',
-  });
+  try {
+    await Sharing.shareAsync(uri, {
+      mimeType: 'application/pdf',
+      dialogTitle: documentNoun(options) === 'invoice'
+        ? `Save ${invoice.invoiceNumber} PDF`
+        : `Save ${options?.filePrefix} ${invoice.invoiceNumber} PDF`,
+      UTI: 'com.adobe.pdf',
+    });
+  } catch (error) {
+    if (isShareSheetDismissal(error)) return null;
+    throw error;
+  }
   return uri;
 }

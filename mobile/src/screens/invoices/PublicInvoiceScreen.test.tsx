@@ -38,6 +38,19 @@ describe('PublicInvoiceScreen', () => {
     expect(view.queryByText('The shared invoice could not be loaded. Check your connection and try again.')).toBeNull();
     expect(view.queryByLabelText('Try again')).toBeNull();
     expect(view.queryByText('Download PDF')).toBeNull();
+    expect(view.queryByText(/expired/i)).toBeNull();
+  });
+
+  it('shows an unknown token as not found, without a retry or a connection error', async () => {
+    (invoiceService.fetchSharedInvoice as jest.Mock).mockResolvedValue(null);
+
+    const view = render(<PublicInvoiceScreen />);
+
+    expect(await view.findByText('This invoice link could not be found.')).toBeTruthy();
+    expect(view.queryByLabelText('Try again')).toBeNull();
+    expect(view.queryByText(/expired/i)).toBeNull();
+    expect(view.queryByText(/connection/i)).toBeNull();
+    expect(view.queryByText('Download PDF')).toBeNull();
   });
 
   it('keeps a retry on a connection failure', async () => {

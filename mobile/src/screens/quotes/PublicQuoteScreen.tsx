@@ -40,19 +40,20 @@ export default function PublicQuoteScreen() {
     queryKey: ['quotes', 'public', token],
     queryFn: () => quotesApi.getPublic(token),
   });
+  const ready = snapshot.data && snapshot.data !== 'inactive' ? snapshot.data : null;
 
-  const quote = snapshot.data?.quote;
+  const quote = ready?.quote;
   const kind = quote?.kind ?? 'quote';
-  const template = quoteTemplateId(snapshot.data?.templateName ?? quote?.templateName);
+  const template = quoteTemplateId(ready?.templateName ?? quote?.templateName);
   const html = useMemo(() => {
-    if (!quote || !snapshot.data) return '';
+    if (!quote || !ready) return '';
     return generateInvoiceHTML(
       quoteToPreviewInvoice(quote),
-      snapshot.data.businessProfile,
+      ready.businessProfile,
       template,
       quoteDocumentLabels(quote.kind),
     );
-  }, [quote, snapshot.data, template]);
+  }, [quote, ready, template]);
 
   const respond = async (action: 'accept' | 'decline') => {
     const trimmed = name.trim();
@@ -88,15 +89,25 @@ export default function PublicQuoteScreen() {
     );
   }
 
-  if (snapshot.isError || !snapshot.data || !quote) {
+  if (snapshot.data === 'inactive') {
+    return (
+      <SafeAreaView style={styles.center}>
+        <EmptyState
+          icon={<Feather name="file-minus" size={34} color={palette.textSecondary} />}
+          title="Link no longer active"
+          description="This link is no longer active."
+        />
+      </SafeAreaView>
+    );
+  }
+
+  if (snapshot.isError) {
     return (
       <SafeAreaView style={styles.center}>
         <EmptyState
           icon={<Feather name="file-minus" size={34} color={palette.textSecondary} />}
           title="Quote unavailable"
-          description={snapshot.isError
-            ? 'The shared quote could not be loaded. Check your connection and try again.'
-            : 'This link is invalid, expired, or no longer active.'}
+          description="The shared quote could not be loaded. Check your connection and try again."
           actionLabel="Try again"
           onAction={() => snapshot.refetch()}
         />
@@ -104,7 +115,19 @@ export default function PublicQuoteScreen() {
     );
   }
 
-  const liveStatus = snapshot.data.status;
+  if (!ready || !quote) {
+    return (
+      <SafeAreaView style={styles.center}>
+        <EmptyState
+          icon={<Feather name="file-minus" size={34} color={palette.textSecondary} />}
+          title="Quote not found"
+          description="This quote link could not be found."
+        />
+      </SafeAreaView>
+    );
+  }
+
+  const liveStatus = ready.status;
   const canRespond = liveStatus === 'sent' || liveStatus === 'viewed';
   const title = quoteKindLabel(kind);
 
@@ -112,11 +135,11 @@ export default function PublicQuoteScreen() {
     <SafeAreaView style={styles.container} edges={['top', 'bottom']}>
       <View style={styles.header}>
         <Text style={type.headline}>{title} {quote.quoteNumber}</Text>
-        <Text style={styles.subtitle}>From {snapshot.data.businessProfile.name} · {quoteStatusLabel(liveStatus)} · valid until {snapshot.data.expiryDate}</Text>
-        {snapshot.data.respondedByName ? (
+        <Text style={styles.subtitle}>From {ready.businessProfile.name} · {quoteStatusLabel(liveStatus)} · valid until {ready.expiryDate}</Text>
+        {ready.respondedByName ? (
           <Text style={styles.subtitle}>
-            {quoteStatusLabel(liveStatus)} by {snapshot.data.respondedByName}
-            {snapshot.data.responseNote ? `. ${snapshot.data.responseNote}` : ''}
+            {quoteStatusLabel(liveStatus)} by {ready.respondedByName}
+            {ready.responseNote ? `. ${ready.responseNote}` : ''}
           </Text>
         ) : null}
       </View>
@@ -156,7 +179,7 @@ export default function PublicQuoteScreen() {
             <ModernButton fullWidth variant="secondary" loading={busy === 'decline'} disabled={busy !== null} onPress={() => respond('decline')}>Decline</ModernButton>
           </>
         ) : (
-          <Text style={styles.outcome}>{outcomeCopy(liveStatus, snapshot.data.respondedByName)}</Text>
+          <Text style={styles.outcome}>{outcomeCopy(liveStatus, ready.respondedByName)}</Text>
         )}
         <ModernButton
           fullWidth
@@ -166,7 +189,7 @@ export default function PublicQuoteScreen() {
           onPress={async () => {
             setBusy('pdf');
             try {
-              await downloadInvoicePDF(quoteToPreviewInvoice(quote), snapshot.data?.businessProfile, template, {
+              await downloadInvoicePDF(quoteToPreviewInvoice(quote), ready.businessProfile, template, {
                 labels: quoteDocumentLabels(quote.kind),
                 filePrefix: title,
               });

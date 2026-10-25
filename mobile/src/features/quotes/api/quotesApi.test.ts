@@ -119,10 +119,29 @@ describe('quotesApi', () => {
     await expect(quotesApi.get('quote-1')).rejects.toThrow('Quote not found');
   });
 
-  it('treats a revoked public link as unavailable', async () => {
+  it('reads a public quote with the token only and treats a revoked link as inactive', async () => {
     (global.fetch as jest.Mock).mockResolvedValue(
       response({ error: { code: 'QUOTE_LINK_REVOKED', message: 'This link is no longer valid' } }, 410),
     );
-    await expect(quotesApi.getPublic('org_token')).resolves.toBeNull();
+    await expect(quotesApi.getPublic('org_token')).resolves.toBe('inactive');
+    const init = requestInit(0);
+    const headers = init.headers as Record<string, string>;
+    expect(init.credentials).toBe('omit');
+    expect(headers.Cookie).toBeUndefined();
+    expect(headers.Authorization).toBeUndefined();
+    expect(headers.cookie).toBeUndefined();
+    expect(headers.authorization).toBeUndefined();
+    expect(JSON.stringify(headers)).not.toContain('session-token');
+    expect(requestUrl(0)).toBe('https://api.example.test/api/public/quotes/org_token');
+  });
+
+  it('returns null for an unknown public quote without attaching the session', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(
+      response({ error: { code: 'NOT_FOUND', message: 'Quote not found' } }, 404),
+    );
+    await expect(quotesApi.getPublic('missing-token')).resolves.toBeNull();
+    const headers = requestInit(0).headers as Record<string, string>;
+    expect(headers.Cookie).toBeUndefined();
+    expect(JSON.stringify(headers)).not.toContain('session-token');
   });
 });

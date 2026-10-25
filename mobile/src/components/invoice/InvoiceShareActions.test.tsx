@@ -16,9 +16,9 @@ jest.mock('expo-clipboard', () => ({ setStringAsync: jest.fn() }));
 jest.mock('react-native-safe-area-context', () => ({ useSafeAreaInsets: () => ({ top: 0, bottom: 20, left: 0, right: 0 }) }));
 
 const existing = { shareToken: 'private-existing-token', templateName: 'classic', expiresAt: null, isActive: true, accessCount: 2, createdAt: '2026-10-25T00:00:00Z' };
-function setup() {
+function setup(props: { canManageShares?: boolean } = {}) {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false }, mutations: { retry: false } } });
-  return { client, ...render(<QueryClientProvider client={client}><InvoiceShareActions visible invoice={mockInvoice} onClose={jest.fn()} /></QueryClientProvider>) };
+  return { client, ...render(<QueryClientProvider client={client}><InvoiceShareActions visible invoice={mockInvoice} canManageShares={props.canManageShares} onClose={jest.fn()} /></QueryClientProvider>) };
 }
 async function confirm(title: string) {
   const call = jest.mocked(Alert.alert).mock.calls.findLast(([message]) => message === title);
@@ -67,9 +67,9 @@ it('confirms revoke for all templates and removes the old link after success', a
   jest.mocked(invoiceService.revokeShareLinks).mockResolvedValue({ revoked: 2 });
   const view = setup();
   await view.findByText('Active · No expiry');
-  fireEvent.press(view.getByLabelText('Revoke access'));
+  fireEvent.press(view.getByLabelText('Revoke all links'));
   expect(invoiceService.revokeShareLinks).not.toHaveBeenCalled();
-  await confirm('Revoke access?');
+  await confirm('Revoke all links?');
   expect(invoiceService.revokeShareLinks).toHaveBeenCalledWith(mockInvoice.id);
   await view.findByText('Access revoked. Existing links no longer work.');
   expect(view.queryByLabelText('Copy link')).toBeNull();
@@ -90,13 +90,13 @@ it('retains current link after revoke failure, allows retry, and never exposes r
   jest.mocked(invoiceService.revokeShareLinks).mockRejectedValueOnce(new Error('https://site/shared/invoice/secret-token')).mockResolvedValueOnce({ revoked: 1 });
   const view = setup();
   await view.findByText('Active · No expiry');
-  fireEvent.press(view.getByLabelText('Revoke access'));
-  await confirm('Revoke access?');
+  fireEvent.press(view.getByLabelText('Revoke all links'));
+  await confirm('Revoke all links?');
   await view.findByText('Unable to complete action. Please try again.');
   expect(JSON.stringify(jest.mocked(Alert.alert).mock.calls)).not.toContain('secret-token');
   expect(view.getByText(/private-existing-token/)).toBeVisible();
-  fireEvent.press(view.getByLabelText('Revoke access'));
-  await confirm('Revoke access?');
+  fireEvent.press(view.getByLabelText('Revoke all links'));
+  await confirm('Revoke all links?');
   await view.findByText('Access revoked. Existing links no longer work.');
 });
 
@@ -123,7 +123,7 @@ it('uses the matching template and keeps revoke available for links belonging to
   await view.findByText('No active link for this template');
   expect(view.getByLabelText('Replace link')).toBeVisible();
   expect(view.queryByText(/private-existing-token/)).toBeNull();
-  expect(view.getByLabelText('Revoke access')).toBeVisible();
+  expect(view.getByLabelText('Revoke all links')).toBeVisible();
   fireEvent.press(view.getByLabelText('Share link'));
   await waitFor(() => expect(invoiceService.createShareLink).toHaveBeenCalledWith(mockInvoice.id, 'classic'));
 });
@@ -143,8 +143,8 @@ it('reconciles uncertain mutation outcomes before allowing the old link to be us
   jest.mocked(invoiceService.revokeShareLinks).mockRejectedValueOnce(new Error('Response lost after server committed'));
   const view = setup();
   await view.findByText('Active · No expiry');
-  fireEvent.press(view.getByLabelText('Revoke access'));
-  await confirm('Revoke access?');
+  fireEvent.press(view.getByLabelText('Revoke all links'));
+  await confirm('Revoke all links?');
   await view.findByText('No active link');
   expect(view.queryByLabelText('Copy link')).toBeNull();
   expect(invoiceService.listShareLinks).toHaveBeenCalledTimes(2);
@@ -157,8 +157,8 @@ it('does not restore a revoked token when an older status response arrives after
   jest.mocked(invoiceService.revokeShareLinks).mockImplementationOnce(() => new Promise((resolve) => { resolveRevoke = resolve; }));
   const view = setup();
   await view.findByText('Active · No expiry');
-  fireEvent.press(view.getByLabelText('Revoke access'));
-  await confirm('Revoke access?');
+  fireEvent.press(view.getByLabelText('Revoke all links'));
+  await confirm('Revoke all links?');
   // Simulate an already scheduled background refresh while mutation is pending.
   act(() => { void view.client.refetchQueries({ queryKey: ['invoice-shares', mockInvoice.id] }); });
   await act(async () => { resolveRevoke({ revoked: 1 }); });
@@ -187,4 +187,56 @@ it('blocks cached links when both replacement response and reconciliation fail, 
   await view.findByText(/server-replacement-token/);
   expect(view.getByLabelText('Copy link')).not.toBeDisabled();
   expect(invoiceService.createShareLink).toHaveBeenCalledTimes(1);
+});
+
+it('shows each active link with its created date and view count', async () => {
+  jest.mocked(invoiceService.listShareLinks).mockResolvedValue([
+    existing,
+    { ...existing, shareToken: 'other-template-token', templateName: 'modern', accessCount: 1, createdAt: '2026-10-20T00:00:00.000Z' },
+  ]);
+  const view = setup();
+  expect(await view.findByText('classic · Created 25 Oct 2026 · 2 views')).toBeVisible();
+  expect(view.getByText('modern · Created 20 Oct 2026 · 1 view')).toBeVisible();
+});
+
+it('names revoke-all and does not call the server until the confirm dialog accepts', async () => {
+  jest.mocked(invoiceService.revokeShareLinks).mockResolvedValue({ revoked: 1 });
+  const view = setup();
+  await view.findByText('Active · No expiry');
+  fireEvent.press(view.getByLabelText('Revoke all links'));
+  expect(invoiceService.revokeShareLinks).not.toHaveBeenCalled();
+  expect(jest.mocked(Alert.alert).mock.calls.at(-1)?.[0]).toBe('Revoke all links?');
+  await confirm('Revoke all links?');
+  expect(invoiceService.revokeShareLinks).toHaveBeenCalledWith(mockInvoice.id);
+});
+
+it('lets a read-only member see links and reuse them without mutate actions', async () => {
+  const view = setup({ canManageShares: false });
+  expect(await view.findByText('classic · Created 25 Oct 2026 · 2 views')).toBeVisible();
+  expect(view.queryByLabelText('Revoke all links')).toBeNull();
+  expect(view.queryByLabelText('Replace link')).toBeNull();
+  fireEvent.press(view.getByLabelText('Share link'));
+  await waitFor(() => expect(Share.share).toHaveBeenCalled());
+  expect(invoiceService.createShareLink).not.toHaveBeenCalled();
+  expect(invoiceService.revokeShareLinks).not.toHaveBeenCalled();
+});
+
+it('hides link creation when a read-only member has no active link for this template', async () => {
+  jest.mocked(invoiceService.listShareLinks).mockResolvedValue([]);
+  const view = setup({ canManageShares: false });
+  await view.findByText('No active link');
+  expect(view.queryByLabelText('Share link')).toBeNull();
+  expect(view.queryByLabelText('Replace link')).toBeNull();
+  expect(view.queryByLabelText('Revoke all links')).toBeNull();
+  expect(invoiceService.createShareLink).not.toHaveBeenCalled();
+});
+
+it('stays quiet when the native link share sheet throws a dismissal', async () => {
+  jest.spyOn(Share, 'share').mockRejectedValueOnce(Object.assign(new Error('User did not share'), { code: 'ERR_CANCELED' }));
+  const view = setup();
+  await view.findByText('Active · No expiry');
+  fireEvent.press(view.getByLabelText('Share link'));
+  await waitFor(() => expect(Share.share).toHaveBeenCalled());
+  expect(view.queryByText('Unable to complete action. Please try again.')).toBeNull();
+  expect(Alert.alert).not.toHaveBeenCalled();
 });
