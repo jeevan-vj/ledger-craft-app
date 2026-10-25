@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createJournalEntryRequestSchema } from './journal';
+import { createJournalEntryRequestSchema, updateJournalEntryRequestSchema } from './journal';
 
 describe('journal contracts', () => {
   it('rejects ownership ids on journal create', () => {
@@ -13,5 +13,9 @@ describe('journal contracts', () => {
         organisationId: '33333333-3333-3333-3333-333333333333',
       }).success,
     ).toBe(false);
+  });
+  it('only allows draft/posted status updates; reversal needs a counter entry', () => {
+    expect(updateJournalEntryRequestSchema.safeParse({ status: 'posted' }).success).toBe(true);
+    expect(updateJournalEntryRequestSchema.safeParse({ status: 'reversed' }).success).toBe(false);
   });
 });

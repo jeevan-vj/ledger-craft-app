@@ -47,7 +47,9 @@ export const createJournalEntryRequestSchema = z
 
 export const updateJournalEntryRequestSchema = z
   .object({
-    status: journalStatus.optional(),
+    // A journal can only become `reversed` through a posted counter entry;
+    // flipping a draft straight to reversed would leave no reversing journal.
+    status: z.enum(['draft', 'posted']).optional(),
   })
   .strict();
 

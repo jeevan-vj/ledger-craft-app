@@ -1,4 +1,4 @@
-import { errorEnvelopeSchema, journalEntrySchema } from '@ledgercraft/contracts';
+import { errorEnvelopeSchema, journalEntrySchema, updateJournalEntryRequestSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
@@ -134,6 +134,33 @@ describe('journal routes', () => {
         const third = await createDraft(app, owner.cookie, accounts, 'Third draft');
         expect(third.entryNumber).not.toBe(second.entryNumber);
         expect(third.entryNumber).toBe('JE-2026-003');
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+  it('rejects moving a draft journal straight to reversed', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Reversal Owner');
+        const accounts = await seedAccounts(app, owner.cookie);
+        const draft = await createDraft(app, owner.cookie, accounts, 'Draft to reverse');
+        const response = await app.request(`/api/journal-entries/${draft.id}`, {
+          method: 'PATCH',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ status: 'reversed' }),
+        });
+        expect(response.status).toBe(400);
+        expect(updateJournalEntryRequestSchema.safeParse({ status: 'reversed' }).success).toBe(false);
+        const unchanged = await app.request(`/api/journal-entries/${draft.id}`, { headers: { Cookie: owner.cookie } });
+        expect(journalEntrySchema.parse(await unchanged.json()).status).toBe('draft');
+        const report = await app.request('/api/reports/financial?from=2026-01-01&to=2026-12-31&basis=accrual&baseCurrency=NZD', { headers: { Cookie: owner.cookie } });
+        expect(report.status).toBe(200);
+        const body = await report.json() as { trialBalance: { totalDebits: string } };
+        expect(body.trialBalance.totalDebits).toBe('0.00');
       } finally {
         await sql.end();
       }

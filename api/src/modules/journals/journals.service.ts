@@ -52,6 +52,9 @@ export async function updateJournalEntryForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
     if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
+    if ((input.status as string | undefined) === 'reversed') {
+      throw apiError(409, 'CONFLICT', 'Journal entries can only be reversed by posting a reversing entry');
+    }
     if (current.status !== 'draft' && input.status !== current.status) {
       throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
     }
