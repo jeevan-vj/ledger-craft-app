@@ -2,8 +2,9 @@
  * NZ GST / IRD scenario evidence.
  *
  * This suite deliberately uses only the public in-process HTTP API for business
- * actions and report reads. Evidence is written to `.gst-evidence/` so the
- * before/after behaviour can be compared without committing generated data.
+ * actions and report reads. Set GST_EVIDENCE_DIR to write JSON evidence of the
+ * before/after behaviour; by default nothing is written. System-dated actions
+ * (cancel, void, restore) run under a frozen clock so the suite is date-independent.
  *
  * Credit notes are not a Hono accounting document in the current contracts or
  * API. The legacy web GST preparation form has a manual credit-note adjustment,
@@ -28,14 +29,15 @@ const jsonHeaders = {
   Origin: 'http://localhost:8080',
   'Content-Type': 'application/json',
 };
-// API Vitest runs with `<worktree>/api` as cwd; evidence belongs at worktree root.
-const evidenceDirectory = join(process.cwd(), '..', '.gst-evidence');
+// Opt-in evidence output, e.g. GST_EVIDENCE_DIR=../.gst-evidence pnpm test:api.
+const evidenceDirectory = process.env.GST_EVIDENCE_DIR;
 
 function cookieHeader(response: Response): string {
   return response.headers.getSetCookie().map((cookie) => cookie.split(';')[0]).join('; ');
 }
 
 async function writeEvidence(name: string, value: unknown): Promise<void> {
+  if (!evidenceDirectory) return;
   await mkdir(evidenceDirectory, { recursive: true });
   await writeFile(join(evidenceDirectory, name), `${JSON.stringify(value, null, 2)}\n`, 'utf8');
 }
@@ -379,6 +381,8 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         const lifecycleBefore = await financialReport(app, lifecycle.cookie, '2026-01-01', '2026-12-31');
         expectGst(lifecycleBefore, '30.00', '15.00', '15.00', 'payable');
 
+        // Freeze the clock so cancel/restore journals land inside 2026 whatever day CI runs.
+        vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-06-15T00:00:00.000Z') });
         await requestJson(app, `/api/invoices/${lifecycleInvoice.id}/cancel`, {
           method: 'POST', headers: lifecycle.headers, body: JSON.stringify({ reason: 'Scenario reversal' }),
         }, 200);
@@ -402,6 +406,7 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         await requestJson(app, `/api/bills/${lifecycleBill.id}/restore`, {
           method: 'POST', headers: lifecycle.headers, body: '{}',
         }, 200);
+        vi.useRealTimers();
         const lifecycleRestored = await financialReport(app, lifecycle.cookie, '2026-01-01', '2026-12-31');
         await writeEvidence('lifecycle-restored-financial-report.json', {
           taxSummary: lifecycleRestored.taxSummary,
@@ -566,6 +571,72 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         const septemberQuarter = await financialReport(app, org.cookie, '2026-07-01', '2026-09-30');
         expectGst(septemberQuarter, '-30.00', '-15.00', '-15.00', 'refundable');
         await writeEvidence('timezone-cutover-financial-report.json', { juneQuarter: juneQuarter.taxSummary, septemberQuarter: septemberQuarter.taxSummary });
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+
+  it('keeps invoice-basis GST through partial payment and blocks voiding a paid invoice', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'GST Partial Payment');
+        const invoice = await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-05-01', amount: '200.00', description: 'Part-paid sale' });
+        await requestJson(app, '/api/payments', {
+          method: 'POST',
+          headers: { ...org.headers, 'Idempotency-Key': crypto.randomUUID() },
+          body: JSON.stringify({ invoiceId: invoice.id, paymentMethod: 'bank_transfer', amount: '100.00', paymentDate: '2026-05-10' }),
+        }, 201);
+        const afterPayment = await financialReport(app, org.cookie);
+        expectGst(afterPayment, '30.00', '0.00', '30.00', 'payable');
+        expect(rowFor(afterPayment, '1200')?.balance).toBe('130.00');
+
+        const voidAttempt = await app.request(`/api/invoices/${invoice.id}/cancel`, { method: 'POST', headers: org.headers, body: '{}' });
+        expect(voidAttempt.status).toBe(409);
+        expect(await voidAttempt.text()).toContain('INVOICE_HAS_PAYMENTS');
+        const afterVoidAttempt = await financialReport(app, org.cookie);
+        expectGst(afterVoidAttempt, '30.00', '0.00', '30.00', 'payable');
+        expect(afterVoidAttempt.taxSummary).toEqual(afterPayment.taxSummary);
+      } finally {
+        await sql.end();
+      }
+    });
+  });
+
+  it('reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const zeroRated = await setUpOrganisation(app, 'GST Zero Rated');
+        await createPostedInvoice(app, zeroRated.headers, zeroRated.customerId, { date: '2026-05-01', amount: '500.00', taxRate: '0', description: 'Exported services' });
+        const zeroRatedReport = await financialReport(app, zeroRated.cookie);
+        expectGst(zeroRatedReport, '0.00', '0.00', '0.00', 'nil');
+        expect(rowFor(zeroRatedReport, '4000')?.balance).toBe('500.00');
+        expect(rowFor(zeroRatedReport, '2200')).toBeUndefined();
+
+        const exempt = await setUpOrganisation(app, 'GST Exempt Purchase');
+        await createPostedInvoice(app, exempt.headers, exempt.customerId, { date: '2026-05-01', amount: '200.00', description: 'Standard sale' });
+        const exemptBill = await requestJson(app, '/api/bills', {
+          method: 'POST',
+          headers: { ...exempt.headers, 'Idempotency-Key': crypto.randomUUID() },
+          body: JSON.stringify({
+            vendorId: exempt.vendorId, issueDate: '2026-05-03', dueDate: '2026-05-03', currency: 'NZD', taxInclusive: true,
+            lines: [
+              { description: 'Taxable stationery', quantity: '1', unitPrice: '115.00', taxRate: '15', accountId: exempt.expenseAccountId },
+              { description: 'Exempt bank fee', quantity: '1', unitPrice: '20.00', taxRate: '0', accountId: exempt.expenseAccountId },
+            ],
+          }),
+        }, 201);
+        await requestJson(app, `/api/bills/${exemptBill.id}/receive`, { method: 'POST', headers: exempt.headers, body: '{}' }, 200);
+        const exemptReport = await financialReport(app, exempt.cookie);
+        expectGst(exemptReport, '30.00', '15.00', '15.00', 'payable');
+        expect(rowFor(exemptReport, '5000')?.balance).toBe('120.00');
+        await writeEvidence('zero-rated-and-exempt-financial-report.json', { zeroRated: zeroRatedReport.taxSummary, exempt: exemptReport.taxSummary });
       } finally {
         await sql.end();
       }
