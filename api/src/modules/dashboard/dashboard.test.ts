@@ -78,6 +78,15 @@ describe('dashboard and saved report routes', () => {
         };
         await post('Authoritative sale', bankAccount.id, revenueAccount.id, '120.10');
         await post('Authoritative expense', expenseAccount.id, bankAccount.id, '10.01');
+        // GST is reported from the 2200/2150 ledger accounts, not from document rows.
+        const ledgerAccount = async (accountNumber: string, name: string, accountClass: 'asset' | 'liability') => {
+          const existing = accounts.find((account) => account.accountNumber === accountNumber);
+          if (existing) return existing.id;
+          const created = await app.request('/api/accounts', { method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA }, body: JSON.stringify({ name, type: accountClass, accountNumber, accountClass }) });
+          return (await created.json() as { id: string }).id;
+        };
+        await post('Authoritative output GST', await ledgerAccount('1200', 'Accounts Receivable', 'asset'), await ledgerAccount('2200', 'GST Collected on Sales', 'liability'), '15.66');
+        await post('Authoritative input GST', await ledgerAccount('2150', 'GST Paid on Purchases', 'asset'), await ledgerAccount('2100', 'Accounts Payable', 'liability'), '5.22');
 
         const dashboardResponse = await app.request('/api/dashboard?from=2026-10-01&to=2026-10-31&comparison=none', { headers: { Cookie: ownerA } });
         expect(dashboardResponse.status).toBe(200);
