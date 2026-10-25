@@ -9,6 +9,7 @@ import {
   Pressable,
   Modal,
 } from 'react-native';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
@@ -16,13 +17,19 @@ import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
-import type { BusinessProfile, Invoice } from '@/types/invoice';
+import type { BusinessProfile } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
+import { PaymentHistoryList } from '@/components/invoice/PaymentHistoryList';
+import {
+  invoiceDetailQueryKey,
+  invoicePaymentsQueryKey,
+  recordInvoicePayment,
+} from '@/features/payments/paymentQueries';
 import { getStatusLabel, statusInk } from '@/utils/statusUtils';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
@@ -57,19 +64,28 @@ export default function InvoiceDetailScreen() {
   const { invoiceId } = route.params;
   const { tabBarClearance } = useTabScreenInsets();
   const canWrite = useStore((state) => canWriteInvoices(state.permissions));
+  const queryClient = useQueryClient();
+  const invoiceQuery = useQuery({
+    queryKey: invoiceDetailQueryKey(invoiceId),
+    queryFn: () => invoiceService.fetchInvoiceById(invoiceId),
+  });
+  const paymentsQuery = useQuery({
+    queryKey: invoicePaymentsQueryKey(invoiceId),
+    queryFn: () => paymentService.getPaymentsByInvoice(invoiceId),
+  });
+  const invoice = invoiceQuery.data ?? null;
 
-  const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
-  const [loading, setLoading] = useState(true);
   const [showPreview, setShowPreview] = useState(false);
   const [shareActionsVisible, setShareActionsVisible] = useState(false);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [updatingStatus, setUpdatingStatus] = useState(false);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
   const [history, setHistory] = useState<{ id: string; action: string; createdAt: string }[]>([]);
   const [attachments, setAttachments] = useState<{ id: string; filename: string; size: number }[]>([]);
+  const loading = invoiceQuery.isPending;
+  const loadError = invoiceQuery.isError ? 'This invoice could not be loaded.' : null;
 
   useEffect(() => {
     loadData();
@@ -92,15 +108,10 @@ export default function InvoiceDetailScreen() {
 
   const loadData = async () => {
     try {
-      setLoadError(null);
-      const [invoiceData, profileData] = await Promise.all([
-        invoiceService.fetchInvoiceById(invoiceId),
-        businessProfileService.getBusinessProfile().catch((error) => {
-          console.warn('Business profile unavailable:', error);
-          return null;
-        }),
-      ]);
-      setInvoice(invoiceData);
+      const profileData = await businessProfileService.getBusinessProfile().catch((error) => {
+        console.warn('Business profile unavailable:', error);
+        return null;
+      });
       const [events, files] = await Promise.all([
         invoiceService.getInvoiceHistory(invoiceId),
         invoiceService.getInvoiceAttachments(invoiceId),
@@ -108,23 +119,13 @@ export default function InvoiceDetailScreen() {
       setHistory(events);
       setAttachments(files);
       setBusinessProfile(profileData);
-      if (!invoiceData) setLoadError(null);
     } catch (error) {
-      console.error('Error loading data:', error);
-      setLoadError('This invoice could not be loaded.');
-    } finally {
-      setLoading(false);
+      console.error('Error loading invoice details:', error);
     }
   };
 
-  const loadInvoice = async () => {
-    try {
-      const data = await invoiceService.fetchInvoiceById(invoiceId);
-      setInvoice(data);
-    } catch (error) {
-      console.error('Error loading invoice:', error);
-      Alert.alert('Error', 'Failed to refresh this invoice.');
-    }
+  const refreshInvoice = async () => {
+    await queryClient.invalidateQueries({ queryKey: invoiceDetailQueryKey(invoiceId) });
   };
 
   const formatCurrency = (amount: number, currency: string) => formatMoney(amount, currency);
@@ -136,7 +137,7 @@ export default function InvoiceDetailScreen() {
   const handleStatusChange = async (newStatus: string) => {
     // If changing to "paid", open payment capture modal
     if (newStatus === 'paid') {
-      setPaymentModalVisible(true);
+      if (invoice?.status !== 'paid') setPaymentModalVisible(true);
       return;
     }
 
@@ -145,9 +146,7 @@ export default function InvoiceDetailScreen() {
 
     try {
       await invoiceService.updateInvoiceStatus(invoiceId, newStatus as any);
-      
-      // Reload invoice data
-      await loadInvoice();
+      await refreshInvoice();
       
       Alert.alert('Success', `Invoice status changed to ${newStatus}`);
     } catch (error) {
@@ -158,21 +157,10 @@ export default function InvoiceDetailScreen() {
     }
   };
 
-  const handlePaymentSubmit = async (paymentData: CreatePaymentRequest) => {
-    try {
-      await paymentService.createPayment(paymentData);
-      
-      // Reload invoice data
-      await loadInvoice();
-      
-      // Close modal
-      setPaymentModalVisible(false);
-      
-      Alert.alert('Success', 'Payment recorded successfully');
-    } catch (error) {
-      console.error('Error recording payment:', error);
-      throw error; // Let the modal handle the error
-    }
+  const handlePaymentSubmit = async (paymentData: CreatePaymentRequest, idempotencyKey: string) => {
+    await recordInvoicePayment(queryClient, paymentData, idempotencyKey);
+    setPaymentModalVisible(false);
+    Alert.alert('Payment recorded', 'The invoice balance has been updated.');
   };
 
   const handleMarkAsPaid = () => {
@@ -187,7 +175,11 @@ export default function InvoiceDetailScreen() {
   };
 
   const handleRestore = async () => {
-    try { setInvoice(await invoiceService.restoreInvoice(invoiceId)); await loadData(); }
+    try {
+      await invoiceService.restoreInvoice(invoiceId);
+      await refreshInvoice();
+      await loadData();
+    }
     catch { Alert.alert('Could not restore invoice', 'Please try again.'); }
   };
 
@@ -236,7 +228,7 @@ export default function InvoiceDetailScreen() {
           title={loadError ? "Couldn't open this invoice" : 'Invoice not found'}
           description={loadError ?? 'It may have been deleted.'}
           actionLabel={loadError ? 'Try again' : 'Go back'}
-          onAction={loadError ? () => { setLoading(true); loadData(); } : () => navigation.goBack()}
+          onAction={loadError ? () => { void invoiceQuery.refetch(); void loadData(); } : () => navigation.goBack()}
         />
       </View>
     );
@@ -425,10 +417,20 @@ export default function InvoiceDetailScreen() {
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Amount due</Text>
             <Text style={styles.totalValue}>
-              {formatCurrency(invoiceAmountDue(invoice), invoice.currency || 'NZD')}
+              {invoice.balanceDueText
+                ? formatMoney(invoice.balanceDueText, invoice.currency || 'NZD')
+                : formatCurrency(invoiceAmountDue(invoice), invoice.currency || 'NZD')}
             </Text>
           </View>
         </View>
+
+        <PaymentHistoryList
+          payments={paymentsQuery.data ?? []}
+          currency={invoice.currency || 'NZD'}
+          loading={paymentsQuery.isPending}
+          error={paymentsQuery.isError ? 'Payments could not be loaded.' : null}
+          onRetry={() => { void paymentsQuery.refetch(); }}
+        />
 
         {/* Notes Card */}
         {(invoice.notes || invoice.terms) && (
@@ -452,7 +454,7 @@ export default function InvoiceDetailScreen() {
           invoice={invoice}
           canSend={canWrite}
           onShareInstead={() => setShareActionsVisible(true)}
-          onSent={() => { void loadInvoice(); }}
+          onSent={() => { void refreshInvoice(); }}
         />
 
         <View style={{ paddingBottom: 8 }}>

@@ -1,10 +1,12 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/store';
+import { dashboardQueryKey } from '@/features/payments/paymentQueries';
 import { invoiceService } from '@/services/invoiceService';
 import { quotesApi } from '@/features/quotes/api/quotesApi';
 import { summarizeQuotes } from '@/features/quotes/quoteModel';
@@ -31,6 +33,43 @@ type HomeQuickActionTile = {
   primary?: boolean;
 };
 
+const emptyInvoices: Invoice[] = [];
+const emptyQuotes: Quote[] = [];
+
+async function loadDashboardHome(filters?: ReportFilters) {
+  let invoices: Invoice[] = [];
+  let invoiceError: string | null = null;
+  try {
+    invoices = await invoiceService.fetchInvoices();
+  } catch (loadError) {
+    console.error('Error loading dashboard data:', loadError);
+    invoiceError = 'Invoices could not be loaded.';
+  }
+  let dashboard: DashboardResponse | null = null;
+  let savedReports: SavedReportDefinitionDto[] = [];
+  let reportError: string | null = null;
+  try {
+    const [nextDashboard, nextSavedReports] = await Promise.all([
+      dashboardApi.getDashboard(filters),
+      dashboardApi.listSavedReports(),
+    ]);
+    dashboard = nextDashboard;
+    savedReports = nextSavedReports;
+  } catch (loadError) {
+    console.error('Error loading business reports:', loadError);
+    reportError = 'Business reports could not be loaded.';
+  }
+  let quotes: Quote[] = [];
+  let quoteError: string | null = null;
+  try {
+    quotes = (await quotesApi.list()).quotes;
+  } catch (loadError) {
+    console.error('Error loading quotes:', loadError);
+    quoteError = 'Quotes could not be loaded.';
+  }
+  return { invoices, invoiceError, dashboard, savedReports, reportError, quotes, quoteError };
+}
+
 const quickActions: readonly HomeQuickActionTile[] = [
   { id: 'newInvoice', label: 'New invoice', hint: 'Creates a new invoice', icon: 'plus', primary: true },
   { id: 'newQuote', label: 'New quote', hint: 'Creates a quote or estimate', icon: 'file-text' },
@@ -44,51 +83,23 @@ export default function DashboardScreen() {
   const { safeArea: insets, bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<DashboardNavigation>();
   const { user } = useAuth();
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [quotes, setQuotes] = useState<Quote[]>([]);
-  const [quoteError, setQuoteError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false);
-  const [dashboard, setDashboard] = useState<DashboardResponse | null>(null);
-  const [savedReports, setSavedReports] = useState<SavedReportDefinitionDto[]>([]);
   const [dashboardFilters, setDashboardFilters] = useState<ReportFilters | undefined>();
-  const [reportError, setReportError] = useState<string | null>(null);
   const [tasksDismissed, setTasksDismissed] = useState<boolean | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    try {
-      setInvoices(await invoiceService.fetchInvoices());
-      setError(null);
-    } catch (loadError) {
-      console.error('Error loading dashboard data:', loadError);
-      setError('Invoices could not be loaded.');
-    }
-    try {
-      const [nextDashboard, nextSavedReports] = await Promise.all([
-        dashboardApi.getDashboard(dashboardFilters),
-        dashboardApi.listSavedReports(),
-      ]);
-      setDashboard(nextDashboard);
-      setSavedReports(nextSavedReports);
-      setReportError(null);
-    } catch (loadError) {
-      console.error('Error loading business reports:', loadError);
-      setReportError('Business reports could not be loaded.');
-    }
-    try {
-      setQuotes((await quotesApi.list()).quotes);
-      setQuoteError(null);
-    } catch (loadError) {
-      console.error('Error loading quotes:', loadError);
-      setQuoteError('Quotes could not be loaded.');
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
-  }, [dashboardFilters]);
-  useEffect(() => { load(); }, [load]);
+  const home = useQuery({
+    queryKey: [...dashboardQueryKey, dashboardFilters ?? null],
+    queryFn: () => loadDashboardHome(dashboardFilters),
+    placeholderData: keepPreviousData,
+  });
+  const invoices = home.data?.invoices ?? emptyInvoices;
+  const quotes = home.data?.quotes ?? emptyQuotes;
+  const quoteError = home.data?.quoteError ?? null;
+  const dashboard = home.data?.dashboard ?? null;
+  const savedReports = home.data?.savedReports ?? [];
+  const reportError = home.data?.reportError ?? null;
+  const error = home.data?.invoiceError ?? null;
+  const loading = home.isPending && !home.data;
+  const refreshing = home.isRefetching && !home.isPending;
   useEffect(() => {
     let active = true;
     homeTaskStorage.isDismissed()
@@ -156,7 +167,7 @@ export default function DashboardScreen() {
       setTasksDismissed(false);
     });
   };
-  const retry = () => { setLoading(true); load(); };
+  const retry = () => { void home.refetch(); };
   const applyPeriod = (days?: number) => {
     const to = new Date();
     const from = days ? new Date(to.getTime() - (days - 1) * 86_400_000) : new Date(Date.UTC(to.getUTCFullYear(), 0, 1));
@@ -182,7 +193,7 @@ export default function DashboardScreen() {
   return <ScrollView
     style={{ backgroundColor: theme.colors.background }}
     contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: bottomPadding }]}
-    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); load(); }} tintColor={theme.colors.accent} />}
+    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={() => { void home.refetch(); }} tintColor={theme.colors.accent} />}
     showsVerticalScrollIndicator={false}
   >
     <View style={styles.topRow}>

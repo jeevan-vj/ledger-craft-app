@@ -82,6 +82,8 @@ describe('InvoiceService (Hono)', () => {
 
     expect(invoice.items).toHaveLength(1);
     expect(invoice.items[0].description).toBe('Work');
+    expect(invoice.balanceDueText).toBe(invoiceDto.balanceDue);
+    expect(typeof invoice.balanceDueText).toBe('string');
     expect(global.fetch).toHaveBeenCalledWith(
       `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}`,
       expect.objectContaining({ method: 'GET' }),

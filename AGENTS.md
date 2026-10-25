@@ -2,6 +2,8 @@
 
 **Payment idempotency and receipt filters (implemented locally, 2026-10-24):** `POST /api/payments` accepts an optional `Idempotency-Key`. The existing `idempotency_keys` helper in `api/src/modules/invoices/idempotency.ts` scopes that key to the organisation, user, method, and path. The same key and body return the original payment and do not create a second payment or journal entry. A different body returns 409 `IDEMPOTENCY_CONFLICT`. `GET /api/receipts` accepts optional `paymentId` and `invoiceId` filters and stays organisation-scoped. Payment maths, balance recalculation, `PAYMENT_EXCEEDS_BALANCE`, and journal posting are unchanged. No migration was added.
 
+**Mobile invoice payments (implemented locally, 2026-10-25):** Expo invoice detail lists payment amount, method, date, and reference as exact decimal strings. Record payment defaults to the server balance due, validates a positive amount within that balance, and sends one `Idempotency-Key` per attempt. The same key is reused for a retry or double tap; a new key is created after the form changes, a successful submit, or `409 IDEMPOTENCY_CONFLICT`. `PAYMENT_EXCEEDS_BALANCE` refreshes the invoice and its payments. Offline payments show an error and are not queued. Paid invoices hide Record payment and Edit. A successful payment invalidates the invoice, payment, and dashboard queries. `mobile/src/services/paymentService.ts` calls the Hono payments API only. Receipt creation and receipt PDFs are not part of this slice. Server payment maths are unchanged.
+
 Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
 
 **Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration

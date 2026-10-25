@@ -11,16 +11,16 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useQueryClient } from '@tanstack/react-query';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList } from '@/navigation/types';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { invoiceService } from '@/services/invoiceService';
-import { paymentService } from '@/services/paymentService';
+import { recordInvoicePayment } from '@/features/payments/paymentQueries';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
-import { useFocusEffect } from '@react-navigation/native';
 import SwipeableInvoiceCard from '@/components/invoice/SwipeableInvoiceCard';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { FilterPills } from '@/components/ui/FilterPills';
@@ -39,6 +39,7 @@ export default function InvoiceListScreen() {
   const styles = createStyles(theme);
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<InvoiceListNavigationProp>();
+  const queryClient = useQueryClient();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -137,7 +138,7 @@ export default function InvoiceListScreen() {
     // If changing to "paid", open payment capture modal
     if (newStatus === 'paid') {
       const invoice = invoices.find((i) => i.id === invoiceId);
-      if (invoice) {
+      if (invoice && invoice.status !== 'paid') {
         setSelectedInvoiceForPayment(invoice);
         setPaymentModalVisible(true);
       }
@@ -162,22 +163,12 @@ export default function InvoiceListScreen() {
     }
   };
 
-  const handlePaymentSubmit = async (paymentData: CreatePaymentRequest) => {
-    try {
-      await paymentService.createPayment(paymentData);
-      
-      // Refresh the invoice list
-      await loadInvoices();
-      
-      // Close modal
-      setPaymentModalVisible(false);
-      setSelectedInvoiceForPayment(null);
-      
-      Alert.alert('Success', 'Payment recorded successfully');
-    } catch (error) {
-      console.error('Error recording payment:', error);
-      throw error; // Let the modal handle the error
-    }
+  const handlePaymentSubmit = async (paymentData: CreatePaymentRequest, idempotencyKey: string) => {
+    await recordInvoicePayment(queryClient, paymentData, idempotencyKey);
+    await loadInvoices();
+    setPaymentModalVisible(false);
+    setSelectedInvoiceForPayment(null);
+    Alert.alert('Payment recorded', 'The invoice balance has been updated.');
   };
 
   const formatCurrency = (amount: number, currency: string) => formatMoney(amount, currency);

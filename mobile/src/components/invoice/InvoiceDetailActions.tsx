@@ -58,15 +58,17 @@ export function InvoiceDetailActions({
           <Feather name="share-2" size={18} color={palette.accentText} />
           <Text style={styles.secondaryLabel}>Share</Text>
         </Pressable>
-        <Pressable
-          onPress={onEdit}
-          accessibilityRole="button"
-          accessibilityLabel="Edit invoice"
-          style={styles.secondaryAction}
-        >
-          <Feather name="edit-2" size={18} color={palette.accentText} />
-          <Text style={styles.secondaryLabel}>Edit</Text>
-        </Pressable>
+        {!isPaid ? (
+          <Pressable
+            onPress={onEdit}
+            accessibilityRole="button"
+            accessibilityLabel="Edit invoice"
+            style={styles.secondaryAction}
+          >
+            <Feather name="edit-2" size={18} color={palette.accentText} />
+            <Text style={styles.secondaryLabel}>Edit</Text>
+          </Pressable>
+        ) : null}
       </View>
     </View>
   );

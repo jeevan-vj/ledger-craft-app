@@ -7,7 +7,7 @@ describe('InvoiceDetailActions', () => {
   it('gives Share and Edit the full 48pt secondary action targets', () => {
     const { getByLabelText } = render(
       <InvoiceDetailActions
-        isPaid
+        isPaid={false}
         bottomInset={82}
         onPreview={jest.fn()}
         onRecordPayment={jest.fn()}
@@ -21,6 +21,24 @@ describe('InvoiceDetailActions', () => {
       expect(style.minHeight).toBeGreaterThanOrEqual(48);
       expect(style.flex).toBe(1);
     }
+  });
+
+  it('hides record payment and edit when the invoice is paid', () => {
+    const { queryByLabelText, queryByText, getByLabelText } = render(
+      <InvoiceDetailActions
+        isPaid
+        bottomInset={82}
+        onPreview={jest.fn()}
+        onRecordPayment={jest.fn()}
+        onShare={jest.fn()}
+        onEdit={jest.fn()}
+      />,
+    );
+
+    expect(queryByText('Record payment')).toBeNull();
+    expect(queryByLabelText('Edit invoice')).toBeNull();
+    expect(getByLabelText('Share invoice')).toBeTruthy();
+    expect(queryByText('Preview invoice')).toBeTruthy();
   });
 
   it('keeps the action content above the native tab bar with breathing room', () => {

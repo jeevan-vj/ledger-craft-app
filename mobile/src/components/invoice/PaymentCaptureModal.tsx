@@ -1,353 +1,226 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
-  View,
-  Text,
+  ActivityIndicator,
+  KeyboardAvoidingView,
   Modal,
-  TouchableOpacity,
-  TextInput,
+  Platform,
   ScrollView,
   StyleSheet,
-  KeyboardAvoidingView,
-  Platform,
-  Alert,
-  ActivityIndicator,
+  Text,
+  TextInput,
+  View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { onlineManager } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
+import { AppPressable } from '@/components/ui/AppPressable';
+import { AuthApiError } from '@/features/auth/api/http';
+import {
+  createPaymentAttempt,
+  formatPaymentAmount,
+  mapPaymentError,
+  paymentAmountError,
+  paymentFingerprint,
+  remainingAfterPayment,
+} from '@/features/payments/paymentModel';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
+import { localIsoDate } from '@/components/ui/datePickerModel';
 import { PAYMENT_METHOD_OPTIONS } from '@/utils/statusUtils';
-import { formatMoney } from '@/utils/money';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
 interface PaymentCaptureModalProps {
   visible: boolean;
   invoice: Invoice;
-  onSubmit: (paymentData: CreatePaymentRequest) => Promise<void>;
+  onSubmit: (paymentData: CreatePaymentRequest, idempotencyKey: string) => Promise<void>;
   onClose: () => void;
 }
 
-export default function PaymentCaptureModal({
-  visible,
-  invoice,
-  onSubmit,
-  onClose,
-}: PaymentCaptureModalProps) {
+export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClose }: PaymentCaptureModalProps) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
-  const [loading, setLoading] = useState(false);
-
-  // Form state
-  const [paymentMethod, setPaymentMethod] = useState<'bank_transfer' | 'cash' | 'cheque' | 'credit_card' | 'online'>('bank_transfer');
-  const [amount, setAmount] = useState(invoice.total?.toString() || '0');
-  const [paymentDate, setPaymentDate] = useState(new Date().toISOString().split('T')[0]);
+  const attempt = useRef(createPaymentAttempt());
+  const balanceDue = invoice.balanceDueText?.trim() ?? '';
+  const currency = invoice.currency || 'NZD';
+  const [paymentMethod, setPaymentMethod] = useState<CreatePaymentRequest['paymentMethod']>('bank_transfer');
+  const [amount, setAmount] = useState(balanceDue);
+  const [paymentDate, setPaymentDate] = useState(localIsoDate(new Date()));
   const [referenceNumber, setReferenceNumber] = useState('');
   const [notes, setNotes] = useState('');
-  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [amountError, setAmountError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const selectedMethod = PAYMENT_METHOD_OPTIONS.find((m) => m.value === paymentMethod);
+  useEffect(() => {
+    if (!visible) return;
+    setPaymentMethod('bank_transfer');
+    setAmount(invoice.balanceDueText?.trim() ?? '');
+    setPaymentDate(localIsoDate(new Date()));
+    setReferenceNumber('');
+    setNotes('');
+    setAmountError(null);
+    setFormError(null);
+    attempt.current.succeed();
+  }, [visible, invoice.id, invoice.balanceDueText]);
 
-  // Calculate balance
-  const parsedAmount = parseFloat(amount) || 0;
-  const isPartialPayment = parsedAmount < invoice.total;
-  const isOverpayment = parsedAmount > invoice.total;
-  const balanceAfterPayment = invoice.total - parsedAmount;
+  const remaining = remainingAfterPayment(balanceDue, amount);
+  const selectedMethod = PAYMENT_METHOD_OPTIONS.find((method) => method.value === paymentMethod);
 
-  const validate = (): boolean => {
-    const newErrors: Record<string, string> = {};
-
-    if (!amount || parseFloat(amount) <= 0) {
-      newErrors.amount = 'Amount must be greater than 0';
-    }
-
-    if (selectedMethod?.requiresReference && !referenceNumber.trim()) {
-      newErrors.referenceNumber = 'Reference number is recommended for this payment method';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleSubmit = async () => {
-    if (!validate()) {
-      if (Platform.OS === 'ios') {
-        const { notificationAsync, NotificationFeedbackType } = require('expo-haptics');
-        notificationAsync(NotificationFeedbackType.Error);
-      }
+  const submit = async () => {
+    if (!balanceDue) {
+      setFormError('The balance due is unavailable. Refresh the invoice before recording a payment.');
       return;
     }
-
-    // Show warning for partial payments
-    if (isPartialPayment) {
-      Alert.alert(
-        'Partial Payment',
-        `This is a partial payment. The remaining balance will be ${formatMoney(Math.abs(balanceAfterPayment), invoice.currency || 'NZD')}.`,
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Continue', onPress: () => submitPayment() },
-        ]
-      );
+    const validation = paymentAmountError(amount, balanceDue);
+    if (validation || !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) {
+      setAmountError(validation);
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) setFormError('Enter the payment date as YYYY-MM-DD.');
       return;
     }
-
-    // Show alert for overpayments
-    if (isOverpayment) {
-      Alert.alert(
-        'Overpayment',
-        `The payment amount exceeds the invoice total by ${formatMoney(Math.abs(balanceAfterPayment), invoice.currency || 'NZD')}.`,
-        [
-          { text: 'Cancel', style: 'cancel' },
-          { text: 'Continue', onPress: () => submitPayment() },
-        ]
-      );
-      return;
-    }
-
-    await submitPayment();
-  };
-
-  const submitPayment = async () => {
+    const payload: CreatePaymentRequest = {
+      invoiceId: invoice.id,
+      paymentMethod,
+      amount: amount.trim(),
+      paymentDate: paymentDate.trim(),
+      referenceNumber: referenceNumber.trim() || null,
+      notes: notes.trim() || null,
+    };
+    const key = attempt.current.claim(paymentFingerprint({
+      invoiceId: payload.invoiceId,
+      amount: payload.amount,
+      paymentMethod: payload.paymentMethod,
+      paymentDate: payload.paymentDate,
+      referenceNumber: payload.referenceNumber ?? '',
+      notes: payload.notes ?? '',
+    }));
+    if (!key) return;
+    setSubmitting(true);
+    setFormError(null);
     try {
-      setLoading(true);
-
-      const paymentData: CreatePaymentRequest = {
-        invoiceId: invoice.id,
-        paymentMethod,
-        amount: parseFloat(amount),
-        paymentDate,
-        referenceNumber: referenceNumber.trim() || undefined,
-        notes: notes.trim() || undefined,
-        generateReceipt: true,
-      };
-
-      await onSubmit(paymentData);
-
-      // Success haptic
-      if (Platform.OS === 'ios') {
-        const { notificationAsync, NotificationFeedbackType } = require('expo-haptics');
-        notificationAsync(NotificationFeedbackType.Success);
-      }
-
-      // Reset form
-      setPaymentMethod('bank_transfer');
-      setAmount(invoice.total?.toString() || '0');
-      setReferenceNumber('');
-      setNotes('');
-      setErrors({});
+      await onSubmit(payload, key);
+      attempt.current.succeed();
     } catch (error) {
-      console.error('Error recording payment:', error);
-      Alert.alert('Error', 'Failed to record payment. Please try again.');
-
-      if (Platform.OS === 'ios') {
-        const { notificationAsync, NotificationFeedbackType } = require('expo-haptics');
-        notificationAsync(NotificationFeedbackType.Error);
+      const failure = mapPaymentError(error, onlineManager.isOnline());
+      if (failure.resetKey) attempt.current.resetKey();
+      else attempt.current.release();
+      setFormError(failure.message);
+      if (error instanceof AuthApiError) {
+        console.error('Payment was not recorded', { code: error.code, requestId: error.requestId, status: error.status });
       }
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      presentationStyle="pageSheet"
-      onRequestClose={onClose}
-    >
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-        keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 0}
-      >
-        {/* Header */}
+    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.header, { paddingTop: insets.top || 16 }]}>
-          <TouchableOpacity
+          <AppPressable
             onPress={onClose}
-            disabled={loading}
-            style={styles.headerButton}
+            disabled={submitting}
             accessibilityRole="button"
             accessibilityLabel="Close payment form"
+            style={styles.headerButton}
           >
             <Feather name="x" size={22} color={palette.textSecondary} />
-          </TouchableOpacity>
-          <Text style={styles.headerTitle}>Record Payment</Text>
-          <View style={styles.headerButtonPlaceholder} />
+          </AppPressable>
+          <Text style={styles.headerTitle}>Record payment</Text>
+          <View style={styles.headerButton} />
         </View>
-
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
-        >
-          {/* Invoice Info Card */}
-          <View style={styles.infoCard}>
-            <Text style={styles.infoLabel}>Invoice</Text>
-            <Text style={styles.infoValue}>{invoice.invoiceNumber}</Text>
-            <View style={styles.infoDivider} />
-            <Text style={styles.infoLabel}>Amount Due</Text>
-            <Text style={styles.infoValueLarge}>
-              {formatMoney(invoice.total || 0, invoice.currency || 'NZD')}
-            </Text>
-          </View>
-
-          {/* Payment Method */}
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Payment Method *</Text>
-            <View style={styles.methodGrid}>
-              {PAYMENT_METHOD_OPTIONS.map((method) => (
-                <TouchableOpacity
+        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+          <Text style={styles.kicker}>{invoice.invoiceNumber}</Text>
+          <Text style={styles.balanceLabel}>Balance due</Text>
+          <Text style={styles.balance}>{balanceDue ? formatPaymentAmount(balanceDue, currency) : 'Unavailable'}</Text>
+          <Text style={styles.fieldLabel}>Payment method</Text>
+          <View style={styles.methods}>
+            {PAYMENT_METHOD_OPTIONS.map((method) => {
+              const selected = paymentMethod === method.value;
+              return (
+                <AppPressable
                   key={method.value}
-                  style={[
-                    styles.methodButton,
-                    paymentMethod === method.value && styles.methodButtonActive,
-                  ]}
-                  onPress={() => setPaymentMethod(method.value)}
-                  disabled={loading}
-                  activeOpacity={0.7}
                   accessibilityRole="button"
-                  accessibilityState={{ selected: paymentMethod === method.value, disabled: loading }}
+                  accessibilityLabel={method.label}
+                  accessibilityState={{ selected, disabled: submitting }}
+                  disabled={submitting}
+                  onPress={() => setPaymentMethod(method.value)}
+                  style={({ pressed }) => [styles.method, selected && styles.methodSelected, pressed && styles.pressed]}
                 >
-                  <Text style={[
-                    styles.methodButtonText,
-                    paymentMethod === method.value && styles.methodButtonTextActive,
-                  ]}>
-                    {method.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            {selectedMethod && (
-              <Text style={styles.fieldHelper}>{selectedMethod.description}</Text>
-            )}
+                  <Text style={[styles.methodText, selected && styles.methodTextSelected]}>{method.label}</Text>
+                </AppPressable>
+              );
+            })}
           </View>
-
-          {/* Amount */}
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Amount *</Text>
-            <View style={[styles.inputContainer, errors.amount && styles.inputError]}>
-              <Text style={styles.inputPrefix}>$</Text>
-              <TextInput
-                style={styles.input}
-                value={amount}
-                onChangeText={(text) => {
-                  setAmount(text);
-                  if (errors.amount) setErrors({ ...errors, amount: '' });
-                }}
-                keyboardType="decimal-pad"
-                placeholder="0.00"
-                placeholderTextColor={palette.textTertiary}
-                accessibilityLabel="Payment amount"
-                editable={!loading}
-              />
-            </View>
-            {errors.amount && <Text style={styles.errorText}>{errors.amount}</Text>}
-          </View>
-
-          {/* Payment Date */}
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Payment Date *</Text>
-            <View style={styles.inputContainer}>
-              <Text style={styles.inputPrefix}>Date</Text>
-              <TextInput
-                style={styles.input}
-                value={paymentDate}
-                onChangeText={setPaymentDate}
-                placeholder="YYYY-MM-DD"
-                placeholderTextColor={palette.textTertiary}
-                accessibilityLabel="Payment date"
-                editable={!loading}
-              />
-            </View>
-            <Text style={styles.fieldHelper}>Format: YYYY-MM-DD</Text>
-          </View>
-
-          {/* Reference Number */}
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>
-              Reference Number {selectedMethod?.requiresReference && '(Recommended)'}
-            </Text>
-            <View style={[styles.inputContainer, errors.referenceNumber && styles.inputError]}>
-              <TextInput
-                style={[styles.input, { paddingLeft: space.lg }]}
-                value={referenceNumber}
-                onChangeText={(text) => {
-                  setReferenceNumber(text);
-                  if (errors.referenceNumber) setErrors({ ...errors, referenceNumber: '' });
-                }}
-                placeholder="Transaction ID, Check #, etc."
-                placeholderTextColor={palette.textTertiary}
-                accessibilityLabel="Payment reference number"
-                editable={!loading}
-              />
-            </View>
-            {errors.referenceNumber && <Text style={styles.warningText}>{errors.referenceNumber}</Text>}
-          </View>
-
-          {/* Notes */}
-          <View style={styles.field}>
-            <Text style={styles.fieldLabel}>Notes (Optional)</Text>
-            <TextInput
-              style={styles.textArea}
-              value={notes}
-              onChangeText={setNotes}
-              placeholder="Additional payment details..."
-              placeholderTextColor={palette.textTertiary}
-              accessibilityLabel="Payment notes"
-              multiline
-              numberOfLines={4}
-              textAlignVertical="top"
-              editable={!loading}
-            />
-          </View>
-
-          {/* Summary Card */}
-          <View style={styles.summaryCard}>
-            <Text style={styles.summaryTitle}>Payment Summary</Text>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Amount Paid:</Text>
-              <Text style={styles.summaryValue}>{formatMoney(parsedAmount, invoice.currency || 'NZD')}</Text>
-            </View>
-            <View style={styles.summaryRow}>
-              <Text style={styles.summaryLabel}>Remaining Balance:</Text>
-              <Text style={[
-                styles.summaryValue,
-                balanceAfterPayment <= 0 && styles.summaryValueSuccess,
-              ]}>
-                {formatMoney(Math.max(0, balanceAfterPayment), invoice.currency || 'NZD')}
-              </Text>
-            </View>
-            <View style={styles.summaryDivider} />
-            <View style={styles.statusRow}>
-              <Text style={styles.statusLabel}>Status:</Text>
-              <Text style={[
-                styles.statusBadge,
-                balanceAfterPayment <= 0 ? styles.statusBadgePaid : styles.statusBadgePartial,
-              ]}>
-                {balanceAfterPayment <= 0 ? 'Paid in full' : 'Partially paid'}
-              </Text>
-            </View>
-          </View>
+          {selectedMethod ? <Text style={styles.helper}>{selectedMethod.description}</Text> : null}
+          <Text style={styles.fieldLabel}>Amount</Text>
+          <TextInput
+            accessibilityLabel="Payment amount"
+            value={amount}
+            onChangeText={(value) => {
+              setAmount(value);
+              setAmountError(null);
+            }}
+            keyboardType="decimal-pad"
+            editable={!submitting}
+            placeholder="0.00"
+            placeholderTextColor={palette.textTertiary}
+            style={[styles.input, amountError ? styles.inputError : null]}
+          />
+          {amountError ? <Text style={styles.error}>{amountError}</Text> : null}
+          {remaining ? (
+            <Text style={styles.helper}>Remaining after this payment: {formatPaymentAmount(remaining, currency)}</Text>
+          ) : null}
+          <Text style={styles.fieldLabel}>Payment date</Text>
+          <TextInput
+            accessibilityLabel="Payment date"
+            value={paymentDate}
+            onChangeText={setPaymentDate}
+            editable={!submitting}
+            placeholder="YYYY-MM-DD"
+            placeholderTextColor={palette.textTertiary}
+            style={styles.input}
+          />
+          <Text style={styles.fieldLabel}>Reference</Text>
+          <TextInput
+            accessibilityLabel="Payment reference"
+            value={referenceNumber}
+            onChangeText={setReferenceNumber}
+            editable={!submitting}
+            placeholder="Optional"
+            placeholderTextColor={palette.textTertiary}
+            style={styles.input}
+          />
+          <Text style={styles.fieldLabel}>Notes</Text>
+          <TextInput
+            accessibilityLabel="Payment notes"
+            value={notes}
+            onChangeText={setNotes}
+            editable={!submitting}
+            placeholder="Optional"
+            placeholderTextColor={palette.textTertiary}
+            multiline
+            style={[styles.input, styles.notes]}
+          />
+          {formError ? <Text style={styles.error}>{formError}</Text> : null}
         </ScrollView>
-
-        {/* Submit Button */}
-        <View style={[styles.footer, { paddingBottom: insets.bottom || 16 }]}>
-          <TouchableOpacity
-            style={[styles.submitButton, loading && styles.submitButtonDisabled]}
-            onPress={handleSubmit}
-            disabled={loading}
-            activeOpacity={0.8}
+        <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
+          <AppPressable
             accessibilityRole="button"
-            accessibilityState={{ disabled: loading, busy: loading }}
+            accessibilityLabel="Record payment"
+            accessibilityState={{ disabled: submitting, busy: submitting }}
+            disabled={submitting}
+            onPress={() => { void submit(); }}
+            style={({ pressed }) => [styles.submit, submitting && styles.submitDisabled, pressed && !submitting && styles.pressed]}
           >
-            {loading ? (
+            {submitting ? (
               <ActivityIndicator color={palette.accentForeground} />
             ) : (
-              <Text style={styles.submitButtonText}>Record payment</Text>
+              <Text style={styles.submitText}>Record payment</Text>
             )}
-          </TouchableOpacity>
+          </AppPressable>
         </View>
       </KeyboardAvoidingView>
     </Modal>
@@ -355,10 +228,7 @@ export default function PaymentCaptureModal({
 }
 
 const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: palette.background,
-  },
+  container: { flex: 1, backgroundColor: palette.background },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -369,216 +239,53 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     borderBottomWidth: hairline,
     borderBottomColor: palette.separator,
   },
-  headerButton: {
-    width: control.touchTarget,
-    height: control.touchTarget,
-    alignItems: 'flex-start',
-    justifyContent: 'center',
-  },
-  headerButtonPlaceholder: {
-    width: control.touchTarget,
-  },
-  headerTitle: {
-    ...type.headline,
-    fontSize: 20,
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: space.screen,
-  },
-  infoCard: {
-    backgroundColor: palette.surface,
-    borderRadius: radius.group,
-    padding: space.xl,
-    marginBottom: space.xxl,
-  },
-  infoLabel: {
-    ...type.section,
-    marginBottom: space.xs,
-  },
-  infoValue: {
-    ...type.headline,
-    marginBottom: space.lg,
-  },
-  infoDivider: {
-    height: hairline,
-    backgroundColor: palette.separator,
-    marginBottom: space.lg,
-  },
-  infoValueLarge: {
-    fontSize: 32,
-    color: palette.text,
-    fontWeight: '700',
-    fontVariant: ['tabular-nums'],
-  },
-  field: {
-    marginBottom: space.xxl,
-  },
-  fieldLabel: {
-    ...type.subhead,
-    color: palette.text,
-    fontWeight: '600',
-    marginBottom: space.sm,
-  },
-  fieldHelper: {
-    ...type.footnote,
-    marginTop: 6,
-  },
-  methodGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: space.sm,
-  },
-  methodButton: {
+  headerButton: { width: control.touchTarget, height: control.touchTarget, justifyContent: 'center' },
+  headerTitle: { ...type.headline, fontSize: 20 },
+  content: { padding: space.screen, paddingBottom: 32 },
+  kicker: { ...type.footnote, color: palette.textSecondary },
+  balanceLabel: { ...type.subhead, marginTop: space.sm, color: palette.textSecondary },
+  balance: { fontSize: 32, fontWeight: '700', color: palette.text, fontVariant: ['tabular-nums'], marginBottom: space.xl },
+  fieldLabel: { ...type.subhead, color: palette.text, fontWeight: '600', marginTop: space.lg, marginBottom: space.sm },
+  methods: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  method: {
     minHeight: control.touchTarget,
     justifyContent: 'center',
-    paddingVertical: space.sm,
     paddingHorizontal: space.lg,
+    borderRadius: radius.pill,
     backgroundColor: palette.fillMuted,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: 'transparent',
   },
-  methodButtonActive: {
-    backgroundColor: palette.accentFill,
-    borderColor: palette.focus,
-  },
-  methodButtonText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: palette.textSecondary,
-  },
-  methodButtonTextActive: {
-    color: palette.accentForeground,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: palette.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: palette.separator,
-    paddingHorizontal: space.lg,
-    minHeight: control.prominent,
-  },
-  inputError: {
-    borderColor: palette.danger,
-  },
-  inputPrefix: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: palette.textSecondary,
-    marginRight: space.sm,
-  },
+  methodSelected: { backgroundColor: palette.accent },
+  methodText: { fontSize: 15, fontWeight: '600', color: palette.textSecondary },
+  methodTextSelected: { color: palette.accentForeground },
+  helper: { ...type.footnote, marginTop: space.sm },
   input: {
-    flex: 1,
-    fontSize: 16,
-    color: palette.text,
-    fontWeight: '500',
-  },
-  textArea: {
-    backgroundColor: palette.surface,
+    minHeight: control.prominent,
     borderRadius: radius.md,
     borderWidth: 1,
     borderColor: palette.separator,
-    padding: space.lg,
+    backgroundColor: palette.surface,
+    paddingHorizontal: space.lg,
     fontSize: 16,
     color: palette.text,
-    minHeight: 100,
   },
-  errorText: {
-    fontSize: 13,
-    color: palette.danger,
-    marginTop: 6,
-  },
-  warningText: {
-    fontSize: 13,
-    color: palette.warning,
-    marginTop: 6,
-  },
-  summaryCard: {
-    backgroundColor: palette.surface,
-    borderRadius: radius.group,
-    padding: space.xl,
-    marginTop: space.sm,
-  },
-  summaryTitle: {
-    fontSize: 17,
-    fontWeight: '700',
-    color: palette.text,
-    marginBottom: space.lg,
-  },
-  summaryRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: space.md,
-  },
-  summaryLabel: {
-    fontSize: 15,
-    color: palette.textSecondary,
-  },
-  summaryValue: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: palette.text,
-    fontVariant: ['tabular-nums'],
-  },
-  summaryValueSuccess: {
-    color: palette.success,
-  },
-  summaryDivider: {
-    height: hairline,
-    backgroundColor: palette.separator,
-    marginVertical: space.md,
-  },
-  statusRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  statusLabel: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: palette.text,
-  },
-  statusBadge: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: radius.pill,
-    fontSize: 13,
-    fontWeight: '700',
-  },
-  statusBadgePaid: {
-    backgroundColor: palette.successFill,
-    color: palette.text,
-  },
-  statusBadgePartial: {
-    backgroundColor: palette.warningFill,
-    color: palette.text,
-  },
+  inputError: { borderColor: palette.danger },
+  notes: { minHeight: 96, paddingTop: space.md, textAlignVertical: 'top' },
+  error: { color: palette.danger, fontSize: 14, fontWeight: '600', marginTop: space.sm },
   footer: {
-    padding: space.screen,
-    paddingTop: space.lg,
+    paddingHorizontal: space.screen,
+    paddingTop: space.md,
     backgroundColor: palette.surface,
     borderTopWidth: hairline,
     borderTopColor: palette.separator,
   },
-  submitButton: {
-    backgroundColor: palette.accent,
+  submit: {
     minHeight: control.prominent,
-    paddingHorizontal: space.xl,
     borderRadius: radius.pill,
+    backgroundColor: palette.accent,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  submitButtonDisabled: {
-    opacity: 0.6,
-  },
-  submitButtonText: {
-    color: palette.accentForeground,
-    fontSize: 17,
-    fontWeight: '700',
-  },
+  submitDisabled: { opacity: 0.5 },
+  submitText: { color: palette.accentForeground, fontSize: 17, fontWeight: '700' },
+  pressed: { opacity: 0.7 },
 });
