@@ -1,5 +1,5 @@
 import { decimal } from './money';
-import { and, asc, eq, sql } from 'drizzle-orm';
+import { and, asc, eq } from 'drizzle-orm';
 import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -176,23 +176,28 @@ export async function postInvoiceRestoreJournal(
   tx: Database,
   ctx: { organisationId: string; userId: string },
   input: { invoiceId: string; invoiceNumber: string; date: string; total: string },
-): Promise<void> {
-  const [existing] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
+): Promise<boolean> {
+  // Every cancel posts its own reversal, so a restore is owed only while
+  // cancellations outnumber restores. Each restore mirrors the oldest
+  // cancellation that has not been restored yet (deterministic pairing).
+  // Callers run inside withOrganisationTx, which the storage engine serialises
+  // (local mutex / Durable Object transaction), so the count check and the
+  // insert cannot interleave with a concurrent restore.
+  const references = (referenceType: string) => and(
     eq(journalEntries.organisationId, ctx.organisationId),
-    eq(journalEntries.referenceType, 'invoice_restore'),
+    eq(journalEntries.referenceType, referenceType),
     eq(journalEntries.referenceId, input.invoiceId),
-  ));
-  if (existing) return;
-  const [cancellation] = await tx.select().from(journalEntries).where(and(
-    eq(journalEntries.organisationId, ctx.organisationId),
-    eq(journalEntries.referenceType, 'invoice_cancellation'),
-    eq(journalEntries.referenceId, input.invoiceId),
-  ));
+  );
+  const cancellations = await tx.select().from(journalEntries).where(references('invoice_cancellation'))
+    .orderBy(asc(journalEntries.createdAt), asc(journalEntries.entryDate), asc(journalEntries.entryNumber), asc(journalEntries.id));
+  const restores = await tx.select({ id: journalEntries.id }).from(journalEntries).where(references('invoice_restore'));
+  if (cancellations.length <= restores.length) return false;
+  const cancellation = cancellations[restores.length];
   if (!cancellation) throw new HTTPException(409, { message: 'Invoice cancellation journal is missing' });
   const cancellationLines = await tx.select().from(journalEntryLines).where(and(
     eq(journalEntryLines.organisationId, ctx.organisationId),
     eq(journalEntryLines.journalEntryId, cancellation.id),
-  ));
+  )).orderBy(asc(journalEntryLines.lineOrder));
   const [entry] = await tx.insert(journalEntries).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
@@ -214,4 +219,5 @@ export async function postInvoiceRestoreJournal(
     creditAmount: line.debitAmount,
     lineOrder: index + 1,
   });
+  return true;
 }

@@ -418,4 +418,64 @@ describe('NZ GST journals and IRD reporting scenario', () => {
       }
     });
   });
+  it('keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'GST Restore Cycle');
+        const invoice = await createPostedInvoice(app, org.headers, org.customerId, {
+          date: '2026-06-01', amount: '200.00', description: 'Cycled sale',
+        });
+        await createReceivedBill(app, org.headers, {
+          vendorId: org.vendorId, accountId: org.expenseAccountId, date: '2026-06-02', gross: '115.00', description: 'Cycle purchase',
+        });
+        const action = (verb: 'cancel' | 'restore') => app.request(`/api/invoices/${invoice.id}/${verb}`, {
+          method: 'POST', headers: org.headers, body: '{}',
+        });
+        const wide = () => financialReport(app, org.cookie, '2000-01-01', '2099-12-31');
+        const expectActive = async (label: string) => {
+          const report = await wide();
+          expect(report.taxSummary.outputGst, label).toBe('30.00');
+          expect(report.taxSummary.inputGst, label).toBe('15.00');
+          expect(report.taxSummary.netGst, label).toBe('15.00');
+          expect(report.taxSummary.position, label).toBe('payable');
+          expect(report.trialBalance.balanced, label).toBe(true);
+          expect(rowFor(report, '1200')?.balance, label).toBe('230.00');
+          expect(rowFor(report, '4000')?.balance, label).toBe('200.00');
+          expect(rowFor(report, '2200')?.balance, label).toBe('30.00');
+        };
+
+        for (let cycle = 1; cycle <= 3; cycle += 1) {
+          expect((await action('cancel')).status).toBe(200);
+          const cancelled = await wide();
+          expect(cancelled.taxSummary.outputGst, `cancel ${cycle}`).toBe('0.00');
+          expect(cancelled.taxSummary.position, `cancel ${cycle}`).toBe('refundable');
+          expect((await action('restore')).status).toBe(200);
+          // A second restore of an already-active invoice must not post again.
+          expect((await action('restore')).status).toBe(200);
+          await expectActive(`after cycle ${cycle}`);
+        }
+
+        expect((await action('cancel')).status).toBe(200);
+        const concurrent = await Promise.all([action('restore'), action('restore'), action('restore')]);
+        expect(concurrent.map((response) => response.status)).toEqual([200, 200, 200]);
+        await expectActive('after concurrent restores');
+
+        const ledger = await generalLedger(app, org.cookie, '2000-01-01', '2099-12-31');
+        const entries = (type: string) => new Set((ledger.lines as Json[])
+          .filter((line) => line.referenceType === type && line.referenceId === invoice.id)
+          .map((line) => line.journalEntryId)).size;
+        expect(entries('invoice_cancellation')).toBe(4);
+        expect(entries('invoice_restore')).toBe(4);
+        const numbers = (ledger.lines as Json[]).map((line) => `${line.journalEntryId}:${line.entryNumber}`);
+        const uniqueNumbers = new Set(numbers.map((value) => value.split(':')[1]));
+        expect(uniqueNumbers.size).toBe(new Set(numbers.map((value) => value.split(':')[0])).size);
+        await writeEvidence('restore-cycle-financial-report.json', { taxSummary: (await wide()).taxSummary, generalLedger: ledger });
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });
