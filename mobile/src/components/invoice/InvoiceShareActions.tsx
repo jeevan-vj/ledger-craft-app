@@ -4,12 +4,10 @@ import {
   Alert,
   Linking,
   Modal,
-  Pressable,
   Share,
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import { useQuery, useQueryClient, type UseQueryResult } from '@tanstack/react-query';
@@ -17,14 +15,17 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { ShareInvoiceResponse } from '@ledgercraft/contracts';
 import * as Clipboard from 'expo-clipboard';
 import { Feather } from '@expo/vector-icons';
+import { AppPressable } from '@/components/ui/AppPressable';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { invoiceService } from '@/services/invoiceService';
 import {
   buildInvoiceShareMessage,
   buildPublicInvoiceUrl,
+  shareLinkSummary,
 } from '@/features/invoices/invoiceSharing';
 import { downloadInvoicePDF, shareInvoicePDF } from '@/utils/pdfUtils';
+import { isShareSheetDismissal } from '@/utils/shareSheet';
 import { control, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -34,6 +35,7 @@ interface InvoiceShareActionsProps {
   readonly visible: boolean;
   readonly invoice: Invoice;
   readonly businessProfile?: BusinessProfile;
+  readonly canManageShares?: boolean;
   readonly onClose: () => void;
 }
 
@@ -45,6 +47,7 @@ function ShareActions({
   visible,
   invoice,
   businessProfile,
+  canManageShares = true,
   onClose,
 }: InvoiceShareActionsProps) {
   const theme = useTheme();
@@ -112,6 +115,9 @@ function ShareActions({
     if (current && (!current.expiresAt || new Date(current.expiresAt).getTime() > Date.now())) {
       return buildPublicInvoiceUrl(current.shareToken);
     }
+    if (!canManageShares) {
+      throw new Error('You do not have permission to create a share link');
+    }
     const share = await invoiceService.createShareLink(invoice.id, template);
     await remember(share);
     return buildPublicInvoiceUrl(share.shareToken);
@@ -126,9 +132,9 @@ function ShareActions({
     }) }],
   );
   const revokeLinks = () => Alert.alert(
-    'Revoke access?',
+    'Revoke all links?',
     'All existing links for this invoice, including other templates, will stop working. Copies already downloaded cannot be recalled.',
-    [{ text: 'Cancel', style: 'cancel' }, { text: 'Revoke access', style: 'destructive', onPress: () => void run('revoke', async () => {
+    [{ text: 'Cancel', style: 'cancel' }, { text: 'Revoke all links', style: 'destructive', onPress: () => void run('revoke', async () => {
       await invoiceService.revokeShareLinks(invoice.id);
       await queryClient.cancelQueries({ queryKey });
       queryClient.setQueryData(queryKey, []);
@@ -138,15 +144,20 @@ function ShareActions({
 
   const shareLink = () => run('link', async () => {
     const url = await createLink();
-    await Share.share({
-      title: `Invoice ${invoice.invoiceNumber}`,
-      message: buildInvoiceShareMessage({
-        invoiceNumber: invoice.invoiceNumber,
-        businessName: businessProfile?.name,
+    try {
+      await Share.share({
+        title: `Invoice ${invoice.invoiceNumber}`,
+        message: buildInvoiceShareMessage({
+          invoiceNumber: invoice.invoiceNumber,
+          businessName: businessProfile?.name,
+          url,
+        }),
         url,
-      }),
-      url,
-    });
+      });
+    } catch (error) {
+      if (isShareSheetDismissal(error)) return;
+      throw error;
+    }
   });
 
   const copyLink = () => run('link', async () => {
@@ -171,11 +182,11 @@ function ShareActions({
     { key: 'link' as const, icon: 'link-2' as const, title: 'Share link', subtitle: 'Anyone with the link can view the invoice', onPress: shareLink },
     { key: 'download' as const, icon: 'download' as const, title: 'Download PDF', subtitle: 'Save or export a PDF copy', onPress: savePdf },
     { key: 'pdf' as const, icon: 'share' as const, title: 'Share PDF', subtitle: 'Attach the PDF to another app', onPress: sharePdf },
-  ];
+  ].filter((row) => row.key !== 'link' || canManageShares || Boolean(current));
 
   return (
     <Modal visible={visible} transparent animationType="slide" onRequestClose={onClose}>
-      <Pressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Close share actions" />
+      <AppPressable style={styles.backdrop} onPress={onClose} accessibilityLabel="Close share actions" />
       <ScrollView style={styles.sheet} contentContainerStyle={{ paddingBottom: insets.bottom + space.lg }} contentInsetAdjustmentBehavior="automatic">
         <View style={styles.handle} />
         <View style={styles.headingRow}>
@@ -183,23 +194,22 @@ function ShareActions({
             <Text style={styles.title}>Share invoice</Text>
             <Text style={styles.subtitle}>{invoice.invoiceNumber}</Text>
           </View>
-          <Pressable
+          <AppPressable
             onPress={onClose}
             accessibilityRole="button"
             accessibilityLabel="Close share actions"
             style={styles.close}
           >
             <Feather name="x" size={20} color={palette.text} />
-          </Pressable>
+          </AppPressable>
         </View>
 
         <View style={styles.group}>
           {rows.map((row) => (
-            <TouchableOpacity
+            <AppPressable
               key={row.key}
               onPress={row.onPress}
               disabled={row.key === 'link' ? linkDisabled : busy !== null}
-              activeOpacity={0.65}
               accessibilityRole="button"
               accessibilityLabel={row.title}
               accessibilityHint={row.subtitle}
@@ -218,7 +228,7 @@ function ShareActions({
                 <Text style={styles.rowSubtitle}>{row.subtitle}</Text>
               </View>
               <Feather name="chevron-right" size={18} color={palette.textTertiary} />
-            </TouchableOpacity>
+            </AppPressable>
           ))}
         </View>
 
@@ -231,18 +241,19 @@ function ShareActions({
           linkDisabled={linkDisabled}
           onReplace={replaceLink}
           onRevoke={revokeLinks}
+          canManageShares={canManageShares}
         />
 
         {shareUrl ? (
           <View style={styles.linkCard}>
             <Text numberOfLines={2} selectable style={styles.link}>{shareUrl}</Text>
             <View style={styles.linkActions}>
-              <Pressable disabled={linkDisabled} onPress={copyLink} accessibilityRole="button" accessibilityLabel="Copy link" style={styles.linkButton}>
+              <AppPressable disabled={linkDisabled} onPress={copyLink} accessibilityRole="button" accessibilityLabel="Copy link" style={styles.linkButton}>
                 <Text style={styles.linkButtonText}>Copy link</Text>
-              </Pressable>
-              <Pressable disabled={linkDisabled} onPress={openLink} accessibilityRole="link" accessibilityLabel="Open link" style={styles.linkButton}>
+              </AppPressable>
+              <AppPressable disabled={linkDisabled} onPress={openLink} accessibilityRole="link" accessibilityLabel="Open link" style={styles.linkButton}>
                 <Text style={styles.linkButtonText}>Open link</Text>
-              </Pressable>
+              </AppPressable>
             </View>
           </View>
         ) : null}
@@ -266,9 +277,10 @@ interface ShareStatusProps {
   readonly linkDisabled: boolean;
   readonly onReplace: () => void;
   readonly onRevoke: () => void;
+  readonly canManageShares: boolean;
 }
 
-function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onReplace, onRevoke }: ShareStatusProps) {
+function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onReplace, onRevoke, canManageShares }: ShareStatusProps) {
   const theme = useTheme();
   const styles = createStyles(theme);
   const palette = theme.colors;
@@ -277,20 +289,24 @@ function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onRep
       {links.isPending ? <Text style={styles.subtitle}>Loading sharing status…</Text> : null}
       {links.isError ? <>
         <Text accessibilityRole="alert" style={styles.subtitle}>Unable to load sharing status. Please retry.</Text>
-        <Pressable accessibilityRole="button" accessibilityLabel="Retry sharing status" disabled={links.isFetching || busy !== null} onPress={() => void links.refetch()} style={styles.linkButton}><Text style={styles.linkButtonText}>Retry</Text></Pressable>
+        <AppPressable accessibilityRole="button" accessibilityLabel="Retry sharing status" disabled={links.isFetching || busy !== null} onPress={() => void links.refetch()} style={styles.linkButton}><Text style={styles.linkButtonText}>Retry</Text></AppPressable>
       </> : null}
       {links.isSuccess ? <>
         <Text style={styles.rowTitle}>{shareStatusLabel(current, links.data.length > 0)}</Text>
+        {links.data.map((share) => (
+          <Text key={share.shareToken} style={styles.rowSubtitle}>{shareLinkSummary(share)}</Text>
+        ))}
         {revoked ? <Text style={styles.subtitle}>Access revoked. Existing links no longer work.</Text> : null}
         <Text style={styles.rowSubtitle}>Links keep the invoice and business details from when they were created. Replace a link to publish current details.</Text>
-        <View style={styles.linkActions}>
-          {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Replace link" disabled={linkDisabled} onPress={onReplace} style={styles.linkButton}><Text style={styles.linkButtonText}>Replace link</Text></Pressable> : null}
-          {links.data.length > 0 ? <Pressable accessibilityRole="button" accessibilityLabel="Revoke access" disabled={linkDisabled} onPress={onRevoke} style={styles.linkButton}><Text style={styles.linkButtonText}>Revoke access</Text></Pressable> : null}
-        </View>
+        {canManageShares && links.data.length > 0 ? (
+          <View style={styles.linkActions}>
+            <AppPressable accessibilityRole="button" accessibilityLabel="Replace link" disabled={linkDisabled} onPress={onReplace} style={styles.linkButton}><Text style={styles.linkButtonText}>Replace link</Text></AppPressable>
+            <AppPressable accessibilityRole="button" accessibilityLabel="Revoke all links" disabled={linkDisabled} onPress={onRevoke} style={styles.linkButton}><Text style={styles.linkButtonText}>Revoke all links</Text></AppPressable>
+          </View>
+        ) : null}
       </> : null}
       {error ? <Text accessibilityRole="alert" style={styles.subtitle}>{error}</Text> : null}
       {busy === 'replace' || busy === 'revoke' ? <ActivityIndicator accessibilityLabel="Updating sharing access" color={palette.accentText} /> : null}
-      <Text style={styles.rowSubtitle}>Email delivery and reminders are unavailable. Use Share link to send the invoice yourself.</Text>
     </View>
   );
 }

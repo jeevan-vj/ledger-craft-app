@@ -121,6 +121,27 @@ describe('sentry scrubber', () => {
     expect(scrubSentryEvent({ type: 'replay_event', user: { id: 'user_1' } })).toBeNull();
   });
 
+  it('redacts share tokens inside serialized exception values from public reads', () => {
+    const event = scrubSentryEvent({
+      exception: {
+        values: [{
+          type: 'Error',
+          value: 'GET https://easybiz.iamjeevan.com/api/public/invoices/org_secret-token failed',
+        }],
+      },
+      extra: {
+        shareToken: 'org_secret-token',
+        note: 'opened easybizinvoice://shared/quote/quote-token',
+      },
+    });
+
+    const serialized = JSON.stringify(event);
+    expect(serialized).not.toContain('org_secret-token');
+    expect(serialized).not.toContain('quote-token');
+    expect(serialized).toContain('/api/public/invoices/[redacted]');
+    expect(serialized).toContain('shared/quote/[redacted]');
+  });
+
   it('drops a user object that has no id', () => {
     const event = scrubSentryEvent({ user: { email: 'only-email@example.com', ip_address: '127.0.0.1' } });
     expect(event).not.toHaveProperty('user');

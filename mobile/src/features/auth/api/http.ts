@@ -124,6 +124,47 @@ export async function apiRequest<T>(path: string, init?: RequestInit): Promise<T
   }
 }
 
+function publicHeaders(init?: RequestInit): Record<string, string> {
+  const headers = mergeHeaders(init);
+  delete headers.Cookie;
+  delete headers.cookie;
+  delete headers.Authorization;
+  delete headers.authorization;
+  return headers;
+}
+
+/** Token-only public document read. No session cookie, auth header, or cookie storage. */
+export async function publicApiRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  const headers = publicHeaders(init);
+  let response: Response;
+  try {
+    response = await fetch(`${apiBase()}${path}`, {
+      ...init,
+      credentials: 'omit',
+      headers,
+    });
+  } catch {
+    const error = new AuthApiError(
+      "Can't reach the API. Start it with pnpm dev:api (port 3001).",
+      0,
+    );
+    captureApiError(error, 0);
+    throw error;
+  }
+
+  if (response.status === 204) {
+    return undefined as T;
+  }
+  if (!response.ok) {
+    await rejectFailedResponse(response);
+  }
+  try {
+    return (await response.json()) as T;
+  } catch {
+    return undefined as T;
+  }
+}
+
 export async function clearSessionCookies(): Promise<void> {
   await clearCookies();
 }

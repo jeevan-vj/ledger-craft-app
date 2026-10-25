@@ -24,31 +24,26 @@ export default function PublicInvoiceScreen() {
   const styles = createStyles(theme);
   const palette = theme.colors;
   const [snapshot, setSnapshot] = useState<MobileSharedInvoiceSnapshot | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [inactive, setInactive] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [phase, setPhase] = useState<'loading' | 'ready' | 'inactive' | 'missing' | 'offline'>('loading');
   const [busy, setBusy] = useState<'download' | 'share' | null>(null);
 
   const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    setInactive(false);
+    setPhase('loading');
     try {
       const next = await invoiceService.fetchSharedInvoice(route.params.shareToken);
       if (next === 'inactive') {
-        setInactive(true);
         setSnapshot(null);
-        setError('This link is no longer active.');
+        setPhase('inactive');
       } else if (!next) {
-        setError('This invoice link is invalid, expired, or no longer active.');
         setSnapshot(null);
+        setPhase('missing');
       } else {
         setSnapshot(next);
+        setPhase('ready');
       }
     } catch {
-      setError('The shared invoice could not be loaded. Check your connection and try again.');
-    } finally {
-      setLoading(false);
+      setSnapshot(null);
+      setPhase('offline');
     }
   }, [route.params.shareToken]);
 
@@ -84,7 +79,7 @@ export default function PublicInvoiceScreen() {
     }
   };
 
-  if (loading) {
+  if (phase === 'loading') {
     return (
       <SafeAreaView style={styles.center}>
         <ActivityIndicator size="large" color={palette.accent} accessibilityLabel="Loading shared invoice" />
@@ -93,15 +88,22 @@ export default function PublicInvoiceScreen() {
     );
   }
 
-  if (error || !snapshot) {
+  if (phase !== 'ready' || !snapshot) {
+    const offline = phase === 'offline';
     return (
       <SafeAreaView style={styles.center}>
         <EmptyState
           icon={<Feather name="file-minus" size={34} color={palette.textSecondary} />}
-          title={inactive ? 'Link no longer active' : 'Invoice unavailable'}
-          description={error ?? 'This invoice is no longer available.'}
-          actionLabel={inactive ? undefined : 'Try again'}
-          onAction={inactive ? undefined : load}
+          title={phase === 'inactive' ? 'Link no longer active' : phase === 'missing' ? 'Invoice not found' : 'Invoice unavailable'}
+          description={
+            phase === 'inactive'
+              ? 'This link is no longer active.'
+              : phase === 'missing'
+                ? 'This invoice link could not be found.'
+                : 'The shared invoice could not be loaded. Check your connection and try again.'
+          }
+          actionLabel={offline ? 'Try again' : undefined}
+          onAction={offline ? load : undefined}
         />
       </SafeAreaView>
     );

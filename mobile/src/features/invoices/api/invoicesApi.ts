@@ -1,5 +1,5 @@
 import type { CreateShareInvoiceRequest, InvoiceShareListResponse, RevokeInvoiceSharesResponse, ShareInvoiceResponse } from '@ledgercraft/contracts';
-import { apiRequest, AuthApiError } from '@/features/auth/api/http';
+import { apiRequest, AuthApiError, publicApiRequest } from '@/features/auth/api/http';
 import {
   toBusinessProfile,
   type MobileBusinessProfileDto,
@@ -280,9 +280,26 @@ export const invoicesApi = {
     return apiRequest(`/api/invoices/${encodeURIComponent(id)}/shares/revoke`, { method: 'POST', body: '{}' });
   },
 
+  async send(id: string): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${encodeURIComponent(id)}/send`, {
+      method: 'POST',
+      body: '{}',
+    }));
+  },
+
+  async remind(
+    id: string,
+    input: { subject: string; html: string; reminderType?: 'gentle' | 'firm' | 'final' },
+  ): Promise<Invoice> {
+    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${encodeURIComponent(id)}/remind`, {
+      method: 'POST',
+      body: JSON.stringify(input),
+    }));
+  },
+
   async getShared(token: string): Promise<MobileSharedInvoiceSnapshot | 'inactive' | null> {
     try {
-      const dto = await apiRequest<{
+      const dto = await publicApiRequest<{
         invoice: MobileInvoiceDto;
         templateName: string;
         businessProfile: MobileBusinessProfileDto;

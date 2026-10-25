@@ -1,4 +1,4 @@
-import { apiRequest, AuthApiError } from '@/features/auth/api/http';
+import { apiRequest, AuthApiError, publicApiRequest } from '@/features/auth/api/http';
 import {
   toBusinessProfile,
   type MobileBusinessProfileDto,
@@ -168,9 +168,9 @@ export const quotesApi = {
     };
   },
 
-  async getPublic(token: string): Promise<PublicQuoteSnapshot | null> {
+  async getPublic(token: string): Promise<PublicQuoteSnapshot | 'inactive' | null> {
     try {
-      const dto = await apiRequest<PublicQuoteDto>(`/api/public/quotes/${encodeURIComponent(token)}`);
+      const dto = await publicApiRequest<PublicQuoteDto>(`/api/public/quotes/${encodeURIComponent(token)}`);
       return {
         quote: dto.quote,
         templateName: dto.templateName,
@@ -182,7 +182,10 @@ export const quotesApi = {
         respondedAt: dto.respondedAt,
       };
     } catch (error) {
-      if (error instanceof AuthApiError && (error.status === 404 || error.status === 410)) return null;
+      if (error instanceof AuthApiError && error.status === 404) return null;
+      if (error instanceof AuthApiError && (error.status === 410 || error.code === 'QUOTE_LINK_REVOKED')) {
+        return 'inactive';
+      }
       throw error;
     }
   },
@@ -191,7 +194,7 @@ export const quotesApi = {
     token: string,
     input: { action: 'accept' | 'decline'; name: string; note?: string },
   ): Promise<void> {
-    await apiRequest(`/api/public/quotes/${encodeURIComponent(token)}/respond`, {
+    await publicApiRequest(`/api/public/quotes/${encodeURIComponent(token)}/respond`, {
       method: 'POST',
       body: JSON.stringify(input),
     });
