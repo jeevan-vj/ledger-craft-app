@@ -79,7 +79,7 @@ function GstReturnPanel({ report }: { report: FinancialReportResponse }) {
       <div>
         <div className="mb-4">
           <h4 className="text-lg font-semibold">Underlying account balances</h4>
-          <p className="mt-1 text-sm text-muted-foreground">Period movements from posted and reversed journal entries on an {meta.basis} basis.</p>
+          <p className="mt-1 text-sm text-muted-foreground">Period movements from posted and reversed journal entries.</p>
         </div>
         {taxSummary.keyAccounts.length ? <Table>
           <TableCaption className="sr-only">Underlying ledger account balances for this GST period</TableCaption>

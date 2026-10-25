@@ -11,11 +11,16 @@ export async function financialReportForUser(db: Database, userId: string, query
 }
 
 export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery) {
-    const [periodRows, openingRows, taxRows, receivables, payables] = await Promise.all([
+    const [periodRows, openingRows, receivables, payables] = await Promise.all([
       repo.ledgerRows(tx, organisationId, query), repo.ledgerRows(tx, organisationId, query, query.from),
-      query.basis === 'accrual' ? repo.ledgerRows(tx, organisationId, query) : repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual' }),
       repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query),
     ]);
+    // GST is read from the journals that actually carry 2150/2200. Payment
+    // journals do not allocate GST, so the report's cash filter is not a valid
+    // alternate GST basis.
+    const taxRows = query.basis === 'accrual'
+      ? periodRows
+      : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual' });
     let comparison;
     if (query.comparisonFrom && query.comparisonTo) {
       comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
