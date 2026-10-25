@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -19,6 +19,8 @@ import {
   createPaymentAttempt,
   formatPaymentAmount,
   mapPaymentError,
+  normalizePaymentAmount,
+  PaymentExceedsBalanceError,
   paymentAmountError,
   paymentFingerprint,
   remainingAfterPayment,
@@ -43,28 +45,62 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
   const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const attempt = useRef(createPaymentAttempt());
-  const balanceDue = invoice.balanceDueText?.trim() ?? '';
+  const initialBalance = invoice.balanceDueText?.trim() ?? '';
   const currency = invoice.currency || 'NZD';
   const [paymentMethod, setPaymentMethod] = useState<CreatePaymentRequest['paymentMethod']>('bank_transfer');
-  const [amount, setAmount] = useState(balanceDue);
+  const [amount, setAmount] = useState(normalizePaymentAmount(initialBalance) ?? initialBalance);
   const [paymentDate, setPaymentDate] = useState(localIsoDate(new Date()));
   const [referenceNumber, setReferenceNumber] = useState('');
   const [notes, setNotes] = useState('');
   const [amountError, setAmountError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [shownBalance, setShownBalance] = useState(initialBalance);
+  const wasOpen = useRef(false);
+  const openInvoiceId = useRef<string | null>(null);
+  const appliedBalance = useRef(initialBalance);
+  const fieldsRef = useRef({ paymentMethod, amount, paymentDate, referenceNumber, notes });
+  fieldsRef.current = { paymentMethod, amount, paymentDate, referenceNumber, notes };
+  const balanceDue = shownBalance.trim();
+
+  const fingerprintFor = useCallback((nextAmount: string, fields: typeof fieldsRef.current) => paymentFingerprint({
+    invoiceId: invoice.id,
+    amount: nextAmount,
+    paymentMethod: fields.paymentMethod,
+    paymentDate: fields.paymentDate,
+    referenceNumber: fields.referenceNumber,
+    notes: fields.notes,
+  }), [invoice.id]);
 
   useEffect(() => {
-    if (!visible) return;
-    setPaymentMethod('bank_transfer');
-    setAmount(invoice.balanceDueText?.trim() ?? '');
-    setPaymentDate(localIsoDate(new Date()));
-    setReferenceNumber('');
-    setNotes('');
-    setAmountError(null);
-    setFormError(null);
-    attempt.current.succeed();
-  }, [visible, invoice.id, invoice.balanceDueText]);
+    if (!visible) {
+      wasOpen.current = false;
+      attempt.current.release();
+      return;
+    }
+    const nextBalance = invoice.balanceDueText?.trim() ?? '';
+    const opening = !wasOpen.current || openInvoiceId.current !== invoice.id;
+    if (opening) {
+      wasOpen.current = true;
+      openInvoiceId.current = invoice.id;
+      appliedBalance.current = nextBalance;
+      setPaymentMethod('bank_transfer');
+      setAmount(normalizePaymentAmount(nextBalance) ?? nextBalance);
+      setPaymentDate(localIsoDate(new Date()));
+      setReferenceNumber('');
+      setNotes('');
+      setAmountError(null);
+      setFormError(null);
+      setShownBalance(nextBalance);
+      return;
+    }
+    if (nextBalance === appliedBalance.current) return;
+    const nextAmount = normalizePaymentAmount(nextBalance) ?? nextBalance;
+    attempt.current.retarget(fingerprintFor(nextAmount, fieldsRef.current));
+    appliedBalance.current = nextBalance;
+    setAmount(nextAmount);
+    setShownBalance(nextBalance);
+  }, [visible, invoice.id, invoice.balanceDueText, fingerprintFor]);
 
   const remaining = remainingAfterPayment(balanceDue, amount);
   const selectedMethod = PAYMENT_METHOD_OPTIONS.find((method) => method.value === paymentMethod);
@@ -80,10 +116,15 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
       if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) setFormError('Enter the payment date as YYYY-MM-DD.');
       return;
     }
+    const normalizedAmount = normalizePaymentAmount(amount);
+    if (!normalizedAmount) {
+      setAmountError('Enter a positive amount.');
+      return;
+    }
     const payload: CreatePaymentRequest = {
       invoiceId: invoice.id,
       paymentMethod,
-      amount: amount.trim(),
+      amount: normalizedAmount,
       paymentDate: paymentDate.trim(),
       referenceNumber: referenceNumber.trim() || null,
       notes: notes.trim() || null,
@@ -95,7 +136,7 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
       paymentDate: payload.paymentDate,
       referenceNumber: payload.referenceNumber ?? '',
       notes: payload.notes ?? '',
-    }));
+    }), invoice.id);
     if (!key) return;
     setSubmitting(true);
     setFormError(null);
@@ -106,6 +147,21 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
       const failure = mapPaymentError(error, onlineManager.isOnline());
       if (failure.resetKey) attempt.current.resetKey();
       else attempt.current.release();
+      if (error instanceof PaymentExceedsBalanceError) {
+        const nextBalance = error.invoice.balanceDueText?.trim() ?? '';
+        const nextAmount = normalizePaymentAmount(nextBalance) ?? nextBalance;
+        attempt.current.retarget(paymentFingerprint({
+          invoiceId: invoice.id,
+          amount: nextAmount,
+          paymentMethod,
+          paymentDate,
+          referenceNumber,
+          notes,
+        }));
+        appliedBalance.current = nextBalance;
+        setShownBalance(nextBalance);
+        setAmount(nextAmount);
+      }
       setFormError(failure.message);
       if (error instanceof AuthApiError) {
         console.error('Payment was not recorded', { code: error.code, requestId: error.requestId, status: error.status });

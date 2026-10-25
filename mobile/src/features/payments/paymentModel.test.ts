@@ -6,7 +6,10 @@ import {
   formatPaymentHistory,
   invoicePaymentActions,
   mapPaymentError,
+  normalizePaymentAmount,
   paymentAmountError,
+  remainingAfterPayment,
+  resetPaymentAttemptStore,
 } from './paymentModel';
 
 describe('payment decimal formatting', () => {
@@ -49,9 +52,29 @@ describe('payment amount validation', () => {
     expect(paymentAmountError('9007199254740993.26', '9007199254740993.25')).toMatch(/balance/i);
     expect(paymentAmountError('10.01', '10.00')).toMatch(/balance/i);
   });
+
+  it('compares the cent value the server stores, including half-up at the exact balance', () => {
+    expect(normalizePaymentAmount('10.004')).toBe('10.00');
+    expect(normalizePaymentAmount('10.005')).toBe('10.01');
+    expect(normalizePaymentAmount('9.996')).toBe('10.00');
+    expect(normalizePaymentAmount('9007199254740993.254')).toBe('9007199254740993.25');
+    expect(normalizePaymentAmount('9007199254740993.255')).toBe('9007199254740993.26');
+    expect(paymentAmountError('10.004', '10.00')).toBeNull();
+    expect(paymentAmountError('10.005', '10.00')).toMatch(/balance/i);
+    expect(paymentAmountError('10.00', '10.00')).toBeNull();
+    expect(paymentAmountError('10.005', '10.01')).toBeNull();
+    expect(paymentAmountError('9007199254740993.255', '9007199254740993.25')).toMatch(/balance/i);
+    expect(remainingAfterPayment('10.00', '10.004')).toBe('0.00');
+    expect(remainingAfterPayment('10.00', '9.996')).toBe('0.00');
+    expect(remainingAfterPayment('10.00', '10.005')).toBeNull();
+  });
 });
 
 describe('payment idempotency key lifecycle', () => {
+  beforeEach(() => {
+    resetPaymentAttemptStore();
+  });
+
   it('reuses one key for a double tap and a retry, then mints a new key after an edit or success', () => {
     const keys = ['key-a', 'key-b', 'key-c'];
     const attempt = createPaymentAttempt(() => keys.shift() ?? 'missing');
@@ -71,6 +94,22 @@ describe('payment idempotency key lifecycle', () => {
     expect(attempt.claim('amount:10.00')).toBe('key-1');
     attempt.resetKey();
     expect(attempt.claim('amount:10.00')).toBe('key-2');
+  });
+
+  it('keeps the pending key when the sheet is dismissed and opened again after an unknown outcome', () => {
+    const first = createPaymentAttempt(() => 'key-a');
+    expect(first.claim('amount:50.00|ref:', 'invoice-1')).toBe('key-a');
+    first.release();
+    const reopened = createPaymentAttempt(() => 'key-b');
+    expect(reopened.claim('amount:50.00|ref:', 'invoice-1')).toBe('key-a');
+  });
+
+  it('keeps the same key when a balance refetch retargets the amount', () => {
+    const attempt = createPaymentAttempt(() => 'key-a');
+    expect(attempt.claim('amount:50.00|ref:REF-1', 'invoice-1')).toBe('key-a');
+    attempt.release();
+    attempt.retarget('amount:40.00|ref:REF-1');
+    expect(attempt.claim('amount:40.00|ref:REF-1', 'invoice-1')).toBe('key-a');
   });
 });
 

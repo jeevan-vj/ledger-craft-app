@@ -28,7 +28,7 @@ import { PaymentHistoryList } from '@/components/invoice/PaymentHistoryList';
 import {
   invoiceDetailQueryKey,
   invoicePaymentsQueryKey,
-  recordInvoicePayment,
+  submitInvoicePayment,
 } from '@/features/payments/paymentQueries';
 import { getStatusLabel, statusInk } from '@/utils/statusUtils';
 import { AppPressable } from '@/components/ui/AppPressable';
@@ -158,7 +158,7 @@ export default function InvoiceDetailScreen() {
   };
 
   const handlePaymentSubmit = async (paymentData: CreatePaymentRequest, idempotencyKey: string) => {
-    await recordInvoicePayment(queryClient, paymentData, idempotencyKey);
+    await submitInvoicePayment(queryClient, paymentData, idempotencyKey);
     setPaymentModalVisible(false);
     Alert.alert('Payment recorded', 'The invoice balance has been updated.');
   };

@@ -18,7 +18,7 @@ import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList } from '@/navigation/types';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { invoiceService } from '@/services/invoiceService';
-import { recordInvoicePayment } from '@/features/payments/paymentQueries';
+import { submitInvoicePayment } from '@/features/payments/paymentQueries';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
 import SwipeableInvoiceCard from '@/components/invoice/SwipeableInvoiceCard';
@@ -164,7 +164,11 @@ export default function InvoiceListScreen() {
   };
 
   const handlePaymentSubmit = async (paymentData: CreatePaymentRequest, idempotencyKey: string) => {
-    await recordInvoicePayment(queryClient, paymentData, idempotencyKey);
+    await submitInvoicePayment(queryClient, paymentData, idempotencyKey, (fresh) => {
+      setSelectedInvoiceForPayment(fresh);
+      setInvoices((current) => current.map((item) => (item.id === fresh.id ? fresh : item)));
+      setFilteredInvoices((current) => current.map((item) => (item.id === fresh.id ? fresh : item)));
+    });
     await loadInvoices();
     setPaymentModalVisible(false);
     setSelectedInvoiceForPayment(null);

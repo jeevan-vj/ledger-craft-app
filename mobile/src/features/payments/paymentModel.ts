@@ -1,5 +1,5 @@
-import DecimalJs from 'decimal.js';
 import { AuthApiError } from '@/features/auth/api/http';
+import type { Invoice } from '@/types/invoice';
 import { formatMoney } from '@/utils/money';
 import { randomId } from '@/utils/id';
 import { getPaymentMethodLabel } from '@/utils/statusUtils';
@@ -57,30 +57,39 @@ export function formatPaymentHistory(payment: PaymentHistoryInput, currency = 'N
   };
 }
 
-function decimalAmount(value: string): DecimalJs | null {
-  const trimmed = value.trim();
+/** Half-up to 2 decimal places, matching server `roundMoney`, without converting through Number. */
+export function normalizePaymentAmount(amount: string): string | null {
+  const trimmed = amount.trim();
   if (!/^\d+(\.\d+)?$/.test(trimmed)) return null;
-  try {
-    const amount = new DecimalJs(trimmed);
-    return amount.isFinite() ? amount : null;
-  } catch {
-    return null;
-  }
+  const [whole = '0', fraction = ''] = trimmed.split('.');
+  const kept = (fraction + '00').slice(0, 2);
+  let minor = BigInt(whole) * 100n + BigInt(kept);
+  const extra = fraction.slice(2);
+  if (extra.length > 0 && (extra[0] ?? '0') >= '5') minor += 1n;
+  const digits = minor.toString().padStart(3, '0');
+  return `${digits.slice(0, -2)}.${digits.slice(-2)}`;
+}
+
+function minorUnits(amount: string): bigint {
+  const [whole = '0', fraction = '00'] = amount.split('.');
+  return BigInt(whole) * 100n + BigInt(fraction);
 }
 
 export function paymentAmountError(amount: string, balanceDue: string): string | null {
-  const value = decimalAmount(amount);
-  const balance = decimalAmount(balanceDue);
-  if (!value || !value.greaterThan(0)) return 'Enter a positive amount.';
-  if (!balance || value.greaterThan(balance)) return 'Amount cannot exceed the balance due.';
+  const value = normalizePaymentAmount(amount);
+  const balance = normalizePaymentAmount(balanceDue);
+  if (!value || minorUnits(value) <= 0n) return 'Enter a positive amount.';
+  if (!balance || minorUnits(value) > minorUnits(balance)) return 'Amount cannot exceed the balance due.';
   return null;
 }
 
 export function remainingAfterPayment(balanceDue: string, amount: string): string | null {
-  const balance = decimalAmount(balanceDue);
-  const value = decimalAmount(amount);
-  if (!balance || !value || value.greaterThan(balance)) return null;
-  return balance.minus(value).toFixed(2);
+  const balance = normalizePaymentAmount(balanceDue);
+  const value = normalizePaymentAmount(amount);
+  if (!balance || !value || minorUnits(value) > minorUnits(balance)) return null;
+  const remaining = minorUnits(balance) - minorUnits(value);
+  const digits = remaining.toString().padStart(3, '0');
+  return `${digits.slice(0, -2)}.${digits.slice(-2)}`;
 }
 
 export function paymentFingerprint(input: {
@@ -104,6 +113,16 @@ export function paymentFingerprint(input: {
 export function invoicePaymentActions(status: string) {
   const paid = status === 'paid';
   return { recordPayment: !paid, edit: !paid };
+}
+
+export class PaymentExceedsBalanceError extends AuthApiError {
+  readonly invoice: Invoice;
+
+  constructor(invoice: Invoice, cause: AuthApiError) {
+    super(cause.message, cause.status, 'PAYMENT_EXCEEDS_BALANCE', cause.requestId);
+    this.name = 'PaymentExceedsBalanceError';
+    this.invoice = invoice;
+  }
 }
 
 export function mapPaymentError(error: unknown, online: boolean): PaymentFailure {
@@ -134,29 +153,53 @@ export function mapPaymentError(error: unknown, online: boolean): PaymentFailure
   return { kind: 'other', message: 'The payment could not be recorded.' };
 }
 
+const pendingKeys = new Map<string, Map<string, string>>();
+const inFlightInvoices = new Set<string>();
+
+export function resetPaymentAttemptStore() {
+  pendingKeys.clear();
+  inFlightInvoices.clear();
+}
+
 export function createPaymentAttempt(createKey: () => string = randomId) {
-  let inFlight = false;
-  let key: string | null = null;
+  let invoiceId = '';
   let fingerprint = '';
   return {
-    claim(nextFingerprint: string): string | null {
-      if (inFlight) return null;
-      if (key !== null && nextFingerprint !== fingerprint) key = null;
+    claim(nextFingerprint: string, nextInvoiceId = ''): string | null {
+      if (inFlightInvoices.has(nextInvoiceId)) return null;
+      let keys = pendingKeys.get(nextInvoiceId);
+      if (!keys) {
+        keys = new Map();
+        pendingKeys.set(nextInvoiceId, keys);
+      }
+      let key = keys.get(nextFingerprint);
+      if (!key) {
+        key = createKey();
+        keys.set(nextFingerprint, key);
+      }
+      inFlightInvoices.add(nextInvoiceId);
+      invoiceId = nextInvoiceId;
       fingerprint = nextFingerprint;
-      inFlight = true;
-      key ??= createKey();
       return key;
     },
     release() {
-      inFlight = false;
+      inFlightInvoices.delete(invoiceId);
     },
     succeed() {
-      inFlight = false;
-      key = null;
+      inFlightInvoices.delete(invoiceId);
+      pendingKeys.get(invoiceId)?.delete(fingerprint);
     },
     resetKey() {
-      inFlight = false;
-      key = null;
+      inFlightInvoices.delete(invoiceId);
+      pendingKeys.get(invoiceId)?.delete(fingerprint);
+    },
+    retarget(nextFingerprint: string) {
+      const keys = pendingKeys.get(invoiceId);
+      const key = keys?.get(fingerprint);
+      if (!keys || !key || nextFingerprint === fingerprint) return;
+      keys.delete(fingerprint);
+      if (!keys.has(nextFingerprint)) keys.set(nextFingerprint, key);
+      fingerprint = nextFingerprint;
     },
   };
 }

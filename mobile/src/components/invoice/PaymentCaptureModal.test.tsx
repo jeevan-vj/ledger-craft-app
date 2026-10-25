@@ -2,6 +2,7 @@ import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { onlineManager } from '@tanstack/react-query';
 import { AuthApiError } from '@/features/auth/api/http';
+import { PaymentExceedsBalanceError, resetPaymentAttemptStore } from '@/features/payments/paymentModel';
 import { mockInvoice } from '@/__tests__/fixtures/invoice.fixtures';
 import PaymentCaptureModal from './PaymentCaptureModal';
 
@@ -30,6 +31,7 @@ function renderModal(onSubmit = jest.fn().mockResolvedValue(undefined)) {
 describe('PaymentCaptureModal', () => {
   beforeEach(() => {
     onlineManager.setOnline(true);
+    resetPaymentAttemptStore();
   });
 
   it('defaults the amount to the exact balance due', () => {
@@ -107,5 +109,79 @@ describe('PaymentCaptureModal', () => {
     fireEvent.press(screen.getByLabelText('Record payment'));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(3));
     expect(onSubmit.mock.calls[2]?.[1]).not.toBe(balanceKey);
+  });
+
+  it('updates the open balance and amount from the refetched invoice before showing the exceeds error', async () => {
+    const refreshed = { ...invoice, balanceDue: 40, balanceDueText: '40.00' };
+    const onSubmit = jest.fn()
+      .mockRejectedValueOnce(new PaymentExceedsBalanceError(
+        refreshed,
+        new AuthApiError('Payment exceeds invoice balance', 400, 'PAYMENT_EXCEEDS_BALANCE'),
+      ))
+      .mockResolvedValueOnce(undefined);
+    const screen = renderModal(onSubmit);
+    fireEvent.changeText(screen.getByLabelText('Payment reference'), 'REF-1');
+
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    expect(await screen.findByText(/more than the balance due/i)).toBeTruthy();
+    expect(screen.getByLabelText('Payment amount').props.value).toBe('40.00');
+    expect(screen.getByText('$40.00')).toBeTruthy();
+    expect(screen.getByLabelText('Payment reference').props.value).toBe('REF-1');
+    const key = onSubmit.mock.calls[0]?.[1];
+
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[1]).toBe(key);
+    expect(onSubmit.mock.calls[1]?.[0].amount).toBe('40.00');
+    expect(onSubmit.mock.calls[1]?.[0].referenceNumber).toBe('REF-1');
+  });
+
+  it('reuses the idempotency key when the sheet is dismissed and reopened after a timeout', async () => {
+    const onSubmit = jest.fn()
+      .mockRejectedValueOnce(new Error('The request timed out'))
+      .mockResolvedValueOnce(undefined);
+    const props = { invoice, onSubmit, onClose: jest.fn() };
+    const screen = render(<PaymentCaptureModal visible {...props} />);
+
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    expect(await screen.findByText(/timed out/i)).toBeTruthy();
+    const key = onSubmit.mock.calls[0]?.[1];
+    screen.unmount();
+
+    const reopened = render(<PaymentCaptureModal visible {...props} />);
+    fireEvent.press(reopened.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[1]).toBe(key);
+    expect(onSubmit.mock.calls[1]?.[0].amount).toBe('50.00');
+  });
+
+  it('does not reset the idempotency key when balanceDueText changes', async () => {
+    const onSubmit = jest.fn()
+      .mockRejectedValueOnce(new Error('The request timed out'))
+      .mockResolvedValueOnce(undefined);
+    const screen = render(
+      <PaymentCaptureModal visible invoice={invoice} onSubmit={onSubmit} onClose={jest.fn()} />,
+    );
+    fireEvent.changeText(screen.getByLabelText('Payment reference'), 'REF-9');
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    expect(await screen.findByText(/timed out/i)).toBeTruthy();
+    const key = onSubmit.mock.calls[0]?.[1];
+
+    screen.rerender(
+      <PaymentCaptureModal
+        visible
+        invoice={{ ...invoice, balanceDue: 40, balanceDueText: '40.00' }}
+        onSubmit={onSubmit}
+        onClose={jest.fn()}
+      />,
+    );
+    expect(screen.getByLabelText('Payment amount').props.value).toBe('40.00');
+    expect(screen.getByLabelText('Payment reference').props.value).toBe('REF-9');
+
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[1]).toBe(key);
+    expect(onSubmit.mock.calls[1]?.[0].amount).toBe('40.00');
+    expect(onSubmit.mock.calls[1]?.[0].referenceNumber).toBe('REF-9');
   });
 });
