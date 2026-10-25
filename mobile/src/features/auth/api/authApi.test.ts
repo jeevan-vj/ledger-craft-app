@@ -175,5 +175,14 @@ describe('mobile authApi', () => {
       'http://127.0.0.1:3001/api/auth/sign-out',
       expect.objectContaining({ method: 'POST' }),
     );
+
+    // Better Auth parses the body as JSON whenever Content-Type is JSON, so an empty body
+    // returns 400 "Invalid JSON in request body" and the session is never revoked.
+    const signOutInit = (fetch as jest.Mock).mock.calls[1][1] as RequestInit & {
+      headers: Record<string, string>;
+    };
+    expect(signOutInit.headers['Content-Type']).toBe('application/json');
+    expect(signOutInit.body).toBe('{}');
+    expect(JSON.parse(signOutInit.body as string)).toEqual({});
   });
 });

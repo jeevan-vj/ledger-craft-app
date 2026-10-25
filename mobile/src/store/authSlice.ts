@@ -152,6 +152,11 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   signOut: async () => {
     try {
       await signOutSession();
+    } catch {
+      // Local sign-out must still complete when the server call fails (offline, 4xx, 5xx).
+      // apiFetch already reports network and 5xx failures to Sentry, and 4xx are not reported
+      // by design, so swallow here instead of rethrowing an unhandled rejection to the
+      // Settings button handler.
     } finally {
       clearServerState();
       set({

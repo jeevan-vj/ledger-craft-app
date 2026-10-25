@@ -75,6 +75,61 @@ describe('session routes', () => {
     });
   });
 
+  it('sign-out with a JSON content type needs a JSON body and then revokes the session', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const email = `signout-${crypto.randomUUID()}@example.com`;
+
+        const signUp = await app.request('/api/auth/sign-up/email', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Origin: 'http://localhost:8080',
+          },
+          body: JSON.stringify({ name: 'Sign Out', email, password: 'password123' }),
+        });
+        expect(signUp.status).toBeLessThan(400);
+        const sessionHeaders = {
+          'Content-Type': 'application/json',
+          Cookie: cookieHeader(signUp),
+          Origin: 'http://localhost:8080',
+        };
+
+        // What the mobile app used to send: JSON content type with an empty body. Over the wire
+        // (Content-Length: 0) the server sees an empty, non-null body, so model it with ''.
+        const emptyBody = await app.request('/api/auth/sign-out', {
+          method: 'POST',
+          headers: sessionHeaders,
+          body: '',
+        });
+        expect(emptyBody.status).toBe(400);
+        const stillSignedIn = await app.request('/api/me', { headers: sessionHeaders });
+        expect(stillSignedIn.status).toBe(200);
+
+        // What the mobile app sends now.
+        const signOut = await app.request('/api/auth/sign-out', {
+          method: 'POST',
+          headers: sessionHeaders,
+          body: '{}',
+        });
+        expect(signOut.status).toBe(200);
+        expect(await signOut.json()).toEqual({ success: true });
+
+        // The old cookie must no longer work, because the server session was revoked.
+        const afterSignOut = await app.request('/api/me', {
+          headers: { Cookie: sessionHeaders.Cookie, Origin: 'http://localhost:8080' },
+        });
+        expect(afterSignOut.status).toBe(401);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
   it('does not point Vitest at the app database', () => {
     expect(new URL(getDatabaseUrl()).pathname).toMatch(/ledgercraft-sqlite-test-[^/]+\/ledgercraft_test\.sqlite$/);
   });
