@@ -108,7 +108,7 @@ async function createPostedInvoice(
   app: TestApp,
   headers: Record<string, string>,
   customerId: string,
-  input: { date: string; amount: string; taxRate?: string; taxInclusive?: boolean; description: string },
+  input: { date: string; amount: string; taxRate?: string; taxInclusive?: boolean; description: string; currency?: string },
 ) {
   const draft = await requestJson(app, '/api/invoices', {
     method: 'POST',
@@ -117,7 +117,7 @@ async function createPostedInvoice(
       customerId,
       date: input.date,
       dueDate: input.date,
-      currency: 'NZD',
+      currency: input.currency ?? 'NZD',
       taxInclusive: input.taxInclusive ?? false,
       taxRate: input.taxRate ?? '15',
       items: [{ description: input.description, quantity: '1', rate: input.amount }],
@@ -475,6 +475,32 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         await writeEvidence('restore-cycle-financial-report.json', { taxSummary: (await wide()).taxSummary, generalLedger: ledger });
       } finally {
         await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
+  it('excludes foreign-currency documents from the NZD GST return and flags them', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'Foreign Currency GST');
+        await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-05-01', amount: '200.00', description: 'NZD sale' });
+        await requestJson(app, '/api/exchange-rates', {
+          method: 'POST',
+          headers: org.headers,
+          body: JSON.stringify({ currencyCode: 'USD', effectiveDate: '2026-04-01', rate: '1.60000' }),
+        }, 201);
+        await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-05-02', amount: '100.00', currency: 'USD', description: 'USD sale' });
+        const report = await financialReport(app, org.cookie);
+        expectGst(report, '30.00', '0.00', '30.00', 'payable');
+        expect(report.taxSummary.foreignCurrencyDocumentsExcluded).toBe(1);
+        expect(report.taxSummary.warnings).toHaveLength(1);
+        expect(report.taxSummary.warnings[0]).toMatch(/foreign-currency/);
+        await writeEvidence('foreign-currency-financial-report.json', { taxSummary: report.taxSummary });
+      } finally {
+        await sql.end();
       }
     });
   });

@@ -1,8 +1,9 @@
-import { and, asc, eq, gte, inArray, lt, lte } from 'drizzle-orm';
+import { and, asc, eq, gte, inArray, lt, lte, ne } from 'drizzle-orm';
 import type { FinancialReportQuery } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { customers } from '../../db/schema/customers';
+import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { bills, vendors } from '../../db/schema/purchases';
 
@@ -114,4 +115,18 @@ export async function payables(tx: Database, organisationId: string, query: Fina
 export async function account(tx: Database, organisationId: string, accountId: string) {
   const [row] = await tx.select().from(accounts).where(and(eq(accounts.organisationId, organisationId), eq(accounts.id, accountId)));
   return row ?? null;
+}
+
+/**
+ * Ids of invoices, bills and expenses not denominated in the report's base
+ * currency. Their journals carry document-currency amounts (no FX conversion at
+ * posting time), so they must not be summed into a base-currency GST return.
+ */
+export async function foreignCurrencyDocumentIds(tx: Database, organisationId: string, baseCurrency: string): Promise<Set<string>> {
+  const [invoiceRows, billRows, expenseRows] = await Promise.all([
+    tx.select({ id: invoices.id }).from(invoices).where(and(eq(invoices.organisationId, organisationId), ne(invoices.currency, baseCurrency))),
+    tx.select({ id: bills.id }).from(bills).where(and(eq(bills.organisationId, organisationId), ne(bills.currency, baseCurrency))),
+    tx.select({ id: expenses.id }).from(expenses).where(and(eq(expenses.organisationId, organisationId), ne(expenses.currency, baseCurrency))),
+  ]);
+  return new Set([...invoiceRows, ...billRows, ...expenseRows].map((row) => row.id));
 }

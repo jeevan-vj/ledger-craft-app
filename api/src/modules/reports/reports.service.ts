@@ -17,15 +17,22 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     ]);
     // GST is read from the journals that actually carry 2150/2200. Payment
     // journals do not allocate GST, so the report's cash filter is not a valid
-    // alternate GST basis.
-    const taxRows = query.basis === 'accrual'
+    // alternate GST basis: GST is always reported on the invoice basis.
+    const ledgerTaxRows = query.basis === 'accrual'
       ? periodRows
       : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual' });
+    const foreignIds = await repo.foreignCurrencyDocumentIds(tx, organisationId, query.baseCurrency);
+    const excludedDocuments = new Set<string>();
+    const taxRows = ledgerTaxRows.filter((row) => {
+      if (!row.referenceId || !foreignIds.has(row.referenceId)) return true;
+      if (row.accountNumber === '2150' || row.accountNumber === '2200') excludedDocuments.add(row.referenceId);
+      return false;
+    });
     let comparison;
     if (query.comparisonFrom && query.comparisonTo) {
       comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
     }
-    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, taxRows, receivables, payables, comparison }));
+    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, taxRows, foreignCurrencyGstDocuments: excludedDocuments.size, receivables, payables, comparison }));
 }
 
 export async function generalLedgerForUser(db: Database, userId: string, query: FinancialReportQuery) {

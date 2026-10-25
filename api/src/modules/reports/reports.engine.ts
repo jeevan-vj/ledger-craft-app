@@ -53,7 +53,7 @@ function summary(rows: DocumentRow[]) {
   return { subtotal: money(totals.subtotal), tax: money(totals.tax), total: money(totals.total), paid: money(totals.paid), outstanding: money(totals.outstanding) };
 }
 
-export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
+export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; foreignCurrencyGstDocuments?: number; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
   const { query, periodRows, openingRows } = input;
   const period = aggregate(periodRows); const opening = aggregate(openingRows);
   const rows = accountRows(periodRows);
@@ -95,6 +95,10 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
       collected: money(outputGst), paid: money(inputGst), netPayable: money(netGst),
       outputGst: money(outputGst), inputGst: money(inputGst), netGst: money(netGst), position,
       gstAccounts, keyAccounts,
+      foreignCurrencyDocumentsExcluded: input.foreignCurrencyGstDocuments ?? 0,
+      warnings: input.foreignCurrencyGstDocuments
+        ? [`${input.foreignCurrencyGstDocuments} foreign-currency document(s) excluded from GST: amounts are not converted to ${query.baseCurrency}. Review them manually before filing.`]
+        : [],
     },
     comparison: input.comparison ? { from: input.comparison.from, to: input.comparison.to, revenue: money(compRevenue), expenses: money(compExpenses), netIncome: money(compRevenue.sub(compExpenses)), netCashFlow: money(comparisonRows.filter((row) => ['bank', 'cash'].includes(row.accountType)).reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero())) } : null,
   });

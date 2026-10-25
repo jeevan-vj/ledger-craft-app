@@ -114,6 +114,9 @@ export const financialReportResponseSchema = z.object({
     position: z.enum(['payable', 'refundable', 'nil']),
     gstAccounts: z.array(reportAccountRowSchema),
     keyAccounts: z.array(reportAccountRowSchema),
+    /** Non-base-currency documents with GST lines left out of this return. */
+    foreignCurrencyDocumentsExcluded: z.number().int().nonnegative().default(0),
+    warnings: z.array(z.string()).default([]),
   }),
   comparison: reportComparisonSchema.nullable(),
 });
