@@ -1,5 +1,6 @@
 import React from 'react';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
 import { StyleSheet, type ViewStyle } from 'react-native';
 import DashboardScreen from './DashboardScreen';
@@ -68,6 +69,15 @@ function flatStyle(style: unknown): ViewStyle {
   return StyleSheet.flatten(style as ViewStyle) ?? {};
 }
 
+function renderHome() {
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  return render(
+    <QueryClientProvider client={client}>
+      <DashboardScreen />
+    </QueryClientProvider>,
+  );
+}
+
 describe('Home quick actions', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
@@ -82,7 +92,7 @@ describe('Home quick actions', () => {
   });
 
   it('renders the shared server-authoritative report widgets', async () => {
-    const screen = render(<DashboardScreen />);
+    const screen = renderHome();
     expect(await screen.findByText('Business reports')).toBeTruthy();
     expect(screen.getByText('Posted ledger')).toBeTruthy();
     expect(screen.getByLabelText('Closing cash $1,234.56')).toBeTruthy();
@@ -90,7 +100,7 @@ describe('Home quick actions', () => {
   });
 
   it('renders home actions that open distinct screens', async () => {
-    const { findByRole } = render(<DashboardScreen />);
+    const { findByRole } = renderHome();
 
     expect(await findByRole('button', { name: 'New invoice' })).toHaveProp(
       'accessibilityHint',
@@ -153,7 +163,7 @@ describe('Home quick actions', () => {
   });
 
   it('renders Continue as a lime button and remembers Dismiss', async () => {
-    const first = render(<DashboardScreen />);
+    const first = renderHome();
     const continueButton = await first.findByRole('button', { name: 'Continue' });
     expect(flatStyle(continueButton.props.style).backgroundColor).toBe(darkPalette.accent);
 
@@ -165,7 +175,7 @@ describe('Home quick actions', () => {
     (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (storedKey: string) => (
       storedKey === key ? value : null
     ));
-    const second = render(<DashboardScreen />);
+    const second = renderHome();
     expect(await second.findByText("You're all caught up")).toBeTruthy();
     expect(second.queryByText('Finish setting up')).toBeNull();
     await waitFor(() => {

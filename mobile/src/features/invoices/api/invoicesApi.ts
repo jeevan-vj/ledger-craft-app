@@ -124,6 +124,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     total: Number(dto.total),
     totalPaid: Number(dto.totalPaid),
     balanceDue: Number(dto.balanceDue),
+    balanceDueText: dto.balanceDue,
     paymentStatus: dto.paymentStatus,
     taxInclusive: dto.taxInclusive,
     status: dto.status,

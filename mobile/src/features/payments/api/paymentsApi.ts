@@ -42,10 +42,10 @@ function toPayment(dto: PaymentDto): Payment {
     invoiceId: dto.invoiceId,
     userId: '',
     paymentMethod: dto.paymentMethod,
-    amount: Number(dto.amount),
+    amount: dto.amount,
     paymentDate: dto.paymentDate,
-    referenceNumber: dto.referenceNumber ?? undefined,
-    notes: dto.notes ?? undefined,
+    referenceNumber: dto.referenceNumber,
+    notes: dto.notes,
     status: dto.status,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
@@ -76,9 +76,20 @@ export const paymentsApi = {
     return toPayment(await apiRequest<PaymentDto>(`/api/payments/${id}`));
   },
 
-  async create(input: Record<string, unknown>): Promise<Payment> {
+  async create(input: {
+    invoiceId: string;
+    paymentMethod: Payment['paymentMethod'];
+    amount: string;
+    paymentDate: string;
+    referenceNumber: string | null;
+    notes: string | null;
+  }, idempotencyKey: string): Promise<Payment> {
     return toPayment(
-      await apiRequest<PaymentDto>('/api/payments', { method: 'POST', body: JSON.stringify(input) }),
+      await apiRequest<PaymentDto>('/api/payments', {
+        method: 'POST',
+        headers: { 'Idempotency-Key': idempotencyKey },
+        body: JSON.stringify(input),
+      }),
     );
   },
 };

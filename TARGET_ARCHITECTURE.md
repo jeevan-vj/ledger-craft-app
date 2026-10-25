@@ -9,6 +9,21 @@ optional `paymentId` and `invoiceId` filters inside the active organisation.
 Payment maths, balance recalculation, overpayment rejection, and journal
 posting are unchanged. No migration was added.
 
+**Mobile invoice payments (implemented locally, 2026-10-25):** The Expo invoice
+detail screen lists payments with exact decimal amounts, method, date, and
+reference. Record payment defaults to the server balance-due string, normalises
+the amount to 2 decimal places with half-up, and posts that cent value to
+`/api/payments` with one `Idempotency-Key` for the attempt. The key is kept per
+invoice and request fingerprint, including after the sheet is dismissed. A user
+edit, a successful submit, or `409 IDEMPOTENCY_CONFLICT` mints a new key.
+`PAYMENT_EXCEEDS_BALANCE` waits for the refetched invoice, then updates the open
+sheet balance and amount on the list and the detail screen before showing the
+error. Offline attempts are shown and not queued. Paid invoices hide Record
+payment and Edit. Success invalidates the invoice, payment, and dashboard
+queries. The mobile payment service no longer falls back to Supabase. Receipt
+auto-create and client receipt PDFs remain a later slice, including when
+`EXPO_PUBLIC_RECEIPTS_API` is set. Server payment maths are unchanged.
+
 Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
 
 **Akaunting core parity gate (implemented locally, 2026-10-23):**

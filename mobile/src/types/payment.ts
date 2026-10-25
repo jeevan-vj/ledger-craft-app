@@ -5,11 +5,11 @@ export interface Payment {
   invoiceId: string;
   userId: string;
   paymentMethod: 'bank_transfer' | 'cash' | 'cheque' | 'credit_card' | 'online';
-  amount: number;
+  amount: string;
   paymentDate: string;
-  referenceNumber?: string;
-  notes?: string;
-  status: 'completed' | 'pending' | 'failed';
+  referenceNumber?: string | null;
+  notes?: string | null;
+  status: 'pending' | 'completed' | 'failed' | 'cancelled' | 'refunded';
   createdAt: string;
   updatedAt: string;
 }
@@ -29,11 +29,10 @@ export interface Receipt {
 export interface CreatePaymentRequest {
   invoiceId: string;
   paymentMethod: 'bank_transfer' | 'cash' | 'cheque' | 'credit_card' | 'online';
-  amount: number;
+  amount: string;
   paymentDate: string;
-  referenceNumber?: string;
-  notes?: string;
-  generateReceipt?: boolean;
+  referenceNumber?: string | null;
+  notes?: string | null;
 }
 
 export interface EnhancedInvoice {

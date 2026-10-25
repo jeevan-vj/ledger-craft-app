@@ -91,6 +91,8 @@ export interface Invoice {
   total: number;
   totalPaid?: number;
   balanceDue?: number;
+  /** Exact balance-due decimal from the API. Payment capture uses this string. */
+  balanceDueText?: string;
   paymentStatus?: 'unpaid' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled' | string;
   taxInclusive?: boolean;
   status: InvoiceStatus;
