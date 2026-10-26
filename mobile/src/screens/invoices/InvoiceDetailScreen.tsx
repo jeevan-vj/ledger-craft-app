@@ -10,11 +10,11 @@ import {
   Modal,
 } from 'react-native';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { CompositeNavigationProp, useNavigation, useRoute, RouteProp } from '@react-navigation/native';
+import { CompositeNavigationProp, useNavigation, useRoute, RouteProp, type NavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { Feather } from '@expo/vector-icons';
-import { InvoiceStackParamList, MainTabParamList } from '@/navigation/types';
+import { InvoiceStackParamList, MainTabParamList, type RootStackParamList } from '@/navigation/types';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { BusinessProfile } from '@/types/invoice';
@@ -83,7 +83,7 @@ export default function InvoiceDetailScreen() {
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
   const [history, setHistory] = useState<{ id: string; action: string; createdAt: string }[]>([]);
-  const [attachments, setAttachments] = useState<{ id: string; filename: string; size: number }[]>([]);
+  const [attachments, setAttachments] = useState<{ id: string; filename: string; size: number; contentType: string; role: 'attachment' | 'source_document'; locked: boolean }[]>([]);
   const loading = invoiceQuery.isPending;
   const loadError = invoiceQuery.isError ? 'This invoice could not be loaded.' : null;
 
@@ -256,6 +256,15 @@ export default function InvoiceDetailScreen() {
             </Text>
           </Text>
         </View>
+
+        {invoice.sourceImportDocumentId ? <View style={styles.card}>
+          <Text style={styles.sectionTitle}>Source document</Text>
+          <View style={styles.detailRow}><Text style={styles.detailLabel}>External issuer</Text><Text style={styles.detailValue}>{invoice.externalIssuerName ?? '—'}</Text></View>
+          <View style={styles.detailRow}><Text style={styles.detailLabel}>External number</Text><Text style={styles.detailValue}>{invoice.externalNumber ?? '—'}</Text></View>
+          <AppPressable accessibilityRole="button" accessibilityLabel="View original source document" onPress={() => { const source = attachments.find((file) => file.role === 'source_document'); (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportOriginal', { importId: invoice.sourceImportDocumentId!, filename: source?.filename ?? invoice.externalNumber ?? 'Original document', mimeType: source?.contentType ?? 'application/pdf' }); }} style={({ pressed }) => [styles.lifecycleAction, pressed && { opacity: 0.7 }]}>
+            <Text style={[styles.lifecycleLabel, { color: palette.accentText }]}>View original</Text><Feather name="external-link" size={18} color={palette.accentText} />
+          </AppPressable>
+        </View> : null}
 
         <View style={styles.card}>
           <Text style={styles.sectionTitle}>Invoice lifecycle</Text>

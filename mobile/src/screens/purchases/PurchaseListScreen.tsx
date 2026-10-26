@@ -12,21 +12,25 @@ import {
 } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useQuery } from '@tanstack/react-query';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, type NavigationProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FilterPills } from '@/components/ui/FilterPills';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type BillDto, type VendorDto } from '@/features/purchases/api/purchasesApi';
-import type { PurchaseStackParamList } from '@/navigation/types';
+import type { PurchaseStackParamList, RootStackParamList } from '@/navigation/types';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
+import { canImportInvoices } from '@/features/auth/invoiceAccess';
+import { useStore } from '@/store';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
 type Mode = 'bills' | 'vendors';
+
+const headerActionsStyle = { flexDirection: 'row', alignItems: 'center', gap: space.sm } as const;
 
 export default function PurchaseListScreen() {
   const theme = useTheme();
@@ -34,6 +38,7 @@ export default function PurchaseListScreen() {
   const styles = createStyles(theme);
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<Navigation>();
+  const canImport = useStore((state) => canImportInvoices(state.permissions));
   const [mode, setMode] = useState<Mode>('bills');
   const [search, setSearch] = useState('');
   const bills = useQuery({ queryKey: ['purchases', 'bills'], queryFn: purchasesApi.listBills });
@@ -47,11 +52,12 @@ export default function PurchaseListScreen() {
         hideWhenScrolling: true,
         onChangeText: (event) => setSearch(event.nativeEvent.text),
       } : undefined,
-      headerRight: () => mode === 'bills' ? (
+      headerRight: () => mode === 'bills' ? <View style={headerActionsStyle}>
+        {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'purchases' })} /> : null}
         <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={() => navigation.navigate('BillCreate')} />
-      ) : null,
+      </View> : null,
     });
-  }, [mode, navigation]);
+  }, [canImport, mode, navigation]);
 
   const billRows = useMemo(() => {
     const needle = search.trim().toLowerCase();

@@ -74,7 +74,7 @@ export function createApp(deps: AppDependencies = {}) {
     cors({
       origin: getBetterAuthTrustedOrigins(),
       credentials: true,
-      allowHeaders: ['Content-Type', 'Authorization'],
+      allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
       exposeHeaders: ['set-auth-token'],
       allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     }),

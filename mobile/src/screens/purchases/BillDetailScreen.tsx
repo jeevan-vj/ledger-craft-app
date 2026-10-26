@@ -1,7 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native';
+import { useNavigation, useRoute, type NavigationProp, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import { BillPaymentSheet } from '@/components/purchases/BillPaymentSheet';
@@ -12,7 +12,7 @@ import { ModernButton } from '@/components/ui/ModernButton';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type RecordBillPaymentRequest } from '@/features/purchases/api/purchasesApi';
 import { objectsApi } from '@/features/storage/api/objectsApi';
-import type { PurchaseStackParamList } from '@/navigation/types';
+import type { PurchaseStackParamList, RootStackParamList } from '@/navigation/types';
 import { space } from '@/theme/tokens';
 import { formatMoney } from '@/utils/money';
 import { errorHaptic, successHaptic } from '@/utils/haptics';
@@ -109,6 +109,11 @@ export default function BillDetailScreen() {
         <ListRow label="Bill date" value={formatDate(item.issueDate)} showChevron={false} />
         <ListRow label="Due date" value={formatDate(item.dueDate)} showChevron={false} />
       </GroupedSection>
+      {item.sourceImportDocumentId ? <GroupedSection title="Source document">
+        <ListRow label="External issuer" value={item.externalIssuerName ?? item.vendorName} showChevron={false} />
+        <ListRow label="External number" value={item.externalNumber ?? item.vendorReference ?? '—'} showChevron={false} />
+        <ListRow label="View original" accessibilityHint="Downloads and opens the locked source document" onPress={() => { const source = item.attachments.find((attachment) => attachment.role === 'source_document'); (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportOriginal', { importId: item.sourceImportDocumentId!, filename: source?.filename ?? item.externalNumber ?? 'Original document', mimeType: source?.contentType ?? 'application/pdf' }); }} />
+      </GroupedSection> : null}
       <GroupedSection title="Line items">
         {item.lines.map((line) => <ListRow key={line.id} label={line.description} subtitle={line.accountName ?? 'No account selected'} value={formatMoney(line.total, item.currency)} showChevron={false} />)}
       </GroupedSection>
@@ -119,7 +124,7 @@ export default function BillDetailScreen() {
         <ListRow label="Balance due" value={formatMoney(item.balanceDue, item.currency)} showChevron={false} />
       </GroupedSection>
       <GroupedSection title="Attachments">
-        {item.attachments.map((attachment) => <ListRow key={attachment.id} label={attachment.filename} subtitle={`${Math.ceil(attachment.size / 1024)} KB · tap to remove`} onPress={() => Alert.alert('Remove attachment?', attachment.filename, [{ text: 'Keep', style: 'cancel' }, { text: 'Remove', style: 'destructive', onPress: () => removeAttachment.mutate(attachment.id) }])} />)}
+        {item.attachments.filter((attachment) => attachment.role !== 'source_document').map((attachment) => <ListRow key={attachment.id} label={attachment.filename} subtitle={`${Math.ceil(attachment.size / 1024)} KB · tap to remove`} onPress={() => Alert.alert('Remove attachment?', attachment.filename, [{ text: 'Keep', style: 'cancel' }, { text: 'Remove', style: 'destructive', onPress: () => removeAttachment.mutate(attachment.id) }])} />)}
         <ListRow label={attach.isPending ? 'Adding receipt…' : 'Add receipt photo'} accessibilityHint="Opens your photo library" onPress={() => attach.mutate()} disabled={attach.isPending} />
       </GroupedSection>
       <GroupedSection title="History">{item.history.map((entry) => <ListRow key={entry.id} label={entry.summary} subtitle={new Date(entry.createdAt).toLocaleString('en-NZ')} showChevron={false} />)}</GroupedSection>

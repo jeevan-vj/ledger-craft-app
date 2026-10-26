@@ -22,6 +22,20 @@ describe('health routes', () => {
     expect(await response.json()).toEqual({ status: 'ok' });
   });
 
+  it('allows idempotent browser writes through CORS preflight', async () => {
+    const response = await createApp().request('/api/invoice-imports', {
+      method: 'OPTIONS',
+      headers: {
+        Origin: 'http://127.0.0.1:8080',
+        'Access-Control-Request-Method': 'POST',
+        'Access-Control-Request-Headers': 'content-type,idempotency-key',
+      },
+    });
+
+    expect(response.status).toBe(204);
+    expect(response.headers.get('access-control-allow-headers')?.toLowerCase()).toContain('idempotency-key');
+  });
+
   it('GET /readyz returns 200 when the database check passes', async () => {
     const app = createApp({ checkDatabase: async () => true });
     const response = await app.request('/readyz');

@@ -94,5 +94,15 @@ describe('InvoiceImportReview', () => {
     render(<InvoiceImportReview {...defaultProps} review={review({ provider: 'mock', mock: true })} />);
     expect(screen.getByText('Mock extraction — demo data')).toBeInTheDocument();
   });
+
+  it('keeps the document preview content-sized instead of stretching a dark empty panel', () => {
+    render(<InvoiceImportReview {...defaultProps} review={review()} />);
+    expect(screen.getByRole('region', { name: 'Original document preview' })).toHaveClass('self-start');
+  });
+
+  it('keeps the line GST field visible inside the review panel', () => {
+    render(<InvoiceImportReview {...defaultProps} review={review()} />);
+    expect(screen.getByRole('textbox', { name: 'Line 1 GST rate' })).toHaveClass('min-w-0');
+  });
 });
 

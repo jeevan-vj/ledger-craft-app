@@ -42,6 +42,9 @@ export interface BillDto {
   vendorId: string;
   vendorName: string;
   vendorReference: string | null;
+  externalNumber?: string | null;
+  externalIssuerName?: string | null;
+  sourceImportDocumentId?: string | null;
   issueDate: string;
   dueDate: string;
   lifecycleStatus: 'draft' | 'received' | 'void';
@@ -57,7 +60,7 @@ export interface BillDto {
   notes: string | null;
   lines: BillLineDto[];
   payments: BillPaymentDto[];
-  attachments: { id: string; objectKey: string; filename: string; contentType: string; size: number; createdAt: string }[];
+  attachments: { id: string; objectKey: string; filename: string; contentType: string; size: number; role?: 'attachment' | 'source_document'; locked?: boolean; createdAt: string }[];
   history: { id: string; event: string; summary: string; createdAt: string }[];
   createdAt: string;
   updatedAt: string;

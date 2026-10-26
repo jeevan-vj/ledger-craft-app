@@ -7,6 +7,7 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
     screens: {
       PublicInvoice: 'shared/invoice/:shareToken',
       PublicQuote: 'shared/quote/:shareToken',
+      ImportCapture: 'imports/new/:entry',
       Main: {
         screens: {
           Invoices: {

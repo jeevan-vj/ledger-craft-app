@@ -1,5 +1,5 @@
 import { captureApiError } from '@/observability/sentry';
-import { apiRequest, AuthApiError, parseError, publicApiRequest, rejectFailedResponse } from './http';
+import { apiCredentials, apiRequest, AuthApiError, parseError, publicApiRequest, rejectFailedResponse } from './http';
 
 jest.mock('@/observability/sentry', () => ({
   captureApiError: jest.fn(),
@@ -15,6 +15,11 @@ function jsonResponse(body: unknown, status: number): Response {
 describe('API error request ids', () => {
   beforeEach(() => {
     jest.mocked(captureApiError).mockClear();
+  });
+
+  it('uses browser cookies on web and the native cookie jar elsewhere', () => {
+    expect(apiCredentials('web')).toBe('include');
+    expect(apiCredentials('ios')).toBe('omit');
   });
 
   it('reads the server request id without keeping the response body', async () => {

@@ -1,9 +1,17 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 
 const COOKIE_KEY = 'ledgercraft.auth.cookie';
 
 let memoryCookies: string | null = null;
 let loaded = false;
+let secureStoreAvailable: boolean | null = null;
+
+async function canUseSecureStore(): Promise<boolean> {
+  // Native keeps the original SecureStore behaviour; only Expo web probes availability.
+  if (Platform.OS !== 'web') return true;
+  return typeof SecureStore.isAvailableAsync === 'function' ? SecureStore.isAvailableAsync() : true;
+}
 
 type HeaderBag = {
   get?: (name: string) => string | null;
@@ -39,7 +47,8 @@ async function load(): Promise<void> {
     return;
   }
   loaded = true;
-  memoryCookies = (await SecureStore.getItemAsync(COOKIE_KEY)) ?? null;
+  secureStoreAvailable = await canUseSecureStore();
+  memoryCookies = secureStoreAvailable ? (await SecureStore.getItemAsync(COOKIE_KEY)) ?? null : null;
 }
 
 export async function getCookieHeader(): Promise<string | null> {
@@ -74,7 +83,7 @@ export async function rememberSetCookie(headers?: HeaderBag | null): Promise<voi
   }
 
   memoryCookies = [...map.entries()].map(([name, value]) => `${name}=${value}`).join('; ');
-  await SecureStore.setItemAsync(COOKIE_KEY, memoryCookies);
+  if (secureStoreAvailable) await SecureStore.setItemAsync(COOKIE_KEY, memoryCookies);
 }
 
 export async function rememberSessionToken(token: string): Promise<void> {
@@ -86,11 +95,12 @@ export async function rememberSessionToken(token: string): Promise<void> {
   const map = cookieMapFromHeader(memoryCookies);
   map.set('better-auth.session_token', trimmed);
   memoryCookies = [...map.entries()].map(([name, value]) => `${name}=${value}`).join('; ');
-  await SecureStore.setItemAsync(COOKIE_KEY, memoryCookies);
+  if (secureStoreAvailable) await SecureStore.setItemAsync(COOKIE_KEY, memoryCookies);
 }
 
 export async function clearCookies(): Promise<void> {
   memoryCookies = null;
   loaded = true;
-  await SecureStore.deleteItemAsync(COOKIE_KEY);
+  secureStoreAvailable ??= await canUseSecureStore();
+  if (secureStoreAvailable) await SecureStore.deleteItemAsync(COOKIE_KEY);
 }

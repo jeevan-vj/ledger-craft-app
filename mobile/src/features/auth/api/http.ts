@@ -1,6 +1,7 @@
 import { captureApiError } from '@/observability/sentry';
 import { shouldReportApiStatus } from '@/observability/sentryOptions';
 import { clearCookies, getCookieHeader, rememberSessionToken, rememberSetCookie } from './cookieJar';
+import { Platform } from 'react-native';
 
 export class AuthApiError extends Error {
   readonly code?: string;
@@ -28,6 +29,10 @@ function requestOrigin(): string {
 }
 
 export const OFFLINE_MESSAGE = 'Check your connection and try again.';
+
+export function apiCredentials(platform: string = Platform.OS): RequestCredentials {
+  return platform === 'web' ? 'include' : 'omit';
+}
 
 function friendlyStatus(status: number): string {
   if (status === 0 || status === 502 || status === 503) {
@@ -81,7 +86,7 @@ function mergeHeaders(init?: RequestInit): Record<string, string> {
 }
 
 export async function apiFetch(path: string, init?: RequestInit): Promise<Response> {
-  const cookie = await getCookieHeader();
+  const cookie = Platform.OS === 'web' ? null : await getCookieHeader();
   const headers = mergeHeaders(init);
   if (cookie) {
     headers.Cookie = cookie;
@@ -90,7 +95,7 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
   let response: Response;
   try {
     response = await fetch(`${apiBase()}${path}`, {
-      credentials: 'omit',
+      credentials: apiCredentials(),
       ...init,
       headers,
     });
@@ -100,9 +105,9 @@ export async function apiFetch(path: string, init?: RequestInit): Promise<Respon
     throw error;
   }
 
-  await rememberSetCookie(response.headers);
+  if (Platform.OS !== 'web') await rememberSetCookie(response.headers);
   const authToken = response.headers?.get?.('set-auth-token');
-  if (authToken) {
+  if (authToken && Platform.OS !== 'web') {
     await rememberSessionToken(authToken);
   }
   return response;

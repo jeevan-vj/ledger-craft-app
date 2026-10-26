@@ -21,7 +21,7 @@ export function CompanySwitcher({ compact = false }: { compact?: boolean }) {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="min-w-0 gap-2 px-2" aria-label={`Switch company. Current company ${active.name}`}>
           <Building2 className="h-4 w-4 text-primary" />
-          {!compact && <span className="max-w-[180px] truncate text-sm font-semibold">{active.name}</span>}
+          {!compact && <span className="max-w-[260px] truncate text-sm font-semibold lg:max-w-[360px]" title={active.name}>{active.name}</span>}
           <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>

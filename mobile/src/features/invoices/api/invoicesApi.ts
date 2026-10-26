@@ -12,6 +12,10 @@ export interface MobileInvoiceDto {
   id: string;
   invoiceNumber: string;
   externalId?: string | null;
+  externalNumber?: string | null;
+  externalIssuerName?: string | null;
+  sourceImportDocumentId?: string | null;
+  thirdPartyIssued?: boolean;
   customerId: string;
   date: string;
   dueDate: string;
@@ -100,6 +104,10 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     id: dto.id,
     invoiceNumber: dto.invoiceNumber,
     externalId: dto.externalId,
+    externalNumber: dto.externalNumber,
+    externalIssuerName: dto.externalIssuerName,
+    sourceImportDocumentId: dto.sourceImportDocumentId,
+    thirdPartyIssued: dto.thirdPartyIssued,
     customerId: dto.customerId,
     customer: dto.customerName
       ? {
@@ -254,8 +262,8 @@ export const invoicesApi = {
     return (await apiRequest<{ history: { id: string; action: string; reason: string | null; createdAt: string }[] }>(`/api/invoices/${id}/history`, { method: 'GET' })).history;
   },
 
-  async attachments(id: string): Promise<{ id: string; filename: string; size: number; contentType: string; createdAt: string }[]> {
-    return (await apiRequest<{ attachments: { id: string; filename: string; size: number; contentType: string; createdAt: string }[] }>(`/api/invoices/${id}/attachments`, { method: 'GET' })).attachments;
+  async attachments(id: string): Promise<{ id: string; filename: string; size: number; contentType: string; role: 'attachment' | 'source_document'; locked: boolean; createdAt: string }[]> {
+    return (await apiRequest<{ attachments: { id: string; filename: string; size: number; contentType: string; role: 'attachment' | 'source_document'; locked: boolean; createdAt: string }[] }>(`/api/invoices/${id}/attachments`, { method: 'GET' })).attachments;
   },
 
   async attach(id: string, input: { objectKey: string; filename: string }): Promise<{ id: string; filename: string; size: number; contentType: string; createdAt: string }> {

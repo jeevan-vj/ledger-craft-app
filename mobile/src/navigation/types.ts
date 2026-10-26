@@ -2,9 +2,12 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 
 export type RootStackParamList = {
   Auth: undefined;
-  Main: undefined;
+  Main: NavigatorScreenParams<MainTabParamList> | undefined;
   PublicInvoice: { shareToken: string };
   PublicQuote: { shareToken: string };
+  ImportCapture: { entry: 'invoices' | 'purchases' };
+  ImportReview: { importId: string; filename: string; mimeType: string; localUri: string };
+  ImportOriginal: { importId: string; filename: string; mimeType: string };
 };
 
 export type AuthStackParamList = {
