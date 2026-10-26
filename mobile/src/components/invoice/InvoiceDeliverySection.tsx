@@ -54,7 +54,7 @@ export function InvoiceDeliverySection({
   if (!emailAvailable) return (
     <View style={styles.card}>
       <Text style={styles.title}>Delivery</Text>
-      <Text style={styles.meta}>Email isn't set up on this server yet. Share a secure invoice link instead.</Text>
+      <Text style={styles.meta}>Email isn’t set up on this server yet. Share a secure invoice link instead.</Text>
       <AppPressable accessibilityRole="button" accessibilityLabel="Share invoice link" onPress={onShareInstead} style={styles.action}>
         <Feather name="link" size={18} color={palette.accentText} />
         <Text style={styles.actionLabel}>Share link instead</Text>

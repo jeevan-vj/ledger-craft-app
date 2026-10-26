@@ -96,7 +96,7 @@ it('hides send and remind for a read-only member', () => {
 it('proactively offers a share link when email is unavailable', () => {
   const onShareInstead = jest.fn();
   const view = render(<InvoiceDeliverySection invoice={mockInvoice} canSend emailAvailable={false} onShareInstead={onShareInstead} onSent={jest.fn()} />);
-  expect(view.getByText("Email isn't set up on this server yet. Share a secure invoice link instead.")).toBeTruthy();
+  expect(view.getByText('Email isn’t set up on this server yet. Share a secure invoice link instead.')).toBeTruthy();
   fireEvent.press(view.getByLabelText('Share invoice link'));
   expect(onShareInstead).toHaveBeenCalledTimes(1);
   expect(view.queryByLabelText('Send invoice')).toBeNull();

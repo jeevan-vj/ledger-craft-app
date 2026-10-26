@@ -43,4 +43,34 @@ describe('resend invoice mailer', () => {
   ])('selects the mailer only when both settings are non-empty', (env, expected) => {
     expect(createInvoiceMailerFromEnv(env).availability).toBe(expected);
   });
+
+  it.each([
+    ['sendReminder', 'reminder', 'Payment reminder for invoice INV-9'],
+    ['sendQuote', 'quote', 'Quote QUO-9'],
+  ] as const)('sends canonical %s content through the same transport', async (method, keyPrefix, subject) => {
+    const fetchImpl = vi.fn(async () => new Response('{}', { status: 200 }));
+    const mailer = createResendInvoiceMailer({ apiKey: 're_secret', from: 'EasyBizInvoice <invoices@jnok.co.nz>', fetchImpl: fetchImpl as typeof fetch });
+    await mailer[method]!({
+      invoiceId: 'internal-id', invoiceNumber: keyPrefix === 'quote' ? 'QUO-9' : 'INV-9', to: ['buyer@example.test'],
+      amountDue: '230.00', dueDate: '2026-11-20', businessName: 'Crystal & Touch', publicUrl: `https://easybiz.example/shared/${keyPrefix}/public-token`,
+    });
+    const [, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
+    const body = JSON.parse(String(init.body)) as { subject: string; text: string; html: string };
+    expect(body.subject).toBe(subject);
+    expect(body.text).toContain('NZD 230.00');
+    expect(body.text).toContain('public-token');
+    expect(body.html).toContain('Crystal &amp; Touch');
+    expect(body.html).not.toContain('internal-id');
+    expect(body.html).not.toContain('re_secret');
+    expect((init.headers as Record<string, string>)['Idempotency-Key']).toBe(`${keyPrefix}/internal-id`);
+  });
+
+  it('maps a Resend rejection to email_failed without leaking provider content', async () => {
+    const mailer = createResendInvoiceMailer({
+      apiKey: 're_secret', from: 'EasyBizInvoice <invoices@jnok.co.nz>',
+      fetchImpl: vi.fn(async () => new Response('provider detail', { status: 500 })) as typeof fetch,
+    });
+    await expect(mailer.sendInvoice({ invoiceId: 'id', invoiceNumber: 'INV-1', to: ['buyer@example.test'] }))
+      .rejects.toMatchObject({ status: 502, message: 'Failed to send email' });
+  });
 });

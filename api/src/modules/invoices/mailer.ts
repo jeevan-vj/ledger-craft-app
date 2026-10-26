@@ -23,7 +23,7 @@ export type InvoiceMailer = {
 
 export function createLoggingInvoiceMailer(): InvoiceMailer {
   return {
-    availability: 'unavailable',
+    availability: 'available',
     async sendInvoice(mail) {
       console.info(JSON.stringify({ msg: 'invoice_email_queued', ...mail }));
     },

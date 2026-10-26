@@ -406,7 +406,7 @@ export default function ExpenseCreateScreen() {
               Scan Receipt with AI
             </ModernButton>
           ) : (
-            <Text style={styles.receiptText}>Receipt scanning isn't set up on this server yet. Upload the receipt and enter the details manually.</Text>
+            <Text style={styles.receiptText}>Receipt scanning isn’t set up on this server yet. Upload the receipt and enter the details manually.</Text>
           )}
         </View>
 
