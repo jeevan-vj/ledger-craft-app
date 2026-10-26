@@ -11,11 +11,11 @@ import {
   Platform,
   Pressable,
 } from 'react-native';
-import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation, type NavigationProp } from '@react-navigation/native';
 import { useQueryClient } from '@tanstack/react-query';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
-import { InvoiceStackParamList } from '@/navigation/types';
+import { InvoiceStackParamList, type RootStackParamList } from '@/navigation/types';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { invoiceService } from '@/services/invoiceService';
 import { submitInvoicePayment } from '@/features/payments/paymentQueries';
@@ -30,6 +30,8 @@ import { formatMoney } from '@/utils/money';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { SalesDocumentSwitch } from '@/components/quotes/SalesDocumentSwitch';
+import { canImportInvoices } from '@/features/auth/invoiceAccess';
+import { useStore } from '@/store';
 
 type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceList'>;
 
@@ -39,6 +41,7 @@ export default function InvoiceListScreen() {
   const styles = createStyles(theme);
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<InvoiceListNavigationProp>();
+  const canImport = useStore((state) => canImportInvoices(state.permissions));
   const queryClient = useQueryClient();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
@@ -124,15 +127,12 @@ export default function InvoiceListScreen() {
               onChangeText: (event) => handleSearch(event.nativeEvent.text),
             }
           : undefined,
-      headerRight: () => (
-        <NativeHeaderButton
-          label="New"
-          primary
-          onPress={() => navigation.navigate('InvoiceCreate')}
-        />
-      ),
+      headerRight: () => <View style={styles.headerActions}>
+        {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'invoices' })} /> : null}
+        <NativeHeaderButton label="New" primary onPress={() => navigation.navigate('InvoiceCreate')} />
+      </View>,
     });
-  }, [navigation, invoices, filter]);
+  }, [canImport, filter, invoices, navigation]);
 
   const handleStatusChange = async (invoiceId: string, newStatus: string) => {
     // If changing to "paid", open payment capture modal
@@ -359,4 +359,5 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 14,
     fontWeight: '600',
   },
+  headerActions: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
 });

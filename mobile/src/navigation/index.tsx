@@ -22,13 +22,16 @@ import { RootStackParamList } from './types';
 import { useAuth, useStore } from '@/store';
 import AuthNavigator from './AuthNavigator';
 import AppNavigator from './AppNavigator';
-import { createNavigationTheme } from '@/theme/navigation';
+import { createDetailHeaderOptions, createFormHeaderOptions, createNavigationTheme } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import { rootNavigatorOptions } from '@/utils/navigationAnimations';
 import { mobileLinking } from './links';
 import { registerNavigationContainer, setSentryUser } from '@/observability/sentry';
 import PublicInvoiceScreen from '@/screens/invoices/PublicInvoiceScreen';
 import PublicQuoteScreen from '@/screens/quotes/PublicQuoteScreen';
+import ImportCaptureScreen from '@/screens/imports/ImportCaptureScreen';
+import ImportReviewScreen from '@/screens/imports/ImportReviewScreen';
+import ImportOriginalScreen from '@/screens/imports/ImportOriginalScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -124,6 +127,11 @@ export default function RootNavigator() {
           component={PublicQuoteScreen}
           options={{ headerShown: false, animation: 'slide_from_right' }}
         />
+        {user && hasCompletedOnboarding ? <>
+          <Stack.Screen name="ImportCapture" component={ImportCaptureScreen} options={{ ...createFormHeaderOptions(theme.colors), title: 'Import document' }} />
+          <Stack.Screen name="ImportReview" component={ImportReviewScreen} options={{ ...createDetailHeaderOptions(theme.colors), title: 'Review import' }} />
+          <Stack.Screen name="ImportOriginal" component={ImportOriginalScreen} options={{ ...createDetailHeaderOptions(theme.colors), title: 'Original document' }} />
+        </> : null}
         {!user ? (
           <Stack.Screen
             name="Auth"
