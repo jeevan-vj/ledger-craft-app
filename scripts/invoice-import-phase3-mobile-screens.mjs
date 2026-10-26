@@ -23,6 +23,16 @@ async function api(context, pathname, { method = 'GET', body, expected = 200 } =
   return response.status() === 204 ? null : response.json();
 }
 async function capture(page, name) { await page.screenshot({ path: path.join(outputDir, name), animations: 'disabled' }); }
+async function reveal(page, locator) {
+  await page.mouse.move(195, 420);
+  let box = await locator.boundingBox();
+  for (let attempt = 0; box && (box.y < 72 || box.y + box.height > 820) && attempt < 12; attempt += 1) {
+    await page.mouse.wheel(0, box.y > 420 ? 560 : -560);
+    await page.waitForTimeout(80);
+    box = await locator.boundingBox();
+  }
+  if (!box || box.y < 0 || box.y + box.height > 844) throw new Error(`Could not reveal evidence at y=${box?.y ?? 'missing'}`);
+}
 async function chooseFile(page, filename, delayUpload = false) {
   if (delayUpload) await page.route('**/api/invoice-imports', async (route) => { await new Promise((resolve) => setTimeout(resolve, 2600)); await route.continue(); });
   const chooserPromise = page.waitForEvent('filechooser');
@@ -50,6 +60,8 @@ async function chooseContact(page, name) {
   const response = page.waitForResponse((candidate) => candidate.request().method() === 'PATCH' && /\/api\/invoice-imports\/[^/]+\/draft$/.test(new URL(candidate.url()).pathname));
   await page.getByRole('button', { name: new RegExp(name, 'i') }).click();
   if (!(await response).ok()) throw new Error(`Contact PATCH failed for ${name}`);
+  const done = page.getByRole('button', { name: 'Done' });
+  if (await done.isVisible()) await done.click();
 }
 
 async function setup() {
@@ -82,7 +94,10 @@ try {
   await capture(page, '02-source-picker.png');
 
   await chooseFile(page, 'cleancorp-buyer-created-tax-invoice.pdf', true);
+  await page.getByRole('button', { name: /View original cleancorp-buyer-created-tax-invoice\.pdf/i }).click();
+  await page.getByRole('button', { name: 'Close original preview' }).waitFor();
   await capture(page, '04-review-original.png');
+  await page.getByRole('button', { name: 'Close original preview' }).click();
   await chooseDirection(page, 'Sales income');
   const thirdParty = page.getByRole('switch', { name: 'Issued by a third party' });
   if (!(await thirdParty.isChecked())) await thirdParty.click();
@@ -98,16 +113,16 @@ try {
   await chooseFile(page, 'cleancorp-buyer-created-tax-invoice.pdf');
   await chooseDirection(page, 'Sales income');
   await chooseContact(page, 'Cleancorp Ltd');
-  await page.getByText('Possible duplicate').scrollIntoViewIfNeeded();
-  if (!(await page.getByRole('button', { name: 'Create draft invoice' }).isDisabled())) throw new Error('Duplicate acknowledgement did not block commit');
+  await reveal(page, page.getByText('Possible duplicate', { exact: true }));
+  await page.getByText('Acknowledge the possible duplicate.', { exact: true }).waitFor();
   await capture(page, '06-duplicate-warning.png');
 
   await openImport(page);
   await chooseFile(page, 'prompt-injection-invoice.pdf');
   await chooseDirection(page, 'Purchase / expense');
   await chooseContact(page, 'Sparkle Supplies Ltd');
-  await page.getByText('Totals mismatch — draft blocked').scrollIntoViewIfNeeded();
-  if (!(await page.getByRole('button', { name: 'Create draft bill' }).isDisabled())) throw new Error('Totals mismatch did not block commit');
+  await reveal(page, page.getByText('Totals mismatch — draft blocked'));
+  await page.getByText('Correct the totals mismatch before creating the draft.', { exact: true }).waitFor();
   await capture(page, '07-totals-mismatch-block.png');
 
   const deniedPage = await readOnlyContext.newPage();

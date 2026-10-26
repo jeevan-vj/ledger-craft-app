@@ -10,8 +10,8 @@ TMP_DIR=$(mktemp -d)
 DB_PATH="${TMP_DIR}/phase3-mobile.sqlite"
 OBJECT_STORE_DIR="${TMP_DIR}/objects"
 WEB_EXPORT="${TMP_DIR}/expo-web"
-API_PORT=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')
-WEB_PORT=$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')
+API_PORT=${PHASE3_API_PORT:-$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')}
+WEB_PORT=${PHASE3_WEB_PORT:-$(python3 -c 'import socket;s=socket.socket();s.bind(("127.0.0.1",0));print(s.getsockname()[1]);s.close()')}
 API_PID=''
 WEB_PID=''
 
@@ -66,11 +66,15 @@ API_PID=$!
 wait_for_url "http://127.0.0.1:${API_PORT}/api/healthz" "${TMP_DIR}/api.log"
 
 cd "${ROOT}/mobile"
-EXPO_PUBLIC_API_URL="http://127.0.0.1:${API_PORT}" \
-EXPO_PUBLIC_APP_ORIGIN="http://127.0.0.1:${WEB_PORT}" \
-EXPO_NO_TELEMETRY=1 \
-SENTRY_DISABLE_AUTO_UPLOAD=true \
-npx expo export --clear --platform web --output-dir "${WEB_EXPORT}" >"${TMP_DIR}/expo-export.log" 2>&1
+export EXPO_PUBLIC_API_URL="http://127.0.0.1:${API_PORT}"
+export EXPO_PUBLIC_APP_ORIGIN="http://127.0.0.1:${WEB_PORT}"
+export EXPO_NO_TELEMETRY=1
+export SENTRY_DISABLE_AUTO_UPLOAD=true
+if [[ "${PHASE3_REUSE_METRO_CACHE:-0}" == "1" ]]; then
+  npx expo export --platform web --output-dir "${WEB_EXPORT}" >"${TMP_DIR}/expo-export.log" 2>&1
+else
+  npx expo export --clear --platform web --output-dir "${WEB_EXPORT}" >"${TMP_DIR}/expo-export.log" 2>&1
+fi
 
 # Metro leaves zustand's import.meta development guard in the web bundle. Load
 # the generated bundle as a module so Chromium can parse that standard syntax.

@@ -30,6 +30,8 @@ import { useStore } from '@/store';
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
 type Mode = 'bills' | 'vendors';
 
+const headerActionsStyle = { flexDirection: 'row', alignItems: 'center', gap: space.sm } as const;
+
 export default function PurchaseListScreen() {
   const theme = useTheme();
   const { colors: palette } = theme;
@@ -50,7 +52,7 @@ export default function PurchaseListScreen() {
         hideWhenScrolling: true,
         onChangeText: (event) => setSearch(event.nativeEvent.text),
       } : undefined,
-      headerRight: () => mode === 'bills' ? <View style={styles.headerActions}>
+      headerRight: () => mode === 'bills' ? <View style={headerActionsStyle}>
         {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'purchases' })} /> : null}
         <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={() => navigation.navigate('BillCreate')} />
       </View> : null,
@@ -207,5 +209,4 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   amountCopy: { alignItems: 'flex-end' },
   amount: { ...type.callout, color: palette.text, fontVariant: ['tabular-nums'] },
   status: { ...type.caption, marginTop: 2, textTransform: 'capitalize' },
-  headerActions: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
 });

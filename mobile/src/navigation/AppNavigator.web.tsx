@@ -49,7 +49,12 @@ function MoreNavigator() { const { colors } = useTheme(); const list = createLis
 
 export default function AppNavigator() {
   const theme = useTheme();
-  const icon = (name: React.ComponentProps<typeof Feather>['name']) => ({ color, size }: { color: string; size: number }) => <Feather name={name} color={color} size={size} />;
+  const icon = (name: React.ComponentProps<typeof Feather>['name']) => {
+    function TabBarIcon({ color, size }: { color: string; size: number }) {
+      return <Feather name={name} color={color} size={size} />;
+    }
+    return TabBarIcon;
+  };
   return <Tab.Navigator screenOptions={{ headerShown: false, tabBarActiveTintColor: theme.colors.accentText, tabBarInactiveTintColor: theme.colors.textSecondary, tabBarStyle: { backgroundColor: theme.colors.surface, borderTopColor: theme.colors.separator } }}>
     <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: icon('home') }} />
     <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: icon('file-text') }} />
