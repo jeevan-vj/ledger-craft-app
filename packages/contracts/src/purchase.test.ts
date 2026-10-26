@@ -42,12 +42,16 @@ describe('purchase contracts', () => {
   });
 
   it('represents lifecycle and payment state separately', () => {
+    const sourceImportDocumentId = '22222222-2222-4222-8222-222222222222';
     const parsed = billSchema.parse({
       id: '88888888-8888-8888-8888-888888888888',
       billNumber: 'BILL-0001',
       vendorId: '77777777-7777-7777-7777-777777777777',
       vendorName: 'Harbour Office Supplies',
       vendorReference: 'HS-1042',
+      externalNumber: 'SUPPLIER-1042',
+      externalIssuerName: 'Harbour Office Supplies',
+      sourceImportDocumentId,
       issueDate: '2026-10-03',
       dueDate: '2026-10-23',
       lifecycleStatus: 'received',
@@ -77,6 +81,11 @@ describe('purchase contracts', () => {
       updatedAt: '2026-10-03T00:00:00.000Z',
     });
     expect(parsed.balanceDue).toBe('18.00');
+    expect(parsed).toMatchObject({
+      externalNumber: 'SUPPLIER-1042',
+      externalIssuerName: 'Harbour Office Supplies',
+      sourceImportDocumentId,
+    });
   });
 
   it('requires a positive payment and bank account', () => {

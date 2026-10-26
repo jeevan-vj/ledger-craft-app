@@ -91,6 +91,14 @@ describe('invoice import Phase 2 review and commit', () => {
 
         const [invoice] = await sql.unsafe(`SELECT status, source, external_number, external_issuer_name, import_document_id, third_party_issued FROM invoices WHERE id = ?`, [result.recordId]) as any[];
         expect(invoice).toEqual({ status: 'draft', source: 'import', external_number: 'CC-TEST-001', external_issuer_name: 'Cleancorp Ltd', import_document_id: document.id, third_party_issued: 1 });
+        const invoiceDetail = await app.request(`/api/invoices/${result.recordId}`, { headers: { Cookie: owner } });
+        expect(invoiceDetail.status).toBe(200);
+        expect(await invoiceDetail.json()).toMatchObject({
+          externalNumber: 'CC-TEST-001',
+          externalIssuerName: 'Cleancorp Ltd',
+          sourceImportDocumentId: document.id,
+          thirdPartyIssued: true,
+        });
         const [attachment] = await sql.unsafe(`SELECT id, role, locked, object_key FROM invoice_attachments WHERE invoice_id = ?`, [result.recordId]) as any[];
         expect(attachment).toMatchObject({ role: 'source_document', locked: 1 });
         expect(await sql.unsafe(`SELECT id FROM journal_entries WHERE reference_type = 'invoice' AND reference_id = ?`, [result.recordId])).toHaveLength(0);
@@ -131,6 +139,13 @@ describe('invoice import Phase 2 review and commit', () => {
         expect(result.recordType).toBe('bill');
         const [bill] = await sql.unsafe(`SELECT lifecycle_status, source, external_number, import_document_id FROM bills WHERE id = ?`, [result.recordId]) as any[];
         expect(bill).toEqual({ lifecycle_status: 'draft', source: 'import', external_number: 'INJECT-TEST-001', import_document_id: injection.id });
+        const billDetail = await app.request(`/api/bills/${result.recordId}`, { headers: { Cookie: owner } });
+        expect(billDetail.status).toBe(200);
+        expect(await billDetail.json()).toMatchObject({
+          externalNumber: 'INJECT-TEST-001',
+          externalIssuerName: 'Malicious Supplier Test Document',
+          sourceImportDocumentId: injection.id,
+        });
         const [attachment] = await sql.unsafe(`SELECT role, locked FROM bill_attachments WHERE bill_id = ?`, [result.recordId]) as any[];
         expect(attachment).toEqual({ role: 'source_document', locked: 1 });
         expect(await sql.unsafe(`SELECT id FROM journal_entries WHERE reference_type = 'bill' AND reference_id = ?`, [result.recordId])).toHaveLength(0);

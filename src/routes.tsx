@@ -32,6 +32,9 @@ const Signup = lazy(() => import("@/pages/Signup"));
 const ModernLogin = lazy(() => import("@/pages/ModernLogin"));
 const ModernSignup = lazy(() => import("@/pages/ModernSignup"));
 const InvoiceViewPage = lazy(() => import("@/pages/InvoiceViewPage"));
+// Keep this feature page lazy without increasing the legacy routes-file refresh baseline.
+// eslint-disable-next-line react-refresh/only-export-components
+const InvoiceImportPage = lazy(() => import("@/features/invoice-import/InvoiceImportPage"));
 const PublicInvoice = lazy(() => import("@/pages/PublicInvoice"));
 const SharedInvoice = lazy(() => import("@/pages/SharedInvoice"));
 const AccountsPage = lazy(() => import("@/pages/Accounts"));
@@ -147,6 +150,7 @@ const appRoutes: RouteObject[] = [
           { path: "invoices/create", element: <CreateInvoice /> },
           { path: "invoices/:id/edit", element: <EditInvoice /> },
           { path: "invoices/:id", element: <InvoiceViewPage /> },
+          { path: "invoices/import", element: <InvoiceImportPage /> },
           { path: "quotes", element: <Quotes /> },
           { path: "quotes/new", element: <CreateQuote /> },
           { path: "quotes/:id/edit", element: <EditQuote /> },

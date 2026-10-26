@@ -184,6 +184,10 @@ export interface Invoice {
   id: string;
   invoiceNumber: string;
   externalId?: string | null;
+  externalNumber?: string | null;
+  externalIssuerName?: string | null;
+  sourceImportDocumentId?: string | null;
+  thirdPartyIssued?: boolean;
   customerId: string;
   customer?: Customer;
   businessProfile?: BusinessProfile;

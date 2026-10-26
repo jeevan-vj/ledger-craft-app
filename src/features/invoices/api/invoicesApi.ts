@@ -84,6 +84,10 @@ function toInvoice(dto: InvoiceDto): Invoice {
     id: dto.id,
     invoiceNumber: dto.invoiceNumber,
     externalId: dto.externalId,
+    externalNumber: dto.externalNumber,
+    externalIssuerName: dto.externalIssuerName,
+    sourceImportDocumentId: dto.sourceImportDocumentId,
+    thirdPartyIssued: dto.thirdPartyIssued,
     customerId: dto.customerId,
     customer: dto.customerName
       ? {
