@@ -4,7 +4,7 @@ import { useAppData } from '@/hooks/useAppData';
 import InvoicePreview from '@/components/invoice/preview/InvoicePreview';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Archive, ChevronLeft, Copy, FileUp, Printer, RotateCcw, XCircle } from 'lucide-react';
+import { Archive, ChevronLeft, Copy, Download, FileText, FileUp, Printer, RotateCcw, XCircle } from 'lucide-react';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { fileToBase64, objectsApi } from '@/features/storage/api/objectsApi';
 import type { InvoiceAttachmentDto, InvoiceHistoryDto } from '@ledgercraft/contracts';
@@ -83,6 +83,14 @@ const InvoiceViewPage = () => {
           <section className="min-w-0"><h2 className="font-semibold">History</h2><ul className="mt-2 space-y-1 text-sm text-muted-foreground">{history.slice(0, 5).map((event) => <li key={event.id}>{event.action.replace('_', ' ')} · {new Date(event.createdAt).toLocaleString()}</li>)}</ul></section>
         </div>
       </Card>
+      {invoice.sourceImportDocumentId ? (
+        <Card className="mb-6 border border-border p-5 print:hidden">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex min-w-0 items-start gap-3"><span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#9FE870] text-[#163300]"><FileText /></span><div className="min-w-0"><h2 className="font-semibold">Source document</h2><p className="mt-1 text-sm text-muted-foreground">{invoice.externalIssuerName ? `Imported from a document issued by ${invoice.externalIssuerName}.` : 'This draft was created from an imported document.'}{invoice.externalNumber ? ` External number ${invoice.externalNumber}.` : ''}</p></div></div>
+            <Button variant="outline" asChild><a href={`/api/invoice-imports/${invoice.sourceImportDocumentId}/file`} download><Download />Download original</a></Button>
+          </div>
+        </Card>
+      ) : null}
       {invoice.sourceQuoteId && invoice.sourceQuoteNumber ? (
         <p className="mb-4 text-sm text-muted-foreground">
           Converted from quote{' '}
