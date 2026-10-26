@@ -2,9 +2,10 @@ import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import InvoiceForm from '../InvoiceForm';
 import { Invoice, Customer, BusinessProfile } from '@/types/index';
+import { upsertRecurringInvoiceTemplate } from '@/features/recurring/invoiceTemplate';
 
 // Mock the AppContext
 const mockAppContext = {
@@ -43,6 +44,19 @@ vi.mock('@/utils/pdfUtils', () => ({
 
 vi.mock('@/hooks/useAppData', () => ({
   useAppData: () => ({ units: ['each', 'kg', 'g'], itemCategories: [] }),
+}));
+
+vi.mock('@/features/recurring/components/RepeatSchedulePanel', () => ({
+  defaultRepeatSettings: () => ({
+    schedule: { frequency: 'monthly', interval: 1, startDate: '2026-10-27', timezone: 'Pacific/Auckland', localTime: '09:00', dayOfMonth: 27 },
+    delivery: { mode: 'draft', whenEmailUnavailable: 'draft' },
+  }),
+  RepeatSchedulePanel: () => <div>Repeat schedule panel</div>,
+}));
+
+vi.mock('@/features/recurring/invoiceTemplate', () => ({
+  buildRecurringInvoicePayload: vi.fn(() => ({ kind: 'invoice', input: {} })),
+  upsertRecurringInvoiceTemplate: vi.fn(),
 }));
 
 // Mock UI components
@@ -241,5 +255,27 @@ describe('InvoiceForm Template Saving', () => {
     });
 
     expect(mockOnSubmit.mock.calls[0][0].templateName).toBe('classic');
+  });
+
+  it('shows repeat settings and creates one source-linked template after save', async () => {
+    const mockOnSubmit = vi.fn().mockResolvedValue({
+      id: '22222222-2222-4222-8222-222222222222',
+      invoiceNumber: 'INV-001',
+    });
+
+    render(
+      <InvoiceFormWrapper>
+        <InvoiceForm {...defaultProps} initialValues={readyInvoice} onSubmit={mockOnSubmit} />
+      </InvoiceFormWrapper>,
+    );
+
+    fireEvent.click(await screen.findByRole('switch', { name: 'Repeat this invoice' }));
+    expect(screen.getByText('Repeat schedule panel')).toBeInTheDocument();
+    clickSaveDraft();
+
+    await waitFor(() => expect(upsertRecurringInvoiceTemplate).toHaveBeenCalledTimes(1));
+    expect(upsertRecurringInvoiceTemplate).toHaveBeenCalledWith(expect.objectContaining({
+      sourceInvoiceId: '22222222-2222-4222-8222-222222222222',
+    }));
   });
 });

@@ -143,6 +143,7 @@ const CreateInvoice = () => {
         });
       }
       navigate('/invoices');
+      return created;
     } catch (error) {
       console.error('Error creating invoice:', error);
       toast({
@@ -150,6 +151,7 @@ const CreateInvoice = () => {
         description: error instanceof Error ? error.message : "Failed to create invoice. Please try again.",
         variant: "destructive"
       });
+      throw error;
     }
   };
 

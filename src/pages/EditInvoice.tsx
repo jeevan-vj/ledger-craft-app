@@ -101,8 +101,10 @@ const EditInvoicePage = () => {
         });
       }
       navigate("/invoices");
+      return saved;
     } catch (e: any) {
       setError(e?.message || "Error updating invoice");
+      throw e;
     }
   };
 
