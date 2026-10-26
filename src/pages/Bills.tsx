@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type { BillDto } from '@ledgercraft/contracts';
-import { Download, FilePlus2, Paperclip, Plus, RotateCcw, Search } from 'lucide-react';
+import { Download, FilePlus2, Paperclip, Plus, RotateCcw, Search, Upload } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { toast } from 'sonner';
 import { PageHeader } from '@/components/layout/PageHeader';
@@ -16,6 +16,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { purchasesApi } from '@/features/purchases/api/purchasesApi';
 import { fileToBase64, objectsApi } from '@/features/storage/api/objectsApi';
+import { usePermissions } from '@/hooks/usePermissions';
 
 function statusVariant(status: BillDto['displayStatus']): BadgeProps['variant'] {
   if (status === 'paid') return 'success';
@@ -30,6 +31,7 @@ function formatMoney(value: string, currency: string) {
 }
 
 export default function Bills() {
+  const { hasPermission } = usePermissions();
   const queryClient = useQueryClient();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
@@ -72,7 +74,7 @@ export default function Bills() {
 
   return (
     <div className="space-y-6">
-      <PageHeader title="Bills" description="Track supplier bills, due dates and accounts payable." actions={<div className="flex gap-2"><Button variant="outline" onClick={() => void downloadCsv()}><Download />Export CSV</Button><Button asChild><Link to="/bills/new"><Plus />New bill</Link></Button></div>} />
+      <PageHeader title="Bills" description="Track supplier bills, due dates and accounts payable." actions={<div className="flex flex-wrap gap-2">{hasPermission('invoices:import') && <Button variant="outline" asChild><Link to="/invoices/import?from=bills"><Upload />Import from file</Link></Button>}<Button variant="outline" onClick={() => void downloadCsv()}><Download />Export CSV</Button><Button asChild><Link to="/bills/new"><Plus />New bill</Link></Button></div>} />
       {billsQuery.isLoading ? (
         <ContentPanel><div className="h-48 animate-pulse rounded-2xl bg-muted" aria-label="Loading bills" /></ContentPanel>
       ) : billsQuery.isError ? (

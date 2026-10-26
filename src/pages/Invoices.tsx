@@ -30,6 +30,7 @@ import { Invoice, InvoiceStatus } from '@/types';
 import { CreatePaymentRequest } from '@/types/payment';
 import { paymentService } from '@/services/paymentService';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
+import { usePermissions } from '@/hooks/usePermissions';
 
 const STATUS_OPTIONS = [
   { value: 'draft', label: 'Draft' },
@@ -67,6 +68,8 @@ interface InvoiceFilters {
 }
 
 const Invoices = () => {
+  const { hasPermission } = usePermissions();
+  const canImportInvoices = hasPermission('invoices:import');
   const { invoices, isLoadingInvoices, refreshInvoices, businessProfile, deleteInvoice, updateInvoiceStatus } = useAppData();
   const { toast } = useToast();
   const navigate = useNavigate();
@@ -365,6 +368,7 @@ const Invoices = () => {
         actions={
           invoices.length > 0 ? (
             <div className="flex flex-wrap gap-2">
+              {canImportInvoices && <Button variant="outline" asChild><Link to="/invoices/import"><Upload size={18} /><span>Import from file</span></Link></Button>}
               <Button variant="outline" asChild>
                 <a href={invoicesApi.exportUrl} download><Download size={18} /><span>Export CSV</span></a>
               </Button>
@@ -382,6 +386,7 @@ const Invoices = () => {
           title="Here's how to get started"
           description="Create a draft invoice, or import bank transactions to match later."
           actions={[
+            ...(canImportInvoices ? [{ icon: Upload, title: 'Import from file', subtitle: 'Review a PDF, JPG or PNG before creating a draft.', to: '/invoices/import' }] : []),
             {
               icon: Plus,
               title: 'Create invoice',

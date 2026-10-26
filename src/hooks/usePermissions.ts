@@ -14,6 +14,7 @@ export type Permission =
   | 'invoices:update'
   | 'invoices:delete'
   | 'invoices:share'
+  | 'invoices:import'
   | 'customers:create'
   | 'customers:read'
   | 'customers:update'
@@ -41,7 +42,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     // Full access to everything
     'payments:create', 'payments:read', 'payments:update', 'payments:delete',
     'receipts:read', 'receipts:email',
-    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:delete', 'invoices:share',
+    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:delete', 'invoices:share', 'invoices:import',
     'customers:create', 'customers:read', 'customers:update', 'customers:delete',
     'expenses:create', 'expenses:read', 'expenses:update', 'expenses:delete',
     'accounts:create', 'accounts:read', 'accounts:update', 'accounts:delete',
@@ -52,7 +53,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     // All operations except settings management
     'payments:create', 'payments:read', 'payments:update', 'payments:delete',
     'receipts:read', 'receipts:email',
-    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:delete', 'invoices:share',
+    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:delete', 'invoices:share', 'invoices:import',
     'customers:create', 'customers:read', 'customers:update', 'customers:delete',
     'expenses:create', 'expenses:read', 'expenses:update', 'expenses:delete',
     'accounts:create', 'accounts:read', 'accounts:update', 'accounts:delete',
@@ -63,7 +64,7 @@ const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     // Standard business operations
     'payments:create', 'payments:read', 'payments:update',
     'receipts:read', 'receipts:email',
-    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:share',
+    'invoices:create', 'invoices:read', 'invoices:update', 'invoices:share', 'invoices:import',
     'customers:create', 'customers:read', 'customers:update',
     'expenses:create', 'expenses:read', 'expenses:update',
     'accounts:read',
@@ -95,6 +96,7 @@ const FEATURE_REQUIREMENTS: Record<string, { permission: Permission; description
   '/payments/create': { permission: 'payments:create', description: 'Create payments' },
   '/receipts': { permission: 'receipts:read', description: 'View receipts' },
   '/invoices/create': { permission: 'invoices:create', description: 'Create invoices' },
+  '/invoices/import': { permission: 'invoices:import', description: 'Import invoices' },
   '/customers/create': { permission: 'customers:create', description: 'Create customers' },
   '/expenses/create': { permission: 'expenses:create', description: 'Create expenses' },
   '/accounts/create': { permission: 'accounts:create', description: 'Create accounts' },
