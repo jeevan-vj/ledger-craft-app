@@ -1,0 +1,60 @@
+   ✓ dashboard and saved report routes > uses ledger-authoritative reports and isolates personal layouts and saved reports  2153ms
+ ✓ src/modules/customers/customers.test.ts (3 tests) 3144ms
+   ✓ customer routes > creates and lists customers for the session organisation only  1766ms
+   ✓ customer routes > rejects ownership ids in the create body  1299ms
+ ✓ src/modules/currency/currency.test.ts (3 tests) 2603ms
+   ✓ currency and localization routes > isolates settings and immutable dated rates by organisation  2541ms
+ ✓ src/modules/expenses/expenses.test.ts (2 tests) 2072ms
+   ✓ expense routes > creates and lists expenses for the session organisation only  2017ms
+ ✓ src/test/schema.compatibility.test.ts (2 tests) 2363ms
+   ✓ SQLite compatibility schema > creates every table and column the clients select  1195ms
+   ✓ SQLite compatibility schema > stores monetary columns as exact decimal text, not floating point  1164ms
+ ✓ src/modules/tax/tax.test.ts (2 tests) 2417ms
+   ✓ tax routes > defaults NZ GST, upserts config, and isolates tax returns  2345ms
+ ✓ src/modules/reconciliation/reconciliation.test.ts (2 tests) 2094ms
+   ✓ reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete  2041ms
+ ✓ src/modules/recurring/recurring.test.ts (1 test) 2163ms
+   ✓ recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures  2159ms
+ ✓ src/modules/tax/gst-self-filing.e2e.test.ts (1 test) 2352ms
+   ✓ new business GST self-filing journey > creates a GST invoice, receives payment, saves IRD figures, and records myIR filing  2349ms
+ ✓ src/modules/accounts/accounts.test.ts (2 tests) 2026ms
+   ✓ account write routes > seeds a default chart and isolates organisations  1954ms
+ ✓ src/modules/storage/objects.test.ts (2 tests) 1969ms
+   ✓ object routes > stores bytes, returns them, and hides them from other orgs  1900ms
+ ✓ src/modules/invoices/restore-repair.test.ts (1 test) 2151ms
+   ✓ invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently  2146ms
+ ✓ src/modules/conversations/conversations.test.ts (2 tests) 2079ms
+   ✓ conversation routes > creates a conversation, adds a message, and isolates organisations  2010ms
+ ✓ src/modules/health/readyz.integration.test.ts (1 test) 1135ms
+   ✓ readyz against SQLite > returns 200 when the SQLite connection responds  1131ms
+ ✓ src/modules/invoices/invoices.remind.test.ts (1 test) 2055ms
+   ✓ invoice reminder routes > sends a reminder without changing invoice status and isolates organisations  2051ms
+ ✓ src/modules/auth/protected-route-permissions.test.ts (1 test) 1581ms
+   ✓ protected bulk and AI route permissions > blocks read-only access and permits accountant invoice import, exports, and AI authorization  1578ms
+ ✓ src/test/session-index.test.ts (1 test) 1137ms
+   ✓ indexes session lookups by user without changing existing session columns  1134ms
+ ✓ src/modules/health/health.test.ts (6 tests) 97ms
+ ✓ src/modules/recurring/schedule.test.ts (3 tests) 63ms
+ ✓ src/middleware/logging.test.ts (2 tests) 70ms
+ ✓ src/middleware/errors.test.ts (3 tests) 89ms
+ ✓ src/modules/quotes/quotes.transitions.test.ts (4 tests) 75ms
+ ✓ src/modules/accounting/organisation-date.test.ts (6 tests) 59ms
+ ✓ src/observability/report.test.ts (2 tests) 30ms
+ ✓ src/modules/auth/authorize-request.test.ts (30 tests) 30ms
+ ✓ src/observability/request-id.test.ts (5 tests) 25ms
+ ✓ src/modules/invoices/totals.test.ts (5 tests) 17ms
+ ✓ src/modules/invoice-imports/invoice-import-validation.test.ts (12 tests) 20ms
+ ✓ src/observability/scrub.test.ts (6 tests) 30ms
+ ✓ src/modules/ai/openai.test.ts (2 tests) 24ms
+ ✓ src/modules/invoices/resend.test.ts (1 test) 19ms
+ ✓ src/cloudflare/public-routes.test.ts (2 tests) 7ms
+ ✓ src/modules/storage/file-storage.test.ts (2 tests) 12ms
+ ✓ src/lib/csv.test.ts (9 tests) 10ms
+ ✓ src/modules/invoices/money.test.ts (4 tests) 11ms
+ ✓ src/modules/storage/keys.test.ts (2 tests) 13ms
+ ✓ src/observability/sentry-options.test.ts (7 tests) 17ms
+ ✓ src/modules/invoices/mailer.test.ts (1 test) 10ms
+ ✓ src/modules/auth/permissions.test.ts (10 tests) 9ms
+ Test Files  58 passed (58)
+      Tests  233 passed | 1 skipped (234)
+EXIT 0
