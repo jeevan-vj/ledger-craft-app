@@ -3,6 +3,7 @@ import {spawnSync} from 'node:child_process';
 import {existsSync, mkdirSync, openSync, closeSync, unlinkSync, readFileSync, writeFileSync, readdirSync} from 'node:fs';
 import {randomBytes} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {providerSecretWarning} from './provider-secret-readiness.mjs';
 const root=fileURLToPath(new URL('../',import.meta.url));
 process.chdir(root);
 const args=process.argv.slice(2);
@@ -92,17 +93,22 @@ try {
   else {
     // An authenticated resource read fails closed; whoami alone can exit zero when logged out.
     wrangler('pages','project','list');
+    const listed=spawnSync('node_modules/.bin/wrangler',['secret','list','--config',config],{cwd:root,env:environment,encoding:'utf8'});
+    let remoteSecretNames=[];
+    if(listed.status===0) {
+      remoteSecretNames=JSON.parse(listed.stdout).map(secret=>secret.name);
+      const warning=providerSecretWarning(remoteSecretNames);
+      if(warning) console.warn(warning);
+    } else if(!`${listed.stdout} ${listed.stderr}`.includes('Worker "ledgercraft-api" not found.')) {
+      throw new Error('Could not inspect remote secret names. Deployment stopped without changing them.');
+    } else {
+      console.warn(providerSecretWarning([]));
+    }
     // A missing local file must never rotate an existing remote signing key.
     const secretPath='deploy/secrets.local.json';
     let preserveRemote=false;
     if(!existsSync(secretPath)) {
-      const listed=spawnSync('node_modules/.bin/wrangler',['secret','list','--config',config],{cwd:root,env:environment,encoding:'utf8'});
-      if(listed.status===0) {
-        const names=JSON.parse(listed.stdout);
-        preserveRemote=names.some(secret=>secret.name==='BETTER_AUTH_SECRET');
-      } else if(!`${listed.stdout} ${listed.stderr}`.includes('Worker "ledgercraft-api" not found.')) {
-        throw new Error('Could not inspect remote signing secret. Deployment stopped without changing it.');
-      }
+      preserveRemote=remoteSecretNames.includes('BETTER_AUTH_SECRET');
       if(!preserveRemote) writeFileSync(secretPath,JSON.stringify({BETTER_AUTH_SECRET:randomBytes(48).toString('base64url')}),{mode:0o600});
     }
     const shaResult=spawnSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'});

@@ -22,6 +22,10 @@
     "SENTRY_DSN": "https://c70476b701f3fd7d5fb85254a73b3060@o4512292098342912.ingest.us.sentry.io/4512292100702208"
   },
   "secrets": { "required": ["BETTER_AUTH_SECRET"] },
+  // Optional Worker secrets (set with `cd deploy/api && npx wrangler secret put NAME`):
+  // RESEND_API_KEY + RESEND_FROM enable invoice/reminder/quote email; without both, clients offer share links.
+  // OPENAI_API_KEY enables receipt/import AI; XAI_API_KEY is the fallback when OpenAI is absent.
+  // Keep these optional: deployment must remain possible with honest unavailable capabilities.
   "observability": { "enabled": true },
   "upload_source_maps": true,
   "version_metadata": { "binding": "CF_VERSION_METADATA" },

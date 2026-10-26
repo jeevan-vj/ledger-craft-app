@@ -8,13 +8,14 @@ its accounting records and attachments. The authenticated gateway chooses the
 organisation object; client-supplied tenant IDs do not grant access.
 
 This is the approved replacement for the earlier container/PostgreSQL proposal.
-It uses no D1, paid Containers, R2, PostgreSQL, Supabase, external email service,
-or external AI service. Durable Objects provide the transaction boundary and
+It requires no D1, paid Containers, R2, PostgreSQL, Supabase, email provider,
+or AI provider to deploy; Resend and AI integrations are optional. Durable Objects provide the transaction boundary and
 CPU budget needed by accounting operations and secure password hashing. Money
 is stored as decimal TEXT and calculated with exact server decimal helpers.
 Attachments are stored in SQLite with a 1 MB size limit; PDFs can be generated
-and downloaded by the client. Email delivery and AI features are unavailable in
-this deployment; they must not claim successful delivery or generation.
+and downloaded by the client. Email delivery and AI features are available only
+when their optional Worker secrets are configured; otherwise the API reports
+them unavailable and clients show manual/share-link fallbacks.
 
 ## Web error monitoring
 
@@ -222,6 +223,39 @@ provider and is optional at deploy time: AI import and receipt scanning return 5
 until it is set with `wrangler secret put OPENAI_API_KEY`. `XAI_API_KEY` is an
 optional alternative, used only when no OpenAI key is set. Configure both names through Wrangler secrets; never put
 their values in `wrangler.jsonc`, Pages variables, or client environment files.
+
+Outbound invoice, reminder, and quote email requires both `RESEND_API_KEY` and
+`RESEND_FROM`. Use a sending-only Resend key restricted to `jnok.co.nz`; that
+domain is already verified in the shared Resend account, so no DNS change is
+needed. A suitable sender is `EasyBizInvoice <invoices@jnok.co.nz>`. These four
+provider settings remain optional and must not be added to `secrets.required`:
+
+| Secret | Without it |
+| --- | --- |
+| `RESEND_API_KEY` | Email is unavailable; invoice/reminder/quote endpoints return 503 and clients offer share links. |
+| `RESEND_FROM` | Same; both Resend settings must be non-empty. |
+| `OPENAI_API_KEY` | OpenAI receipt/import extraction is unavailable unless `XAI_API_KEY` is set. |
+| `XAI_API_KEY` | Optional fallback only; AI remains available when OpenAI is configured. |
+
+Set them against Worker `ledgercraft-api` without writing values to files:
+
+```bash
+cd deploy/api
+npx wrangler secret put RESEND_API_KEY
+npx wrangler secret put RESEND_FROM
+npx wrangler secret put OPENAI_API_KEY
+# Optional alternative/fallback:
+npx wrangler secret put XAI_API_KEY
+```
+
+After deployment, `curl -sS https://easybiz.iamjeevan.com/api/healthz` must show
+only `available`/`unavailable` capability states, never provider names or secret
+values. Send one synthetic draft invoice and quote to an authorised test inbox,
+open their public links, and confirm the draft invoice changes to `sent` only
+after provider acceptance. With email unconfigured, confirm the share fallback
+and 503 `EMAIL_UNAVAILABLE`; with AI unconfigured, confirm the receipt UI hides
+Scan and explains manual entry. `pnpm deploy:cloudflare` lists remote secret
+names only and prints a non-fatal warning for either missing provider group.
 
 ## Code and database changes
 
