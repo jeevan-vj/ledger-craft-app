@@ -118,6 +118,9 @@ describe('invoice import routes', () => {
         const app = createApp({ auth: createAuth(db), db, fileStorage: createMemoryFileStorage() });
         const authCookie = await signUp(app, 'Validation Owner');
         const session = await createAuth(db).api.getSession({ headers: new Headers({ Cookie: authCookie }) });
+        const readable = await upload(app, authCookie);
+        expect(readable.status).toBe(201);
+        const readableId = (await readable.json() as any).documents[0].id;
 
         expect((await upload(app, authCookie, {
           contentBase64: Buffer.from('not a file').toString('base64'),
@@ -132,6 +135,11 @@ describe('invoice import routes', () => {
         await db.update(organisationMemberships).set({ role: 'read_only' })
           .where(eq(organisationMemberships.userId, session!.user.id));
         expect((await upload(app, authCookie)).status).toBe(403);
+        expect((await app.request(`/api/invoice-imports/${readableId}`, { headers: { Cookie: authCookie } })).status).toBe(200);
+        expect((await app.request(`/api/invoice-imports/${readableId}/file`, { headers: { Cookie: authCookie } })).status).toBe(200);
+        expect((await app.request(`/api/invoice-imports/${readableId}`, {
+          method: 'DELETE', headers: { Cookie: authCookie },
+        })).status).toBe(403);
       } finally {
         await sql.end({ timeout: 5 });
       }

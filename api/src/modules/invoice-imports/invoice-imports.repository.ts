@@ -4,7 +4,7 @@ import {
   type InvoiceImportBatchDto,
   type InvoiceImportDocumentDto,
 } from '@ledgercraft/contracts';
-import { and, asc, desc, eq, or } from 'drizzle-orm';
+import { and, asc, desc, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { importBatches, importDocumentEvents, importDocuments } from '../../db/schema/invoice-imports';
 import { invoiceAttachments, invoices } from '../../db/schema/invoices';
