@@ -202,6 +202,33 @@ export {
 } from './invoice';
 
 export {
+  createInvoiceImportRequestSchema,
+  createInvoiceImportResponseSchema,
+  invoiceImportBatchSchema,
+  invoiceImportCommittedRecordTypeSchema,
+  invoiceImportDetailResponseSchema,
+  invoiceImportDirectionSchema,
+  invoiceImportDocumentSchema,
+  invoiceImportDuplicateWarningSchema,
+  invoiceImportListResponseSchema,
+  invoiceImportMimeTypeSchema,
+  invoiceImportStatusSchema,
+  invoiceImportUploadFileSchema,
+  type CreateInvoiceImportRequest,
+  type CreateInvoiceImportResponse,
+  type InvoiceImportBatchDto,
+  type InvoiceImportCommittedRecordType,
+  type InvoiceImportDetailResponse,
+  type InvoiceImportDirection,
+  type InvoiceImportDocumentDto,
+  type InvoiceImportDuplicateWarning,
+  type InvoiceImportListResponse,
+  type InvoiceImportMimeType,
+  type InvoiceImportStatus,
+  type InvoiceImportUploadFile,
+} from './invoice-import';
+
+export {
   convertQuoteResponseSchema,
   createQuoteRequestSchema,
   createShareQuoteRequestSchema,

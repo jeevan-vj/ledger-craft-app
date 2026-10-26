@@ -1,0 +1,70 @@
+== Phase 1 demo 2026-10-26 19:03 NZDT | commit 510dc53 | fresh SQLite in temp dir | port 3018 ==
+tables: import_batches,import_documents,import_document_events
+invoices import cols: external_number,source,external_issuer_name,import_document_id
+bills import cols: source,external_issuer_name,external_number,import_document_id
+
+## Setup: org A 'Crystal Touch Cleaning' owner, org B 'Other Demo Org' owner (synthetic)
+-> HTTP 200
+-> HTTP 200
+
+## 1. Upload Cleancorp PDF (org A owner)
+{"documents":[{"id":"1438bc35-5868-4edd-89df-b114eb32d4f9","status":"uploaded","originalFilename":"cleancorp-buyer-created-tax-invoice.pdf","mimeType":"application/pdf","sizeBytes":989,"sha256":"c92fbc3408ac551e1d8c417d30ad5a35a8c63c0d0cbb50181a0608efa4c318f4"}],"duplicateWarnings":[]}
+-> HTTP 201
+pdf doc id: 1438bc35-5868-4edd-89df-b114eb32d4f9
+
+## 2. Upload photo-style JPG (org A owner)
+{"documents":[{"id":"4d643217-5889-41d8-a82f-5faa3af4e477","status":"uploaded","originalFilename":"invoice photo.jpg","mimeType":"image/jpeg","sizeBytes":517}],"duplicateWarnings":[]}
+-> HTTP 201
+
+## 3. Duplicate upload of same PDF -> accepted with warning
+{"documents":[{"id":"8302e098-ee30-4027-b612-d073d2003ca5","duplicateOfDocumentId":"1438bc35-5868-4edd-89df-b114eb32d4f9"}],"duplicateWarnings":[{"documentId":"8302e098-ee30-4027-b612-d073d2003ca5","existingDocumentId":"1438bc35-5868-4edd-89df-b114eb32d4f9","sha256":"c92fbc3408ac551e1d8c417d30ad5a35a8c63c0d0cbb50181a0608efa4c318f4"}]}
+-> HTTP 201
+
+## 4. Bad file: plain text declared as application/pdf
+$ curl -X POST /api/invoice-imports --data @bad.json
+{"error":{"code":"UNSUPPORTED_MEDIA_TYPE","message":"Upload must be a supported PDF or image","requestId":"req_d630018e-2d84-4f72-8c23-52106f8b598c"}}
+-> HTTP 415
+
+## 5. Oversize: 1.2 MB file with PDF header
+$ curl -X POST /api/invoice-imports --data @big.json
+{"error":{"code":"FILE_TOO_LARGE","message":"Uploaded file is too large (maximum 1048576 bytes)","requestId":"req_516d76ff-ff6e-48c0-a7f7-bbb0b655746e"}}
+-> HTTP 413
+
+## 6. Download as org A owner
+HTTP/1.1 200 OK
+cache-control: private, no-store
+content-disposition: attachment; filename="cleancorp-buyer-created-tax-invoice.pdf"
+content-type: application/pdf
+x-content-type-options: nosniff
+sha256 match: yes
+
+## 7. Org B owner tries org A document (IDOR)
+{"error":{"code":"NOT_FOUND","message":"Invoice import not found","requestId":"req_e3f9edfc-c127-4786-af4e-0d13d7e686d9"}}
+-> HTTP 404
+{"error":{"code":"NOT_FOUND","message":"Invoice import not found","requestId":"req_a685aab4-c55e-4b5a-bd78-bfaa03e0b8d8"}}
+-> HTTP 404
+{"error":{"code":"NOT_FOUND","message":"Invoice import not found","requestId":"req_d0b2e024-4449-42ca-bbd1-6ab831beb570"}}
+-> HTTP 404
+org B list count: 0
+
+## 8. read_only member of org A
+{"error":{"code":"FORBIDDEN","message":"Missing permission: invoices.import","requestId":"req_5ca4708c-4a97-425f-9a2f-cc7b89506295"}}
+-> HTTP 403
+read_only download status: 200
+
+## 9. Delete blocked while linked to an invoice
+(linked doc 1438bc35-5868-4edd-89df-b114eb32d4f9 -> invoice 63401333-f828-4800-b02a-f937d3760023 directly in the temp DB; Phase 2 commit flow does this)
+$ curl -X DELETE /api/invoice-imports/1438bc35-5868-4edd-89df-b114eb32d4f9 
+{"error":{"code":"IMPORT_DOCUMENT_LINKED","message":"Invoice import is linked to an invoice, bill, or locked source document","requestId":"req_b98f51c4-d1e1-4479-8928-00c0b12a1bb0"}}
+-> HTTP 409
+document still stored: committed
+
+## 10. Audit events (DB)
+action            n
+----------------  -
+delete_attempted  1
+file_downloaded   2
+uploaded          3
+
+server stopped; temp dir removed
+server.log error lines: 0

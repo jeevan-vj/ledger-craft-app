@@ -1,5 +1,6 @@
 import { createDatabase, type SQLiteAdapter } from '../db/client';
 import type { ObjectStore } from '../modules/storage/object-store';
+import type { FileStorage } from '../modules/storage/file-storage';
 import { migrations } from '../../../deploy/api/migrations.generated';
 
 export async function migrateStorage(storage: DurableObjectStorage) {
@@ -44,5 +45,38 @@ export function durableObjectStore(storage: DurableObjectStorage): ObjectStore {
       return row ? { key, contentType: row.content_type, bytes: new Uint8Array(row.bytes) } : undefined;
     },
     async delete(key) { storage.sql.exec('DELETE FROM _objects WHERE key=?', key); },
+  };
+}
+
+/** Invoice-import adapter for the existing private Durable Object `_objects` table. */
+export function durableFileStorage(storage: DurableObjectStorage): FileStorage {
+  return {
+    maxBytes: 1_048_576,
+    async put(file) {
+      if (file.bytes.byteLength > 1_048_576) throw new Error('Invoice import exceeds Durable Object 1 MB limit');
+      storage.sql.exec(
+        'INSERT INTO _objects (key, content_type, bytes) VALUES (?, ?, ?) ON CONFLICT(key) DO UPDATE SET content_type=excluded.content_type, bytes=excluded.bytes',
+        file.key,
+        file.contentType,
+        file.bytes,
+      );
+    },
+    async get(key) {
+      const row = storage.sql.exec<{content_type: string; bytes: ArrayBuffer}>(
+        'SELECT content_type, bytes FROM _objects WHERE key=?', key,
+      ).toArray()[0];
+      if (!row) return undefined;
+      const bytes = new Uint8Array(row.bytes);
+      return { key, contentType: row.content_type, size: bytes.byteLength, bytes };
+    },
+    async delete(key) {
+      storage.sql.exec('DELETE FROM _objects WHERE key=?', key);
+    },
+    async head(key) {
+      const row = storage.sql.exec<{content_type: string; size: number}>(
+        'SELECT content_type, length(bytes) AS size FROM _objects WHERE key=?', key,
+      ).toArray()[0];
+      return row ? { key, contentType: row.content_type, size: row.size } : undefined;
+    },
   };
 }

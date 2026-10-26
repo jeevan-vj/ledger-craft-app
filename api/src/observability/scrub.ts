@@ -34,6 +34,8 @@ const SENSITIVE_KEYS = new Set([
   'request-body',
   'query-string',
   'querystring',
+  'filename',
+  'original-filename',
   'vars',
 ]);
 
@@ -97,6 +99,10 @@ export function scrubText(value: string): string {
   text = text.replace(
     /\b(password|passwd|secret|token|api[_-]?key|authorization|cookie|set-auth-token)\b\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s,;}&]+)/gi,
     '$1=[redacted]',
+  );
+  text = text.replace(
+    /\b(original[-_]?filename|filename)\b\s*[:=]\s*(?:"[^"]*"|'[^']*'|[^\s,;}&]+)/gi,
+    '$1=[redacted-filename]',
   );
   text = text.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '[redacted-email]');
   return text;

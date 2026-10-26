@@ -7,6 +7,7 @@ import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from './modules
 import { createAuth } from './modules/auth/auth';
 import { createRuntimeInvoiceMailer } from './modules/invoices/resend';
 import { createFilesystemObjectStore } from './modules/storage/filesystem';
+import { createFilesystemFileStorage } from './modules/storage/filesystem-file-storage';
 
 function createRuntimeApp() {
   const { db, sql } = createAppDb();
@@ -16,6 +17,7 @@ function createRuntimeApp() {
     db,
     invoiceMailer: createRuntimeInvoiceMailer(),
     objectStore: createFilesystemObjectStore(),
+    fileStorage: createFilesystemFileStorage(),
     receiptScanner: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? createOpenAiReceiptScanner() : undefined,
     chatCompleter: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? createOpenAiChatCompleter() : undefined,
     checkDatabase: async () => {

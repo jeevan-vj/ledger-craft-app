@@ -12,7 +12,8 @@ import { toRouteTemplate } from '../observability/scrub';
 import { isSentryDebugRouteEnabled, SENTRY_DEBUG_PATH, sentrySdkOptions } from '../observability/sentry-options';
 import { createSentryReporter, tagActiveRequest } from '../observability/sentry-reporter';
 import { publicLedgerOrganisationId } from './public-routes';
-import { durableDatabase, durableObjectStore, migrateStorage } from './storage';
+import { durableDatabase, durableFileStorage, durableObjectStore, migrateStorage } from './storage';
+import { createR2FileStorage } from '../modules/storage/r2-file-storage';
 import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 
@@ -31,6 +32,8 @@ interface Env {
   SENTRY_RELEASE?: string;
   SENTRY_DEBUG_ROUTE?: string;
   CF_VERSION_METADATA?: WorkerVersionMetadata;
+  /** Optional Phase 1 binding. Wrangler keeps it disabled until the bucket exists. */
+  DOCUMENTS?: R2Bucket;
 }
 type IdentityContext = {
   user: { id: string; name: string; email: string; emailVerified: boolean };
@@ -132,6 +135,9 @@ class LedgerBase extends DurableObject<Env> {
         db:this.db,
         auth:sessionAuth,
         objectStore:durableObjectStore(this.ctx.storage),
+        fileStorage:this.env.DOCUMENTS
+          ? createR2FileStorage(this.env.DOCUMENTS)
+          : durableFileStorage(this.ctx.storage),
         invoiceMailer:createUnavailableInvoiceMailer(),
         receiptScanner: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined,
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,

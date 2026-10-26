@@ -1,0 +1,4 @@
+web pnpm type-check: 663 errors (baseline 663)
+web pnpm lint: ✖ 575 problems (462 errors, 113 warnings)  (baseline 462 errors, 113 warnings)
+mobile npm run type-check: EXIT 0
+mobile npm run lint: ✖ 78 problems (0 errors, 78 warnings)  (baseline 0 errors, 78 warnings)
