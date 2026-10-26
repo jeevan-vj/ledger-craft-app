@@ -41,6 +41,10 @@ export const bills = sqliteTable('bills', {
   billNumber: text('bill_number').notNull(),
   vendorId: text('vendor_id').notNull(),
   vendorReference: text('vendor_reference'),
+  source: text('source').notNull().default('manual'),
+  externalIssuerName: text('external_issuer_name'),
+  externalNumber: text('external_number'),
+  importDocumentId: text('import_document_id'),
   issueDate: text('issue_date').notNull(),
   dueDate: text('due_date').notNull(),
   lifecycleStatus: text('lifecycle_status').notNull().default('draft'),
@@ -66,6 +70,7 @@ export const bills = sqliteTable('bills', {
 }, (table) => [
   check('bills_lifecycle_status_check', sql`${table.lifecycleStatus} IN ('draft', 'received', 'void')`),
   check('bills_payment_status_check', sql`${table.paymentStatus} IN ('unpaid', 'partial', 'paid')`),
+  check('bills_source_check', sql`${table.source} IN ('manual', 'import')`),
   check('bills_subtotal_check', moneyCheck(table.subtotal)),
   check('bills_tax_amount_check', moneyCheck(table.taxAmount)),
   check('bills_total_check', moneyCheck(table.total)),
@@ -74,6 +79,8 @@ export const bills = sqliteTable('bills', {
   uniqueIndex('bills_org_id_uidx').on(table.organisationId, table.id),
   uniqueIndex('bills_org_number_uidx').on(table.organisationId, table.billNumber),
   index('bills_org_due_date_idx').on(table.organisationId, table.dueDate),
+  index('bills_org_import_document_idx').on(table.organisationId, table.importDocumentId),
+  index('bills_org_external_number_idx').on(table.organisationId, table.externalIssuerName, table.externalNumber),
   foreignKey({ columns: [table.organisationId, table.vendorId], foreignColumns: [vendors.organisationId, vendors.id] }).onDelete('restrict'),
 ]);
 

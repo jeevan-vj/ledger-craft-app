@@ -29,6 +29,7 @@ import { authorizeProtectedRequest } from './modules/auth/authorize-request';
 import { organisationRoutes } from './modules/organisations/organisations.routes';
 import { recurringRoutes } from './modules/recurring/recurring.routes';
 import { currencyRoutes } from './modules/currency/currency.routes';
+import { invoiceImportRoutes } from './modules/invoice-imports/invoice-imports.routes';
 import type { AppDependencies, AppEnv } from './types';
 
 export function createApp(deps: AppDependencies = {}) {
@@ -50,6 +51,9 @@ export function createApp(deps: AppDependencies = {}) {
     }
     if (deps.objectStore) {
       c.set('objectStore', deps.objectStore);
+    }
+    if (deps.fileStorage) {
+      c.set('fileStorage', deps.fileStorage);
     }
     if (deps.receiptScanner) {
       c.set('receiptScanner', deps.receiptScanner);
@@ -107,6 +111,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', purchaseRoutes());
   app.route('/', recurringRoutes());
   app.route('/', currencyRoutes());
+  app.route('/', invoiceImportRoutes());
   // Financial statements are registered before /reports/:type widget runs.
   app.route('/', reportRoutes());
   app.route('/', dashboardRoutes());

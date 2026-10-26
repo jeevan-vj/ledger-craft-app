@@ -17,6 +17,9 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
 ];
 
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
+  if (/^\/(?:api\/)?invoice-imports(?:\/|$)/.test(path)) {
+    return method === 'GET' || method === 'HEAD' ? 'invoices.read' : 'invoices.import';
+  }
   if (/^\/(?:api\/)?invoices-import$/.test(path)) return 'invoices.import';
   if (/^\/(?:api\/)?invoices-export\.csv$/.test(path)) return 'invoices.write';
   if (/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/.test(path)) return 'bills.write';

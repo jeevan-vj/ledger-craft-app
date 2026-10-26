@@ -50,6 +50,19 @@ describe('scrubText', () => {
     expect(scrubbed).toContain('Bearer [redacted]');
     expect(scrubbed).toContain('password=[redacted]');
   });
+
+  it('redacts invoice-import filenames from messages and breadcrumb data', () => {
+    const event: ScrubbableEvent = {
+      message: 'invoice import failed originalFilename="Cleancorp confidential.pdf"',
+      breadcrumbs: [{
+        category: 'invoice-import',
+        data: { filename: 'Cleancorp confidential.pdf', original_filename: 'camera-001.jpg' },
+      }],
+    };
+    const serialised = JSON.stringify(scrubSentryEvent(event));
+    expect(serialised).not.toContain('Cleancorp confidential.pdf');
+    expect(serialised).not.toContain('camera-001.jpg');
+  });
 });
 
 describe('scrubSentryEvent', () => {

@@ -39,6 +39,7 @@ import { billLines, billPayments, bills, vendors } from './schema/purchases';
 import { recurringRuns, recurringTemplates } from './schema/recurring';
 import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from './schema/currency';
 import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
+import { importBatches, importDocumentEvents, importDocuments } from './schema/invoice-imports';
 
 export const schema = {
   rlsProbe,
@@ -99,6 +100,9 @@ export const schema = {
   exchangeRateUsage,
   dashboardLayouts,
   savedReportDefinitions,
+  importBatches,
+  importDocuments,
+  importDocumentEvents,
 };
 
 

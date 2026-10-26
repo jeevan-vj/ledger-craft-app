@@ -11,6 +11,10 @@
     { "name": "LEDGERS", "class_name": "Ledger" }
   ]},
   "migrations": [{ "tag": "sqlite-v1", "new_sqlite_classes": ["Identity", "Ledger"] }],
+  // PLACEHOLDER (issue #94 Phase 1): after Jeevan creates the private R2 bucket,
+  // uncomment this binding and use a separate preview bucket. Do not enable it
+  // until storage location and retention prerequisites have been reviewed.
+  // "r2_buckets": [{ "binding": "DOCUMENTS", "bucket_name": "ledgercraft-documents" }],
   "vars": {
     "NODE_ENV": "production",
     "BETTER_AUTH_URL": "https://easybiz.iamjeevan.com",

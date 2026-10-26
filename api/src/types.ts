@@ -4,6 +4,7 @@ import type { ChatCompleter } from './modules/ai/chat';
 import type { ReceiptScanner } from './modules/ai/scanner';
 import type { InvoiceMailer } from './modules/invoices/mailer';
 import type { ObjectStore } from './modules/storage/object-store';
+import type { FileStorage } from './modules/storage/file-storage';
 
 export type AppEnv = {
   Variables: {
@@ -14,6 +15,7 @@ export type AppEnv = {
     db?: Database;
     invoiceMailer?: InvoiceMailer;
     objectStore?: ObjectStore;
+    fileStorage?: FileStorage;
     receiptScanner?: ReceiptScanner;
     chatCompleter?: ChatCompleter;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
@@ -27,6 +29,7 @@ export type AppDependencies = {
   db?: Database;
   invoiceMailer?: InvoiceMailer;
   objectStore?: ObjectStore;
+  fileStorage?: FileStorage;
   receiptScanner?: ReceiptScanner;
   chatCompleter?: ChatCompleter;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
