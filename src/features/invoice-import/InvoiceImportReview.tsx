@@ -42,14 +42,16 @@ function percentageCents(cents: bigint, rate: string) {
   const parsed = rational(rate);
   return halfUp(cents * parsed.numerator, parsed.denominator * 100n);
 }
-function updateLines(review: InvoiceImportDraftResponse, index: number, changes: Partial<InvoiceImportDraftResponse['draft']['lineItems'][number]>): InvoiceImportDraftPatch {
-  const lineItems = review.draft.lineItems.map((line, lineIndex) => lineIndex === index ? { ...line, ...changes } : line);
+function linesPatch(lineItems: InvoiceImportDraftResponse['draft']['lineItems']): InvoiceImportDraftPatch {
   let net = 0n; let gst = 0n;
   const computed = lineItems.map((line) => {
     const amount = lineCents(line.quantity, line.unitPrice); net += amount; gst += percentageCents(amount, line.gstRate);
     return { ...line, amount: centsText(amount) };
   });
   return { lineItems: computed, net: centsText(net), gst: centsText(gst), total: centsText(net + gst) };
+}
+function updateLines(review: InvoiceImportDraftResponse, index: number, changes: Partial<InvoiceImportDraftResponse['draft']['lineItems'][number]>): InvoiceImportDraftPatch {
+  return linesPatch(review.draft.lineItems.map((line, lineIndex) => lineIndex === index ? { ...line, ...changes } : line));
 }
 
 function ConfidenceLabel({ field, review }: { field: keyof InvoiceImportDraftResponse['draft']['confidence']; review: InvoiceImportDraftResponse }) {
@@ -99,12 +101,12 @@ export function InvoiceImportReview({ review, filename, mimeType, previewUrl, or
 
         <div className="grid gap-3 sm:grid-cols-2"><Field label="Issuer" field="issuerName" review={review} onChange={onChange} /><Field label="Recipient" field="recipientName" review={review} onChange={onChange} /><Field label="Document number" field="documentNumber" review={review} onChange={onChange} /><Field label="Issue date" field="issueDate" type="date" review={review} onChange={onChange} /><Field label="Due date" field="dueDate" type="date" review={review} onChange={onChange} /></div>
 
-        <div className="space-y-3"><div className="flex items-center justify-between"><h3 className="font-semibold">Line items</h3><Button type="button" variant="ghost" size="sm" onClick={() => onChange({ lineItems: [...review.draft.lineItems, { description: 'New item', quantity: '1', unitPrice: '0.00', amount: '0.00', gstRate: '15' }] })}><Plus />Add line</Button></div>{review.draft.lineItems.map((line, index) => <div key={index} className={cn('grid gap-2 rounded-xl border p-3 sm:grid-cols-[2fr_.7fr_1fr_.7fr_auto]', review.draft.confidence.lineItems[index]?.label !== 'High' ? 'border-amber-400 bg-amber-50/50' : 'border-border')}>
+        <div className="space-y-3"><div className="flex items-center justify-between"><h3 className="font-semibold">Line items</h3><Button type="button" variant="ghost" size="sm" onClick={() => onChange(linesPatch([...review.draft.lineItems, { description: 'New item', quantity: '1', unitPrice: '0.00', amount: '0.00', gstRate: '15' }]))}><Plus />Add line</Button></div>{review.draft.lineItems.map((line, index) => <div key={index} className={cn('grid gap-2 rounded-xl border p-3 sm:grid-cols-[2fr_.7fr_1fr_.7fr_auto]', review.draft.confidence.lineItems[index]?.label !== 'High' ? 'border-amber-400 bg-amber-50/50' : 'border-border')}>
           <Input aria-label={`Line ${index + 1} description`} defaultValue={line.description} onBlur={(event) => onChange(updateLines(review, index, { description: event.target.value }))} />
           <Input aria-label={`Line ${index + 1} quantity`} inputMode="decimal" defaultValue={line.quantity} onBlur={(event) => onChange(updateLines(review, index, { quantity: event.target.value }))} />
           <Input aria-label={`Line ${index + 1} unit price`} inputMode="decimal" defaultValue={line.unitPrice} onBlur={(event) => onChange(updateLines(review, index, { unitPrice: event.target.value }))} />
           <Input aria-label={`Line ${index + 1} GST rate`} inputMode="decimal" defaultValue={line.gstRate} onBlur={(event) => onChange(updateLines(review, index, { gstRate: event.target.value }))} />
-          <Button type="button" variant="ghost" size="icon" aria-label={`Remove line ${index + 1}`} onClick={() => onChange({ lineItems: review.draft.lineItems.filter((_, i) => i !== index) })}><Trash2 /></Button>
+          <Button type="button" variant="ghost" size="icon" aria-label={`Remove line ${index + 1}`} onClick={() => onChange(linesPatch(review.draft.lineItems.filter((_, i) => i !== index)))}><Trash2 /></Button>
           {review.draft.confidence.lineItems[index]?.label !== 'High' && <span className="sm:col-span-5"><span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-900">Check this · {Math.round((review.draft.confidence.lineItems[index]?.value ?? 0) * 100)}%</span></span>}
         </div>)}</div>
 

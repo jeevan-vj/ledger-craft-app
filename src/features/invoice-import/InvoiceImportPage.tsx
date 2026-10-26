@@ -12,8 +12,9 @@ import { customersApi } from '@/features/customers/api/customersApi';
 import { purchasesApi } from '@/features/purchases/api/purchasesApi';
 import { usePermissions } from '@/hooks/usePermissions';
 import { invoiceImportApi } from './api/invoiceImportApi';
-import { InvoiceImportDropzone, validateInvoiceImportFile } from './InvoiceImportDropzone';
+import { InvoiceImportDropzone } from './InvoiceImportDropzone';
 import { InvoiceImportReview } from './InvoiceImportReview';
+import { validateInvoiceImportFile } from './invoiceImportFile';
 
 type Stage = 'idle' | 'uploading' | 'extracting' | 'review' | 'error';
 

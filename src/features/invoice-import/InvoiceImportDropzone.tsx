@@ -2,8 +2,6 @@ import { useRef, useState } from 'react';
 import { FileUp } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const accepted = new Set(['application/pdf', 'image/jpeg', 'image/png']);
-
 interface Props {
   onFile: (file: File) => void;
   error?: string | null;
@@ -40,12 +38,5 @@ export function InvoiceImportDropzone({ onFile, error, disabled }: Props) {
       {error && <p className="mt-3 text-sm font-medium text-destructive" role="alert">{error}</p>}
     </div>
   );
-}
-
-export function validateInvoiceImportFile(file: File): string | null {
-  if (!accepted.has(file.type)) return 'Choose a PDF, JPG or PNG file.';
-  if (file.size === 0) return 'The selected file is empty.';
-  if (file.size > 1024 * 1024) return 'The selected file must be 1 MB or smaller.';
-  return null;
 }
 
