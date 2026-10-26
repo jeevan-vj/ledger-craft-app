@@ -24,6 +24,7 @@ export function permissionForRequest(method: string, path: string): Organisation
   if (/^\/(?:api\/)?invoices-export\.csv$/.test(path)) return 'invoices.write';
   if (/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/.test(path)) return 'bills.write';
   if (/^\/(?:api\/)?items\/export$/.test(path)) return 'settings.write';
+  if (/^\/(?:api\/)?recurring-templates\/preview$/.test(path)) return 'settings.read';
   if (/^\/(?:api\/)?bank-transactions\/export\.csv$/.test(path)) return 'banking.write';
   if (/^\/(?:api\/)?ai(?:\/|$)/.test(path)) return 'ai.use';
   if (/^\/(?:api\/)?conversations(?:\/|$)/.test(path) && method !== 'GET' && method !== 'HEAD') return 'ai.use';

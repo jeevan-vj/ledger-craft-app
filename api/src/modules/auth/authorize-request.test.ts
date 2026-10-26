@@ -15,6 +15,7 @@ describe('permissionForRequest', () => {
     ['GET', '/api/tax-returns', 'reports.read'],
     ['POST', '/api/tax-returns', 'reports.read'],
     ['GET', '/api/items', 'settings.read'],
+    ['POST', '/api/recurring-templates/preview', 'settings.read'],
     ['GET', '/api/items/export', 'settings.write'],
     ['POST', '/api/items/import', 'settings.write'],
     ['DELETE', '/api/objects/id', 'settings.write'],

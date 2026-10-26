@@ -1,0 +1,21 @@
+Seeded org "Crystal Touch Cleaning" and customer "Cleancorp Ltd" (9d1b016f-2ea1-402b-b8c8-263c2dd501c0)
+healthz capabilities: {"email":"unavailable","ai":"unavailable"}
+Created template df606885-015b-4963-b435-5a16cba66cee; nextRunAt=2026-10-26T20:00:00.000Z
+Created template 17c281eb-2ebe-4695-a4b4-a5486954a926 (whenEmailUnavailable=mark_sent); nextRunAt=2026-10-26T20:00:00.000Z
+process #1 (now=2026-10-27T00:00:00.000Z): {"claimed":2,"succeeded":2,"failed":0,"nextAlarmAt":"2026-11-26T20:00:00.000Z"}
+process #2 (same now, idempotency): {"claimed":0,"succeeded":0,"failed":0,"nextAlarmAt":"2026-11-26T20:00:00.000Z"}
+runs for both templates: 2
+  run recurring:17c281eb-2ebe-4695-a4b4-a5486954a926:2026-10-26T20:00:00.000Z status=succeeded generatedId=3726e0e2-66d9-467b-be3e-04ebbb04afc5 deliveryStatus=email_not_configured deliveryMessage="Not emailed: email not configured"
+  run recurring:df606885-015b-4963-b435-5a16cba66cee:2026-10-26T20:00:00.000Z status=succeeded generatedId=70ade630-6b01-4bb1-a29f-a5eaef234415 deliveryStatus=email_not_configured deliveryMessage="Not emailed: email not configured"
+invoices for Cleancorp Ltd: 2
+  invoice INV-2026-0001 status=draft subtotal=973.91 tax=146.09 total=1120.00
+  invoice INV-2026-0002 status=sent subtotal=100.00 tax=15.00 total=115.00
+31st preview in editor: 31 Jan 2027 | 28 Feb 2027 | 31 Mar 2027 | 30 Apr 2027 | 31 May 2027
+
+Journal entries posted for recurring-generated invoices (read from temp SQLite):
+  INV-2026-0001 status=draft total=1120.00 journal_entries=0
+  INV-2026-0002 status=sent total=115.00 journal_entries=1
+    1200 Accounts Receivable  Dr 115.00  Cr 0.00
+    4000 Sales Revenue  Dr 0.00  Cr 100.00
+    2200 GST Collected on Sales  Dr 0.00  Cr 15.00
+  recurring_runs rows=2 (one per template occurrence; reprocessing added none)
