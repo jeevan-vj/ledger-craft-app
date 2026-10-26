@@ -1,0 +1,15 @@
+# main @ 3d37db5 baseline (worktree ledger-import-p0-base)
+test:api  Test Files  51 passed (51)
+test:api       Tests  175 passed | 1 skipped (176)
+test:contracts  Test Files  24 passed (24)
+test:contracts       Tests  89 passed (89)
+exit code: test:api = 0
+exit code: test:contracts = 0
+exit code: web type-check = 2
+exit code: web lint = 1
+exit code: mobile type-check = 0
+exit code: mobile lint = 0
+DONE
+web tsc: 663 TypeScript errors
+web lint ✖ 575 problems (462 errors, 113 warnings)
+mobile lint ✖ 78 problems (0 errors, 78 warnings)

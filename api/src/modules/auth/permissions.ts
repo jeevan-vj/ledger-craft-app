@@ -4,7 +4,7 @@ const allPermissions: OrganisationPermission[] = [
   'organisations.create', 'organisations.update', 'organisations.archive', 'organisations.switch',
   'customers.read', 'customers.write', 'invoices.read', 'invoices.write', 'bills.read', 'bills.write',
   'banking.read', 'banking.write', 'reports.read', 'settings.read', 'settings.write',
-  'users.read', 'users.manage', 'api.access',
+  'users.read', 'users.manage', 'api.access', 'invoices.import', 'ai.use',
 ];
 
 export const ROLE_PERMISSIONS: Record<OrganisationRole, readonly OrganisationPermission[]> = {
@@ -13,11 +13,11 @@ export const ROLE_PERMISSIONS: Record<OrganisationRole, readonly OrganisationPer
   accountant: [
     'organisations.switch', 'customers.read', 'customers.write', 'invoices.read', 'invoices.write',
     'bills.read', 'bills.write', 'banking.read', 'banking.write', 'reports.read', 'settings.read',
-    'users.read', 'api.access',
+    'users.read', 'api.access', 'invoices.import', 'ai.use',
   ],
   member: [
     'organisations.switch', 'customers.read', 'customers.write', 'invoices.read', 'invoices.write',
-    'bills.read', 'bills.write', 'reports.read', 'settings.read', 'api.access',
+    'bills.read', 'bills.write', 'reports.read', 'settings.read', 'api.access', 'ai.use',
   ],
   read_only: [
     'organisations.switch', 'customers.read', 'invoices.read', 'bills.read', 'banking.read',

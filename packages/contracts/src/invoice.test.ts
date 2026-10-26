@@ -55,7 +55,16 @@ describe('invoice contracts', () => {
   };
 
   it('accepts a camelCase invoice DTO without ownership ids', () => {
-    expect(invoiceSchema.parse(invoice).invoiceNumber).toBe('INV-2026-0001');
+    expect(invoiceSchema.parse({ ...invoice, externalNumber: 'CLIENT-42' })).toMatchObject({
+      invoiceNumber: 'INV-2026-0001', externalNumber: 'CLIENT-42',
+    });
+  });
+
+  it('accepts an optional nullable external number on invoice creation', () => {
+    const input = { customerId: invoice.customerId, date: invoice.date, dueDate: invoice.dueDate, items: [{ description: 'Work', quantity: '1', rate: '10' }] };
+    expect(createInvoiceRequestSchema.parse({ ...input, externalNumber: 'BUYER-INV-9' }).externalNumber).toBe('BUYER-INV-9');
+    expect(createInvoiceRequestSchema.parse({ ...input, externalNumber: null }).externalNumber).toBeNull();
+    expect(createInvoiceRequestSchema.safeParse({ ...input, externalNumber: 'x'.repeat(101) }).success).toBe(false);
   });
 
   it('rejects client totals and ownership ids on create', () => {
@@ -208,12 +217,15 @@ describe('invoice lifecycle contracts', () => {
     expect(invoiceLifecycleActionRequestSchema.parse({ reason: 'Customer request' }).reason).toBe('Customer request');
     expect(invoiceAttachmentSchema.parse({
       id: crypto.randomUUID(), invoiceId: crypto.randomUUID(), filename: 'brief.pdf',
-      contentType: 'application/pdf', size: 123, createdAt: new Date().toISOString(),
-    }).filename).toBe('brief.pdf');
+      contentType: 'application/pdf', size: 123, role: 'source_document', locked: true,
+      createdAt: new Date().toISOString(),
+    })).toMatchObject({ filename: 'brief.pdf', role: 'source_document', locked: true });
     expect(importInvoicesRequestSchema.parse({ dryRun: true, rows: [{
       externalId: 'legacy-1', customerId: crypto.randomUUID(), date: '2026-10-23',
-      dueDate: '2026-11-23', currency: 'NZD', items: [{ description: 'Work', quantity: '1', rate: '20' }],
-    }] }).rows).toHaveLength(1);
+      dueDate: '2026-11-23', currency: 'NZD', invoiceNumber: 'SOURCE-100', status: 'paid',
+      paymentDate: '2026-10-24', paymentMethod: 'bank_transfer', paymentReference: 'BANK-1',
+      items: [{ description: 'Work', quantity: '1', rate: '20' }],
+    }] }).rows[0]).toMatchObject({ invoiceNumber: 'SOURCE-100', paymentDate: '2026-10-24', paymentMethod: 'bank_transfer' });
   });
 });
 

@@ -14,6 +14,7 @@ import { createSentryReporter, tagActiveRequest } from '../observability/sentry-
 import { publicLedgerOrganisationId } from './public-routes';
 import { durableDatabase, durableObjectStore, migrateStorage } from './storage';
 import { runDue } from '../modules/recurring/recurring.service';
+import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 
 setErrorReporter(createSentryReporter());
 
@@ -21,6 +22,8 @@ interface Env {
   IDENTITY: DurableObjectNamespace<IdentityBase>;
   LEDGERS: DurableObjectNamespace<LedgerBase>;
   BETTER_AUTH_SECRET: string;
+  OPENAI_API_KEY?: string;
+  XAI_API_KEY?: string;
   NODE_ENV?: string;
   SENTRY_DSN?: string;
   SENTRY_TRACES_SAMPLE_RATE?: string;
@@ -130,6 +133,8 @@ class LedgerBase extends DurableObject<Env> {
         auth:sessionAuth,
         objectStore:durableObjectStore(this.ctx.storage),
         invoiceMailer:createUnavailableInvoiceMailer(),
+        receiptScanner: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined,
+        chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
         actorUserId: userId,
         scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
       });

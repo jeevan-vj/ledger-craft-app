@@ -20,6 +20,7 @@ import {
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { csvCell } from '../../lib/csv';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './bank.repository';
 import * as detailsRepo from './bank-details.repository';
@@ -296,18 +297,13 @@ export async function duplicateBankTransactionForUser(
   });
 }
 
-function csvCell(value: string | null) {
-  const text = value ?? '';
-  return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
-}
-
 export async function exportBankTransactionsCsvForUser(db: Database, userId: string, bankAccountId?: string): Promise<string> {
   const result = await listBankTransactionsForUser(db, userId, { bankAccountId });
   const header = ['Date', 'Description', 'Counterparty', 'Reference', 'Direction', 'Amount', 'Category', 'Source', 'Reconciled'];
   return [header.join(','), ...result.transactions.map((transaction) => [
     transaction.transactionDate, transaction.description, transaction.counterparty, transaction.reference,
     transaction.type, transaction.amount, transaction.category, transaction.source, transaction.isReconciled ? 'yes' : 'no',
-  ].map((value) => csvCell(String(value ?? ''))).join(','))].join('\n');
+  ].map(csvCell).join(','))].join('\n');
 }
 
 export async function createBankTransferForUser(

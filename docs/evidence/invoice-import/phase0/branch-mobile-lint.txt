@@ -1,0 +1,177 @@
+
+> mobile@1.0.0 lint
+> eslint .
+
+
+~/.codex/worktrees/ledger-import-p0/mobile/shared/types/bankTransaction.ts
+  148:11  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  153:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/shared/types/index.ts
+  554:19  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/shared/types/payment.ts
+  186:16  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  250:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/dashboard/BalanceCard.tsx
+  23:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/expense/CategoryPicker.tsx
+  18:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/expense/SwipeableExpenseCard.tsx
+  72:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/CompactLineItem.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/InvoicePreviewWithTemplates.tsx
+  45:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/ProfileCompletenessBanner.tsx
+  23:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  23:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/ProgressIndicator.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/StatusPicker.tsx
+  34:28  warning  'type' is assigned a value but never used                                                                                      @typescript-eslint/no-unused-vars
+  71:6   warning  React Hook useEffect has missing dependencies: 'fadeAnim' and 'slideAnim'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  76:52  warning  A `require()` style import is forbidden                                                                                        @typescript-eslint/no-require-imports
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/SwipeableInvoiceCard.tsx
+  47:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/invoice/TaxConfigCard.tsx
+  32:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  32:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/items/ItemPicker.tsx
+   41:10  warning  'categories' is assigned a value but never used              @typescript-eslint/no-unused-vars
+  179:22  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/ActionButton.tsx
+  29:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/AnimatedFilterButton.tsx
+   12:10  warning  'Text' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   85:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  104:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/AnimatedPressable.tsx
+  76:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/AnimatedSwitch.tsx
+   18:3   warning  'withTiming' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   25:25  warning  'TIMING_CONFIG' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+   25:55  warning  'EASING' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   94:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  110:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/AnimatedTotal.tsx
+   8:3  warning  'interpolate' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  40:6  warning  React Hook useEffect has missing dependencies: 'animatedValue' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/ConfirmDialog.tsx
+  2:29  warning  'TouchableOpacity' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/EmptyState.tsx
+  17:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  17:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/FilterPills.tsx
+  22:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  22:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/FormInput.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/FormSwitch.tsx
+  15:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/GroupedSection.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/IconWell.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/ModernButton.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/ModernInput.tsx
+  38:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/SelectionSheet.tsx
+   54:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  116:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/components/ui/SmartDatePicker.tsx
+  48:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/features/currency/currencyApi.ts
+  7:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/features/invoices/api/invoicesApi.ts
+  25:27  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  45:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  57:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/features/quotes/quoteTotals.ts
+  25:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/navigation/index.tsx
+  53:6  warning  React Hook useEffect has missing dependencies: 'opacity' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/auth/LoginScreen.tsx
+  26:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  26:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/expenses/ExpenseCreateScreen.tsx
+  44:28  warning  'type' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  54:20  warning  'setCurrency' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  58:19  warning  'setTaxRate' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/expenses/ExpenseEditScreen.tsx
+  19:15  warning  'Expense' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/expenses/ExpenseListScreen.tsx
+   33:28  warning  'type' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
+   63:8   warning  React Hook useCallback has a missing dependency: 'loadExpenses'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  121:6   warning  React Hook useLayoutEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/invoices/InvoiceCreateScreen.tsx
+  47:28  warning  'type' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
+  99:6   warning  React Hook useEffect has a missing dependency: 'loadInitialData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/invoices/InvoiceDetailScreen.tsx
+  60:28  warning  'type' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  92:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/invoices/InvoiceListScreen.tsx
+   38:28  warning  'type' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
+   77:8   warning  React Hook useCallback has a missing dependency: 'loadInvoices'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  135:6   warning  React Hook useLayoutEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/screens/settings/BusinessSettingsScreen.tsx
+  41:28  warning  'type' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  79:6   warning  React Hook useEffect has a missing dependency: 'loadProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/services/businessProfileService.ts
+  351:15  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/services/expenseService.ts
+  3:66  warning  '~/.codex/worktrees/ledger-import-p0/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+  4:30  warning  'PaymentMethod' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+  4:51  warning  '~/.codex/worktrees/ledger-import-p0/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+
+~/.codex/worktrees/ledger-import-p0/mobile/src/services/storageService.ts
+  46:15  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 78 problems (0 errors, 78 warnings)
+  0 errors and 12 warnings potentially fixable with the `--fix` option.
+
+exit 0

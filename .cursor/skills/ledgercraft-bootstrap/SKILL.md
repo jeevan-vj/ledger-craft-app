@@ -9,6 +9,11 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+Invoice-import Phase 0 hardening is implemented locally (2026-10-26) through
+`0017_invoice-import-phase0.sql`: explicit import/export and AI permissions,
+real payments for paid imports, retained source attachments, external document
+numbers, formula-safe CSV exports, and OpenAI-first Worker bindings (xAI optional).
+
 The active deployment is Cloudflare Pages plus a Hono Worker, with Identity and
 per-organisation Ledger SQLite Durable Objects. The PostgreSQL reconstruction
 table below is historical context only; do not start Docker or Postgres for the

@@ -61,6 +61,7 @@ export function refineDiscount(
 const createInvoiceRequestBaseSchema = z
   .object({
     customerId: z.string().uuid(),
+    externalNumber: z.string().trim().min(1).max(100).nullable().optional(),
     date: z.string().min(1),
     dueDate: z.string().min(1),
     notes: z.string().nullable().optional(),
@@ -135,6 +136,7 @@ export const invoiceLineSchema = z.object({
 export const invoiceSchema = z.object({
   id: z.string().uuid(),
   invoiceNumber: z.string().min(1),
+  externalNumber: z.string().max(100).nullable().optional(),
   externalId: z.string().nullable().optional(),
   customerId: z.string().uuid(),
   date: z.string().min(1),
@@ -188,6 +190,8 @@ export const invoiceAttachmentSchema = z.object({
   filename: z.string().min(1).max(255),
   contentType: z.enum(['application/pdf', 'image/jpeg', 'image/png', 'image/webp']),
   size: z.number().int().positive().max(1_048_576),
+  role: z.enum(['attachment', 'source_document']).default('attachment'),
+  locked: z.boolean().default(false),
   createdAt: z.string().min(1),
 });
 
@@ -201,7 +205,14 @@ export const invoiceAttachmentsResponseSchema = z.object({ attachments: z.array(
 
 export const importInvoiceRowSchema = createInvoiceRequestBaseSchema.extend({
   externalId: z.string().trim().min(1).max(120),
-}).omit({ status: true }).extend({ status: invoiceStatusSchema.exclude(['cancelled']).optional() });
+  invoiceNumber: z.string().trim().min(1).max(100).optional(),
+}).omit({ status: true }).extend({
+  status: invoiceStatusSchema.exclude(['cancelled']).optional(),
+  paymentDate: z.string().min(1).optional(),
+  paymentMethod: z.enum(['bank_transfer', 'cash', 'cheque', 'credit_card', 'online']).optional(),
+  reference: z.string().trim().max(100).nullable().optional(),
+  paymentReference: z.string().trim().max(100).nullable().optional(),
+});
 export const importInvoicesRequestSchema = z.object({ dryRun: z.boolean().default(true), rows: z.array(importInvoiceRowSchema).min(1).max(200) }).strict();
 export const importInvoicesResponseSchema = z.object({ valid: z.boolean(), imported: z.number().int().nonnegative(), errors: z.array(z.object({ row: z.number().int().positive(), message: z.string() })) });
 

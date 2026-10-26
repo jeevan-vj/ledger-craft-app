@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { csvRow } from '@/lib/csv';
 
 const today = new Date();
 const initialFrom = `${today.getFullYear()}-01-01`;
@@ -105,7 +106,7 @@ function GstReturnPanel({ report }: { report: FinancialReportResponse }) {
 
 function downloadCsv(report: FinancialReportResponse) {
   const rows = [['Account', 'Class', 'Debit', 'Credit', 'Balance'], ...report.trialBalance.rows.map((row) => [row.accountName, row.accountClass, row.debit, row.credit, row.balance])];
-  const blob = new Blob([rows.map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(',')).join('\n')], { type: 'text/csv' });
+  const blob = new Blob([rows.map(csvRow).join('\n')], { type: 'text/csv' });
   const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = `LedgerCraft-report-${report.meta.from}-${report.meta.to}.csv`; link.click(); URL.revokeObjectURL(url);
 }
 

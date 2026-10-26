@@ -6,6 +6,11 @@ export function requiredEnv(name: string): string {
   return value;
 }
 
+export type AiProviderEnv = {
+  OPENAI_API_KEY?: string;
+  XAI_API_KEY?: string;
+};
+
 export function getDatabaseUrl(): string {
   return process.env.DATABASE_URL ?? '.data/ledgercraft.sqlite';
 }

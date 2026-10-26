@@ -5,6 +5,7 @@ import {
   type ScanReceiptRequest,
 } from '@ledgercraft/contracts';
 import { apiError } from '../../http-error';
+import type { AiProviderEnv } from '../../env';
 import type { ChatCompleter } from './chat';
 import type { ReceiptScanner } from './scanner';
 
@@ -75,25 +76,38 @@ function sanitize(raw: unknown): ReceiptScanResultDto {
   });
 }
 
-export function createOpenAiReceiptScanner(opts?: {
+type AiProviderOptions = {
   apiKey?: string;
+  xaiApiKey?: string;
+  openAiApiKey?: string;
+  env?: AiProviderEnv;
   fetchImpl?: typeof fetch;
-}): ReceiptScanner {
-  const apiKey = opts?.apiKey ?? process.env.OPENAI_API_KEY;
+};
+
+function provider(options?: AiProviderOptions) {
+  const openAiApiKey = options?.openAiApiKey ?? options?.apiKey ?? options?.env?.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY;
+  if (openAiApiKey) return { apiKey: openAiApiKey, url: 'https://api.openai.com/v1/chat/completions', receiptModel: 'gpt-4o-mini', chatModel: 'gpt-3.5-turbo' };
+  const xaiApiKey = options?.xaiApiKey ?? options?.env?.XAI_API_KEY ?? process.env.XAI_API_KEY;
+  if (xaiApiKey) return { apiKey: xaiApiKey, url: 'https://api.x.ai/v1/chat/completions', receiptModel: 'grok-4-fast-non-reasoning', chatModel: 'grok-4-fast-non-reasoning' };
+  return undefined;
+}
+
+export function createOpenAiReceiptScanner(opts?: AiProviderOptions): ReceiptScanner {
+  const configured = provider(opts);
   const fetchImpl = opts?.fetchImpl ?? fetch;
   return {
     async scan(input: ScanReceiptRequest) {
-      if (!apiKey) {
+      if (!configured) {
         throw apiError(503, 'AI_UNAVAILABLE', 'Receipt scanning is not configured');
       }
-      const response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+      const response = await fetchImpl(configured.url, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${configured.apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
+          model: configured.receiptModel,
           max_tokens: 1000,
           response_format: { type: 'json_object' },
           messages: [
@@ -126,25 +140,22 @@ export function createOpenAiReceiptScanner(opts?: {
   };
 }
 
-export function createOpenAiChatCompleter(opts?: {
-  apiKey?: string;
-  fetchImpl?: typeof fetch;
-}): ChatCompleter {
-  const apiKey = opts?.apiKey ?? process.env.OPENAI_API_KEY;
+export function createOpenAiChatCompleter(opts?: AiProviderOptions): ChatCompleter {
+  const configured = provider(opts);
   const fetchImpl = opts?.fetchImpl ?? fetch;
   return {
     async complete(messages: ChatCompletionRequest['messages']) {
-      if (!apiKey) {
+      if (!configured) {
         throw apiError(503, 'AI_UNAVAILABLE', 'Chat completions are not configured');
       }
-      const response = await fetchImpl('https://api.openai.com/v1/chat/completions', {
+      const response = await fetchImpl(configured.url, {
         method: 'POST',
         headers: {
-          Authorization: `Bearer ${apiKey}`,
+          Authorization: `Bearer ${configured.apiKey}`,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          model: 'gpt-3.5-turbo',
+          model: configured.chatModel,
           messages,
           max_tokens: 500,
           temperature: 0.3,

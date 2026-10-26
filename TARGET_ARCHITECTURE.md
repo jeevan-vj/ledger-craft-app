@@ -1,5 +1,15 @@
 # LedgerCraft target architecture
 
+**Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
+SQLite migration `0017_invoice-import-phase0.sql` stores source invoice numbers
+separately from LedgerCraft numbering and marks retained invoice/bill source
+attachments. Paid invoice imports create the invoice posting plus a real payment
+and payment posting; dry runs create neither. Bulk import/export and AI routes
+have explicit role permissions, all registered protected Hono routes are covered
+by a permission-domain test, CSV exports neutralise formula strings, and public
+invoice shares exclude source documents. Worker AI uses required `OPENAI_API_KEY`
+as the primary provider and optional `XAI_API_KEY` as an alternative.
+
 **Payment idempotency and receipt filters (implemented locally, 2026-10-24):**
 `POST /api/payments` accepts an optional `Idempotency-Key` and reuses the
 existing organisation- and user-scoped `idempotency_keys` helper. The same key

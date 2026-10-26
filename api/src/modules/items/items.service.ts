@@ -8,6 +8,7 @@ import {
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { csvCell } from '../../lib/csv';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './items.repository';
 
@@ -92,15 +93,10 @@ export async function importItemsForUser(db: Database, userId: string, input: Im
   });
 }
 
-function csvCell(value: string | null | boolean): string {
-  const rendered = value === null ? '' : String(value);
-  return /[",\n]/.test(rendered) ? `"${rendered.replace(/"/g, '""')}"` : rendered;
-}
-
 export async function exportItemsForUser(db: Database, userId: string): Promise<string> {
   const catalog = await listCatalogForUser(db, userId);
   const headers = ['id','name','description','type','categoryId','salePrice','purchasePrice','taxRate','enableSaleInfo','enablePurchaseInfo','unit','isActive'];
-  return [headers.join(','), ...catalog.items.map((item) => headers.map((key) => csvCell(item[key as keyof ItemDto] as string | null | boolean)).join(','))].join('\n');
+  return [headers.join(','), ...catalog.items.map((item) => headers.map((key) => csvCell(item[key as keyof ItemDto])).join(','))].join('\n');
 }
 
 export async function createCategoryForUser(db: Database, userId: string, input: CreateItemCategoryRequest): Promise<ItemCategoryDto> {

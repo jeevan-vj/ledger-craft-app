@@ -10,13 +10,20 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
   [/^\/(?:api\/)?customers(?:\/|$)/, 'customers'],
   [/^\/(?:api\/)?(?:invoices|quotes|payments|receipts)(?:\/|$)/, 'invoices'],
   [/^\/(?:api\/)?(?:vendors|bills|expenses|expense-categories)(?:\/|$)/, 'bills'],
-  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
-  [/^\/(?:api\/)?(?:reports|tax-configurations|tax-returns|tax-adjustments)(?:\/|$)/, 'reports'],
+  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
+  [/^\/(?:api\/)?(?:reports|tax-configurations|tax-returns|tax-adjustments|dashboard|dashboard-layouts|saved-reports)(?:\/|$)/, 'reports'],
   [/^\/(?:api\/)?(?:business-profile|items|item-categories|objects|currency-settings|currencies|exchange-rates|recurring-templates|recurring-runs)(?:\/|$)/, 'settings'],
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],
 ];
 
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
+  if (/^\/(?:api\/)?invoices-import$/.test(path)) return 'invoices.import';
+  if (/^\/(?:api\/)?invoices-export\.csv$/.test(path)) return 'invoices.write';
+  if (/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/.test(path)) return 'bills.write';
+  if (/^\/(?:api\/)?items\/export$/.test(path)) return 'settings.write';
+  if (/^\/(?:api\/)?bank-transactions\/export\.csv$/.test(path)) return 'banking.write';
+  if (/^\/(?:api\/)?ai(?:\/|$)/.test(path)) return 'ai.use';
+  if (/^\/(?:api\/)?conversations(?:\/|$)/.test(path) && method !== 'GET' && method !== 'HEAD') return 'ai.use';
   const match = resourceDomains.find(([pattern]) => pattern.test(path));
   if (!match) return null;
   const domain = match[1];

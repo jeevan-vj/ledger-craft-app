@@ -9,6 +9,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { ContentPanel } from '@/components/ui/ContentPanel';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { csvRow } from '@/lib/csv';
 
 const titles: Record<DashboardWidgetKind, string> = {
   summary: 'Business summary', receivables: 'Receivables', payables: 'Payables',
@@ -30,7 +31,7 @@ function displayMetric(report: ReportResultDto, value: string, currency: string)
 
 function downloadCsv(report: ReportResultDto) {
   const rows = [['date', 'label', 'detail', 'value'], ...report.rows.map((row) => [row.date, row.label, row.detail ?? '', row.value ?? ''])];
-  const csv = rows.map((row) => row.map((value) => `"${String(value).replaceAll('"', '""')}"`).join(',')).join('\n');
+  const csv = rows.map(csvRow).join('\n');
   const href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
   const anchor = document.createElement('a');
   anchor.href = href;

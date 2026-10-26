@@ -1,0 +1,37 @@
+$ pnpm --filter @ledgercraft/contracts test
+$ vitest run
+
+ RUN  v3.2.4 ~/.codex/worktrees/ledger-import-p0/packages/contracts
+
+ ✓ src/payment.test.ts (3 tests) 36ms
+ ✓ src/customer.test.ts (4 tests) 141ms
+ ✓ src/dashboard.test.ts (4 tests) 195ms
+ ✓ src/session.test.ts (3 tests) 192ms
+ ✓ src/report.test.ts (2 tests) 47ms
+ ✓ src/bank.test.ts (5 tests) 223ms
+ ✓ src/business-profile.test.ts (7 tests) 322ms
+ ✓ src/tax.test.ts (4 tests) 252ms
+ ✓ src/purchase.test.ts (6 tests) 78ms
+ ✓ src/invoice.test.ts (13 tests) 238ms
+ ✓ src/recurring.test.ts (2 tests) 341ms
+   ✓ recurring contracts > accepts exact-money invoice schedules and all interval families  328ms
+ ✓ src/object.test.ts (2 tests) 23ms
+ ✓ src/organisation.test.ts (3 tests) 155ms
+ ✓ src/item.test.ts (5 tests) 187ms
+ ✓ src/error.test.ts (4 tests) 144ms
+ ✓ src/conversation.test.ts (1 test) 83ms
+ ✓ src/ai.test.ts (2 tests) 15ms
+ ✓ src/receipt.test.ts (3 tests) 144ms
+ ✓ src/quote.test.ts (4 tests) 185ms
+ ✓ src/journal.test.ts (2 tests) 17ms
+ ✓ src/expense.test.ts (3 tests) 169ms
+ ✓ src/currency.test.ts (5 tests) 141ms
+ ✓ src/health.test.ts (3 tests) 26ms
+ ✓ src/reconciliation.test.ts (1 test) 30ms
+
+ Test Files  24 passed (24)
+      Tests  91 passed (91)
+   Start at  18:21:13
+   Duration  18.34s (transform 12.78s, setup 0ms, collect 27.64s, tests 3.38s, environment 272ms, prepare 48.90s)
+
+exit 0

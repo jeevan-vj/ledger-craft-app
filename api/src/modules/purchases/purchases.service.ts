@@ -10,7 +10,9 @@ import {
   type UpdateVendorRequest,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
+import { apiError } from '../../http-error';
 import type { Database } from '../../db/client';
+import { csvCell } from '../../lib/csv';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import { decimal } from '../invoices/money';
 import { postBillPayment, postReceivedBill, restoreBill, reverseBill } from './purchases.journal';
@@ -242,15 +244,15 @@ export async function attachBillObjectForUser(db: Database, userId: string, id: 
 
 export async function removeBillAttachmentForUser(db: Database, userId: string, id: string, attachmentId: string) {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const existing = await repo.getBillAttachment(tx, ctx.organisationId, id, attachmentId);
+    if (!existing) throw new HTTPException(404, { message: 'Attachment not found' });
+    if (existing.locked || existing.role === 'source_document') {
+      throw apiError(409, 'SOURCE_DOCUMENT_LOCKED', 'Source documents cannot be deleted');
+    }
     const removed = await repo.removeAttachment(tx, ctx.organisationId, id, attachmentId);
     if (!removed) throw new HTTPException(404, { message: 'Attachment not found' });
     await repo.appendBillHistory(tx, ctx, id, 'attachment_removed', `Removed ${removed.filename}`);
   });
-}
-
-function csvCell(value: unknown) {
-  const text = String(value ?? '');
-  return `"${text.replaceAll('"', '""')}"`;
 }
 
 function parseCsvRow(row: string) {

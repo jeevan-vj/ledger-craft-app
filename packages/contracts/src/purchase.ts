@@ -150,6 +150,8 @@ export const billAttachmentSchema = z.object({
   filename: z.string().min(1),
   contentType: z.string().min(1),
   size: z.number().int().nonnegative().max(1_048_576),
+  role: z.enum(['attachment', 'source_document']).default('attachment'),
+  locked: z.boolean().default(false),
   createdAt: z.string().min(1),
 });
 

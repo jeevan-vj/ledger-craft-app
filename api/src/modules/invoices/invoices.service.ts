@@ -96,6 +96,7 @@ export async function createInvoiceInTx(
   const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
     customerId: input.customerId,
     invoiceNumber,
+    externalNumber: input.externalNumber ?? null,
     date: input.date,
     dueDate: input.dueDate,
     paymentTermDays,

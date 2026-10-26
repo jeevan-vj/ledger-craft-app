@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { createApp } from '../../app';
 import { permissionForRequest } from './authorize-request';
 
 describe('permissionForRequest', () => {
@@ -14,8 +15,19 @@ describe('permissionForRequest', () => {
     ['GET', '/api/tax-returns', 'reports.read'],
     ['POST', '/api/tax-returns', 'reports.read'],
     ['GET', '/api/items', 'settings.read'],
+    ['GET', '/api/items/export', 'settings.write'],
+    ['POST', '/api/items/import', 'settings.write'],
     ['DELETE', '/api/objects/id', 'settings.write'],
-    ['POST', '/api/ai/chat', 'api.access'],
+    ['POST', '/api/invoices-import', 'invoices.import'],
+    ['GET', '/api/invoices-export.csv', 'invoices.write'],
+    ['GET', '/api/bills-export.csv', 'bills.write'],
+    ['GET', '/api/vendors-export.csv', 'bills.write'],
+    ['GET', '/api/bank-transactions/export.csv', 'banking.write'],
+    ['POST', '/api/bank-transactions/import', 'banking.write'],
+    ['POST', '/api/ai/chat', 'ai.use'],
+    ['POST', '/api/ai/receipt-scan', 'ai.use'],
+    ['GET', '/api/conversations', 'api.access'],
+    ['POST', '/api/conversations', 'ai.use'],
   ] as const)('%s %s requires %s', (method, path, expected) => {
     expect(permissionForRequest(method, path)).toBe(expected);
   });
@@ -24,5 +36,24 @@ describe('permissionForRequest', () => {
     expect(permissionForRequest('GET', '/api/public/invoices/token')).toBeNull();
     expect(permissionForRequest('POST', '/api/auth/sign-in/email')).toBeNull();
     expect(permissionForRequest('PATCH', '/api/organisations/id/members/member')).toBeNull();
+  });
+
+  it('maps every registered non-public application route to a permission', () => {
+    const explicitlyGuardedOrPublic = [
+      /^\/$/,
+      /^\/(?:api\/)?(?:healthz|readyz)$/,
+      /^\/api\/auth\//,
+      /^\/(?:api\/)?me$/,
+      /^\/(?:api\/)?public\//,
+      /^\/api\/(?:organisations|invitations)(?:\/|$)/,
+      /^\/api\/__test\//,
+    ];
+    const routes = createApp().routes.filter((route) =>
+      route.method !== 'ALL'
+      && !explicitlyGuardedOrPublic.some((pattern) => pattern.test(route.path)));
+
+    expect(routes.length).toBeGreaterThan(0);
+    expect(routes.filter((route) => permissionForRequest(route.method, route.path) == null))
+      .toEqual([]);
   });
 });

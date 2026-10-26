@@ -1,5 +1,15 @@
 # AGENTS.md
 
+**Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
+Migration `0017_invoice-import-phase0.sql` adds invoice `external_number` and
+locked source-document roles to invoice and bill attachments. Invoice imports
+require `invoices.import` (owner, admin, accountant), paid imports create a real
+payment and balanced payment journal, and exports require their domain write
+permission. AI writes require `ai.use` and use server-only OpenAI credentials first,
+with optional xAI as an alternative. Shared CSV exports neutralise spreadsheet
+formulas. Locked source documents cannot be deleted or exposed through public
+invoice shares.
+
 **Payment idempotency and receipt filters (implemented locally, 2026-10-24):** `POST /api/payments` accepts an optional `Idempotency-Key`. The existing `idempotency_keys` helper in `api/src/modules/invoices/idempotency.ts` scopes that key to the organisation, user, method, and path. The same key and body return the original payment and do not create a second payment or journal entry. A different body returns 409 `IDEMPOTENCY_CONFLICT`. `GET /api/receipts` accepts optional `paymentId` and `invoiceId` filters and stays organisation-scoped. Payment maths, balance recalculation, `PAYMENT_EXCEEDS_BALANCE`, and journal posting are unchanged. No migration was added.
 
 **Mobile invoice payments (implemented locally, 2026-10-25):** Expo invoice detail lists payment amount, method, date, and reference as exact decimal strings. Record payment defaults to the server balance due, normalises the amount to 2 decimal places with half-up before comparing or sending it, and sends one `Idempotency-Key` per attempt. The same key is reused for a retry, a double tap, or the same request after the sheet is dismissed. A new key is created after the user edits the request, a successful submit, or `409 IDEMPOTENCY_CONFLICT`. `PAYMENT_EXCEEDS_BALANCE` waits for the refetched invoice, updates the open sheet balance and amount on the list and the detail screen, then shows the error. Offline payments show an error and are not queued. Paid invoices hide Record payment and Edit. A successful payment invalidates the invoice, payment, and dashboard queries. `mobile/src/services/paymentService.ts` calls the Hono payments API only. Receipt creation and receipt PDFs are not part of this slice, including when `EXPO_PUBLIC_RECEIPTS_API` is set. Server payment maths are unchanged.

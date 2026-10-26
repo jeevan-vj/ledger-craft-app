@@ -104,6 +104,12 @@ describe('purchase routes', () => {
         const vendorExport = await app.request('/api/vendors-export.csv', { headers: { Cookie: ownerA } });
         expect(vendorExport.status).toBe(200);
         expect(await vendorExport.text()).toContain('"South, Harbour Supplies"');
+        await app.request('/api/vendors', {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ name: '=HYPERLINK("https://example.test")' }),
+        });
+        const safeVendorExport = await app.request('/api/vendors-export.csv', { headers: { Cookie: ownerA } });
+        expect(await safeVendorExport.text()).toContain("'=HYPERLINK");
 
         const billInput = {
           vendorId: vendor.id,
@@ -152,6 +158,18 @@ describe('purchase routes', () => {
           body: JSON.stringify({ objectKey: uploaded.key, filename: 'bill.pdf', contentType: 'application/pdf', size: 4 }),
         });
         expect(attached.status).toBe(201);
+        const sourceAttachment = await attached.json() as { id: string };
+        await sql.unsafe("UPDATE bill_attachments SET role = 'source_document', locked = 1 WHERE id = ?", [sourceAttachment.id]);
+        const lockedDelete = await app.request(`/api/bills/${draft.id}/attachments/${sourceAttachment.id}`, { method: 'DELETE', headers: { Cookie: ownerA } });
+        expect(lockedDelete.status).toBe(409);
+        expect((await lockedDelete.json() as { error: { code: string } }).error.code).toBe('SOURCE_DOCUMENT_LOCKED');
+        expect(await sql.unsafe('SELECT id FROM bill_attachments WHERE id = ?', [sourceAttachment.id])).toHaveLength(1);
+
+        const regularAttachment = await (await app.request(`/api/bills/${draft.id}/attachments`, {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({ objectKey: `${uploaded.key}-regular`, filename: 'regular.pdf', contentType: 'application/pdf', size: 4 }),
+        })).json() as { id: string };
+        expect((await app.request(`/api/bills/${draft.id}/attachments/${regularAttachment.id}`, { method: 'DELETE', headers: { Cookie: ownerA } })).status).toBe(204);
 
         const receivedResponse = await app.request(`/api/bills/${draft.id}/receive`, {
           method: 'POST',
@@ -200,7 +218,9 @@ describe('purchase routes', () => {
         expect(paidBill.history.map((entry) => entry.event)).toEqual(expect.arrayContaining(['created', 'received', 'payment_recorded', 'attachment_added']));
         const billExport = await app.request('/api/bills-export.csv', { headers: { Cookie: ownerA } });
         expect(billExport.status).toBe(200);
-        expect(await billExport.text()).toContain('"BILL-0001"');
+        const billCsv = await billExport.text();
+        expect(billCsv).not.toContain('\n=HYPERLINK');
+        expect(billCsv).toContain('BILL-0001');
 
         expect((await app.request(`/api/bills/${draft.id}/attachments/${paidBill.attachments[0]!.id}`, {
           method: 'DELETE', headers: { ...jsonHeaders, Cookie: ownerB },

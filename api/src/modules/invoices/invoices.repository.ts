@@ -40,6 +40,7 @@ function toDto(
   return invoiceSchema.parse({
     id: row.id,
     invoiceNumber: row.invoiceNumber,
+    externalNumber: row.externalNumber ?? null,
     externalId: row.externalId ?? null,
     customerId: row.customerId,
     date: row.date,
@@ -149,6 +150,7 @@ export async function insertInvoice(
   input: {
     customerId: string;
     invoiceNumber: string;
+    externalNumber?: string | null;
     externalId?: string | null;
     date: string;
     dueDate: string;
@@ -173,6 +175,7 @@ export async function insertInvoice(
       organisationId: ctx.organisationId,
       userId: ctx.userId,
       invoiceNumber: input.invoiceNumber,
+      externalNumber: input.externalNumber ?? null,
       externalId: input.externalId ?? null,
       customerId: input.customerId,
       date: input.date,
@@ -407,7 +410,8 @@ export async function archiveInvoice(tx: Database, organisationId: string, id: s
 function toAttachmentDto(row: typeof invoiceAttachments.$inferSelect): InvoiceAttachmentDto {
   return invoiceAttachmentSchema.parse({
     id: row.id, invoiceId: row.invoiceId, filename: row.filename,
-    contentType: row.contentType, size: row.size, createdAt: row.createdAt.toISOString(),
+    contentType: row.contentType, size: row.size, role: row.role, locked: row.locked,
+    createdAt: row.createdAt.toISOString(),
   });
 }
 

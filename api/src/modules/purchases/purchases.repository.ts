@@ -417,3 +417,12 @@ export async function removeAttachment(tx: Database, organisationId: string, bil
   )).returning();
   return rows[0];
 }
+
+export async function getBillAttachment(tx: Database, organisationId: string, billId: string, attachmentId: string) {
+  const [row] = await tx.select().from(billAttachments).where(and(
+    eq(billAttachments.organisationId, organisationId),
+    eq(billAttachments.billId, billId),
+    eq(billAttachments.id, attachmentId),
+  ));
+  return row;
+}

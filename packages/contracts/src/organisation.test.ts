@@ -4,6 +4,7 @@ import {
   createInvitationRequestSchema,
   createOrganisationRequestSchema,
   organisationRoleSchema,
+  organisationPermissionSchema,
   updateMemberRequestSchema,
 } from './organisation';
 
@@ -13,6 +14,11 @@ describe('organisation contracts', () => {
       expect(organisationRoleSchema.parse(role)).toBe(role);
     }
     expect(() => organisationRoleSchema.parse('superuser')).toThrow();
+  });
+
+  it('exposes dedicated invoice-import and AI-use permissions', () => {
+    expect(organisationPermissionSchema.parse('invoices.import')).toBe('invoices.import');
+    expect(organisationPermissionSchema.parse('ai.use')).toBe('ai.use');
   });
 
   it('validates organisation, member, and invitation writes', () => {

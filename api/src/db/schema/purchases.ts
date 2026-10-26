@@ -131,8 +131,11 @@ export const billAttachments = sqliteTable('bill_attachments', {
   filename: text('filename').notNull(),
   contentType: text('content_type').notNull(),
   size: integer('size').notNull(),
+  role: text('role').notNull().default('attachment'),
+  locked: integer('locked', { mode: 'boolean' }).notNull().default(false),
   createdAt: timestamp('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
+  check('bill_attachments_role_check', sql`${table.role} IN ('attachment', 'source_document')`),
   check('bill_attachments_size_check', sql`${table.size} >= 0 AND ${table.size} <= 1048576`),
   uniqueIndex('bill_attachments_org_id_uidx').on(table.organisationId, table.id),
   uniqueIndex('bill_attachments_org_object_uidx').on(table.organisationId, table.objectKey),

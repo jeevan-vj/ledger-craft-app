@@ -11,8 +11,10 @@ import {
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { csvCell } from '../../lib/csv';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
+import { createPaymentInTx } from '../payments/payments.service';
 import { assertKeyOwned } from '../storage/keys';
 import type { ObjectStore } from '../storage/object-store';
 import { createInvoiceInTx } from './invoices.service';
@@ -129,6 +131,11 @@ export async function attachInvoiceFileForUser(db: Database, userId: string, id:
 
 export async function deleteInvoiceAttachmentForUser(db: Database, userId: string, invoiceId: string, attachmentId: string, store: ObjectStore) {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const existing = await repo.getAttachment(tx, ctx.organisationId, invoiceId, attachmentId);
+    if (!existing) throw new HTTPException(404, { message: 'Attachment not found' });
+    if (existing.locked || existing.role === 'source_document') {
+      throw apiError(409, 'SOURCE_DOCUMENT_LOCKED', 'Source documents cannot be deleted');
+    }
     const removed = await repo.deleteAttachment(tx, ctx.organisationId, invoiceId, attachmentId);
     if (!removed) throw new HTTPException(404, { message: 'Attachment not found' });
     await store.delete(removed.objectKey);
@@ -145,25 +152,37 @@ export async function importInvoicesForUser(db: Database, userId: string, input:
     if (duplicates.length) return { valid: false, imported: 0, errors: duplicates.map((row) => ({ row, message: 'External id already exists' })) };
     if (input.dryRun) return { valid: true, imported: 0, errors: [] };
     for (const row of input.rows) {
-      const created = await createInvoiceInTx(tx, ctx, row);
+      const requestedStatus = row.status;
+      const externalNumber = row.externalNumber ?? row.invoiceNumber ?? null;
+      const createInput = { ...row, externalNumber, ...(requestedStatus === 'paid' ? { status: 'draft' as const } : {}) };
+      const created = await createInvoiceInTx(tx, ctx, createInput);
       await repo.setExternalId(tx, ctx.organisationId, created.id, row.externalId);
-      await repo.recordHistory(tx, ctx, created.id, { action: 'imported', fromStatus: null, toStatus: created.status, metadata: { externalId: row.externalId } });
+      if (requestedStatus === 'paid') {
+        await createPaymentInTx(tx, ctx, {
+          invoiceId: created.id, amount: created.total,
+          paymentDate: row.paymentDate ?? row.date,
+          paymentMethod: row.paymentMethod ?? 'bank_transfer',
+          referenceNumber: row.paymentReference ?? row.reference ?? null,
+          notes: 'Created from paid invoice import',
+        });
+      }
+      const imported = requestedStatus === 'paid' ? await repo.getInvoice(tx, ctx.organisationId, created.id) : created;
+      await repo.recordHistory(tx, ctx, created.id, {
+        action: 'imported', fromStatus: null, toStatus: imported?.status ?? created.status,
+        metadata: { externalId: row.externalId, externalNumber },
+      });
     }
     return { valid: true, imported: input.rows.length, errors: [] };
   });
 }
 
-function csvCell(value: string): string {
-  return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
-}
-
 export async function exportInvoicesForUser(db: Database, userId: string): Promise<string> {
   const { invoices } = await import('./invoices.service').then((service) => service.listInvoicesForUser(db, userId));
-  const headers = ['externalId', 'invoiceNumber', 'customerId', 'date', 'dueDate', 'currency', 'status', 'subtotal', 'taxAmount', 'total', 'itemsJson'];
+  const headers = ['externalId', 'invoiceNumber', 'externalNumber', 'customerId', 'date', 'dueDate', 'currency', 'status', 'subtotal', 'taxAmount', 'total', 'itemsJson'];
   const rows = invoices.map((invoice) => [
-    invoice.externalId ?? invoice.id, invoice.invoiceNumber, invoice.customerId, invoice.date, invoice.dueDate,
+    invoice.externalId ?? invoice.id, invoice.invoiceNumber, invoice.externalNumber, invoice.customerId, invoice.date, invoice.dueDate,
     invoice.currency, invoice.status, invoice.subtotal, invoice.taxAmount, invoice.total,
     JSON.stringify(invoice.items.map(({ id: _id, ...item }) => item)),
-  ].map((value) => csvCell(String(value))).join(','));
+  ].map(csvCell).join(','));
   return [headers.join(','), ...rows].join('\n');
 }
