@@ -114,6 +114,10 @@ async function setup() {
       defaultTaxRate: '15', gstRegistrationStatus: 'registered',
     },
   });
+  const owner = await api(ownerContext, '/api/me');
+  await api(ownerContext, `/api/organisations/${owner.organisation.id}`, {
+    method: 'PATCH', body: { name: 'Crystal Touch Cleaning' },
+  });
   await api(ownerContext, '/api/customers', {
     method: 'POST', expected: 201,
     body: { name: 'Cleancorp Ltd', email: 'ap@cleancorp.example', country: 'NZ' },
@@ -131,8 +135,7 @@ async function setup() {
     body: { name: 'Kauri Office Supplies', email: 'billing@kauri.example' },
   });
 
-  const me = await api(ownerContext, '/api/me');
-  const invitation = await api(ownerContext, `/api/organisations/${me.organisation.id}/invitations`, {
+  const invitation = await api(ownerContext, `/api/organisations/${owner.organisation.id}/invitations`, {
     method: 'POST', expected: 201,
     body: { email: readOnlyEmail, role: 'read_only' },
   });
