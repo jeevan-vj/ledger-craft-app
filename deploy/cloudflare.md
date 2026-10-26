@@ -217,9 +217,10 @@ Do not regenerate a signing secret as part of a routine release: changing it
 invalidates existing authentication state. Never place secrets in frontend
 build variables.
 
-Worker AI credentials are server-only bindings. `OPENAI_API_KEY` is optional at deploy time (AI import and receipt scanning return 503 until it is set with `wrangler secret put OPENAI_API_KEY`) and
-and is the primary provider. `XAI_API_KEY` is an optional alternative, used only
-when no OpenAI key is set. Configure both names through Wrangler secrets; never put
+Worker AI credentials are server-only bindings. `OPENAI_API_KEY` is the primary
+provider and is optional at deploy time: AI import and receipt scanning return 503
+until it is set with `wrangler secret put OPENAI_API_KEY`. `XAI_API_KEY` is an
+optional alternative, used only when no OpenAI key is set. Configure both names through Wrangler secrets; never put
 their values in `wrangler.jsonc`, Pages variables, or client environment files.
 
 ## Code and database changes
