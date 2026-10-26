@@ -245,6 +245,10 @@ manual review. Invoice-import confidence is capped at 0.6. Its vision model
 accepts PNG/JPEG/WebP images; invoice-import PDFs are rejected with guidance to
 upload a photo/screenshot or configure OpenAI/xAI. The local screenshot/demo
 hook `WORKERS_AI_FAKE=1` injects a canned Workers binding only outside production.
+Migration `0020_workers-ai-extraction-provider.sql` widens the
+`import_documents.extraction_provider` CHECK to allow `workers-ai` (existing
+values are preserved). It must ship with this provider; without it, saving a
+Workers AI extraction fails with a 500.
 Never place provider keys in `wrangler.jsonc`, Pages variables, or client
 environment files.
 
