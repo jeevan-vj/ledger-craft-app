@@ -62,9 +62,10 @@ export function createApp(deps: AppDependencies = {}) {
       c.set('chatCompleter', deps.chatCompleter);
     }
     if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
+    if (deps.workersAi) c.set('workersAi', deps.workersAi);
     c.set('capabilities', deps.capabilities ?? {
       email: deps.invoiceMailer?.availability === 'available' ? 'available' : 'unavailable',
-      ai: deps.receiptScanner ? 'available' : 'unavailable',
+      ai: deps.receiptScanner || deps.workersAi ? 'available' : 'unavailable',
     });
     if (deps.actorUserId) {
       c.set('actorUserId', deps.actorUserId);

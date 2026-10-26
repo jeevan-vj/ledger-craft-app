@@ -1,0 +1,38 @@
+[
+  {
+    "file": "inv1.png",
+    "issuerName": "Kiwi Supplies Ltd",
+    "recipientName": "Crystal Touch Cleaning",
+    "documentNumber": "KS-1001",
+    "issueDate": "2026-10-01",
+    "dueDate": "2026-10-20",
+    "net": "149.00",
+    "gst": "22.35",
+    "total": "171.35",
+    "lineCount": 2
+  },
+  {
+    "file": "inv2.png",
+    "issuerName": "Harbour Chemicals NZ",
+    "recipientName": "Crystal Touch Cleaning",
+    "documentNumber": "HC-2207",
+    "issueDate": "2026-09-15",
+    "dueDate": "2026-10-15",
+    "net": "188.10",
+    "gst": "28.22",
+    "total": "216.32",
+    "lineCount": 3
+  },
+  {
+    "file": "inv3.png",
+    "issuerName": "Crystal Touch Cleaning",
+    "recipientName": "Ponsonby Dental Clinic",
+    "documentNumber": "CTC-0042",
+    "issueDate": "2026-10-05",
+    "dueDate": "2026-10-19",
+    "net": "960.00",
+    "gst": "144.00",
+    "total": "1104.00",
+    "lineCount": 2
+  }
+]

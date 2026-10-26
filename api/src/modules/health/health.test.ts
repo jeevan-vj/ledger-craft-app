@@ -30,6 +30,17 @@ describe('health routes', () => {
     });
   });
 
+  it('reports AI available with only a Workers AI binding', async () => {
+    const response = await createApp({
+      workersAi: { run: async () => ({ response: {} }) },
+    }).request('/api/healthz');
+    expect(response.status).toBe(200);
+    expect(await response.json()).toEqual({
+      status: 'ok',
+      capabilities: { email: 'unavailable', ai: 'available' },
+    });
+  });
+
   it('allows idempotent browser writes through CORS preflight', async () => {
     const response = await createApp().request('/api/invoice-imports', {
       method: 'OPTIONS',

@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback } from 'react';
-import { Camera, Upload, Scan, X, CheckCircle, AlertCircle } from 'lucide-react';
+import { Camera, Upload, Scan, X, CheckCircle, AlertCircle, AlertTriangle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -133,7 +133,7 @@ export const ReceiptScanner: React.FC<ReceiptScannerProps> = ({
           <Alert>
             <AlertCircle className="h-4 w-4" />
             <AlertDescription>
-              Receipt scanning is not available. Please configure your OpenAI API key in the .env.local file.
+              Receipt scanning is not available. Configure a server-side AI provider or enter the receipt manually.
             </AlertDescription>
           </Alert>
           <Button onClick={onClose} className="mt-4 w-full">
@@ -307,6 +307,12 @@ export const ReceiptScanner: React.FC<ReceiptScannerProps> = ({
 
         {scanResult && (
           <div className="space-y-4">
+            {scanResult.provider === 'workers-ai' && (
+              <Alert className="border-warning/40 bg-warning/10 text-warning">
+                <AlertTriangle className="h-4 w-4" />
+                <AlertDescription>Scanned with Cloudflare Workers AI, check carefully</AlertDescription>
+              </Alert>
+            )}
             <div className="flex items-center text-green-600 mb-4">
               <CheckCircle className="h-5 w-5 mr-2" />
               <span className="font-medium">Receipt scanned successfully!</span>

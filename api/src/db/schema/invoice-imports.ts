@@ -55,7 +55,7 @@ export const importDocuments = sqliteTable('import_documents', {
   check('import_documents_sha256_check', sql`length(${table.sha256}) = 64 AND ${table.sha256} NOT GLOB '*[^0-9a-f]*'`),
   check('import_documents_direction_check', sql`${table.direction} IS NULL OR ${table.direction} IN ('sales','purchase')`),
   check('import_documents_third_party_issued_check', sql`${table.thirdPartyIssued} IN (0,1)`),
-  check('import_documents_extraction_provider_check', sql`${table.extractionProvider} IS NULL OR ${table.extractionProvider} IN ('openai','xai','mock')`),
+  check('import_documents_extraction_provider_check', sql`${table.extractionProvider} IS NULL OR ${table.extractionProvider} IN ('openai','xai','workers-ai','mock')`),
   check('import_documents_extraction_mock_check', sql`${table.extractionMock} IN (0,1)`),
   check('import_documents_committed_record_type_check', sql`${table.committedRecordType} IS NULL OR ${table.committedRecordType} IN ('invoice','bill')`),
   check('import_documents_committed_record_check', sql`(${table.committedRecordType} IS NULL AND ${table.committedRecordId} IS NULL) OR (${table.committedRecordType} IS NOT NULL AND ${table.committedRecordId} IS NOT NULL)`),

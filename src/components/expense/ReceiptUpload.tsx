@@ -544,7 +544,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                   <div className="border-t pt-4">
                     <div className="flex items-center text-xs text-muted-foreground">
                       <AlertCircle className="h-3 w-3 mr-1" />
-                      <span>Powered by OpenAI Vision</span>
+                      <span>Powered by the configured AI vision provider</span>
                     </div>
                   </div>
                 </div>
@@ -585,7 +585,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                   <div className="border-t pt-4">
                     <div className="flex items-center justify-center text-xs text-muted-foreground">
                       <AlertCircle className="h-3 w-3 mr-1" />
-                      <span>Powered by OpenAI Vision API</span>
+                      <span>AI receipt scanning is configured on the server</span>
                     </div>
                   </div>
                 </div>

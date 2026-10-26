@@ -12,6 +12,13 @@ describe('health contracts', () => {
     });
   });
 
+  it('never carries provider names in healthz capabilities', () => {
+    expect(healthzResponseSchema.parse({
+      status: 'ok',
+      capabilities: { email: 'unavailable', ai: 'available', aiProvider: 'workers-ai' },
+    }).capabilities).toEqual({ email: 'unavailable', ai: 'available' });
+  });
+
   it('accepts readyz ok and not_ready', () => {
     expect(readyzResponseSchema.parse({ status: 'ok' })).toEqual({ status: 'ok' });
     expect(readyzResponseSchema.parse({ status: 'not_ready' })).toEqual({

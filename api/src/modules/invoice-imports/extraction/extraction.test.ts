@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { createMockExtractionProvider } from './mock-provider';
 import { createExtractionProvider } from './provider-factory';
 import { extractPdfText } from './document-content';
+import { recomputeAndValidateDraft } from '../draft-validation';
 
 const fixtureDir = resolve(import.meta.dirname, '../__fixtures__');
 
@@ -15,6 +16,16 @@ async function fixture(name: string, mimeType = 'application/pdf') {
 }
 
 describe('invoice import extraction providers', () => {
+  async function providerPayload() {
+    const payload = (await createMockExtractionProvider().extractDocument(
+      await fixture('sparkle-supplies-bill.pdf'),
+      { organisationName: 'Crystal Touch Cleaning' },
+    )) as Record<string, unknown>;
+    delete payload.provider;
+    delete payload.mock;
+    return payload;
+  }
+
   it('returns deterministic labelled drafts for all committed fixtures and a low-confidence fallback', async () => {
     const provider = createMockExtractionProvider();
     const cleancorp = await provider.extractDocument(await fixture('cleancorp-buyer-created-tax-invoice.pdf'), { organisationName: 'Crystal Touch Cleaning' });
@@ -75,5 +86,109 @@ describe('invoice import extraction providers', () => {
   it('refuses mock in production and returns provider unavailable when no key exists', () => {
     expect(() => createExtractionProvider({ env: { NODE_ENV: 'production', APP_ENV: 'production', INVOICE_IMPORT_AI_PROVIDER: 'mock' } })).toThrow(expect.objectContaining({ status: 503 }));
     expect(() => createExtractionProvider({ env: { NODE_ENV: 'production' } })).toThrow(expect.objectContaining({ status: 503 }));
+  });
+
+  it('selects openai, then xai, then Workers AI, then the non-production mock', async () => {
+    const remoteBody = { choices: [{ message: { content: JSON.stringify(await providerPayload()) } }] };
+    const fetchImpl = vi.fn(async () => Response.json(remoteBody));
+    const ai = { run: vi.fn(async () => ({ response: await providerPayload() })) };
+
+    const openai = createExtractionProvider({
+      env: { NODE_ENV: 'test', OPENAI_API_KEY: 'openai', XAI_API_KEY: 'xai', AI: ai },
+      fetchImpl: fetchImpl as typeof fetch,
+    });
+    expect((await openai.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' })).provider).toBe('openai');
+
+    const xai = createExtractionProvider({
+      env: { NODE_ENV: 'test', XAI_API_KEY: 'xai', AI: ai },
+      fetchImpl: fetchImpl as typeof fetch,
+    });
+    expect((await xai.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' })).provider).toBe('xai');
+
+    const workers = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    expect((await workers.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' })).provider).toBe('workers-ai');
+    expect(ai.run).toHaveBeenCalledWith('@cf/meta/llama-4-scout-17b-16e-instruct', expect.objectContaining({ max_tokens: 3000, temperature: 0 }));
+
+    expect((await createExtractionProvider({ env: { NODE_ENV: 'test' } }).extractDocument(
+      await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' },
+    )).provider).toBe('mock');
+  });
+
+  it('honours configured provider overrides and rejects unconfigured overrides', async () => {
+    const ai = { run: vi.fn(async () => ({ response: await providerPayload() })) };
+    const workers = createExtractionProvider({
+      env: { NODE_ENV: 'test', OPENAI_API_KEY: 'openai', AI: ai, INVOICE_IMPORT_AI_PROVIDER: 'workers-ai' },
+    });
+    expect((await workers.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' })).provider).toBe('workers-ai');
+    expect(() => createExtractionProvider({
+      env: { NODE_ENV: 'test', XAI_API_KEY: 'xai', INVOICE_IMPORT_AI_PROVIDER: 'openai' },
+    })).toThrow(expect.objectContaining({ status: 503 }));
+  });
+
+  it('retries invalid Workers AI JSON once and caps every confidence value', async () => {
+    const payload = await providerPayload();
+    const ai = {
+      run: vi.fn()
+        .mockResolvedValueOnce({ response: '```json\nnot-json\n```' })
+        .mockResolvedValueOnce({ response: `model preface ${JSON.stringify(payload)} trailing text` }),
+    };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai, WORKERS_AI_MODEL: '@cf/test/model' } });
+    const result = await provider.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Crystal Touch Cleaning' });
+    expect(ai.run).toHaveBeenCalledTimes(2);
+    expect(ai.run.mock.calls[0]?.[0]).toBe('@cf/test/model');
+    expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('previous reply was not valid JSON for the schema');
+    expect(result.provider).toBe('workers-ai');
+    expect(result.confidence.total).toEqual({ value: 0.6, label: 'Check' });
+    expect(result.confidence.lineItems.every((item) => item.value <= 0.6 && item.label !== 'High')).toBe(true);
+  });
+
+  it('returns 502 after two invalid Workers AI schema responses', async () => {
+    const ai = { run: vi.fn(async () => ({ response: { total: 115 } })) };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    await expect(provider.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' }))
+      .rejects.toMatchObject({ status: 502, cause: { code: 'EXTRACTION_PROVIDER_ERROR' } });
+    expect(ai.run).toHaveBeenCalledTimes(2);
+  });
+
+  it('maps Workers AI daily limits to 429 and never falls back to mock', async () => {
+    const ai = { run: vi.fn(async () => { throw Object.assign(new Error('3036 daily free allocation neurons exceeded'), { code: 429 }); }) };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    await expect(provider.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' }))
+      .rejects.toMatchObject({ status: 429, cause: { code: 'EXTRACTION_PROVIDER_LIMIT' } });
+    expect(ai.run).toHaveBeenCalledTimes(1);
+  });
+
+  it('maps a Workers AI model-licence error to a clear 503 without falling back to mock', async () => {
+    const ai = { run: vi.fn(async () => { throw new Error("5016: Prior to using this model, you must submit the prompt 'agree'."); }) };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    await expect(provider.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' }))
+      .rejects.toMatchObject({ status: 503, cause: { code: 'EXTRACTION_PROVIDER_UNAVAILABLE' } });
+    expect(ai.run).toHaveBeenCalledTimes(1);
+  });
+
+  it('rejects PDFs before calling Workers AI', async () => {
+    const ai = { run: vi.fn() };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    await expect(provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Test' }))
+      .rejects.toMatchObject({ status: 415, cause: { code: 'EXTRACTION_UNSUPPORTED_DOCUMENT' } });
+    expect(ai.run).not.toHaveBeenCalled();
+  });
+
+  it('keeps cent-level totals validation around Workers AI drafts', async () => {
+    const payload = await providerPayload();
+    payload.total = '0.00';
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: { run: async () => ({ response: payload }) } } });
+    const draft = await provider.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Test' });
+    expect(recomputeAndValidateDraft(draft).issues).toContainEqual(expect.objectContaining({
+      code: 'totals_mismatch', path: 'total', expected: '115.00', actual: '0.00', blocking: true,
+    }));
+  });
+
+  it('allows the fake Workers AI demo only outside production', async () => {
+    const demo = createExtractionProvider({ env: { NODE_ENV: 'development', WORKERS_AI_FAKE: '1' } });
+    const result = await demo.extractDocument(await fixture('invoice-photo.jpg', 'image/jpeg'), { organisationName: 'Crystal Touch Cleaning' });
+    expect(result).toMatchObject({ provider: 'workers-ai', mock: false, issuerName: 'Kiwi Supplies Ltd', recipientName: 'Crystal Touch Cleaning', total: '115.00' });
+    expect(() => createExtractionProvider({ env: { NODE_ENV: 'production', WORKERS_AI_FAKE: '1' } }))
+      .toThrow(expect.objectContaining({ status: 503 }));
   });
 });

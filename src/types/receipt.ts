@@ -9,6 +9,7 @@ export interface ReceiptScanResult {
   suggestedCategory: string | null;
   confidence: number;
   notes: string | null;
+  provider?: 'openai' | 'xai' | 'workers-ai';
 }
 
 export interface ReceiptItem {

@@ -1,0 +1,1 @@
+{ "name": "wai-accuracy-probe-local-only", "main": "worker.js", "compatibility_date": "2026-09-11", "account_id": "c611a72b3bacd0c105ab864d7006fca7", "ai": { "binding": "AI" } }

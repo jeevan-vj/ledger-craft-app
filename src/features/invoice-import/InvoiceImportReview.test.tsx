@@ -95,6 +95,13 @@ describe('InvoiceImportReview', () => {
     expect(screen.getByText('Mock extraction — demo data')).toBeInTheDocument();
   });
 
+  it('warns when the draft was scanned with Workers AI', () => {
+    const data = review({ provider: 'workers-ai', mock: false });
+    data.draft.provider = 'workers-ai';
+    render(<InvoiceImportReview {...defaultProps} review={data} />);
+    expect(screen.getByText('Scanned with Cloudflare Workers AI, check carefully')).toBeInTheDocument();
+  });
+
   it('keeps the document preview content-sized instead of stretching a dark empty panel', () => {
     render(<InvoiceImportReview {...defaultProps} review={review()} />);
     expect(screen.getByRole('region', { name: 'Original document preview' })).toHaveClass('self-start');

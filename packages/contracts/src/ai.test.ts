@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
-import { chatCompletionRequestSchema, scanReceiptRequestSchema } from './ai';
+import { chatCompletionRequestSchema, receiptScanResultSchema, scanReceiptRequestSchema } from './ai';
 
 describe('ai contracts', () => {
+  it('accepts a Workers AI receipt result provider', () => {
+    expect(receiptScanResultSchema.parse({
+      merchantName: 'Kiwi Supplies Ltd', date: null, total: 11.5, tax: 1.5, subtotal: 10,
+      items: [], paymentMethod: 'card', suggestedCategory: 'Office Supplies', confidence: 60,
+      notes: null, provider: 'workers-ai',
+    }).provider).toBe('workers-ai');
+  });
+
   it('rejects ownership ids on receipt scan', () => {
     expect(
       scanReceiptRequestSchema.safeParse({

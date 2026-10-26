@@ -17,6 +17,7 @@ export const receiptScanResultSchema = z.object({
   suggestedCategory: z.string().nullable(),
   confidence: z.number(),
   notes: z.string().nullable(),
+  provider: z.enum(['openai', 'xai', 'workers-ai']).optional(),
 });
 
 export const scanReceiptRequestSchema = z

@@ -147,6 +147,7 @@ describe('invoice import contracts', () => {
     expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, total: 230 }).success).toBe(false);
     expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, confidence: { ...draft.confidence, dueDate: confidence(1.1, 'High') } }).success).toBe(false);
     expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, confidence: { ...draft.confidence, dueDate: confidence(0.4, 'High') } }).success).toBe(false);
+    expect(invoiceImportExtractionDraftSchema.parse({ ...draft, provider: 'workers-ai', mock: false }).provider).toBe('workers-ai');
   });
 
   it('validates strict review, commit, and draft response contracts', () => {
@@ -175,6 +176,11 @@ describe('invoice import contracts', () => {
       documentId, status: 'needs_review', draft, direction: null, thirdPartyIssued: false,
       contactId: null, validationIssues: [], duplicateWarnings: [], contactSuggestions: [],
       provider: 'mock', mock: true,
+    }).success).toBe(true);
+    expect(invoiceImportDraftResponseSchema.safeParse({
+      documentId, status: 'needs_review', draft: { ...draft, provider: 'workers-ai', mock: false },
+      direction: null, thirdPartyIssued: false, contactId: null, validationIssues: [],
+      duplicateWarnings: [], contactSuggestions: [], provider: 'workers-ai', mock: false,
     }).success).toBe(true);
   });
 });

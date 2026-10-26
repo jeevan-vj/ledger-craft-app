@@ -86,6 +86,7 @@ export function InvoiceImportReview({ review, filename, mimeType, previewUrl, or
 
       <section className="space-y-6 rounded-2xl border border-border bg-card p-5 sm:p-6" aria-label="Review extracted invoice fields">
         <div className="flex flex-wrap items-start justify-between gap-3"><div><h2 className="text-2xl font-bold tracking-tight">Review extraction</h2><p className="mt-1 text-sm text-muted-foreground">Confirm the document type and check every flagged field.</p></div>{(review.provider === 'mock' || review.mock) && <Badge variant="warning">Mock extraction — demo data</Badge>}</div>
+        {review.provider === 'workers-ai' && <div role="status" className="rounded-xl border border-warning/40 bg-warning/10 px-4 py-3 text-sm font-semibold text-warning">Scanned with Cloudflare Workers AI, check carefully</div>}
 
         <fieldset className="space-y-3"><legend className="font-semibold">What should this become?</legend><p className="text-sm text-muted-foreground">AI suggestion only: <strong className="text-foreground">Suggested: {review.draft.suggestedDirection === 'SALES' ? 'Sales' : review.draft.suggestedDirection === 'PURCHASE' ? 'Purchase' : 'No suggestion'}</strong></p>
           <RadioGroup value={review.direction ?? ''} onValueChange={(value) => onChange({ direction: value as 'SALES' | 'PURCHASE', contactId: null })} className="grid gap-3 sm:grid-cols-2">

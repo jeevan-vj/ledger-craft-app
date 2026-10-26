@@ -17,6 +17,7 @@ import { createR2FileStorage } from '../modules/storage/r2-file-storage';
 import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 import { createExtractionProvider } from '../modules/invoice-imports/extraction';
+import type { WorkersAiBinding } from '../modules/ai/workers-ai';
 
 setErrorReporter(createSentryReporter());
 
@@ -32,6 +33,8 @@ export interface Env {
   NODE_ENV?: string;
   APP_ENV?: string;
   INVOICE_IMPORT_AI_PROVIDER?: string;
+  WORKERS_AI_MODEL?: string;
+  AI?: WorkersAiBinding;
   SENTRY_DSN?: string;
   SENTRY_TRACES_SAMPLE_RATE?: string;
   SENTRY_ENVIRONMENT?: string;
@@ -89,7 +92,7 @@ class IdentityBase extends DurableObject<Env> {
           status: 'ok',
           capabilities: {
             email: this.env.RESEND_API_KEY?.trim() && this.env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
-            ai: this.env.OPENAI_API_KEY?.trim() || this.env.XAI_API_KEY?.trim() ? 'available' : 'unavailable',
+            ai: this.env.OPENAI_API_KEY?.trim() || this.env.XAI_API_KEY?.trim() || this.env.AI ? 'available' : 'unavailable',
           },
         } : { status: 'ok' }, {headers:{'X-Ledgercraft-Migration':applied?.name ?? 'none'}});
       }
@@ -144,7 +147,7 @@ class LedgerBase extends DurableObject<Env> {
       }
       const sessionAuth = identity ? { api: {getSession: async () => ({user:identity.user})} } as unknown as Auth : undefined;
       const invoiceMailer = createInvoiceMailerFromEnv(this.env);
-      const receiptScanner = this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined;
+      const receiptScanner = this.env.OPENAI_API_KEY || this.env.XAI_API_KEY || this.env.AI ? createOpenAiReceiptScanner({ env: this.env }) : undefined;
       const app = createApp({
         db:this.db,
         auth:sessionAuth,
@@ -154,6 +157,7 @@ class LedgerBase extends DurableObject<Env> {
           : durableFileStorage(this.ctx.storage),
         invoiceMailer,
         receiptScanner,
+        workersAi: this.env.AI,
         capabilities: { email: invoiceMailer.availability ?? 'unavailable', ai: receiptScanner ? 'available' : 'unavailable' },
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
         invoiceImportExtractor: {

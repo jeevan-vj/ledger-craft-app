@@ -6,6 +6,9 @@ import type { InvoiceMailer } from './modules/invoices/mailer';
 import type { ObjectStore } from './modules/storage/object-store';
 import type { FileStorage } from './modules/storage/file-storage';
 import type { InvoiceImportExtractionProvider } from './modules/invoice-imports/extraction';
+import type { WorkersAiBinding } from './modules/ai/workers-ai';
+
+export type AppCapabilities = { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
 
 export type AppEnv = {
   Variables: {
@@ -21,7 +24,8 @@ export type AppEnv = {
     chatCompleter?: ChatCompleter;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
     invoiceImportExtractor?: InvoiceImportExtractionProvider;
-    capabilities?: { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
+    workersAi?: WorkersAiBinding;
+    capabilities?: AppCapabilities;
   };
 };
 
@@ -37,5 +41,6 @@ export type AppDependencies = {
   chatCompleter?: ChatCompleter;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
   invoiceImportExtractor?: InvoiceImportExtractionProvider;
-  capabilities?: { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
+  workersAi?: WorkersAiBinding;
+  capabilities?: AppCapabilities;
 };
