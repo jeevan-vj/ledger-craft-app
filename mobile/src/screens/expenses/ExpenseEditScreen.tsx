@@ -27,6 +27,7 @@ import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/theme';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 type ExpenseEditNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseEdit'>;
 type ExpenseEditRouteProp = RouteProp<AppTabParamList, 'ExpenseEdit'>;
@@ -76,6 +77,8 @@ export default function ExpenseEditScreen() {
   
   // Receipt state
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
+  const [receiptScanAvailable, setReceiptScanAvailable] = useState(false);
+  useEffect(() => { void getServerCapabilities().then((value) => setReceiptScanAvailable(value.ai === 'available')); }, []);
   
   // Loading state
   const [loading, setLoading] = useState(false);
@@ -491,7 +494,7 @@ export default function ExpenseEditScreen() {
                 <Text style={styles.removeReceiptText}>Remove</Text>
               </TouchableOpacity>
             </View>
-          ) : (
+          ) : receiptScanAvailable ? (
             <ModernButton
               onPress={() => setShowReceiptScanner(true)}
               variant="outline"
@@ -500,6 +503,8 @@ export default function ExpenseEditScreen() {
             >
               Scan Receipt with AI
             </ModernButton>
+          ) : (
+            <Text style={styles.receiptText}>Receipt scanning isn't set up on this server yet. Upload the receipt and enter the details manually.</Text>
           )}
         </View>
 

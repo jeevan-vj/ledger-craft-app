@@ -9,6 +9,9 @@ import { InvoiceDeliverySection } from './InvoiceDeliverySection';
 jest.mock('@/services/invoiceService', () => ({
   invoiceService: { sendInvoice: jest.fn(), remindInvoice: jest.fn() },
 }));
+jest.mock('@/services/capabilitiesService', () => ({
+  getServerCapabilities: jest.fn(async () => ({ email: 'available', ai: 'unavailable' })),
+}));
 
 const serverMessage = 'Email delivery is unavailable. Download or share the invoice instead.';
 
@@ -16,13 +19,13 @@ function renderSection(canSend = true) {
   const onShareInstead = jest.fn();
   const onSent = jest.fn();
   const view = render(
-    <InvoiceDeliverySection invoice={mockInvoice} canSend={canSend} onShareInstead={onShareInstead} onSent={onSent} />,
+    <InvoiceDeliverySection invoice={mockInvoice} canSend={canSend} emailAvailable onShareInstead={onShareInstead} onSent={onSent} />,
   );
   return { ...view, onShareInstead, onSent };
 }
 
 beforeEach(() => {
-  jest.resetAllMocks();
+  jest.clearAllMocks();
   jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 });
 
@@ -88,6 +91,15 @@ it('hides send and remind for a read-only member', () => {
   const hidden = renderSection(false);
   expect(hidden.queryByLabelText('Send invoice')).toBeNull();
   expect(hidden.queryByLabelText('Send reminder')).toBeNull();
+});
+
+it('proactively offers a share link when email is unavailable', () => {
+  const onShareInstead = jest.fn();
+  const view = render(<InvoiceDeliverySection invoice={mockInvoice} canSend emailAvailable={false} onShareInstead={onShareInstead} onSent={jest.fn()} />);
+  expect(view.getByText("Email isn't set up on this server yet. Share a secure invoice link instead.")).toBeTruthy();
+  fireEvent.press(view.getByLabelText('Share invoice link'));
+  expect(onShareInstead).toHaveBeenCalledTimes(1);
+  expect(view.queryByLabelText('Send invoice')).toBeNull();
 });
 
 it('reports a successful send only after the server accepts it', async () => {

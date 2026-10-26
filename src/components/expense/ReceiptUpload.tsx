@@ -59,14 +59,15 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const isScanningAvailable = openaiReceiptService.isAvailable();
+  const [isScanningAvailable, setIsScanningAvailable] = useState(false);
 
-  // Set default tab after component initialization
   useEffect(() => {
-    if (isScanningAvailable && activeTab === 'upload') {
-      setActiveTab('scan');
-    }
-  }, [isScanningAvailable, activeTab]);
+    let current = true;
+    void openaiReceiptService.isAvailable().then((available) => {
+      if (current) setIsScanningAvailable(available);
+    });
+    return () => { current = false; };
+  }, []);
 
   const validateFile = (file: File): string | null => {
     if (file.size > MAX_FILE_SIZE) {
@@ -237,17 +238,22 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
       <Label>Receipt</Label>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className={cn('grid w-full', isScanningAvailable ? 'grid-cols-3' : 'grid-cols-2')}>
           <TabsTrigger value="upload">Upload/Camera</TabsTrigger>
-          <TabsTrigger value="scan" className="text-xs relative">
+          {isScanningAvailable && <TabsTrigger value="scan" className="text-xs relative">
             <Sparkles className="h-3 w-3 mr-1" />
             AI Scan
             <span className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[8px] px-1 py-0.5 rounded-full font-bold animate-pulse">
               NEW
             </span>
-          </TabsTrigger>
+          </TabsTrigger>}
           <TabsTrigger value="url">Manual URL</TabsTrigger>
         </TabsList>
+        {!isScanningAvailable && (
+          <p className="mt-3 text-sm text-muted-foreground" role="status">
+            Receipt scanning isn't set up on this server yet. Upload the receipt and enter the details manually.
+          </p>
+        )}
         
         <TabsContent value="upload" className="space-y-4">
           {!previewUrl ? (
@@ -454,7 +460,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
           )}
         </TabsContent>
 
-        <TabsContent value="scan" className="space-y-4">
+        {isScanningAvailable && <TabsContent value="scan" className="space-y-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center">
@@ -592,7 +598,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent>}
         
         <TabsContent value="url" className="space-y-4">
           <Card>

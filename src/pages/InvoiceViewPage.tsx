@@ -4,19 +4,25 @@ import { useAppData } from '@/hooks/useAppData';
 import InvoicePreview from '@/components/invoice/preview/InvoicePreview';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Archive, ChevronLeft, Copy, Download, FileText, FileUp, Printer, RotateCcw, XCircle } from 'lucide-react';
+import { Archive, ChevronLeft, Copy, Download, FileText, FileUp, Printer, RotateCcw, Share2, XCircle } from 'lucide-react';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { fileToBase64, objectsApi } from '@/features/storage/api/objectsApi';
 import type { InvoiceAttachmentDto, InvoiceHistoryDto } from '@ledgercraft/contracts';
 import { toast } from 'sonner';
+import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 const InvoiceViewPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { invoices, isLoadingInvoices } = useAppData();
+  const { invoices, isLoadingInvoices, businessProfile } = useAppData();
   const [attachments, setAttachments] = useState<InvoiceAttachmentDto[]>([]);
   const [history, setHistory] = useState<InvoiceHistoryDto[]>([]);
   const [busy, setBusy] = useState(false);
+  const [emailAvailable, setEmailAvailable] = useState(false);
+  const [shareOpen, setShareOpen] = useState(false);
+
+  useEffect(() => { void getServerCapabilities().then((value) => setEmailAvailable(value.email === 'available')); }, []);
 
   const invoice = invoices.find((inv) => inv.id === id);
 
@@ -66,6 +72,13 @@ const InvoiceViewPage = () => {
       <Button variant="ghost" className="mb-4 print:hidden" onClick={() => navigate(-1)}>
         <ChevronLeft className="mr-2 w-4 h-4" /> Back to Invoices
       </Button>
+      {!emailAvailable && (
+        <Card className="mb-6 p-5 print:hidden">
+          <h2 className="font-semibold">Delivery</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Email isn't set up on this server yet. Share a secure invoice link instead.</p>
+          <Button className="mt-4" onClick={() => setShareOpen(true)}><Share2 className="mr-2 h-4 w-4" />Share link instead</Button>
+        </Card>
+      )}
       <Card className="mb-6 p-4 print:hidden">
         <div className="flex flex-wrap gap-2" aria-label="Invoice lifecycle actions">
           <Button variant="outline" disabled={busy} onClick={() => void run(async () => { const copy = await invoicesApi.duplicate(invoice.id); navigate(`/invoices/${copy.id}`); }, 'Invoice duplicated')}><Copy className="mr-2 h-4 w-4" />Duplicate</Button>
@@ -103,6 +116,7 @@ const InvoiceViewPage = () => {
         invoice={invoice} 
         selectedTemplate={(invoice.templateName as any) || "classic"} 
       />
+      <ShareInvoiceModal open={shareOpen} onOpenChange={setShareOpen} invoice={invoice} businessName={businessProfile?.name} />
     </div>
   );
 };

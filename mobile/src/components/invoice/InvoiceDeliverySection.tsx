@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { AppPressable } from '@/components/ui/AppPressable';
@@ -8,12 +8,14 @@ import { invoiceService } from '@/services/invoiceService';
 import type { Invoice } from '@/types/invoice';
 import { control, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 interface InvoiceDeliverySectionProps {
   readonly invoice: Invoice;
   readonly canSend: boolean;
   readonly onShareInstead: () => void;
   readonly onSent: () => void;
+  readonly emailAvailable?: boolean;
 }
 
 function safeDeliveryMessage(error: unknown): string {
@@ -35,13 +37,30 @@ export function InvoiceDeliverySection({
   canSend,
   onShareInstead,
   onSent,
+  emailAvailable: emailAvailableOverride,
 }: InvoiceDeliverySectionProps) {
   const theme = useTheme();
   const styles = createStyles(theme);
   const palette = theme.colors;
   const [busy, setBusy] = useState<'send' | 'remind' | null>(null);
+  const [emailAvailable, setEmailAvailable] = useState(emailAvailableOverride ?? false);
+  useEffect(() => {
+    if (emailAvailableOverride !== undefined) return;
+    void getServerCapabilities().then((value) => setEmailAvailable(value.email === 'available'));
+  }, [emailAvailableOverride]);
 
   if (!canSend) return null;
+
+  if (!emailAvailable) return (
+    <View style={styles.card}>
+      <Text style={styles.title}>Delivery</Text>
+      <Text style={styles.meta}>Email isn't set up on this server yet. Share a secure invoice link instead.</Text>
+      <AppPressable accessibilityRole="button" accessibilityLabel="Share invoice link" onPress={onShareInstead} style={styles.action}>
+        <Feather name="link" size={18} color={palette.accentText} />
+        <Text style={styles.actionLabel}>Share link instead</Text>
+      </AppPressable>
+    </View>
+  );
 
   const fail = (error: unknown) => {
     if (error instanceof AuthApiError && error.code === 'EMAIL_UNAVAILABLE') {

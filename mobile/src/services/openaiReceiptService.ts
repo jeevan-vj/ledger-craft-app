@@ -1,5 +1,6 @@
 import { ReceiptScanResult, ReceiptScanOptions } from '@/types/receipt';
 import { aiApiEnabled, scanReceiptImage } from '@/features/ai/api/receiptScanApi';
+import { getServerCapabilities } from './capabilitiesService';
 
 // Export error class before using it
 export class ReceiptScanError extends Error {
@@ -41,8 +42,8 @@ class OpenAIReceiptService {
     console.log('OpenAI client initialized successfully');
   }
 
-  public isAvailable(): boolean {
-    if (aiApiEnabled()) return true;
+  public async isAvailable(): Promise<boolean> {
+    if (aiApiEnabled()) return (await getServerCapabilities()).ai === 'available';
     return this.isInitialized && this.apiKey !== null;
   }
 
@@ -99,7 +100,7 @@ IMPORTANT RULES:
       }
     }
 
-    if (!this.isAvailable()) {
+    if (!(await this.isAvailable())) {
       console.error('OpenAI service not available');
       throw new ReceiptScanError({
         code: 'API_ERROR',
