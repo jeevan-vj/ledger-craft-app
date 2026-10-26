@@ -26,4 +26,12 @@ Captured locally on 2026-10-26 against a fresh temporary SQLite database with `A
 
 ## Gate results
 
-Milestone D records the exact local gate counts here after the screenshot pass.
+Run locally with Node 24.22.1 on 2026-10-26:
+
+- `pnpm test:api` — **61 files passed; 246 tests passed, 1 skipped**. The issue baseline was 245 passed + 1 skipped; the added CORS preflight regression is the additional pass.
+- `pnpm test:contracts` — **25 files passed; 99 tests passed**.
+- `pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false` plus `tsconfig.node.json`, followed by `.github/scripts/ci-baseline-gate.mjs` — **663 errors**, below the **728** ceiling (`tsconfig.node.json` passed; the app command retains the accepted debt).
+- `pnpm lint` plus `.github/scripts/ci-baseline-gate.mjs` — **462 errors / 113 warnings**, below the **468-error** ceiling.
+- `cd mobile && npm run type-check` — **passed**.
+- `cd mobile && npm run lint` — **0 errors / 78 warnings**, exactly the existing warning baseline and no new warnings.
+- `cd mobile && npm test -- --ci --watchAll=false` — **65 suites passed; 311 tests passed**, including the new access, commit-decision, API-client, web-session, linking, and browser-file tests. Jest force-exited one worker after success because an existing suite left a timer/open handle; no test failed.
