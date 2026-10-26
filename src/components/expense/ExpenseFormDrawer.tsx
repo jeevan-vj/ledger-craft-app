@@ -29,7 +29,6 @@ import { Expense, PaymentMethod } from '@/types';
 import { DrawerFormLayout } from '@/components/ui/DrawerFormLayout';
 import { useAppData } from '@/hooks/useAppData';
 import { 
-  Sparkles, 
   FileText, 
   DollarSign, 
   CreditCard, 
@@ -483,10 +482,6 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                 <div className="flex items-center gap-2 mb-4">
                   <Receipt className="h-4 w-4 text-primary" />
                   <h3 className="text-sm font-medium text-foreground">Receipt & Documents</h3>
-                  <div className="flex items-center text-xs text-purple-600 font-medium">
-                    <Sparkles className="h-3 w-3 mr-1" />
-                    AI Scanner Available!
-                  </div>
                 </div>
                 
                 <ReceiptUpload

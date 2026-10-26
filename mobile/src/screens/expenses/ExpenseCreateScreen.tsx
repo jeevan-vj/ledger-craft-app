@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -28,6 +28,7 @@ import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 type ExpenseCreateNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseCreate'>;
 
@@ -71,6 +72,8 @@ export default function ExpenseCreateScreen() {
   
   // Receipt state
   const [receiptUrl, setReceiptUrl] = useState<string | null>(null);
+  const [receiptScanAvailable, setReceiptScanAvailable] = useState(false);
+  useEffect(() => { void getServerCapabilities().then((value) => setReceiptScanAvailable(value.ai === 'available')); }, []);
   
   // Loading state
   const [loading, setLoading] = useState(false);
@@ -393,7 +396,7 @@ export default function ExpenseCreateScreen() {
                 <Text style={styles.removeReceiptText}>Remove</Text>
               </TouchableOpacity>
             </View>
-          ) : (
+          ) : receiptScanAvailable ? (
             <ModernButton
               onPress={() => setShowReceiptScanner(true)}
               variant="outline"
@@ -402,6 +405,8 @@ export default function ExpenseCreateScreen() {
             >
               Scan Receipt with AI
             </ModernButton>
+          ) : (
+            <Text style={styles.receiptText}>Receipt scanning isn’t set up on this server yet. Upload the receipt and enter the details manually.</Text>
           )}
         </View>
 

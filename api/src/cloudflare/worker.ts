@@ -5,7 +5,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { createApp } from '../app';
 import { activeOrganisationSelections, organisationMemberships, organisations, users } from '../db/schema/identity';
 import { createAuth, type Auth } from '../modules/auth/auth';
-import { createUnavailableInvoiceMailer } from '../modules/invoices/mailer';
+import { createInvoiceMailerFromEnv } from '../modules/invoices/resend';
 import { bindRequestId, failureResponse, resolveRequestId } from '../observability/request-id';
 import { reportUnhandledError, setErrorReporter, type ErrorReport } from '../observability/report';
 import { toRouteTemplate } from '../observability/scrub';
@@ -20,12 +20,15 @@ import { createExtractionProvider } from '../modules/invoice-imports/extraction'
 
 setErrorReporter(createSentryReporter());
 
-interface Env {
+export interface Env {
   IDENTITY: DurableObjectNamespace<IdentityBase>;
   LEDGERS: DurableObjectNamespace<LedgerBase>;
   BETTER_AUTH_SECRET: string;
   OPENAI_API_KEY?: string;
   XAI_API_KEY?: string;
+  RESEND_API_KEY?: string;
+  RESEND_FROM?: string;
+  BETTER_AUTH_URL?: string;
   NODE_ENV?: string;
   APP_ENV?: string;
   INVOICE_IMPORT_AI_PROVIDER?: string;
@@ -82,7 +85,13 @@ class IdentityBase extends DurableObject<Env> {
       if (path === '/api/healthz' || path === '/api/readyz') {
         this.ctx.storage.sql.exec('SELECT 1').toArray();
         const applied = this.ctx.storage.sql.exec<{name:string}>('SELECT name FROM _migrations ORDER BY name DESC LIMIT 1').toArray()[0];
-        return Response.json({status:'ok'}, {headers:{'X-Ledgercraft-Migration':applied?.name ?? 'none'}});
+        return Response.json(path === '/api/healthz' ? {
+          status: 'ok',
+          capabilities: {
+            email: this.env.RESEND_API_KEY?.trim() && this.env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
+            ai: this.env.OPENAI_API_KEY?.trim() || this.env.XAI_API_KEY?.trim() ? 'available' : 'unavailable',
+          },
+        } : { status: 'ok' }, {headers:{'X-Ledgercraft-Migration':applied?.name ?? 'none'}});
       }
       const session = await this.auth.api.getSession({headers:request.headers});
       if (!session) return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
@@ -134,6 +143,8 @@ class LedgerBase extends DurableObject<Env> {
         return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
       }
       const sessionAuth = identity ? { api: {getSession: async () => ({user:identity.user})} } as unknown as Auth : undefined;
+      const invoiceMailer = createInvoiceMailerFromEnv(this.env);
+      const receiptScanner = this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined;
       const app = createApp({
         db:this.db,
         auth:sessionAuth,
@@ -141,8 +152,9 @@ class LedgerBase extends DurableObject<Env> {
         fileStorage:this.env.DOCUMENTS
           ? createR2FileStorage(this.env.DOCUMENTS)
           : durableFileStorage(this.ctx.storage),
-        invoiceMailer:createUnavailableInvoiceMailer(),
-        receiptScanner: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined,
+        invoiceMailer,
+        receiptScanner,
+        capabilities: { email: invoiceMailer.availability ?? 'unavailable', ai: receiptScanner ? 'available' : 'unavailable' },
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
         invoiceImportExtractor: {
           extractDocument: (file, context) => createExtractionProvider({ env: this.env }).extractDocument(file, context),

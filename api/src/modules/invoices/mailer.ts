@@ -6,9 +6,15 @@ export type InvoiceMail = {
   to: string[];
   subject?: string;
   html?: string;
+  amountDue?: string;
+  dueDate?: string | null;
+  businessName?: string;
+  publicUrl?: string;
+  kind?: 'invoice' | 'quote' | 'reminder';
 };
 
 export type InvoiceMailer = {
+  readonly availability?: 'available' | 'unavailable';
   sendInvoice(mail: InvoiceMail): Promise<void>;
   sendReminder?(mail: InvoiceMail): Promise<void>;
   /** Optional until a provider exists. Production leaves this unset and quote send returns 503. */
@@ -17,6 +23,7 @@ export type InvoiceMailer = {
 
 export function createLoggingInvoiceMailer(): InvoiceMailer {
   return {
+    availability: 'available',
     async sendInvoice(mail) {
       console.info(JSON.stringify({ msg: 'invoice_email_queued', ...mail }));
     },
@@ -31,6 +38,7 @@ export function createUnavailableInvoiceMailer(): InvoiceMailer {
     throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email delivery is unavailable. Download or share the invoice instead.');
   };
   return {
+    availability: 'unavailable',
     sendInvoice: unavailable,
     sendReminder: unavailable,
     sendQuote: async () => {

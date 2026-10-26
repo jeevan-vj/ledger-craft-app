@@ -1,5 +1,6 @@
 import { ReceiptScanResult, ReceiptScanOptions } from '@/types/receipt';
 import { scanReceiptImage } from '@/features/ai/api/receiptScanApi';
+import { getServerCapabilities } from './capabilitiesService';
 
 export class ReceiptScanError extends Error {
   public code: 'PROCESSING_ERROR' | 'INVALID_IMAGE' | 'API_ERROR' | 'NETWORK_ERROR';
@@ -12,8 +13,8 @@ export class ReceiptScanError extends Error {
 }
 
 class OpenAIReceiptService {
-  public isAvailable(): boolean {
-    return true;
+  public async isAvailable(): Promise<boolean> {
+    return (await getServerCapabilities()).ai === 'available';
   }
 
   public async scanReceipt(

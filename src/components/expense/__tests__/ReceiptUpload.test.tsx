@@ -22,7 +22,7 @@ vi.mock('@/hooks/use-toast', () => ({
 
 vi.mock('@/services/openaiReceiptService', () => ({
   openaiReceiptService: {
-    isAvailable: () => false,
+    isAvailable: () => Promise.resolve(false),
     scanReceipt: vi.fn(),
   },
 }));
@@ -58,6 +58,12 @@ describe('ReceiptUpload', () => {
     expect(screen.getByText('Manual URL')).toBeInTheDocument();
     expect(screen.getByText('Take Photo')).toBeInTheDocument();
     expect(screen.getByText('Upload File')).toBeInTheDocument();
+  });
+
+  it('hides scan and explains the manual fallback when the server has no AI capability', async () => {
+    render(<ReceiptUpload {...defaultProps} />);
+    expect(await screen.findByText("Receipt scanning isn't set up on this server yet. Upload the receipt and enter the details manually.")).toBeInTheDocument();
+    expect(screen.queryByRole('tab', { name: /AI Scan/i })).not.toBeInTheDocument();
   });
 
   it('shows initial receipt when provided', () => {

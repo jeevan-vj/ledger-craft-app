@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { openaiReceiptService, OpenAIReceiptService } from '@/services/openaiReceiptService';
 import { storageService } from '@/services/storageService';
 import { ReceiptScanResult } from '@/types/receipt';
@@ -21,7 +21,8 @@ export const useReceiptScanning = (): UseReceiptScanningResult => {
   const [scanResult, setScanResult] = useState<ReceiptScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const isAvailable = openaiReceiptService.isAvailable();
+  const [isAvailable, setIsAvailable] = useState(false);
+  useEffect(() => { void openaiReceiptService.isAvailable().then(setIsAvailable); }, []);
 
   const scanReceipt = useCallback(async (uri: string) => {
     if (!isAvailable) {

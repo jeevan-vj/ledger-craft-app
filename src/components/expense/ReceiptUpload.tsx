@@ -59,14 +59,15 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const { toast } = useToast();
 
-  const isScanningAvailable = openaiReceiptService.isAvailable();
+  const [isScanningAvailable, setIsScanningAvailable] = useState(false);
 
-  // Set default tab after component initialization
   useEffect(() => {
-    if (isScanningAvailable && activeTab === 'upload') {
-      setActiveTab('scan');
-    }
-  }, [isScanningAvailable, activeTab]);
+    let current = true;
+    void openaiReceiptService.isAvailable().then((available) => {
+      if (current) setIsScanningAvailable(available);
+    });
+    return () => { current = false; };
+  }, []);
 
   const validateFile = (file: File): string | null => {
     if (file.size > MAX_FILE_SIZE) {
@@ -237,17 +238,19 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
       <Label>Receipt</Label>
       
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className={cn('grid w-full', isScanningAvailable ? 'grid-cols-3' : 'grid-cols-2')}>
           <TabsTrigger value="upload">Upload/Camera</TabsTrigger>
-          <TabsTrigger value="scan" className="text-xs relative">
+          {isScanningAvailable && <TabsTrigger value="scan" className="text-xs relative">
             <Sparkles className="h-3 w-3 mr-1" />
             AI Scan
-            <span className="absolute -top-1 -right-1 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-[8px] px-1 py-0.5 rounded-full font-bold animate-pulse">
-              NEW
-            </span>
-          </TabsTrigger>
+          </TabsTrigger>}
           <TabsTrigger value="url">Manual URL</TabsTrigger>
         </TabsList>
+        {!isScanningAvailable && (
+          <p className="mt-3 text-sm text-muted-foreground" role="status">
+            Receipt scanning isn't set up on this server yet. Upload the receipt and enter the details manually.
+          </p>
+        )}
         
         <TabsContent value="upload" className="space-y-4">
           {!previewUrl ? (
@@ -454,11 +457,11 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
           )}
         </TabsContent>
 
-        <TabsContent value="scan" className="space-y-4">
+        {isScanningAvailable && <TabsContent value="scan" className="space-y-4">
           <Card>
             <CardHeader className="pb-2">
               <CardTitle className="text-sm flex items-center">
-                <Sparkles className="h-4 w-4 mr-2 text-purple-600" />
+                <Sparkles className="h-4 w-4 mr-2 text-primary" />
                 AI Receipt Scanner
               </CardTitle>
               <CardDescription className="text-xs">
@@ -470,18 +473,15 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                 <div className="space-y-4">
                   <div className="text-center py-4">
                     {/* Prominent Header */}
-                    <div className="bg-gradient-to-br from-purple-100 via-blue-100 to-teal-100 rounded-2xl p-6 mb-4 border border-purple-200">
-                      <div className="bg-gradient-to-br from-purple-500 to-blue-500 rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-lg">
-                        <Scan className="h-10 w-10 text-white" />
+                    <div className="rounded-2xl bg-accent p-6 mb-4">
+                      <div className="bg-primary rounded-full w-20 h-20 mx-auto mb-4 flex items-center justify-center shadow-surface">
+                        <Scan className="h-10 w-10 text-primary-foreground" />
                       </div>
                       <div className="flex items-center justify-center mb-2">
                         <h3 className="font-bold text-lg">Smart Receipt Scanning</h3>
-                        <span className="ml-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1 rounded-full font-bold animate-bounce">
-                          NEW
-                        </span>
                       </div>
                       <p className="text-sm text-muted-foreground mb-4">
-                        Just snap a photo and let AI do the work! ✨
+                        Take a photo and review the extracted expense details before saving.
                       </p>
                       
                       {/* Large prominent button */}
@@ -491,7 +491,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
                             onClick={openScanner}
                             disabled={disabled}
                             size="lg"
-                            className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-lg py-6 px-8 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                            className="text-lg py-6 px-8 rounded-xl"
                           >
                             <Scan className="h-5 w-5 mr-3" />
                             Scan Receipt with AI
@@ -592,7 +592,7 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
               )}
             </CardContent>
           </Card>
-        </TabsContent>
+        </TabsContent>}
         
         <TabsContent value="url" className="space-y-4">
           <Card>

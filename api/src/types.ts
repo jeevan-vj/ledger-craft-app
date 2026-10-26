@@ -21,6 +21,7 @@ export type AppEnv = {
     chatCompleter?: ChatCompleter;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
     invoiceImportExtractor?: InvoiceImportExtractionProvider;
+    capabilities?: { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
   };
 };
 
@@ -36,4 +37,5 @@ export type AppDependencies = {
   chatCompleter?: ChatCompleter;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
   invoiceImportExtractor?: InvoiceImportExtractionProvider;
+  capabilities?: { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
 };
