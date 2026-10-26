@@ -1,0 +1,78 @@
+== Phase 0 demo 2026-10-26 18:25 NZDT | commit c2d26c1 | fresh SQLite in temp dir | port 3017 ==
+migrations applied (db:migrate incl. 0017): 61 tables; invoices.external_number present=1; invoice_attachments role/locked cols=2
+
+## Setup (owner signs up; synthetic org)
+$ curl -X POST /api/auth/sign-up/email -d '{"name":"Demo Owner","email":"owner-9793@example.test","password":"Local-demo-pass-123!"}'
+{"token":"<redacted>","user":{"name":"Demo Owner","email":"owner-9793@example.test","emailVerified":false,"image":null,"createdAt":"2026-10-26T05:25:58.791Z","updatedAt":"2026-10-26T05:25:58.791Z","id":"32c6f806-0bef-415f-b0d1-55b9f86ce8dd"}}
+-> HTTP 200
+-> HTTP 200
+customer id: f6ef84d9-9848-4275-bdda-c310eaaae3e4
+
+## Membership role set to: read_only
+METHOD  PATH                                 STATUS
+POST    /api/invoices-import                 403
+GET     /api/invoices-export.csv             403
+GET     /api/bills-export.csv                403
+GET     /api/vendors-export.csv              403
+GET     /api/bank-transactions/export.csv    403
+POST    /api/ai/receipt-scan                 403
+POST    /api/ai/chat                         403
+
+read_only body sample:
+$ curl -X POST /api/invoices-import -d '{"dryRun":false,"rows":[{"externalId":"legacy-INV-1001","invoiceNumber":"LEGACY-1001","customerId":"f6ef84d9-9848-4275-bdda-c310eaaae3e4","date":"2026-10-05","dueDate":"2026-10-20","currency":"NZD","taxInclusive":false,"taxRate":"15","status":"paid","paymentDate":"2026-10-10","paymentMethod":"bank_transfer","paymentReference":"LEG-PAY-1001","items":[{"description":"Consulting","quantity":"1","rate":"200.00"}]}]}'
+{"error":{"code":"FORBIDDEN","message":"Missing permission: invoices.import","requestId":"req_f375fd1e-1bb5-446e-9948-6c0fd960c9e2"}}
+-> HTTP 403
+
+## Membership role set to: accountant
+METHOD  PATH                                 STATUS
+POST    /api/invoices-import                 200
+GET     /api/invoices-export.csv             200
+GET     /api/bills-export.csv                200
+GET     /api/vendors-export.csv              200
+GET     /api/bank-transactions/export.csv    200
+POST    /api/ai/receipt-scan                 503
+POST    /api/ai/chat                         503
+(AI routes pass the permission check for accountant; 503 = no AI key configured locally, by design no key used)
+
+## Accountant imports a PAID legacy invoice
+$ curl -X POST /api/invoices-import -d '{"dryRun":false,"rows":[{"externalId":"legacy-INV-1001","invoiceNumber":"LEGACY-1001","customerId":"f6ef84d9-9848-4275-bdda-c310eaaae3e4","date":"2026-10-05","dueDate":"2026-10-20","currency":"NZD","taxInclusive":false,"taxRate":"15","status":"paid","paymentDate":"2026-10-10","paymentMethod":"bank_transfer","paymentReference":"LEG-PAY-1001","items":[{"description":"Consulting","quantity":"1","rate":"200.00"}]}]}'
+{"valid":true,"imported":1,"errors":[]}
+-> HTTP 200
+
+## Invoice row (DB):
+invoice_number  external_number  status  subtotal  tax_amount  total 
+--------------  ---------------  ------  --------  ----------  ------
+INV-2026-0001   LEGACY-1001      paid    200.00    30.00       230.00
+
+## Payment created:
+amount  payment_date  payment_method
+------  ------------  --------------
+230.00  2026-10-10    bank_transfer 
+
+## Journal lines for this invoice + payment (DB):
+ref              code  name                    debit   credit
+---------------  ----  ----------------------  ------  ------
+invoice          1200  Accounts Receivable     230.00  0.00  
+invoice          4000  Sales Revenue           0.00    200.00
+invoice          2200  GST Collected on Sales  0.00    30.00 
+invoice_payment  1110  Bank Account - Current  230.00  0.00  
+invoice_payment  1200  Accounts Receivable     0.00    230.00
+
+## Balance check per journal entry:
+ref              dr     cr     ok      
+---------------  -----  -----  --------
+invoice_payment  230.0  230.0  BALANCED
+invoice          230.0  230.0  BALANCED
+
+## Export CSV includes externalNumber:
+externalId,invoiceNumber,externalNumber,customerId,date,dueDate,currency,status,subtotal,taxAmount,total,itemsJson
+legacy-INV-1001,INV-2026-0001,LEGACY-1001,f6ef84d9-9848-4275-bdda-c310eaaae3e4,2026-10-05,2026-10-20,NZD,paid,200.00,30.00,230.00,"[{""description"":""Consulting"",""quantity"":""1.00"",""unit"":""ea"",""rate"":""200.00"",""rateUnit"":""ea"",""tax"":""30.00"",""total"":""200.00"",""discountType"":""fixed"",""discountValue"":null,""discountAmount"":""0.00"",""taxes"":[{""id"":""default"",""name"":""Tax"",""rate"":""15.00""}]}]"
+## Source-document attachment cannot be deleted (owner role)
+
+## Membership role set to: owner
+$ curl -X DELETE /api/invoices/9b1e7825-cf15-4750-b762-60769ba090d2/attachments/att-src-1 
+{"error":{"code":"SOURCE_DOCUMENT_LOCKED","message":"Source documents cannot be deleted","requestId":"req_0b82396f-2c1f-4892-83fc-bdc172e90f3d"}}
+-> HTTP 409
+still present: 1
+
+server stopped; temp dir removed

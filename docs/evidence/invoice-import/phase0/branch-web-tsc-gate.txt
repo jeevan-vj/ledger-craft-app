@@ -1,0 +1,3 @@
+tsc: 663 TypeScript errors (baseline 728)
+TODO: tsc is not clean (663 TypeScript errors). The log above is the full report. This gate stays green at or under 728 and fails when the count rises. Remove the gate once the count is 0.
+exit 0

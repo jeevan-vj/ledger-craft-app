@@ -1,0 +1,3 @@
+eslint: 462 errors, 113 warnings (baseline 468)
+TODO: eslint is not clean (462 errors, 113 warnings). The log above is the full report. This gate stays green at or under 468 and fails when the count rises. Remove the gate once the count is 0.
+exit 0

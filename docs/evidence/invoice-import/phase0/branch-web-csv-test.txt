@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 ~/.codex/worktrees/ledger-import-p0
+
+ ✓ src/lib/csv.test.ts (1 test) 9ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  18:22:41
+   Duration  8.97s (transform 307ms, setup 662ms, collect 47ms, tests 9ms, environment 2.40s, prepare 1.62s)
+
+exit 0
