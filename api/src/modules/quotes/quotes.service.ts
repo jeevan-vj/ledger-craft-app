@@ -28,6 +28,9 @@ import { addCalendarDays } from '../invoices/payment-terms';
 import { computeInvoiceTotals, type ComputedInvoiceTotals } from '../invoices/totals';
 import * as quotesRepo from './quotes.repository';
 import { assertQuoteTransition, aucklandToday } from './quotes.transitions';
+import * as quoteShare from './quotes.share';
+
+const PUBLIC_APP_URL = 'https://easybiz.iamjeevan.com';
 
 const EMPTY_COUNTS: QuoteCounts = {
   draft: 0, sent: 0, viewed: 0, accepted: 0, declined: 0, expired: 0, converted: 0,
@@ -362,17 +365,26 @@ export async function sendQuoteForUser(
       .map((address) => address.trim())
       .filter((address) => address.length > 0);
     if (recipients.length === 0) throw apiError(400, 'customer_email_required', 'Add an email to this customer');
-    return { quote, recipients };
+    const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    return { quote, recipients, businessName: profile?.name ?? 'EasyBizInvoice' };
   });
 
   if (!mailer.sendQuote) {
     throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email delivery is unavailable. Share the quote link instead.');
   }
+  if (mailer.availability === 'unavailable') {
+    await mailer.sendQuote({ invoiceId: prepared.quote.id, invoiceNumber: prepared.quote.quoteNumber, to: prepared.recipients });
+  }
+  const shared = await quoteShare.createShareForUser(db, userId, id, { templateName: prepared.quote.templateName ?? 'classic' });
   try {
     await mailer.sendQuote({
       invoiceId: prepared.quote.id,
       invoiceNumber: prepared.quote.quoteNumber,
       to: prepared.recipients,
+      amountDue: prepared.quote.total,
+      dueDate: prepared.quote.expiryDate,
+      businessName: prepared.businessName,
+      publicUrl: `${PUBLIC_APP_URL}/shared/quote/${encodeURIComponent(shared.shareToken)}`,
     });
   } catch (error) {
     if (error instanceof HTTPException && error.status === 503) throw error;

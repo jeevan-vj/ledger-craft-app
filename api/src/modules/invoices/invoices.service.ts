@@ -25,6 +25,9 @@ import type { InvoiceMailer } from './mailer';
 import { formatInvoiceNumber } from './numbering';
 import { computeInvoiceTotals } from './totals';
 import { convertToBase, currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
+import * as shareService from './share';
+
+const PUBLIC_APP_URL = 'https://easybiz.iamjeevan.com';
 
 export { formatInvoiceNumber };
 
@@ -266,8 +269,14 @@ export async function sendInvoiceForUser(
       throw apiError(400, 'customer_email_required', 'Add an email to this customer');
     }
 
-    return { invoice, recipients: validRecipients };
+    const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    return { invoice, recipients: validRecipients, businessName: profile?.name ?? 'EasyBizInvoice' };
   });
+
+  if (mailer.availability === 'unavailable') {
+    await mailer.sendInvoice({ invoiceId: prepared.invoice.id, invoiceNumber: prepared.invoice.invoiceNumber, to: prepared.recipients });
+  }
+  const shared = await shareService.createShareForUser(db, userId, id, { templateName: 'classic' });
 
   // Mail is after the create/update transaction. Status becomes sent only if the mailer accepts.
   try {
@@ -275,6 +284,10 @@ export async function sendInvoiceForUser(
       invoiceId: prepared.invoice.id,
       invoiceNumber: prepared.invoice.invoiceNumber,
       to: prepared.recipients,
+      amountDue: prepared.invoice.balanceDue,
+      dueDate: prepared.invoice.dueDate,
+      businessName: prepared.businessName,
+      publicUrl: `${PUBLIC_APP_URL}/shared/invoice/${encodeURIComponent(shared.share.shareToken)}`,
     });
   } catch (error) {
     if (error instanceof HTTPException && error.status === 503) throw error;
@@ -315,8 +328,15 @@ export async function remindInvoiceForUser(
       throw apiError(400, 'customer_email_required', 'Add an email to this customer');
     }
 
-    return { invoice, recipients: validRecipients };
+    const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    return { invoice, recipients: validRecipients, businessName: profile?.name ?? 'EasyBizInvoice' };
   });
+
+  if (mailer.availability === 'unavailable') {
+    const sendReminder = mailer.sendReminder?.bind(mailer) ?? mailer.sendInvoice.bind(mailer);
+    await sendReminder({ invoiceId: prepared.invoice.id, invoiceNumber: prepared.invoice.invoiceNumber, to: prepared.recipients });
+  }
+  const shared = await shareService.createShareForUser(db, userId, id, { templateName: 'classic' });
 
   try {
     const sendReminder = mailer.sendReminder?.bind(mailer) ?? mailer.sendInvoice.bind(mailer);
@@ -326,6 +346,10 @@ export async function remindInvoiceForUser(
       to: prepared.recipients,
       subject: input.subject,
       html: input.html,
+      amountDue: prepared.invoice.balanceDue,
+      dueDate: prepared.invoice.dueDate,
+      businessName: prepared.businessName,
+      publicUrl: `${PUBLIC_APP_URL}/shared/invoice/${encodeURIComponent(shared.share.shareToken)}`,
     });
   } catch (error) {
     if (error instanceof HTTPException && error.status === 503) throw error;

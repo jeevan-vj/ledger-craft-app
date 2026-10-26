@@ -12,14 +12,22 @@ describe('health routes', () => {
 
     const response = await app.request('/healthz');
     expect(response.status).toBe(200);
-    expect(healthzResponseSchema.parse(await response.json())).toEqual({ status: 'ok' });
+    expect(healthzResponseSchema.parse(await response.json())).toEqual({
+      status: 'ok',
+      capabilities: { email: 'unavailable', ai: 'unavailable' },
+    });
     expect(response.headers.get('x-request-id')).toMatch(/^req_/);
   });
 
   it('GET /api/healthz matches the Vite proxy path', async () => {
-    const response = await createApp().request('/api/healthz');
+    const response = await createApp({
+      capabilities: { email: 'available', ai: 'unavailable' },
+    }).request('/api/healthz');
     expect(response.status).toBe(200);
-    expect(await response.json()).toEqual({ status: 'ok' });
+    expect(await response.json()).toEqual({
+      status: 'ok',
+      capabilities: { email: 'available', ai: 'unavailable' },
+    });
   });
 
   it('allows idempotent browser writes through CORS preflight', async () => {

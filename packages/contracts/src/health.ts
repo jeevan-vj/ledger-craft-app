@@ -2,6 +2,10 @@ import { z } from 'zod';
 
 export const healthzResponseSchema = z.object({
   status: z.literal('ok'),
+  capabilities: z.object({
+    email: z.enum(['available', 'unavailable']),
+    ai: z.enum(['available', 'unavailable']),
+  }),
 });
 
 export const readyzOkResponseSchema = z.object({

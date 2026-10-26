@@ -3,7 +3,13 @@ import { healthzResponseSchema, readyzResponseSchema } from './health';
 
 describe('health contracts', () => {
   it('accepts healthz ok', () => {
-    expect(healthzResponseSchema.parse({ status: 'ok' })).toEqual({ status: 'ok' });
+    expect(healthzResponseSchema.parse({
+      status: 'ok',
+      capabilities: { email: 'available', ai: 'unavailable' },
+    })).toEqual({
+      status: 'ok',
+      capabilities: { email: 'available', ai: 'unavailable' },
+    });
   });
 
   it('accepts readyz ok and not_ready', () => {

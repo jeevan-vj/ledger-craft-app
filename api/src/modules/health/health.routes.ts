@@ -6,7 +6,7 @@ export function healthRoutes() {
   const routes = new Hono<AppEnv>();
 
   routes.get('/healthz', (c) => {
-    return c.json(healthzResponseSchema.parse({ status: 'ok' as const }));
+    return c.json(response(c));
   });
 
   routes.get('/readyz', async (c) => {
@@ -19,7 +19,7 @@ export function healthRoutes() {
   });
 
   routes.get('/api/healthz', (c) => {
-    return c.json(healthzResponseSchema.parse({ status: 'ok' as const }));
+    return c.json(response(c));
   });
 
   routes.get('/api/readyz', async (c) => {
@@ -33,3 +33,7 @@ export function healthRoutes() {
 
   return routes;
 }
+  const response = (c: { get: (key: 'capabilities') => AppEnv['Variables']['capabilities'] }) => healthzResponseSchema.parse({
+    status: 'ok' as const,
+    capabilities: c.get('capabilities') ?? { email: 'unavailable', ai: 'unavailable' },
+  });
