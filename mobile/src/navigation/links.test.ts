@@ -101,6 +101,7 @@ describe('mobile navigation links', () => {
     expect(mobileLinking.config?.screens).toMatchObject({
       PublicInvoice: 'shared/invoice/:shareToken',
       PublicQuote: 'shared/quote/:shareToken',
+      ImportCapture: 'imports/new/:entry',
     });
   });
 

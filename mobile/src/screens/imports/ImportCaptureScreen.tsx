@@ -4,11 +4,11 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import * as DocumentPicker from 'expo-document-picker';
 import * as ImagePicker from 'expo-image-picker';
-import { File } from 'expo-file-system';
 import type { InvoiceImportMimeType } from '@ledgercraft/contracts';
 import { AppPressable, EmptyState, ModernButton } from '@/components/ui';
 import { canImportInvoices } from '@/features/auth/invoiceAccess';
 import { documentImportApi } from '@/features/invoice-import/api/documentImportApi';
+import { readDocumentBase64 } from '@/features/invoice-import/sourceFile';
 import { OFFLINE_MESSAGE } from '@/features/auth/api/http';
 import type { RootStackParamList } from '@/navigation/types';
 import { useStore } from '@/store';
@@ -67,11 +67,11 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
   };
 
   const chooseFile = async () => {
-    const result = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/*'], copyToCacheDirectory: true, multiple: false });
+    const result = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/*'], copyToCacheDirectory: true, multiple: false, base64: true });
     if (result.canceled) return;
     const asset = result.assets[0];
     try {
-      const contentBase64 = await new File(asset.uri).base64();
+      const contentBase64 = await readDocumentBase64(asset);
       await upload({ uri: asset.uri, filename: asset.name, contentType: contentType(asset.name, asset.mimeType), contentBase64 });
     } catch {
       setStatus('failed'); setError('The selected file could not be read. Choose a PDF, JPG or PNG and try again.');
