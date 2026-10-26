@@ -78,7 +78,7 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
     }
   };
 
-  if (!allowed) return <View style={styles.state}><EmptyState title="Import access restricted" description="You don't have permission to import invoices. Ask an owner or administrator for invoice import access." actionLabel="Go back" onAction={() => navigation.goBack()} /></View>;
+  if (!allowed) return <View style={styles.state}><EmptyState title="Import access restricted" description="You don't have permission to import invoices. Ask an owner or administrator for invoice import access." actionLabel="Go back" actionVariant="link" onAction={() => navigation.goBack()} /></View>;
 
   const busy = status === 'uploading' || status === 'processing';
   return <ScrollView style={styles.canvas} contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>

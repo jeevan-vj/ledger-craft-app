@@ -49,7 +49,7 @@ export default function ImportReviewScreen({ navigation, route }: Props) {
   const selectedContact = contacts.find((item) => item.id === review?.contactId)
     ?? [...(customers.data ?? []), ...(vendors.data ?? [])].find((item) => item.id === review?.contactId);
 
-  if (!allowed) return <View style={styles.state}><EmptyState title="Import access restricted" description="You don't have permission to import invoices. Ask an owner or administrator for invoice import access." actionLabel="Go back" onAction={() => navigation.goBack()} /></View>;
+  if (!allowed) return <View style={styles.state}><EmptyState title="Import access restricted" description="You don't have permission to import invoices. Ask an owner or administrator for invoice import access." actionLabel="Go back" actionVariant="link" onAction={() => navigation.goBack()} /></View>;
   if (!review && draftQuery.isPending) return <View style={styles.state}><ActivityIndicator size="large" color={theme.colors.accent} accessibilityLabel="Loading import review" /><Text style={styles.stateText}>Loading extracted fields</Text></View>;
   if (!review) return <View style={styles.state}><EmptyState title="Couldn't open this import" description={draftQuery.error instanceof Error ? draftQuery.error.message : 'The extracted draft is unavailable.'} actionLabel="Try again" onAction={() => void draftQuery.refetch()} /></View>;
 
