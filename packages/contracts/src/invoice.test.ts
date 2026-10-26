@@ -55,8 +55,19 @@ describe('invoice contracts', () => {
   };
 
   it('accepts a camelCase invoice DTO without ownership ids', () => {
-    expect(invoiceSchema.parse({ ...invoice, externalNumber: 'CLIENT-42' })).toMatchObject({
-      invoiceNumber: 'INV-2026-0001', externalNumber: 'CLIENT-42',
+    const sourceImportDocumentId = '22222222-2222-4222-8222-222222222222';
+    expect(invoiceSchema.parse({
+      ...invoice,
+      externalNumber: 'CLIENT-42',
+      sourceImportDocumentId,
+      externalIssuerName: 'Cleancorp Ltd',
+      thirdPartyIssued: true,
+    })).toMatchObject({
+      invoiceNumber: 'INV-2026-0001',
+      externalNumber: 'CLIENT-42',
+      sourceImportDocumentId,
+      externalIssuerName: 'Cleancorp Ltd',
+      thirdPartyIssued: true,
     });
   });
 
