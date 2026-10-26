@@ -32,6 +32,8 @@ const Signup = lazy(() => import("@/pages/Signup"));
 const ModernLogin = lazy(() => import("@/pages/ModernLogin"));
 const ModernSignup = lazy(() => import("@/pages/ModernSignup"));
 const InvoiceViewPage = lazy(() => import("@/pages/InvoiceViewPage"));
+// Keep this feature page lazy without increasing the legacy routes-file refresh baseline.
+// eslint-disable-next-line react-refresh/only-export-components
 const InvoiceImportPage = lazy(() => import("@/features/invoice-import/InvoiceImportPage"));
 const PublicInvoice = lazy(() => import("@/pages/PublicInvoice"));
 const SharedInvoice = lazy(() => import("@/pages/SharedInvoice"));
