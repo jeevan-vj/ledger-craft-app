@@ -16,6 +16,8 @@ export function extractPdfText(bytes: Uint8Array): string {
       parts.push(unescapePdfString(text[1]!));
     }
   }
+  // Strip control characters from untrusted document text before it reaches a model.
+  // eslint-disable-next-line no-control-regex
   return parts.join('\n').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, MAX_DOCUMENT_TEXT);
 }
 
