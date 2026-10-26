@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { InvoiceImportDraftPatch, InvoiceImportDraftResponse, InvoiceImportDocumentDto } from '@ledgercraft/contracts';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AlertTriangle, ArrowLeft, Check, FileSearch, LockKeyhole, RotateCcw } from 'lucide-react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
@@ -8,6 +8,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { Button } from '@/components/ui/button';
 import { ContentPanel } from '@/components/ui/ContentPanel';
 import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
+import { ledgerQueryKeys } from '@/features/app-data/useLedgerQueries';
 import { customersApi } from '@/features/customers/api/customersApi';
 import { purchasesApi } from '@/features/purchases/api/purchasesApi';
 import { usePermissions } from '@/hooks/usePermissions';
@@ -24,6 +25,7 @@ function ImportDenied() {
 
 function ImportWorkspace() {
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
   const [params] = useSearchParams();
   const headingRef = useRef<HTMLHeadingElement>(null);
   const [stage, setStage] = useState<Stage>('idle');
@@ -76,6 +78,7 @@ function ImportWorkspace() {
     setCommitting(true);
     try {
       const result = await invoiceImportApi.commit(document.id, acknowledgeDuplicates);
+      await queryClient.invalidateQueries({ queryKey: result.recordType === 'invoice' ? ledgerQueryKeys.invoices : ['bills'] });
       toast.success(result.recordType === 'invoice' ? 'Draft invoice created' : 'Draft bill created', { description: 'The original document is attached and locked.' });
       navigate(result.recordType === 'invoice' ? `/invoices/${result.recordId}` : `/bills/${result.recordId}/edit`);
     } catch (caught) {
