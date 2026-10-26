@@ -1,5 +1,14 @@
 # LedgerCraft target architecture
 
+**Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
+SQLite migration `0019_invoice-import-phase2.sql` persists provider-labelled
+review drafts, validation issues, contact selection, and extraction/review state.
+Hono selects OpenAI, then optional xAI, and permits the deterministic mock only
+outside production. Document content is untrusted, provider output is strictly
+validated, and totals are recomputed in cents. Explicit review commits only a
+draft invoice or bill with a locked original source document and no journal.
+Client UI remains outside this phase. See `docs/invoice-import/phase2.md`.
+
 **Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
 SQLite migration `0017_invoice-import-phase0.sql` stores source invoice numbers
 separately from LedgerCraft numbering and marks retained invoice/bill source
