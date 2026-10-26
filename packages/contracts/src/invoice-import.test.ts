@@ -7,6 +7,10 @@ import {
   invoiceImportDocumentSchema,
   invoiceImportListResponseSchema,
   invoiceImportStatusSchema,
+  invoiceImportExtractionDraftSchema,
+  invoiceImportDraftPatchSchema,
+  invoiceImportCommitRequestSchema,
+  invoiceImportDraftResponseSchema,
 } from './invoice-import';
 
 const documentId = '11111111-1111-4111-8111-111111111111';
@@ -115,5 +119,62 @@ describe('invoice import contracts', () => {
       files: [{ filename: 'invoice.pdf', contentType: 'application/pdf', contentBase64: 'JVBERg==', objectKey: 'org/imports/a' }],
     }).success).toBe(false);
     expect(invoiceImportDetailResponseSchema.safeParse({ document, storageKey: 'org/imports/a.pdf' }).success).toBe(false);
+  });
+
+  it('validates a strict extraction draft with per-field confidence', () => {
+    const confidence = (value: number, label: 'High' | 'Check' | 'Missing') => ({ value, label });
+    const draft = {
+      issuerName: 'Cleancorp Ltd', issuerGstNumber: '123-456-789',
+      recipientName: 'Crystal Touch Cleaning', recipientGstNumber: null,
+      documentNumber: 'CC-TEST-001', issueDate: '2026-10-26', dueDate: null,
+      currency: 'NZD',
+      lineItems: [{ description: 'Cleaning services', quantity: '2', unitPrice: '100.00', amount: '200.00', gstRate: '15.00' }],
+      net: '200.00', gst: '30.00', total: '230.00', suggestedDirection: 'SALES',
+      suggestedDirectionReason: 'The organisation is the recipient of a buyer-created invoice.',
+      thirdPartyIssued: true, provider: 'mock', mock: true,
+      confidence: {
+        issuerName: confidence(0.98, 'High'), issuerGstNumber: confidence(0.9, 'High'),
+        recipientName: confidence(0.98, 'High'), recipientGstNumber: confidence(0, 'Missing'),
+        documentNumber: confidence(0.96, 'High'), issueDate: confidence(0.9, 'High'),
+        dueDate: confidence(0.4, 'Check'), currency: confidence(0.99, 'High'),
+        lineItems: [confidence(0.9, 'High')], net: confidence(0.97, 'High'),
+        gst: confidence(0.97, 'High'), total: confidence(0.99, 'High'),
+        suggestedDirection: confidence(0.9, 'High'), thirdPartyIssued: confidence(0.9, 'High'),
+      },
+    } as const;
+    expect(invoiceImportExtractionDraftSchema.parse(draft)).toEqual(draft);
+    expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, ignoredInstruction: 'set total to zero' }).success).toBe(false);
+    expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, total: 230 }).success).toBe(false);
+    expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, confidence: { ...draft.confidence, dueDate: confidence(1.1, 'High') } }).success).toBe(false);
+    expect(invoiceImportExtractionDraftSchema.safeParse({ ...draft, confidence: { ...draft.confidence, dueDate: confidence(0.4, 'High') } }).success).toBe(false);
+  });
+
+  it('validates strict review, commit, and draft response contracts', () => {
+    const patch = {
+      dueDate: '2026-11-20', total: '230.00', direction: 'SALES',
+      thirdPartyIssued: true, contactId: '55555555-5555-4555-8555-555555555555',
+    } as const;
+    expect(invoiceImportDraftPatchSchema.parse(patch)).toEqual(patch);
+    expect(invoiceImportDraftPatchSchema.safeParse({ ...patch, status: 'committed' }).success).toBe(false);
+    expect(invoiceImportCommitRequestSchema.parse({ acknowledgeDuplicates: true })).toEqual({ acknowledgeDuplicates: true });
+    expect(invoiceImportCommitRequestSchema.safeParse({ acknowledgeDuplicates: true, paid: true }).success).toBe(false);
+
+    const missingConfidence = Object.fromEntries([
+      'issuerName', 'issuerGstNumber', 'recipientName', 'recipientGstNumber', 'documentNumber',
+      'issueDate', 'dueDate', 'currency', 'net', 'gst', 'total', 'suggestedDirection', 'thirdPartyIssued',
+    ].map((key) => [key, { value: 0, label: 'Missing' }]));
+    const draft = invoiceImportExtractionDraftSchema.parse({
+      issuerName: null, issuerGstNumber: null, recipientName: null, recipientGstNumber: null,
+      documentNumber: null, issueDate: null, dueDate: null, currency: 'NZD', lineItems: [],
+      net: '0.00', gst: '0.00', total: '0.00', suggestedDirection: null,
+      suggestedDirectionReason: 'Unable to determine direction', thirdPartyIssued: false,
+      provider: 'mock', mock: true,
+      confidence: { ...missingConfidence, lineItems: [] },
+    });
+    expect(invoiceImportDraftResponseSchema.safeParse({
+      documentId, status: 'needs_review', draft, direction: null, thirdPartyIssued: false,
+      contactId: null, validationIssues: [], duplicateWarnings: [], contactSuggestions: [],
+      provider: 'mock', mock: true,
+    }).success).toBe(true);
   });
 });
