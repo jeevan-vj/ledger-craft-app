@@ -9,6 +9,12 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+Invoice-import Phase 2 is implemented locally (2026-10-26) through migration
+`0019_invoice-import-phase2.sql`: guarded OpenAI/xAI/mock extraction, strict
+review drafts, cent-level recomputation, duplicate/contact review, and atomic
+draft invoice/bill commit with locked source documents. No client UI or posting
+is included. See `docs/invoice-import/phase2.md`.
+
 Invoice-import Phase 0 hardening is implemented locally (2026-10-26) through
 `0017_invoice-import-phase0.sql`: explicit import/export and AI permissions,
 real payments for paid imports, retained source attachments, external document

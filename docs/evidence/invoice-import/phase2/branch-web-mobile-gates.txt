@@ -1,0 +1,24 @@
+$ pnpm type-check (web)
+exit=2
+error TS count: 663
+$ pnpm lint (web)
+exit=1
+✖ 576 problems (463 errors, 113 warnings)
+$ cd mobile && npm run type-check
+
+> mobile@1.0.0 type-check
+> tsc --noEmit
+
+exit=0
+$ cd mobile && npm run lint
+   94:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+✖ 78 problems (0 errors, 78 warnings)
+  0 errors and 12 warnings potentially fixable with the `--fix` option.
+exit=0
+
+# Re-run after fixing the one new lint error (no-control-regex in
+# api/src/modules/invoice-imports/extraction/document-content.ts, intentional control-char strip; targeted disable added):
+$ pnpm lint (web)
+✖ 575 problems (462 errors, 113 warnings)   <- equals baseline 462/113
+$ pnpm type-check:api  -> exit=0
+$ (cd api && npx vitest run src/modules/invoice-imports) -> 5 files, 26 tests passed

@@ -16,6 +16,7 @@ import { durableDatabase, durableFileStorage, durableObjectStore, migrateStorage
 import { createR2FileStorage } from '../modules/storage/r2-file-storage';
 import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
+import { createExtractionProvider } from '../modules/invoice-imports/extraction';
 
 setErrorReporter(createSentryReporter());
 
@@ -26,6 +27,8 @@ interface Env {
   OPENAI_API_KEY?: string;
   XAI_API_KEY?: string;
   NODE_ENV?: string;
+  APP_ENV?: string;
+  INVOICE_IMPORT_AI_PROVIDER?: string;
   SENTRY_DSN?: string;
   SENTRY_TRACES_SAMPLE_RATE?: string;
   SENTRY_ENVIRONMENT?: string;
@@ -141,6 +144,9 @@ class LedgerBase extends DurableObject<Env> {
         invoiceMailer:createUnavailableInvoiceMailer(),
         receiptScanner: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiReceiptScanner({ env: this.env }) : undefined,
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
+        invoiceImportExtractor: {
+          extractDocument: (file, context) => createExtractionProvider({ env: this.env }).extractDocument(file, context),
+        },
         actorUserId: userId,
         scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
       });

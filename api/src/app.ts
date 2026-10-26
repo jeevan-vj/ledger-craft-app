@@ -61,6 +61,7 @@ export function createApp(deps: AppDependencies = {}) {
     if (deps.chatCompleter) {
       c.set('chatCompleter', deps.chatCompleter);
     }
+    if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
     if (deps.actorUserId) {
       c.set('actorUserId', deps.actorUserId);
     }

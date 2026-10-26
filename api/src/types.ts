@@ -5,6 +5,7 @@ import type { ReceiptScanner } from './modules/ai/scanner';
 import type { InvoiceMailer } from './modules/invoices/mailer';
 import type { ObjectStore } from './modules/storage/object-store';
 import type { FileStorage } from './modules/storage/file-storage';
+import type { InvoiceImportExtractionProvider } from './modules/invoice-imports/extraction';
 
 export type AppEnv = {
   Variables: {
@@ -19,6 +20,7 @@ export type AppEnv = {
     receiptScanner?: ReceiptScanner;
     chatCompleter?: ChatCompleter;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
+    invoiceImportExtractor?: InvoiceImportExtractionProvider;
   };
 };
 
@@ -33,4 +35,5 @@ export type AppDependencies = {
   receiptScanner?: ReceiptScanner;
   chatCompleter?: ChatCompleter;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
+  invoiceImportExtractor?: InvoiceImportExtractionProvider;
 };

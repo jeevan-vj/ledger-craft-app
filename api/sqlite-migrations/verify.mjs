@@ -56,7 +56,9 @@ assert.ok(Number.isInteger(database.prepare("SELECT created_at FROM users WHERE 
 const importBatchColumns = Object.fromEntries(database.prepare('PRAGMA table_info(import_batches)').all().map(row => [row.name, row]));
 assert.equal(importBatchColumns.file_count.notnull, 1);
 const importDocumentColumns = Object.fromEntries(database.prepare('PRAGMA table_info(import_documents)').all().map(row => [row.name, row]));
-for (const name of ['sha256', 'storage_key', 'extraction_draft_json', 'duplicate_of_document_id']) assert.ok(importDocumentColumns[name]);
+for (const name of ['sha256', 'storage_key', 'extraction_draft_json', 'duplicate_of_document_id', 'extraction_provider', 'validation_issues_json', 'contact_id', 'extracted_at', 'reviewed_at']) assert.ok(importDocumentColumns[name]);
+const invoiceColumns = Object.fromEntries(database.prepare('PRAGMA table_info(invoices)').all().map(row => [row.name, row]));
+assert.equal(invoiceColumns.third_party_issued.dflt_value, '0');
 database.prepare("INSERT INTO import_batches(id,organisation_id,created_by,status,file_count) VALUES ('ib-a','org-a','u-a','uploaded',2)").run();
 const insertImportDocument = database.prepare(`INSERT INTO import_documents(
   id,organisation_id,batch_id,status,original_filename,mime_type,size_bytes,sha256,storage_key,uploaded_by
