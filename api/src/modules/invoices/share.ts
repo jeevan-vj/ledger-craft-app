@@ -134,7 +134,8 @@ export async function createShareForUser(
     }
 
     const shareToken = `${ctx.organisationId}_${crypto.randomUUID()}`;
-    const attachments = await invoicesRepo.listAttachments(tx, ctx.organisationId, invoice.id);
+    const attachments = (await invoicesRepo.listAttachments(tx, ctx.organisationId, invoice.id))
+      .filter((attachment) => attachment.role !== 'source_document');
     const [row] = await tx.insert(sharedInvoices).values({
       organisationId: ctx.organisationId,
       originalInvoiceId: invoice.id,
@@ -202,6 +203,6 @@ export async function getPublicSharedAttachment(
   const ids = (share?.attachmentIds ?? []) as string[];
   if (!share || !ids.includes(attachmentId)) throw new HTTPException(404, { message: 'Attachment not found' });
   const attachment = await invoicesRepo.getAttachment(db, organisationId, share.originalInvoiceId, attachmentId);
-  if (!attachment) throw new HTTPException(404, { message: 'Attachment not found' });
+  if (!attachment || attachment.role === 'source_document') throw new HTTPException(404, { message: 'Attachment not found' });
   return attachment;
 }

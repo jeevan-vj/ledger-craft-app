@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 
 import { ReconciliationSummary } from '@/types/reconciliation';
+import { csvRow } from '@/lib/csv';
 
 interface ReconciliationReportProps {
   summary: ReconciliationSummary;
@@ -55,43 +56,43 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
     const lines = [
       'BANK RECONCILIATION STATEMENT',
       '',
-      `Account: ${summary.bankAccountName} - ${summary.bankName}`,
-      `Period: ${formatDate(summary.session.statementStartDate)} to ${formatDate(summary.session.statementEndDate)}`,
+      csvRow([`Account: ${summary.bankAccountName} - ${summary.bankName}`]),
+      csvRow([`Period: ${formatDate(summary.session.statementStartDate)} to ${formatDate(summary.session.statementEndDate)}`]),
       '',
       'BANK SIDE',
-      `Statement Closing Balance,${summary.bankBalance}`,
+      csvRow(['Statement Closing Balance', summary.bankBalance]),
     ];
 
     if (summary.outstandingDeposits.length > 0) {
       lines.push('Add: Deposits in Transit');
       summary.outstandingDeposits.forEach(d => {
-        lines.push(`  ${d.description},${d.amount}`);
+        lines.push(csvRow([`  ${d.description}`, d.amount]));
       });
     }
 
     if (summary.outstandingChecks.length > 0) {
       lines.push('Less: Outstanding Checks');
       summary.outstandingChecks.forEach(c => {
-        lines.push(`  ${c.description},${c.amount}`);
+        lines.push(csvRow([`  ${c.description}`, c.amount]));
       });
     }
 
-    lines.push(`Adjusted Bank Balance,${summary.adjustedBankBalance}`);
+    lines.push(csvRow(['Adjusted Bank Balance', summary.adjustedBankBalance]));
     lines.push('');
     lines.push('BOOK SIDE');
-    lines.push(`Book Balance,${summary.bookBalance}`);
+    lines.push(csvRow(['Book Balance', summary.bookBalance]));
     
     if (summary.otherAdjustments.length > 0) {
       lines.push('Adjustments');
       summary.otherAdjustments.forEach(a => {
-        lines.push(`  ${a.description},${a.affectsBook ? a.amount : -a.amount}`);
+        lines.push(csvRow([`  ${a.description}`, a.affectsBook ? a.amount : -a.amount]));
       });
     }
 
-    lines.push(`Adjusted Book Balance,${summary.adjustedBookBalance}`);
+    lines.push(csvRow(['Adjusted Book Balance', summary.adjustedBookBalance]));
     lines.push('');
-    lines.push(`DIFFERENCE,${summary.finalDifference}`);
-    lines.push(`STATUS,${summary.isReconciled ? 'RECONCILED' : 'NOT RECONCILED'}`);
+    lines.push(csvRow(['DIFFERENCE', summary.finalDifference]));
+    lines.push(csvRow(['STATUS', summary.isReconciled ? 'RECONCILED' : 'NOT RECONCILED']));
 
     // Download
     const blob = new Blob([lines.join('\n')], { type: 'text/csv' });

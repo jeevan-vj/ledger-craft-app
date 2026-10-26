@@ -5,7 +5,7 @@ export const organisationPermissionSchema = z.enum([
   'organisations.create', 'organisations.update', 'organisations.archive', 'organisations.switch',
   'customers.read', 'customers.write', 'invoices.read', 'invoices.write', 'bills.read', 'bills.write',
   'banking.read', 'banking.write', 'reports.read', 'settings.read', 'settings.write',
-  'users.read', 'users.manage', 'api.access',
+  'users.read', 'users.manage', 'api.access', 'invoices.import', 'ai.use',
 ]);
 
 export const createOrganisationRequestSchema = z.object({ name: z.string().trim().min(2).max(120) });

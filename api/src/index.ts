@@ -16,8 +16,8 @@ function createRuntimeApp() {
     db,
     invoiceMailer: createRuntimeInvoiceMailer(),
     objectStore: createFilesystemObjectStore(),
-    receiptScanner: process.env.OPENAI_API_KEY ? createOpenAiReceiptScanner() : undefined,
-    chatCompleter: process.env.OPENAI_API_KEY ? createOpenAiChatCompleter() : undefined,
+    receiptScanner: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? createOpenAiReceiptScanner() : undefined,
+    chatCompleter: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? createOpenAiChatCompleter() : undefined,
     checkDatabase: async () => {
       try {
         await sql`SELECT 1`;

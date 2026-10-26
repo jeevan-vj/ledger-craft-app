@@ -354,6 +354,12 @@ describe('bank routes', () => {
         expect(csv.status).toBe(200);
         expect(csv.headers.get('content-type')).toContain('text/csv');
         expect(await csv.text()).toContain('Customer deposit (copy)');
+        await app.request('/api/bank-transactions', {
+          method: 'POST', headers: { ...originHeaders, Cookie: ownerA.cookie },
+          body: JSON.stringify({ bankAccountId: account.id, transactionDate: '2026-10-25', description: '=HYPERLINK("https://example.test")', amount: '1.00', type: 'credit' }),
+        });
+        const safeCsv = await app.request(`/api/bank-transactions/export.csv?bankAccountId=${account.id}`, { headers: { Cookie: ownerA.cookie } });
+        expect(await safeCsv.text()).toContain("'=HYPERLINK");
         const foreign = await app.request(`/api/bank-transactions/${transaction.id}`, { headers: { Cookie: ownerB.cookie } });
         expect(foreign.status).toBe(404);
       } finally {

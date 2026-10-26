@@ -155,6 +155,13 @@ describe('item routes', () => {
         expect(applied.status).toBe(200);
         expect((await applied.json() as { imported: number }).imported).toBe(1);
 
+        await app.request('/api/items', {
+          method: 'POST', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: '=HYPERLINK("https://example.test")', type: 'service' }),
+        });
+        const exported = await app.request('/api/items/export', { headers: { Cookie: owner.cookie } });
+        expect(await exported.text()).toContain("'=HYPERLINK");
+
         const deletedCategory = await app.request(`/api/item-categories/${category.id}`, {
           method: 'DELETE', headers: { Cookie: owner.cookie },
         });
