@@ -1,0 +1,38 @@
+node: v24.22.1
+$ pnpm test:contracts
+$ pnpm --filter @ledgercraft/contracts test
+$ vitest run
+
+ RUN  v3.2.4 ~/.codex/worktrees/ledger-import-p4/packages/contracts
+
+ ✓ src/business-profile.test.ts (7 tests) 35ms
+ ✓ src/report.test.ts (2 tests) 48ms
+ ✓ src/receipt.test.ts (3 tests) 49ms
+ ✓ src/dashboard.test.ts (4 tests) 68ms
+ ✓ src/tax.test.ts (4 tests) 29ms
+ ✓ src/purchase.test.ts (6 tests) 64ms
+ ✓ src/bank.test.ts (5 tests) 71ms
+ ✓ src/invoice-import.test.ts (8 tests) 82ms
+ ✓ src/currency.test.ts (5 tests) 47ms
+ ✓ src/quote.test.ts (4 tests) 58ms
+ ✓ src/invoice.test.ts (13 tests) 133ms
+ ✓ src/customer.test.ts (4 tests) 28ms
+ ✓ src/expense.test.ts (3 tests) 44ms
+ ✓ src/payment.test.ts (3 tests) 40ms
+ ✓ src/journal.test.ts (2 tests) 43ms
+ ✓ src/organisation.test.ts (3 tests) 40ms
+ ✓ src/session.test.ts (3 tests) 29ms
+ ✓ src/error.test.ts (4 tests) 38ms
+ ✓ src/item.test.ts (5 tests) 44ms
+ ✓ src/conversation.test.ts (1 test) 31ms
+ ✓ src/object.test.ts (2 tests) 19ms
+ ✓ src/recurring.test.ts (2 tests) 189ms
+ ✓ src/ai.test.ts (2 tests) 24ms
+ ✓ src/reconciliation.test.ts (1 test) 20ms
+ ✓ src/health.test.ts (3 tests) 24ms
+
+ Test Files  25 passed (25)
+      Tests  99 passed (99)
+   Start at  21:55:25
+   Duration  7.55s (transform 4.10s, setup 0ms, collect 9.93s, tests 1.30s, environment 65ms, prepare 24.49s)
+

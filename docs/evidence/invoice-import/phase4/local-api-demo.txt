@@ -1,0 +1,42 @@
+== Invoice import Phase 4 accounting/GST demo ==
+Node v24.22.1; fresh temporary SQLite; APP_ENV=demo; OpenAI/xAI keys unset
+Local API ready on an ephemeral port
+Organisation: Crystal Touch Cleaning (GST registered); synthetic customer/vendor created
+
+## 1. Cleancorp third-party-issued SALES import, draft then issue
+{"provider":"mock","mock":true,"direction":null,"suggestedDirection":"SALES","net":"200.00","gst":"30.00","total":"230.00"}
+commit before direction: HTTP 422 {"code":"DIRECTION_REQUIRED","message":"Choose SALES or PURCHASE before commit"}
+{"status":"draft","paymentStatus":"unpaid","subtotal":"200.00","taxAmount":"30.00","total":"230.00","totalPaid":"0.00","balanceDue":"230.00","thirdPartyIssued":true}
+invoice journal after draft: []
+invoice issue: HTTP 200, status=sent
+invoice journal after issue: [{"accountCode":"1200","debit":"230.00","credit":"0.00"},{"accountCode":"4000","debit":"0.00","credit":"200.00"},{"accountCode":"2200","debit":"0.00","credit":"30.00"}]
+
+## 2. Sparkle Supplies PURCHASE import, draft then receive
+{"provider":"mock","mock":true,"direction":null,"suggestedDirection":"PURCHASE","net":"100.00","gst":"15.00","total":"115.00"}
+{"lifecycleStatus":"draft","paymentStatus":"unpaid","subtotal":"100.00","taxAmount":"15.00","total":"115.00","balanceDue":"115.00"}
+bill journal after draft: []
+bill receive: HTTP 200, lifecycleStatus=received
+bill journal after receive: [{"accountCode":"5000","debit":"100.00","credit":"0.00"},{"accountCode":"2150","debit":"15.00","credit":"0.00"},{"accountCode":"2100","debit":"0.00","credit":"115.00"}]
+
+## 3-4. GST report (invoice basis) and trial balance
+{"gst":{"basis":"invoice","output":"30.00","input":"15.00","net":"15.00","position":"payable"},"trialBalance":{"totalDebits":"345.00","totalCredits":"345.00","balanced":true}}
+
+## 5. Wrong direction requires an explicit PATCH
+{"direction":null,"suggestedDirection":"SALES"}
+suggestion-only commit: HTTP 422 DIRECTION_REQUIRED
+{"explicitDirection":"PURCHASE","extractorSuggestion":"SALES"}
+{"recordType":"bill","recordId":"b97081da-2b19-422e-aab7-a7604cb6e19f"}
+
+## 6. Import commit cannot mark paid; normal payment route settles the invoice
+{"beforePayment":{"status":"sent","paymentStatus":"unpaid","totalPaid":"0.00","balanceDue":"230.00"}}
+payment journal: [{"accountCode":"1110","debit":"230.00","credit":"0.00"},{"accountCode":"1200","debit":"0.00","credit":"230.00"}]
+{"afterPayment":{"status":"paid","paymentStatus":"paid","totalPaid":"230.00","balanceDue":"0.00"}}
+
+## 7. read_only member permission denials
+upload: HTTP 403 Missing permission: invoices.import
+extract: HTTP 403 Missing permission: invoices.import
+commit: HTTP 403 Missing permission: invoices.import
+invoice issue: HTTP 403 Missing permission: invoices.write
+bill receive: HTTP 403 Missing permission: bills.write
+final trial balance: debits=575.00 credits=575.00 balanced=true
+Demo complete; the exit trap stops only PID 884 and removes the temporary directory.

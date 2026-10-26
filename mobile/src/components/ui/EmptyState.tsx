@@ -9,10 +9,11 @@ interface EmptyStateProps {
   title: string;
   description?: string;
   actionLabel?: string;
+  actionVariant?: 'button' | 'link';
   onAction?: () => void;
 }
 
-export function EmptyState({ icon, title, description, actionLabel, onAction }: EmptyStateProps) {
+export function EmptyState({ icon, title, description, actionLabel, actionVariant = 'button', onAction }: EmptyStateProps) {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -26,9 +27,9 @@ export function EmptyState({ icon, title, description, actionLabel, onAction }: 
           onPress={onAction}
           accessibilityRole="button"
           accessibilityLabel={actionLabel}
-          style={({ pressed }) => [styles.button, pressed && styles.pressed]}
+          style={({ pressed }) => [styles.button, actionVariant === 'link' && styles.link, pressed && styles.pressed]}
         >
-          <Text style={styles.buttonLabel}>{actionLabel}</Text>
+          <Text style={[styles.buttonLabel, actionVariant === 'link' && styles.linkLabel]}>{actionLabel}</Text>
         </AppPressable>
       ) : null}
     </View>
@@ -72,5 +73,11 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     color: palette.accentForeground,
     fontSize: 16,
     fontWeight: '600',
+  },
+  link: {
+    backgroundColor: 'transparent',
+  },
+  linkLabel: {
+    color: palette.accentText,
   },
 });
