@@ -36,6 +36,11 @@ const SENSITIVE_KEYS = new Set([
   'querystring',
   'filename',
   'original-filename',
+  'document-text',
+  'document-content',
+  'extraction-draft',
+  'draft',
+  'confidence',
   'vars',
 ]);
 
