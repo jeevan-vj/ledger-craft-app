@@ -173,7 +173,7 @@ class LedgerBase extends DurableObject<Env> {
   }
 
   async alarm(): Promise<void> {
-    const result = await runDue(this.db, new Date(), 100);
+    const result = await runDue(this.db, new Date(), 100, undefined, createInvoiceMailerFromEnv(this.env));
     if (result.nextAlarmAt) await this.ctx.storage.setAlarm(new Date(result.nextAlarmAt).getTime());
   }
 }

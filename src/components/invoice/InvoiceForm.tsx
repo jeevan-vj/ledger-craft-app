@@ -87,6 +87,12 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { SegmentedControl } from "@/components/ui/SegmentedControl";
 import { quoteDocumentLabels } from "./preview/documentLabels";
+import {
+  defaultRepeatSettings,
+  RepeatSchedulePanel,
+  type RepeatSettings,
+} from '@/features/recurring/components/RepeatSchedulePanel';
+import { buildRecurringInvoicePayload, upsertRecurringInvoiceTemplate } from '@/features/recurring/invoiceTemplate';
 
 type InvoiceFormMode = "create" | "edit";
 type DocumentKind = "invoice" | "quote";
@@ -101,7 +107,7 @@ interface InvoiceFormProps {
   customers: Customer[];
   businessProfile: BusinessProfile | null;
   isLoadingCustomers: boolean;
-  onSubmit: (values: any, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[], intent?: 'draft' | 'send') => Promise<void>;
+  onSubmit: (values: any, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[], intent?: 'draft' | 'send') => Promise<{ id: string; invoiceNumber?: string } | void>;
   onCancel: () => void;
   onAddCustomer?: () => void;
   newlyAddedCustomer?: Customer | null;
@@ -260,6 +266,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const [sendConfirmOpen, setSendConfirmOpen] = useState(false);
   const [refetchItemsTrigger, setRefetchItemsTrigger] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [repeatEnabled, setRepeatEnabled] = useState(false);
+  const [repeatSettings, setRepeatSettings] = useState<RepeatSettings>(() => defaultRepeatSettings());
   // New state to track which line item is creating a new item
   const [indexCreatingNewItem, setIndexCreatingNewItem] = useState<number | null>(null);
 
@@ -958,7 +966,7 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         } : {}),
       };
 
-      await onSubmit(
+      const savedDocument = await onSubmit(
         valuesWithTemplate,
         items,
         subtotal + taxAmount + finalAdditionalCharges - Number(valuesWithTemplate.discount),
@@ -969,6 +977,39 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         isAdditionalChargesEnabled ? additionalChargesList : [],
         submitIntentRef.current,
       );
+
+      if (!isQuote && repeatEnabled && savedDocument) {
+        try {
+          const recurringValues = {
+            customerId: valuesWithTemplate.customerId,
+            date: valuesWithTemplate.date,
+            dueDate: valuesWithTemplate.dueDate,
+            currency: valuesWithTemplate.currency,
+            notes: valuesWithTemplate.notes,
+            terms: valuesWithTemplate.terms,
+            paymentTermDays: valuesWithTemplate.paymentTermDays,
+            discountType: valuesWithTemplate.discountType,
+            discountPercent: valuesWithTemplate.discountPercent,
+            discount: valuesWithTemplate.discount,
+            taxInclusive: pricesIncludeTax,
+            taxRate: isTaxEnabled ? taxRate : 0,
+            additionalCharges: finalAdditionalCharges,
+            additionalChargesList: isAdditionalChargesEnabled ? additionalChargesList : [],
+          };
+          await upsertRecurringInvoiceTemplate({
+            sourceInvoiceId: savedDocument.id,
+            name: `${valuesWithTemplate.invoiceNumber} recurring invoice`,
+            payload: buildRecurringInvoicePayload({ values: recurringValues, items, delivery: repeatSettings.delivery }),
+            schedule: repeatSettings.schedule,
+          });
+        } catch (error) {
+          toast({
+            title: 'Invoice saved, repeat schedule not saved',
+            description: error instanceof Error ? error.message : 'Try adding the repeat schedule again from the invoice.',
+            variant: 'destructive',
+          });
+        }
+      }
       
       // Clear auto-saved data on successful submission
       clearSavedData();
@@ -1788,6 +1829,36 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
                         </AnimatePresence>
                       </Collapsible>
                     </motion.div>
+
+                    {!isQuote && (
+                      <section className="space-y-4" aria-labelledby="repeat-invoice-title">
+                        <div className="flex items-start justify-between gap-4 rounded-2xl border border-border bg-card p-4">
+                          <div>
+                            <h3 id="repeat-invoice-title" className="font-semibold text-foreground">Repeat this invoice</h3>
+                            <p className="mt-1 text-sm text-muted-foreground">Create future invoices from these customer, line item, tax, term and note details.</p>
+                          </div>
+                          <Switch
+                            aria-label="Repeat this invoice"
+                            checked={repeatEnabled}
+                            onCheckedChange={(checked) => {
+                              setRepeatEnabled(checked);
+                              if (checked) {
+                                const invoiceDate = formatDate(form.getValues('date'));
+                                setRepeatSettings((current) => ({
+                                  ...current,
+                                  schedule: {
+                                    ...current.schedule,
+                                    startDate: invoiceDate,
+                                    dayOfMonth: Number(invoiceDate.slice(8, 10)),
+                                  },
+                                }));
+                              }
+                            }}
+                          />
+                        </div>
+                        {repeatEnabled && <RepeatSchedulePanel value={repeatSettings} onChange={setRepeatSettings} disabled={isSubmitting} />}
+                      </section>
+                    )}
 
                   </form>
                 </Form>
