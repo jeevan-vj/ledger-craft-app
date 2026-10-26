@@ -1,0 +1,87 @@
+# pnpm test:api, 26 Oct 2026, Node 24.22.1 (summary of verbose log; the full ~334 KB log is not committed)
+ ✓ src/modules/tax/gst-ird-scenario.e2e.test.ts (8 tests | 1 skipped) 15588ms
+   ✓ NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger  3440ms
+   ✓ NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles  2553ms
+   ✓ NZ GST journals and IRD reporting scenario > excludes foreign-currency documents from the NZD GST return and flags them  1799ms
+   ✓ NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports  1940ms
+   ✓ NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter  1725ms
+   ✓ NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice  1919ms
+   ✓ NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST  2209ms
+ ✓ src/modules/quotes/quotes.test.ts (7 tests) 16541ms
+   ✓ quote routes > keeps quote numbering independent and matches invoice totals  2733ms
+   ✓ quote routes > rejects invalid quotes and edits only drafts  2696ms
+   ✓ quote routes > follows the status table, expires on read, and lets a client respond once  3335ms
+   ✓ quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places  2776ms
+   ✓ quote routes > converts an accepted quote once into a draft invoice with the same totals  4872ms
+ ✓ src/modules/invoices/invoices.test.ts (10 tests) 22252ms
+   ✓ invoice routes > persists named delivery charges, recalculates percentages and clears charges  3777ms
+   ✓ invoice routes > peeks next invoice number and creates without a pre-seeded business profile  2046ms
+   ✓ invoice routes > creates an invoice with server totals and isolates organisations  2687ms
+   ✓ invoice routes > copies profile payment terms and keeps an overridden due date  2645ms
+   ✓ invoice routes > computes percent and fixed discounts on the server and recalculates on edit  2760ms
+   ✓ invoice routes > saves drafts without mail and sends only after the mailer accepts  2067ms
+   ✓ invoice routes > ignores client-supplied totals on create  1829ms
+   ✓ invoice routes > retried create with the same Idempotency-Key returns the original invoice  2161ms
+   ✓ invoice routes > share tokens expire and do not leak other organisations  2253ms
+ ✓ src/modules/bank/bank.test.ts (4 tests) 9528ms
+   ✓ bank routes > creates bank accounts and skips duplicate imports for the session organisation  2234ms
+   ✓ bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances  2415ms
+   ✓ bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage  4784ms
+ ✓ src/modules/invoices/invoice-lifecycle.test.ts (4 tests) 35023ms
+   ✓ invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive  9440ms
+   ✓ invoice lifecycle > snapshots attachment access and imports idempotently by external id  9331ms
+   ✓ invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free  6989ms
+   ✓ invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares  9250ms
+ ✓ src/modules/invoices/share.test.ts (3 tests) 27437ms
+   ✓ invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation  15880ms
+   ✓ invoice share links > replaces every active link in one transaction and keeps the old link when creation fails  4792ms
+   ✓ invoice share links > lets a read-only member list shares but not create, replace, or revoke them  6755ms
+ ✓ src/modules/invoice-imports/invoice-imports-accounting.e2e.test.ts (1 test) 11520ms
+   ✓ invoice import accounting and GST end-to-end > keeps imports as drafts, posts through normal lifecycle routes, reports GST, requires direction, records payment, and enforces read-only access  11514ms
+ ✓ src/modules/purchases/purchases.test.ts (2 tests) 12100ms
+   ✓ purchase routes > protects the purchase directory  311ms
+   ✓ purchase routes > creates, receives, pays and isolates a bill with balanced journals  11782ms
+ ✓ src/modules/payments/payments.test.ts (4 tests) 17902ms
+   ✓ payment routes > records a payment and updates invoice totals in one transaction  7925ms
+   ✓ payment routes > retried payment with the same Idempotency-Key returns the original payment  5657ms
+   ✓ payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal  4068ms
+ ✓ src/modules/invoice-imports/invoice-imports-phase2.test.ts (3 tests) 7894ms
+   ✓ invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice  2597ms
+   ✓ invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill  2184ms
+   ✓ invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route  3106ms
+ ✓ src/modules/dashboard/dashboard.test.ts (2 tests) 4201ms
+   ✓ dashboard and saved report routes > uses ledger-authoritative reports and isolates personal layouts and saved reports  4081ms
+ ✓ src/modules/receipts/receipts.test.ts (3 tests) 6761ms
+   ✓ receipt routes > creates a payment receipt and isolates it by organisation  3466ms
+   ✓ receipt routes > filters receipts by payment and invoice inside the organisation  3203ms
+ ✓ src/modules/invoice-imports/invoice-imports.test.ts (3 tests) 7574ms
+   ✓ invoice import routes > uploads, detects same-org duplicate hashes, lists/downloads privately, audits, and isolates every id route  2825ms
+   ✓ invoice import routes > rejects read-only upload, bad magic, MIME mismatch, and oversized files with explicit statuses  2219ms
+   ✓ invoice import routes > blocks discard while a linked invoice exists and audits the failed attempt  2523ms
+ ✓ src/modules/currency/currency.test.ts (3 tests) 3394ms
+   ✓ currency and localization routes > isolates settings and immutable dated rates by organisation  3304ms
+ ✓ src/modules/organisations/organisations.test.ts (3 tests) 9830ms
+   ✓ organisation collaboration > creates and switches companies while keeping their ledgers isolated  2994ms
+   ✓ organisation collaboration > rejects direct write access and privilege escalation for read-only members  2891ms
+   ✓ organisation collaboration > binds invitations to a fresh email, rejects reuse, and removes ledger access with membership  3938ms
+ ✓ src/modules/items/items.test.ts (3 tests) 5751ms
+   ✓ item routes > creates and lists items for the session organisation only  3211ms
+   ✓ item routes > validates item money and supports category lifecycle plus import preview/apply  2463ms
+ ✓ src/modules/reconciliation/reconciliation.test.ts (2 tests) 2353ms
+   ✓ reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete  2289ms
+ ✓ src/modules/reports/reports.test.ts (5 tests) 3110ms
+   ✓ server-authoritative reports > derives balanced reports from posted journals and isolates organisations  1736ms
+   ✓ server-authoritative reports > rejects mutation or deletion of posted journals  1281ms
+ ✓ src/modules/journals/journals.test.ts (4 tests) 4331ms
+   ✓ journal routes > creates a balanced journal and isolates organisations  1675ms
+   ✓ journal routes > numbers new journals after a deleted draft without colliding with the unique entry number  1264ms
+   ✓ journal routes > rejects moving a draft journal straight to reversed  1315ms
+ ✓ src/modules/tax/gst-self-filing.e2e.test.ts (1 test) 1941ms
+   ✓ new business GST self-filing journey > creates a GST invoice, receives payment, saves IRD figures, and records myIR filing  1937ms
+ ✓ src/modules/business-profile/business-profile.test.ts (3 tests) 4126ms
+
+ Test Files  62 passed (62)
+      Tests  247 passed | 1 skipped (248)
+   Start at  21:55:24
+   Duration  585.77s (transform 6.51s, setup 1.42s, collect 254.95s, tests 265.28s, environment 42ms, prepare 20.69s)
+

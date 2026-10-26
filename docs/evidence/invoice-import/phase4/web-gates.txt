@@ -1,0 +1,4 @@
+Web gates, Phase 4 branch, Node 24.22.1, 26 Oct 2026
+web tsc -p tsconfig.app.json: 663 errors (baseline 663, CI ceiling 728)
+web tsc -p tsconfig.node.json: pass (exit 0)
+web pnpm lint: 462 errors / 113 warnings (baseline 462/113, CI ceiling 468 errors)

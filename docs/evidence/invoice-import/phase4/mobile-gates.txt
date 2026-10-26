@@ -1,0 +1,444 @@
+node: v24.22.1
+$ npm run lint
+
+> mobile@1.0.0 lint
+> eslint .
+
+
+~/.codex/worktrees/ledger-import-p4/mobile/shared/types/bankTransaction.ts
+  148:11  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  153:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/shared/types/index.ts
+  554:19  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/shared/types/payment.ts
+  186:16  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  250:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/dashboard/BalanceCard.tsx
+  23:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/expense/CategoryPicker.tsx
+  18:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/expense/SwipeableExpenseCard.tsx
+  72:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/CompactLineItem.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/InvoicePreviewWithTemplates.tsx
+  45:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/ProfileCompletenessBanner.tsx
+  23:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  23:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/ProgressIndicator.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/StatusPicker.tsx
+  34:28  warning  'type' is assigned a value but never used                                                                                      @typescript-eslint/no-unused-vars
+  71:6   warning  React Hook useEffect has missing dependencies: 'fadeAnim' and 'slideAnim'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+  76:52  warning  A `require()` style import is forbidden                                                                                        @typescript-eslint/no-require-imports
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/SwipeableInvoiceCard.tsx
+  47:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/invoice/TaxConfigCard.tsx
+  32:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  32:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/items/ItemPicker.tsx
+   41:10  warning  'categories' is assigned a value but never used              @typescript-eslint/no-unused-vars
+  179:22  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/ActionButton.tsx
+  29:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/AnimatedFilterButton.tsx
+   12:10  warning  'Text' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   85:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  104:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/AnimatedPressable.tsx
+  76:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/AnimatedSwitch.tsx
+   18:3   warning  'withTiming' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   25:25  warning  'TIMING_CONFIG' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+   25:55  warning  'EASING' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   94:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  110:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/AnimatedTotal.tsx
+   8:3  warning  'interpolate' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  40:6  warning  React Hook useEffect has missing dependencies: 'animatedValue' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/ConfirmDialog.tsx
+  2:29  warning  'TouchableOpacity' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/EmptyState.tsx
+  18:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  18:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/FilterPills.tsx
+  22:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  22:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/FormInput.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/FormSwitch.tsx
+  15:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/GroupedSection.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/IconWell.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/ModernButton.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/ModernInput.tsx
+  38:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/SelectionSheet.tsx
+   54:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  116:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/components/ui/SmartDatePicker.tsx
+  48:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/features/currency/currencyApi.ts
+  7:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/features/invoices/api/invoicesApi.ts
+  29:27  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  49:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  61:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/features/quotes/quoteTotals.ts
+  25:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/navigation/index.tsx
+  56:6  warning  React Hook useEffect has missing dependencies: 'opacity' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/auth/LoginScreen.tsx
+  26:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  26:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/expenses/ExpenseCreateScreen.tsx
+  44:28  warning  'type' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  54:20  warning  'setCurrency' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  58:19  warning  'setTaxRate' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/expenses/ExpenseEditScreen.tsx
+  19:15  warning  'Expense' is defined but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/expenses/ExpenseListScreen.tsx
+   33:28  warning  'type' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
+   63:8   warning  React Hook useCallback has a missing dependency: 'loadExpenses'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  121:6   warning  React Hook useLayoutEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/invoices/InvoiceCreateScreen.tsx
+  47:28  warning  'type' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
+  99:6   warning  React Hook useEffect has a missing dependency: 'loadInitialData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/invoices/InvoiceDetailScreen.tsx
+  60:28  warning  'type' is assigned a value but never used                                                                    @typescript-eslint/no-unused-vars
+  92:6   warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/invoices/InvoiceListScreen.tsx
+   40:28  warning  'type' is assigned a value but never used                                                                                                           @typescript-eslint/no-unused-vars
+   80:8   warning  React Hook useCallback has a missing dependency: 'loadInvoices'. Either include it or remove the dependency array                                   react-hooks/exhaustive-deps
+  135:6   warning  React Hook useLayoutEffect has missing dependencies: 'handleSearch' and 'styles.headerActions'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/screens/settings/BusinessSettingsScreen.tsx
+  41:28  warning  'type' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  79:6   warning  React Hook useEffect has a missing dependency: 'loadProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/services/businessProfileService.ts
+  351:15  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/services/expenseService.ts
+  3:66  warning  '~/.codex/worktrees/ledger-import-p4/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+  4:30  warning  'PaymentMethod' is defined but never used                                                                        @typescript-eslint/no-unused-vars
+  4:51  warning  '~/.codex/worktrees/ledger-import-p4/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+
+~/.codex/worktrees/ledger-import-p4/mobile/src/services/storageService.ts
+  46:15  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 78 problems (0 errors, 78 warnings)
+  0 errors and 12 warnings potentially fixable with the `--fix` option.
+
+$ npm run type-check
+
+> mobile@1.0.0 type-check
+> tsc --noEmit
+
+$ npm test -- --ci --watchAll=false
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/payments/paymentModel.test.ts (8.977 s)
+PASS src/navigation/links.test.ts (10.001 s)
+PASS src/services/__tests__/invoiceService.test.ts
+PASS src/features/quotes/api/quotesApi.test.ts
+PASS src/features/auth/api/authApi.test.ts
+PASS src/components/ui/PillButton.test.tsx (15.266 s)
+PASS src/features/invoice-import/api/documentImportApi.test.ts
+PASS src/utils/__tests__/invoiceHtml.test.ts
+PASS src/observability/scrub.test.ts
+PASS src/utils/__tests__/pdfUtils.test.ts
+PASS src/features/quotes/quoteModel.test.ts
+PASS src/services/__tests__/customerService.test.ts
+PASS src/components/AppErrorBoundary.test.tsx
+PASS src/store/authSlice.queryCache.test.ts
+PASS src/components/invoice/PaymentCaptureModal.test.tsx (20.53 s)
+PASS src/components/invoice/InvoiceDeliverySection.test.tsx
+PASS src/components/invoice/InvoiceShareActions.test.tsx (21.839 s)
+PASS src/components/invoice/PaymentHistoryList.test.tsx
+PASS src/components/ui/ModernInput.test.tsx
+PASS src/services/__tests__/businessProfileService.test.ts
+PASS src/components/invoice/InvoiceDetailActions.test.tsx (22.208 s)
+PASS src/services/__tests__/itemService.test.ts
+PASS scripts/publish-update.test.js
+PASS src/features/quotes/quoteSharing.test.ts
+PASS src/features/payments/paymentQueries.test.ts
+PASS src/features/quotes/quoteTotals.test.ts
+PASS src/features/banking/api/bankingApi.test.ts
+PASS src/screens/reports/ReportsScreen.test.tsx (24.483 s)
+PASS src/screens/invoices/PublicInvoiceScreen.test.tsx (24.669 s)
+PASS src/components/ui/EmptyState.test.tsx
+PASS src/lib/queryClient.test.ts
+PASS src/features/payments/api/paymentsApi.test.ts
+PASS src/screens/settings/BusinessSettingsScreen.test.tsx (25.477 s)
+  ● Console
+
+    console.log
+      📸 Loaded profile data: {
+        id: 'profile-1',
+        userId: 'user-1',
+        name: 'LedgerCraft Studio',
+        email: 'owner@example.com',
+        country: 'New Zealand',
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        createdAt: '2026-10-18T00:00:00.000Z',
+        updatedAt: '2026-10-18T00:00:00.000Z',
+        theme: {
+          primary: '#163300',
+          secondary: '#3B4DE6',
+          accent: '#4F63D7',
+          text: '#1E293B',
+          textLight: '#64748B',
+          background: '#F5F6F3',
+          surface: '#FFFFFF'
+        }
+      }
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:85:15)
+
+    console.log
+      📸 Logo URL from database: undefined
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:86:15)
+
+    console.log
+      📸 Setting logoUri to: null
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:119:13)
+
+    console.log
+      📸 Loaded profile data: {
+        id: 'profile-1',
+        userId: 'user-1',
+        name: 'LedgerCraft Studio',
+        email: 'owner@example.com',
+        country: 'New Zealand',
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        createdAt: '2026-10-18T00:00:00.000Z',
+        updatedAt: '2026-10-18T00:00:00.000Z',
+        theme: {
+          primary: '#163300',
+          secondary: '#3B4DE6',
+          accent: '#4F63D7',
+          text: '#1E293B',
+          textLight: '#64748B',
+          background: '#F5F6F3',
+          surface: '#FFFFFF'
+        }
+      }
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:85:15)
+
+    console.log
+      📸 Logo URL from database: undefined
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:86:15)
+
+    console.log
+      📸 Setting logoUri to: null
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:119:13)
+
+    console.log
+      📸 Loaded profile data: {
+        id: 'profile-1',
+        userId: 'user-1',
+        name: 'LedgerCraft Studio',
+        email: 'owner@example.com',
+        country: 'New Zealand',
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        createdAt: '2026-10-18T00:00:00.000Z',
+        updatedAt: '2026-10-18T00:00:00.000Z',
+        theme: {
+          primary: '#163300',
+          secondary: '#3B4DE6',
+          accent: '#4F63D7',
+          text: '#1E293B',
+          textLight: '#64748B',
+          background: '#F5F6F3',
+          surface: '#FFFFFF'
+        }
+      }
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:85:15)
+
+    console.log
+      📸 Logo URL from database: undefined
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:86:15)
+
+    console.log
+      📸 Setting logoUri to: null
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:119:13)
+
+    console.log
+      📸 Loaded profile data: {
+        id: 'profile-1',
+        userId: 'user-1',
+        name: 'LedgerCraft Studio',
+        email: 'owner@example.com',
+        country: 'New Zealand',
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        createdAt: '2026-10-18T00:00:00.000Z',
+        updatedAt: '2026-10-18T00:00:00.000Z',
+        theme: {
+          primary: '#163300',
+          secondary: '#3B4DE6',
+          accent: '#4F63D7',
+          text: '#1E293B',
+          textLight: '#64748B',
+          background: '#F5F6F3',
+          surface: '#FFFFFF'
+        }
+      }
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:85:15)
+
+    console.log
+      📸 Logo URL from database: undefined
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:86:15)
+
+    console.log
+      📸 Setting logoUri to: null
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:119:13)
+
+    console.log
+      📸 Loaded profile data: {
+        id: 'profile-1',
+        userId: 'user-1',
+        name: 'LedgerCraft Studio',
+        email: 'owner@example.com',
+        country: 'New Zealand',
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        createdAt: '2026-10-18T00:00:00.000Z',
+        updatedAt: '2026-10-18T00:00:00.000Z',
+        theme: {
+          primary: '#163300',
+          secondary: '#3B4DE6',
+          accent: '#4F63D7',
+          text: '#1E293B',
+          textLight: '#64748B',
+          background: '#F5F6F3',
+          surface: '#FFFFFF'
+        }
+      }
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:85:15)
+
+    console.log
+      📸 Logo URL from database: undefined
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:86:15)
+
+    console.log
+      📸 Setting logoUri to: null
+
+      at log (src/screens/settings/BusinessSettingsScreen.tsx:119:13)
+
+PASS src/features/purchases/api/purchasesApi.test.ts
+PASS src/features/invoice-import/sourceFile.test.ts
+PASS src/services/__tests__/organisationService.test.ts
+PASS src/utils/__tests__/statusUtils.test.ts
+PASS ./eas.test.js
+PASS src/features/customers/model/customerForms.test.ts
+PASS src/features/onboarding/setupFailure.test.ts
+PASS src/features/banking/model/bankingForms.test.ts
+PASS src/features/banking/model/bankAccountForms.test.ts
+PASS src/services/__tests__/paymentService.test.ts
+PASS src/navigation/appLinks.test.ts
+PASS src/features/items/model/itemForms.test.ts
+PASS src/utils/__tests__/quoteHtml.test.ts
+PASS src/features/dashboard/api/dashboardApi.test.ts
+PASS src/screens/quotes/PublicQuoteScreen.test.tsx (27.789 s)
+PASS src/features/purchases/model/purchaseForms.test.ts
+PASS src/components/ui/datePickerModel.test.ts
+PASS plugins/sentryUploadGate.test.js
+PASS src/utils/__tests__/invoiceLineDisplay.test.ts
+PASS src/features/banking/model/statementImport.test.ts
+PASS src/features/auth/api/http.error.test.ts
+PASS src/features/reports/api/reportsApi.test.ts
+PASS src/features/invoices/__tests__/invoiceSharing.test.ts
+PASS src/features/onboarding/onboardingModel.test.ts
+PASS src/observability/sentryOptions.test.ts
+PASS src/features/customers/model/filterCustomers.test.ts
+PASS src/features/invoice-import/model/reviewDecision.test.ts
+PASS src/layout/__tests__/tabScreenInsets.test.ts
+PASS scripts/eas-update-config.test.js
+PASS src/utils/__tests__/money.test.ts
+PASS src/utils/__tests__/countryTaxDefaults.test.ts
+PASS src/screens/main/DashboardScreen.test.tsx (29.728 s)
+PASS src/features/auth/invoiceAccess.test.ts
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them.
+
+Test Suites: 66 passed, 66 total
+Tests:       312 passed, 312 total
+Snapshots:   0 total
+Time:        33.398 s, estimated 220 s
+Ran all test suites.
