@@ -85,6 +85,7 @@ export function validateInvoiceImportFile(input: {
 }
 
 export function sanitizeImportFilename(filename: string, maxLength = 180): string {
+  // eslint-disable-next-line no-control-regex -- intentionally strips control characters from filenames
   const withoutControls = filename.replace(/[\u0000-\u001f\u007f]/g, '').trim();
   const base = withoutControls.split(/[\\/]/).filter(Boolean).at(-1)?.trim() || 'invoice';
   const safe = base.replace(/[<>:"|?*]/g, '_').replace(/^\.+/, '').trim() || 'invoice';
