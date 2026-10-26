@@ -1,0 +1,155 @@
+[
+  {
+    "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+    "file": "inv1.png",
+    "ok": true,
+    "ms": 5450,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 2,
+    "expectedLineItems": 2,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 2016,
+      "completion_tokens": 194,
+      "total_tokens": 2210,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 64.47454833984375
+    }
+  },
+  {
+    "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+    "file": "inv2.png",
+    "ok": true,
+    "ms": 5129,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 3,
+    "expectedLineItems": 3,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 2016,
+      "completion_tokens": 231,
+      "total_tokens": 2247,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 67.3336410522461
+    }
+  },
+  {
+    "model": "@cf/meta/llama-4-scout-17b-16e-instruct",
+    "file": "inv3.png",
+    "ok": true,
+    "ms": 5866,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 2,
+    "expectedLineItems": 2,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 2016,
+      "completion_tokens": 225,
+      "total_tokens": 2241,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 66.87000274658203
+    }
+  },
+  {
+    "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+    "file": "inv1.png",
+    "ok": true,
+    "ms": 9165,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 2,
+    "expectedLineItems": 2,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 1488,
+      "completion_tokens": 277,
+      "total_tokens": 1765,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 61.41666793823242
+    }
+  },
+  {
+    "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+    "file": "inv2.png",
+    "ok": true,
+    "ms": 7187,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 3,
+    "expectedLineItems": 3,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 1488,
+      "completion_tokens": 330,
+      "total_tokens": 1818,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 64.092529296875
+    }
+  },
+  {
+    "model": "@cf/mistralai/mistral-small-3.1-24b-instruct",
+    "file": "inv3.png",
+    "ok": true,
+    "ms": 7832,
+    "jsonParsed": true,
+    "fieldsCorrect": "8/8",
+    "lineItems": 2,
+    "expectedLineItems": 2,
+    "mismatches": [],
+    "usage": {
+      "prompt_tokens": 1488,
+      "completion_tokens": 274,
+      "total_tokens": 1762,
+      "prompt_tokens_details": {
+        "cached_tokens": 0
+      },
+      "neurons": 61.26520538330078
+    }
+  },
+  {
+    "model": "@cf/meta/llama-3.2-11b-vision-instruct",
+    "file": "inv1.png",
+    "ok": false,
+    "ms": 270,
+    "error": "5016: Prior to using this model, you must submit the prompt 'agree'. By submitting ‘agree’, you  hereby agree to the llama-3.2-11b-vision-instruct Community License https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE and Acceptable Use Policy https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/USE_POLICY.md and you represent that you are not an individual domiciled in, or a company with a principal place of business in, the European Union.",
+    "jsonParsed": false,
+    "fieldsCorrect": "0/8",
+    "expectedLineItems": 2,
+    "mismatches": []
+  },
+  {
+    "model": "@cf/meta/llama-3.2-11b-vision-instruct",
+    "file": "inv2.png",
+    "ok": false,
+    "ms": 38,
+    "error": "5016: Prior to using this model, you must submit the prompt 'agree'. By submitting ‘agree’, you  hereby agree to the llama-3.2-11b-vision-instruct Community License https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE and Acceptable Use Policy https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/USE_POLICY.md and you represent that you are not an individual domiciled in, or a company with a principal place of business in, the European Union.",
+    "jsonParsed": false,
+    "fieldsCorrect": "0/8",
+    "expectedLineItems": 3,
+    "mismatches": []
+  },
+  {
+    "model": "@cf/meta/llama-3.2-11b-vision-instruct",
+    "file": "inv3.png",
+    "ok": false,
+    "ms": 35,
+    "error": "5016: Prior to using this model, you must submit the prompt 'agree'. By submitting ‘agree’, you  hereby agree to the llama-3.2-11b-vision-instruct Community License https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/LICENSE and Acceptable Use Policy https://github.com/meta-llama/llama-models/blob/main/models/llama3_2/USE_POLICY.md and you represent that you are not an individual domiciled in, or a company with a principal place of business in, the European Union.",
+    "jsonParsed": false,
+    "fieldsCorrect": "0/8",
+    "expectedLineItems": 2,
+    "mismatches": []
+  }
+]

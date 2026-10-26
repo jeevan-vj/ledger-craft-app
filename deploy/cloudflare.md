@@ -218,11 +218,35 @@ Do not regenerate a signing secret as part of a routine release: changing it
 invalidates existing authentication state. Never place secrets in frontend
 build variables.
 
-Worker AI credentials are server-only bindings. `OPENAI_API_KEY` is the primary
-provider and is optional at deploy time: AI import and receipt scanning return 503
-until it is set with `wrangler secret put OPENAI_API_KEY`. `XAI_API_KEY` is an
-optional alternative, used only when no OpenAI key is set. Configure both names through Wrangler secrets; never put
-their values in `wrangler.jsonc`, Pages variables, or client environment files.
+AI credentials and bindings are server-only. Provider selection is OpenAI,
+xAI, then the Cloudflare Workers AI `AI` binding declared in
+`deploy/api/wrangler.jsonc`. `INVOICE_IMPORT_AI_PROVIDER` can explicitly select
+`openai`, `xai`, `workers-ai`, or `mock`; the named provider must be configured,
+and production always refuses `mock`. `WORKERS_AI_MODEL` overrides the default
+`@cf/meta/llama-4-scout-17b-16e-instruct` model.
+
+The default model needs no licence step. In a local `wrangler dev` probe against
+three synthetic invoices (October 2026) it extracted all 8 scored fields on each,
+in about 5-6 seconds, using about 2,000 prompt tokens and roughly 65 neurons per
+scan (see `docs/evidence/workers-ai/README.md`). `@cf/meta/llama-3.2-11b-vision-instruct`
+can still be selected with `WORKERS_AI_MODEL`, but Cloudflare requires a one-time
+Meta licence acceptance first (send one request with `{"prompt":"agree"}` to that
+model); until then calls fail with error 5016, which the API returns as 503
+`EXTRACTION_PROVIDER_UNAVAILABLE`.
+
+The free allocation is 10,000 neurons per day (about 150 scans at ~65 neurons)
+and resets at 00:00 UTC. On Workers Paid, usage beyond that allocation is $0.011
+per 1,000 neurons; Llama 4 Scout is priced at $0.27 per million input tokens and
+$0.85 per million output tokens (roughly $0.0007 per scan). Quota/rate-limit
+responses return 429 `EXTRACTION_PROVIDER_LIMIT` and do not fall back to mock.
+
+Workers AI invoice imports and receipt scans are marked lower confidence for
+manual review. Invoice-import confidence is capped at 0.6. Its vision model
+accepts PNG/JPEG/WebP images; invoice-import PDFs are rejected with guidance to
+upload a photo/screenshot or configure OpenAI/xAI. The local screenshot/demo
+hook `WORKERS_AI_FAKE=1` injects a canned Workers binding only outside production.
+Never place provider keys in `wrangler.jsonc`, Pages variables, or client
+environment files.
 
 Outbound invoice, reminder, and quote email requires both `RESEND_API_KEY` and
 `RESEND_FROM`. Use a sending-only Resend key restricted to `jnok.co.nz`; that
@@ -234,8 +258,8 @@ provider settings remain optional and must not be added to `secrets.required`:
 | --- | --- |
 | `RESEND_API_KEY` | Email is unavailable; invoice/reminder/quote endpoints return 503 and clients offer share links. |
 | `RESEND_FROM` | Same; both Resend settings must be non-empty. |
-| `OPENAI_API_KEY` | OpenAI receipt/import extraction is unavailable unless `XAI_API_KEY` is set. |
-| `XAI_API_KEY` | Optional fallback only; AI remains available when OpenAI is configured. |
+| `OPENAI_API_KEY` | OpenAI is skipped; xAI or the `AI` binding may still provide extraction. |
+| `XAI_API_KEY` | xAI is skipped; OpenAI or the `AI` binding may still provide extraction. |
 
 Set them against Worker `ledgercraft-api` without writing values to files:
 
@@ -249,13 +273,14 @@ npx wrangler secret put XAI_API_KEY
 ```
 
 After deployment, `curl -sS https://easybiz.iamjeevan.com/api/healthz` must show
-only `available`/`unavailable` capability states, never provider names or secret
-values. Send one synthetic draft invoice and quote to an authorised test inbox,
+only `available`/`unavailable` capability states, never provider names or
+secret values (`ai` is `available` when the `AI` binding is present). Send one synthetic draft invoice and quote to an authorised test inbox,
 open their public links, and confirm the draft invoice changes to `sent` only
 after provider acceptance. With email unconfigured, confirm the share fallback
 and 503 `EMAIL_UNAVAILABLE`; with AI unconfigured, confirm the receipt UI hides
 Scan and explains manual entry. `pnpm deploy:cloudflare` lists remote secret
-names only and prints a non-fatal warning for either missing provider group.
+names only and prints a non-fatal warning when the email provider is incomplete;
+OpenAI and xAI remain optional because the Workers AI binding is configured.
 
 ## Code and database changes
 

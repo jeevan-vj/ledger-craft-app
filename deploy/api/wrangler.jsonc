@@ -6,6 +6,7 @@
   "compatibility_date": "2026-09-11",
   "compatibility_flags": ["nodejs_compat"],
   "workers_dev": true,
+  "ai": { "binding": "AI" },
   "durable_objects": { "bindings": [
     { "name": "IDENTITY", "class_name": "Identity" },
     { "name": "LEDGERS", "class_name": "Ledger" }

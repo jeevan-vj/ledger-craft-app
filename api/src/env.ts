@@ -9,6 +9,8 @@ export function requiredEnv(name: string): string {
 export type AiProviderEnv = {
   OPENAI_API_KEY?: string;
   XAI_API_KEY?: string;
+  WORKERS_AI_MODEL?: string;
+  AI?: import('./modules/ai/workers-ai').WorkersAiBinding;
 };
 
 export function getDatabaseUrl(): string {

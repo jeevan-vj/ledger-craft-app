@@ -8,6 +8,7 @@ import { apiError } from '../../http-error';
 import type { AiProviderEnv } from '../../env';
 import type { ChatCompleter } from './chat';
 import type { ReceiptScanner } from './scanner';
+import { DEFAULT_WORKERS_AI_MODEL, parseWorkersAiJson, workersAiRunError } from './workers-ai';
 
 const PROMPT = `You are a receipt data extraction expert. Analyze this receipt image and extract the following information in JSON format:
 
@@ -46,7 +47,7 @@ function asNumber(value: unknown): number | null {
   return null;
 }
 
-function sanitize(raw: unknown): ReceiptScanResultDto {
+function sanitize(raw: unknown, provider?: 'openai' | 'xai' | 'workers-ai'): ReceiptScanResultDto {
   const value = (raw ?? {}) as Record<string, unknown>;
   const items = Array.isArray(value.items)
     ? value.items
@@ -71,8 +72,9 @@ function sanitize(raw: unknown): ReceiptScanResultDto {
     items,
     paymentMethod,
     suggestedCategory: typeof value.suggestedCategory === 'string' ? value.suggestedCategory : null,
-    confidence: asNumber(value.confidence) ?? 0,
+    confidence: provider === 'workers-ai' ? Math.min(asNumber(value.confidence) ?? 0, 60) : asNumber(value.confidence) ?? 0,
     notes: typeof value.notes === 'string' ? value.notes : null,
+    provider,
   });
 }
 
@@ -86,19 +88,45 @@ type AiProviderOptions = {
 
 function provider(options?: AiProviderOptions) {
   const openAiApiKey = options?.openAiApiKey ?? options?.apiKey ?? options?.env?.OPENAI_API_KEY ?? process.env.OPENAI_API_KEY;
-  if (openAiApiKey) return { apiKey: openAiApiKey, url: 'https://api.openai.com/v1/chat/completions', receiptModel: 'gpt-4o-mini', chatModel: 'gpt-3.5-turbo' };
+  if (openAiApiKey) return { name: 'openai' as const, apiKey: openAiApiKey, url: 'https://api.openai.com/v1/chat/completions', receiptModel: 'gpt-4o-mini', chatModel: 'gpt-3.5-turbo' };
   const xaiApiKey = options?.xaiApiKey ?? options?.env?.XAI_API_KEY ?? process.env.XAI_API_KEY;
-  if (xaiApiKey) return { apiKey: xaiApiKey, url: 'https://api.x.ai/v1/chat/completions', receiptModel: 'grok-4-fast-non-reasoning', chatModel: 'grok-4-fast-non-reasoning' };
+  if (xaiApiKey) return { name: 'xai' as const, apiKey: xaiApiKey, url: 'https://api.x.ai/v1/chat/completions', receiptModel: 'grok-4-fast-non-reasoning', chatModel: 'grok-4-fast-non-reasoning' };
   return undefined;
 }
 
 export function createOpenAiReceiptScanner(opts?: AiProviderOptions): ReceiptScanner {
   const configured = provider(opts);
+  const workersAi = opts?.env?.AI;
   const fetchImpl = opts?.fetchImpl ?? fetch;
   return {
     async scan(input: ScanReceiptRequest) {
       if (!configured) {
-        throw apiError(503, 'AI_UNAVAILABLE', 'Receipt scanning is not configured');
+        if (!workersAi) throw apiError(503, 'AI_UNAVAILABLE', 'Receipt scanning is not configured');
+        const model = opts?.env?.WORKERS_AI_MODEL?.trim() || DEFAULT_WORKERS_AI_MODEL;
+        for (let attempt = 0; attempt < 2; attempt += 1) {
+          let response: unknown;
+          try {
+            response = await workersAi.run(model, {
+              max_tokens: 1000,
+              temperature: 0,
+              messages: [
+                { role: 'system', content: `${PROMPT}\nOutput ONLY one JSON object. Do not use Markdown fences or explanatory text.` },
+                { role: 'user', content: [
+                  { type: 'text', text: attempt === 0 ? 'Extract this receipt.' : 'Your previous reply was not valid JSON for the schema. Return only one valid JSON object.' },
+                  { type: 'image_url', image_url: { url: asDataUrl(input.imageBase64, input.contentType) } },
+                ] },
+              ],
+            });
+          } catch (error) {
+            workersAiRunError(error);
+          }
+          try {
+            return sanitize(parseWorkersAiJson(response), 'workers-ai');
+          } catch {
+            if (attempt === 1) throw apiError(502, 'AI_ERROR', 'Receipt scanning returned invalid JSON');
+          }
+        }
+        throw apiError(502, 'AI_ERROR', 'Receipt scanning returned invalid JSON');
       }
       const response = await fetchImpl(configured.url, {
         method: 'POST',
@@ -132,7 +160,7 @@ export function createOpenAiReceiptScanner(opts?: AiProviderOptions): ReceiptSca
         throw apiError(502, 'AI_ERROR', 'Receipt scanning returned no content');
       }
       try {
-        return sanitize(JSON.parse(content));
+        return sanitize(JSON.parse(content), configured.name);
       } catch {
         throw apiError(502, 'AI_ERROR', 'Receipt scanning returned invalid JSON');
       }

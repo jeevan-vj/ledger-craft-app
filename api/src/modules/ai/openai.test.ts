@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createOpenAiReceiptScanner } from './openai';
 
 const successBody = { choices: [{ message: { content: JSON.stringify({ items: [], confidence: 80 }) } }] };
@@ -26,5 +26,24 @@ describe('AI provider environment bindings', () => {
     });
     await scanner.scan({ imageBase64: 'abc' });
     expect(url).toBe('https://api.x.ai/v1/chat/completions');
+  });
+
+  it('uses Workers AI after remote providers, retries JSON once, and lowers confidence', async () => {
+    const ai = { run: vi.fn()
+      .mockResolvedValueOnce({ response: 'not json' })
+      .mockResolvedValueOnce({ response: { items: [], confidence: 94 } }) };
+    const scanner = createOpenAiReceiptScanner({ env: { AI: ai } });
+    const result = await scanner.scan({ imageBase64: 'abc', contentType: 'image/png' });
+    expect(ai.run).toHaveBeenCalledTimes(2);
+    expect(result).toMatchObject({ provider: 'workers-ai', confidence: 60 });
+    expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('previous reply was not valid JSON for the schema');
+  });
+
+  it('maps Workers AI quota errors without another provider fallback', async () => {
+    const ai = { run: vi.fn(async () => { throw new Error('Too Many Requests: neurons capacity'); }) };
+    const scanner = createOpenAiReceiptScanner({ env: { AI: ai } });
+    await expect(scanner.scan({ imageBase64: 'abc' }))
+      .rejects.toMatchObject({ status: 429, cause: { code: 'EXTRACTION_PROVIDER_LIMIT' } });
+    expect(ai.run).toHaveBeenCalledTimes(1);
   });
 });

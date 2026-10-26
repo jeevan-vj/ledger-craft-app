@@ -2,11 +2,12 @@
 
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add
-OpenAI-first/xAI-fallback structured extraction, a deterministic non-production
-mock, untrusted-document prompt boundaries, integer-cent total validation,
+OpenAI-first/xAI-then-Workers-AI structured extraction, a deterministic non-production
+mock and Workers-AI demo binding, untrusted-document prompt boundaries, integer-cent total validation,
 duplicate/contact review, and explicit SALES/PURCHASE draft commit. Commits create
 only draft invoices or bills, attach the original as a locked source document,
-and never send, pay, post, or journal. See `docs/invoice-import/phase2.md`.
+and never send, pay, post, or journal. Workers AI rejects PDFs and caps confidence
+at 0.6. See `docs/invoice-import/phase2.md`.
 
 **Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
 Migration `0017_invoice-import-phase0.sql` adds invoice `external_number` and

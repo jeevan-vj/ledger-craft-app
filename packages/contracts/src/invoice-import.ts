@@ -133,7 +133,7 @@ export const invoiceImportExtractionDraftSchema = z.object({
   suggestedDirection: invoiceImportReviewDirectionSchema.nullable(),
   suggestedDirectionReason: z.string().trim().min(1).max(500),
   thirdPartyIssued: z.boolean(),
-  provider: z.enum(['openai', 'xai', 'mock']),
+  provider: z.enum(['openai', 'xai', 'workers-ai', 'mock']),
   mock: z.boolean(),
   confidence: z.object({
     issuerName: invoiceImportConfidenceSchema,
@@ -209,7 +209,7 @@ export const invoiceImportDraftResponseSchema = z.object({
   validationIssues: z.array(invoiceImportValidationIssueSchema),
   duplicateWarnings: z.array(invoiceImportDuplicateReviewWarningSchema),
   contactSuggestions: z.array(invoiceImportContactSuggestionSchema),
-  provider: z.enum(['openai', 'xai', 'mock']),
+  provider: z.enum(['openai', 'xai', 'workers-ai', 'mock']),
   mock: z.boolean(),
 }).strict();
 

@@ -23,6 +23,9 @@ export function extractPdfText(bytes: Uint8Array): string {
 
 export function documentContent(file: { bytes: Uint8Array; mimeType: string }): string | { dataUrl: string } {
   if (file.mimeType === 'application/pdf') return extractPdfText(file.bytes);
+  if (file.mimeType.startsWith('text/') || file.mimeType === 'application/json') {
+    return new TextDecoder().decode(file.bytes).slice(0, MAX_DOCUMENT_TEXT);
+  }
   return { dataUrl: `data:${file.mimeType};base64,${Buffer.from(file.bytes).toString('base64')}` };
 }
 
