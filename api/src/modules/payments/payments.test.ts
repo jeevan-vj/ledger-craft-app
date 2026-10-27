@@ -192,6 +192,64 @@ describe('payment routes', () => {
     });
   });
 
+  it('rejects payment amounts with more than 2 decimal places and still replays an accepted payment', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner Cents');
+        const invoice = await seedInvoice(app, owner.cookie);
+        const post = (amount: string, key: string) =>
+          app.request('/api/payments', {
+            method: 'POST',
+            headers: { ...originHeaders, Cookie: owner.cookie, 'Idempotency-Key': key },
+            body: JSON.stringify({
+              invoiceId: invoice.id,
+              paymentMethod: 'cash',
+              amount,
+              paymentDate: '2026-09-08',
+            }),
+          });
+
+        for (const amount of ['1.005', '0.001']) {
+          const rejected = await post(amount, `reject-${amount}`);
+          expect(rejected.status).toBe(400);
+          const error = errorEnvelopeSchema.parse(await rejected.json()).error;
+          expect(error.code).toBe('VALIDATION_ERROR');
+          expect(error.message).toMatch(/at most 2 decimal places/);
+        }
+        expect(await sql.unsafe(`SELECT id FROM payments WHERE invoice_id = ?`, [invoice.id])).toHaveLength(0);
+
+        const accepted = await post('1.00', 'accept-1-00');
+        expect(accepted.status).toBe(201);
+        const original = paymentSchema.parse(await accepted.json());
+        expect(original.amount).toBe('1.00');
+
+        const oneDecimal = await post('1.5', 'accept-1-5');
+        expect(oneDecimal.status).toBe(201);
+        expect(paymentSchema.parse(await oneDecimal.json()).amount).toBe('1.50');
+
+        const whole = await post('10', 'accept-10');
+        expect(whole.status).toBe(201);
+        expect(paymentSchema.parse(await whole.json()).amount).toBe('10.00');
+
+        const replay = await post('1.00', 'accept-1-00');
+        expect(replay.status).toBe(201);
+        expect(paymentSchema.parse(await replay.json())).toEqual(original);
+        expect(await sql.unsafe(`SELECT id FROM payments WHERE invoice_id = ?`, [invoice.id])).toHaveLength(3);
+
+        const afterReject = await post('1.00', 'reject-1.005');
+        expect(afterReject.status).toBe(201);
+        expect(paymentSchema.parse(await afterReject.json()).amount).toBe('1.00');
+        expect(await sql.unsafe(`SELECT id FROM payments WHERE invoice_id = ?`, [invoice.id])).toHaveLength(4);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
   it('retried payment with the same Idempotency-Key returns the original payment', async () => {
     await assertLocalDatabaseReachable();
     await withTestDb(async () => {

@@ -20,6 +20,24 @@ describe('payment contracts', () => {
     expect(paymentSchema.parse(payment).amount).toBe('5175.00');
   });
 
+  it('rejects payment amounts with more than 2 decimal places and accepts 0 to 2', () => {
+    const request = {
+      invoiceId: payment.invoiceId,
+      paymentMethod: 'cash' as const,
+      paymentDate: '2026-10-27',
+    };
+    for (const amount of ['1.005', '0.001']) {
+      const parsed = createPaymentRequestSchema.safeParse({ ...request, amount });
+      expect(parsed.success).toBe(false);
+      if (!parsed.success) {
+        expect(parsed.error.issues.map((issue) => issue.message).join(' ')).toMatch(/at most 2 decimal places/);
+      }
+    }
+    for (const amount of ['1.00', '1.5', '10']) {
+      expect(createPaymentRequestSchema.safeParse({ ...request, amount }).success).toBe(true);
+    }
+  });
+
   it('rejects ownership ids and client status on create', () => {
     expect(
       createPaymentRequestSchema.safeParse({

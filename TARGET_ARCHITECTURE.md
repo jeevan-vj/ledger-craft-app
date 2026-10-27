@@ -36,6 +36,14 @@ optional `paymentId` and `invoiceId` filters inside the active organisation.
 Payment maths, balance recalculation, overpayment rejection, and journal
 posting are unchanged. No migration was added.
 
+**Payment amount precision (implemented locally, 2026-10-27):** `POST /api/payments`
+and bill payment amounts, including split allocations, reject more than 2
+decimal places with 400 `VALIDATION_ERROR` (`Amount must have at most 2 decimal
+places`). The check is the same positive-amount schema as quick-sale line
+prices. Whole numbers and one decimal place stay valid. Rejected amounts do
+not claim an idempotency key. `roundMoney`, journals, and ledger account
+selection are unchanged. No migration.
+
 **Mobile invoice payments (implemented locally, 2026-10-25):** The Expo invoice
 detail screen lists payments with exact decimal amounts, method, date, and
 reference. Record payment defaults to the server balance-due string. Amounts

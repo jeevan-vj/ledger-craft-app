@@ -2,27 +2,23 @@ import { z } from 'zod';
 import { invoiceSchema } from './invoice';
 import { paymentSchema } from './payment';
 import { paymentReceiptSchema } from './receipt';
-
-const positiveAmount = z
-  .string()
-  .regex(/^\d+(?:\.\d{1,2})?$/, 'Amount must have at most 2 decimal places')
-  .refine((value) => Number(value) > 0, 'Amount must be greater than 0');
+import { positiveAmountAtMostTwoDecimals } from './positive-amount';
 
 export const salePaymentMethodSchema = z.enum(['cash', 'credit_card', 'bank_transfer']);
 
 export const saleCatalogLineSchema = z
   .object({
     itemId: z.string().uuid(),
-    quantity: positiveAmount,
-    price: positiveAmount,
+    quantity: positiveAmountAtMostTwoDecimals,
+    price: positiveAmountAtMostTwoDecimals,
   })
   .strict();
 
 export const saleCustomLineSchema = z
   .object({
     label: z.string().trim().min(1).max(200).optional(),
-    quantity: positiveAmount,
-    price: positiveAmount,
+    quantity: positiveAmountAtMostTwoDecimals,
+    price: positiveAmountAtMostTwoDecimals,
   })
   .strict();
 

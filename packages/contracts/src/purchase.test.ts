@@ -96,6 +96,24 @@ describe('purchase contracts', () => {
     };
     expect(recordBillPaymentRequestSchema.parse(request)).toEqual(request);
     expect(recordBillPaymentRequestSchema.safeParse({ ...request, amount: '0' }).success).toBe(false);
+    for (const amount of ['1.005', '0.001']) {
+      const parsed = recordBillPaymentRequestSchema.safeParse({ ...request, amount });
+      expect(parsed.success).toBe(false);
+      if (!parsed.success) {
+        expect(parsed.error.issues.map((issue) => issue.message).join(' ')).toMatch(/at most 2 decimal places/);
+      }
+      const split = recordBillPaymentRequestSchema.safeParse({
+        allocations: [
+          { bankAccountId: request.bankAccountId, amount },
+          { bankAccountId: '44444444-4444-4444-4444-444444444444', amount: '1.00' },
+        ],
+        paymentDate: request.paymentDate,
+      });
+      expect(split.success).toBe(false);
+    }
+    for (const amount of ['1.00', '1.5', '10']) {
+      expect(recordBillPaymentRequestSchema.safeParse({ ...request, amount }).success).toBe(true);
+    }
   });
 
   it('accepts exact split payment allocations and rejects ambiguous payment shapes', () => {

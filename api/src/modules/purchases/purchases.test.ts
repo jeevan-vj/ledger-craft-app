@@ -195,6 +195,18 @@ describe('purchase routes', () => {
         expect(debit).toBe(credit);
         expect(debit).toBe(23);
 
+        for (const amount of ['1.005', '0.001']) {
+          const extraCents = await app.request(`/api/bills/${draft.id}/payments`, {
+            method: 'POST',
+            headers: { ...jsonHeaders, Cookie: ownerA },
+            body: JSON.stringify({ bankAccountId: bankAccount.id, amount, paymentDate: '2026-10-04' }),
+          });
+          expect(extraCents.status).toBe(400);
+          const error = (await extraCents.json() as { error: { code: string; message: string } }).error;
+          expect(error.code).toBe('VALIDATION_ERROR');
+          expect(error.message).toMatch(/at most 2 decimal places/);
+        }
+
         const paymentResponse = await app.request(`/api/bills/${draft.id}/payments`, {
           method: 'POST',
           headers: { ...jsonHeaders, Cookie: ownerA },
