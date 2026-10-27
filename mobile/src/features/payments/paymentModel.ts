@@ -58,10 +58,13 @@ export function formatPaymentHistory(payment: PaymentHistoryInput, currency = 'N
   };
 }
 
-/** Half-up to 2 decimal places via server `roundMoney`, without converting through Number. */
+const AT_MOST_TWO_DECIMALS = /^\d+(?:\.\d{1,2})?$/;
+const MORE_THAN_TWO_DECIMALS = /^\d+\.\d{3,}$/;
+
+/** Canonical 2-decimal amount. More than 2 fractional digits are rejected, not rounded. */
 export function normalizePaymentAmount(amount: string): string | null {
   const trimmed = amount.trim();
-  if (!/^\d+(\.\d+)?$/.test(trimmed)) return null;
+  if (!AT_MOST_TWO_DECIMALS.test(trimmed)) return null;
   return roundMoney(trimmed);
 }
 
@@ -71,6 +74,7 @@ function minorUnits(amount: string): bigint {
 }
 
 export function paymentAmountError(amount: string, balanceDue: string): string | null {
+  if (MORE_THAN_TWO_DECIMALS.test(amount.trim())) return 'Enter an amount with at most 2 decimal places.';
   const value = normalizePaymentAmount(amount);
   const balance = normalizePaymentAmount(balanceDue);
   if (!value || minorUnits(value) <= 0n) return 'Enter a positive amount.';

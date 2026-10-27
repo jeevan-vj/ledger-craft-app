@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { Modal } from 'react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { onlineManager, QueryClient } from '@tanstack/react-query';
-import { roundMoney } from '../../../../api/src/modules/invoices/money';
 import { AuthApiError } from '@/features/auth/api/http';
-import { PaymentExceedsBalanceError, resetPaymentAttemptStore } from '@/features/payments/paymentModel';
+import { PaymentExceedsBalanceError, pendingPaymentAttempt, resetPaymentAttemptStore } from '@/features/payments/paymentModel';
 import { submitInvoicePayment } from '@/features/payments/paymentQueries';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
@@ -246,15 +246,59 @@ describe('PaymentCaptureModal', () => {
     expect(onSubmit.mock.calls[1]?.[0].referenceNumber).toBe('REF-1');
   });
 
-  it('sends the shared cent rounding instead of an amount with extra fractional digits', async () => {
+  it('rejects more than 2 decimal places before claiming a payment attempt', async () => {
     const onSubmit = jest.fn().mockResolvedValue(undefined);
     const screen = renderModal(onSubmit);
-    fireEvent.changeText(screen.getByLabelText('Payment amount'), '10.004');
+
+    for (const value of ['10.004', '10.005', '9.996']) {
+      fireEvent.changeText(screen.getByLabelText('Payment amount'), value);
+      fireEvent.press(screen.getByLabelText('Record payment'));
+      expect(screen.getByText(/2 decimal places/i)).toBeTruthy();
+      expect(onSubmit).not.toHaveBeenCalled();
+      expect(pendingPaymentAttempt(invoice.id)).toBeNull();
+    }
+
+    fireEvent.changeText(screen.getByLabelText('Payment amount'), '10.5');
     fireEvent.press(screen.getByLabelText('Record payment'));
     await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
-    expect(onSubmit.mock.calls[0]?.[0].amount).toBe(roundMoney('10.004'));
-    expect(onSubmit.mock.calls[0]?.[0].amount).toBe('10.00');
-    expect(onSubmit.mock.calls[0]?.[0].amount).not.toBe('10.004');
+    await waitFor(() => expect(screen.getByLabelText('Record payment').props.accessibilityState.disabled).toBe(false));
+    expect(onSubmit.mock.calls[0]?.[0].amount).toBe('10.50');
+
+    fireEvent.changeText(screen.getByLabelText('Payment amount'), '10.50');
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[0].amount).toBe('10.50');
+  });
+
+  it('does not send a second payment when the sheet is dismissed and reopened before the first request settles', async () => {
+    let resolveSubmit: (() => void) | undefined;
+    const pending = new Promise<void>((resolve) => { resolveSubmit = resolve; });
+    const onSubmit = jest.fn().mockImplementation(() => pending);
+    const props = { invoice, onSubmit, onClose: jest.fn() };
+    const screen = render(<PaymentCaptureModal visible {...props} />);
+
+    fireEvent.press(screen.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    const firstKey = onSubmit.mock.calls[0]?.[1];
+    screen.UNSAFE_getByType(Modal).props.onRequestClose();
+    expect(props.onClose).not.toHaveBeenCalled();
+
+    screen.rerender(<PaymentCaptureModal visible={false} {...props} />);
+    screen.unmount();
+
+    const reopened = render(<PaymentCaptureModal visible {...props} />);
+    fireEvent.changeText(reopened.getByLabelText('Payment amount'), '25.00');
+    fireEvent.press(reopened.getByLabelText('Record payment'));
+
+    expect(onSubmit).toHaveBeenCalledTimes(1);
+    expect(reopened.getByText(/already being recorded/i)).toBeTruthy();
+
+    resolveSubmit?.();
+    await act(async () => { await pending; });
+    fireEvent.press(reopened.getByLabelText('Record payment'));
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(2));
+    expect(onSubmit.mock.calls[1]?.[0].amount).toBe('25.00');
+    expect(onSubmit.mock.calls[1]?.[1]).not.toBe(firstKey);
   });
 });
 

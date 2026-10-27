@@ -80,7 +80,6 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
   useEffect(() => {
     if (!visible) {
       wasOpen.current = false;
-      attempt.current.release();
       return;
     }
     const nextBalance = invoice.balanceDueText?.trim() ?? '';
@@ -145,7 +144,10 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
       notes: payload.notes ?? '',
     };
     const key = attempt.current.claim(paymentFingerprint(attemptFields), attemptFields.invoiceId, attemptFields);
-    if (!key) return;
+    if (!key) {
+      setFormError('A payment for this invoice is already being recorded. Wait until it finishes.');
+      return;
+    }
     setSubmitting(true);
     setFormError(null);
     try {
@@ -171,7 +173,15 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
   };
 
   return (
-    <Modal visible={visible} animationType="slide" presentationStyle="pageSheet" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      animationType="slide"
+      presentationStyle="pageSheet"
+      onRequestClose={() => {
+        if (submitting) return;
+        onClose();
+      }}
+    >
       <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
         <View style={[styles.header, { paddingTop: insets.top || 16 }]}>
           <AppPressable

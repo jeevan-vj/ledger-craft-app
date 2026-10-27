@@ -54,25 +54,23 @@ describe('payment amount validation', () => {
     expect(paymentAmountError('10.01', '10.00')).toMatch(/balance/i);
   });
 
-  it('compares the cent value the server stores, including half-up at the exact balance', () => {
-    expect(normalizePaymentAmount('10.004')).toBe(roundMoney('10.004'));
-    expect(normalizePaymentAmount('10.005')).toBe(roundMoney('10.005'));
-    expect(normalizePaymentAmount('9.996')).toBe(roundMoney('9.996'));
-    expect(normalizePaymentAmount('10.004')).toBe('10.00');
-    expect(normalizePaymentAmount('10.005')).toBe('10.01');
-    expect(normalizePaymentAmount('9.996')).toBe('10.00');
-    expect(normalizePaymentAmount('9007199254740993.254')).toBe(roundMoney('9007199254740993.254'));
-    expect(normalizePaymentAmount('9007199254740993.255')).toBe(roundMoney('9007199254740993.255'));
-    expect(normalizePaymentAmount('9007199254740993.254')).toBe('9007199254740993.25');
-    expect(normalizePaymentAmount('9007199254740993.255')).toBe('9007199254740993.26');
-    expect(paymentAmountError('10.004', '10.00')).toBeNull();
-    expect(paymentAmountError('10.005', '10.00')).toMatch(/balance/i);
-    expect(paymentAmountError('10.00', '10.00')).toBeNull();
-    expect(paymentAmountError('10.005', '10.01')).toBeNull();
-    expect(paymentAmountError('9007199254740993.255', '9007199254740993.25')).toMatch(/balance/i);
-    expect(remainingAfterPayment('10.00', '10.004')).toBe('0.00');
-    expect(remainingAfterPayment('10.00', '9.996')).toBe('0.00');
-    expect(remainingAfterPayment('10.00', '10.005')).toBeNull();
+  it('rejects more than 2 decimal places and accepts one or two', () => {
+    expect(paymentAmountError('10.004', '50.00')).toMatch(/2 decimal places/i);
+    expect(paymentAmountError('10.005', '50.00')).toMatch(/2 decimal places/i);
+    expect(paymentAmountError('9.996', '50.00')).toMatch(/2 decimal places/i);
+    expect(paymentAmountError('9007199254740993.255', '9007199254740993.26')).toMatch(/2 decimal places/i);
+    expect(paymentAmountError('10.5', '50.00')).toBeNull();
+    expect(paymentAmountError('10.50', '50.00')).toBeNull();
+    expect(paymentAmountError('10.5', '10.50')).toBeNull();
+    expect(normalizePaymentAmount('10.5')).toBe(roundMoney('10.5'));
+    expect(normalizePaymentAmount('10.5')).toBe('10.50');
+    expect(normalizePaymentAmount('10.50')).toBe('10.50');
+    expect(normalizePaymentAmount('10.004')).toBeNull();
+    expect(normalizePaymentAmount('10.005')).toBeNull();
+    expect(normalizePaymentAmount('9.996')).toBeNull();
+    expect(remainingAfterPayment('10.00', '10.004')).toBeNull();
+    expect(remainingAfterPayment('50.00', '10.5')).toBe('39.50');
+    expect(remainingAfterPayment('50.00', '10.50')).toBe('39.50');
   });
 });
 
