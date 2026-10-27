@@ -64,6 +64,9 @@ module.exports = {
       predictiveBackGestureEnabled: false,
     },
     plugins: [
+      // Keep first: Expo runs native mods from later plugins first, so listing the gate
+      // first makes it run after Sentry adds sentry.gradle and its Xcode build phases.
+      './plugins/withSentryUploadGate',
       'expo-secure-store',
       'react-native-bottom-tabs',
       [
@@ -74,7 +77,6 @@ module.exports = {
           project: process.env.SENTRY_PROJECT || 'ledgercraft-mobile',
         },
       ],
-      './plugins/withSentryUploadGate',
     ],
     scheme: 'easybizinvoice',
     extra: {
