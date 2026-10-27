@@ -415,6 +415,19 @@ export {
 } from './object';
 
 export {
+  createSaleRequestSchema,
+  saleCatalogLineSchema,
+  saleCustomLineSchema,
+  saleLineSchema,
+  salePaymentMethodSchema,
+  saleResponseSchema,
+  type CreateSaleRequest,
+  type SaleLine,
+  type SalePaymentMethod,
+  type SaleResponse,
+} from './sale';
+
+export {
   createPaymentReceiptRequestSchema,
   paymentReceiptDataSchema,
   paymentReceiptListQuerySchema,

@@ -38,46 +38,52 @@ export async function getReceiptForUser(db: Database, userId: string, id: string
   });
 }
 
+export async function createReceiptInTx(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  input: CreatePaymentReceiptRequest,
+): Promise<PaymentReceiptDto> {
+  const existing = await repo.getReceiptByPayment(tx, ctx.organisationId, input.paymentId);
+  if (existing) return existing;
+
+  const payment = await paymentsRepo.getPayment(tx, ctx.organisationId, input.paymentId);
+  if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
+
+  const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, payment.invoiceId);
+  if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
+
+  const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
+  const now = new Date();
+  const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
+  const nextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
+  const sequence = (await repo.countReceiptsInMonth(tx, ctx.organisationId, monthStart, nextMonth)) + 1;
+
+  return repo.insertReceipt(tx, ctx, {
+    paymentId: payment.id,
+    receiptNumber: receiptNumber(now, sequence),
+    receiptData: {
+      paymentId: payment.id,
+      invoiceId: invoice.id,
+      invoiceNumber: invoice.invoiceNumber,
+      customerName: customer?.name ?? invoice.customerName,
+      customerEmail: customer?.email || null,
+      amountPaid: payment.amount,
+      paymentDate: payment.paymentDate,
+      invoiceDate: invoice.date,
+      invoiceDueDate: invoice.dueDate,
+      paymentMethod: payment.paymentMethod,
+      currency: invoice.currency,
+      invoiceTotal: invoice.total,
+      totalPaid: invoice.totalPaid,
+      balanceDue: invoice.balanceDue,
+    },
+  });
+}
+
 export async function createReceiptForUser(
   db: Database,
   userId: string,
   input: CreatePaymentReceiptRequest,
 ): Promise<PaymentReceiptDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const existing = await repo.getReceiptByPayment(tx, ctx.organisationId, input.paymentId);
-    if (existing) return existing;
-
-    const payment = await paymentsRepo.getPayment(tx, ctx.organisationId, input.paymentId);
-    if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
-
-    const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, payment.invoiceId);
-    if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
-
-    const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
-    const now = new Date();
-    const monthStart = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), 1));
-    const nextMonth = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth() + 1, 1));
-    const sequence = (await repo.countReceiptsInMonth(tx, ctx.organisationId, monthStart, nextMonth)) + 1;
-
-    return repo.insertReceipt(tx, ctx, {
-      paymentId: payment.id,
-      receiptNumber: receiptNumber(now, sequence),
-      receiptData: {
-        paymentId: payment.id,
-        invoiceId: invoice.id,
-        invoiceNumber: invoice.invoiceNumber,
-        customerName: customer?.name ?? invoice.customerName,
-        customerEmail: customer?.email ?? null,
-        amountPaid: payment.amount,
-        paymentDate: payment.paymentDate,
-        invoiceDate: invoice.date,
-        invoiceDueDate: invoice.dueDate,
-        paymentMethod: payment.paymentMethod,
-        currency: invoice.currency,
-        invoiceTotal: invoice.total,
-        totalPaid: invoice.totalPaid,
-        balanceDue: invoice.balanceDue,
-      },
-    });
-  });
+  return withOrganisationTx(db, userId, (tx, ctx) => createReceiptInTx(tx, ctx, input));
 }

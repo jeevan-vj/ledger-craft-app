@@ -6,6 +6,7 @@ describe('permissionForRequest', () => {
   it.each([
     ['GET', '/api/customers', 'customers.read'],
     ['POST', '/api/customers', 'customers.write'],
+    ['POST', '/api/sales', 'invoices.write'],
     ['GET', '/api/invoices', 'invoices.read'],
     ['PATCH', '/api/quotes/id', 'invoices.write'],
     ['GET', '/api/bills', 'bills.read'],

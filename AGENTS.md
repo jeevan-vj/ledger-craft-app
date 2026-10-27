@@ -1,5 +1,15 @@
 # AGENTS.md
 
+**POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales`
+takes a cart of at most 100 catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
+and an optional customer. Quantity and price are positive decimal text with at most 2 decimal places. In one organisation transaction it finds or creates the
+walk-in customer (tag `walk-in`, one per organisation), creates a GST-inclusive
+invoice dated today in the business timezone through `createInvoiceInTx`, records
+a completed payment for the full total through the existing `createPaymentInTx`,
+and creates the receipt. `Idempotency-Key` is required. Empty customer emails are
+stored on receipts as null. No migration. `GET /api/sales/summary` is not part of
+this slice. Cash payments still follow the existing bank-account routing.
+
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add
 OpenAI-first/xAI-then-Workers-AI structured extraction, a deterministic non-production
