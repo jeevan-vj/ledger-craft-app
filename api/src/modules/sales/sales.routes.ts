@@ -1,4 +1,4 @@
-import { createSaleRequestSchema } from '@ledgercraft/contracts';
+import { createSaleRequestSchema, salesSummaryQuerySchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { apiError } from '../../http-error';
@@ -10,6 +10,12 @@ export function saleRoutes() {
   const routes = new Hono<AppEnv>();
 
   for (const prefix of ['', '/api'] as const) {
+    routes.get(`${prefix}/sales/summary`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const query = salesSummaryQuerySchema.parse({ date: c.req.query('date') });
+      return c.json(await salesService.salesSummaryForUser(db, user.id, query.date));
+    });
+
     routes.post(`${prefix}/sales`, async (c) => {
       const { db, user } = await requireSession(c);
       const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));

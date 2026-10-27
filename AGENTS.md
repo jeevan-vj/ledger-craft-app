@@ -7,8 +7,16 @@ walk-in customer (tag `walk-in`, one per organisation), creates a GST-inclusive
 invoice dated today in the business timezone through `createInvoiceInTx`, records
 a completed payment for the full total through the existing `createPaymentInTx`,
 and creates the receipt. `Idempotency-Key` is required. Empty customer emails are
-stored on receipts as null. No migration. `GET /api/sales/summary` is not part of
-this slice. Cash payments still follow the existing bank-account routing.
+stored on receipts as null. No migration. Cash payments still follow the existing bank-account routing.
+
+`GET /api/sales/summary?date=YYYY-MM-DD` is a read-only day summary for the caller's
+organisation. A counted sale is an invoice on that stored calendar date (already the
+business-timezone day) whose customer tags include `walk-in`, or whose id is on a
+`POST /api/sales` idempotency row. Named-customer sales stay included after the tag
+changes. Completed payments must equal the invoice total, so per-method totals add
+up to the gross total. GST is the sum of those invoices' `taxAmount`. Top items are
+grouped by line description because line items do not store an item id. Amounts are
+exact decimal strings. The route requires `invoices.read`. No migration.
 
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add

@@ -5,6 +5,8 @@ import { paymentReceiptSchema } from './receipt';
 import {
   createSaleRequestSchema,
   saleResponseSchema,
+  salesSummaryQuerySchema,
+  salesSummarySchema,
 } from './sale';
 
 const invoiceId = '33333333-3333-4333-8333-333333333333';
@@ -158,5 +160,45 @@ describe('sale contracts', () => {
     expect(sale.invoice.balanceDue).toBe('0.00');
     expect(sale.payment.amount).toBe(sale.invoice.total);
     expect(sale.receipt.paymentId).toBe(sale.payment.id);
+  });
+
+  it('parses a day summary of exact decimal strings and invoice ids', () => {
+    const summary = salesSummarySchema.parse({
+      date: '2026-10-27',
+      count: 2,
+      grossTotal: '31.50',
+      gstTotal: '4.11',
+      paymentMethods: [
+        { paymentMethod: 'cash', total: '13.50' },
+        { paymentMethod: 'credit_card', total: '18.00' },
+      ],
+      topItemsByQuantity: [{ description: 'Pie', quantity: '5.00', amount: '22.50' }],
+      topItemsByAmount: [{ description: 'Pie', quantity: '5.00', amount: '22.50' }],
+      sales: [
+        { invoiceId, invoiceNumber: 'INV-2026-0001', total: '13.50', taxAmount: '1.76' },
+        { invoiceId: paymentId, invoiceNumber: 'INV-2026-0002', total: '18.00', taxAmount: '2.35' },
+      ],
+    });
+    expect(summary.count).toBe(2);
+    expect(summary.sales.map((sale) => sale.invoiceId)).toEqual([invoiceId, paymentId]);
+    expect(summary.grossTotal).toBe('31.50');
+    expect(summary.gstTotal).toBe('4.11');
+  });
+
+  it('rejects numeric amounts, a missing date, and a date that is not a real calendar day', () => {
+    expect(salesSummarySchema.safeParse({
+      date: '2026-10-27',
+      count: 0,
+      grossTotal: 0,
+      gstTotal: '0.00',
+      paymentMethods: [],
+      topItemsByQuantity: [],
+      topItemsByAmount: [],
+      sales: [],
+    }).success).toBe(false);
+    expect(salesSummaryQuerySchema.safeParse({}).success).toBe(false);
+    expect(salesSummaryQuerySchema.safeParse({ date: '2026-02-31' }).success).toBe(false);
+    expect(salesSummaryQuerySchema.safeParse({ date: '27-10-2026' }).success).toBe(false);
+    expect(salesSummaryQuerySchema.safeParse({ date: '2026-10-27' }).success).toBe(true);
   });
 });

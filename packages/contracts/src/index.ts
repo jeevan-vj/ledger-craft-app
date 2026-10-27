@@ -421,10 +421,18 @@ export {
   saleLineSchema,
   salePaymentMethodSchema,
   saleResponseSchema,
+  salesSummaryDateSchema,
+  salesSummaryItemSchema,
+  salesSummaryMethodTotalSchema,
+  salesSummaryQuerySchema,
+  salesSummarySaleSchema,
+  salesSummarySchema,
   type CreateSaleRequest,
   type SaleLine,
   type SalePaymentMethod,
   type SaleResponse,
+  type SalesSummary,
+  type SalesSummaryQuery,
 } from './sale';
 
 export {
