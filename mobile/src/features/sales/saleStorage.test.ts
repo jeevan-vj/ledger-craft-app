@@ -54,8 +54,8 @@ describe('sale storage', () => {
       referenceNumber: '',
       tendered: '20.00',
     };
-    await saveSaleAttempt(attempt);
-    expect(await loadSaleAttempt()).toEqual(attempt);
+    await saveSaleAttempt({ ...attempt, keys: { body: 'key-1' } });
+    expect(await loadSaleAttempt()).toEqual({ ...attempt, keys: { body: 'key-1' } });
     await clearSaleAttempt();
     expect(await loadSaleAttempt()).toBeNull();
     memory.set('ledgercraft.quickSale.attempt', 'nope');

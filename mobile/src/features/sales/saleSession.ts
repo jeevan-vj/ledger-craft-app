@@ -25,10 +25,12 @@ import {
   hydrateSaleAttempt,
   mapSaleError,
   OFFLINE_SALE_MESSAGE,
+  readSaleAttempt,
   releaseSaleAttempt,
   resetSaleAttemptForTests,
   SALE_IN_FLIGHT_MESSAGE,
   saleAttemptInFlight,
+  saleAttemptKeys,
 } from './saleAttempt';
 import {
   clearSaleAttempt,
@@ -53,6 +55,7 @@ export interface SaleUiState {
   submitting: boolean;
   formError: string | null;
   actionError: string | null;
+  hydrateError: string | null;
   completed: SaleReceiptHandoff | null;
 }
 
@@ -75,6 +78,7 @@ function initialState(): SaleUiState {
     submitting: false,
     formError: null,
     actionError: null,
+    hydrateError: null,
     completed: null,
   };
 }
@@ -124,27 +128,86 @@ export function resetSaleSessionForTests() {
   listeners.clear();
 }
 
+const HYDRATE_ERROR = 'The cart could not be loaded. Try again before selling.';
+
+async function readStoredSale() {
+  return Promise.all([loadSaleDraft(), loadSaleAttempt()]);
+}
+
 export async function hydrateSaleSession(): Promise<void> {
   if (state.ready) return;
   bindAppState();
   if (!hydrateTask) {
     hydrateTask = (async () => {
       try {
-        const [draft, attempt] = await Promise.all([loadSaleDraft(), loadSaleAttempt()]);
-        hydrateSaleAttempt(attempt ? { fingerprint: attempt.fingerprint, key: attempt.key } : null);
+        let loaded: Awaited<ReturnType<typeof readStoredSale>>;
+        try {
+          loaded = await readStoredSale();
+        } catch {
+          loaded = await readStoredSale();
+        }
+        const [draft, attempt] = loaded;
+        hydrateSaleAttempt(attempt);
         update({
           ready: true,
+          hydrateError: null,
           draft,
           paymentMethod: attempt?.paymentMethod ?? 'cash',
           referenceNumber: attempt?.referenceNumber ?? '',
           tendered: attempt?.tendered ?? '',
         });
       } catch {
-        update({ ready: true });
+        hydrateTask = null;
+        update({ ready: false, hydrateError: HYDRATE_ERROR });
       }
     })();
   }
   await hydrateTask;
+}
+
+export async function retrySaleHydrate(): Promise<void> {
+  hydrateTask = null;
+  update({ ready: false, hydrateError: null });
+  await hydrateSaleSession();
+}
+
+async function persistSaleAttempt(omitFingerprint?: string): Promise<void> {
+  const storedKeys = { ...saleAttemptKeys() };
+  if (omitFingerprint) delete storedKeys[omitFingerprint];
+  const current = readSaleAttempt();
+  const fingerprint = (omitFingerprint && current?.fingerprint === omitFingerprint
+    ? Object.keys(storedKeys)[0]
+    : current?.fingerprint) ?? Object.keys(storedKeys)[0] ?? '';
+  if (!fingerprint || !storedKeys[fingerprint]) {
+    await clearSaleAttempt();
+    return;
+  }
+  await saveSaleAttempt({
+    fingerprint,
+    key: storedKeys[fingerprint],
+    keys: storedKeys,
+    paymentMethod: state.paymentMethod,
+    referenceNumber: state.referenceNumber,
+    tendered: state.tendered,
+  });
+}
+
+function commitSaleSuccess(completed: SaleReceiptHandoff) {
+  update({
+    submitting: false,
+    draft: emptySaleDraft(),
+    completed,
+    chargeOpen: false,
+    cartOpen: false,
+    customOpen: false,
+    customerOpen: false,
+    quantityKey: null,
+    formError: null,
+    actionError: null,
+    tendered: '',
+    referenceNumber: '',
+    paymentMethod: 'cash',
+  });
 }
 
 function commitDraft(draft: SaleDraft, patch: Partial<SaleUiState> = {}): boolean {
@@ -261,6 +324,10 @@ export function dismissSaleSuccess() {
 }
 
 export async function confirmSale(): Promise<void> {
+  if (saleAttemptInFlight() || state.submitting) {
+    update({ formError: SALE_IN_FLIGHT_MESSAGE, chargeOpen: true });
+    return;
+  }
   if (!onlineManager.isOnline()) {
     update({ formError: OFFLINE_SALE_MESSAGE });
     return;
@@ -280,39 +347,27 @@ export async function confirmSale(): Promise<void> {
   }
   update({ submitting: true, formError: null, chargeOpen: true });
   try {
-    await saveSaleAttempt({
-      fingerprint,
-      key,
-      paymentMethod: state.paymentMethod,
-      referenceNumber: state.referenceNumber,
-      tendered: state.tendered,
-    });
+    await persistSaleAttempt();
     const result = await createSale(body, key);
     const completed = saleReceiptHandoff(result);
-    finishSaleAttempt();
-    await clearSaleAttempt();
-    const draft = emptySaleDraft();
-    await saveSaleDraft(draft);
-    update({
-      submitting: false,
-      draft,
-      completed,
-      chargeOpen: false,
-      cartOpen: false,
-      customOpen: false,
-      customerOpen: false,
-      quantityKey: null,
-      formError: null,
-      actionError: null,
-      tendered: '',
-      referenceNumber: '',
-      paymentMethod: 'cash',
-    });
+    try {
+      await saveSaleDraft(emptySaleDraft());
+      await persistSaleAttempt(fingerprint);
+      commitSaleSuccess(completed);
+      finishSaleAttempt();
+    } catch {
+      commitSaleSuccess(completed);
+      releaseSaleAttempt();
+    }
   } catch (error) {
     const failure = mapSaleError(error, onlineManager.isOnline());
     if (failure.resetKey) {
       discardSaleAttempt();
-      await clearSaleAttempt();
+      try {
+        await persistSaleAttempt();
+      } catch {
+        // The conflicting key is already gone in memory. A later retry can persist the rest.
+      }
     } else {
       releaseSaleAttempt();
     }

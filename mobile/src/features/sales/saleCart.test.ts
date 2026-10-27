@@ -11,6 +11,7 @@ import {
   groupSaleTiles,
   isSellableItem,
   keypadAmountError,
+  lineTotal,
   normalizeSaleAmount,
   pushKeypadKey,
   saleFingerprint,
@@ -55,6 +56,14 @@ describe('quick sale cart', () => {
     const mixed = addCatalogItem(addCatalogItem(emptySaleDraft(), roll).draft, pie).draft;
     const mixedAgain = addCatalogItem(mixed, pie).draft;
     expect(cartTotal(mixedAgain.lines)).toBe('18.00');
+  });
+
+  it('charges the once-rounded sum, while each line display rounds on its own', () => {
+    const first = setLineQuantity(addCustomAmount(emptySaleDraft(), '0.10', '', 'custom-a').draft, 'custom-a', '0.33').draft;
+    const both = setLineQuantity(addCustomAmount(first, '0.10', '', 'custom-b').draft, 'custom-b', '0.33').draft;
+    expect(lineTotal(both.lines[0]!)).toBe('0.03');
+    expect(lineTotal(both.lines[1]!)).toBe('0.03');
+    expect(cartTotal(both.lines)).toBe('0.07');
   });
 
   it('does not lose cents the way binary floats do', () => {

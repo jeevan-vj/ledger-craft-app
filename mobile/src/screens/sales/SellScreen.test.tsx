@@ -239,6 +239,21 @@ describe('SellScreen', () => {
     expect(jest.mocked(createSale).mock.calls[1]?.[0]).toEqual(jest.mocked(createSale).mock.calls[0]?.[0]);
   });
 
+  it('shows the charge error after an iOS swipe dismisses a failed attempt', async () => {
+    jest.mocked(createSale).mockRejectedValueOnce(new Error('The request timed out'));
+    const screen = renderSell();
+    fireEvent.press(await screen.findByLabelText('Pie, $4.50 including GST'));
+    fireEvent.press(screen.getByLabelText('Charge'));
+    fireEvent.press(screen.getByLabelText('Exact'));
+    fireEvent.press(screen.getByLabelText('Confirm sale'));
+    expect(await screen.findByText(/timed out/i)).toBeTruthy();
+    const modal = screen.UNSAFE_getByType(Modal);
+    expect(modal.props.allowSwipeDismissal).toBe(true);
+    modal.props.onDismiss();
+    expect(await screen.findByText(/timed out/i)).toBeTruthy();
+    expect(screen.queryByLabelText('Confirm sale')).toBeNull();
+  });
+
   it('keeps the in-flight lock when Android back asks to close the charge sheet', async () => {
     let resolveSale: ((value: typeof sale) => void) | undefined;
     jest.mocked(createSale).mockImplementationOnce(() => new Promise((resolve) => {
@@ -252,17 +267,19 @@ describe('SellScreen', () => {
     await waitFor(() => expect(createSale).toHaveBeenCalledTimes(1));
 
     const modal = screen.UNSAFE_getByType(Modal);
+    expect(modal.props.allowSwipeDismissal).toBe(false);
+    expect(screen.getByLabelText('Confirm sale').props.accessibilityState.disabled).toBe(true);
     modal.props.onRequestClose();
-    expect(screen.getByLabelText('Confirm sale')).toBeTruthy();
+    modal.props.onDismiss();
+    expect(screen.getByLabelText('Confirm sale').props.accessibilityState.disabled).toBe(true);
     fireEvent.press(screen.getByLabelText('Confirm sale'));
     expect(createSale).toHaveBeenCalledTimes(1);
-    expect(screen.getByText(/already being recorded/i)).toBeTruthy();
 
     screen.unmount();
     const reopened = renderSell();
-    fireEvent.press(await reopened.findByLabelText('Confirm sale'));
+    expect((await reopened.findByLabelText('Confirm sale')).props.accessibilityState.disabled).toBe(true);
+    fireEvent.press(reopened.getByLabelText('Confirm sale'));
     expect(createSale).toHaveBeenCalledTimes(1);
-    expect(reopened.getByText(/already being recorded/i)).toBeTruthy();
 
     resolveSale?.(sale);
     await waitFor(() => expect(reopened.getByText('INV-2041')).toBeTruthy());

@@ -16,19 +16,33 @@ export interface SaleFailure {
 
 let inFlight = false;
 let pending: SaleAttemptRecord | null = null;
+let keys = new Map<string, string>();
 
 export function resetSaleAttemptForTests() {
   inFlight = false;
   pending = null;
+  keys = new Map();
 }
 
-export function hydrateSaleAttempt(record: SaleAttemptRecord | null) {
-  pending = record;
+export function hydrateSaleAttempt(record: (SaleAttemptRecord & { keys?: Record<string, string> }) | null) {
+  keys = new Map();
+  pending = null;
   inFlight = false;
+  if (!record) return;
+  for (const [fingerprint, key] of Object.entries(record.keys ?? {})) {
+    if (fingerprint && key) keys.set(fingerprint, key);
+  }
+  if (record.fingerprint && record.key) keys.set(record.fingerprint, record.key);
+  pending = { fingerprint: record.fingerprint, key: record.key };
 }
 
-export function readSaleAttempt(): SaleAttemptRecord | null {
-  return pending;
+export function readSaleAttempt(): (SaleAttemptRecord & { keys: Record<string, string> }) | null {
+  if (!pending) return null;
+  return { ...pending, keys: Object.fromEntries(keys) };
+}
+
+export function saleAttemptKeys(): Record<string, string> {
+  return Object.fromEntries(keys);
 }
 
 export function saleAttemptInFlight(): boolean {
@@ -37,7 +51,11 @@ export function saleAttemptInFlight(): boolean {
 
 export function claimSaleAttempt(fingerprint: string, createKey: () => string = randomId): string | null {
   if (inFlight) return null;
-  const key = pending?.fingerprint === fingerprint ? pending.key : createKey();
+  let key = keys.get(fingerprint);
+  if (!key) {
+    key = createKey();
+    keys.set(fingerprint, key);
+  }
   pending = { fingerprint, key };
   inFlight = true;
   return key;
@@ -47,14 +65,19 @@ export function releaseSaleAttempt() {
   inFlight = false;
 }
 
+function dropPendingKey() {
+  if (pending) keys.delete(pending.fingerprint);
+  pending = null;
+}
+
 export function finishSaleAttempt() {
   inFlight = false;
-  pending = null;
+  dropPendingKey();
 }
 
 export function discardSaleAttempt() {
   inFlight = false;
-  pending = null;
+  dropPendingKey();
 }
 
 export function mapSaleError(error: unknown, online: boolean): SaleFailure {

@@ -58,14 +58,19 @@ export function ChargeSheet({
   const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
   const change = paymentMethod === 'cash' ? cashChange(total, tendered) : null;
-  const confirmDisabled = !online || (paymentMethod === 'cash' && change === null);
+  const confirmDisabled = !online || submitting || (paymentMethod === 'cash' && change === null);
 
   return (
     <Modal
       visible={visible}
       animationType="slide"
       presentationStyle="pageSheet"
+      allowSwipeDismissal={!submitting}
       onRequestClose={() => {
+        if (submitting) return;
+        onClose();
+      }}
+      onDismiss={() => {
         if (submitting) return;
         onClose();
       }}

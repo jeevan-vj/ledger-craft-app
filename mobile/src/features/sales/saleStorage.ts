@@ -14,6 +14,7 @@ export interface StoredSaleAttempt {
   paymentMethod: SalePaymentMethod;
   referenceNumber: string;
   tendered: string;
+  keys: Record<string, string>;
 }
 
 function isLine(value: unknown): value is SaleLine {
@@ -61,12 +62,20 @@ export async function loadSaleAttempt(): Promise<StoredSaleAttempt | null> {
     const parsed = JSON.parse(value) as Partial<StoredSaleAttempt>;
     if (!parsed || typeof parsed.fingerprint !== 'string' || typeof parsed.key !== 'string') return null;
     if (!parsed.paymentMethod || !METHODS.has(parsed.paymentMethod)) return null;
+    const keys: Record<string, string> = {};
+    if (parsed.keys && typeof parsed.keys === 'object') {
+      for (const [fingerprint, key] of Object.entries(parsed.keys)) {
+        if (fingerprint && typeof key === 'string' && key) keys[fingerprint] = key;
+      }
+    }
+    keys[parsed.fingerprint] = parsed.key;
     return {
       fingerprint: parsed.fingerprint,
       key: parsed.key,
       paymentMethod: parsed.paymentMethod,
       referenceNumber: typeof parsed.referenceNumber === 'string' ? parsed.referenceNumber : '',
       tendered: typeof parsed.tendered === 'string' ? parsed.tendered : '',
+      keys,
     };
   } catch {
     return null;
@@ -74,7 +83,8 @@ export async function loadSaleAttempt(): Promise<StoredSaleAttempt | null> {
 }
 
 export async function saveSaleAttempt(attempt: StoredSaleAttempt): Promise<void> {
-  await SecureStore.setItemAsync(ATTEMPT_KEY, JSON.stringify(attempt));
+  const keys = { ...attempt.keys, [attempt.fingerprint]: attempt.key };
+  await SecureStore.setItemAsync(ATTEMPT_KEY, JSON.stringify({ ...attempt, keys }));
 }
 
 export async function clearSaleAttempt(): Promise<void> {

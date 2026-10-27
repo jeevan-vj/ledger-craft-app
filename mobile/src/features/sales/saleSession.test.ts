@@ -7,13 +7,17 @@ import {
   addCatalogItemToDraft,
   confirmSale,
   dismissChargeSheet,
+  dismissSaleSuccess,
   getSaleUiState,
   hydrateSaleSession,
   openChargeSheet,
   resetSaleSessionForTests,
+  retrySaleHydrate,
   setSaleTendered,
+  updateSaleLineQuantity,
 } from './saleSession';
 import { createSale } from './salesApi';
+import type { SaleLine } from './saleCart';
 
 jest.mock('./salesApi', () => ({
   createSale: jest.fn(),
@@ -69,6 +73,10 @@ describe('sale session', () => {
     for (let index = 0; index < count; index += 1) addCatalogItemToDraft(pie);
   }
 
+  function catalogLineName(line: SaleLine | undefined): string | undefined {
+    return line?.kind === 'catalog' ? line.name : undefined;
+  }
+
   it('reuses the idempotency key after a timeout and after a restart', async () => {
     addPies(3);
     setSaleTendered('20.00');
@@ -110,6 +118,121 @@ describe('sale session', () => {
     expect(saleAttemptInFlight()).toBe(false);
     expect(getSaleUiState().draft.lines).toHaveLength(0);
     expect(getSaleUiState().completed?.invoiceNumber).toBe('INV-2041');
+  });
+
+  it('does not start a second sale after the server accepts and before the cart clears', async () => {
+    addPies(1);
+    setSaleTendered('5.00');
+    let releaseDraft: () => void = () => {};
+    const gate = new Promise<void>((resolve) => {
+      releaseDraft = resolve;
+    });
+    (SecureStore.setItemAsync as jest.Mock).mockImplementation(async (key: string, value: string) => {
+      if (key === 'ledgercraft.quickSale.draft' && value.includes('"lines":[]')) await gate;
+      memory.set(key, value);
+    });
+    jest.mocked(createSale).mockResolvedValue(sale);
+    const pending = confirmSale();
+    await waitFor(() => expect(createSale).toHaveBeenCalledTimes(1));
+    expect(saleAttemptInFlight()).toBe(true);
+
+    await confirmSale();
+    expect(createSale).toHaveBeenCalledTimes(1);
+    expect(saleAttemptInFlight()).toBe(true);
+    expect(getSaleUiState().draft.lines).toHaveLength(1);
+    expect(getSaleUiState().submitting).toBe(true);
+
+    releaseDraft();
+    await pending;
+    expect(saleAttemptInFlight()).toBe(false);
+    expect(getSaleUiState().submitting).toBe(false);
+    expect(getSaleUiState().draft.lines).toHaveLength(0);
+    expect(getSaleUiState().completed?.invoiceNumber).toBe('INV-2041');
+    await confirmSale();
+    expect(createSale).toHaveBeenCalledTimes(1);
+  });
+
+  it('does not mint a new key when clearing the cart fails after the sale is saved', async () => {
+    addPies(1);
+    setSaleTendered('5.00');
+    (SecureStore.setItemAsync as jest.Mock).mockImplementation(async (key: string, value: string) => {
+      if (key === 'ledgercraft.quickSale.draft' && value.includes('"lines":[]')) throw new Error('disk full');
+      memory.set(key, value);
+    });
+    jest.mocked(createSale).mockResolvedValue(sale);
+    await confirmSale();
+    const key = jest.mocked(createSale).mock.calls[0]?.[1];
+    expect(createSale).toHaveBeenCalledTimes(1);
+    expect(getSaleUiState().completed?.invoiceNumber).toBe('INV-2041');
+    expect(getSaleUiState().draft.lines).toHaveLength(0);
+
+    await confirmSale();
+    expect(createSale).toHaveBeenCalledTimes(1);
+
+    dismissSaleSuccess();
+    addPies(1);
+    setSaleTendered('5.00');
+    await confirmSale();
+    expect(jest.mocked(createSale).mock.calls[1]?.[1]).toBe(key);
+    expect(jest.mocked(createSale).mock.calls[1]?.[0]).toEqual(jest.mocked(createSale).mock.calls[0]?.[0]);
+  });
+
+  it('reuses the original key when a timed-out cart is edited and then restored', async () => {
+    addPies(1);
+    setSaleTendered('20.00');
+    jest.mocked(createSale).mockRejectedValue(new Error('The request timed out'));
+    await confirmSale();
+    const original = jest.mocked(createSale).mock.calls[0]?.[1];
+    addPies(1);
+    await confirmSale();
+    const edited = jest.mocked(createSale).mock.calls[1]?.[1];
+    expect(edited).toEqual(expect.any(String));
+    expect(edited).not.toBe(original);
+    await waitFor(() => expect(memory.get('ledgercraft.quickSale.draft')).toContain('"quantity":"2.00"'));
+
+    resetSaleSessionForTests();
+    await hydrateSaleSession();
+    updateSaleLineQuantity(pie.id, '1');
+    await confirmSale();
+    expect(jest.mocked(createSale).mock.calls[2]?.[1]).toBe(original);
+    expect(jest.mocked(createSale).mock.calls[2]?.[0]).toEqual(jest.mocked(createSale).mock.calls[0]?.[0]);
+  });
+
+  it('retries a failed cart read and shows an error instead of an empty cart', async () => {
+    const stored = JSON.stringify({
+      lines: [{ kind: 'catalog', itemId: pie.id, name: 'Pie', quantity: '1.00', price: '4.50' }],
+      customerId: null,
+      customerName: null,
+    });
+    memory.set('ledgercraft.quickSale.draft', stored);
+    let draftReads = 0;
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key: string) => {
+      if (key === 'ledgercraft.quickSale.draft') {
+        draftReads += 1;
+        if (draftReads === 1) throw new Error('locked');
+      }
+      return memory.get(key) ?? null;
+    });
+    resetSaleSessionForTests();
+    await hydrateSaleSession();
+    expect(catalogLineName(getSaleUiState().draft.lines[0])).toBe('Pie');
+    expect(getSaleUiState().hydrateError).toBeNull();
+
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async () => {
+      throw new Error('locked');
+    });
+    resetSaleSessionForTests();
+    await hydrateSaleSession();
+    expect(getSaleUiState().ready).toBe(false);
+    expect(getSaleUiState().hydrateError).toMatch(/could not be loaded/i);
+    expect(getSaleUiState().draft.lines).toHaveLength(0);
+    expect(memory.get('ledgercraft.quickSale.draft')).toBe(stored);
+
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (key: string) => memory.get(key) ?? null);
+    await retrySaleHydrate();
+    expect(getSaleUiState().ready).toBe(true);
+    expect(getSaleUiState().hydrateError).toBeNull();
+    expect(catalogLineName(getSaleUiState().draft.lines[0])).toBe('Pie');
   });
 
   it('does not call the sale API while offline and keeps the cart', async () => {

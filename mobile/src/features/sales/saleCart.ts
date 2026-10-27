@@ -135,10 +135,12 @@ export function displayQuantity(quantity: string): string {
   return quantity.endsWith('.00') ? quantity.slice(0, -3) : quantity;
 }
 
+/** Display only. A line can round a cent away from the charged total. */
 export function lineTotal(line: SaleLine): string {
   return roundMoney(decimal(line.quantity).mul(line.price));
 }
 
+/** Buyer-pays total. Sum the raw line amounts, then round once. This is the total the server charges. */
 export function cartTotal(lines: SaleLine[]): string {
   const sum = lines.reduce((total, line) => total.add(decimal(line.quantity).mul(line.price)), decimal(0));
   return roundMoney(sum);

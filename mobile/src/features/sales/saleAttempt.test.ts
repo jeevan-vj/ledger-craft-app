@@ -49,6 +49,22 @@ describe('sale attempt', () => {
     expect(claimSaleAttempt('body', () => 'fresh')).toBe('key-1');
   });
 
+  it('keeps each cart fingerprint key until that body succeeds or conflicts', () => {
+    expect(claimSaleAttempt('original', () => 'key-1')).toBe('key-1');
+    releaseSaleAttempt();
+    expect(claimSaleAttempt('edited', () => 'key-2')).toBe('key-2');
+    releaseSaleAttempt();
+    expect(claimSaleAttempt('original', () => 'key-3')).toBe('key-1');
+    finishSaleAttempt();
+    expect(claimSaleAttempt('original', () => 'key-4')).toBe('key-4');
+    releaseSaleAttempt();
+    expect(claimSaleAttempt('edited', () => 'key-5')).toBe('key-2');
+    discardSaleAttempt();
+    expect(claimSaleAttempt('edited', () => 'key-6')).toBe('key-6');
+    releaseSaleAttempt();
+    expect(claimSaleAttempt('original', () => 'key-7')).toBe('key-4');
+  });
+
   it('drops the key after an idempotency conflict and keeps the offline copy exact', () => {
     claimSaleAttempt('body', () => 'key-1');
     discardSaleAttempt();

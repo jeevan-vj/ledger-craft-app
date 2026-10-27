@@ -24,6 +24,7 @@ import {
   dismissChargeSheet,
   dismissSaleSuccess,
   hydrateSaleSession,
+  retrySaleHydrate,
   openChargeSheet,
   removeSaleLine,
   setCartOpen,
@@ -74,6 +75,16 @@ export default function SellScreen() {
   useEffect(() => onlineManager.subscribe(setOnline), []);
 
   if (ui.completed) return <SaleSuccessState sale={ui.completed} onDone={dismissSaleSuccess} />;
+  if (ui.hydrateError) {
+    return (
+      <View style={styles.loading}>
+        <Text style={styles.loadingText}>{ui.hydrateError}</Text>
+        <AppPressable accessibilityRole="button" accessibilityLabel="Try again" onPress={() => { void retrySaleHydrate(); }} style={styles.charge}>
+          <Text style={styles.chargeText}>Try again</Text>
+        </AppPressable>
+      </View>
+    );
+  }
   if (!ui.ready) {
     return (
       <View style={styles.loading}>
