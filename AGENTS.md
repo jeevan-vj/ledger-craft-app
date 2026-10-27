@@ -18,6 +18,8 @@ up to the gross total. GST is the sum of those invoices' `taxAmount`. Top items 
 grouped by line description because line items do not store an item id. Amounts are
 exact decimal strings. The route requires `invoices.read`. No migration.
 
+The Expo Sell tab is on only when the device Quick sale switch is on. That switch is off by default and stored on the device. Tiles are active catalog items that have a sale price. The cart total and cash change use the shared `roundMoney` helper. Charge calls `POST /api/sales` with one persisted idempotency key per attempt. An offline charge is refused and nothing is queued. A saved sale clears the cart and shows the invoice number. The receipt QR, share action, and receipt sheet are not on this screen.
+
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add
 OpenAI-first/xAI-then-Workers-AI structured extraction, a deterministic non-production

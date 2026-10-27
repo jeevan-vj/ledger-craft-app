@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { SFSymbol } from 'sf-symbols-typescript';
 import type { AppleIcon } from 'react-native-bottom-tabs';
 import type { CustomerStackParamList, HomeStackParamList, InvoiceStackParamList, MainTabParamList, MoreStackParamList } from './types';
+import { SellNavigator } from './SellNavigator';
+import { useQuickSaleEnabled } from '@/features/sales/quickSalePreference';
 import { createDetailHeaderOptions, createFormHeaderOptions, createListHeaderOptions } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import DashboardScreen from '@/screens/main/DashboardScreen';
@@ -107,6 +109,7 @@ function MoreNavigator() {
 
 export default function AppNavigator() {
   const theme = useTheme();
+  const { enabled: quickSaleEnabled } = useQuickSaleEnabled();
   return <Tab.Navigator
     labeled hapticFeedbackEnabled
     tabBarActiveTintColor={theme.colors.accent}
@@ -116,6 +119,7 @@ export default function AppNavigator() {
     <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: tabIcon('house.fill', require('../../assets/tabs/home.png')) }} />
     <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: tabIcon('doc.text.fill', require('../../assets/tabs/invoices.png')) }} />
     <Tab.Screen name="Customers" component={CustomerNavigator} options={{ title: 'Customers', tabBarIcon: tabIcon('person.2.fill', require('../../assets/tabs/customers.png')) }} />
+    {quickSaleEnabled ? <Tab.Screen name="Sell" component={SellNavigator} options={{ title: 'Sell', tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/sell.png')) }} /> : null}
     <Tab.Screen name="More" component={MoreNavigator} options={{ title: 'More', tabBarIcon: tabIcon('ellipsis.circle.fill', require('../../assets/tabs/settings.png')) }} />
   </Tab.Navigator>;
 }

@@ -7,6 +7,7 @@ import { useAuth } from '@/store';
 import type { MoreStackParamList } from '@/navigation/types';
 import { moreMenuSections, type MoreMenuScreen } from '@/navigation/links';
 import { Card, DashedSetupCard, ListRow, AppPressable } from '@/components/ui';
+import { QuickSaleSwitch } from '@/features/sales/QuickSaleSwitch';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 
@@ -37,6 +38,9 @@ export default function SettingsScreen() {
       <Text style={[theme.type.display, styles.name]}>{name}</Text>
       {user?.email ? <Text style={theme.type.subhead}>{user.email}</Text> : null}
     </View>
+
+    <Text style={[theme.type.headline, styles.sectionTitle]}>Selling</Text>
+    <Card style={styles.sectionCard}><QuickSaleSwitch /></Card>
 
     {moreMenuSections.map((section) => (
       <View key={section.title}>

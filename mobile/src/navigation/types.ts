@@ -82,10 +82,16 @@ export type SettingsStackParamList = {
 
 export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList & ItemStackParamList & BankingStackParamList;
 
+export type SellStackParamList = {
+  SellHome: undefined;
+};
+
 export type MainTabParamList = {
   Dashboard: NavigatorScreenParams<HomeStackParamList>;
   Invoices: NavigatorScreenParams<InvoiceStackParamList>;
   Customers: NavigatorScreenParams<CustomerStackParamList>;
+  /** Present only while the on-device Quick sale switch is on. */
+  Sell: NavigatorScreenParams<SellStackParamList>;
   More: NavigatorScreenParams<MoreStackParamList>;
 };
 
