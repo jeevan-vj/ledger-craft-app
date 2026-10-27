@@ -1,8 +1,10 @@
 import {
+  salesSummarySchema,
   saleResponseSchema,
   type CreateInvoiceRequest,
   type CreateSaleRequest,
   type SaleResponse,
+  type SalesSummary,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -16,11 +18,13 @@ import {
   insertIdempotencyRecord,
   type IdempotencyScope,
 } from '../invoices/idempotency';
+import { decimal, roundMoney } from '../invoices/money';
 import { createInvoiceInTx } from '../invoices/invoices.service';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import * as itemsRepo from '../items/items.repository';
 import { createPaymentInTx } from '../payments/payments.service';
 import { createReceiptInTx } from '../receipts/receipts.service';
+import { loadSalesDay, type SalesDayLine, type SalesDayPayment, type SalesDayRows } from './sales.repository';
 
 const WALK_IN_TAG = 'walk-in';
 const WALK_IN_NAME = 'Walk-in customer';
@@ -138,4 +142,113 @@ export async function createSaleForUser(
     await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: response });
     return response;
   });
+}
+
+const PAYMENT_METHOD_ORDER = ['cash', 'credit_card', 'bank_transfer', 'cheque', 'online'] as const;
+
+/**
+ * A counted sale needs no migration. `invoices.source` is only `manual` or
+ * `import`, so the summary unions two facts already stored:
+ * the customer tags include `walk-in`, or a POST `/api/sales` idempotency row
+ * in this organisation names the invoice. The tag covers a paid invoice written
+ * for the walk-in customer through the normal invoice API. The idempotency row
+ * still covers a named-customer sale after that tag is edited or removed.
+ * Completed payments must equal the invoice total, so the method totals add up
+ * to the gross total; an unpaid walk-in draft is not takings. GST is the sum of
+ * those invoices' `taxAmount`, never a sum of rounded line taxes. Line items do
+ * not store an item id, so top items are grouped by the stored description.
+ * `invoice.date` is already the business-timezone calendar day, so the query
+ * matches that stored date.
+ */
+export async function salesSummaryForUser(db: Database, userId: string, date: string): Promise<SalesSummary> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const day = await loadSalesDay(tx, ctx.organisationId, date);
+    return salesSummarySchema.parse(summariseSalesDay(date, day));
+  });
+}
+
+function tagList(tags: unknown): string[] {
+  const parsed = typeof tags === 'string' ? parseJson(tags) : tags;
+  return Array.isArray(parsed) ? parsed.filter((tag): tag is string => typeof tag === 'string') : [];
+}
+
+function parseJson(value: string): unknown {
+  try {
+    return JSON.parse(value) as unknown;
+  } catch {
+    return undefined;
+  }
+}
+
+function isSale(invoice: SalesDayRows['invoices'][number], saleInvoiceIds: ReadonlySet<string>): boolean {
+  if (invoice.lifecycleStatus === 'cancelled') return false;
+  return saleInvoiceIds.has(invoice.id) || tagList(invoice.customerTags).includes(WALK_IN_TAG);
+}
+
+function paymentsFor(invoiceId: string, payments: SalesDayPayment[]): SalesDayPayment[] {
+  return payments.filter((payment) => payment.invoiceId === invoiceId && payment.status === 'completed');
+}
+
+function summariseSalesDay(date: string, day: SalesDayRows): SalesSummary {
+  const saleInvoiceIds = new Set(day.saleInvoiceIds);
+  const sales = day.invoices.filter((invoice) => {
+    if (!isSale(invoice, saleInvoiceIds)) return false;
+    const paid = paymentsFor(invoice.id, day.payments).reduce((total, payment) => total.add(payment.amount), decimal(0));
+    return paid.compare(invoice.total) === 0;
+  });
+  const saleIds = new Set(sales.map((invoice) => invoice.id));
+  const payments = day.payments.filter((payment) => saleIds.has(payment.invoiceId) && payment.status === 'completed');
+  const lines = day.lines.filter((line) => saleIds.has(line.invoiceId));
+  return {
+    date,
+    count: sales.length,
+    grossTotal: roundMoney(sales.reduce((total, invoice) => total.add(invoice.total), decimal(0))),
+    gstTotal: roundMoney(sales.reduce((total, invoice) => total.add(invoice.taxAmount), decimal(0))),
+    paymentMethods: methodTotals(payments),
+    topItemsByQuantity: rankItems(lines, 'quantity'),
+    topItemsByAmount: rankItems(lines, 'amount'),
+    sales: sales.map((invoice) => ({
+      invoiceId: invoice.id,
+      invoiceNumber: invoice.invoiceNumber,
+      total: roundMoney(invoice.total),
+      taxAmount: roundMoney(invoice.taxAmount),
+    })),
+  };
+}
+
+function methodTotals(payments: SalesDayPayment[]): SalesSummary['paymentMethods'] {
+  const totals = new Map<string, ReturnType<typeof decimal>>();
+  for (const payment of payments) {
+    const current = totals.get(payment.paymentMethod) ?? decimal(0);
+    totals.set(payment.paymentMethod, current.add(payment.amount));
+  }
+  return [...totals.entries()]
+    .sort(([left], [right]) => methodRank(left) - methodRank(right) || left.localeCompare(right))
+    .map(([paymentMethod, total]) => ({ paymentMethod, total: roundMoney(total) }));
+}
+
+function methodRank(method: string): number {
+  const index = PAYMENT_METHOD_ORDER.indexOf(method as (typeof PAYMENT_METHOD_ORDER)[number]);
+  return index === -1 ? PAYMENT_METHOD_ORDER.length : index;
+}
+
+function rankItems(lines: SalesDayLine[], by: 'quantity' | 'amount'): SalesSummary['topItemsByQuantity'] {
+  const grouped = new Map<string, { quantity: ReturnType<typeof decimal>; amount: ReturnType<typeof decimal> }>();
+  for (const line of lines) {
+    const current = grouped.get(line.description) ?? { quantity: decimal(0), amount: decimal(0) };
+    current.quantity = current.quantity.add(line.quantity);
+    current.amount = current.amount.add(line.total);
+    grouped.set(line.description, current);
+  }
+  return [...grouped.entries()]
+    .map(([description, totals]) => ({
+      description,
+      quantity: roundMoney(totals.quantity),
+      amount: roundMoney(totals.amount),
+    }))
+    .sort((left, right) => {
+      const field = by === 'quantity' ? 'quantity' : 'amount';
+      const difference = decimal(right[field]).compare(left[field]);
+      return difference === 0 ? left.description.localeCompare(right.description) : difference;
+    });
 }
