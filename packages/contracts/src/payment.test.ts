@@ -36,6 +36,20 @@ describe('payment contracts', () => {
     for (const amount of ['1.00', '1.5', '10']) {
       expect(createPaymentRequestSchema.safeParse({ ...request, amount }).success).toBe(true);
     }
+    const trailingZero = createPaymentRequestSchema.safeParse({ ...request, amount: '1.500' });
+    expect(trailingZero.success).toBe(false);
+    if (!trailingZero.success) {
+      expect(trailingZero.error.issues.map((issue) => issue.message).join(' ')).toMatch(/at most 2 decimal places/);
+    }
+    for (const amount of ['-1.00', '1e-3', ' 1.00 ']) {
+      const parsed = createPaymentRequestSchema.safeParse({ ...request, amount });
+      expect(parsed.success).toBe(false);
+      if (!parsed.success) {
+        expect(parsed.error.issues.map((issue) => issue.message).join(' ')).toBe(
+          'Amount must be a positive decimal with at most 2 decimal places',
+        );
+      }
+    }
   });
 
   it('rejects ownership ids and client status on create', () => {

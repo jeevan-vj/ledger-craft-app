@@ -17,6 +17,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { format } from 'date-fns';
+import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
 import { Invoice } from '@/types';
 import { CreatePaymentRequest } from '@/types/payment';
 import { formatCurrency } from '@/utils/invoiceUtils';
@@ -106,6 +107,8 @@ export function PaymentCaptureModal({
   const isPartialPayment = watchedAmount < invoice.total;
   const isOverpayment = watchedAmount > invoice.total;
   const balanceAfterPayment = invoice.total - watchedAmount;
+  const balance = invoice.balanceDue ?? invoice.total;
+  const halfAmount = halfPaymentAmount(invoice.total, balance);
 
   const handleNext = async (data: z.infer<typeof paymentCaptureSchema>) => {
     setFormData(data);
@@ -263,15 +266,15 @@ export function PaymentCaptureModal({
                     >
                       Full Amount ({formatCurrency(invoice.total)})
                     </Button>
-                    {invoice.total > 100 && (
+                    {Number(halfAmount) > 0 && (
                       <Button
                         type="button"
                         variant="outline"
                         size="sm"
-                        onClick={() => form.setValue('amount', invoice.total / 2)}
+                        onClick={() => form.setValue('amount', Number(halfAmount), { shouldDirty: true, shouldValidate: true })}
                         className="text-xs"
                       >
-                        Half Payment ({formatCurrency(invoice.total / 2)})
+                        Half Payment ({halfAmount})
                       </Button>
                     )}
                   </div>

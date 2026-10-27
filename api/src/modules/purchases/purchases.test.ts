@@ -195,6 +195,22 @@ describe('purchase routes', () => {
         expect(debit).toBe(credit);
         expect(debit).toBe(23);
 
+        const extraSplit = await app.request(`/api/bills/${draft.id}/payments`, {
+          method: 'POST',
+          headers: { ...jsonHeaders, Cookie: ownerA },
+          body: JSON.stringify({
+            allocations: [
+              { bankAccountId: bankAccount.id, amount: '1.005' },
+              { bankAccountId: secondBank.id, amount: '1.00' },
+            ],
+            paymentDate: '2026-10-04',
+          }),
+        });
+        expect(extraSplit.status).toBe(400);
+        const splitError = (await extraSplit.json() as { error: { code: string; message: string } }).error;
+        expect(splitError.code).toBe('VALIDATION_ERROR');
+        expect(splitError.message).toMatch(/at most 2 decimal places/);
+
         for (const amount of ['1.005', '0.001']) {
           const extraCents = await app.request(`/api/bills/${draft.id}/payments`, {
             method: 'POST',
