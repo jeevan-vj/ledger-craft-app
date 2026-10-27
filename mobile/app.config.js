@@ -1,10 +1,11 @@
 const appJson = require('./app.json');
-const EAS_PROJECT_ID = '7148323b-502c-447e-96c3-a5c1704c40c9';
+const EAS_PROJECT_ID = '6bb662da-bb2f-405d-876f-cea471908f74';
 
 module.exports = {
   expo: {
     name: 'easybizinvoice',
-    slug: 'easybizinvoice-mobile',
+    owner: 'jnok',
+    slug: 'easybizinvoice',
     version: appJson.expo.version,
     runtimeVersion: { policy: 'fingerprint' },
     updates: {

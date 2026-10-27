@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "easybizinvoice",
-    "slug": "easybizinvoice-mobile",
+    "slug": "easybizinvoice",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

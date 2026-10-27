@@ -50,8 +50,8 @@ symbols. Create one at
 [Sentry auth tokens](https://us.sentry.io/settings/account/api/auth-tokens/)
 with the `project:releases` and `org:read` scopes. Do not commit it.
 
-From `mobile/`, on the Expo account that owns project
-`7148323b-502c-447e-96c3-a5c1704c40c9`:
+From `mobile/`, on the `jnok` Expo account that owns project `@jnok/easybizinvoice`
+(`6bb662da-bb2f-405d-876f-cea471908f74`):
 
 ```bash
 eas env:create --name SENTRY_AUTH_TOKEN --value "<token>" --visibility secret --environment preview --environment production

@@ -2,9 +2,9 @@
 
 Agent workflow: [ledgercraft-eas-update](../.cursor/skills/ledgercraft-eas-update/SKILL.md).
 
-The SDK 54 app uses `expo-updates` with EAS project
-`7148323b-502c-447e-96c3-a5c1704c40c9`. The dynamic `app.config.js` is authoritative:
-updates use `https://u.expo.dev/7148323b-502c-447e-96c3-a5c1704c40c9`, and the runtime
+The SDK 54 app uses `expo-updates` with EAS project `@jnok/easybizinvoice`
+(`6bb662da-bb2f-405d-876f-cea471908f74`). The dynamic `app.config.js` is authoritative:
+updates use `https://u.expo.dev/6bb662da-bb2f-405d-876f-cea471908f74`, and the runtime
 version is generated from native dependencies/configuration (`fingerprint` policy).
 
 ## One-time rollout
