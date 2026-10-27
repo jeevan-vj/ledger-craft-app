@@ -3,6 +3,8 @@ import { Feather } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import type { CustomerStackParamList, HomeStackParamList, InvoiceStackParamList, MainTabParamList, MoreStackParamList } from './types';
+import { SellNavigator } from './SellNavigator';
+import { useQuickSaleEnabled } from '@/features/sales/quickSalePreference';
 import { createDetailHeaderOptions, createFormHeaderOptions, createListHeaderOptions } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import DashboardScreen from '@/screens/main/DashboardScreen';
@@ -49,6 +51,7 @@ function MoreNavigator() { const { colors } = useTheme(); const list = createLis
 
 export default function AppNavigator() {
   const theme = useTheme();
+  const { enabled: quickSaleEnabled } = useQuickSaleEnabled();
   const icon = (name: React.ComponentProps<typeof Feather>['name']) => {
     function TabBarIcon({ color, size }: { color: string; size: number }) {
       return <Feather name={name} color={color} size={size} />;
@@ -59,6 +62,7 @@ export default function AppNavigator() {
     <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: icon('home') }} />
     <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: icon('file-text') }} />
     <Tab.Screen name="Customers" component={CustomerNavigator} options={{ title: 'Customers', tabBarIcon: icon('users') }} />
+    {quickSaleEnabled ? <Tab.Screen name="Sell" component={SellNavigator} options={{ title: 'Sell', tabBarIcon: icon('shopping-bag') }} /> : null}
     <Tab.Screen name="More" component={MoreNavigator} options={{ title: 'More', tabBarIcon: icon('more-horizontal') }} />
   </Tab.Navigator>;
 }
