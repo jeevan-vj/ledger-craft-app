@@ -12,6 +12,7 @@ import { invoiceRoutes } from './modules/invoices/invoices.routes';
 import { quoteRoutes } from './modules/quotes/quotes.routes';
 import { itemRoutes } from './modules/items/items.routes';
 import { paymentRoutes } from './modules/payments/payments.routes';
+import { saleRoutes } from './modules/sales/sales.routes';
 import { accountRoutes } from './modules/accounts/accounts.routes';
 import { bankRoutes } from './modules/bank/bank.routes';
 import { reconciliationRoutes } from './modules/reconciliation/reconciliation.routes';
@@ -105,6 +106,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', quoteRoutes());
   app.route('/', expenseRoutes());
   app.route('/', paymentRoutes());
+  app.route('/', saleRoutes());
   app.route('/', accountRoutes());
   app.route('/', bankRoutes());
   app.route('/', reconciliationRoutes());

@@ -272,4 +272,70 @@ describe('receipt routes', () => {
       }
     });
   });
+
+  it('receipts a paid invoice for a customer saved with an empty email', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Empty Email Receipt');
+        await app.request('/api/business-profile', {
+          method: 'PUT',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({
+            name: 'Kauri Studio Ltd',
+            email: 'hello@kauristudio.nz',
+            country: 'NZ',
+            defaultTaxRate: '15',
+          }),
+        });
+        const customer = await app.request('/api/customers', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: 'Walk-up buyer', email: '', country: 'NZ' }),
+        });
+        expect(customer.status).toBe(201);
+        const customerId = ((await customer.json()) as { id: string }).id;
+        const created = await app.request('/api/invoices', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({
+            customerId,
+            date: '2026-10-27',
+            dueDate: '2026-10-27',
+            taxInclusive: true,
+            taxRate: '15',
+            items: [{ description: 'Pie', quantity: '1', rate: '4.50' }],
+          }),
+        });
+        expect(created.status).toBe(201);
+        const invoice = invoiceSchema.parse(await created.json());
+        const paid = await app.request('/api/payments', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({
+            invoiceId: invoice.id,
+            paymentMethod: 'cash',
+            amount: invoice.total,
+            paymentDate: '2026-10-27',
+          }),
+        });
+        expect(paid.status).toBe(201);
+        const payment = (await paid.json()) as { id: string };
+        const receiptResponse = await app.request('/api/receipts', {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ paymentId: payment.id }),
+        });
+        expect(receiptResponse.status).toBe(201);
+        const receipt = paymentReceiptSchema.parse(await receiptResponse.json());
+        expect(receipt.receiptData.customerEmail).toBeNull();
+        expect(receipt.receiptData.customerName).toBe('Walk-up buyer');
+      } finally {
+        await sql.end();
+      }
+    });
+  });
 });

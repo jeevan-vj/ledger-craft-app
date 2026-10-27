@@ -8,7 +8,7 @@ import { requireSession } from './require-session';
 
 const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'banking' | 'reports' | 'settings' | 'api']> = [
   [/^\/(?:api\/)?customers(?:\/|$)/, 'customers'],
-  [/^\/(?:api\/)?(?:invoices|quotes|payments|receipts)(?:\/|$)/, 'invoices'],
+  [/^\/(?:api\/)?(?:invoices|quotes|payments|receipts|sales)(?:\/|$)/, 'invoices'],
   [/^\/(?:api\/)?(?:vendors|bills|expenses|expense-categories)(?:\/|$)/, 'bills'],
   [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
   [/^\/(?:api\/)?(?:reports|tax-configurations|tax-returns|tax-adjustments|dashboard|dashboard-layouts|saved-reports)(?:\/|$)/, 'reports'],

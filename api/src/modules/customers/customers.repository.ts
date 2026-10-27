@@ -4,7 +4,7 @@ import {
   type CustomerDto,
   type UpdateCustomerRequest,
 } from '@ledgercraft/contracts';
-import { and, eq } from 'drizzle-orm';
+import { and, asc, eq, sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { customers } from '../../db/schema/customers';
 
@@ -44,6 +44,23 @@ export async function getCustomer(
     .select()
     .from(customers)
     .where(and(eq(customers.id, id), eq(customers.organisationId, organisationId)));
+  return row ? toDto(row) : undefined;
+}
+
+export async function findCustomerByTag(
+  tx: Database,
+  organisationId: string,
+  tag: string,
+): Promise<CustomerDto | undefined> {
+  const [row] = await tx
+    .select()
+    .from(customers)
+    .where(and(
+      eq(customers.organisationId, organisationId),
+      sql`exists (select 1 from json_each(${customers.tags}) where json_each.value = ${tag})`,
+    ))
+    .orderBy(asc(customers.createdAt))
+    .limit(1);
   return row ? toDto(row) : undefined;
 }
 

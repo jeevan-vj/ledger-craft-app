@@ -9,6 +9,10 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+POS quick sale API is implemented locally (2026-10-27): `POST /api/sales` creates
+the walk-in invoice, full payment, and receipt in one transaction. `Idempotency-Key`
+is required. `GET /api/sales/summary` is not implemented. No migration.
+
 Invoice-import Phase 2 is implemented locally (2026-10-26) through migration
 `0019_invoice-import-phase2.sql`: guarded OpenAI/xAI/mock extraction, strict
 review drafts, cent-level recomputation, duplicate/contact review, and atomic
