@@ -40,6 +40,7 @@ export async function recordInvoicePayment(
         const invoice = await queryClient.fetchQuery({
           queryKey: invoiceDetailQueryKey(input.invoiceId),
           queryFn: () => invoiceService.fetchInvoiceById(input.invoiceId),
+          staleTime: 0,
         });
         await queryClient.invalidateQueries({ queryKey: invoicePaymentsQueryKey(input.invoiceId) });
         throw new PaymentExceedsBalanceError(invoice, error);

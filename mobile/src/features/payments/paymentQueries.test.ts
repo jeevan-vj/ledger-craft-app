@@ -95,6 +95,32 @@ describe('recordInvoicePayment', () => {
     expect(client.getQueryData(invoiceDetailQueryKey(input.invoiceId))).toMatchObject({ balanceDueText: '4.00' });
   });
 
+  it('refetches a still-fresh cached invoice when the payment exceeds the balance', async () => {
+    jest.mocked(paymentService.createPayment).mockRejectedValue(
+      new AuthApiError('Payment exceeds invoice balance', 400, 'PAYMENT_EXCEEDS_BALANCE'),
+    );
+    jest.mocked(invoiceService.fetchInvoiceById).mockResolvedValue({
+      id: input.invoiceId,
+      balanceDueText: '8.00',
+    } as never);
+    const client = new QueryClient({
+      defaultOptions: { queries: { retry: false, staleTime: 30_000 } },
+    });
+    client.setQueryData(invoiceDetailQueryKey(input.invoiceId), { id: input.invoiceId, balanceDueText: '10.00' });
+    const applied: string[] = [];
+
+    await expect(submitInvoicePayment(client, input, 'attempt-1', (invoice) => {
+      applied.push(invoice.balanceDueText ?? '');
+    })).rejects.toMatchObject({
+      code: 'PAYMENT_EXCEEDS_BALANCE',
+      invoice: { balanceDueText: '8.00' },
+    });
+
+    expect(invoiceService.fetchInvoiceById).toHaveBeenCalledWith(input.invoiceId);
+    expect(applied).toEqual(['8.00']);
+    expect(client.getQueryData(invoiceDetailQueryKey(input.invoiceId))).toMatchObject({ balanceDueText: '8.00' });
+  });
+
   it('does not call the API or store the payment while offline', async () => {
     onlineManager.setOnline(false);
     const client = clientWithSettlement();

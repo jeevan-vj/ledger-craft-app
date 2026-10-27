@@ -1,3 +1,4 @@
+import { roundMoney } from '../../../../api/src/modules/invoices/money';
 import { AuthApiError } from '@/features/auth/api/http';
 import type { Invoice } from '@/types/invoice';
 import { formatMoney } from '@/utils/money';
@@ -57,17 +58,11 @@ export function formatPaymentHistory(payment: PaymentHistoryInput, currency = 'N
   };
 }
 
-/** Half-up to 2 decimal places, matching server `roundMoney`, without converting through Number. */
+/** Half-up to 2 decimal places via server `roundMoney`, without converting through Number. */
 export function normalizePaymentAmount(amount: string): string | null {
   const trimmed = amount.trim();
   if (!/^\d+(\.\d+)?$/.test(trimmed)) return null;
-  const [whole = '0', fraction = ''] = trimmed.split('.');
-  const kept = (fraction + '00').slice(0, 2);
-  let minor = BigInt(whole) * 100n + BigInt(kept);
-  const extra = fraction.slice(2);
-  if (extra.length > 0 && (extra[0] ?? '0') >= '5') minor += 1n;
-  const digits = minor.toString().padStart(3, '0');
-  return `${digits.slice(0, -2)}.${digits.slice(-2)}`;
+  return roundMoney(trimmed);
 }
 
 function minorUnits(amount: string): bigint {
@@ -153,19 +148,41 @@ export function mapPaymentError(error: unknown, online: boolean): PaymentFailure
   return { kind: 'other', message: 'The payment could not be recorded.' };
 }
 
+export interface PaymentAttemptFields {
+  invoiceId: string;
+  amount: string;
+  paymentMethod: string;
+  paymentDate: string;
+  referenceNumber: string;
+  notes: string;
+}
+
 const pendingKeys = new Map<string, Map<string, string>>();
+const latestAttempts = new Map<string, { fingerprint: string; fields: PaymentAttemptFields }>();
 const inFlightInvoices = new Set<string>();
 
 export function resetPaymentAttemptStore() {
   pendingKeys.clear();
+  latestAttempts.clear();
   inFlightInvoices.clear();
+}
+
+export function pendingPaymentAttempt(invoiceId: string): PaymentAttemptFields | null {
+  const latest = latestAttempts.get(invoiceId);
+  if (!latest) return null;
+  return pendingKeys.get(invoiceId)?.has(latest.fingerprint) ? latest.fields : null;
+}
+
+function dropLatest(invoiceId: string, fingerprint: string) {
+  const latest = latestAttempts.get(invoiceId);
+  if (latest?.fingerprint === fingerprint) latestAttempts.delete(invoiceId);
 }
 
 export function createPaymentAttempt(createKey: () => string = randomId) {
   let invoiceId = '';
   let fingerprint = '';
   return {
-    claim(nextFingerprint: string, nextInvoiceId = ''): string | null {
+    claim(nextFingerprint: string, nextInvoiceId = '', fields?: PaymentAttemptFields): string | null {
       if (inFlightInvoices.has(nextInvoiceId)) return null;
       let keys = pendingKeys.get(nextInvoiceId);
       if (!keys) {
@@ -177,6 +194,7 @@ export function createPaymentAttempt(createKey: () => string = randomId) {
         key = createKey();
         keys.set(nextFingerprint, key);
       }
+      if (fields) latestAttempts.set(nextInvoiceId, { fingerprint: nextFingerprint, fields });
       inFlightInvoices.add(nextInvoiceId);
       invoiceId = nextInvoiceId;
       fingerprint = nextFingerprint;
@@ -188,18 +206,12 @@ export function createPaymentAttempt(createKey: () => string = randomId) {
     succeed() {
       inFlightInvoices.delete(invoiceId);
       pendingKeys.get(invoiceId)?.delete(fingerprint);
+      dropLatest(invoiceId, fingerprint);
     },
     resetKey() {
       inFlightInvoices.delete(invoiceId);
       pendingKeys.get(invoiceId)?.delete(fingerprint);
-    },
-    retarget(nextFingerprint: string) {
-      const keys = pendingKeys.get(invoiceId);
-      const key = keys?.get(fingerprint);
-      if (!keys || !key || nextFingerprint === fingerprint) return;
-      keys.delete(fingerprint);
-      if (!keys.has(nextFingerprint)) keys.set(nextFingerprint, key);
-      fingerprint = nextFingerprint;
+      dropLatest(invoiceId, fingerprint);
     },
   };
 }

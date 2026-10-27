@@ -1,3 +1,4 @@
+import { roundMoney } from '../../../../api/src/modules/invoices/money';
 import { AuthApiError } from '@/features/auth/api/http';
 import { PAYMENT_METHOD_OPTIONS } from '@/utils/statusUtils';
 import {
@@ -54,9 +55,14 @@ describe('payment amount validation', () => {
   });
 
   it('compares the cent value the server stores, including half-up at the exact balance', () => {
+    expect(normalizePaymentAmount('10.004')).toBe(roundMoney('10.004'));
+    expect(normalizePaymentAmount('10.005')).toBe(roundMoney('10.005'));
+    expect(normalizePaymentAmount('9.996')).toBe(roundMoney('9.996'));
     expect(normalizePaymentAmount('10.004')).toBe('10.00');
     expect(normalizePaymentAmount('10.005')).toBe('10.01');
     expect(normalizePaymentAmount('9.996')).toBe('10.00');
+    expect(normalizePaymentAmount('9007199254740993.254')).toBe(roundMoney('9007199254740993.254'));
+    expect(normalizePaymentAmount('9007199254740993.255')).toBe(roundMoney('9007199254740993.255'));
     expect(normalizePaymentAmount('9007199254740993.254')).toBe('9007199254740993.25');
     expect(normalizePaymentAmount('9007199254740993.255')).toBe('9007199254740993.26');
     expect(paymentAmountError('10.004', '10.00')).toBeNull();
@@ -104,12 +110,18 @@ describe('payment idempotency key lifecycle', () => {
     expect(reopened.claim('amount:50.00|ref:', 'invoice-1')).toBe('key-a');
   });
 
-  it('keeps the same key when a balance refetch retargets the amount', () => {
-    const attempt = createPaymentAttempt(() => 'key-a');
-    expect(attempt.claim('amount:50.00|ref:REF-1', 'invoice-1')).toBe('key-a');
-    attempt.release();
-    attempt.retarget('amount:40.00|ref:REF-1');
-    expect(attempt.claim('amount:40.00|ref:REF-1', 'invoice-1')).toBe('key-a');
+  it('keeps the original key when a later balance is not a new request body', () => {
+    const first = createPaymentAttempt(() => 'key-a');
+    const body = 'amount:50.00|ref:REF-1';
+    expect(first.claim(body, 'invoice-1')).toBe('key-a');
+    first.release();
+    const reopened = createPaymentAttempt(() => 'key-b');
+    expect(reopened.claim(body, 'invoice-1')).toBe('key-a');
+    expect(reopened.claim('amount:40.00|ref:REF-1', 'invoice-1')).toBeNull();
+    reopened.release();
+    expect(reopened.claim('amount:40.00|ref:REF-1', 'invoice-1')).toBe('key-b');
+    reopened.release();
+    expect(reopened.claim(body, 'invoice-1')).toBe('key-a');
   });
 });
 
