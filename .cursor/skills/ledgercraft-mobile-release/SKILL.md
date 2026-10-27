@@ -13,19 +13,20 @@ specific facts and decisions that should not be rediscovered.
 
 | Item | Value |
 | --- | --- |
-| Expo owner/project | `@jeevan90/easybizinvoice-mobile` |
-| EAS project ID | `7148323b-502c-447e-96c3-a5c1704c40c9` |
+| Expo owner/project | `@jnok/easybizinvoice` (owner `jnok`) |
+| EAS project ID | `6bb662da-bb2f-405d-876f-cea471908f74` |
+| Previous EAS project (retired) | `@jeevan90/easybizinvoice-mobile`, `7148323b-502c-447e-96c3-a5c1704c40c9` |
 | App name/version | `easybizinvoice` / `1.0.0` |
 | iOS bundle identifier | `com.easybizinvoice.app` |
 | Apple team | `88282K637B` |
-| App Store Connect app ID | `6818787287` |
+| App Store Connect app ID | `6818787287` (iOS credentials on the jnok project not yet checked) |
 | App Store Connect provider | `128291446` |
 | TestFlight group | `Team (Expo)` |
 | Mobile directory | `mobile/` |
 
 Useful pages:
 
-- EAS project: https://expo.dev/accounts/jeevan90/projects/easybizinvoice-mobile
+- EAS project: https://expo.dev/accounts/jnok/projects/easybizinvoice
 - App Store Connect TestFlight: https://appstoreconnect.apple.com/apps/6818787287/testflight/ios
 
 These identifiers are configuration, not authorization to build, submit, invite
@@ -78,7 +79,9 @@ committed.
 
 Before requesting a paid build:
 
-1. Confirm `npx --yes eas-cli@latest whoami` resolves to `jeevan90`.
+1. Confirm `npx --yes eas-cli@latest whoami` resolves to a member or robot of the
+   `jnok` account, and `npx --yes eas-cli@25.3.0 project:info` resolves
+   `@jnok/easybizinvoice`.
 2. Inspect `app.config.js`, `app.json`, and `eas.json`; confirm the stable IDs
    above and the intended version.
 3. Inspect the production EAS environment. Restore missing public values before
