@@ -2,6 +2,7 @@ import {
   customerSchema,
   errorEnvelopeSchema,
   invoiceSchema,
+  paymentListResponseSchema,
   saleResponseSchema,
   salesSummarySchema,
 } from '@ledgercraft/contracts';
@@ -10,6 +11,7 @@ import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
 import { organisationMemberships } from '../../db/schema/identity';
+import { invoices } from '../../db/schema/invoices';
 import { getDatabaseUrl } from '../../env';
 import { createAuth } from '../auth/auth';
 import { decimal, roundMoney } from '../invoices/money';
@@ -326,6 +328,51 @@ describe('GET /api/sales/summary', () => {
         { description: 'Cake', quantity: '1.00', amount: '9.00' },
       ]);
       expect(summary.sales.map((row) => row.invoiceId)).toEqual(sales.map((sale) => sale.invoice.id));
+    });
+  });
+
+  it('splits one settled invoice across two payment methods', async () => {
+    await withOwner('Summary Split', async ({ app, owner }) => {
+      const seed = await ringSale(app, owner.cookie, 'summary-split-seed', {
+        lines: [{ label: 'Pie', quantity: '1', price: '4.50' }],
+        paymentMethod: 'cash',
+      });
+      const day = seed.invoice.date;
+      const split = await createInvoice(app, owner.cookie, seed.invoice.customerId, day, 'Split loaf', '10.00');
+      await payInvoice(app, owner.cookie, split.id, '4.00', day, 'cash');
+      await payInvoice(app, owner.cookie, split.id, '6.00', day, 'credit_card');
+
+      const summary = await readSummary(app, owner.cookie, day);
+      expect(summary.sales.map((row) => row.invoiceId)).toEqual([seed.invoice.id, split.id]);
+      expect(summary.count).toBe(2);
+      expect(summary.grossTotal).toBe(sumMoney([seed.invoice.total, split.total]));
+      expect(summary.paymentMethods).toEqual([
+        { paymentMethod: 'cash', total: '8.50' },
+        { paymentMethod: 'credit_card', total: '6.00' },
+      ]);
+      expect(sumMoney(summary.paymentMethods.map((row) => row.total))).toBe(summary.grossTotal);
+    });
+  });
+
+  it('omits a cancelled sale even when its payment row stays completed', async () => {
+    await withOwner('Summary Cancelled', async ({ app, db, owner }) => {
+      const sale = await ringSale(app, owner.cookie, 'summary-cancelled', {
+        lines: [{ label: 'Pie', quantity: '1', price: '4.50' }],
+        paymentMethod: 'cash',
+      });
+      await db.update(invoices).set({ lifecycleStatus: 'cancelled' }).where(eq(invoices.id, sale.invoice.id));
+
+      const payments = paymentListResponseSchema.parse(await (await app.request('/api/payments', {
+        headers: { Cookie: owner.cookie },
+      })).json());
+      expect(payments.payments).toEqual([
+        expect.objectContaining({ invoiceId: sale.invoice.id, status: 'completed', amount: sale.invoice.total }),
+      ]);
+      const summary = await readSummary(app, owner.cookie, sale.invoice.date);
+      expect(summary.sales).toEqual([]);
+      expect(summary.count).toBe(0);
+      expect(summary.grossTotal).toBe('0.00');
+      expect(summary.paymentMethods).toEqual([]);
     });
   });
 
