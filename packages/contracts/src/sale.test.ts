@@ -110,6 +110,11 @@ describe('sale contracts', () => {
     expect(parsed.paymentMethod).toBe('credit_card');
     expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '9.00' }], paymentMethod: 'cash' }).success).toBe(true);
     expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '9.00' }], paymentMethod: 'bank_transfer' }).success).toBe(true);
+    expect(createSaleRequestSchema.safeParse({
+      lines: Array.from({ length: 100 }, () => ({ quantity: '1', price: '4.50' })),
+      paymentMethod: 'cash',
+    }).success).toBe(true);
+    expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '4.5' }], paymentMethod: 'cash' }).success).toBe(true);
   });
 
   it('rejects other payment methods, empty carts, non-positive amounts, and ownership ids', () => {
@@ -122,6 +127,12 @@ describe('sale contracts', () => {
     expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '-1', price: '4.50' }], paymentMethod: 'cash' }).success).toBe(false);
     expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '0' }], paymentMethod: 'cash' }).success).toBe(false);
     expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '-4.50' }], paymentMethod: 'cash' }).success).toBe(false);
+    expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1', price: '4.501' }], paymentMethod: 'cash' }).success).toBe(false);
+    expect(createSaleRequestSchema.safeParse({ lines: [{ quantity: '1.001', price: '4.50' }], paymentMethod: 'cash' }).success).toBe(false);
+    expect(createSaleRequestSchema.safeParse({
+      lines: Array.from({ length: 101 }, () => line),
+      paymentMethod: 'cash',
+    }).success).toBe(false);
     expect(createSaleRequestSchema.safeParse({
       lines: [line],
       paymentMethod: 'cash',

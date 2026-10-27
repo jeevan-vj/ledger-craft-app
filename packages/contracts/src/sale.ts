@@ -5,7 +5,7 @@ import { paymentReceiptSchema } from './receipt';
 
 const positiveAmount = z
   .string()
-  .regex(/^\d+(\.\d+)?$/)
+  .regex(/^\d+(?:\.\d{1,2})?$/, 'Amount must have at most 2 decimal places')
   .refine((value) => Number(value) > 0, 'Amount must be greater than 0');
 
 export const salePaymentMethodSchema = z.enum(['cash', 'credit_card', 'bank_transfer']);
@@ -30,7 +30,7 @@ export const saleLineSchema = z.union([saleCatalogLineSchema, saleCustomLineSche
 
 export const createSaleRequestSchema = z
   .object({
-    lines: z.array(saleLineSchema).min(1),
+    lines: z.array(saleLineSchema).min(1).max(100),
     paymentMethod: salePaymentMethodSchema,
     customerId: z.string().uuid().nullable().optional(),
     referenceNumber: z.string().trim().min(1).max(100).nullable().optional(),

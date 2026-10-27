@@ -1,8 +1,8 @@
 # AGENTS.md
 
 **POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales`
-takes a cart of catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
-and an optional customer. In one organisation transaction it finds or creates the
+takes a cart of at most 100 catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
+and an optional customer. Quantity and price are positive decimal text with at most 2 decimal places. In one organisation transaction it finds or creates the
 walk-in customer (tag `walk-in`, one per organisation), creates a GST-inclusive
 invoice dated today in the business timezone through `createInvoiceInTx`, records
 a completed payment for the full total through the existing `createPaymentInTx`,

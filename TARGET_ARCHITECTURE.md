@@ -5,7 +5,7 @@ the existing invoice, payment, and receipt use cases in one organisation
 transaction. The walk-in customer is tag `walk-in` and is scoped to the
 organisation. The invoice is GST-inclusive and dated today in the business
 timezone. The payment is the invoice total and uses `createPaymentInTx` unchanged.
-`Idempotency-Key` is required. No migration and no sales summary route.
+`Idempotency-Key` is required. The cart allows at most 100 lines, and each quantity and price is positive decimal text with at most 2 decimal places. No migration and no sales summary route.
 
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 SQLite migration `0019_invoice-import-phase2.sql` persists provider-labelled

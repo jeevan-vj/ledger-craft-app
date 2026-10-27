@@ -594,4 +594,55 @@ describe('sale routes', () => {
       }
     });
   });
+
+  it('rolls back the invoice, payment, receipt, and journals when the receipt insert fails', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Sale Rollback');
+        await saveProfile(app, owner.cookie);
+        await sql.exec(`
+          CREATE TRIGGER sales_receipt_insert_fails
+          BEFORE INSERT ON receipts
+          BEGIN
+            SELECT RAISE(ABORT, 'receipt insert failed');
+          END
+        `);
+
+        const failed = await postSale(app, owner.cookie, 'sale-rollback', {
+          lines: [{ quantity: '1', price: '4.50' }],
+          paymentMethod: 'cash',
+        });
+        expect(failed.status).toBe(500);
+        expect(invoiceListResponseSchema.parse(
+          await (await app.request('/api/invoices', { headers: { Cookie: owner.cookie } })).json(),
+        ).invoices).toHaveLength(0);
+        expect(paymentListResponseSchema.parse(
+          await (await app.request('/api/payments', { headers: { Cookie: owner.cookie } })).json(),
+        ).payments).toHaveLength(0);
+        expect(paymentReceiptListResponseSchema.parse(
+          await (await app.request('/api/receipts', { headers: { Cookie: owner.cookie } })).json(),
+        ).receipts).toHaveLength(0);
+        expect(customerListResponseSchema.parse(
+          await (await app.request('/api/customers', { headers: { Cookie: owner.cookie } })).json(),
+        ).customers).toHaveLength(0);
+        const journals = await sql.unsafe('SELECT id FROM journal_entries') as Array<{ id: string }>;
+        const journalLines = await sql.unsafe('SELECT id FROM journal_entry_lines') as Array<{ id: string }>;
+        expect(journals).toHaveLength(0);
+        expect(journalLines).toHaveLength(0);
+
+        await sql.exec('DROP TRIGGER sales_receipt_insert_fails');
+        const recovered = await postSale(app, owner.cookie, 'sale-rollback-recovered', {
+          lines: [{ quantity: '1', price: '4.50' }],
+          paymentMethod: 'cash',
+        });
+        expect(recovered.status).toBe(201);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });
