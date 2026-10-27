@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { positiveAmountAtMostTwoDecimals } from './positive-amount';
 
 const money = z.string().regex(/^\d+(\.\d+)?$/);
 const positiveDecimal = money.refine((value) => /^0*(?:\.0*)?$/.test(value) === false, {
@@ -117,12 +118,12 @@ export const billListResponseSchema = z.object({ bills: z.array(billSchema) });
 
 export const paymentAllocationInputSchema = z.object({
   bankAccountId: z.string().uuid(),
-  amount: positiveDecimal,
+  amount: positiveAmountAtMostTwoDecimals,
 }).strict();
 
 export const recordBillPaymentRequestSchema = z.object({
   bankAccountId: z.string().uuid().optional(),
-  amount: positiveDecimal.optional(),
+  amount: positiveAmountAtMostTwoDecimals.optional(),
   allocations: z.array(paymentAllocationInputSchema).min(2).max(10).optional(),
   paymentDate: date,
   referenceNumber: z.string().nullable().optional(),

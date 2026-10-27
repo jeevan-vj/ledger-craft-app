@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { positiveAmountAtMostTwoDecimals } from './positive-amount';
 
 const money = z.string().regex(/^\d+(\.\d+)?$/);
 const paymentMethod = z.enum(['bank_transfer', 'cash', 'cheque', 'credit_card', 'online']);
@@ -22,16 +23,12 @@ export const createPaymentRequestSchema = z
   .object({
     invoiceId: z.string().uuid(),
     paymentMethod,
-    amount: money,
+    amount: positiveAmountAtMostTwoDecimals,
     paymentDate: z.string().min(1),
     referenceNumber: z.string().nullable().optional(),
     notes: z.string().nullable().optional(),
   })
-  .strict()
-  .refine((value) => Number(value.amount) > 0, {
-    message: 'Amount must be greater than 0',
-    path: ['amount'],
-  });
+  .strict();
 
 export const paymentListResponseSchema = z.object({
   payments: z.array(paymentSchema),

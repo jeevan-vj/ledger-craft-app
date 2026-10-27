@@ -16,6 +16,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
+import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
 import { CreatePaymentRequest, EnhancedInvoice } from '@/types/payment';
 
 const paymentSchema = z.object({
@@ -73,6 +74,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
   const balanceDue = invoice.balanceDue || 0;
   const isPartialPayment = watchedAmount < balanceDue;
   const isOverpayment = watchedAmount > balanceDue;
+  const halfAmount = halfPaymentAmount(balanceDue);
 
   return (
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
@@ -183,15 +185,15 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
               >
                 Full Amount ({invoice.currency || '$'}{(invoice.balanceDue || 0).toFixed(2)})
               </Button>
-              {(invoice.balanceDue || 0) > 100 && (
+              {Number(halfAmount) > 0 && (
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
-                  onClick={() => form.setValue('amount', (invoice.balanceDue || 0) / 2)}
+                  onClick={() => form.setValue('amount', Number(halfAmount), { shouldDirty: true, shouldValidate: true })}
                   className="text-xs"
                 >
-                  Half ({invoice.currency || '$'}{((invoice.balanceDue || 0) / 2).toFixed(2)})
+                  Half ({invoice.currency || '$'}{halfAmount})
                 </Button>
               )}
             </div>
