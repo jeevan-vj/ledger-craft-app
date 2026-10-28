@@ -7,12 +7,21 @@ organisation. The invoice is GST-inclusive and dated today in the business
 timezone. The payment is the invoice total and uses `createPaymentInTx` unchanged.
 `Idempotency-Key` is required. The cart allows at most 100 lines, and each quantity and price is positive decimal text with at most 2 decimal places. `GET /api/sales/summary?date=YYYY-MM-DD` reads that organisation's sales for one stored calendar date: walk-in-tagged customers or invoices named by a `POST /api/sales` idempotency row, with completed payments equal to the invoice total. GST is the sum of invoice `taxAmount`. Amounts are exact decimal strings. No migration. The Expo Sell tab follows the same sale API. It is hidden until the device Quick sale switch is on, that switch defaults off, The charged total is one `roundMoney` of the raw line sum, line amounts are display-only, and cash change uses the same helper. Receipt QR and the receipt sheet are not on this screen.
 
+**Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
+The Workers AI path converts PDFs through the binding's native `toMarkdown`
+operation with PDF metadata disabled, bounds the converted text, and preserves
+the existing untrusted-document prompt boundary before structured extraction.
+Expo camera captures are resized and recompressed locally to JPEG using
+progressively smaller presets until the decoded upload is at most 950,000 bytes.
+The private storage ceiling remains 1 MiB without `DOCUMENTS` R2. Real Workers
+AI, authenticated native-device camera QA, and deployment remain pending.
+
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 SQLite migration `0019_invoice-import-phase2.sql` persists provider-labelled
 review drafts, validation issues, contact selection, and extraction/review state.
 Hono selects OpenAI, optional xAI, then Cloudflare Workers AI, and permits the
-deterministic mock only outside production. Workers AI rejects PDFs and caps
-confidence at 0.6. Document content is untrusted, provider output is strictly
+deterministic mock only outside production. Workers AI caps confidence at 0.6.
+Document content is untrusted, provider output is strictly
 validated, and totals are recomputed in cents. Explicit review commits only a
 draft invoice or bill with a locked original source document and no journal.
 Client UI remains outside this phase. See `docs/invoice-import/phase2.md`.

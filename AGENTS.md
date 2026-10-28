@@ -20,14 +20,24 @@ exact decimal strings. The route requires `invoices.read`. No migration.
 
 The Expo Sell tab is on only when the device Quick sale switch is on. That switch is off by default and stored on the device. Tiles are active catalog items that have a sale price. The charged cart total is the once-rounded sum from `roundMoney`; each line amount is display-only. Cash change uses the same helper. Charge keeps one persisted idempotency key per cart fingerprint until that sale succeeds or returns 409, and Confirm stays locked until the empty cart is saved. An offline charge is refused and nothing is queued. A saved sale clears the cart and shows the invoice number. The receipt QR, share action, and receipt sheet are not on this screen.
 
+**Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
+Cloudflare Workers AI converts retained PDFs to bounded Markdown with metadata
+disabled, wraps that text as an untrusted document, and then runs the existing
+structured extraction. Camera captures are resized and recompressed to JPEG on
+device through `expo-image-manipulator`, retrying progressively smaller presets
+until the upload is at most 950,000 bytes. Chosen files retain the existing
+private-storage limit: 1 MiB without the reviewed `DOCUMENTS` R2 binding. Focused
+API and mobile tests and strict TypeScript pass; real Workers AI, authenticated
+camera/device QA, and production deployment remain pending.
+
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add
 OpenAI-first/xAI-then-Workers-AI structured extraction, a deterministic non-production
 mock and Workers-AI demo binding, untrusted-document prompt boundaries, integer-cent total validation,
 duplicate/contact review, and explicit SALES/PURCHASE draft commit. Commits create
 only draft invoices or bills, attach the original as a locked source document,
-and never send, pay, post, or journal. Workers AI rejects PDFs and caps confidence
-at 0.6. See `docs/invoice-import/phase2.md`.
+and never send, pay, post, or journal. Workers AI caps confidence at 0.6. See
+`docs/invoice-import/phase2.md`.
 
 **Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
 Migration `0017_invoice-import-phase0.sql` adds invoice `external_number` and

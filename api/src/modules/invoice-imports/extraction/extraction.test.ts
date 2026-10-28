@@ -5,6 +5,7 @@ import { createMockExtractionProvider } from './mock-provider';
 import { createExtractionProvider } from './provider-factory';
 import { extractPdfText } from './document-content';
 import { recomputeAndValidateDraft } from '../draft-validation';
+import type { WorkersAiBinding } from '../../ai/workers-ai';
 
 const fixtureDir = resolve(import.meta.dirname, '../__fixtures__');
 
@@ -166,12 +167,44 @@ describe('invoice import extraction providers', () => {
     expect(ai.run).toHaveBeenCalledTimes(1);
   });
 
-  it('rejects PDFs before calling Workers AI', async () => {
-    const ai = { run: vi.fn() };
+  it('converts PDFs to bounded text before calling Workers AI', async () => {
+    const payload = await providerPayload();
+    const convertedText = `# Invoice\nSparkle Supplies Ltd\nTotal NZD 115.00\n${'x'.repeat(40_000)}END-OF-UNBOUNDED-DOCUMENT`;
+    const toMarkdown = vi.fn<NonNullable<WorkersAiBinding['toMarkdown']>>(async () => ({
+        format: 'markdown',
+        data: convertedText,
+      }));
+    const run = vi.fn<WorkersAiBinding['run']>(async () => ({ response: payload }));
+    const ai: WorkersAiBinding = { toMarkdown, run };
     const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    const result = await provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Test' });
+
+    expect(result).toMatchObject({ provider: 'workers-ai', total: '115.00' });
+    expect(toMarkdown).toHaveBeenCalledTimes(1);
+    const [document, options] = toMarkdown.mock.calls[0]!;
+    expect(document.name).toBe('sparkle-supplies-bill.pdf');
+    expect(document.blob).toBeInstanceOf(Blob);
+    expect(document.blob.type).toBe('application/pdf');
+    expect(options).toEqual({ conversionOptions: { pdf: { metadata: false } } });
+    const request = run.mock.calls[0]?.[1] as {
+      messages: Array<{ content: Array<{ text?: string }> }>;
+    };
+    const documentText = request.messages[1]?.content[1]?.text ?? '';
+    expect(documentText).toContain('BEGIN_UNTRUSTED_DOCUMENT');
+    expect(documentText).toContain('Total NZD 115.00');
+    expect(documentText).not.toContain('END-OF-UNBOUNDED-DOCUMENT');
+    expect(documentText.length).toBeLessThan(30_100);
+  });
+
+  it('fails safely when Workers AI cannot convert a PDF', async () => {
+    const toMarkdown = vi.fn<NonNullable<WorkersAiBinding['toMarkdown']>>(async () => ({ format: 'error', error: 'provider detail' }));
+    const run = vi.fn<WorkersAiBinding['run']>();
+    const ai: WorkersAiBinding = { toMarkdown, run };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+
     await expect(provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Test' }))
-      .rejects.toMatchObject({ status: 415, cause: { code: 'EXTRACTION_UNSUPPORTED_DOCUMENT' } });
-    expect(ai.run).not.toHaveBeenCalled();
+      .rejects.toMatchObject({ status: 502, cause: { code: 'EXTRACTION_PROVIDER_ERROR' } });
+    expect(run).not.toHaveBeenCalled();
   });
 
   it('keeps cent-level totals validation around Workers AI drafts', async () => {
