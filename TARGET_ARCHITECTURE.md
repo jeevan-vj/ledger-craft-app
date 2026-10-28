@@ -104,8 +104,9 @@ financial-year settings, a precision-aware currency catalogue, explicit dated
 exchange rates, and immutable document-rate usage. Hono exposes canonical
 decimal DTOs; web and Expo expose responsive settings. Invoices, bills,
 expenses, and explicit-rate base/foreign transfers snapshot exact transaction
-and base amounts and reject missing rates. Base-currency reporting and
-realized/unrealized posting remain dependent on AKP-05 authoritative ledger rules.
+and base amounts and reject missing rates. Financial reports stay NZD-only.
+Foreign-currency documents are excluded from GST rather than converted, and
+realized or unrealized exchange-difference journals are not posted.
 
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
 Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
@@ -465,9 +466,10 @@ general ledger, account statements, aging, sales/purchase and tax summaries are
 calculated by Hono from posted journal lines, never trusted from client totals.
 Migration `0013_server-authoritative-reports.sql` adds the reporting indexes and
 posted-journal immutability triggers. Query contracts validate date range, cash/accrual basis, comparison period and
-tenant-scoped filters. Base currency is NZD-only until AKP-06 supplies exchange
-rates, and category filtering remains deferred until category dimensions are
-represented on journal lines.
+tenant-scoped filters. Report `baseCurrency` is NZD only. Document exchange
+rates exist, and reports do not convert foreign amounts or post
+exchange-difference journals. Category filtering remains deferred until category
+dimensions are represented on journal lines.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 

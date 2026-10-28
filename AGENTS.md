@@ -95,8 +95,9 @@ Currency/localization is implemented locally through migration
 precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
 formats, and financial-year start. Used rates are immutable. Invoice, bill,
 expense, and explicit-rate base/foreign transfer records snapshot transaction
-and base values. Do not claim base-currency reports or realized/unrealized
-postings until AKP-05 ledger/report rules land.
+and base values. Financial reports stay NZD-only: foreign-currency documents are
+excluded from GST rather than converted, and realized or unrealized
+exchange-difference journals are not posted.
 
 ## Stack that is current
 
@@ -127,10 +128,11 @@ excluded and posted journals are immutable at both service and SQLite-trigger
 boundaries. Hono exposes financial statements, general ledger, and account
 statements with organisation isolation, date/basis/comparison and relevant
 account/customer/vendor filters. Web provides responsive statements, ledger,
-aging, tax and CSV workflows; Expo provides native period/basis summaries. The
-base currency is deliberately restricted to NZD until AKP-06 adds exchange-rate
-accounting. Category filtering is accepted by the shared query contract but is
-not yet applied to reports because journal lines do not carry category links.
+aging, tax and CSV workflows; Expo provides native period/basis summaries. Report
+`baseCurrency` accepts only NZD. Document exchange rates exist, and reports do
+not convert foreign amounts or post exchange-difference journals. Category
+filtering is accepted by the shared query contract but is not applied, because
+journal lines do not carry category links.
 
 Configurable dashboards and saved reports are implemented locally through
 `api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and
