@@ -89,6 +89,8 @@ Before requesting a paid build:
 4. Run risk-proportionate mobile verification. At minimum, run the focused tests
    for the changed feature and an iOS production Expo export. Follow
    `ledgercraft-verify` and `ledgercraft-mobile-ui` for broader changes.
+   Expo UI evidence and Device checks pending are the Mobile section of
+   `ledgercraft-verify-ui`.
 5. Report unrelated known test or type-check failures separately. Do not claim a
    full green suite when only focused verification passed.
 

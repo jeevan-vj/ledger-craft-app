@@ -1,6 +1,6 @@
 # Software factory pipeline
 
-Label names and risk rules for EasyBizInvoice. `TARGET_ARCHITECTURE.md` stays the architecture spec. This file is the intake and merge contract.
+Label names, risk rules, and the review loop for EasyBizInvoice. `TARGET_ARCHITECTURE.md` stays the architecture spec. This file is the intake and merge contract. The Review loop section below is the only copy of those steps. `ledgercraft-reviewer`, `ledgercraft-verify`, and `AGENTS.md` link here.
 
 An auto-merge gate is not implemented. When it is, it auto-merges only a pull request labeled `auto-merge-eligible`. That label is allowed only when every condition in stage 6 holds. `review-passed` plus `risk:low` is not enough.
 
@@ -40,6 +40,18 @@ These labels describe the handoff. Nothing in this repository moves them automat
    - no changed file matches a path in `.github/CODEOWNERS`
 
 `risk:medium` and `risk:high` stay on `needs-human`. A person merges them. Nothing in this repository applies the label or merges on its own.
+
+## Review loop
+
+This section is the only copy of the review loop. Skills and `AGENTS.md` link here.
+
+1. The builder runs a self-review against `ledgercraft-reviewer` before opening the pull request, opens it with the full evidence table from `ledgercraft-verify`, and waits until every job in `.github/workflows/ci.yml` is green.
+2. An independent reviewer agent, in a different session from the builder, reviews and posts one verdict comment. The comment shape is in `ledgercraft-reviewer`: **PASS** or **CHANGES REQUESTED**, with blockers, should-fixes, and nits. A PASS that recommends merge is valid only after that skill's head-commit check.
+3. Review fixes are made by the same builder agent and environment that implemented the pull request, not a new agent. The builder fixes every blocker and should-fix, plus cheap in-scope nits, pushes, replies on each thread, and waits until CI is green again.
+4. The builder escalates to the human instead of fixing anything that changes scope, money or GST logic, migrations, auth, or a previously approved product decision. Use `needs-human` when the token can write labels.
+5. On a revision, the reviewer re-reviews only the delta since its last reviewed commit. The verdict comment names that commit range. The reviewer does not review the whole pull request again.
+6. Cap: at most 2 delta re-review rounds after the first review. If the pull request is still not PASS, stop and escalate to the human with the open items. Do not start a third delta round.
+7. A person merges `risk:medium` and `risk:high`. Only `risk:low` that meets every condition in stage 6 may be labeled `auto-merge-eligible`. The auto-merge gate is not implemented. The author does not apply `review-passed` or `auto-merge-eligible`.
 
 ## Risk rules
 

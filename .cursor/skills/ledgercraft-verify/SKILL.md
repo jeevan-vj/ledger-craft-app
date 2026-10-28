@@ -1,15 +1,17 @@
 ---
 name: ledgercraft-verify
-description: Verify a LedgerCraft change locally with the same commands as CI before opening or updating a pull request. Use for verify, verify before PR, CI parity, smoke, healthz, risk labels, auto-merge, or evidence. Paste real command output.
+description: Verify a LedgerCraft change locally with the same commands as CI before opening or updating a pull request. Use for verify, verify before PR, CI parity, smoke, healthz, risk labels, auto-merge, or evidence. Paste real command output. When .github/workflows/ci.yml changes, update this skill in the same pull request.
 ---
 
 # Verify before a pull request
 
 A change is not verified because it compiles, because a unit test once passed, or because you remember a green run. CI runs every job below on every pull request (no path filter). Run them locally, in this order, and paste the command, the Node version, the exit code, and the summary line into the pull request.
 
+`.github/workflows/ci.yml` is the source of truth for these commands. When that file changes, update this skill in the same pull request.
+
 `pnpm verify:w1` through `pnpm verify:w13` (there is no `verify:w10`) run only the API & contracts job. `pnpm db:up` starts Docker Postgres, which CI does not use. API tests use a temporary SQLite file (`api/src/test/setup-env.ts`). Do not claim CI parity from either command.
 
-Write the bug-fix test first (`ledgercraft-tdd`). Check domain rules (`ledgercraft-invariants`). Browser and PDF evidence is `ledgercraft-verify-ui`. An independent pass is `ledgercraft-reviewer`. The author does not apply `review-passed` or `auto-merge-eligible`.
+Write the bug-fix test first (`ledgercraft-tdd`). Check domain rules (`ledgercraft-invariants`). Web browser, invoice PDF, and Expo UI evidence is `ledgercraft-verify-ui`. Before opening the pull request, self-review against `ledgercraft-reviewer`. The review loop is the Review loop section of `docs/PIPELINE.md`. The author does not apply `review-passed` or `auto-merge-eligible`.
 
 ## Node
 
@@ -73,13 +75,13 @@ Pass: the Vitest summary line and exit 0. A failed test fails the job. There is 
 
 ### 4. Web build (Node 22)
 
-Job **Web build**. Exit 0.
+Job **Web build**. Exit 0. `prebuild` runs `scripts/generate-version.js`. `postbuild` runs `scripts/verify-build-version.mjs`.
 
 ```bash
 pnpm build
 ```
 
-Pass: Vite finishes and `scripts/verify-build-version.mjs` exits 0 (`prebuild` / `postbuild`).
+Pass: Vite finishes. `prebuild` has run `scripts/generate-version.js`. `postbuild` has run `scripts/verify-build-version.mjs` and that script exits 0.
 
 ### 5. API & contracts (Node 24)
 
@@ -94,14 +96,15 @@ Pass: API Vitest, contracts Vitest, and both typechecks exit 0. `node -v` in tha
 
 ### 6. Release readiness (Node 22)
 
-Job **Release readiness script**. No `pnpm install`. Exit 0 on both. These are the two steps in `.github/workflows/ci.yml`.
+Job **Release readiness script**. No `pnpm install`. These are the three steps in `.github/workflows/ci.yml`.
 
 ```bash
-node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs
+node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
 node --test scripts/upload-web-sourcemaps.test.mjs
+node scripts/verify-akaunting-core.mjs --report
 ```
 
-Pass: each run ends with `# fail 0`.
+Pass: each `node --test` run ends with `# fail 0`, and `node scripts/verify-akaunting-core.mjs --report` exits 0. Report mode must exit 0. This job does not run strict mode.
 
 ### 7. Mobile (Node 20)
 
@@ -125,7 +128,7 @@ CI jobs run in parallel. Do not end the run while any of them is pending. `gh pr
 
 If a job fails immediately and the annotation says the job was not started because recent account payments have failed, or a spending limit needs to be increased, paste that annotation and stop. Do not edit a workflow, rerun in a loop, or change tests to get past it.
 
-Draft [PR #63](https://github.com/jeevan-vj/ledger-craft-app/pull/63) proposes `.github/lint-baseline.json` and warning ceilings. Until that is on `main`, the ceilings are 468 and 728 in `.github/workflows/ci.yml`. [PR #15](https://github.com/jeevan-vj/ledger-craft-app/pull/15) adds `Verification evidence (experimental)`, which is not on `main`. Do not require a check named `verify`, and do not copy that workflow.
+Draft [PR #63](https://github.com/jeevan-vj/ledger-craft-app/pull/63) proposes `.github/lint-baseline.json` and warning ceilings. Until that is on `main`, the ceilings are 468 and 728 in `.github/workflows/ci.yml`. Do not require a GitHub check named `verify`. The jobs in this skill are the jobs in `.github/workflows/ci.yml`.
 
 `SonarCloud Code Analysis` is not a job in `.github/workflows/ci.yml`. A cancelled Sonar check does not by itself fail this list.
 
@@ -189,11 +192,16 @@ Put this in the pull request, filled with real output:
 | Web unit tests (`pnpm test:run`) | | |
 | Web build (`pnpm build`) | | |
 | API & contracts | | |
-| Release readiness (two `node --test` commands) | | |
+| Release readiness (checker tests, web source map tests, Akaunting `--report`) | | |
 | Mobile lint / tsc / Jest / iOS export | | |
 
 ### Screenshots
-UI changes: phone 390×844, and 1440×900 when layout changed. Embed the images.
+Web UI changes: phone 390×844, and 1440×900 when layout changed. Embed the images. A mock or static render is labelled as such.
+
+### Mobile screenshots / device checks
+Expo UI changes: Jest and React Native Testing Library results for loading, empty, error, and success, plus screenshots or a short recording. Label the platform and how it was produced (emulator, simulator, or Expo web). A mock or static render is labelled as such. Rules: the Mobile section of `ledgercraft-verify-ui`.
+
+Device checks pending: named platform checks, or none
 
 ### Risk
 - Label: `risk:` because …
@@ -216,4 +224,4 @@ Human steps, or none. Release to Cloudflare runs only after CI succeeds on `main
 - Edit a snapshot, fixture, or golden file so the assertion passes
 - Touch files that the change does not need
 - End the run while CI is still pending
-- Treat Docker Postgres, `pnpm verify:w13`, or the experimental workflow on PR #15 as CI
+- Treat Docker Postgres or `pnpm verify:w13` as CI
