@@ -22,7 +22,7 @@ Launch specialists with Task `subagent_type: generalPurpose` (explore for invent
 | Web | architecture, tdd, vertical-slice, project-guide UI | `src/` Query hooks and UI | Drizzle, mobile native |
 | Mobile | architecture, tdd, vertical-slice | `mobile/` | Web router, API SQL |
 | Verification | tdd, verify, verify-ui, invariants, architecture | Tests, CI-matching commands, UI/PDF evidence | Shipping without a failing test first; claiming CI without pasted output; Playwright against hosted Supabase |
-| Reviewer | reviewer, verify, invariants | A verdict and inline comments on someone else's pull request | Pushing, approving, merging, or reviewing a pull request this session authored |
+| Reviewer | reviewer, verify, invariants, `docs/PIPELINE.md` Review loop | A verdict and inline comments on someone else's pull request | Pushing, approving, merging, or reviewing a pull request this session authored |
 
 ## Prompt template
 

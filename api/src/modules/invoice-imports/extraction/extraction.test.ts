@@ -138,6 +138,7 @@ describe('invoice import extraction providers', () => {
     expect(ai.run).toHaveBeenCalledTimes(2);
     expect(ai.run.mock.calls[0]?.[0]).toBe('@cf/test/model');
     expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('previous reply was not valid JSON for the schema');
+    expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('response: invalid JSON');
     expect(result.provider).toBe('workers-ai');
     expect(result.confidence.total).toEqual({ value: 0.6, label: 'Check' });
     expect(result.confidence.lineItems.every((item) => item.value <= 0.6 && item.label !== 'High')).toBe(true);
@@ -187,13 +188,83 @@ describe('invoice import extraction providers', () => {
     expect(document.blob.type).toBe('application/pdf');
     expect(options).toEqual({ conversionOptions: { pdf: { metadata: false } } });
     const request = run.mock.calls[0]?.[1] as {
-      messages: Array<{ content: Array<{ text?: string }> }>;
+      messages: Array<{ content: string }>;
+      response_format?: unknown;
     };
-    const documentText = request.messages[1]?.content[1]?.text ?? '';
+    expect(run.mock.calls[0]?.[0]).toBe('@cf/meta/llama-3.3-70b-instruct-fp8-fast');
+    expect(request.response_format).toEqual({
+      type: 'json_schema',
+      json_schema: expect.objectContaining({ type: 'object' }),
+    });
+    const documentText = request.messages[1]?.content ?? '';
     expect(documentText).toContain('BEGIN_UNTRUSTED_DOCUMENT');
     expect(documentText).toContain('Total NZD 115.00');
     expect(documentText).not.toContain('END-OF-UNBOUNDED-DOCUMENT');
     expect(documentText.length).toBeLessThan(30_100);
+  });
+
+  it('normalizes common invoice formats before strict validation', async () => {
+    const payload = structuredClone(await providerPayload());
+    payload.issueDate = '1 Jul 2026';
+    payload.dueDate = '31 July 2026';
+    payload.currency = 'nzd';
+    payload.lineItems = [
+      { description: 'Royalty 14% Jul 2026', quantity: 0.14, unitPrice: '3,977.12', amount: 'NZD 556.80', gstRate: '15%' },
+      { description: 'Email service', quantity: 1, unitPrice: '$9.95', amount: 9.95, gstRate: '15 %' },
+    ];
+    payload.net = 'NZ$ 566.75';
+    payload.gst = '$85.01';
+    payload.total = '651.76 NZD';
+    payload.suggestedDirection = 'purchase';
+    payload.thirdPartyIssued = 'false';
+    const confidence = payload.confidence as Record<string, unknown>;
+    payload.confidence = Object.fromEntries(Object.keys(confidence).map((key) => [
+      key,
+      key === 'lineItems'
+        ? [{ value: '0.92', label: 'Missing' }, { value: 2, label: 'High' }]
+        : { value: '0.92', label: 'Missing' },
+    ]));
+
+    const ai: WorkersAiBinding = {
+      toMarkdown: async () => ({ format: 'markdown', data: '# TAX INVOICE\nRINV-13880\nTOTAL NZD 651.76' }),
+      run: vi.fn(async () => ({ response: payload })),
+    };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+
+    const result = await provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Crystal Touch Limited' });
+
+    expect(result).toMatchObject({
+      issueDate: '2026-07-01', dueDate: '2026-07-31', currency: 'NZD',
+      net: '566.75', gst: '85.01', total: '651.76', suggestedDirection: 'PURCHASE',
+      thirdPartyIssued: false,
+      lineItems: [
+        { quantity: '0.14', unitPrice: '3977.12', amount: '556.80', gstRate: '15' },
+        { quantity: '1', unitPrice: '9.95', amount: '9.95', gstRate: '15' },
+      ],
+    });
+    expect(result.confidence.lineItems).toEqual([
+      { value: 0.6, label: 'Check' },
+      { value: 0.6, label: 'Check' },
+    ]);
+  });
+
+  it('includes safe validation paths in the Workers AI retry prompt', async () => {
+    const invalid = structuredClone(await providerPayload()) as Record<string, unknown>;
+    invalid.total = 'not a total';
+    const valid = await providerPayload();
+    const ai: WorkersAiBinding = {
+      run: vi.fn()
+        .mockResolvedValueOnce({ response: invalid })
+        .mockResolvedValueOnce({ response: valid }),
+    };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+
+    await expect(provider.extractDocument(
+      await fixture('invoice-photo.jpg', 'image/jpeg'),
+      { organisationName: 'Crystal Touch Cleaning' },
+    )).resolves.toMatchObject({ total: '115.00' });
+
+    expect(JSON.stringify((ai.run as ReturnType<typeof vi.fn>).mock.calls[1]?.[1])).toContain('total: Expected a non-negative decimal string');
   });
 
   it('fails safely when Workers AI cannot convert a PDF', async () => {

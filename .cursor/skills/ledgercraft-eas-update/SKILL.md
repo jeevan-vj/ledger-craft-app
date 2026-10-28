@@ -36,8 +36,10 @@ or review request does not authorize a production update.
    Use that version explicitly; the older installed CLI can fail under Node 26.
 3. Run the mobile checks in `ledgercraft-verify`: lint, TypeScript, relevant tests,
    and native exports; use the full suite when scope warrants it. Use Node 20 to
-   match mobile CI. Do not use Expo `--platform all` to validate native-only changes:
-   it also exports the Expo web target, which has a native bottom-tabs limitation.
+   match mobile CI. Expo UI evidence and Device checks pending are the Mobile
+   section of `ledgercraft-verify-ui`. Do not use Expo `--platform all` to validate
+   native-only changes: it also exports the Expo web target, which has a native
+   bottom-tabs limitation.
 4. Compare runtime fingerprints using the actual target environment:
 
    ```sh

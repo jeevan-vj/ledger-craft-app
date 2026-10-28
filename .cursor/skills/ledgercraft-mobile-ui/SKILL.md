@@ -1,6 +1,6 @@
 ---
 name: ledgercraft-mobile-ui
-description: Build, redesign, or review LedgerCraft Expo interfaces using its Wise-inspired native design system. Use for React Native screens, navigation chrome, mobile components, NativeWind or StyleSheet styling, accessibility, and device QA; not for web-only UI.
+description: Build, redesign, or review LedgerCraft Expo interfaces using its Wise-inspired native design system. Use for React Native screens, navigation chrome, mobile components, NativeWind or StyleSheet styling, accessibility, and device QA; not for web-only UI. Pull-request UI evidence is ledgercraft-verify-ui.
 ---
 
 # LedgerCraft mobile UI
@@ -45,4 +45,4 @@ Do not copy server data into new Zustand state, change API/auth boundaries, or m
 
 `mobile/` is not in the pnpm workspace. Before a pull request, run the Mobile job commands in `ledgercraft-verify` (Node 20: `npm ci`, `npm run lint`, `npx tsc --noEmit --pretty false`, `npm test -- --ci --watchAll=false`, and the iOS export). Paste the output. A missing install is `not run`, not a pass.
 
-For visual changes, inspect a current standard iPhone and one compact width, plus Android when the layout is shared. Exercise keyboard, loading, empty, error, and real-content states the change can hit. Perform one batched visual pass, one correction pass, then stop. A phone-width web screenshot does not replace device QA, and device QA does not replace the Mobile CI commands.
+For visual changes, inspect a current standard iPhone and one compact width, plus Android when the layout is shared. Exercise keyboard, loading, empty, error, and real-content states the change can hit. Perform one batched visual pass, one correction pass, then stop. A phone-width Vite screenshot does not replace device QA, and device QA does not replace the Mobile CI commands. What to paste in the pull request (Jest and React Native Testing Library states, labelled screenshots or a recording, and Device checks pending) is the Mobile section of `ledgercraft-verify-ui`.

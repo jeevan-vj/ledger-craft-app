@@ -25,7 +25,13 @@ Tick one level. The paths live only in `docs/PIPELINE.md`. Tick every high-risk 
 
 ## Screenshots
 
-UI changes: paste before and after images here. Agent-written UI changes also include a phone-width (390×844) screenshot.
+Web UI changes: paste before and after images here. Agent-written web UI changes also include a phone-width (390×844) screenshot, and 1440×900 when layout changed. A mock or static render is labelled as such.
+
+### Mobile screenshots / device checks
+
+Expo UI changes: Jest and React Native Testing Library results for loading, empty, error, and success, plus screenshots or a short recording. Label the platform and how it was produced. Rules: the Mobile section of `.cursor/skills/ledgercraft-verify-ui/SKILL.md`.
+
+Device checks pending:
 
 ## Agent evidence
 
@@ -38,7 +44,7 @@ Authors fill this from `.cursor/skills/ledgercraft-verify/SKILL.md`. A missing t
 | Web unit tests (`pnpm test:run`) | | |
 | Web build (`pnpm build`) | | |
 | API & contracts (Node 24) | | |
-| Release readiness (two `node --test` commands) | | |
+| Release readiness (checker tests, web source map tests, Akaunting `--report`) | | |
 | Mobile lint / tsc / Jest / iOS export (Node 20) | | |
 
 - Risk label and why:

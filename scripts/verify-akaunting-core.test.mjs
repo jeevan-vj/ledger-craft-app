@@ -63,8 +63,11 @@ test('completed required capabilities make strict mode pass', () => {
 
 test('validator rejects a status-only promotion without applicable proof', () => {
   const manifest = clone(loadManifest(manifestPath));
-  const transfer = manifest.coreCapabilities.find(({ id }) => id === 'transfers');
-  transfer.status = 'available';
+  const capability = manifest.coreCapabilities.find(({ id }) => id === 'customer-portal');
+  capability.status = 'available';
+  for (const evidence of Object.values(capability.verification)) {
+    if (evidence.applicable) evidence.paths = [];
+  }
 
   const result = validateManifest(manifest, { repositoryRoot });
   assert.match(result.errors.join('\n'), /paths must contain proof before the capability is available/);

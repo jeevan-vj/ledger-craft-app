@@ -22,7 +22,7 @@ Read, in order:
 2. **Pick** — choose the smallest dependency-ordered mobile gap whose Hono contract already exists. Prefer a complete user journey over a broad screen inventory. Record the selected acceptance boundary and explicit non-goals in the PR.
 3. **Red** — add a failing test for the transport or form/domain rule before production code.
 4. **Green** — implement through the existing authenticated API client, TanStack Query, React Navigation, and mobile design primitives. Keep exact money as decimal text across API/form boundaries.
-5. **Verify** — follow `ledgercraft-verify` and paste the output. The Mobile CI job is Node 20 lint, `tsc`, Jest, and the iOS export. Android export is extra. Perform authenticated native QA only when a safe test session is available; otherwise name it as pending.
+5. **Verify** — follow `ledgercraft-verify` and paste the output. The Mobile CI job is Node 20 lint, `tsc`, Jest, and the iOS export. Android export is extra. Expo UI evidence is the Mobile section of `ledgercraft-verify-ui`, including Device checks pending. Perform authenticated native QA only when a safe test session is available; otherwise name it on that line.
 6. **Sync** — update present-tense status in `TARGET_ARCHITECTURE.md`, `AGENTS.md`, bootstrap, and the parity backlog when capability status changed.
 7. **Review** — inspect the complete diff against the intended base. Fix correctness, accessibility, error/empty/loading states, and any new lint warnings.
 8. **PR** — only when the initiating user or automation prompt authorizes GitHub writes: commit, push the feature branch, open one PR, attach it to the task, and report verification plus remaining gaps.

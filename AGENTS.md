@@ -111,8 +111,9 @@ Currency/localization is implemented locally through migration
 precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
 formats, and financial-year start. Used rates are immutable. Invoice, bill,
 expense, and explicit-rate base/foreign transfer records snapshot transaction
-and base values. Do not claim base-currency reports or realized/unrealized
-postings until AKP-05 ledger/report rules land.
+and base values. Financial reports stay NZD-only: foreign-currency documents are
+excluded from GST rather than converted, and realized or unrealized
+exchange-difference journals are not posted.
 
 ## Stack that is current
 
@@ -143,10 +144,11 @@ excluded and posted journals are immutable at both service and SQLite-trigger
 boundaries. Hono exposes financial statements, general ledger, and account
 statements with organisation isolation, date/basis/comparison and relevant
 account/customer/vendor filters. Web provides responsive statements, ledger,
-aging, tax and CSV workflows; Expo provides native period/basis summaries. The
-base currency is deliberately restricted to NZD until AKP-06 adds exchange-rate
-accounting. Category filtering is accepted by the shared query contract but is
-not yet applied to reports because journal lines do not carry category links.
+aging, tax and CSV workflows; Expo provides native period/basis summaries. Report
+`baseCurrency` accepts only NZD. Document exchange rates exist, and reports do
+not convert foreign amounts or post exchange-difference journals. Category
+filtering is accepted by the shared query contract but is not applied, because
+journal lines do not carry category links.
 
 Configurable dashboards and saved reports are implemented locally through
 `api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and
@@ -195,7 +197,7 @@ functions/api/[[path]].ts    Pages /api proxy
 deploy/api/wrangler.jsonc    Worker + Durable Objects
 deploy/cloudflare.md         release runbook
 docs/sentry-web.md           web Sentry setup
-docs/PIPELINE.md             label names and risk rules
+docs/PIPELINE.md             label names, risk rules, and the review loop
 mobile/SENTRY.md             Expo crash reporting
 .github/labels.yml           repository labels synced on main
 .github/CODEOWNERS           review owners for migrations, money, auth, workflows, release
@@ -207,7 +209,7 @@ Leave `src/` and `mobile/` where they are until a change is only about moving th
 
 `docs/PIPELINE.md` is the label and risk contract, and the only high-risk path list. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, and the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the label file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `.github/CODEOWNERS` requests `@jeevan-vj` on a subset of the high-risk paths. An auto-merge gate is not implemented. `auto-merge-eligible` requires every stage-6 condition in `docs/PIPELINE.md`, not `review-passed` plus `risk:low` alone. The author does not apply `review-passed` or `auto-merge-eligible`.
 
-Before opening a pull request, follow `.cursor/skills/ledgercraft-verify/SKILL.md` and paste the command output. Draft pull request #63 proposes a lint-baseline file and warning ceilings. Until that merges, the web ceilings stay the numbers in `.github/workflows/ci.yml` (468 ESLint errors, 728 TypeScript errors). Pull request #15's experimental verification workflow is not on `main` and is not a required check.
+Before opening a pull request, follow `.cursor/skills/ledgercraft-verify/SKILL.md` and paste the command output. Draft pull request #63 proposes a lint-baseline file and warning ceilings. Until that merges, the web ceilings stay the numbers in `.github/workflows/ci.yml` (468 ESLint errors, 728 TypeScript errors). The review loop is the Review loop section of `docs/PIPELINE.md`.
 
 ## Commands
 
@@ -260,7 +262,7 @@ pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
 
 ## CI
 
-`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Web lint and web typecheck still compare counts with baselines in that workflow; the count gate fails when the count rises. Mobile uses Node 20 and `npm ci`. `npm run lint`, `npx tsc --noEmit`, and `npm test -- --ci --watchAll=false` fail the job directly. The mobile count gate is gone. The iOS export is `npx expo export --platform ios` with `SENTRY_DISABLE_AUTO_UPLOAD=true`. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs` and `node --test scripts/upload-web-sourcemaps.test.mjs`.
+`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Web lint and web typecheck still compare counts with baselines in that workflow; the count gate fails when the count rises. Mobile uses Node 20 and `npm ci`. `npm run lint`, `npx tsc --noEmit --pretty false`, and `npm test -- --ci --watchAll=false` fail the job directly. The mobile count gate is gone. The iOS export is `npx expo export --platform ios` with `EXPO_NO_TELEMETRY=1` and `SENTRY_DISABLE_AUTO_UPLOAD=true`. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs`, then `node --test scripts/upload-web-sourcemaps.test.mjs`, then `node scripts/verify-akaunting-core.mjs --report` (report mode, exit 0). Local commands to paste are in `.cursor/skills/ledgercraft-verify/SKILL.md`. When `ci.yml` changes, that skill changes in the same pull request.
 
 `.github/workflows/release.yml` deploys to Cloudflare after the `CI` workflow succeeds on a push to `main`. It checks out that run's head SHA, uses Node 24, and preserves the existing Worker `BETTER_AUTH_SECRET`. Manual `workflow_dispatch` from `main` still runs verify before deploy. The CI workflow does not receive production secrets. The release-readiness job tests the API/source-map/parity checkers and runs Akaunting parity in report mode; strict parity enforcement remains an explicit release command while the tracked core backlog is open.
 
@@ -293,8 +295,8 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 | `.cursor/skills/ledgercraft-tdd/SKILL.md` | Failing test before production code, including bug fixes |
 | `.cursor/skills/ledgercraft-verify/SKILL.md` | Before a pull request: the CI commands, risk label, and evidence |
 | `.cursor/skills/ledgercraft-invariants/SKILL.md` | Money, GST, totals, share tokens, idempotency, migrations |
-| `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Browser, phone-width screenshots, and invoice PDF |
-| `.cursor/skills/ledgercraft-reviewer/SKILL.md` | Independent review. Does not push, approve, or merge |
+| `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Web browser, invoice PDF, and Expo UI evidence |
+| `.cursor/skills/ledgercraft-reviewer/SKILL.md` | Independent review checklist and verdict. The loop is `docs/PIPELINE.md`. Does not push, approve, or merge |
 | `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Web UI |
 | `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Expo UI |
 | `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS, TestFlight, App Store Connect |
