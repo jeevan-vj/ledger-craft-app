@@ -23,7 +23,7 @@ function stripeCents(value: string): number {
 }
 
 function contextForUser(db: Database, userId: string) {
-  return withOrganisationTx(db, userId, async (_tx, ctx) => ctx);
+  return withOrganisationTx(db, userId, (_tx, ctx) => Promise.resolve(ctx));
 }
 
 function requireManage(ctx: OrganisationContext) {
