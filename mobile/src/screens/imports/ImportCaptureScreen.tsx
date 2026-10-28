@@ -8,6 +8,7 @@ import type { InvoiceImportMimeType } from '@ledgercraft/contracts';
 import { AppPressable, EmptyState, ModernButton } from '@/components/ui';
 import { canImportInvoices } from '@/features/auth/invoiceAccess';
 import { documentImportApi } from '@/features/invoice-import/api/documentImportApi';
+import { prepareCameraPhoto } from '@/features/invoice-import/cameraPhoto';
 import { readDocumentBase64 } from '@/features/invoice-import/sourceFile';
 import { OFFLINE_MESSAGE } from '@/features/auth/api/http';
 import type { RootStackParamList } from '@/navigation/types';
@@ -59,11 +60,17 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
       Alert.alert('Camera access needed', 'Allow camera access to photograph an invoice or bill.');
       return;
     }
-    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 0.85, base64: true });
+    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
     if (result.canceled) return;
     const asset = result.assets[0];
-    if (!asset?.base64) { setError('The photo could not be read. Try again.'); return; }
-    await upload({ uri: asset.uri, filename: asset.fileName ?? `invoice-${Date.now()}.jpg`, contentType: contentType(asset.fileName ?? 'invoice.jpg', asset.mimeType), contentBase64: asset.base64 });
+    if (!asset) { setError('The photo could not be read. Try again.'); return; }
+    try {
+      const prepared = await prepareCameraPhoto(asset);
+      await upload(prepared);
+    } catch (caught) {
+      setStatus('failed');
+      setError(caught instanceof Error ? caught.message : 'The photo could not be prepared. Try again.');
+    }
   };
 
   const chooseFile = async () => {
@@ -96,7 +103,7 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
     </View>}
 
     {error ? <View style={styles.error} accessibilityRole="alert"><Text style={styles.errorTitle}>Upload failed</Text><Text style={styles.errorText}>{error === OFFLINE_MESSAGE ? OFFLINE_MESSAGE : error}</Text>{source ? <ModernButton fullWidth variant="secondary" onPress={() => void upload(source)}>Retry</ModernButton> : null}</View> : null}
-    <Text style={styles.privacy}>The original stays linked to the draft for your records. Nothing is sent, paid, posted or journalled by this import.</Text>
+    <Text style={styles.privacy}>The uploaded document stays linked to the draft for your records. Nothing is sent, paid, posted or journalled by this import.</Text>
   </ScrollView>;
 }
 

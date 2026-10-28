@@ -2,6 +2,20 @@ import { apiError } from '../../http-error';
 
 export type WorkersAiBinding = {
   run(model: string, input: unknown): Promise<unknown>;
+  toMarkdown?(document: {
+    name: string;
+    blob: Blob;
+  }, options?: {
+    conversionOptions?: { pdf?: { metadata?: boolean } };
+  }): Promise<{
+    format: 'markdown' | 'text' | 'error';
+    data?: string;
+    error?: string;
+  } | Array<{
+    format: 'markdown' | 'text' | 'error';
+    data?: string;
+    error?: string;
+  }>>;
 };
 
 export const DEFAULT_WORKERS_AI_MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';

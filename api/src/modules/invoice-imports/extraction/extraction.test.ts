@@ -166,11 +166,42 @@ describe('invoice import extraction providers', () => {
     expect(ai.run).toHaveBeenCalledTimes(1);
   });
 
-  it('rejects PDFs before calling Workers AI', async () => {
-    const ai = { run: vi.fn() };
+  it('converts PDFs to bounded text before calling Workers AI', async () => {
+    const payload = await providerPayload();
+    const convertedText = `# Invoice\nSparkle Supplies Ltd\nTotal NZD 115.00\n${'x'.repeat(40_000)}END-OF-UNBOUNDED-DOCUMENT`;
+    const ai = {
+      toMarkdown: vi.fn(async () => ({
+        format: 'markdown',
+        data: convertedText,
+      })),
+      run: vi.fn(async () => ({ response: payload })),
+    };
     const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+    const result = await provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Test' });
+
+    expect(result).toMatchObject({ provider: 'workers-ai', total: '115.00' });
+    expect(ai.toMarkdown).toHaveBeenCalledTimes(1);
+    const [document, options] = ai.toMarkdown.mock.calls[0]!;
+    expect(document.name).toBe('sparkle-supplies-bill.pdf');
+    expect(document.blob).toBeInstanceOf(Blob);
+    expect(document.blob.type).toBe('application/pdf');
+    expect(options).toEqual({ conversionOptions: { pdf: { metadata: false } } });
+    const request = JSON.stringify(ai.run.mock.calls[0]?.[1]);
+    expect(request).toContain('BEGIN_UNTRUSTED_DOCUMENT');
+    expect(request).toContain('Total NZD 115.00');
+    expect(request).not.toContain('END-OF-UNBOUNDED-DOCUMENT');
+    expect(request.length).toBeLessThan(32_000);
+  });
+
+  it('fails safely when Workers AI cannot convert a PDF', async () => {
+    const ai = {
+      toMarkdown: vi.fn(async () => ({ format: 'error', error: 'provider detail' })),
+      run: vi.fn(),
+    };
+    const provider = createExtractionProvider({ env: { NODE_ENV: 'test', AI: ai } });
+
     await expect(provider.extractDocument(await fixture('sparkle-supplies-bill.pdf'), { organisationName: 'Test' }))
-      .rejects.toMatchObject({ status: 415, cause: { code: 'EXTRACTION_UNSUPPORTED_DOCUMENT' } });
+      .rejects.toMatchObject({ status: 502, cause: { code: 'EXTRACTION_PROVIDER_ERROR' } });
     expect(ai.run).not.toHaveBeenCalled();
   });
 

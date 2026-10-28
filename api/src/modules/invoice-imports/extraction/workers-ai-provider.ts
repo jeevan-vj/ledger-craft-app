@@ -19,8 +19,42 @@ import {
 } from './invoice-prompt';
 import type { InvoiceImportExtractionProvider } from './types';
 
-const UNSUPPORTED_PDF_MESSAGE = 'Cloudflare Workers AI can only read images (PNG/JPEG/WebP). Upload a photo or screenshot of the PDF, or configure OpenAI/xAI for PDFs.';
 const RETRY_NOTE = 'Your previous reply was not valid JSON for the schema. Return only one valid JSON object with every required field.';
+const MAX_CONVERTED_DOCUMENT_CHARS = 30_000;
+
+function boundedConvertedText(value: string): string {
+  // Strip control characters from provider-produced document text before it reaches the model.
+  // eslint-disable-next-line no-control-regex
+  return value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, MAX_CONVERTED_DOCUMENT_CHARS);
+}
+
+async function workersAiDocumentContent(
+  file: { bytes: Uint8Array; mimeType: string; filename: string },
+  ai: WorkersAiBinding,
+): Promise<string | { dataUrl: string }> {
+  if (file.mimeType !== 'application/pdf') return documentContent(file);
+  if (!ai.toMarkdown) {
+    throw apiError(503, 'EXTRACTION_PROVIDER_UNAVAILABLE', 'Cloudflare Workers AI PDF conversion is unavailable');
+  }
+
+  let converted: Awaited<ReturnType<NonNullable<WorkersAiBinding['toMarkdown']>>>;
+  try {
+    converted = await ai.toMarkdown({
+      name: file.filename,
+      blob: new Blob([file.bytes], { type: 'application/pdf' }),
+    }, { conversionOptions: { pdf: { metadata: false } } });
+  } catch (error) {
+    workersAiRunError(error);
+  }
+  const result = Array.isArray(converted) ? converted[0] : converted;
+  const text = result?.format !== 'error' && typeof result?.data === 'string'
+    ? boundedConvertedText(result.data).trim()
+    : '';
+  if (!text) {
+    throw apiError(502, 'EXTRACTION_PROVIDER_ERROR', 'Cloudflare Workers AI could not read the PDF');
+  }
+  return text;
+}
 
 function capConfidence(confidence: InvoiceImportConfidence): InvoiceImportConfidence {
   const value = Math.min(confidence.value, 0.6);
@@ -61,10 +95,7 @@ export function createWorkersAiExtractionProvider(options: {
 
   return {
     async extractDocument(file, context) {
-      if (file.mimeType === 'application/pdf') {
-        throw apiError(415, 'EXTRACTION_UNSUPPORTED_DOCUMENT', UNSUPPORTED_PDF_MESSAGE);
-      }
-      const content = documentContent(file);
+      const content = await workersAiDocumentContent(file, options.ai);
       const organisation = `Organisation: ${context.organisationName.slice(0, 200)}${context.gstNumber ? `; GST: ${context.gstNumber.slice(0, 40)}` : ''}`;
       const documentPart = typeof content === 'string'
         ? { type: 'text', text: untrustedDocumentText(content) }
