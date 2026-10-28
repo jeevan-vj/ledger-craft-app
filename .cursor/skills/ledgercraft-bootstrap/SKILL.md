@@ -9,6 +9,14 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+Stripe Connect invoice payments are implemented locally (2026-10-29) through
+`0021_stripe-connect-phase1.sql`. Owners/admins use Stripe-hosted onboarding;
+NZD Checkout destination charges retain an environment-configured application
+fee, and verified webhook retries create one payment, receipt, and clearing
+posting. Settings and invoice link/QR UI are included. Real Stripe test-mode
+onboarding, Checkout/webhook evidence, screenshots, and deployment remain
+pending authenticated Stripe access.
+
 POS quick sale API is implemented locally (2026-10-27): `POST /api/sales` creates
 the walk-in invoice, full payment, and receipt in one transaction. `Idempotency-Key`
 is required. `GET /api/sales/summary?date=YYYY-MM-DD` aggregates those stored rows

@@ -18,6 +18,9 @@ export const paymentReceiptDataSchema = z.object({
   invoiceTotal: money,
   totalPaid: money,
   balanceDue: money,
+  provider: z.literal('stripe').optional(),
+  paymentIntentId: z.string().startsWith('pi_').optional(),
+  checkoutSessionId: z.string().startsWith('cs_').optional(),
 });
 
 export const paymentReceiptSchema = z.object({

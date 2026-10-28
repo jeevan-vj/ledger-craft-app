@@ -30,6 +30,15 @@ describe('sentry scrubber', () => {
     expect(app).not.toContain('quote-token');
   });
 
+  it('redacts public Stripe payment tokens in page and API paths', () => {
+    const web = redactSecrets('https://easybiz.iamjeevan.com/pay/payment-secret');
+    const api = redactSecrets('https://easybiz.iamjeevan.com/api/public/pay/payment-secret');
+
+    expect(web).toBe('https://easybiz.iamjeevan.com/pay/[redacted]');
+    expect(api).toBe('https://easybiz.iamjeevan.com/api/public/pay/[redacted]');
+    expect(`${web}${api}`).not.toContain('payment-secret');
+  });
+
   it('strips request bodies, cookies, and auth headers, and keeps only the user id', () => {
     const event = scrubSentryEvent({
       user: { id: 'user_1', email: 'owner@example.com', username: 'owner', ip_address: '203.0.113.8' },

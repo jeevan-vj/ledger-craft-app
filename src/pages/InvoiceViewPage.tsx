@@ -4,13 +4,15 @@ import { useAppData } from '@/hooks/useAppData';
 import InvoicePreview from '@/components/invoice/preview/InvoicePreview';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Archive, ChevronLeft, Copy, Download, FileText, FileUp, Printer, RotateCcw, Share2, XCircle } from 'lucide-react';
+import { Archive, ChevronLeft, Copy, CreditCard, Download, FileText, FileUp, Printer, RotateCcw, Share2, XCircle } from 'lucide-react';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
 import { fileToBase64, objectsApi } from '@/features/storage/api/objectsApi';
 import type { InvoiceAttachmentDto, InvoiceHistoryDto } from '@ledgercraft/contracts';
 import { toast } from 'sonner';
 import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
 import { getServerCapabilities } from '@/services/capabilitiesService';
+import { StripePaymentLinkDialog } from '@/components/invoice/StripePaymentLinkDialog';
+import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
 
 const InvoiceViewPage = () => {
   const { id } = useParams<{ id: string }>();
@@ -21,6 +23,7 @@ const InvoiceViewPage = () => {
   const [busy, setBusy] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [cardPaymentOpen, setCardPaymentOpen] = useState(false);
 
   useEffect(() => { void getServerCapabilities().then((value) => setEmailAvailable(value.email === 'available')); }, []);
 
@@ -89,6 +92,7 @@ const InvoiceViewPage = () => {
           )}
           <Button variant="outline" disabled={busy || !['draft', 'cancelled'].includes(invoice.status)} onClick={() => void run(async () => { await invoicesApi.archive(invoice.id); navigate('/invoices'); }, 'Invoice archived')}><Archive className="mr-2 h-4 w-4" />Archive</Button>
           <Button variant="outline" onClick={() => window.print()}><Printer className="mr-2 h-4 w-4" />Print</Button>
+          {invoice.status !== 'cancelled' && Number(invoice.balanceDue) > 0 && <Button variant="outline" onClick={() => setCardPaymentOpen(true)}><CreditCard className="mr-2 h-4 w-4" />Card payment</Button>}
           <Button variant="outline" asChild><label className="cursor-pointer"><FileUp className="mr-2 h-4 w-4" />Attach file<input className="sr-only" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" onChange={(event) => void uploadAttachment(event.target.files?.[0])} /></label></Button>
         </div>
         <div className="mt-4 grid min-w-0 gap-4 md:grid-cols-2">
@@ -114,9 +118,10 @@ const InvoiceViewPage = () => {
       ) : null}
       <InvoicePreview 
         invoice={invoice} 
-        selectedTemplate={(invoice.templateName as any) || "classic"} 
+        selectedTemplate={(invoice.templateName as InvoiceTemplateId) || "classic"}
       />
       <ShareInvoiceModal open={shareOpen} onOpenChange={setShareOpen} invoice={invoice} businessName={businessProfile?.name} />
+      <StripePaymentLinkDialog open={cardPaymentOpen} onOpenChange={setCardPaymentOpen} invoice={{ id: invoice.id, invoiceNumber: invoice.invoiceNumber, balanceDue: Number(invoice.balanceDue), currency: invoice.currency }} />
     </div>
   );
 };

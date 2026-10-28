@@ -1,4 +1,4 @@
-import { Hono } from 'hono';
+import { Hono, type Context } from 'hono';
 import { cors } from 'hono/cors';
 import { errorHandler, notFoundHandler } from './middleware/errors';
 import { requestLogging } from './middleware/logging';
@@ -31,47 +31,40 @@ import { organisationRoutes } from './modules/organisations/organisations.routes
 import { recurringRoutes } from './modules/recurring/recurring.routes';
 import { currencyRoutes } from './modules/currency/currency.routes';
 import { invoiceImportRoutes } from './modules/invoice-imports/invoice-imports.routes';
+import { stripePublicRoutes, stripeRoutes } from './modules/stripe/stripe.routes';
 import type { AppDependencies, AppEnv } from './types';
+
+function setCoreDependencies(c: Context<AppEnv>, deps: AppDependencies) {
+  if (deps.checkDatabase) c.set('checkDatabase', deps.checkDatabase);
+  if (deps.auth) c.set('auth', deps.auth);
+  if (deps.db) c.set('db', deps.db);
+  if (deps.invoiceMailer) c.set('invoiceMailer', deps.invoiceMailer);
+  if (deps.objectStore) c.set('objectStore', deps.objectStore);
+  if (deps.fileStorage) c.set('fileStorage', deps.fileStorage);
+  if (deps.receiptScanner) c.set('receiptScanner', deps.receiptScanner);
+}
+
+function setExtendedDependencies(c: Context<AppEnv>, deps: AppDependencies) {
+  if (deps.chatCompleter) c.set('chatCompleter', deps.chatCompleter);
+  if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
+  if (deps.workersAi) c.set('workersAi', deps.workersAi);
+  if (deps.stripeGateway) c.set('stripeGateway', deps.stripeGateway);
+  if (deps.stripeConfig) c.set('stripeConfig', deps.stripeConfig);
+  if (deps.actorUserId) c.set('actorUserId', deps.actorUserId);
+  if (deps.scheduleRecurringAlarm) c.set('scheduleRecurringAlarm', deps.scheduleRecurringAlarm);
+}
 
 export function createApp(deps: AppDependencies = {}) {
   const app = new Hono<AppEnv>();
 
   app.use('*', requestContext);
   app.use('*', async (c, next) => {
-    if (deps.checkDatabase) {
-      c.set('checkDatabase', deps.checkDatabase);
-    }
-    if (deps.auth) {
-      c.set('auth', deps.auth);
-    }
-    if (deps.db) {
-      c.set('db', deps.db);
-    }
-    if (deps.invoiceMailer) {
-      c.set('invoiceMailer', deps.invoiceMailer);
-    }
-    if (deps.objectStore) {
-      c.set('objectStore', deps.objectStore);
-    }
-    if (deps.fileStorage) {
-      c.set('fileStorage', deps.fileStorage);
-    }
-    if (deps.receiptScanner) {
-      c.set('receiptScanner', deps.receiptScanner);
-    }
-    if (deps.chatCompleter) {
-      c.set('chatCompleter', deps.chatCompleter);
-    }
-    if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
-    if (deps.workersAi) c.set('workersAi', deps.workersAi);
+    setCoreDependencies(c, deps);
+    setExtendedDependencies(c, deps);
     c.set('capabilities', deps.capabilities ?? {
       email: deps.invoiceMailer?.availability === 'available' ? 'available' : 'unavailable',
       ai: deps.receiptScanner || deps.workersAi ? 'available' : 'unavailable',
     });
-    if (deps.actorUserId) {
-      c.set('actorUserId', deps.actorUserId);
-    }
-    if (deps.scheduleRecurringAlarm) c.set('scheduleRecurringAlarm', deps.scheduleRecurringAlarm);
     await next();
   });
   app.use('*', requestLogging);
@@ -93,6 +86,8 @@ export function createApp(deps: AppDependencies = {}) {
     }
     return auth.handler(c.req.raw);
   });
+
+  app.route('/', stripePublicRoutes());
 
   app.use('*', authorizeProtectedRequest);
 
@@ -120,6 +115,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', recurringRoutes());
   app.route('/', currencyRoutes());
   app.route('/', invoiceImportRoutes());
+  app.route('/', stripeRoutes());
   // Financial statements are registered before /reports/:type widget runs.
   app.route('/', reportRoutes());
   app.route('/', dashboardRoutes());

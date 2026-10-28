@@ -19,6 +19,7 @@ describe('organisation contracts', () => {
   it('exposes dedicated invoice-import and AI-use permissions', () => {
     expect(organisationPermissionSchema.parse('invoices.import')).toBe('invoices.import');
     expect(organisationPermissionSchema.parse('ai.use')).toBe('ai.use');
+    expect(organisationPermissionSchema.parse('payments.manage')).toBe('payments.manage');
   });
 
   it('validates organisation, member, and invitation writes', () => {

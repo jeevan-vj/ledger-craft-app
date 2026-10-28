@@ -63,6 +63,7 @@ const BillForm = lazy(() => import("@/pages/BillForm"));
 const Recurring = lazy(() => import("@/pages/Recurring"));
 const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
 const PaymentDetailPage = lazy(() => import("@/pages/PaymentDetailPage"));
+const PayRedirectPage = lazy(() => import("@/pages/PayRedirectPage"));
 // Loading component
 const LoadingScreen = () => (
   <div className="flex h-screen w-screen items-center justify-center">
@@ -249,6 +250,11 @@ const appRoutes: RouteObject[] = [
           },
           { path: "journal-entries", element: <JournalEntriesPage /> },
         ],
+      },
+      {
+        path: "/pay/:token",
+        element: <SuspenseWrapper><PayRedirectPage /></SuspenseWrapper>,
+        errorElement: <RouteErrorFallback />,
       },
       {
         path: "/public/invoice/:invoiceId",

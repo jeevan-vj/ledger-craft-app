@@ -18,6 +18,9 @@ import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 import { createExtractionProvider } from '../modules/invoice-imports/extraction';
 import type { WorkersAiBinding } from '../modules/ai/workers-ai';
+import { stripeRuntimeFromEnv } from '../modules/stripe/stripe.real-gateway';
+import { processVerifiedWebhook } from '../modules/stripe/stripe.service';
+import type { StripeWebhookEvent } from '../modules/stripe/stripe.gateway';
 
 setErrorReporter(createSentryReporter());
 
@@ -40,6 +43,13 @@ export interface Env {
   SENTRY_ENVIRONMENT?: string;
   SENTRY_RELEASE?: string;
   SENTRY_DEBUG_ROUTE?: string;
+  STRIPE_PAYMENTS_ENABLED?: string;
+  STRIPE_SECRET_KEY?: string;
+  STRIPE_WEBHOOK_SECRET?: string;
+  STRIPE_CONNECT_WEBHOOK_SECRET?: string;
+  STRIPE_PLATFORM_FEE_BPS?: string;
+  STRIPE_PLATFORM_FEE_FIXED_CENTS?: string;
+  APP_URL?: string;
   CF_VERSION_METADATA?: WorkerVersionMetadata;
   /** Optional Phase 1 binding. Wrangler keeps it disabled until the bucket exists. */
   DOCUMENTS?: R2Bucket;
@@ -146,6 +156,7 @@ class LedgerBase extends DurableObject<Env> {
         return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
       }
       const sessionAuth = identity ? { api: {getSession: async () => ({user:identity.user})} } as unknown as Auth : undefined;
+      const stripe = stripeRuntimeFromEnv(this.env as unknown as Record<string, string | undefined>);
       const invoiceMailer = createInvoiceMailerFromEnv(this.env);
       const receiptScanner = this.env.OPENAI_API_KEY || this.env.XAI_API_KEY || this.env.AI ? createOpenAiReceiptScanner({ env: this.env }) : undefined;
       const app = createApp({
@@ -165,11 +176,19 @@ class LedgerBase extends DurableObject<Env> {
         },
         actorUserId: userId,
         scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
+        stripeGateway: stripe?.gateway,
+        stripeConfig: stripe?.config,
       });
       return app.fetch(request);
     } catch (error) {
       return reportFailure(error, report);
     }
+  }
+
+  async stripeWebhook(event: StripeWebhookEvent): Promise<{ received: true }> {
+    const stripe = stripeRuntimeFromEnv(this.env as unknown as Record<string, string | undefined>);
+    if (!stripe) throw new Error('Stripe payments are not enabled');
+    return processVerifiedWebhook(this.db, event, stripe.gateway, stripe.config);
   }
 
   async alarm(): Promise<void> {
@@ -181,6 +200,25 @@ class LedgerBase extends DurableObject<Env> {
 export const Identity = Sentry.instrumentDurableObjectWithSentry(sentryOptions, IdentityBase);
 export const Ledger = Sentry.instrumentDurableObjectWithSentry(sentryOptions, LedgerBase);
 
+async function dispatchStripeWebhook(request: Request, env: Env, path: string, requestId: string): Promise<Response> {
+  const stripe = stripeRuntimeFromEnv(env as unknown as Record<string, string | undefined>);
+  if (!stripe) return failureResponse(404, 'NOT_FOUND', 'Not found', requestId);
+  const signature = request.headers.get('stripe-signature');
+  if (!signature) return failureResponse(400, 'VALIDATION_ERROR', 'Missing Stripe signature', requestId);
+  let event: StripeWebhookEvent;
+  try {
+    const secret = path.endsWith('/connect') ? stripe.config.connectWebhookSecret : stripe.config.webhookSecret;
+    event = await stripe.gateway.constructWebhookEvent(new Uint8Array(await request.arrayBuffer()), signature, secret);
+  } catch {
+    return failureResponse(400, 'VALIDATION_ERROR', 'Invalid Stripe webhook signature', requestId);
+  }
+  const rawMetadata = event.data.object.metadata;
+  const metadata = rawMetadata && typeof rawMetadata === 'object' ? rawMetadata as Record<string, unknown> : undefined;
+  const organisationId = typeof metadata?.organisation_id === 'string' ? metadata.organisation_id : undefined;
+  if (!organisationId) return failureResponse(400, 'VALIDATION_ERROR', 'Stripe event is missing organisation routing metadata', requestId);
+  return Response.json(await env.LEDGERS.getByName(organisationId).stripeWebhook(event));
+}
+
 const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const bound = bindRequestId(request);
@@ -191,6 +229,9 @@ const worker = {
       tagActiveRequest(report);
       if (isSentryDebugRouteEnabled(env) && path === SENTRY_DEBUG_PATH) {
         throw new Error('Sentry verification error');
+      }
+      if (path === '/api/stripe/webhooks/platform' || path === '/api/stripe/webhooks/connect') {
+        return dispatchStripeWebhook(bound.request, env, path, bound.requestId);
       }
       const publicOrganisationId = publicLedgerOrganisationId(path);
       if (publicOrganisationId) return await env.LEDGERS.getByName(publicOrganisationId).dispatch(bound.request);

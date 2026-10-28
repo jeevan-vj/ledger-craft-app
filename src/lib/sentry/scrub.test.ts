@@ -83,6 +83,15 @@ describe('redactShareTokens', () => {
       'https://easybiz.iamjeevan.com/api/public/quotes/[redacted]/respond',
     );
   });
+
+  it('redacts public Stripe payment tokens in page and API paths', () => {
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/pay/${TOKEN}`)).toBe(
+      'https://easybiz.iamjeevan.com/pay/[redacted]',
+    );
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/api/public/pay/${TOKEN}`)).toBe(
+      'https://easybiz.iamjeevan.com/api/public/pay/[redacted]',
+    );
+  });
 });
 
 describe('scrubSentryEvent', () => {

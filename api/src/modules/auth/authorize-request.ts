@@ -16,24 +16,36 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],
 ];
 
+const fixedRoutePermissions: Array<[RegExp, OrganisationPermission]> = [
+  [/^\/(?:api\/)?invoices-import$/, 'invoices.import'],
+  [/^\/(?:api\/)?invoices-export\.csv$/, 'invoices.write'],
+  [/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/, 'bills.write'],
+  [/^\/(?:api\/)?items\/export$/, 'settings.write'],
+  [/^\/(?:api\/)?recurring-templates\/preview$/, 'settings.read'],
+  [/^\/(?:api\/)?bank-transactions\/export\.csv$/, 'banking.write'],
+  [/^\/(?:api\/)?ai(?:\/|$)/, 'ai.use'],
+];
+
+function isReadMethod(method: string): boolean {
+  return method === 'GET' || method === 'HEAD';
+}
+
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
-  if (/^\/(?:api\/)?invoice-imports(?:\/|$)/.test(path)) {
-    return method === 'GET' || method === 'HEAD' ? 'invoices.read' : 'invoices.import';
+  if (/^\/(?:api\/)?payments\/stripe\/account(?:\/|$)/.test(path)) {
+    return isReadMethod(method) ? 'invoices.read' : 'payments.manage';
   }
-  if (/^\/(?:api\/)?invoices-import$/.test(path)) return 'invoices.import';
-  if (/^\/(?:api\/)?invoices-export\.csv$/.test(path)) return 'invoices.write';
-  if (/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/.test(path)) return 'bills.write';
-  if (/^\/(?:api\/)?items\/export$/.test(path)) return 'settings.write';
-  if (/^\/(?:api\/)?recurring-templates\/preview$/.test(path)) return 'settings.read';
-  if (/^\/(?:api\/)?bank-transactions\/export\.csv$/.test(path)) return 'banking.write';
-  if (/^\/(?:api\/)?ai(?:\/|$)/.test(path)) return 'ai.use';
-  if (/^\/(?:api\/)?conversations(?:\/|$)/.test(path) && method !== 'GET' && method !== 'HEAD') return 'ai.use';
+  if (/^\/(?:api\/)?invoice-imports(?:\/|$)/.test(path)) {
+    return isReadMethod(method) ? 'invoices.read' : 'invoices.import';
+  }
+  const fixed = fixedRoutePermissions.find(([pattern]) => pattern.test(path));
+  if (fixed) return fixed[1];
+  if (/^\/(?:api\/)?conversations(?:\/|$)/.test(path) && !isReadMethod(method)) return 'ai.use';
   const match = resourceDomains.find(([pattern]) => pattern.test(path));
   if (!match) return null;
   const domain = match[1];
   if (domain === 'api') return 'api.access';
   if (domain === 'reports') return 'reports.read';
-  const action = method === 'GET' || method === 'HEAD' ? 'read' : 'write';
+  const action = isReadMethod(method) ? 'read' : 'write';
   return `${domain}.${action}` as OrganisationPermission;
 }
 
