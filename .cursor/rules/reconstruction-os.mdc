@@ -14,4 +14,4 @@ Read `.cursor/skills/ledgercraft-bootstrap/SKILL.md` first.
 - Local API SQLite via `DATABASE_URL`. API **3001**. Vite **8080** proxies `/api`.
 - Launch specialists via `.cursor/skills/ledgercraft-agent-roster/SKILL.md`.
 - After each wave: `.cursor/skills/ledgercraft-knowledge-sync/SKILL.md`.
-- Before a pull request: `.cursor/skills/ledgercraft-verify/SKILL.md` (UI/PDF: `ledgercraft-verify-ui`, invariants: `ledgercraft-invariants`). Independent review: `ledgercraft-reviewer`.
+- Before a pull request: `.cursor/skills/ledgercraft-verify/SKILL.md` (web and Expo UI evidence: `ledgercraft-verify-ui`, invariants: `ledgercraft-invariants`). The review loop is `docs/PIPELINE.md`. Independent review: `ledgercraft-reviewer`.

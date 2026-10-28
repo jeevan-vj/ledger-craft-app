@@ -16,7 +16,7 @@ Prove the result with `ledgercraft-verify` before a pull request. UI changes als
 3. Change only the production code needed to make that test pass.
 4. Run the same test again. Paste the pass.
 5. If you cannot write a failing test, stop and say why. Do not add the test after the fix and call it test-first.
-6. A UI bug also needs a phone-width check at 390×844 with screenshots (`ledgercraft-verify-ui`).
+6. A web UI bug also needs a phone-width check at 390×844 with screenshots (`ledgercraft-verify-ui`). An Expo UI bug follows the Mobile section of that skill.
 
 ## Feature order
 
