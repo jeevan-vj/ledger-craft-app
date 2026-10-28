@@ -39,6 +39,7 @@ export interface StripeGateway {
 export type StripeConfig = {
   enabled: boolean;
   mode: 'test' | 'live';
+  mock?: boolean;
   appUrl: string;
   platformFeeBasisPoints: number;
   platformFeeFixedCents: number;

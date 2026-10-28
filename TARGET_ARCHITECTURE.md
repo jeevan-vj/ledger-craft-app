@@ -9,7 +9,11 @@ one invoice payment, receipt provenance, and Stripe-clearing journal even when
 Stripe retries the event. Web Settings exposes account readiness and invoice
 detail exposes a link/QR flow with the exact platform fee. Test-mode defaults are
 4% plus NZD 0.30 and remain environment configuration, not a live pricing policy.
-The web production build and focused contract/API/UI tests pass. Real Stripe
+The local-only `STRIPE_MOCK_MODE=true` simulator requires a localhost
+`APP_URL`, is rejected in production, and drives the same webhook settlement
+path without Stripe credentials. Browser proof covers onboarding readiness,
+the exact fee, checkout, the paid invoice, receipt, and balanced journal. The
+web production build and focused contract/API/UI tests pass. Real Stripe
 test-account onboarding, hosted Checkout, webhook delivery, screenshots, and
 deployment remain pending authenticated Stripe access.
 

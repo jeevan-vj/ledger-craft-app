@@ -52,6 +52,7 @@ describe('permissionForRequest', () => {
       /^\/(?:api\/)?me$/,
       /^\/(?:api\/)?public\//,
       /^\/api\/stripe\/webhooks\/(?:platform|connect)$/,
+      /^\/api\/stripe\/mock\//,
       /^\/api\/(?:organisations|invitations)(?:\/|$)/,
       /^\/api\/__test\//,
     ];

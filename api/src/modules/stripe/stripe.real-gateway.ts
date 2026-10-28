@@ -1,16 +1,24 @@
 import Stripe from 'stripe';
 import type { StripeConfig, StripeGateway, StripeRemoteAccount, StripeWebhookEvent } from './stripe.gateway';
+import { createMockStripeGateway } from './stripe.mock-gateway';
 
 const STRIPE_API_VERSION = '2026-09-30.endive' as const;
 
-function remoteAccount(account: Stripe.Account): StripeRemoteAccount {
+function remoteAccount(account: Stripe.V2.Core.Account): StripeRemoteAccount {
+  const cardPayments = account.configuration?.merchant?.capabilities?.card_payments;
+  const payouts = account.configuration?.recipient?.capabilities?.stripe_balance?.payouts;
+  const requirements = account.requirements?.entries ?? [];
+  const blockingCapability = [cardPayments, payouts].find((capability) =>
+    capability && capability.status !== 'active' && capability.status !== 'pending');
   return {
     id: account.id,
-    chargesEnabled: account.charges_enabled,
-    payoutsEnabled: account.payouts_enabled,
-    detailsSubmitted: account.details_submitted,
-    requirementsDue: account.requirements?.currently_due ?? [],
-    disabledReason: account.requirements?.disabled_reason ?? null,
+    chargesEnabled: cardPayments?.status === 'active',
+    payoutsEnabled: payouts?.status === 'active',
+    detailsSubmitted: !requirements.some((requirement) => requirement.awaiting_action_from === 'user'),
+    requirementsDue: requirements
+      .filter((requirement) => requirement.awaiting_action_from === 'user')
+      .map((requirement) => requirement.description),
+    disabledReason: blockingCapability?.status_details[0]?.code ?? null,
   };
 }
 
@@ -21,34 +29,43 @@ export function createStripeGateway(secretKey: string): StripeGateway {
   });
   return {
     async createConnectedAccount(input) {
-      const account = await stripe.accounts.create({
-        country: input.country,
-        default_currency: 'nzd',
-        email: input.email,
-        business_profile: { name: input.businessName },
-        controller: {
-          stripe_dashboard: { type: 'express' },
-          fees: { payer: 'application' },
-          losses: { payments: 'application' },
-          requirement_collection: 'stripe',
+      const account = await stripe.v2.core.accounts.create({
+        contact_email: input.email,
+        dashboard: 'full',
+        defaults: {
+          currency: 'nzd',
+          profile: { doing_business_as: input.businessName },
+          responsibilities: { fees_collector: 'stripe', losses_collector: 'stripe' },
         },
-        capabilities: { card_payments: { requested: true }, transfers: { requested: true } },
+        display_name: input.businessName,
+        identity: { country: input.country },
+        configuration: {
+          merchant: { capabilities: { card_payments: { requested: true } } },
+          recipient: { capabilities: { stripe_balance: { stripe_transfers: { requested: true } } } },
+        },
+        include: ['configuration.merchant', 'configuration.recipient', 'requirements'],
         metadata: { organisation_id: input.organisationId },
       }, { idempotencyKey: input.idempotencyKey });
       return remoteAccount(account);
     },
     async retrieveConnectedAccount(accountId) {
-      return remoteAccount(await stripe.accounts.retrieve(accountId));
+      return remoteAccount(await stripe.v2.core.accounts.retrieve(accountId, {
+        include: ['configuration.merchant', 'configuration.recipient', 'requirements'],
+      }));
     },
     async createAccountLink(input) {
-      const link = await stripe.accountLinks.create({
+      const link = await stripe.v2.core.accountLinks.create({
         account: input.accountId,
-        type: 'account_onboarding',
-        return_url: input.returnUrl,
-        refresh_url: input.refreshUrl,
-        collection_options: { fields: 'eventually_due', future_requirements: 'include' },
+        use_case: {
+          type: 'account_onboarding',
+          account_onboarding: {
+            return_url: input.returnUrl,
+            refresh_url: input.refreshUrl,
+            collection_options: { fields: 'eventually_due', future_requirements: 'include' },
+          },
+        },
       });
-      return { url: link.url, expiresAt: link.expires_at };
+      return { url: link.url, expiresAt: Math.floor(Date.parse(link.expires_at) / 1000) };
     },
     async createCheckoutSession(input, idempotencyKey) {
       const metadata = { organisation_id: input.organisationId, payment_link_id: input.paymentLinkId };
@@ -92,6 +109,32 @@ export function createStripeGateway(secretKey: string): StripeGateway {
 
 export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): { gateway: StripeGateway; config: StripeConfig } | undefined {
   if (env.STRIPE_PAYMENTS_ENABLED !== 'true') return undefined;
+  const appUrl = (env.APP_URL ?? 'http://localhost:8080').replace(/\/$/, '');
+  const mock = env.STRIPE_MOCK_MODE === 'true';
+  if (mock && env.NODE_ENV === 'production') throw new Error('Stripe mock mode is not available in production');
+  if (mock) {
+    let hostname: string;
+    try {
+      hostname = new URL(appUrl).hostname;
+    } catch {
+      throw new Error('Stripe mock mode requires a local APP_URL');
+    }
+    if (!['localhost', '127.0.0.1', '[::1]'].includes(hostname)) {
+      throw new Error('Stripe mock mode requires a local APP_URL');
+    }
+    const basisPoints = Number(env.STRIPE_PLATFORM_FEE_BPS ?? '400');
+    const fixedCents = Number(env.STRIPE_PLATFORM_FEE_FIXED_CENTS ?? '30');
+    if (!Number.isSafeInteger(basisPoints) || basisPoints < 0 || basisPoints > 10_000) throw new Error('STRIPE_PLATFORM_FEE_BPS must be an integer from 0 to 10000');
+    if (!Number.isSafeInteger(fixedCents) || fixedCents < 0) throw new Error('STRIPE_PLATFORM_FEE_FIXED_CENTS must be a non-negative integer');
+    return {
+      gateway: createMockStripeGateway(appUrl),
+      config: {
+        enabled: true, mode: 'test', mock: true, appUrl,
+        platformFeeBasisPoints: basisPoints, platformFeeFixedCents: fixedCents,
+        webhookSecret: 'whsec_mock', connectWebhookSecret: 'whsec_mock',
+      },
+    };
+  }
   const secretKey = env.STRIPE_SECRET_KEY?.trim();
   const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
   const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
@@ -106,7 +149,7 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
     gateway: createStripeGateway(secretKey),
     config: {
       enabled: true, mode,
-      appUrl: (env.APP_URL ?? 'http://localhost:8080').replace(/\/$/, ''),
+      appUrl,
       platformFeeBasisPoints: basisPoints,
       platformFeeFixedCents: fixedCents,
       webhookSecret, connectWebhookSecret,
