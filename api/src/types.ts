@@ -7,6 +7,7 @@ import type { ObjectStore } from './modules/storage/object-store';
 import type { FileStorage } from './modules/storage/file-storage';
 import type { InvoiceImportExtractionProvider } from './modules/invoice-imports/extraction';
 import type { WorkersAiBinding } from './modules/ai/workers-ai';
+import type { StripeConfig, StripeGateway } from './modules/stripe/stripe.gateway';
 
 export type AppCapabilities = { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
 
@@ -26,6 +27,8 @@ export type AppEnv = {
     invoiceImportExtractor?: InvoiceImportExtractionProvider;
     workersAi?: WorkersAiBinding;
     capabilities?: AppCapabilities;
+    stripeGateway?: StripeGateway;
+    stripeConfig?: StripeConfig;
   };
 };
 
@@ -43,4 +46,6 @@ export type AppDependencies = {
   invoiceImportExtractor?: InvoiceImportExtractionProvider;
   workersAi?: WorkersAiBinding;
   capabilities?: AppCapabilities;
+  stripeGateway?: StripeGateway;
+  stripeConfig?: StripeConfig;
 };

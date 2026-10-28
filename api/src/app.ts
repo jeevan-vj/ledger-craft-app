@@ -31,6 +31,7 @@ import { organisationRoutes } from './modules/organisations/organisations.routes
 import { recurringRoutes } from './modules/recurring/recurring.routes';
 import { currencyRoutes } from './modules/currency/currency.routes';
 import { invoiceImportRoutes } from './modules/invoice-imports/invoice-imports.routes';
+import { stripePublicRoutes, stripeRoutes } from './modules/stripe/stripe.routes';
 import type { AppDependencies, AppEnv } from './types';
 
 export function createApp(deps: AppDependencies = {}) {
@@ -64,6 +65,8 @@ export function createApp(deps: AppDependencies = {}) {
     }
     if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
     if (deps.workersAi) c.set('workersAi', deps.workersAi);
+    if (deps.stripeGateway) c.set('stripeGateway', deps.stripeGateway);
+    if (deps.stripeConfig) c.set('stripeConfig', deps.stripeConfig);
     c.set('capabilities', deps.capabilities ?? {
       email: deps.invoiceMailer?.availability === 'available' ? 'available' : 'unavailable',
       ai: deps.receiptScanner || deps.workersAi ? 'available' : 'unavailable',
@@ -94,6 +97,8 @@ export function createApp(deps: AppDependencies = {}) {
     return auth.handler(c.req.raw);
   });
 
+  app.route('/', stripePublicRoutes());
+
   app.use('*', authorizeProtectedRequest);
 
   app.route('/', healthRoutes());
@@ -120,6 +125,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', recurringRoutes());
   app.route('/', currencyRoutes());
   app.route('/', invoiceImportRoutes());
+  app.route('/', stripeRoutes());
   // Financial statements are registered before /reports/:type widget runs.
   app.route('/', reportRoutes());
   app.route('/', dashboardRoutes());

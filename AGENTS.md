@@ -1,5 +1,17 @@
 # AGENTS.md
 
+**Stripe Connect invoice payments (implemented locally, 2026-10-29):** Migration
+`0021_stripe-connect-phase1.sql` adds tenant-scoped connected-account readiness,
+Stripe Checkout payment links, public redirects, and idempotent event claims.
+Owner/admin setup uses Stripe-hosted onboarding. NZD Checkout uses destination
+charges and `application_fee_amount`; the fee is configured by
+`STRIPE_PLATFORM_FEE_BPS` and `STRIPE_PLATFORM_FEE_FIXED_CENTS`. Verified paid
+webhooks create one invoice payment, receipt, and Stripe Clearing posting.
+Settings shows charges/payouts readiness, while invoice detail creates a link
+and QR code with the exact fee. Secrets are server-only. Focused tests and the
+web build pass; real test-account onboarding/Checkout/webhook screenshots and
+deployment remain pending authenticated Stripe access.
+
 **POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales`
 takes a cart of at most 100 catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
 and an optional customer. Quantity and price are positive decimal text with at most 2 decimal places. In one organisation transaction it finds or creates the

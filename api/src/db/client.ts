@@ -40,6 +40,7 @@ import { recurringRuns, recurringTemplates } from './schema/recurring';
 import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from './schema/currency';
 import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
 import { importBatches, importDocumentEvents, importDocuments } from './schema/invoice-imports';
+import { stripeAccountRoutes, stripeConnectedAccounts, stripeEvents, stripePaymentLinks } from './schema/stripe';
 
 export const schema = {
   rlsProbe,
@@ -103,6 +104,10 @@ export const schema = {
   importBatches,
   importDocuments,
   importDocumentEvents,
+  stripeConnectedAccounts,
+  stripeAccountRoutes,
+  stripePaymentLinks,
+  stripeEvents,
 };
 
 

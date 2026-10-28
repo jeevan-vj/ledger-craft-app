@@ -6,10 +6,11 @@ const tokenId = '22222222-2222-4222-8222-222222222222';
 const token = `${orgId}_${tokenId}`;
 
 describe('public ledger routes', () => {
-  it('routes only invoice and quote share reads, plus quote respond, to the tenant ledger', () => {
+  it('routes only invoice and quote share reads, quote respond, and Stripe pay redirects to the tenant ledger', () => {
     expect(publicLedgerOrganisationId(`/api/public/invoices/${token}`)).toBe(orgId);
     expect(publicLedgerOrganisationId(`/api/public/quotes/${token}`)).toBe(orgId);
     expect(publicLedgerOrganisationId(`/api/public/quotes/${token}/respond`)).toBe(orgId);
+    expect(publicLedgerOrganisationId(`/api/public/pay/${token}`)).toBe(orgId);
   });
 
   it('leaves every other public path on the session gate', () => {

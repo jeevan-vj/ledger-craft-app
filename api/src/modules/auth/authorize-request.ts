@@ -17,6 +17,9 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
 ];
 
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
+  if (/^\/(?:api\/)?payments\/stripe\/account(?:\/|$)/.test(path)) {
+    return method === 'GET' || method === 'HEAD' ? 'invoices.read' : 'payments.manage';
+  }
   if (/^\/(?:api\/)?invoice-imports(?:\/|$)/.test(path)) {
     return method === 'GET' || method === 'HEAD' ? 'invoices.read' : 'invoices.import';
   }

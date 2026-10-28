@@ -67,6 +67,7 @@ export async function createPaymentInTx(
   ctx: OrganisationContext,
   input: CreatePaymentRequest,
   idempotency?: IdempotencyScope,
+  options?: { clearingAccountNumber?: '1130' },
 ): Promise<PaymentDto> {
   if (idempotency) {
     const existing = await getIdempotencyRecord(tx, ctx, idempotency);
@@ -104,7 +105,9 @@ export async function createPaymentInTx(
   const receivableId = await systemAccount(tx, ctx, '1200');
   const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
   const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
-  const cashId = selectedBank ? await bankLedgerAccount(tx, ctx, selectedBank) : await systemAccount(tx, ctx, '1110');
+  const cashId = options?.clearingAccountNumber
+    ? await systemAccount(tx, ctx, options.clearingAccountNumber)
+    : selectedBank ? await bankLedgerAccount(tx, ctx, selectedBank) : await systemAccount(tx, ctx, '1110');
   await postBalancedEntry(tx, ctx, {
     date: payment.paymentDate,
     description: `Payment for ${invoice.invoiceNumber}`,

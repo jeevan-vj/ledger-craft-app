@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Stripe Connect invoice payments (implemented locally, 2026-10-29):** SQLite
+migration `0021_stripe-connect-phase1.sql` stores organisation-scoped connected
+accounts, public Checkout links, and idempotent webhook events. Owners and admins
+complete Stripe-hosted onboarding; the platform creates NZD destination charges
+with a configurable application fee. A verified paid Checkout webhook records
+one invoice payment, receipt provenance, and Stripe-clearing journal even when
+Stripe retries the event. Web Settings exposes account readiness and invoice
+detail exposes a link/QR flow with the exact platform fee. Test-mode defaults are
+4% plus NZD 0.30 and remain environment configuration, not a live pricing policy.
+The web production build and focused contract/API/UI tests pass. Real Stripe
+test-account onboarding, hosted Checkout, webhook delivery, screenshots, and
+deployment remain pending authenticated Stripe access.
+
 **POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales` composes
 the existing invoice, payment, and receipt use cases in one organisation
 transaction. The walk-in customer is tag `walk-in` and is scoped to the
