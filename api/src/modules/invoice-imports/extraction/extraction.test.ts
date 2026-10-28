@@ -186,11 +186,14 @@ describe('invoice import extraction providers', () => {
     expect(document.blob).toBeInstanceOf(Blob);
     expect(document.blob.type).toBe('application/pdf');
     expect(options).toEqual({ conversionOptions: { pdf: { metadata: false } } });
-    const request = JSON.stringify(ai.run.mock.calls[0]?.[1]);
-    expect(request).toContain('BEGIN_UNTRUSTED_DOCUMENT');
-    expect(request).toContain('Total NZD 115.00');
-    expect(request).not.toContain('END-OF-UNBOUNDED-DOCUMENT');
-    expect(request.length).toBeLessThan(32_000);
+    const request = ai.run.mock.calls[0]?.[1] as {
+      messages: Array<{ content: Array<{ text?: string }> }>;
+    };
+    const documentText = request.messages[1]?.content[1]?.text ?? '';
+    expect(documentText).toContain('BEGIN_UNTRUSTED_DOCUMENT');
+    expect(documentText).toContain('Total NZD 115.00');
+    expect(documentText).not.toContain('END-OF-UNBOUNDED-DOCUMENT');
+    expect(documentText.length).toBeLessThan(30_100);
   });
 
   it('fails safely when Workers AI cannot convert a PDF', async () => {
