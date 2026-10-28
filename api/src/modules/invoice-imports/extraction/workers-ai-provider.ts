@@ -27,11 +27,10 @@ function boundedConvertedText(value: string): string {
   // Strip control characters and fence markers so converted text cannot close the untrusted boundary.
   // eslint-disable-next-line no-control-regex
   const withoutControls = value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
-  const withoutInvisible = withoutControls
-    .replaceAll('\u200b', '')
-    .replaceAll('\u200c', '')
-    .replaceAll('\u200d', '')
-    .replaceAll('\ufeff', '');
+  const withoutInvisible = [
+    '\u00ad', '\u200b', '\u200c', '\u200d', '\u200e', '\u200f', '\u202a', '\u202b', '\u202c', '\u202d', '\u202e',
+    '\u2060', '\u2066', '\u2067', '\u2068', '\u2069', '\ufeff',
+  ].reduce((text, mark) => text.replaceAll(mark, ''), withoutControls);
   const withoutMarkers = withoutInvisible.replace(/(?:begin|end)[\s_-]*untrusted[\s_-]*document/gi, '');
   return withoutMarkers.slice(0, MAX_CONVERTED_DOCUMENT_CHARS);
 }

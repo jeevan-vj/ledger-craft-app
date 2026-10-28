@@ -24,9 +24,11 @@ The Expo Sell tab is on only when the device Quick sale switch is on. That switc
 Cloudflare Workers AI converts retained PDFs to bounded Markdown with metadata
 disabled, strips `BEGIN_UNTRUSTED_DOCUMENT` / `END_UNTRUSTED_DOCUMENT` marker
 strings (including close variants) from that text, wraps the remainder as one
-untrusted document, and then runs the existing structured extraction. A PDF whose
-page count cannot be verified, or that exceeds the page cap, is rejected before
-`toMarkdown`. Camera captures are taken below full quality and recompressed to
+untrusted document, and then runs the existing structured extraction. Page dictionaries outside content streams and PDF strings
+are counted, and a counted total over the page cap is rejected before
+`toMarkdown`. A PDF whose page count cannot be read, including a compressed
+object stream, stays on the upload byte cap and the 30,000-character conversion
+cap. Camera captures are taken below full quality and recompressed to
 JPEG on device through `expo-image-manipulator`, retrying progressively smaller
 presets until the file fits; base64 is read only after that size check, and the
 upload stays at most 950,000 bytes. A failed camera prepare clears the previously

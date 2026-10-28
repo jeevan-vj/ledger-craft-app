@@ -11,8 +11,9 @@ timezone. The payment is the invoice total and uses `createPaymentInTx` unchange
 The Workers AI path converts PDFs through the binding's native `toMarkdown`
 operation with PDF metadata disabled, strips untrusted-document marker strings
 from the converted text, and wraps the remainder in one prompt boundary before
-structured extraction. A PDF with an unknown page count or more than the page
-cap is rejected before that conversion. Expo camera captures are resized and
+structured extraction. A counted page total over the cap is rejected before that
+conversion. An unreadable page count, including compressed object streams, is
+kept inside the upload byte cap. Expo camera captures are resized and
 recompressed locally to JPEG using progressively smaller presets, and base64 is
 read only after the file is within 950,000 bytes. The private storage ceiling
 remains 1 MiB without `DOCUMENTS` R2. `expo-image-manipulator` changes the Expo

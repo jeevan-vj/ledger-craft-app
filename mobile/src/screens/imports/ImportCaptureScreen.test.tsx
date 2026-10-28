@@ -106,6 +106,17 @@ describe('ImportCaptureScreen', () => {
     expect(extract).toHaveBeenCalledWith('doc-1');
   });
 
+  it('hides import choices while a camera photo is being prepared', async () => {
+    prepare.mockReturnValue(new Promise(() => undefined));
+    const screen = renderScreen();
+
+    fireEvent.press(screen.getByRole('button', { name: 'Take a photo' }));
+
+    expect(await screen.findByText('Preparing photo')).toBeTruthy();
+    expect(screen.queryByRole('button', { name: 'Take a photo' })).toBeNull();
+    expect(screen.queryByRole('button', { name: 'Choose a file' })).toBeNull();
+  });
+
   it('clears the previously selected file when camera preparation fails', async () => {
     await selectPreviousFile();
     const screen = renderScreen();
