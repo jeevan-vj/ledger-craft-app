@@ -1,7 +1,16 @@
 import React from 'react';
-import { View, Text, Switch, StyleSheet } from 'react-native';
-import { space } from '@/theme/tokens';
+import { Platform, View, Text, Switch, StyleSheet } from 'react-native';
+import { space, type ThemePalette } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+
+export function getFormSwitchThumbColor(
+  platform: typeof Platform.OS,
+  value: boolean,
+  palette: ThemePalette,
+): string | undefined {
+  if (platform === 'ios') return undefined;
+  return value ? palette.accentForeground : palette.surface;
+}
 
 interface FormSwitchProps {
   label: string;
@@ -12,7 +21,7 @@ interface FormSwitchProps {
 
 export function FormSwitch({ label, value, onValueChange, description }: FormSwitchProps) {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   return (
     <View style={styles.row}>
@@ -26,7 +35,7 @@ export function FormSwitch({ label, value, onValueChange, description }: FormSwi
         value={value}
         onValueChange={onValueChange}
         trackColor={{ false: palette.fill, true: palette.accent }}
-        thumbColor={value ? palette.accentForeground : palette.surface}
+        thumbColor={getFormSwitchThumbColor(Platform.OS, value, palette)}
         ios_backgroundColor={palette.fill}
         accessibilityLabel={label}
         accessibilityHint={description}
