@@ -22,13 +22,22 @@ The Expo Sell tab is on only when the device Quick sale switch is on. That switc
 
 **Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
 Cloudflare Workers AI converts retained PDFs to bounded Markdown with metadata
-disabled, wraps that text as an untrusted document, and then runs the existing
-structured extraction. Camera captures are resized and recompressed to JPEG on
-device through `expo-image-manipulator`, retrying progressively smaller presets
-until the upload is at most 950,000 bytes. Chosen files retain the existing
-private-storage limit: 1 MiB without the reviewed `DOCUMENTS` R2 binding. Focused
-API and mobile tests and strict TypeScript pass; real Workers AI, authenticated
-camera/device QA, and production deployment remain pending.
+disabled, strips `BEGIN_UNTRUSTED_DOCUMENT` / `END_UNTRUSTED_DOCUMENT` marker
+strings (including close variants) from that text, wraps the remainder as one
+untrusted document, and then runs the existing structured extraction. A PDF whose
+page count cannot be verified, or that exceeds the page cap, is rejected before
+`toMarkdown`. Camera captures are taken below full quality and recompressed to
+JPEG on device through `expo-image-manipulator`, retrying progressively smaller
+presets until the file fits; base64 is read only after that size check, and the
+upload stays at most 950,000 bytes. A failed camera prepare clears the previously
+selected file. Chosen files retain the existing private-storage limit: 1 MiB
+without the reviewed `DOCUMENTS` R2 binding. `expo-image-manipulator` changes the
+Expo fingerprint (`runtimeVersion` policy `fingerprint` in `mobile/app.config.js`),
+so binaries built before that native module need a new build. Do not force
+`runtimeVersion`: the import screen and `cameraPhoto` load the module at startup,
+and a forced update crashes the app. `expo-image-manipulator@~14.0.8` matches
+Expo SDK 54. Focused API and mobile tests and strict TypeScript pass; real
+Workers AI, authenticated camera/device QA, and production deployment remain pending.
 
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add

@@ -8,7 +8,7 @@ import type { InvoiceImportMimeType } from '@ledgercraft/contracts';
 import { AppPressable, EmptyState, ModernButton } from '@/components/ui';
 import { canImportInvoices } from '@/features/auth/invoiceAccess';
 import { documentImportApi } from '@/features/invoice-import/api/documentImportApi';
-import { prepareCameraPhoto } from '@/features/invoice-import/cameraPhoto';
+import { CAMERA_CAPTURE_QUALITY, prepareCameraPhoto } from '@/features/invoice-import/cameraPhoto';
 import { readDocumentBase64 } from '@/features/invoice-import/sourceFile';
 import { OFFLINE_MESSAGE } from '@/features/auth/api/http';
 import type { RootStackParamList } from '@/navigation/types';
@@ -60,10 +60,17 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
       Alert.alert('Camera access needed', 'Allow camera access to photograph an invoice or bill.');
       return;
     }
-    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
+    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: CAMERA_CAPTURE_QUALITY });
     if (result.canceled) return;
+    setSource(null);
+    setError(null);
+    setStatus('idle');
     const asset = result.assets[0];
-    if (!asset) { setError('The photo could not be read. Try again.'); return; }
+    if (!asset) {
+      setStatus('failed');
+      setError('The photo could not be read. Try again.');
+      return;
+    }
     try {
       const prepared = await prepareCameraPhoto(asset);
       await upload(prepared);
@@ -76,7 +83,15 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
   const chooseFile = async () => {
     const result = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/*'], copyToCacheDirectory: true, multiple: false, base64: true });
     if (result.canceled) return;
+    setSource(null);
+    setError(null);
+    setStatus('idle');
     const asset = result.assets[0];
+    if (!asset) {
+      setStatus('failed');
+      setError('The selected file could not be read. Choose a PDF, JPG or PNG and try again.');
+      return;
+    }
     try {
       const contentBase64 = await readDocumentBase64(asset);
       await upload({ uri: asset.uri, filename: asset.name, contentType: contentType(asset.name, asset.mimeType), contentBase64 });

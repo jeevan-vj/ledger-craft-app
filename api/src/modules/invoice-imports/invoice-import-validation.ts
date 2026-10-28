@@ -59,6 +59,17 @@ export function invoiceImportMaxPages(): number {
   return positiveInteger(process.env.INVOICE_IMPORT_MAX_PAGES, DEFAULT_INVOICE_IMPORT_MAX_PAGES);
 }
 
+export function assertPdfWithinPageCap(bytes: Uint8Array, maxPages = invoiceImportMaxPages()): number {
+  const pageCount = countPdfPages(bytes);
+  if (pageCount === null) {
+    throw apiError(400, 'TOO_MANY_PAGES', `PDF page count could not be verified (maximum ${maxPages} pages)`);
+  }
+  if (pageCount > maxPages) {
+    throw apiError(400, 'TOO_MANY_PAGES', `PDF has too many pages (maximum ${maxPages})`);
+  }
+  return pageCount;
+}
+
 export function validateInvoiceImportFile(input: {
   bytes: Uint8Array;
   declaredContentType: string;
@@ -76,11 +87,8 @@ export function validateInvoiceImportFile(input: {
   if (declared !== mimeType) {
     throw apiError(415, 'MIME_TYPE_MISMATCH', 'Declared content type does not match the uploaded file');
   }
-  const pageCount = mimeType === 'application/pdf' ? countPdfPages(input.bytes) : 1;
   const maxPages = input.maxPages ?? invoiceImportMaxPages();
-  if (pageCount !== null && pageCount > maxPages) {
-    throw apiError(400, 'TOO_MANY_PAGES', `PDF has too many pages (maximum ${maxPages})`);
-  }
+  const pageCount = mimeType === 'application/pdf' ? assertPdfWithinPageCap(input.bytes, maxPages) : 1;
   return { mimeType, pageCount };
 }
 

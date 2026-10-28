@@ -10,6 +10,7 @@ import {
   workersAiRunError,
   type WorkersAiBinding,
 } from '../../ai/workers-ai';
+import { assertPdfWithinPageCap } from '../invoice-import-validation';
 import { documentContent } from './document-content';
 import {
   INVOICE_IMPORT_SYSTEM_PROMPT,
@@ -23,9 +24,16 @@ const RETRY_NOTE = 'Your previous reply was not valid JSON for the schema. Retur
 const MAX_CONVERTED_DOCUMENT_CHARS = 30_000;
 
 function boundedConvertedText(value: string): string {
-  // Strip control characters from provider-produced document text before it reaches the model.
+  // Strip control characters and fence markers so converted text cannot close the untrusted boundary.
   // eslint-disable-next-line no-control-regex
-  return value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '').slice(0, MAX_CONVERTED_DOCUMENT_CHARS);
+  const withoutControls = value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
+  const withoutInvisible = withoutControls
+    .replaceAll('\u200b', '')
+    .replaceAll('\u200c', '')
+    .replaceAll('\u200d', '')
+    .replaceAll('\ufeff', '');
+  const withoutMarkers = withoutInvisible.replace(/(?:begin|end)[\s_-]*untrusted[\s_-]*document/gi, '');
+  return withoutMarkers.slice(0, MAX_CONVERTED_DOCUMENT_CHARS);
 }
 
 async function workersAiDocumentContent(
@@ -33,6 +41,7 @@ async function workersAiDocumentContent(
   ai: WorkersAiBinding,
 ): Promise<string | { dataUrl: string }> {
   if (file.mimeType !== 'application/pdf') return documentContent(file);
+  assertPdfWithinPageCap(file.bytes);
   if (!ai.toMarkdown) {
     throw apiError(503, 'EXTRACTION_PROVIDER_UNAVAILABLE', 'Cloudflare Workers AI PDF conversion is unavailable');
   }

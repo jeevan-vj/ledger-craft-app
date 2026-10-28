@@ -47,6 +47,13 @@ describe('invoice import file validation', () => {
       declaredContentType: 'application/pdf',
       maxPages: 1,
     })).toThrowError(/too many pages/i);
+
+    const unknownPages = encoder.encode('%PDF-1.7\n1 0 obj << /Filter /FlateDecode >>\n%%EOF');
+    expect(countPdfPages(unknownPages)).toBeNull();
+    expect(() => validateInvoiceImportFile({
+      bytes: unknownPages,
+      declaredContentType: 'application/pdf',
+    })).toThrowError(/could not be verified/i);
   });
 
   it('returns sniffed metadata and counts one-page PDFs without counting /Pages', () => {
