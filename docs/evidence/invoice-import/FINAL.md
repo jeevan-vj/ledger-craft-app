@@ -1,6 +1,6 @@
 # Invoice import (#94): final acceptance table
 
-Status as of 26 Oct 2026 (NZDT). This covers the stacked draft PRs #95 → #96 → #97 → #98 → #99 → #100 (Phase 4, this PR). Nothing has been merged, deployed, or applied to any remote database. All evidence is local: fresh temporary SQLite databases, `APP_ENV=demo`, no AI keys, synthetic demo data (org "Crystal Touch Cleaning", customer "Cleancorp Ltd", vendor "Sparkle Supplies Ltd").
+Status as of 26 Oct 2026 (NZDT). This covers the stacked draft PRs #95 → #96 → #97 → #98 → #99 → #100 (Phase 4, this PR). **Update 27 Oct 2026:** PRs #95–#100 are merged to `main`, #101 made `OPENAI_API_KEY` optional at deploy time, and the Worker and web app were deployed manually on 26 Oct 2026 (GitHub Actions were paused). Production reported migration `0019_invoice-import-phase2.sql` on `/api/readyz` after the deploy. In production there is no `OPENAI_API_KEY` and no R2 bucket, so extraction returns 503 (`EXTRACTION_PROVIDER_UNAVAILABLE`) and uploads are capped at 1 MB. The mock provider cannot be reached in production. The feature evidence below was gathered before the merge: it is local (fresh temporary SQLite databases, `APP_ENV=demo`, no AI keys) and has not been re-run against production. All other evidence is local: fresh temporary SQLite databases, `APP_ENV=demo`, no AI keys, synthetic demo data (org "Crystal Touch Cleaning", customer "Cleancorp Ltd", vendor "Sparkle Supplies Ltd").
 
 Legend: **PASS** = proven locally by a test or demo listed. **PARTIAL** = works, with a stated gap. **NOT DONE** = not built. **BLOCKED** = needs a decision, credential, or infrastructure from Jeevan.
 
@@ -65,16 +65,16 @@ Evidence paths are relative to `docs/evidence/invoice-import/`.
 | # | Requirement | Status | PR | Evidence |
 |---|---|---|---|---|
 | I1 | R2 storage on a real bucket (`DOCUMENTS` binding) | BLOCKED | #96 | Only the local file-system object store was tested. `deploy/api/wrangler.jsonc` has the binding commented out as a placeholder. |
-| I2 | Migrations 0017–0019 applied | NOT DONE | #95–#97 | Applied only to temporary local SQLite databases, not to any remote D1 or Supabase database |
-| I3 | `OPENAI_API_KEY` in `secrets.required` | PASS (config) | #95 | `deploy/api/wrangler.jsonc`. The secret itself is not set. |
-| I4 | `pnpm run deploy:check` with R2/queue bindings | BLOCKED | — | Waiting on I1 |
+| I2 | Migrations 0017–0019 applied | PASS | #95–#97 | Applied by the normal manual `pnpm deploy:cloudflare` on 26 Oct 2026. Each Durable Object runs `migrateStorage` on start (`api/src/cloudflare/storage.ts:6-21`): one transaction, tracked in `_migrations` with a checksum, so each migration runs once per object and rolls back as a whole on failure. `/api/readyz` shows 0019 for the identity object. Existing organisation (Ledger) objects upgrade on their next request, which has not been observed. A local test applied 0017–0019 on top of the 0016 schema without errors and `integrity_check` was ok, but with no row data. |
+| I3 | `OPENAI_API_KEY` set for the Worker | BLOCKED | #95, #101 | Changed in #101: the secret is no longer in `secrets.required`, because Wrangler refuses to deploy while a required secret is unset. The secret itself is not set, so production fails closed with 503 until Jeevan runs `wrangler secret put OPENAI_API_KEY`. |
+| I4 | `pnpm run deploy:check` with R2/queue bindings | PARTIAL | — | `deploy:check` passed on `main` on 26 Oct 2026 without an R2 binding. It has not been run with the binding (waiting on I1). |
 | I5 | Retention period and IRD offshore-storage decision (decision 13); privacy policy update | BLOCKED | — | Owner/accountant decisions |
 
 ## Totals
 
-44 rows: **25 PASS**, **7 PARTIAL**, **7 NOT DONE**, **5 BLOCKED**.
+44 rows: **26 PASS**, **8 PARTIAL**, **6 NOT DONE**, **4 BLOCKED**.
 
-The ledger side is proven end to end with exact journals and the GST report. The gaps are infrastructure (R2, migrations, keys), owner decisions, and several Phase-1 issue items that were never built: Idempotency-Key, the extraction queue with retries, the filed-period lock, the full third-party checklist, and a no-email "Record as issued" action.
+The ledger side is proven end to end with exact journals and the GST report. The gaps are infrastructure (R2, the OpenAI key), owner decisions, and several Phase-1 issue items that were never built: Idempotency-Key, the extraction queue with retries, the filed-period lock, the full third-party checklist, and a no-email "Record as issued" action.
 
 ## Needs Jeevan
 
@@ -87,16 +87,20 @@ The ledger side is proven end to end with exact journals and the GST report. The
 7. Provide or approve an anonymised document set for the accuracy table.
 8. Decide whether the remaining NOT DONE items (Idempotency-Key, queue + retries, filed-period lock, full third-party checklist, encrypted-PDF rejection, durable rate limit) block launch or become follow-up issues.
 
-## Recommended merge order
+## Open decision: read_only access (S11)
+
+`read_only` users cannot write, but they can still GET import drafts and download the original document. Decide whether that is acceptable or whether those two routes should also return 403.
+
+## Merge order (done)
 
 #95 (Phase 0) → #96 (Phase 1) → #97 (Phase 2) → #98 (Phase 3a web) → #99 (Phase 3b mobile) → #100 (Phase 4). Each PR is stacked on the previous one. Retarget each PR to `main` after its parent merges, and re-run CI at each step.
 
 ## How to turn it on
 
-- [ ] Merge the stack in the order above.
+- [x] Merge the stack in the order above (done 26 Oct 2026).
 - [ ] Cloudflare: create the R2 bucket `ledgercraft-documents` (plus a preview bucket) and add `"r2_buckets": [{ "binding": "DOCUMENTS", "bucket_name": "ledgercraft-documents" }]` in `deploy/api/wrangler.jsonc`.
 - [ ] `wrangler secret put OPENAI_API_KEY` for the API Worker. Never commit it.
-- [ ] Apply migrations 0017, 0018 and 0019 through the normal deploy pipeline. No manual SQL against production.
+- [x] Apply migrations 0017, 0018 and 0019 through the normal deploy pipeline (done by the manual deploy on 26 Oct 2026, no manual SQL).
 - [ ] `pnpm run deploy:check` passes with the new binding.
 - [ ] Smoke test on staging with a demo org: upload → extract (real provider, not the mock badge) → commit → issue/receive → check the journal and GST report.
-- [ ] Ship the mobile build through the normal EAS pipeline (not done by agents).
+- [x] Mobile: an EAS Update was published to the `production` channel (iOS) on 26 Oct 2026, update group `166303a6-f25a-4e2a-86ba-8360f218f0b3`, runtime matching build 12. It has not been opened on a device.
