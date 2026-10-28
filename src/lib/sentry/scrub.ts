@@ -1,7 +1,7 @@
 import type { Breadcrumb, ErrorEvent, EventHint } from '@sentry/react';
 import { requestIdOf } from '@/lib/sentry/requestId';
 
-const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|api\/public\/quotes|api\/public\/invoices)\/[^/?#\s"'<>\\]+/gi;
+const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay)\/[^/?#\s"'<>\\]+/gi;
 const TOKEN_QUERY = /([?&](?:token|shareToken|share_token)=)[^&#\s"'<>]+/gi;
 const SENSITIVE_KEY =
   /^(authorization|proxy-authorization|cookie|cookies|set-cookie|x-api-key|x-auth-token|password|passwd|secret|access_token|refresh_token|id_token|credit_card|card_number|cvv|email|e-mail|username|ip_address|organisation|organization|organisationname|organizationname|orgname)$/i;
@@ -15,7 +15,9 @@ export function redactShareTokens(value: string): string {
     const path = match.toLowerCase();
     if (path.includes('/api/public/quotes/')) return '/api/public/quotes/[redacted]';
     if (path.includes('/api/public/invoices/')) return '/api/public/invoices/[redacted]';
+    if (path.includes('/api/public/pay/')) return '/api/public/pay/[redacted]';
     if (path.includes('/shared/quote/')) return '/shared/quote/[redacted]';
+    if (path.includes('/pay/')) return '/pay/[redacted]';
     return '/shared/invoice/[redacted]';
   }).replace(TOKEN_QUERY, '$1[redacted]');
 }
