@@ -20,6 +20,9 @@ function fakeWorkersAi(): WorkersAiBinding {
   const high = { value: 0.95, label: 'High' } as const;
   const missing = { value: 0, label: 'Missing' } as const;
   return {
+    async toMarkdown() {
+      return { format: 'markdown' as const, data: 'Kiwi Supplies Ltd\nTotal NZD 115.00' };
+    },
     async run() {
       return { response: {
         issuerName: 'Kiwi Supplies Ltd', issuerGstNumber: '123-456-789',

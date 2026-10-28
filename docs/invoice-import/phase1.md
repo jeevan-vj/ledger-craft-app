@@ -31,7 +31,7 @@ All routes require a Better Auth session and active organisation membership.
 
 Upload and discard require `invoices.import` (owner, admin, accountant). Member and read-only roles cannot upload or discard. Metadata and file reads use `invoices.read`, so read-only members may view organisation-owned imports. Unknown and cross-organisation IDs return 404.
 
-Uploads validate decoded size before storage, sniff PDF/JPEG/PNG/WebP/HEIC magic bytes, reject declared MIME mismatches, count PDF `/Type /Page` entries best-effort, sanitise filenames, and rate-limit repeated upload attempts per user. API Sentry processing removes request bodies and filename fields.
+Uploads validate decoded size before storage, sniff PDF/JPEG/PNG/WebP/HEIC magic bytes, and reject declared MIME mismatches. PDF page dictionaries are counted outside content streams and PDF strings. A counted total over `INVOICE_IMPORT_MAX_PAGES` is rejected. An unreadable page count, including compressed object streams, is not rejected as too many pages; it stays within the byte cap. Filenames are sanitised, and repeated upload attempts are rate-limited per user. API Sentry processing removes request bodies and filename fields.
 
 ## Configuration
 

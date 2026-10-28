@@ -9,12 +9,17 @@ timezone. The payment is the invoice total and uses `createPaymentInTx` unchange
 
 **Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
 The Workers AI path converts PDFs through the binding's native `toMarkdown`
-operation with PDF metadata disabled, bounds the converted text, and preserves
-the existing untrusted-document prompt boundary before structured extraction.
-Expo camera captures are resized and recompressed locally to JPEG using
-progressively smaller presets until the decoded upload is at most 950,000 bytes.
-The private storage ceiling remains 1 MiB without `DOCUMENTS` R2. Real Workers
-AI, authenticated native-device camera QA, and deployment remain pending.
+operation with PDF metadata disabled, strips untrusted-document marker strings
+from the converted text, and wraps the remainder in one prompt boundary before
+structured extraction. A counted page total over the cap is rejected before that
+conversion. An unreadable page count, including compressed object streams, is
+kept inside the upload byte cap. Expo camera captures are resized and
+recompressed locally to JPEG using progressively smaller presets, and base64 is
+read only after the file is within 950,000 bytes. The private storage ceiling
+remains 1 MiB without `DOCUMENTS` R2. `expo-image-manipulator` changes the Expo
+fingerprint, so this camera path needs a new binary and must not force
+`runtimeVersion`. Real Workers AI, authenticated native-device camera QA, and
+deployment remain pending.
 
 **Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
 SQLite migration `0019_invoice-import-phase2.sql` persists provider-labelled
