@@ -200,6 +200,25 @@ class LedgerBase extends DurableObject<Env> {
 export const Identity = Sentry.instrumentDurableObjectWithSentry(sentryOptions, IdentityBase);
 export const Ledger = Sentry.instrumentDurableObjectWithSentry(sentryOptions, LedgerBase);
 
+async function dispatchStripeWebhook(request: Request, env: Env, path: string, requestId: string): Promise<Response> {
+  const stripe = stripeRuntimeFromEnv(env as unknown as Record<string, string | undefined>);
+  if (!stripe) return failureResponse(404, 'NOT_FOUND', 'Not found', requestId);
+  const signature = request.headers.get('stripe-signature');
+  if (!signature) return failureResponse(400, 'VALIDATION_ERROR', 'Missing Stripe signature', requestId);
+  let event: StripeWebhookEvent;
+  try {
+    const secret = path.endsWith('/connect') ? stripe.config.connectWebhookSecret : stripe.config.webhookSecret;
+    event = await stripe.gateway.constructWebhookEvent(new Uint8Array(await request.arrayBuffer()), signature, secret);
+  } catch {
+    return failureResponse(400, 'VALIDATION_ERROR', 'Invalid Stripe webhook signature', requestId);
+  }
+  const rawMetadata = event.data.object.metadata;
+  const metadata = rawMetadata && typeof rawMetadata === 'object' ? rawMetadata as Record<string, unknown> : undefined;
+  const organisationId = typeof metadata?.organisation_id === 'string' ? metadata.organisation_id : undefined;
+  if (!organisationId) return failureResponse(400, 'VALIDATION_ERROR', 'Stripe event is missing organisation routing metadata', requestId);
+  return Response.json(await env.LEDGERS.getByName(organisationId).stripeWebhook(event));
+}
+
 const worker = {
   async fetch(request: Request, env: Env): Promise<Response> {
     const bound = bindRequestId(request);
@@ -212,23 +231,7 @@ const worker = {
         throw new Error('Sentry verification error');
       }
       if (path === '/api/stripe/webhooks/platform' || path === '/api/stripe/webhooks/connect') {
-        const stripe = stripeRuntimeFromEnv(env as unknown as Record<string, string | undefined>);
-        if (!stripe) return failureResponse(404, 'NOT_FOUND', 'Not found', bound.requestId);
-        const signature = bound.request.headers.get('stripe-signature');
-        if (!signature) return failureResponse(400, 'VALIDATION_ERROR', 'Missing Stripe signature', bound.requestId);
-        let event: StripeWebhookEvent;
-        try {
-          const secret = path.endsWith('/connect') ? stripe.config.connectWebhookSecret : stripe.config.webhookSecret;
-          event = await stripe.gateway.constructWebhookEvent(new Uint8Array(await bound.request.arrayBuffer()), signature, secret);
-        } catch {
-          return failureResponse(400, 'VALIDATION_ERROR', 'Invalid Stripe webhook signature', bound.requestId);
-        }
-        const object = event.data.object;
-        const metadata = object.metadata && typeof object.metadata === 'object' ? object.metadata as Record<string, unknown> : {};
-        const organisationId = typeof metadata.organisation_id === 'string' ? metadata.organisation_id : undefined;
-        if (!organisationId) return failureResponse(400, 'VALIDATION_ERROR', 'Stripe event is missing organisation routing metadata', bound.requestId);
-        const result = await env.LEDGERS.getByName(organisationId).stripeWebhook(event);
-        return Response.json(result);
+        return dispatchStripeWebhook(bound.request, env, path, bound.requestId);
       }
       const publicOrganisationId = publicLedgerOrganisationId(path);
       if (publicOrganisationId) return await env.LEDGERS.getByName(publicOrganisationId).dispatch(bound.request);

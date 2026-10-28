@@ -4,6 +4,30 @@ import { createMockStripeGateway } from './stripe.mock-gateway';
 
 const STRIPE_API_VERSION = '2026-09-30.endive' as const;
 
+function platformFees(env: Record<string, string | undefined>) {
+  const basisPoints = Number(env.STRIPE_PLATFORM_FEE_BPS ?? '400');
+  const fixedCents = Number(env.STRIPE_PLATFORM_FEE_FIXED_CENTS ?? '30');
+  if (!Number.isSafeInteger(basisPoints) || basisPoints < 0 || basisPoints > 10_000) throw new Error('STRIPE_PLATFORM_FEE_BPS must be an integer from 0 to 10000');
+  if (!Number.isSafeInteger(fixedCents) || fixedCents < 0) throw new Error('STRIPE_PLATFORM_FEE_FIXED_CENTS must be a non-negative integer');
+  return { basisPoints, fixedCents };
+}
+
+function requireLocalMockUrl(appUrl: string): void {
+  let hostname: string;
+  try {
+    hostname = new URL(appUrl).hostname;
+  } catch {
+    throw new Error('Stripe mock mode requires a local APP_URL');
+  }
+  if (!['localhost', '127.0.0.1', '[::1]'].includes(hostname)) throw new Error('Stripe mock mode requires a local APP_URL');
+}
+
+function secretKeyMode(secretKey: string): 'test' | 'live' | undefined {
+  if (/^(?:sk|rk|rkcs)_test_/.test(secretKey)) return 'test';
+  if (/^(?:sk|rk)_live_/.test(secretKey)) return 'live';
+  return undefined;
+}
+
 function remoteAccount(account: Stripe.V2.Core.Account): StripeRemoteAccount {
   const cardPayments = account.configuration?.merchant?.capabilities?.card_payments;
   const payouts = account.configuration?.recipient?.capabilities?.stripe_balance?.payouts;
@@ -113,19 +137,8 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
   const mock = env.STRIPE_MOCK_MODE === 'true';
   if (mock && env.NODE_ENV === 'production') throw new Error('Stripe mock mode is not available in production');
   if (mock) {
-    let hostname: string;
-    try {
-      hostname = new URL(appUrl).hostname;
-    } catch {
-      throw new Error('Stripe mock mode requires a local APP_URL');
-    }
-    if (!['localhost', '127.0.0.1', '[::1]'].includes(hostname)) {
-      throw new Error('Stripe mock mode requires a local APP_URL');
-    }
-    const basisPoints = Number(env.STRIPE_PLATFORM_FEE_BPS ?? '400');
-    const fixedCents = Number(env.STRIPE_PLATFORM_FEE_FIXED_CENTS ?? '30');
-    if (!Number.isSafeInteger(basisPoints) || basisPoints < 0 || basisPoints > 10_000) throw new Error('STRIPE_PLATFORM_FEE_BPS must be an integer from 0 to 10000');
-    if (!Number.isSafeInteger(fixedCents) || fixedCents < 0) throw new Error('STRIPE_PLATFORM_FEE_FIXED_CENTS must be a non-negative integer');
+    requireLocalMockUrl(appUrl);
+    const { basisPoints, fixedCents } = platformFees(env);
     return {
       gateway: createMockStripeGateway(appUrl),
       config: {
@@ -139,12 +152,9 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
   const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
   const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
   if (!secretKey || !webhookSecret || !connectWebhookSecret) throw new Error('Stripe payments are enabled but Stripe secrets are incomplete');
-  const mode = /^(?:sk|rk|rkcs)_test_/.test(secretKey) ? 'test' : /^(?:sk|rk)_live_/.test(secretKey) ? 'live' : undefined;
+  const mode = secretKeyMode(secretKey);
   if (!mode) throw new Error('Stripe secret key must be a test or live secret key');
-  const basisPoints = Number(env.STRIPE_PLATFORM_FEE_BPS ?? '400');
-  const fixedCents = Number(env.STRIPE_PLATFORM_FEE_FIXED_CENTS ?? '30');
-  if (!Number.isSafeInteger(basisPoints) || basisPoints < 0 || basisPoints > 10_000) throw new Error('STRIPE_PLATFORM_FEE_BPS must be an integer from 0 to 10000');
-  if (!Number.isSafeInteger(fixedCents) || fixedCents < 0) throw new Error('STRIPE_PLATFORM_FEE_FIXED_CENTS must be a non-negative integer');
+  const { basisPoints, fixedCents } = platformFees(env);
   return {
     gateway: createStripeGateway(secretKey),
     config: {

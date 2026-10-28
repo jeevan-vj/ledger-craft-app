@@ -105,9 +105,10 @@ export async function createPaymentInTx(
   const receivableId = await systemAccount(tx, ctx, '1200');
   const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
   const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
-  const cashId = options?.clearingAccountNumber
-    ? await systemAccount(tx, ctx, options.clearingAccountNumber)
-    : selectedBank ? await bankLedgerAccount(tx, ctx, selectedBank) : await systemAccount(tx, ctx, '1110');
+  let cashId: string;
+  if (options?.clearingAccountNumber) cashId = await systemAccount(tx, ctx, options.clearingAccountNumber);
+  else if (selectedBank) cashId = await bankLedgerAccount(tx, ctx, selectedBank);
+  else cashId = await systemAccount(tx, ctx, '1110');
   await postBalancedEntry(tx, ctx, {
     date: payment.paymentDate,
     description: `Payment for ${invoice.invoiceNumber}`,

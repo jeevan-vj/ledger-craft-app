@@ -25,7 +25,11 @@ export function StripePaymentsPanel() {
   useEffect(() => { void load(); }, []);
   const onboard = async () => {
     setBusy(true);
-    try { if (account?.status === 'not_connected') await stripeApi.createAccount(); const link = await stripeApi.onboardingLink(); window.open(link.url, '_self', 'noopener,noreferrer'); }
+    try {
+      if (account?.status === 'not_connected') await stripeApi.createAccount();
+      const link = await stripeApi.onboardingLink();
+      window.open(link.url, '_self', 'noopener,noreferrer');
+    }
     catch (error) { toast.error('Could not start Stripe setup', { description: error instanceof Error ? error.message : 'Try again.' }); setBusy(false); }
   };
   const refresh = async () => {

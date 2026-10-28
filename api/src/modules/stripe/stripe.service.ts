@@ -22,7 +22,7 @@ function stripeCents(value: string): number {
   return Number(cents);
 }
 
-async function contextForUser(db: Database, userId: string) {
+function contextForUser(db: Database, userId: string) {
   return withOrganisationTx(db, userId, async (_tx, ctx) => ctx);
 }
 
@@ -82,7 +82,7 @@ export async function createPaymentLink(db: Database, userId: string, invoiceId:
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, invoiceId);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
     const account = await repo.getConnectedAccount(tx, ctx.organisationId);
-    if (!account || account.status !== 'active') throw new HTTPException(409, { message: 'Stripe onboarding must be active before accepting payments' });
+    if (account?.status !== 'active') throw new HTTPException(409, { message: 'Stripe onboarding must be active before accepting payments' });
     return { ctx, invoice, account };
   });
   if (data.invoice.currency !== 'NZD') throw new HTTPException(400, { message: 'Stripe payments currently require an NZD invoice' });
@@ -119,7 +119,7 @@ export async function listPaymentLinks(db: Database, userId: string, invoiceId: 
 export async function getPaymentLink(db: Database, userId: string, invoiceId: string, id: string, appUrl: string) {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const row = await repo.getPaymentLink(tx, ctx.organisationId, id);
-    if (!row || row.invoiceId !== invoiceId) throw new HTTPException(404, { message: 'Payment link not found' });
+    if (row?.invoiceId !== invoiceId) throw new HTTPException(404, { message: 'Payment link not found' });
     return repo.paymentLinkDto(row, appUrl);
   });
 }
@@ -128,7 +128,7 @@ export async function cancelPaymentLink(db: Database, userId: string, invoiceId:
   requireEnabled(config, gateway);
   const row = await withOrganisationTx(db, userId, async (tx, ctx) => {
     const row = await repo.getPaymentLink(tx, ctx.organisationId, id);
-    if (!row || row.invoiceId !== invoiceId) throw new HTTPException(404, { message: 'Payment link not found' });
+    if (row?.invoiceId !== invoiceId) throw new HTTPException(404, { message: 'Payment link not found' });
     if (row.status !== 'open') return row;
     return row;
   });
@@ -166,7 +166,7 @@ export async function processWebhook(db: Database, event: StripeWebhookEvent, co
   await db.transaction(async (tx) => {
     if (!await repo.claimEvent(tx, { id: event.id, organisationId, type: event.type, livemode: event.livemode })) return;
     const link = await repo.getPaymentLinkBySession(tx, sessionId);
-    if (!link || link.id !== linkId || link.organisationId !== organisationId || moneyToCents(link.amount) !== BigInt(amountTotal)) {
+    if (link?.id !== linkId || link?.organisationId !== organisationId || !link || moneyToCents(link.amount) !== BigInt(amountTotal)) {
       await repo.completeEvent(tx, event.id, 'failed', 'Payment link integrity check failed');
       throw new HTTPException(400, { message: 'Stripe payment did not match the local payment link' });
     }
@@ -196,7 +196,7 @@ export async function processVerifiedWebhook(db: Database, event: StripeWebhookE
     const accountId = stringField(object.id) ?? event.account ?? undefined;
     if (!organisationId || !accountId) throw new HTTPException(400, { message: 'Stripe account event is missing routing metadata' });
     const current = await repo.getConnectedAccount(db, organisationId);
-    if (!current || current.stripeAccountId !== accountId) throw new HTTPException(400, { message: 'Unknown Stripe connected account' });
+    if (current?.stripeAccountId !== accountId) throw new HTTPException(400, { message: 'Unknown Stripe connected account' });
     const remote = await gateway.retrieveConnectedAccount(accountId);
     await db.transaction((tx) => repo.upsertConnectedAccount(tx, { organisationId, userId: current.userId }, remote));
     return { received: true as const };

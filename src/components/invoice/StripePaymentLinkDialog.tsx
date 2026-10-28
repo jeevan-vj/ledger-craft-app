@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } f
 import { Input } from '@/components/ui/input';
 import { toast } from 'sonner';
 
-interface Props { open: boolean; onOpenChange: (open: boolean) => void; invoice: { id: string; invoiceNumber: string; balanceDue: number; currency: string }; }
+interface Props { readonly open: boolean; readonly onOpenChange: (open: boolean) => void; readonly invoice: { readonly id: string; readonly invoiceNumber: string; readonly balanceDue: number; readonly currency: string }; }
 function money(value: string, currency: string) {
   if (currency === 'NZD') return `NZ$${Number(value).toFixed(2)}`;
   return new Intl.NumberFormat('en-NZ', { style: 'currency', currency }).format(Number(value));

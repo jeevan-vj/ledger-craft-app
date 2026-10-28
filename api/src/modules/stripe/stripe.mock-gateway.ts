@@ -30,36 +30,37 @@ export function createMockStripeGateway(appUrl: string): MockStripeGateway {
   const checkouts = new Map<string, MockCheckout>();
   return {
     mock: true,
-    async createConnectedAccount(input) {
+    createConnectedAccount(input) {
       const id = `acct_mock_${input.organisationId}`;
       const account = accounts.get(id) ?? pendingAccount(id);
       accounts.set(id, account);
-      return account;
+      return Promise.resolve(account);
     },
-    async retrieveConnectedAccount(accountId) {
+    retrieveConnectedAccount(accountId) {
       const account = accounts.get(accountId);
-      if (!account) throw new Error('Unknown mock Stripe account');
-      return account;
+      if (!account) return Promise.reject(new Error('Unknown mock Stripe account'));
+      return Promise.resolve(account);
     },
-    async createAccountLink(input) {
+    createAccountLink(input) {
       const params = new URLSearchParams({ return_url: input.returnUrl, refresh_url: input.refreshUrl });
-      return {
+      return Promise.resolve({
         url: `${baseUrl}/api/stripe/mock/onboarding/${encodeURIComponent(input.accountId)}?${params}`,
         expiresAt: Math.floor(Date.now() / 1000) + 30 * 60,
-      };
+      });
     },
-    async createCheckoutSession(input) {
+    createCheckoutSession(input) {
       const id = `cs_mock_${crypto.randomUUID()}`;
       const expiresAt = Math.floor(Date.now() / 1000) + 24 * 60 * 60;
       checkouts.set(id, { ...input, id, expiresAt, paid: false });
-      return { id, url: `${baseUrl}/api/stripe/mock/checkout/${id}`, expiresAt };
+      return Promise.resolve({ id, url: `${baseUrl}/api/stripe/mock/checkout/${id}`, expiresAt });
     },
-    async expireCheckoutSession(sessionId) {
+    expireCheckoutSession(sessionId) {
       checkouts.delete(sessionId);
+      return Promise.resolve();
     },
-    async constructWebhookEvent(payload, signature, secret) {
-      if (signature !== 'mock_signature' || secret !== 'whsec_mock') throw new Error('Invalid mock signature');
-      return JSON.parse(new TextDecoder().decode(payload)) as StripeWebhookEvent;
+    constructWebhookEvent(payload, signature, secret) {
+      if (signature !== 'mock_signature' || secret !== 'whsec_mock') return Promise.reject(new Error('Invalid mock signature'));
+      return Promise.resolve(JSON.parse(new TextDecoder().decode(payload)) as StripeWebhookEvent);
     },
     completeAccount(accountId) {
       if (!accounts.has(accountId)) throw new Error('Unknown mock Stripe account');

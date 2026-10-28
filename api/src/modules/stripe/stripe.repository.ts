@@ -81,7 +81,7 @@ export async function getPaymentLinkByIdempotencyKey(db: Database, organisationI
   return row;
 }
 
-export async function listPaymentLinks(db: Database, organisationId: string, invoiceId: string) {
+export function listPaymentLinks(db: Database, organisationId: string, invoiceId: string) {
   return db.select().from(stripePaymentLinks).where(and(eq(stripePaymentLinks.organisationId, organisationId), eq(stripePaymentLinks.invoiceId, invoiceId))).orderBy(desc(stripePaymentLinks.createdAt));
 }
 
