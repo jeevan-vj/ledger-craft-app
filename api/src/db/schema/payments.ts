@@ -18,6 +18,10 @@ export const payments = sqliteTable('payments', {
   referenceNumber: text('reference_number'),
   notes: text('notes'),
   status: text('status').notNull().default('completed'),
+  reversalReason: text('reversal_reason'),
+  reversalDate: text('reversal_date'),
+  reversedAt: timestamptz('reversed_at'),
+  reversedByUserId: text('reversed_by_user_id').references(() => users.id),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [

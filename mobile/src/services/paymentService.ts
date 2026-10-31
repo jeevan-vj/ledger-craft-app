@@ -38,6 +38,17 @@ export class PaymentService {
       throw error;
     }
   }
+
+  async reversePayment(paymentId: string, input: { reason: string; reversalDate: string }): Promise<Payment> {
+    if (!onlineManager.isOnline()) {
+      throw new AuthApiError(
+        'You are offline. This payment was not reversed.',
+        0,
+        'OFFLINE',
+      );
+    }
+    return paymentsApi.reverse(paymentId, input);
+  }
 }
 
 export const paymentService = new PaymentService();

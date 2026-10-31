@@ -1,5 +1,18 @@
 # LedgerCraft target architecture
 
+**Invoice payment integrity (implemented locally, 2026-10-31):** SQLite
+migration `0022_payment-reversals.sql` adds immutable reversal metadata to
+invoice payments. Existing-invoice payments remain exact instalments capped at
+the current balance due; each completed payment credits accounts receivable and
+updates the invoice from unpaid to partially paid or paid. Web and Expo now
+default capture to the remaining balance and expose auditable reversal actions.
+`POST /api/payments/:id/reverse` preserves the original payment, records the
+reason/date/actor, posts an equal opposite journal, and recalculates invoice
+totals atomically. Cross-organisation access, pre-payment reversal dates,
+duplicate reversals, and overpayments are rejected. Pre-invoice advances remain
+a separate future customer-credit/liability workflow and are not represented as
+invoice overpayments.
+
 **Stripe Connect invoice payments (implemented locally, 2026-10-29):** SQLite
 migration `0021_stripe-connect-phase1.sql` stores organisation-scoped connected
 accounts, public Checkout links, and idempotent webhook events. Owners and admins

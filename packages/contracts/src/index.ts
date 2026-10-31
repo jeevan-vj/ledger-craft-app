@@ -333,6 +333,7 @@ export {
   initializeAccountsRequestSchema,
   paymentListResponseSchema,
   paymentSchema,
+  reversePaymentRequestSchema,
   updateAccountRequestSchema,
   type AccountDto,
   type AccountListResponse,
@@ -341,6 +342,7 @@ export {
   type InitializeAccountsRequest,
   type PaymentDto,
   type PaymentListResponse,
+  type ReversePaymentRequest,
   type UpdateAccountRequest,
 } from './payment';
 

@@ -1,5 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { createAccountRequestSchema, createPaymentRequestSchema, paymentSchema } from './payment';
+import {
+  createAccountRequestSchema,
+  createPaymentRequestSchema,
+  paymentSchema,
+  reversePaymentRequestSchema,
+} from './payment';
 
 describe('payment contracts', () => {
   const payment = {
@@ -12,6 +17,9 @@ describe('payment contracts', () => {
     referenceNumber: 'REF-1',
     notes: null,
     status: 'completed' as const,
+    reversalReason: null,
+    reversalDate: null,
+    reversedAt: null,
     createdAt: '2026-09-08T00:00:00.000Z',
     updatedAt: '2026-09-08T00:00:00.000Z',
   };
@@ -69,6 +77,30 @@ describe('payment contracts', () => {
         amount: '10.00',
         paymentDate: '2026-09-08',
         status: 'completed',
+      }).success,
+    ).toBe(false);
+  });
+
+  it('accepts an auditable reversal reason and effective date', () => {
+    expect(
+      reversePaymentRequestSchema.parse({
+        reason: 'Payment entered against the wrong invoice',
+        reversalDate: '2026-09-10',
+      }),
+    ).toEqual({
+      reason: 'Payment entered against the wrong invoice',
+      reversalDate: '2026-09-10',
+    });
+  });
+
+  it('rejects blank reversal reasons, invalid dates and ownership fields', () => {
+    expect(reversePaymentRequestSchema.safeParse({ reason: '  ', reversalDate: '2026-09-10' }).success).toBe(false);
+    expect(reversePaymentRequestSchema.safeParse({ reason: 'Wrong invoice', reversalDate: '10/09/2026' }).success).toBe(false);
+    expect(
+      reversePaymentRequestSchema.safeParse({
+        reason: 'Wrong invoice',
+        reversalDate: '2026-09-10',
+        organisationId: '11111111-1111-1111-1111-111111111111',
       }).success,
     ).toBe(false);
   });

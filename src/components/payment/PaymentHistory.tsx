@@ -31,7 +31,7 @@ interface PaymentHistoryProps {
   onViewReceipt: (paymentId: string) => void;
   onDownloadReceipt: (paymentId: string) => void;
   onResendReceipt: (paymentId: string) => void;
-  onRefundPayment?: (paymentId: string) => void;
+  onReversePayment?: (paymentId: string) => void;
 }
 
 export function PaymentHistory({
@@ -41,7 +41,7 @@ export function PaymentHistory({
   onViewReceipt,
   onDownloadReceipt,
   onResendReceipt,
-  onRefundPayment
+  onReversePayment
 }: PaymentHistoryProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -201,7 +201,48 @@ export function PaymentHistory({
               </AlertDescription>
             </Alert>
           ) : (
-            <div className="rounded-md border">
+            <>
+              <div className="space-y-3 md:hidden">
+                {filteredPayments.map((payment) => {
+                  const invoice = getInvoiceForPayment(payment.id);
+                  return (
+                    <div key={payment.id} className="rounded-2xl border bg-card p-4 shadow-sm">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="min-w-0">
+                          <p className="text-sm text-muted-foreground">
+                            #{invoice?.invoiceNumber || payment.invoiceNumber || 'N/A'} · {format(new Date(payment.paymentDate), 'dd MMM yyyy')}
+                          </p>
+                          <p className="mt-1 text-lg font-bold tabular-nums">${payment.amount.toFixed(2)}</p>
+                          <p className="mt-1 truncate text-sm text-muted-foreground">
+                            {getPaymentMethodLabel(payment.paymentMethod)}{payment.referenceNumber ? ` · ${payment.referenceNumber}` : ''}
+                          </p>
+                        </div>
+                        <Badge variant={getStatusBadgeVariant(payment.status)}>
+                          {payment.status === 'refunded'
+                            ? 'Reversed'
+                            : payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                        </Badge>
+                      </div>
+                      {payment.reversalReason ? (
+                        <p className="mt-3 rounded-xl bg-muted px-3 py-2 text-sm text-muted-foreground">
+                          {payment.reversalReason}
+                        </p>
+                      ) : null}
+                      {onReversePayment && payment.status === 'completed' ? (
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          className="mt-2 h-11 px-0 text-destructive hover:text-destructive"
+                          onClick={() => onReversePayment(payment.id)}
+                        >
+                          Reverse payment
+                        </Button>
+                      ) : null}
+                    </div>
+                  );
+                })}
+              </div>
+              <div className="hidden rounded-md border md:block">
               <Table>
                 <TableHeader>
                   <TableRow>
@@ -247,14 +288,21 @@ export function PaymentHistory({
                           {payment.referenceNumber || '-'}
                         </TableCell>
                         <TableCell>
-                          <Badge variant={getStatusBadgeVariant(payment.status)}>
-                            {payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
-                          </Badge>
+                          <div className="space-y-1">
+                            <Badge variant={getStatusBadgeVariant(payment.status)}>
+                              {payment.status === 'refunded'
+                                ? 'Reversed'
+                                : payment.status.charAt(0).toUpperCase() + payment.status.slice(1)}
+                            </Badge>
+                            {payment.reversalReason ? (
+                              <p className="max-w-48 text-xs text-muted-foreground">{payment.reversalReason}</p>
+                            ) : null}
+                          </div>
                         </TableCell>
                         <TableCell className="text-right">
                           <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                              <Button variant="ghost" size="sm">
+                              <Button variant="ghost" size="sm" aria-label="Payment actions">
                                 <MoreHorizontal className="h-4 w-4" />
                               </Button>
                             </DropdownMenuTrigger>
@@ -271,12 +319,12 @@ export function PaymentHistory({
                                 <Mail className="mr-2 h-4 w-4" />
                                 Resend Receipt
                               </DropdownMenuItem>
-                              {onRefundPayment && payment.status === 'completed' && (
+                              {onReversePayment && payment.status === 'completed' && (
                                 <DropdownMenuItem 
-                                  onClick={() => onRefundPayment(payment.id)}
-                                  className="text-red-600"
+                                  onClick={() => onReversePayment(payment.id)}
+                                  className="text-destructive"
                                 >
-                                  Refund Payment
+                                  Reverse payment
                                 </DropdownMenuItem>
                               )}
                             </DropdownMenuContent>
@@ -287,7 +335,8 @@ export function PaymentHistory({
                   })}
                 </TableBody>
               </Table>
-            </div>
+              </div>
+            </>
           )}
         </CardContent>
       </Card>

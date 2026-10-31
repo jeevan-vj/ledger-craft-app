@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,14 +19,18 @@ import { format } from 'date-fns';
 import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
 import { CreatePaymentRequest, EnhancedInvoice } from '@/types/payment';
 
-const paymentSchema = z.object({
+const paymentSchema = (balanceDue: number) => z.object({
   paymentMethod: z.enum(['bank_transfer', 'cash', 'cheque', 'credit_card', 'online']),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  amount: z.number()
+    .min(0.01, 'Amount must be greater than 0')
+    .max(balanceDue, 'Amount cannot exceed the balance due'),
   paymentDate: z.date(),
   referenceNumber: z.string().optional(),
   notes: z.string().optional(),
   generateReceipt: z.boolean().default(true)
 });
+
+type PaymentFormData = z.infer<ReturnType<typeof paymentSchema>>;
 
 interface PaymentFormProps {
   invoice: EnhancedInvoice;
@@ -44,10 +48,13 @@ const paymentMethods = [
 ];
 
 export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: PaymentFormProps) {
+  const balanceDue = invoice.balanceDue || 0;
+  const schema = useMemo(() => paymentSchema(balanceDue), [balanceDue]);
   const [date, setDate] = useState<Date>(new Date());
   
-  const form = useForm<z.infer<typeof paymentSchema>>({
-    resolver: zodResolver(paymentSchema),
+  const form = useForm<PaymentFormData>({
+    resolver: zodResolver(schema),
+    mode: 'onChange',
     defaultValues: {
       amount: Math.max(0.01, invoice.balanceDue || 0.01),
       paymentDate: new Date(),
@@ -56,7 +63,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
     }
   });
 
-  const handleSubmit = async (data: z.infer<typeof paymentSchema>) => {
+  const handleSubmit = async (data: PaymentFormData) => {
     const paymentRequest: CreatePaymentRequest = {
       invoiceId: invoice.id,
       paymentMethod: data.paymentMethod,
@@ -71,9 +78,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
   };
 
   const watchedAmount = form.watch('amount') || 0;
-  const balanceDue = invoice.balanceDue || 0;
   const isPartialPayment = watchedAmount < balanceDue;
-  const isOverpayment = watchedAmount > balanceDue;
   const halfAmount = halfPaymentAmount(balanceDue);
 
   return (
@@ -144,7 +149,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
                 type="number"
                 step="0.01"
                 min="0.01"
-                max={(invoice.balanceDue || 0) * 1.1} // Allow 10% overpayment
+                max={balanceDue}
                 className="pl-12"
                 {...form.register('amount', { valueAsNumber: true })}
               />
@@ -164,16 +169,6 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
               </Alert>
             )}
             
-            {isOverpayment && (
-              <Alert className="border-orange-200 bg-orange-50">
-                <AlertCircle className="h-4 w-4 text-orange-600" />
-                <AlertDescription className="text-orange-800">
-                  Payment exceeds balance due by: {invoice.currency || '$'}
-                  {(watchedAmount - (invoice.balanceDue || 0)).toFixed(2)}
-                </AlertDescription>
-              </Alert>
-            )}
-
             {/* Quick Amount Buttons */}
             <div className="flex gap-2 flex-wrap">
               <Button
@@ -204,7 +199,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
           {/* Payment Method */}
           <div className="space-y-2">
             <Label>Payment Method *</Label>
-            <Select onValueChange={(value) => form.setValue('paymentMethod', value as any)}>
+            <Select onValueChange={(value) => form.setValue('paymentMethod', value as PaymentFormData['paymentMethod'])}>
               <SelectTrigger>
                 <SelectValue placeholder="Select payment method" />
               </SelectTrigger>

@@ -15,6 +15,9 @@ export const paymentSchema = z.object({
   referenceNumber: z.string().nullable(),
   notes: z.string().nullable(),
   status: paymentStatus,
+  reversalReason: z.string().nullable().default(null),
+  reversalDate: z.string().nullable().default(null),
+  reversedAt: z.string().nullable().default(null),
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
@@ -33,6 +36,13 @@ export const createPaymentRequestSchema = z
 export const paymentListResponseSchema = z.object({
   payments: z.array(paymentSchema),
 });
+
+export const reversePaymentRequestSchema = z
+  .object({
+    reason: z.string().trim().min(3).max(500),
+    reversalDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  })
+  .strict();
 
 export const accountSchema = z.object({
   id: z.string().uuid(),
@@ -86,6 +96,7 @@ export const initializeAccountsRequestSchema = z
 export type PaymentDto = z.infer<typeof paymentSchema>;
 export type CreatePaymentRequest = z.infer<typeof createPaymentRequestSchema>;
 export type PaymentListResponse = z.infer<typeof paymentListResponseSchema>;
+export type ReversePaymentRequest = z.infer<typeof reversePaymentRequestSchema>;
 export type AccountDto = z.infer<typeof accountSchema>;
 export type AccountListResponse = z.infer<typeof accountListResponseSchema>;
 export type CreateAccountRequest = z.infer<typeof createAccountRequestSchema>;
