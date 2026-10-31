@@ -12,9 +12,19 @@ interface PaymentHistoryListProps {
   loading?: boolean;
   error?: string | null;
   onRetry?: () => void;
+  onReverse?: (payment: Payment) => void;
+  reversingPaymentId?: string | null;
 }
 
-export function PaymentHistoryList({ payments, currency, loading, error, onRetry }: PaymentHistoryListProps) {
+export function PaymentHistoryList({
+  payments,
+  currency,
+  loading,
+  error,
+  onRetry,
+  onReverse,
+  reversingPaymentId,
+}: Readonly<PaymentHistoryListProps>) {
   const theme = useTheme();
   const styles = createStyles(theme);
 
@@ -44,16 +54,33 @@ export function PaymentHistoryList({ payments, currency, loading, error, onRetry
         const row = formatPaymentHistory(payment, currency);
         const label = `${row.method}, ${row.amount}, ${row.date}${row.reference ? `, reference ${row.reference}` : ''}, ${row.status}`;
         return (
-          <View key={payment.id} accessible accessibilityLabel={label} style={styles.row}>
-            <View style={styles.copy}>
-              <Text style={styles.method}>{row.method}</Text>
-              <Text style={styles.meta}>
-                {row.date}
-                {row.reference ? ` · ${row.reference}` : ''}
-                {` · ${row.status}`}
-              </Text>
+          <View key={payment.id} style={styles.paymentBlock}>
+            <View accessible accessibilityLabel={label} style={styles.row}>
+              <View style={styles.copy}>
+                <Text style={styles.method}>{row.method}</Text>
+                <Text style={styles.meta}>
+                  {row.date}
+                  {row.reference ? ` · ${row.reference}` : ''}
+                  {` · ${row.status}`}
+                </Text>
+              </View>
+              <Text style={styles.amount}>{row.amount}</Text>
             </View>
-            <Text style={styles.amount}>{row.amount}</Text>
+            {payment.reversalReason ? <Text style={styles.reversalReason}>{payment.reversalReason}</Text> : null}
+            {onReverse && payment.status === 'completed' ? (
+              <AppPressable
+                accessibilityRole="button"
+                accessibilityLabel="Reverse payment"
+                accessibilityState={{ disabled: reversingPaymentId === payment.id, busy: reversingPaymentId === payment.id }}
+                disabled={reversingPaymentId === payment.id}
+                onPress={() => onReverse(payment)}
+                style={({ pressed }) => [styles.reverseButton, pressed && { opacity: 0.7 }]}
+              >
+                <Text style={styles.reverseText}>
+                  {reversingPaymentId === payment.id ? 'Reversing…' : 'Reverse payment'}
+                </Text>
+              </AppPressable>
+            ) : null}
           </View>
         );
       })}
@@ -91,9 +118,8 @@ const createStyles = ({ colors: palette }: ReturnType<typeof useTheme>) => Style
     justifyContent: 'space-between',
     gap: 12,
     paddingVertical: 10,
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: palette.separator,
   },
+  paymentBlock: { borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: palette.separator },
   copy: { flex: 1, minWidth: 0 },
   method: { fontSize: 16, fontWeight: '600', color: palette.text },
   meta: { marginTop: 2, fontSize: 13, color: palette.textSecondary },
@@ -104,5 +130,8 @@ const createStyles = ({ colors: palette }: ReturnType<typeof useTheme>) => Style
     fontVariant: ['tabular-nums'],
   },
   error: { fontSize: 14, fontWeight: '600', color: palette.danger },
+  reversalReason: { fontSize: 13, color: palette.textSecondary, marginBottom: space.sm },
+  reverseButton: { minHeight: 44, alignSelf: 'flex-start', justifyContent: 'center', paddingRight: space.lg },
+  reverseText: { fontSize: 15, fontWeight: '700', color: palette.danger },
   retry: { minHeight: 44, justifyContent: 'center' },
 });

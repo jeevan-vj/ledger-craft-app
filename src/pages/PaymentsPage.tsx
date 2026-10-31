@@ -15,11 +15,15 @@ import { useAppData } from '@/hooks/useAppData';
 import { EnhancedInvoice, CreatePaymentRequest } from '@/types/payment';
 import { paymentService } from '@/services/paymentService';
 import { downloadReceiptPdf } from '@/features/receipts/receiptPdf';
+import type { Payment } from '@/types/payment';
+import { PaymentReversalDialog } from '@/components/payment/PaymentReversalDialog';
 
 export default function PaymentsPage() {
   const [unpaidInvoices, setUnpaidInvoices] = useState<EnhancedInvoice[]>([]);
   const [showQuickPayment, setShowQuickPayment] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<EnhancedInvoice | null>(null);
+  const [paymentToReverse, setPaymentToReverse] = useState<Payment | null>(null);
+  const [reversingPayment, setReversingPayment] = useState(false);
   
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -30,6 +34,7 @@ export default function PaymentsPage() {
     invoices,
     createPayment,
     refreshPayments,
+    refreshInvoices,
     getInvoicesWithBalance
   } = useAppData();
 
@@ -142,6 +147,28 @@ export default function PaymentsPage() {
     ]);
   };
 
+  const handleReversePayment = async (input: { reason: string; reversalDate: string }) => {
+    if (!paymentToReverse) return;
+    setReversingPayment(true);
+    try {
+      await paymentService.reversePayment(paymentToReverse.id, input);
+      await Promise.all([refreshPayments(), refreshInvoices(), fetchUnpaidInvoices()]);
+      setPaymentToReverse(null);
+      toast({
+        title: 'Payment reversed',
+        description: 'The invoice balance and accounting journal have been updated.',
+      });
+    } catch (error) {
+      toast({
+        title: 'Reversal failed',
+        description: error instanceof Error ? error.message : 'The payment could not be reversed.',
+        variant: 'destructive',
+      });
+    } finally {
+      setReversingPayment(false);
+    }
+  };
+
   if (isLoadingPayments) {
     return (
       <div className="space-y-6">
@@ -245,6 +272,9 @@ export default function PaymentsPage() {
           onViewReceipt={handleViewReceipt}
           onDownloadReceipt={handleDownloadReceipt}
           onResendReceipt={handleResendReceipt}
+          onReversePayment={(paymentId) => {
+            setPaymentToReverse(payments.find((payment) => payment.id === paymentId) ?? null);
+          }}
         />
       )}
 
@@ -329,6 +359,14 @@ export default function PaymentsPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      <PaymentReversalDialog
+        payment={paymentToReverse}
+        open={Boolean(paymentToReverse)}
+        onOpenChange={(open) => { if (!open) setPaymentToReverse(null); }}
+        onConfirm={handleReversePayment}
+        loading={reversingPayment}
+      />
     </div>
   );
 }

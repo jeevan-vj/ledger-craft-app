@@ -10,6 +10,9 @@ export interface Payment {
   referenceNumber?: string | null;
   notes?: string | null;
   status: 'pending' | 'completed' | 'failed' | 'cancelled' | 'refunded';
+  reversalReason?: string | null;
+  reversalDate?: string | null;
+  reversedAt?: string | null;
   createdAt: string;
   updatedAt: string;
 }

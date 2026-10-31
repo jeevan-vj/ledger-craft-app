@@ -4,6 +4,7 @@ import {
   type CreatePaymentRequest,
   type PaymentDto,
   type PaymentListResponse,
+  type ReversePaymentRequest,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -18,7 +19,7 @@ import {
 } from '../invoices/idempotency';
 import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as repo from './payments.repository';
-import { bankLedgerAccount, postBalancedEntry, systemAccount } from '../accounting/posting';
+import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
 import * as bankRepo from '../bank/bank.repository';
 import { postInvoiceJournal } from '../invoices/invoices.journal';
 
@@ -122,4 +123,52 @@ export async function createPaymentInTx(
     await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: payment });
   }
   return payment;
+}
+
+export async function reversePaymentForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: ReversePaymentRequest,
+): Promise<PaymentDto> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const payment = await repo.getPayment(tx, ctx.organisationId, id);
+    if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
+    if (payment.status === 'refunded') {
+      throw apiError(409, 'PAYMENT_ALREADY_REVERSED', 'Payment has already been reversed');
+    }
+    if (payment.status !== 'completed') {
+      throw apiError(409, 'PAYMENT_NOT_REVERSIBLE', 'Only completed payments can be reversed');
+    }
+    if (input.reversalDate < payment.paymentDate) {
+      throw apiError(400, 'REVERSAL_PRECEDES_PAYMENT', 'Reversal date cannot be before the payment date');
+    }
+
+    const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, payment.invoiceId);
+    if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
+    const reversed = await repo.reversePayment(tx, ctx, id, input);
+    if (!reversed) {
+      throw apiError(409, 'PAYMENT_NOT_REVERSIBLE', 'Payment is no longer reversible');
+    }
+
+    await reversePosting(tx, ctx, {
+      referenceType: 'invoice_payment',
+      referenceId: payment.id,
+      reversalType: 'invoice_payment_reversal',
+      date: input.reversalDate,
+      description: `Reversal of payment for ${invoice.invoiceNumber}: ${input.reason}`,
+    });
+
+    const totalPaid = roundMoney(await repo.sumCompletedPayments(tx, ctx.organisationId, invoice.id));
+    const remaining = decimal(invoice.total).sub(totalPaid);
+    const balanceDue = roundMoney(remaining.compare(0) < 0 ? '0' : remaining);
+    const next = paymentState(invoice.total, totalPaid, invoice.status);
+    await invoicesRepo.applyPaymentTotals(tx, ctx.organisationId, invoice.id, {
+      totalPaid,
+      balanceDue,
+      paymentStatus: next.paymentStatus,
+      status: next.status,
+    });
+    return reversed;
+  });
 }

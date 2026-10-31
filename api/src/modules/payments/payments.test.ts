@@ -402,4 +402,98 @@ describe('payment routes', () => {
       }
     });
   });
+
+  it('reverses a completed instalment without rewriting its audit trail', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner Reversal');
+        const outsider = await signUp(app, 'Owner Reversal Outsider');
+        const invoice = await seedInvoice(app, owner.cookie);
+
+        const createPayment = async (amount: string, referenceNumber: string) => {
+          const response = await app.request('/api/payments', {
+            method: 'POST',
+            headers: { ...originHeaders, Cookie: owner.cookie },
+            body: JSON.stringify({
+              invoiceId: invoice.id,
+              paymentMethod: 'bank_transfer',
+              amount,
+              paymentDate: '2026-09-08',
+              referenceNumber,
+            }),
+          });
+          expect(response.status).toBe(201);
+          return paymentSchema.parse(await response.json());
+        };
+
+        const reversedPayment = await createPayment('1000.00', 'REF-REV-1');
+        await createPayment('500.00', 'REF-KEEP-1');
+
+        const hidden = await app.request(`/api/payments/${reversedPayment.id}/reverse`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: outsider.cookie },
+          body: JSON.stringify({ reason: 'Payment was entered against the wrong invoice', reversalDate: '2026-09-10' }),
+        });
+        expect(hidden.status).toBe(404);
+
+        const beforePaymentDate = await app.request(`/api/payments/${reversedPayment.id}/reverse`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ reason: 'Payment was entered against the wrong invoice', reversalDate: '2026-09-07' }),
+        });
+        expect(beforePaymentDate.status).toBe(400);
+        expect(errorEnvelopeSchema.parse(await beforePaymentDate.json()).error.code).toBe('REVERSAL_PRECEDES_PAYMENT');
+
+        const reversed = await app.request(`/api/payments/${reversedPayment.id}/reverse`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ reason: 'Payment was entered against the wrong invoice', reversalDate: '2026-09-10' }),
+        });
+        expect(reversed.status).toBe(200);
+        expect(paymentSchema.parse(await reversed.json())).toMatchObject({
+          id: reversedPayment.id,
+          amount: '1000.00',
+          referenceNumber: 'REF-REV-1',
+          status: 'refunded',
+          reversalReason: 'Payment was entered against the wrong invoice',
+          reversalDate: '2026-09-10',
+        });
+
+        const after = invoiceSchema.parse(
+          await (await app.request(`/api/invoices/${invoice.id}`, { headers: { Cookie: owner.cookie } })).json(),
+        );
+        expect(after.totalPaid).toBe('500.00');
+        expect(after.balanceDue).toBe('4675.00');
+        expect(after.paymentStatus).toBe('partially_paid');
+        expect(after.status).toBe('sent');
+
+        const sourceJournals = await sql.unsafe(
+          `SELECT id, status FROM journal_entries WHERE reference_type = 'invoice_payment' AND reference_id = ?`,
+          [reversedPayment.id],
+        ) as Array<{ id: string; status: string }>;
+        expect(sourceJournals).toHaveLength(1);
+        expect(sourceJournals[0]?.status).toBe('reversed');
+        const reversalJournals = await sql.unsafe(
+          `SELECT id, status FROM journal_entries WHERE reference_type = 'invoice_payment_reversal' AND reference_id = ?`,
+          [sourceJournals[0]?.id],
+        ) as Array<{ id: string; status: string }>;
+        expect(reversalJournals).toHaveLength(1);
+        expect(reversalJournals[0]?.status).toBe('posted');
+
+        const duplicate = await app.request(`/api/payments/${reversedPayment.id}/reverse`, {
+          method: 'POST',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ reason: 'Try reversing twice', reversalDate: '2026-09-10' }),
+        });
+        expect(duplicate.status).toBe(409);
+        expect(errorEnvelopeSchema.parse(await duplicate.json()).error.code).toBe('PAYMENT_ALREADY_REVERSED');
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });

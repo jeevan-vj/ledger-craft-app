@@ -9,6 +9,13 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+Invoice payment integrity is implemented locally (2026-10-31) through
+`0022_payment-reversals.sql`. Web and Expo cap instalments at the live invoice
+balance and provide auditable reversals that preserve the source payment, post
+the opposite journal, and atomically reopen the invoice balance. A pre-invoice
+advance is not accepted as an overpayment; it remains separate customer-credit
+liability scope.
+
 Stripe Connect invoice payments are implemented locally (2026-10-29) through
 `0021_stripe-connect-phase1.sql`. Owners/admins use Stripe-hosted onboarding;
 NZD Checkout destination charges retain an environment-configured application

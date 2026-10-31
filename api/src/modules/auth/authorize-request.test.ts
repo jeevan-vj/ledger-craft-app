@@ -8,6 +8,7 @@ describe('permissionForRequest', () => {
     ['POST', '/api/customers', 'customers.write'],
     ['POST', '/api/sales', 'invoices.write'],
     ['GET', '/api/invoices', 'invoices.read'],
+    ['POST', '/api/payments/id/reverse', 'invoices.write'],
     ['PATCH', '/api/quotes/id', 'invoices.write'],
     ['GET', '/api/bills', 'bills.read'],
     ['POST', '/api/expenses', 'bills.write'],

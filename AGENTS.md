@@ -1,5 +1,15 @@
 # AGENTS.md
 
+**Invoice payment integrity (implemented locally, 2026-10-31):** Migration
+`0022_payment-reversals.sql` adds organisation-scoped reversal reason, date,
+timestamp, and actor fields. Web and Expo record exact instalments only up to the
+current invoice balance. Completed payments remain immutable: reversal uses
+`POST /api/payments/:id/reverse`, retains the source payment and receipt, posts
+an equal opposite journal, and recalculates the invoice in the same transaction.
+Tenant isolation, reversal chronology, and duplicate reversal guards are tested.
+Do not model a pre-invoice advance as an invoice overpayment; customer credits
+require a separate liability-ledger workflow.
+
 **Stripe Connect invoice payments (implemented locally, 2026-10-29):** Migration
 `0021_stripe-connect-phase1.sql` adds tenant-scoped connected-account readiness,
 Stripe Checkout payment links, public redirects, and idempotent event claims.

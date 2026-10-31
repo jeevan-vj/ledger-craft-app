@@ -20,6 +20,9 @@ interface PaymentDto {
   referenceNumber: string | null;
   notes: string | null;
   status: Payment['status'];
+  reversalReason: string | null;
+  reversalDate: string | null;
+  reversedAt: string | null;
   createdAt: string;
   updatedAt: string;
 }
@@ -47,6 +50,9 @@ function toPayment(dto: PaymentDto): Payment {
     referenceNumber: dto.referenceNumber,
     notes: dto.notes,
     status: dto.status,
+    reversalReason: dto.reversalReason,
+    reversalDate: dto.reversalDate,
+    reversedAt: dto.reversedAt,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -88,6 +94,15 @@ export const paymentsApi = {
       await apiRequest<PaymentDto>('/api/payments', {
         method: 'POST',
         headers: { 'Idempotency-Key': idempotencyKey },
+        body: JSON.stringify(input),
+      }),
+    );
+  },
+
+  async reverse(id: string, input: { reason: string; reversalDate: string }): Promise<Payment> {
+    return toPayment(
+      await apiRequest<PaymentDto>(`/api/payments/${id}/reverse`, {
+        method: 'POST',
         body: JSON.stringify(input),
       }),
     );
