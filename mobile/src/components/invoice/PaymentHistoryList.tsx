@@ -24,7 +24,7 @@ export function PaymentHistoryList({
   onRetry,
   onReverse,
   reversingPaymentId,
-}: PaymentHistoryListProps) {
+}: Readonly<PaymentHistoryListProps>) {
   const theme = useTheme();
   const styles = createStyles(theme);
 

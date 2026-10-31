@@ -32,7 +32,7 @@ export function PaymentReversalDialog({
   onOpenChange,
   onConfirm,
   loading = false,
-}: PaymentReversalDialogProps) {
+}: Readonly<PaymentReversalDialogProps>) {
   const [reason, setReason] = useState('');
   const [reversalDate, setReversalDate] = useState(localIsoDate());
   const [error, setError] = useState<string | null>(null);

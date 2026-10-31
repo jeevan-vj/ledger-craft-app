@@ -7,6 +7,7 @@ TMP_DIR=$(mktemp -d)
 DB_PATH="${TMP_DIR}/payment-integrity.sqlite"
 API_PORT=3211
 WEB_PORT=8181
+PAYMENT_PROOF_PASSWORD=$(openssl rand -hex 24)
 OUTPUT_DIR="${ROOT}/docs/evidence/payment-integrity"
 API_PID=''
 WEB_PID=''
@@ -47,6 +48,7 @@ WEB_PID=$!
 wait_for_url "http://127.0.0.1:${WEB_PORT}" "${TMP_DIR}/web.log"
 
 PAYMENT_WEB_URL="http://127.0.0.1:${WEB_PORT}" PAYMENT_OUTPUT_DIR="${OUTPUT_DIR}" \
+  PAYMENT_PROOF_PASSWORD="${PAYMENT_PROOF_PASSWORD}" \
   node scripts/payment-integrity-screens.mjs
 
 DB_PATH="${DB_PATH}" node --no-warnings -e '

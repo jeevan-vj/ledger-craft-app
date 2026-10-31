@@ -54,10 +54,14 @@ function testGateway(events: Map<string, StripeWebhookEvent>): StripeGateway {
       return { id: 'acct_test_easybiz', chargesEnabled: true, payoutsEnabled: true, detailsSubmitted: true, requirementsDue: [], disabledReason: null };
     },
     async createAccountLink() {
-      return { url: 'https://connect.stripe.com/setup/s/test_link', expiresAt: 1793239200 };
+      return { url: 'https://connect.stripe.com/setup/s/test_link', expiresAt: Math.floor(Date.now() / 1000) + 3_600 };
     },
     async createCheckoutSession(input) {
-      return { id: `cs_test_${input.paymentLinkId}`, url: `https://checkout.stripe.com/c/pay/${input.paymentLinkId}`, expiresAt: 1793322000 };
+      return {
+        id: `cs_test_${input.paymentLinkId}`,
+        url: `https://checkout.stripe.com/c/pay/${input.paymentLinkId}`,
+        expiresAt: Math.floor(Date.now() / 1000) + 86_400,
+      };
     },
     async expireCheckoutSession() {},
     async constructWebhookEvent(payload, signature) {

@@ -42,7 +42,7 @@ export function PaymentHistory({
   onDownloadReceipt,
   onResendReceipt,
   onReversePayment
-}: PaymentHistoryProps) {
+}: Readonly<PaymentHistoryProps>) {
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [methodFilter, setMethodFilter] = useState<string>('all');

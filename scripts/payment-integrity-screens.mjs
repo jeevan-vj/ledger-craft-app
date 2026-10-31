@@ -4,7 +4,10 @@ import path from 'node:path';
 
 const webUrl = process.env.PAYMENT_WEB_URL;
 const outputDir = process.env.PAYMENT_OUTPUT_DIR;
-if (!webUrl || !outputDir) throw new Error('PAYMENT_WEB_URL and PAYMENT_OUTPUT_DIR are required');
+const proofPassword = process.env.PAYMENT_PROOF_PASSWORD;
+if (!webUrl || !outputDir || !proofPassword) {
+  throw new Error('PAYMENT_WEB_URL, PAYMENT_OUTPUT_DIR, and PAYMENT_PROOF_PASSWORD are required');
+}
 
 const shots = [
   '01-partial-payments-desktop.png',
@@ -44,7 +47,7 @@ async function capture(page, name) {
 const email = `payment-proof-${Date.now()}@example.test`;
 await api('/api/auth/sign-up/email', {
   method: 'POST',
-  body: { name: 'Payment Proof Owner', email, password: 'Local-payment-proof-123!' },
+  body: { name: 'Payment Proof Owner', email, password: proofPassword },
 });
 await api('/api/business-profile', {
   method: 'PUT',

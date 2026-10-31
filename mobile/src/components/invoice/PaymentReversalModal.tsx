@@ -30,7 +30,7 @@ function localIsoDate(date = new Date()): string {
   return new Date(date.getTime() - offset).toISOString().slice(0, 10);
 }
 
-export function PaymentReversalModal({ visible, payment, onClose, onSubmit }: PaymentReversalModalProps) {
+export function PaymentReversalModal({ visible, payment, onClose, onSubmit }: Readonly<PaymentReversalModalProps>) {
   const theme = useTheme();
   const { colors: palette } = theme;
   const styles = createStyles(theme);
