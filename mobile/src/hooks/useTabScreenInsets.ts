@@ -10,6 +10,7 @@ export function useTabScreenInsets(contentSpacing = space.xl) {
 
   return {
     safeArea,
+    tabBarHeight,
     tabBarClearance,
     bottomPadding: getTabScreenBottomPadding(tabBarHeight, safeArea.bottom, contentSpacing),
   };
