@@ -78,11 +78,14 @@ function currencyCode(currency: string | null | undefined): string {
   return /^[A-Z]{3}$/.test(code) ? code : '';
 }
 
+const SAFE_DATA_LOGO = /^data:image\/(?:jpeg|jpg|png|webp);base64,[a-z0-9+/]+={0,2}$/i;
+
 function safeLogoUrl(url: string | null | undefined): string | null | undefined {
   if (url == null) return url;
   const trimmed = url.trim();
-  if (!/^https?:\/\//i.test(trimmed)) return null;
-  return escapeHtml(trimmed);
+  if (/^https?:\/\//i.test(trimmed)) return escapeHtml(trimmed);
+  if (SAFE_DATA_LOGO.test(trimmed)) return trimmed;
+  return null;
 }
 
 function escapeInvoiceText(invoice: Invoice): Invoice {

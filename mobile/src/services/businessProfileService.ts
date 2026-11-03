@@ -1,12 +1,17 @@
 import { supabase } from './supabaseClient';
 import { toContractTheme } from '@/features/business-profile/theme';
 import { OnboardingData, BusinessTheme } from '@/types/onboarding';
-import { decode } from 'base64-arraybuffer';
-import { objectsApi, storageApiEnabled } from '@/features/storage/api/objectsApi';
+import { objectsApi } from '@/features/storage/api/objectsApi';
 import {
   businessProfileApi,
   businessProfileApiEnabled,
 } from '@/features/business-profile/api/businessProfileApi';
+import {
+  LogoUploadError,
+  logoFailureMessage,
+  prepareLogoFile,
+  type PickedLogo,
+} from '@/features/business-profile/logoFile';
 
 export interface BusinessProfile {
   id: string;
@@ -43,18 +48,18 @@ export interface BusinessProfile {
 export interface BusinessProfileUpdate {
   businessName?: string;
   businessEmail?: string;
-  phone?: string;
-  website?: string;
-  taxId?: string;
+  phone?: string | null;
+  website?: string | null;
+  taxId?: string | null;
   country?: string;
-  address?: string;
-  city?: string;
-  state?: string;
-  zip?: string;
-  defaultTaxRate?: number;
+  address?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  defaultTaxRate?: number | null;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
-  defaultTerms?: string;
-  defaultNotes?: string;
+  defaultTerms?: string | null;
+  defaultNotes?: string | null;
   invoiceNumberFormat?: string;
   invoiceNumberSequence?: number;
   quoteNumberFormat?: string;
@@ -62,7 +67,15 @@ export interface BusinessProfileUpdate {
   quoteValidityDays?: number;
   defaultQuoteKind?: 'quote' | 'estimate';
   logoUri?: string;
+  logo?: PickedLogo;
   theme?: BusinessTheme;
+}
+
+function keptText(value: string | null | undefined, current?: string | null): string | null {
+  if (value === undefined) return current ?? null;
+  if (value === null) return null;
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
 }
 
 class BusinessProfileService {
@@ -73,7 +86,7 @@ class BusinessProfileService {
         let logoUrl: string | null = null;
         if (data.logoUri) {
           try {
-            logoUrl = await this.uploadLogo(data.logoUri, 'session');
+            logoUrl = await this.uploadLogo(data.logoUri);
           } catch (error) {
             console.warn('Logo upload failed - continuing without logo:', error);
           }
@@ -106,7 +119,7 @@ class BusinessProfileService {
       let logoUrl: string | null = null;
       if (data.logoUri) {
         try {
-          logoUrl = await this.uploadLogo(data.logoUri, user.id);
+          logoUrl = await this.uploadLogo(data.logoUri);
           if (!logoUrl) {
             console.warn('Logo upload skipped - continuing without logo');
           }
@@ -185,19 +198,13 @@ class BusinessProfileService {
   }
 
   // Update business profile
-  async updateBusinessProfile(
-    updates: BusinessProfileUpdate & Partial<OnboardingData>
-  ): Promise<BusinessProfile> {
+  async updateBusinessProfile(updates: BusinessProfileUpdate): Promise<BusinessProfile> {
     try {
       if (businessProfileApiEnabled()) {
         const current = await businessProfileApi.get();
         let logoUrl = current?.logoUrl ?? null;
-        if (updates.logoUri) {
-          try {
-            logoUrl = await this.uploadLogo(updates.logoUri, 'session');
-          } catch (error) {
-            console.warn('Logo upload failed:', error);
-          }
+        if (updates.logo || updates.logoUri) {
+          logoUrl = await this.uploadLogo(updates.logo ?? updates.logoUri!);
         }
 
         const name = updates.businessName ?? current?.name;
@@ -209,24 +216,24 @@ class BusinessProfileService {
         return businessProfileApi.upsert({
           name,
           email,
-          phone: updates.phone ?? current?.phone ?? null,
-          website: updates.website ?? current?.website ?? null,
-          taxId: updates.taxId ?? current?.taxId ?? null,
+          phone: keptText(updates.phone, current?.phone),
+          website: keptText(updates.website, current?.website),
+          taxId: keptText(updates.taxId, current?.taxId),
           country: updates.country ?? current?.country ?? 'NZ',
-          address: updates.address ?? current?.address ?? null,
-          city: updates.city ?? current?.city ?? null,
-          state: updates.state ?? current?.state ?? null,
-          zip: updates.zip ?? current?.zip ?? null,
+          address: keptText(updates.address, current?.address),
+          city: keptText(updates.city, current?.city),
+          state: keptText(updates.state, current?.state),
+          zip: keptText(updates.zip, current?.zip),
           invoiceNumberFormat: updates.invoiceNumberFormat ?? current?.invoiceNumberFormat ?? null,
           invoiceNumberSequence: updates.invoiceNumberSequence ?? current?.invoiceNumberSequence ?? undefined,
           quoteNumberFormat: updates.quoteNumberFormat ?? current?.quoteNumberFormat ?? 'QUO-{YYYY}-{SEQ}',
           quoteNumberSequence: updates.quoteNumberSequence ?? current?.quoteNumberSequence ?? 1,
           quoteValidityDays: updates.quoteValidityDays ?? current?.quoteValidityDays ?? 30,
           defaultQuoteKind: updates.defaultQuoteKind ?? current?.defaultQuoteKind ?? 'quote',
-          defaultTaxRate: updates.defaultTaxRate ?? current?.defaultTaxRate ?? null,
+          defaultTaxRate: updates.defaultTaxRate !== undefined ? updates.defaultTaxRate : (current?.defaultTaxRate ?? null),
           gstRegistrationStatus: updates.gstRegistrationStatus ?? current?.gstRegistrationStatus ?? 'unknown',
-          defaultTerms: updates.defaultTerms ?? current?.defaultTerms ?? null,
-          defaultNotes: updates.defaultNotes ?? current?.defaultNotes ?? null,
+          defaultTerms: keptText(updates.defaultTerms, current?.defaultTerms),
+          defaultNotes: keptText(updates.defaultNotes, current?.defaultNotes),
           logoUrl,
           theme: updates.theme
             ? toContractTheme(updates.theme)
@@ -244,13 +251,8 @@ class BusinessProfileService {
 
       // Upload new logo if provided
       let logoUrl: string | null = null;
-      if (updates.logoUri) {
-        try {
-          logoUrl = await this.uploadLogo(updates.logoUri, user.id);
-        } catch (error) {
-          console.warn('Logo upload failed:', error);
-          // Continue without logo update
-        }
+      if (updates.logo || updates.logoUri) {
+        logoUrl = await this.uploadLogo(updates.logo ?? updates.logoUri!);
       }
 
       // Prepare update data (using snake_case for database)
@@ -309,75 +311,35 @@ class BusinessProfileService {
     }
   }
 
-  // Upload logo to Supabase Storage
-  async uploadLogo(uri: string, userId: string): Promise<string | null> {
+  /**
+   * Read, resize, and store a logo. Object storage checks the type and size.
+   * The profile stores a data URL because `/api/objects` requires the session
+   * cookie, which invoice HTML and React Native Image cannot send.
+   */
+  async uploadLogo(source: string | PickedLogo): Promise<string> {
+    const asset = typeof source === 'string' ? { uri: source } : source;
+    let prepared;
     try {
-      // Fetch the file from the URI
-      const response = await fetch(uri);
-      const blob = await response.blob();
-      
-      // Convert blob to base64
-      const reader = new FileReader();
-      const base64Promise = new Promise<string>((resolve, reject) => {
-        reader.onloadend = () => {
-          const base64data = reader.result as string;
-          // Remove the data URL prefix (e.g., "data:image/jpeg;base64,")
-          const base64 = base64data.split(',')[1];
-          resolve(base64);
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(blob);
-      });
-
-      const base64 = await base64Promise;
-      const ext = uri.split('.').pop()?.split('?')[0] || 'jpg';
-
-      if (storageApiEnabled()) {
-        const dto = await objectsApi.upload({
-          kind: 'logo',
-          filename: `${userId}-logo.${ext}`,
-          contentType: `image/${ext === 'jpg' ? 'jpeg' : ext}`,
-          contentBase64: base64,
-        });
-        return dto.url;
-      }
-
-      const fileName = `business-logos/${userId}-logo.${ext}`;
-
-      // Convert base64 to ArrayBuffer
-      const arrayBuffer = decode(base64);
-
-      // Upload to Supabase Storage (using 'business-assets' bucket like web app)
-      const { data, error } = await supabase.storage
-        .from('business-assets')
-        .upload(fileName, arrayBuffer, {
-          contentType: `image/${ext}`,
-          upsert: true,
-        });
-
-      if (error) {
-        console.warn('Logo upload failed:', error.message);
-        // Return null instead of throwing - logo is optional
-        return null;
-      }
-
-      // Get public URL
-      const { data: publicData } = supabase.storage
-        .from('business-assets')
-        .getPublicUrl(fileName);
-
-      return publicData.publicUrl;
+      prepared = await prepareLogoFile(asset);
     } catch (error) {
-      console.warn('Error in uploadLogo:', error);
-      // Return null instead of throwing - logo is optional
-      return null;
+      if (error instanceof LogoUploadError) throw error;
+      throw new LogoUploadError(logoFailureMessage(error));
     }
+    try {
+      await objectsApi.upload({
+        kind: 'logo',
+        filename: prepared.filename,
+        contentType: prepared.contentType,
+        contentBase64: prepared.contentBase64,
+      });
+    } catch (error) {
+      throw new LogoUploadError(logoFailureMessage(error));
+    }
+    return `data:${prepared.contentType};base64,${prepared.contentBase64}`;
   }
 
   // Transform snake_case database response to camelCase
   private transformToBusinessProfile(data: any): BusinessProfile {
-    console.log('📸 Raw data from database:', data);
-    console.log('📸 logo_url from database:', data.logo_url);
     
     // Reconstruct theme if color data exists
     let theme: BusinessTheme | undefined;
@@ -415,7 +377,6 @@ class BusinessProfileService {
       updatedAt: data.updated_at,
     };
     
-    console.log('📸 Transformed profile.logoUrl:', profile.logoUrl);
     return profile;
   }
 }

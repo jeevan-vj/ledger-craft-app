@@ -201,6 +201,27 @@ describe('generateInvoiceHTML', () => {
     expect(html).toContain('75.00');
   });
 
+  it('embeds a safe image data URL and drops other data URLs', () => {
+    const png = 'data:image/png;base64,iVBORw0KGgo=';
+    const profile = {
+      id: 'profile-1',
+      userId: 'user-1',
+      name: 'Harbour Studio',
+      email: 'owner@example.com',
+      logoUrl: png,
+    } as BusinessProfile;
+    const html = generateInvoiceHTML(invoice, profile, 'classic');
+    expect(html).toContain(`src="${png}"`);
+
+    const hostile = generateInvoiceHTML(
+      invoice,
+      { ...profile, logoUrl: 'data:text/html;base64,PHNjcmlwdD4=' },
+      'classic',
+    );
+    expect(hostile).not.toContain('data:text/html');
+    expect(hostile).not.toContain('<img');
+  });
+
   it('escapes user-provided text and attributes before creating invoice HTML', () => {
     const hostileText = `<img src=x onerror="globalThis.pwned=true"> O'Reilly & Co`;
     const profile = {

@@ -7,12 +7,12 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
-  Platform,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { businessProfileService, BusinessProfile, BusinessProfileUpdate } from '@/services/businessProfileService';
+import { LogoUploadError } from '@/features/business-profile/logoFile';
 import { ThemeEditor } from '@/components/business/ThemeEditor';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { FormInput } from '@/components/ui/FormInput';
@@ -21,7 +21,7 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import {
   normalizeBusinessTheme,
   themeFieldError,
@@ -35,8 +35,14 @@ import { CurrencyLocalizationEditor } from '@/components/business/CurrencyLocali
 
 type TabType = 'profile' | 'preferences' | 'appearance' | 'currency';
 
+function emptyToNull(value: string): string | null {
+  const trimmed = value.trim();
+  return trimmed ? trimmed : null;
+}
+
 export default function BusinessSettingsScreen() {
-  const insets = useSafeAreaInsets();
+  const { safeArea, tabBarHeight } = useTabScreenInsets();
+  const saveBarPadding = tabBarHeight + safeArea.bottom;
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -65,7 +71,8 @@ export default function BusinessSettingsScreen() {
   const [defaultTerms, setDefaultTerms] = useState('');
   const [defaultNotes, setDefaultNotes] = useState('');
   const [logoUri, setLogoUri] = useState<string | null>(null);
-  const [newLogoUri, setNewLogoUri] = useState<string | null>(null);
+  const [pendingLogo, setPendingLogo] = useState<ImagePicker.ImagePickerAsset | null>(null);
+  const [logoError, setLogoError] = useState<string | null>(null);
   const [invoiceTheme, setInvoiceTheme] = useState<BusinessTheme>(DEFAULT_THEME);
   const [savingTheme, setSavingTheme] = useState(false);
   const [themeStatus, setThemeStatus] = useState<{ tone: 'success' | 'error'; message: string } | null>(null);
@@ -82,8 +89,6 @@ export default function BusinessSettingsScreen() {
     try {
       setLoading(true);
       const data = await businessProfileService.getBusinessProfile();
-      console.log('📸 Loaded profile data:', data);
-      console.log('📸 Logo URL from database:', data?.logoUrl);
       if (data) {
         populateForm(data);
       }
@@ -116,8 +121,8 @@ export default function BusinessSettingsScreen() {
     setDefaultTerms(data.defaultTerms || '');
     setDefaultNotes(data.defaultNotes || '');
     const logoUrl = data.logoUrl || null;
-    console.log('📸 Setting logoUri to:', logoUrl);
     setLogoUri(logoUrl);
+    setPendingLogo(null);
     setInvoiceTheme(normalizeBusinessTheme(data.theme));
   };
 
@@ -166,33 +171,50 @@ export default function BusinessSettingsScreen() {
       const updates: BusinessProfileUpdate = {
         businessName,
         businessEmail: email,
-        phone: phone || undefined,
-        website: website || undefined,
-        taxId: taxId || undefined,
+        phone: emptyToNull(phone),
+        website: emptyToNull(website),
+        taxId: emptyToNull(taxId),
         country,
-        address: address || undefined,
-        city: city || undefined,
-        state: state || undefined,
-        zip: zip || undefined,
-        defaultTaxRate: defaultTaxRate ? parseFloat(defaultTaxRate) : undefined,
+        address: emptyToNull(address),
+        city: emptyToNull(city),
+        state: emptyToNull(state),
+        zip: emptyToNull(zip),
+        defaultTaxRate: defaultTaxRate.trim() ? parseFloat(defaultTaxRate) : null,
         invoiceNumberFormat: invoiceNumberFormat || 'INV-{YYYY}-{SEQ}',
         invoiceNumberSequence: invoiceNumberSequence ? parseInt(invoiceNumberSequence) : 1,
         quoteNumberFormat: quoteNumberFormat || 'QUO-{YYYY}-{SEQ}',
         quoteNumberSequence: quoteNumberSequence ? parseInt(quoteNumberSequence) : 1,
         quoteValidityDays: quoteValidityDays ? parseInt(quoteValidityDays) : 30,
         defaultQuoteKind,
-        defaultTerms: defaultTerms || undefined,
-        defaultNotes: defaultNotes || undefined,
-        logoUri: newLogoUri || undefined,
+        defaultTerms: emptyToNull(defaultTerms),
+        defaultNotes: emptyToNull(defaultNotes),
+        logo: pendingLogo
+          ? {
+              uri: pendingLogo.uri,
+              mimeType: pendingLogo.mimeType,
+              fileName: pendingLogo.fileName,
+              width: pendingLogo.width,
+              height: pendingLogo.height,
+            }
+          : undefined,
       };
 
+      setLogoError(null);
       await businessProfileService.updateBusinessProfile(updates);
+      setPendingLogo(null);
       Alert.alert('Success', 'Business profile updated successfully');
-      setNewLogoUri(null); // Clear the new logo URI after successful save
-      loadProfile(); // Reload to get updated data
+      await loadProfile();
     } catch (error) {
       console.error('Error saving profile:', error);
-      Alert.alert('Error', 'Failed to update business profile');
+      const message = error instanceof Error && error.message
+        ? error.message
+        : 'Failed to update business profile';
+      if (error instanceof LogoUploadError || /logo/i.test(message)) {
+        setLogoError(message);
+        Alert.alert('Logo wasn’t saved', message);
+      } else {
+        Alert.alert('Error', 'Failed to update business profile');
+      }
     } finally {
       setSaving(false);
     }
@@ -227,73 +249,50 @@ export default function BusinessSettingsScreen() {
     }
   };
 
-  const pickImage = async () => {
-    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-    const { status: libraryStatus } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (cameraStatus !== 'granted' || libraryStatus !== 'granted') {
-      Alert.alert('Permission Required', 'Camera and photo library permissions are required to upload a logo');
-      return;
+  const pickFrom = async (source: 'camera' | 'library') => {
+    setImagePickerLoading(true);
+    try {
+      const permission = source === 'camera'
+        ? await ImagePicker.requestCameraPermissionsAsync()
+        : await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        Alert.alert(
+          'Permission required',
+          source === 'camera'
+            ? 'Camera access is required to take a logo photo.'
+            : 'Photo library access is required to choose a logo.',
+        );
+        return;
+      }
+      const options: ImagePicker.ImagePickerOptions = {
+        mediaTypes: ['images'],
+        allowsEditing: true,
+        aspect: [1, 1],
+        quality: 0.8,
+        exif: false,
+      };
+      const result = source === 'camera'
+        ? await ImagePicker.launchCameraAsync(options)
+        : await ImagePicker.launchImageLibraryAsync(options);
+      const asset = result.canceled ? undefined : result.assets[0];
+      if (!asset?.uri) return;
+      setPendingLogo(asset);
+      setLogoUri(asset.uri);
+      setLogoError(null);
+    } catch (error) {
+      console.error('Error picking logo:', error);
+      Alert.alert('Couldn’t open photos', 'Try again.');
+    } finally {
+      setImagePickerLoading(false);
     }
+  };
 
-    Alert.alert(
-      'Upload Logo',
-      'Choose an option',
-      [
-        {
-          text: 'Camera',
-          onPress: async () => {
-            setImagePickerLoading(true);
-            try {
-              const result = await ImagePicker.launchCameraAsync({
-                mediaTypes: ['images'],
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.8,
-              });
-
-              if (!result.canceled && result.assets[0]) {
-                setNewLogoUri(result.assets[0].uri);
-                setLogoUri(result.assets[0].uri);
-              }
-            } catch (error) {
-              console.error('Error picking image from camera:', error);
-              Alert.alert('Error', 'Failed to capture image');
-            } finally {
-              setImagePickerLoading(false);
-            }
-          },
-        },
-        {
-          text: 'Gallery',
-          onPress: async () => {
-            setImagePickerLoading(true);
-            try {
-              const result = await ImagePicker.launchImageLibraryAsync({
-                mediaTypes: ['images'],
-                allowsEditing: true,
-                aspect: [1, 1],
-                quality: 0.8,
-              });
-
-              if (!result.canceled && result.assets[0]) {
-                setNewLogoUri(result.assets[0].uri);
-                setLogoUri(result.assets[0].uri);
-              }
-            } catch (error) {
-              console.error('Error picking image from gallery:', error);
-              Alert.alert('Error', 'Failed to select image');
-            } finally {
-              setImagePickerLoading(false);
-            }
-          },
-        },
-        {
-          text: 'Cancel',
-          style: 'cancel',
-        },
-      ]
-    );
+  const pickImage = () => {
+    Alert.alert('Upload Logo', 'Choose an option', [
+      { text: 'Camera', onPress: () => pickFrom('camera') },
+      { text: 'Gallery', onPress: () => pickFrom('library') },
+      { text: 'Cancel', style: 'cancel' },
+    ]);
   };
 
   const renderTabButtons = () => (
@@ -366,8 +365,6 @@ export default function BusinessSettingsScreen() {
               key={logoUri} 
               source={{ uri: logoUri }} 
               style={styles.logoImage}
-              onError={(error) => console.error('📸 Image load error:', error.nativeEvent)}
-              onLoad={() => console.log('📸 Image loaded successfully:', logoUri)}
             />
           ) : (
             <View style={styles.logoPlaceholder}>
@@ -379,6 +376,7 @@ export default function BusinessSettingsScreen() {
         {imagePickerLoading && (
           <ActivityIndicator style={styles.logoLoader} color={palette.accent} />
         )}
+        {logoError ? <Text style={styles.logoError}>{logoError}</Text> : null}
       </View>
 
       {/* Business Info */}
@@ -579,20 +577,32 @@ export default function BusinessSettingsScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 0}
+      behavior="padding"
+      keyboardVerticalOffset={safeArea.top}
     >
       {renderTabButtons()}
 
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled" keyboardDismissMode="interactive" contentContainerStyle={{ paddingBottom: insets.bottom }}>
+      <ScrollView
+        style={styles.scrollView}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+        keyboardDismissMode="interactive"
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{
+          paddingBottom: activeTab === 'currency'
+            ? saveBarPadding + space.lg
+            : saveBarPadding + control.prominent + space.lg,
+        }}
+      >
         {activeTab === 'profile' && renderProfileTab()}
         {activeTab === 'preferences' && renderPreferencesTab()}
         {activeTab === 'appearance' && renderAppearanceTab()}
         {activeTab === 'currency' && <CurrencyLocalizationEditor />}
       </ScrollView>
 
-      <View style={[styles.bottomContainer, { paddingBottom: Math.max(insets.bottom, space.lg) }]}>
-        {activeTab === 'currency' ? null : activeTab === 'appearance' ? (
+      {activeTab === 'currency' ? null : (
+      <View testID="business-settings-save-bar" style={[styles.bottomContainer, { paddingBottom: saveBarPadding }]}>
+        {activeTab === 'appearance' ? (
           <AppPressable
             style={({ pressed }) => [
               styles.saveButton,
@@ -617,10 +627,10 @@ export default function BusinessSettingsScreen() {
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
             activeOpacity={0.7}
-            disabled={saving}
+            disabled={saving || imagePickerLoading}
             accessibilityRole="button"
             accessibilityLabel="Save business profile"
-            accessibilityState={{ disabled: saving, busy: saving }}
+            accessibilityState={{ disabled: saving || imagePickerLoading, busy: saving }}
           >
             {saving ? (
               <ActivityIndicator color={palette.accentForeground} />
@@ -630,6 +640,7 @@ export default function BusinessSettingsScreen() {
           </TouchableOpacity>
         )}
       </View>
+      )}
 
       {/* Country Picker Modal */}
       <CountryPicker
@@ -721,6 +732,12 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   },
   logoLoader: {
     marginTop: 8,
+  },
+  logoError: {
+    marginTop: space.sm,
+    color: palette.danger,
+    fontSize: 14,
+    lineHeight: 20,
   },
   inputContainer: {
     marginBottom: space.lg,

@@ -7,6 +7,7 @@ export function useTabScreenInsets(contentSpacing = space.xl) {
   const tabBarHeight = 64 + safeArea.bottom;
   return {
     safeArea,
+    tabBarHeight,
     tabBarClearance: getTabBarClearance(tabBarHeight, safeArea.bottom),
     bottomPadding: getTabScreenBottomPadding(tabBarHeight, safeArea.bottom, contentSpacing),
   };
