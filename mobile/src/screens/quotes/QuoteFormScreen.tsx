@@ -22,6 +22,7 @@ import { ItemPicker } from '@/components/items/ItemPicker';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ModernInput } from '@/components/ui/ModernInput';
+import { HeaderActionButton, HeaderActions, ScreenHeaderBar } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { customersApi } from '@/features/customers/api/customersApi';
@@ -239,21 +240,41 @@ export default function QuoteFormScreen() {
   saveRef.current = save;
 
   useLayoutEffect(() => {
+    const title = quoteId ? `Edit ${label.toLowerCase()}` : `New ${label.toLowerCase()}`;
     navigation.setOptions({
-      title: quoteId ? `Edit ${label.toLowerCase()}` : `New ${label.toLowerCase()}`,
-      headerLeft: () => <NativeHeaderButton label="Cancel" onPress={() => Alert.alert('Discard changes?', 'This quote will not be saved.', [
-        { text: 'Keep editing', style: 'cancel' },
-        { text: 'Discard', style: 'destructive', onPress: () => navigation.goBack() },
-      ])} />,
-      headerRight: () => (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <NativeHeaderButton label="Preview" onPress={() => {
-            const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems }) ?? preview.error;
-            if (error) Alert.alert('Check the quote', error);
-            else setShowPreview(true);
-          }} />
-          <NativeHeaderButton label={saving ? 'Saving' : 'Save'} primary disabled={saving} onPress={() => saveRef.current()} />
-        </View>
+      title,
+      header: () => (
+        <ScreenHeaderBar
+          title={title}
+          left={(
+            <NativeHeaderButton
+              label="Cancel"
+              onPress={() => Alert.alert('Discard changes?', 'This quote will not be saved.', [
+                { text: 'Keep editing', style: 'cancel' },
+                { text: 'Discard', style: 'destructive', onPress: () => navigation.goBack() },
+              ])}
+            />
+          )}
+          right={(
+            <HeaderActions>
+              <HeaderActionButton
+                label="Preview"
+                tone="secondary"
+                onPress={() => {
+                  const error = quoteDraftError({ customerId, date, expiryDate, items: lineItems }) ?? preview.error;
+                  if (error) Alert.alert('Check the quote', error);
+                  else setShowPreview(true);
+                }}
+              />
+              <HeaderActionButton
+                label={saving ? 'Saving' : 'Save'}
+                tone="primary"
+                disabled={saving}
+                onPress={() => saveRef.current()}
+              />
+            </HeaderActions>
+          )}
+        />
       ),
     });
   }, [customerId, date, expiryDate, label, lineItems, navigation, preview.error, quoteId, saving]);

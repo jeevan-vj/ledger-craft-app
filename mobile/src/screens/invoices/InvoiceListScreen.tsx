@@ -16,6 +16,7 @@ import { useQueryClient } from '@tanstack/react-query';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, type RootStackParamList } from '@/navigation/types';
+import { HeaderActionButton, HeaderActions } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { invoiceService } from '@/services/invoiceService';
 import { submitInvoicePayment } from '@/features/payments/paymentQueries';
@@ -127,10 +128,23 @@ export default function InvoiceListScreen() {
               onChangeText: (event) => handleSearch(event.nativeEvent.text),
             }
           : undefined,
-      headerRight: () => <View style={styles.headerActions}>
-        {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'invoices' })} /> : null}
+      headerRight: () => canImport ? (
+        <HeaderActions>
+          <HeaderActionButton
+            label="Import"
+            tone="secondary"
+            accessibilityHint="Imports a PDF or photo as a draft"
+            onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'invoices' })}
+          />
+          <HeaderActionButton
+            label="New"
+            tone="primary"
+            onPress={() => navigation.navigate('InvoiceCreate')}
+          />
+        </HeaderActions>
+      ) : (
         <NativeHeaderButton label="New" primary onPress={() => navigation.navigate('InvoiceCreate')} />
-      </View>,
+      ),
     });
   }, [canImport, filter, invoices, navigation]);
 
@@ -359,5 +373,4 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     fontSize: 14,
     fontWeight: '600',
   },
-  headerActions: { flexDirection: 'row', alignItems: 'center', gap: space.sm },
 });
