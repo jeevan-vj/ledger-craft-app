@@ -113,6 +113,7 @@ export function ScreenHeaderBar({
 }) {
   const insets = useSafeAreaInsets();
   const { colors } = useTheme();
+  // Assumes an iOS page sheet: 4pt top padding, not the status-bar inset. A card screen would draw under the status bar.
   const paddingTop = Platform.OS === 'android' ? insets.top : space.xs;
   return (
     <View style={[styles.bar, { paddingTop, backgroundColor: colors.background }]}>
