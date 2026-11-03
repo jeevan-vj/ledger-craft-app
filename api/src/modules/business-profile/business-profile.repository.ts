@@ -1,5 +1,6 @@
 import {
   businessProfileSchema,
+  logoUrlSchema,
   type BusinessProfileDto,
   type UpsertBusinessProfileRequest,
 } from '@ledgercraft/contracts';
@@ -75,7 +76,7 @@ export async function upsertBusinessProfile(
   if (input.zip !== undefined) values.zip = input.zip;
   if (input.country !== undefined) values.country = input.country;
   if (input.taxId !== undefined) values.taxId = input.taxId;
-  if (input.logoUrl !== undefined) values.logoUrl = input.logoUrl;
+  if (input.logoUrl !== undefined) values.logoUrl = input.logoUrl === null ? null : logoUrlSchema.parse(input.logoUrl);
   if (input.website !== undefined) values.website = input.website;
   if (input.defaultTaxRate !== undefined) values.defaultTaxRate = input.defaultTaxRate;
   if (input.gstRegistrationStatus !== undefined) values.gstRegistrationStatus = input.gstRegistrationStatus;
@@ -117,7 +118,7 @@ export async function upsertBusinessProfile(
       zip: input.zip ?? null,
       country: input.country ?? 'NZ',
       taxId: input.taxId ?? null,
-      logoUrl: input.logoUrl ?? null,
+      logoUrl: input.logoUrl === undefined || input.logoUrl === null ? null : logoUrlSchema.parse(input.logoUrl),
       website: input.website ?? null,
       defaultTaxRate: input.defaultTaxRate ?? null,
       gstRegistrationStatus: input.gstRegistrationStatus ?? 'unknown',

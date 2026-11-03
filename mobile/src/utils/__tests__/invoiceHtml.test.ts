@@ -220,6 +220,19 @@ describe('generateInvoiceHTML', () => {
     );
     expect(hostile).not.toContain('data:text/html');
     expect(hostile).not.toContain('<img');
+
+    const jpg = generateInvoiceHTML(
+      invoice,
+      { ...profile, logoUrl: 'data:image/jpg;base64,iVBORw0KGgo=' },
+      'classic',
+    );
+    expect(jpg).not.toContain('data:image/jpg');
+    expect(jpg).not.toContain('<img');
+
+    const oversized = `data:image/png;base64,${'A'.repeat(1_400_000)}`;
+    const huge = generateInvoiceHTML(invoice, { ...profile, logoUrl: oversized }, 'classic');
+    expect(huge).not.toContain('data:image/png;base64,AAAA');
+    expect(huge).not.toContain('<img');
   });
 
   it('escapes user-provided text and attributes before creating invoice HTML', () => {

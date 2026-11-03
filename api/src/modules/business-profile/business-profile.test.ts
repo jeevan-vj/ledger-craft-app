@@ -28,6 +28,45 @@ async function signUp(app: ReturnType<typeof createApp>, name: string) {
 }
 
 describe('business profile routes', () => {
+  it('rejects an unsafe logo with 400 and stores an https logo', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Logo Owner');
+        const rejected = await app.request('/api/business-profile', {
+          method: 'PUT',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({
+            name: 'Kauri Studio Ltd',
+            email: 'hello@kauristudio.nz',
+            logoUrl: 'javascript:alert(1)',
+          }),
+        });
+        expect(rejected.status).toBe(400);
+        const error = errorEnvelopeSchema.parse(await rejected.json()).error;
+        expect(error.code).toBe('VALIDATION_ERROR');
+        expect(error.message).toMatch(/logo/i);
+
+        const saved = await app.request('/api/business-profile', {
+          method: 'PUT',
+          headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({
+            name: 'Kauri Studio Ltd',
+            email: 'hello@kauristudio.nz',
+            logoUrl: 'https://cdn.example.com/logo.png',
+          }),
+        });
+        expect(saved.status).toBe(200);
+        expect(businessProfileSchema.parse(await saved.json()).logoUrl).toBe('https://cdn.example.com/logo.png');
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
   it('unauthenticated GET /api/business-profile returns 401', async () => {
     const response = await createApp().request('/api/business-profile');
     expect(response.status).toBe(401);

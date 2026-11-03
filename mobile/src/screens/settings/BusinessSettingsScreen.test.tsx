@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Image, StyleSheet, type ViewStyle } from 'react-native';
+import { Alert, Image, KeyboardAvoidingView, Platform, StyleSheet, type ViewStyle } from 'react-native';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import * as ImagePicker from 'expo-image-picker';
 import { interopComponents } from 'react-native-css-interop/dist/runtime/native/api';
@@ -25,6 +25,10 @@ jest.mock('react-native-safe-area-context', () => {
     useSafeAreaInsets: () => ({ top: 47, bottom: 34, left: 0, right: 0 }),
   };
 });
+
+jest.mock('@react-navigation/elements', () => ({
+  useHeaderHeight: () => 96,
+}));
 
 jest.mock('@/hooks/useTabScreenInsets', () => ({
   useTabScreenInsets: () => ({
@@ -290,9 +294,14 @@ describe('Business settings profile', () => {
     expect(Alert.alert).not.toHaveBeenCalledWith('Success', 'Business profile updated successfully');
   });
 
-  it('pads the Save bar by at least the tab bar height plus the bottom inset', async () => {
+  it('clears the tab bar once and offsets the keyboard by the header height', async () => {
     const view = render(<BusinessSettingsScreen />);
     const bar = await view.findByTestId('business-settings-save-bar');
-    expect(flatStyle(bar.props.style).paddingBottom).toBeGreaterThanOrEqual(56 + 34);
+    const padding = flatStyle(bar.props.style).paddingBottom;
+    expect(padding).toBe(Math.max(56, 34));
+    expect(padding).toBeLessThan(56 + 34);
+    const keyboard = view.UNSAFE_getByType(KeyboardAvoidingView);
+    expect(keyboard.props.keyboardVerticalOffset).toBe(96);
+    expect(keyboard.props.behavior).toBe(Platform.OS === 'ios' ? 'padding' : undefined);
   });
 });

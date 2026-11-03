@@ -91,4 +91,24 @@ describe('document labels', () => {
     expect(screen.getByRole('heading', { name: 'ESTIMATE' })).toBeInTheDocument();
     expect(screen.getByText(/Valid until:/)).toBeInTheDocument();
   });
+
+  it('drops an untrusted logo from the email HTML and keeps a safe one', () => {
+    const png = 'data:image/png;base64,iVBORw0KGgo=';
+    const safe = createEmailCompatibleInvoiceHtml(invoice, { ...profile, logoUrl: png });
+    expect(safe).toContain(`src="${png}"`);
+
+    const hostile = createEmailCompatibleInvoiceHtml(invoice, {
+      ...profile,
+      logoUrl: 'javascript:alert(1)',
+    });
+    expect(hostile).not.toContain('javascript:');
+    expect(hostile).not.toContain('<img');
+
+    const jpg = createEmailCompatibleInvoiceHtml(invoice, {
+      ...profile,
+      logoUrl: 'data:image/jpg;base64,iVBORw0KGgo=',
+    });
+    expect(jpg).not.toContain('data:image/jpg');
+    expect(jpg).not.toContain('<img');
+  });
 });

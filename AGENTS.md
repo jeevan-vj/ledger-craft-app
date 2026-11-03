@@ -1,15 +1,14 @@
 # AGENTS.md
 
 **Business settings logo (implemented locally, 2026-11-03):** Expo Business Settings
-reads the picked photo with `expo-image-manipulator` and `expo-file-system`, then
-`POST /api/objects` with `kind: logo`. That upload runs when the business profile
-API is on, including when `EXPO_PUBLIC_STORAGE_API` is unset. The removed Supabase
-storage stub is not used. `logo_url` stores a `data:image/jpeg|png|webp;base64`
-value because `GET /api/objects` requires the session cookie, which the invoice
-WebView and React Native `Image` do not send. Invoice HTML embeds only `http(s)`
-URLs and those safe image data URLs. A failed upload is shown on the screen and
-the profile is not saved. The Save bar’s bottom padding is the measured tab-bar
-height plus the bottom safe-area inset.
+reads the picked photo with `expo-image-manipulator` and `expo-file-system`.
+`logo_url` is only a `data:image/png|jpeg|webp;base64` value or an `https://` URL.
+The server rejects every other value, including `http://` and oversized data URLs.
+The profile row is the only copy; the app does not also `POST /api/objects` for
+the same bytes. Invoice HTML and the web email renderer embed only those allowed
+URLs. A failed logo read is shown and the profile is not saved, including during
+onboarding. The Save bar’s bottom padding is the tab-bar clearance (`Math.max`
+of the measured bar and the bottom inset), not the sum of the two.
 
 **Invoice payment integrity (implemented locally, 2026-10-31):** Migration
 `0022_payment-reversals.sql` adds organisation-scoped reversal reason, date,
