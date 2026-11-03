@@ -110,5 +110,12 @@ describe('document labels', () => {
     });
     expect(jpg).not.toContain('data:image/jpg');
     expect(jpg).not.toContain('<img');
+
+    const linked = createEmailCompatibleInvoiceHtml(invoice, {
+      ...profile,
+      logoUrl: 'https://cdn.example.com/logo.png?a=1&b=2',
+    });
+    expect(linked).toContain('src="https://cdn.example.com/logo.png?a=1&amp;b=2"');
+    expect(linked).not.toContain('src="https://cdn.example.com/logo.png?a=1&b=2"');
   });
 });

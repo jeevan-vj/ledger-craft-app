@@ -132,7 +132,7 @@ export const createEmailCompatibleInvoiceHtml = (
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td>
-                ${logoUrl ? `<img src="${logoUrl}" alt="${templateData.companyName}" style="height: 40px; margin-bottom: 10px;">` : ''}
+                ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" alt="${templateData.companyName}" style="height: 40px; margin-bottom: 10px;">` : ''}
                 <h1 style="margin: 0; font-size: 32px; font-weight: bold;">${copy.title}</h1>
                 <p style="margin: 5px 0 0 0; font-size: 18px; opacity: 0.9;">#${invoice.invoiceNumber}</p>
               </td>
