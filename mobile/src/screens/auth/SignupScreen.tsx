@@ -121,26 +121,26 @@ export default function SignupScreen() {
             <Text style={styles.subtitle}>{steps[step].body}</Text>
 
           {step === 0 ? (
-            <ModernInput ref={inputRef} label="Full name" value={draft.fullName} onChangeText={(fullName) => update({ fullName })}
+            <ModernInput ref={inputRef} testID="signup-full-name" label="Full name" value={draft.fullName} onChangeText={(fullName) => update({ fullName })}
               placeholder="Your full name" autoCapitalize="words" autoComplete="name" returnKeyType="next" error={error}
               onSubmitEditing={() => void continueFlow()} />
           ) : null}
           {step === 1 ? (
-            <ModernInput ref={inputRef} label="Phone number (optional)" value={draft.phone} onChangeText={(phone) => update({ phone })}
+            <ModernInput ref={inputRef} testID="signup-phone" label="Phone number (optional)" value={draft.phone} onChangeText={(phone) => update({ phone })}
               placeholder="+64 21 000 0000" keyboardType="phone-pad" autoComplete="tel" returnKeyType="next" error={error}
               onSubmitEditing={() => void continueFlow()} />
           ) : null}
           {step === 2 ? (
-            <ModernInput ref={inputRef} label="Email address" value={draft.email} onChangeText={(email) => update({ email })}
+            <ModernInput ref={inputRef} testID="signup-email" label="Email address" value={draft.email} onChangeText={(email) => update({ email })}
               placeholder="you@business.co.nz" keyboardType="email-address" autoCapitalize="none" autoCorrect={false}
               autoComplete="email" returnKeyType="next" error={error} onSubmitEditing={() => void continueFlow()} />
           ) : null}
             {step === 3 ? (
             <>
-              <ModernInput ref={inputRef} label="Password" value={draft.password} onChangeText={(password) => update({ password })}
+              <ModernInput ref={inputRef} testID="signup-password" label="Password" value={draft.password} onChangeText={(password) => update({ password })}
                 placeholder="At least 8 characters" secureTextEntry showPasswordToggle autoComplete="new-password" returnKeyType="done"
                 error={error && draft.password.length < 8 ? error : undefined} onSubmitEditing={() => void continueFlow()} />
-              <Pressable onPress={() => update({ acceptedTerms: !draft.acceptedTerms })} accessibilityRole="checkbox"
+              <Pressable testID="signup-terms" onPress={() => update({ acceptedTerms: !draft.acceptedTerms })} accessibilityRole="checkbox"
                 accessibilityState={{ checked: draft.acceptedTerms }} style={styles.consent}>
                 <View style={[styles.checkbox, draft.acceptedTerms && styles.checkboxChecked]}>
                   {draft.acceptedTerms ? <Feather name="check" size={16} color={theme.colors.accentForeground} /> : null}
@@ -154,7 +154,7 @@ export default function SignupScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <ModernButton fullWidth size="lg" loading={loading} onPress={() => void continueFlow()}>
+          <ModernButton testID="signup-continue" fullWidth size="lg" loading={loading} onPress={() => void continueFlow()}>
             {loading ? 'Creating account…' : step === steps.length - 1 ? 'Create account' : 'Continue'}
           </ModernButton>
           {step === 0 ? (

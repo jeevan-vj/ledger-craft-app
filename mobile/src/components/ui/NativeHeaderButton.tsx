@@ -11,6 +11,7 @@ interface NativeHeaderButtonProps {
   primary?: boolean;
   destructive?: boolean;
   accessibilityHint?: string;
+  testID?: string;
 }
 
 export function NativeHeaderButton({
@@ -20,6 +21,7 @@ export function NativeHeaderButton({
   primary = false,
   destructive = false,
   accessibilityHint,
+  testID,
 }: NativeHeaderButtonProps) {
   const { colors } = useTheme();
   const color = destructive
@@ -30,6 +32,7 @@ export function NativeHeaderButton({
 
   return (
     <AppPressable
+      testID={testID}
       onPress={onPress}
       disabled={disabled}
       hitSlop={8}

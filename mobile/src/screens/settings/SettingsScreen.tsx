@@ -53,6 +53,7 @@ export default function SettingsScreen() {
                 label={row.label}
                 subtitle={row.subtitle}
                 icon={<Feather name={rowIcons[row.screen]} size={18} color={theme.colors.accentText} />}
+                testID={`more-${row.screen}`}
                 accessibilityHint={`Opens ${row.label}`}
                 onPress={() => navigation.navigate(row.screen)}
               />

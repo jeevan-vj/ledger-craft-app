@@ -208,6 +208,7 @@ function ShareActions({
           {rows.map((row) => (
             <AppPressable
               key={row.key}
+              testID={`share-action-${row.key}`}
               onPress={row.onPress}
               disabled={row.key === 'link' ? linkDisabled : busy !== null}
               accessibilityRole="button"

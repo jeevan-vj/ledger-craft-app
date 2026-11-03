@@ -45,6 +45,7 @@ export default function CustomerListScreen() {
       } : undefined,
       headerRight: () => (
         <NativeHeaderButton
+          testID="customer-new"
           label="New"
           primary
           accessibilityHint="Creates a customer"

@@ -299,6 +299,7 @@ export default function BusinessSettingsScreen() {
   const renderTabButtons = () => (
     <View style={styles.tabContainer}>
       <TouchableOpacity
+        testID="business-tab-profile"
         style={[styles.tab, activeTab === 'profile' && styles.tabActive]}
         onPress={() => setActiveTab('profile')}
         activeOpacity={0.7}
@@ -311,6 +312,7 @@ export default function BusinessSettingsScreen() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        testID="business-tab-currency"
         style={[styles.tab, activeTab === 'currency' && styles.tabActive]}
         onPress={() => setActiveTab('currency')}
         activeOpacity={0.7}
@@ -321,6 +323,7 @@ export default function BusinessSettingsScreen() {
         <Text style={[styles.tabText, activeTab === 'currency' && styles.tabTextActive]}>Currency</Text>
       </TouchableOpacity>
       <TouchableOpacity
+        testID="business-tab-preferences"
         style={[styles.tab, activeTab === 'preferences' && styles.tabActive]}
         onPress={() => setActiveTab('preferences')}
         activeOpacity={0.7}
@@ -333,6 +336,7 @@ export default function BusinessSettingsScreen() {
         </Text>
       </TouchableOpacity>
       <TouchableOpacity
+        testID="business-tab-appearance"
         style={[styles.tab, activeTab === 'appearance' && styles.tabActive]}
         onPress={() => setActiveTab('appearance')}
         activeOpacity={0.7}
@@ -353,6 +357,7 @@ export default function BusinessSettingsScreen() {
       <View style={styles.logoSection}>
         <Text style={styles.logoLabel}>Business Logo</Text>
         <TouchableOpacity
+          testID="business-logo"
           style={styles.logoButton}
           onPress={pickImage}
           activeOpacity={0.7}
@@ -383,6 +388,7 @@ export default function BusinessSettingsScreen() {
 
       {/* Business Info */}
       <FormInput
+        testID="business-name"
         label="Business Name"
         value={businessName}
         onChangeText={setBusinessName}
@@ -390,6 +396,7 @@ export default function BusinessSettingsScreen() {
         required
       />
       <FormInput
+        testID="business-email"
         label="Email"
         value={email}
         onChangeText={setEmail}
@@ -399,6 +406,7 @@ export default function BusinessSettingsScreen() {
         required
       />
       <FormInput
+        testID="business-phone"
         label="Phone"
         value={phone}
         onChangeText={setPhone}
@@ -406,6 +414,7 @@ export default function BusinessSettingsScreen() {
         keyboardType="phone-pad"
       />
       <FormInput
+        testID="business-website"
         label="Website"
         value={website}
         onChangeText={setWebsite}
@@ -414,6 +423,7 @@ export default function BusinessSettingsScreen() {
         autoCapitalize="none"
       />
       <FormInput
+        testID="business-tax-id"
         label="Tax ID / VAT Number"
         value={taxId}
         onChangeText={setTaxId}
@@ -426,6 +436,7 @@ export default function BusinessSettingsScreen() {
           Country <Text style={styles.required}>*</Text>
         </Text>
         <TouchableOpacity
+          testID="business-country"
           onPress={() => setShowCountryPicker(true)}
           style={styles.countryButton}
           activeOpacity={0.7}
@@ -439,12 +450,14 @@ export default function BusinessSettingsScreen() {
 
       {/* Address */}
       <FormInput
+        testID="business-address"
         label="Address"
         value={address}
         onChangeText={setAddress}
         placeholder="100 Main Street"
       />
       <FormInput
+        testID="business-city"
         label="City"
         value={city}
         onChangeText={setCity}
@@ -453,6 +466,7 @@ export default function BusinessSettingsScreen() {
       <View style={styles.row}>
         <View style={styles.halfWidth}>
           <FormInput
+            testID="business-state"
             label="State"
             value={state}
             onChangeText={setState}
@@ -461,6 +475,7 @@ export default function BusinessSettingsScreen() {
         </View>
         <View style={styles.halfWidth}>
           <FormInput
+            testID="business-zip"
             label="Zip Code"
             value={zip}
             onChangeText={setZip}
@@ -471,6 +486,7 @@ export default function BusinessSettingsScreen() {
 
       {/* Invoice Settings */}
       <FormInput
+        testID="business-tax-rate"
         label="Default Tax Rate (%)"
         value={defaultTaxRate}
         onChangeText={setDefaultTaxRate}
@@ -478,6 +494,7 @@ export default function BusinessSettingsScreen() {
         keyboardType="decimal-pad"
       />
       <FormInput
+        testID="business-invoice-format"
         label="Invoice Number Format"
         value={invoiceNumberFormat}
         onChangeText={setInvoiceNumberFormat}
@@ -488,6 +505,7 @@ export default function BusinessSettingsScreen() {
         Example: INV-{'{YYYY}'}-{'{SEQ}'} → INV-2025-001
       </Text>
       <FormInput
+        testID="business-invoice-sequence"
         label="Next Sequence Number"
         value={invoiceNumberSequence}
         onChangeText={setInvoiceNumberSequence}
@@ -495,6 +513,7 @@ export default function BusinessSettingsScreen() {
         keyboardType="number-pad"
       />
       <FormInput
+        testID="business-quote-format"
         label="Quote number format"
         value={quoteNumberFormat}
         onChangeText={setQuoteNumberFormat}
@@ -505,6 +524,7 @@ export default function BusinessSettingsScreen() {
         Quotes and estimates share one series. Example: QUO-{'{YYYY}'}-{'{SEQ}'} → QUO-2026-0001
       </Text>
       <FormInput
+        testID="business-quote-sequence"
         label="Next quote number"
         value={quoteNumberSequence}
         onChangeText={setQuoteNumberSequence}
@@ -512,6 +532,7 @@ export default function BusinessSettingsScreen() {
         keyboardType="number-pad"
       />
       <FormInput
+        testID="business-quote-validity"
         label="Quote validity (days)"
         value={quoteValidityDays}
         onChangeText={setQuoteValidityDays}
@@ -548,6 +569,7 @@ export default function BusinessSettingsScreen() {
   const renderPreferencesTab = () => (
     <View style={styles.tabContent}>
       <FormInput
+        testID="business-terms"
         label="Default Payment Terms"
         value={defaultTerms}
         onChangeText={setDefaultTerms}
@@ -556,6 +578,7 @@ export default function BusinessSettingsScreen() {
         numberOfLines={3}
       />
       <FormInput
+        testID="business-notes"
         label="Default Notes"
         value={defaultNotes}
         onChangeText={setDefaultNotes}
@@ -602,6 +625,7 @@ export default function BusinessSettingsScreen() {
             onPress={handleSaveTheme}
             disabled={savingTheme}
             accessibilityRole="button"
+            testID="business-save-theme"
             accessibilityLabel="Save theme"
             accessibilityHint="Saves invoice colours to your business profile"
             accessibilityState={{ disabled: savingTheme, busy: savingTheme }}
@@ -614,6 +638,7 @@ export default function BusinessSettingsScreen() {
           </AppPressable>
         ) : (
           <TouchableOpacity
+            testID="business-save"
             style={[styles.saveButton, saving && styles.saveButtonDisabled]}
             onPress={handleSave}
             activeOpacity={0.7}

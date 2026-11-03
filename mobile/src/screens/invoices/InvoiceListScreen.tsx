@@ -129,7 +129,7 @@ export default function InvoiceListScreen() {
           : undefined,
       headerRight: () => <View style={styles.headerActions}>
         {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'invoices' })} /> : null}
-        <NativeHeaderButton label="New" primary onPress={() => navigation.navigate('InvoiceCreate')} />
+        <NativeHeaderButton testID="invoice-new" label="New" primary onPress={() => navigation.navigate('InvoiceCreate')} />
       </View>,
     });
   }, [canImport, filter, invoices, navigation]);

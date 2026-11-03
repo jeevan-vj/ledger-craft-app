@@ -406,14 +406,14 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           <Text style={styles.sectionTitle}>Summary</Text>
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Subtotal</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(invoice.subtotal || 0, invoice.currency)}</Text>
+            <Text testID="invoice-detail-subtotal" style={styles.summaryValue}>{formatCurrency(invoice.subtotal || 0, invoice.currency)}</Text>
           </View>
           {(invoice.taxAmount || 0) > 0 && (
             <View style={styles.summaryRow}>
               <Text style={styles.summaryLabel}>
                 {invoice.currency?.toUpperCase() === 'NZD' ? 'GST' : 'Tax'}
               </Text>
-              <Text style={styles.summaryValue}>{formatCurrency(invoice.taxAmount || 0, invoice.currency)}</Text>
+              <Text testID="invoice-detail-gst" style={styles.summaryValue}>{formatCurrency(invoice.taxAmount || 0, invoice.currency)}</Text>
             </View>
           )}
           {(invoice.discount || 0) > 0 && (
@@ -432,7 +432,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           )}
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>Total</Text>
-            <Text style={styles.summaryValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
+            <Text testID="invoice-detail-total" style={styles.summaryValue}>{formatCurrency(invoice.total || 0, invoice.currency)}</Text>
           </View>
           <View style={[styles.summaryRow, styles.totalRow]}>
             <Text style={styles.totalLabel}>Amount due</Text>

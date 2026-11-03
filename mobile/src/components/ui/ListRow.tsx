@@ -16,6 +16,7 @@ interface ListRowProps {
   showChevron?: boolean;
   accessory?: React.ReactNode;
   accessibilityHint?: string;
+  testID?: string;
 }
 
 export function ListRow({
@@ -30,6 +31,7 @@ export function ListRow({
   showChevron = true,
   accessory,
   accessibilityHint,
+  testID,
 }: ListRowProps) {
   const theme = useTheme();
   const colors = theme.colors;
@@ -73,6 +75,7 @@ export function ListRow({
 
   return (
     <AppPressable
+      testID={testID}
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"

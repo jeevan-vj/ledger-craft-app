@@ -396,6 +396,7 @@ export default function InvoiceCreateScreen() {
             onPress={() => handlePreviewRef.current()}
           />
           <NativeHeaderButton
+            testID="invoice-save"
             label={isEditMode ? 'Update' : 'Save'}
             primary
             onPress={() => handleSaveRef.current()}
@@ -469,6 +470,7 @@ export default function InvoiceCreateScreen() {
           <Text style={styles.sectionTitle}>Invoice Details</Text>
 
           <ModernInput
+            testID="invoice-number"
             label="Invoice Number"
             value={invoiceNumber}
             onChangeText={setInvoiceNumber}
@@ -481,6 +483,7 @@ export default function InvoiceCreateScreen() {
               Customer <Text style={styles.required}>*</Text>
             </Text>
             <TouchableOpacity
+              testID="invoice-select-customer"
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
                 setShowCustomerPicker(true);

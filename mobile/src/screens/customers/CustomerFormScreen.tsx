@@ -88,15 +88,15 @@ export default function CustomerFormScreen() {
 
   return <KeyboardAvoidingView style={[styles.container, { backgroundColor: theme.colors.background }]} behavior={Platform.OS === 'ios' ? 'padding' : undefined} keyboardVerticalOffset={90}>
     <ScrollView keyboardShouldPersistTaps="handled" contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
-      <ModernInput label="Customer name" value={form.name} onChangeText={(name) => setForm({ ...form, name })} autoCapitalize="words" autoComplete="name" error={submitted ? errors.name : undefined} />
-      <ModernInput label="Email (optional)" value={form.email} onChangeText={(email) => setForm({ ...form, email })} keyboardType="email-address" autoComplete="email" error={submitted ? errors.email : undefined} />
-      <ModernInput label="Phone (optional)" value={form.phone} onChangeText={(phone) => setForm({ ...form, phone })} keyboardType="phone-pad" autoComplete="tel" />
-      <ModernInput label="Street address (optional)" value={form.address} onChangeText={(address) => setForm({ ...form, address })} autoCapitalize="words" autoComplete="street-address" />
+      <ModernInput testID="customer-name" label="Customer name" value={form.name} onChangeText={(name) => setForm({ ...form, name })} autoCapitalize="words" autoComplete="name" error={submitted ? errors.name : undefined} />
+      <ModernInput testID="customer-email" label="Email (optional)" value={form.email} onChangeText={(email) => setForm({ ...form, email })} keyboardType="email-address" autoComplete="email" error={submitted ? errors.email : undefined} />
+      <ModernInput testID="customer-phone" label="Phone (optional)" value={form.phone} onChangeText={(phone) => setForm({ ...form, phone })} keyboardType="phone-pad" autoComplete="tel" />
+      <ModernInput testID="customer-address" label="Street address (optional)" value={form.address} onChangeText={(address) => setForm({ ...form, address })} autoCapitalize="words" autoComplete="street-address" />
       <View style={styles.row}><View style={styles.flex}><ModernInput label="City" value={form.city} onChangeText={(city) => setForm({ ...form, city })} autoCapitalize="words" /></View><View style={styles.flex}><ModernInput label="Region" value={form.state} onChangeText={(state) => setForm({ ...form, state })} autoCapitalize="words" /></View></View>
       <View style={styles.row}><View style={styles.flex}><ModernInput label="Postcode" value={form.zip} onChangeText={(zip) => setForm({ ...form, zip })} /></View><View style={styles.flex}><ModernInput label="Country" value={form.country} onChangeText={(country) => setForm({ ...form, country })} autoCapitalize="characters" error={submitted ? errors.country : undefined} /></View></View>
       <FormSwitch label="VIP customer" value={form.isVip} onValueChange={(isVip) => setForm({ ...form, isVip })} description="Highlights this customer in contact lists." />
       {saveError ? <Text style={[theme.type.subhead, { color: theme.colors.danger, marginBottom: space.md }]} accessibilityLiveRegion="assertive">{saveError}</Text> : null}
-      <ModernButton onPress={save} loading={saving} fullWidth size="lg">{customerId ? 'Save changes' : 'Create customer'}</ModernButton>
+      <ModernButton testID="customer-save" onPress={save} loading={saving} fullWidth size="lg">{customerId ? 'Save changes' : 'Create customer'}</ModernButton>
     </ScrollView>
   </KeyboardAvoidingView>;
 }

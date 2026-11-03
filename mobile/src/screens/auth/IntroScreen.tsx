@@ -134,10 +134,10 @@ export default function IntroScreen() {
             Next
           </ModernButton>
         </View>
-        <ModernButton fullWidth size="lg" onPress={() => void leave('Signup')}>
+        <ModernButton testID="intro-create-account" fullWidth size="lg" onPress={() => void leave('Signup')}>
           Create an account
         </ModernButton>
-        <ModernButton fullWidth size="md" variant="ghost" onPress={() => void leave('Login')}>
+        <ModernButton testID="intro-login" fullWidth size="md" variant="ghost" onPress={() => void leave('Login')}>
           Log in
         </ModernButton>
       </View>

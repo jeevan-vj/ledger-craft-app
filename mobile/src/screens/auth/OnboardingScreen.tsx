@@ -179,14 +179,14 @@ export default function OnboardingScreen() {
             <Text style={styles.subtitle}>{stepCopy[step].body}</Text>
 
           {step === 0 ? (
-            <ModernInput label="Business name" value={data.businessName} onChangeText={(businessName) => update({ businessName })}
+            <ModernInput testID="onboarding-business-name" label="Business name" value={data.businessName} onChangeText={(businessName) => update({ businessName })}
               placeholder="Kauri Studio Ltd" autoCapitalize="words" autoComplete="organization" returnKeyType="next"
               error={error} onSubmitEditing={() => void next()} autoFocus />
           ) : null}
 
           {step === 1 ? (
             <>
-              <Pressable onPress={() => setShowCountryPicker(true)} accessibilityRole="button"
+              <Pressable testID="onboarding-country" onPress={() => setShowCountryPicker(true)} accessibilityRole="button"
                 accessibilityLabel="Business country" accessibilityHint="Opens country selection" style={styles.countryButton}>
                 <View>
                   <Text style={styles.fieldLabel}>Business country</Text>
@@ -204,8 +204,8 @@ export default function OnboardingScreen() {
 
             {step === 2 ? (
             <View style={styles.options}>
-              <TaxOption selected={data.gstRegistrationStatus === 'registered'} title="Yes, calculate GST" body="Use the country tax default on new transactions." onPress={() => selectGst('registered')} />
-              <TaxOption selected={data.gstRegistrationStatus === 'not_registered'} title="No, I’m not registered" body="New transactions will not add GST by default." onPress={() => selectGst('not_registered')} />
+              <TaxOption testID="onboarding-gst-yes" selected={data.gstRegistrationStatus === 'registered'} title="Yes, calculate GST" body="Use the country tax default on new transactions." onPress={() => selectGst('registered')} />
+              <TaxOption testID="onboarding-gst-no" selected={data.gstRegistrationStatus === 'not_registered'} title="No, I’m not registered" body="New transactions will not add GST by default." onPress={() => selectGst('not_registered')} />
               {error ? <Text style={styles.error}>{error}</Text> : null}
             </View>
             ) : null}
@@ -213,7 +213,7 @@ export default function OnboardingScreen() {
         </ScrollView>
 
         <View style={styles.footer}>
-          <ModernButton fullWidth size="lg" loading={isLoading} onPress={() => void next()}>
+          <ModernButton testID="onboarding-continue" fullWidth size="lg" loading={isLoading} onPress={() => void next()}>
             {isLoading ? 'Setting up…' : step === 2 ? 'Finish setup' : 'Continue'}
           </ModernButton>
           <Text style={styles.footerNote}>You can change these details later in Settings.</Text>
@@ -229,11 +229,11 @@ export default function OnboardingScreen() {
   );
 }
 
-function TaxOption({ selected, title, body, onPress }: { selected: boolean; title: string; body: string; onPress: () => void }) {
+function TaxOption({ selected, title, body, onPress, testID }: { selected: boolean; title: string; body: string; onPress: () => void; testID?: string }) {
   const theme = useTheme();
   const styles = createStyles(theme);
   return (
-    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }}
+    <Pressable testID={testID} onPress={onPress} accessibilityRole="radio" accessibilityState={{ selected }}
       style={[styles.option, selected && styles.optionSelected]}>
       <View style={[styles.radio, selected && styles.radioSelected]}>
         {selected ? <View style={styles.radioDot} /> : null}

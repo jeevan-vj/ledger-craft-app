@@ -24,7 +24,7 @@ export default function BankAccountListScreen() {
   const { isFetched, refetch } = query;
   useFocusEffect(useCallback(() => { if (isFetched) void refetch(); }, [isFetched, refetch]));
   useLayoutEffect(() => navigation.setOptions({
-    headerRight: () => <NativeHeaderButton label="New" primary accessibilityHint="Creates a bank account" onPress={() => navigation.navigate('BankAccountCreate')} />,
+    headerRight: () => <NativeHeaderButton testID="bank-account-new" label="New" primary accessibilityHint="Creates a bank account" onPress={() => navigation.navigate('BankAccountCreate')} />,
   }), [navigation]);
   const accounts = useMemo(() => (query.data ?? []).filter((account) => filter === 'all' || (filter === 'active' ? account.isActive : !account.isActive)), [filter, query.data]);
 

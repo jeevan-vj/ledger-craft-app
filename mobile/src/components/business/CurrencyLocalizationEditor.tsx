@@ -21,15 +21,15 @@ export function CurrencyLocalizationEditor() {
     <Text style={styles.explainer}>Amounts are stored as exact decimal text. Display rounding follows each currency’s declared precision.</Text>
     <Text style={styles.label}>Base currency</Text>
     <View style={styles.options}>{data.currencies.filter((item) => item.enabled).map((item) => <TouchableOpacity key={item.code} accessibilityRole="radio" accessibilityState={{ checked: data.localization.baseCurrency === item.code }} style={[styles.pill, data.localization.baseCurrency === item.code && styles.pillSelected]} onPress={() => update('baseCurrency', item.code)}><Text style={styles.pillText}>{item.code}</Text></TouchableOpacity>)}</View>
-    <FormInput label="Locale" value={data.localization.locale} onChangeText={(value) => update('locale', value)} placeholder="en-NZ" autoCapitalize="none" />
-    <FormInput label="Language" value={data.localization.language} onChangeText={(value) => update('language', value)} placeholder="en" autoCapitalize="none" />
-    <FormInput label="Timezone" value={data.localization.timezone} onChangeText={(value) => update('timezone', value)} placeholder="Pacific/Auckland" autoCapitalize="none" />
+    <FormInput testID="currency-locale" label="Locale" value={data.localization.locale} onChangeText={(value) => update('locale', value)} placeholder="en-NZ" autoCapitalize="none" />
+    <FormInput testID="currency-language" label="Language" value={data.localization.language} onChangeText={(value) => update('language', value)} placeholder="en" autoCapitalize="none" />
+    <FormInput testID="currency-timezone" label="Timezone" value={data.localization.timezone} onChangeText={(value) => update('timezone', value)} placeholder="Pacific/Auckland" autoCapitalize="none" />
     <View style={styles.row}><View style={styles.half}><FormInput label="Financial year month" value={String(data.localization.financialYearStartMonth)} onChangeText={(value) => update('financialYearStartMonth', Number(value))} keyboardType="number-pad" /></View><View style={styles.half}><FormInput label="Start day" value={String(data.localization.financialYearStartDay)} onChangeText={(value) => update('financialYearStartDay', Number(value))} keyboardType="number-pad" /></View></View>
     <Text style={styles.heading}>Enabled catalogue</Text>
     {data.currencies.filter((item) => item.enabled).map((item) => <View key={item.code} style={styles.currencyRow}><Text style={styles.currencyCode}>{item.code}</Text><Text style={styles.meta}>{item.name} · {item.precision} decimals · {item.symbolPosition === 'before' ? `${item.symbol}123` : `123 ${item.symbol}`}</Text></View>)}
     <Text style={styles.heading}>Reviewed rates</Text>
     {data.rates.length ? data.rates.map((item) => <View key={item.id} style={styles.currencyRow}><Text style={styles.currencyCode}>{item.currencyCode} → {item.baseCurrency}</Text><Text style={styles.meta}>{item.effectiveDate} · {item.rate}{item.usageCount ? ' · locked by document use' : ''}</Text></View>) : <Text style={styles.explainer}>No rates yet. Foreign-currency documents fail safely until a dated rate is added on web.</Text>}
-    <TouchableOpacity accessibilityRole="button" accessibilityState={{ disabled: saving, busy: saving }} disabled={saving} onPress={save} style={styles.save}>{saving ? <ActivityIndicator color={theme.colors.accentForeground} /> : <Text style={styles.saveText}>Save currency settings</Text>}</TouchableOpacity>
+    <TouchableOpacity testID="currency-save" accessibilityRole="button" accessibilityLabel="Save currency settings" accessibilityState={{ disabled: saving, busy: saving }} disabled={saving} onPress={save} style={styles.save}>{saving ? <ActivityIndicator color={theme.colors.accentForeground} /> : <Text style={styles.saveText}>Save currency settings</Text>}</TouchableOpacity>
   </View>;
 }
 

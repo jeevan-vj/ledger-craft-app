@@ -1,0 +1,634 @@
+# Discovery flow: signup, business profile (logo from the library), bank account,
+# customer, invoice, PDF share. Commands that can miss stay optional and short
+# so one run records later steps instead of stopping at the first failure.
+# Launch with a fresh app state. The API is the local Hono server, reached with
+# adb reverse so the app keeps its default http://127.0.0.1:3001 base URL.
+appId: com.easybizinvoice.app
+name: Owner signup through invoice PDF
+env:
+  OWNER_EMAIL: maestro.owner@example.test
+  OWNER_PASSWORD: Maestro-pass-1
+---
+- addMedia:
+    - "assets/logo.png"
+- launchApp:
+    clearState: true
+- takeScreenshot: 01-launched
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 30000
+    visible:
+      id: "intro-create-account"
+- takeScreenshot: 02-intro
+- runFlow:
+    when:
+      visible:
+        id: "intro-create-account"
+    commands:
+      - tapOn:
+          id: "intro-create-account"
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 15000
+    visible:
+      id: "signup-full-name"
+- takeScreenshot: 03-signup-name
+- runFlow:
+    when:
+      visible:
+        id: "signup-full-name"
+    commands:
+      - tapOn:
+          id: "signup-full-name"
+      - inputText: "Maestro Owner"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "signup-continue"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "signup-phone"
+      - tapOn:
+          id: "signup-phone"
+          optional: true
+      - inputText: "+64210001111"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "signup-continue"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "signup-email"
+      - tapOn:
+          id: "signup-email"
+          optional: true
+      - inputText: ${OWNER_EMAIL}
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "signup-continue"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "signup-password"
+      - tapOn:
+          id: "signup-password"
+          optional: true
+      - inputText: ${OWNER_PASSWORD}
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "signup-terms"
+          optional: true
+      - tapOn:
+          id: "signup-continue"
+          optional: true
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 25000
+    visible:
+      id: "onboarding-business-name"
+- takeScreenshot: 04-after-signup
+- runFlow:
+    when:
+      visible:
+        id: "onboarding-business-name"
+    commands:
+      - tapOn:
+          id: "onboarding-business-name"
+      - inputText: "Kauri Discovery Ltd"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "onboarding-continue"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "onboarding-country"
+      - takeScreenshot: 05-onboarding-country
+      - tapOn:
+          id: "onboarding-continue"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "onboarding-gst-yes"
+      - takeScreenshot: 06-onboarding-gst
+      - tapOn:
+          id: "onboarding-gst-yes"
+          optional: true
+      - tapOn:
+          id: "onboarding-continue"
+          optional: true
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 25000
+    visible: "Home"
+- takeScreenshot: 07-home
+- tapOn:
+    text: "More"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 10000
+    visible:
+      id: "more-BusinessSettings"
+- takeScreenshot: 08-more
+- tapOn:
+    id: "more-BusinessSettings"
+    optional: true
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 15000
+    visible:
+      id: "business-logo"
+- takeScreenshot: 09-business-profile
+- runFlow:
+    when:
+      visible:
+        id: "business-logo"
+    commands:
+      - tapOn:
+          id: "business-logo"
+      - repeat:
+          times: 3
+          commands:
+            - tapOn:
+                text: "Allow"
+                optional: true
+            - tapOn:
+                text: "While using the app"
+                optional: true
+            - tapOn:
+                text: "Allow all"
+                optional: true
+      - takeScreenshot: 10-logo-chooser
+      - tapOn:
+          text: "Gallery"
+          optional: true
+      - tapOn:
+          text: "Photo library"
+          optional: true
+      - tapOn:
+          text: "logo"
+          optional: true
+      - tapOn:
+          text: "logo.png"
+          optional: true
+      - tapOn:
+          text: "Crop"
+          optional: true
+      - tapOn:
+          text: "Done"
+          optional: true
+      - tapOn:
+          text: "OK"
+          optional: true
+      - takeScreenshot: 11-after-logo
+      - scrollUntilVisible:
+          element:
+            id: "business-tax-id"
+          direction: DOWN
+          timeout: 12000
+          optional: true
+      - tapOn:
+          id: "business-tax-id"
+          optional: true
+      - eraseText
+      - inputText: "123-456-789"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "business-address"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - tapOn:
+          id: "business-address"
+          optional: true
+      - eraseText
+      - inputText: "12 Queen Street"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "business-city"
+          optional: true
+      - eraseText
+      - inputText: "Auckland"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "business-state"
+          optional: true
+      - eraseText
+      - inputText: "Auckland"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "business-zip"
+          optional: true
+      - eraseText
+      - inputText: "1010"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "business-website"
+          direction: UP
+          timeout: 8000
+          optional: true
+      - tapOn:
+          id: "business-website"
+          optional: true
+      - eraseText
+      - inputText: "https://kauri.example.test"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "business-tax-rate"
+          direction: DOWN
+          timeout: 10000
+          optional: true
+      - tapOn:
+          id: "business-tax-rate"
+          optional: true
+      - eraseText
+      - inputText: "15"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "business-save"
+          direction: DOWN
+          timeout: 10000
+          optional: true
+      - takeScreenshot: 12-business-before-save
+      - tapOn:
+          id: "business-save"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 15000
+          visible: "Business profile updated successfully"
+      - takeScreenshot: 13-business-saved
+      - tapOn:
+          text: "OK"
+          optional: true
+
+- tapOn:
+    id: "business-tab-currency"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 10000
+    visible:
+      id: "currency-save"
+- takeScreenshot: 14-currency
+- runFlow:
+    when:
+      visible:
+        id: "currency-save"
+    commands:
+      - tapOn:
+          text: "NZD"
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "currency-save"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - tapOn:
+          id: "currency-save"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 12000
+          visible: "Saved"
+      - takeScreenshot: 15-currency-saved
+      - tapOn:
+          text: "OK"
+          optional: true
+
+- tapOn:
+    id: "business-tab-preferences"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 8000
+    visible:
+      id: "business-terms"
+- takeScreenshot: 16-preferences
+- runFlow:
+    when:
+      visible:
+        id: "business-terms"
+    commands:
+      - tapOn:
+          id: "business-terms"
+      - eraseText
+      - inputText: "Payment due within 14 days"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "business-notes"
+          optional: true
+      - eraseText
+      - inputText: "Thank you for your business"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "business-save"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 12000
+          visible: "Business profile updated successfully"
+      - takeScreenshot: 17-preferences-saved
+      - tapOn:
+          text: "OK"
+          optional: true
+
+- tapOn:
+    id: "business-tab-appearance"
+    optional: true
+- takeScreenshot: 18-appearance
+- tapOn:
+    id: "business-save-theme"
+    optional: true
+- tapOn:
+    text: "OK"
+    optional: true
+
+- pressKey: back
+- tapOn:
+    text: "More"
+    optional: true
+- scrollUntilVisible:
+    element:
+      id: "more-BankAccountList"
+    direction: DOWN
+    timeout: 8000
+    optional: true
+- tapOn:
+    id: "more-BankAccountList"
+    optional: true
+- takeScreenshot: 19-bank-list
+- tapOn:
+    id: "bank-account-new"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 8000
+    visible:
+      id: "bank-account-name"
+- runFlow:
+    when:
+      visible:
+        id: "bank-account-name"
+    commands:
+      - tapOn:
+          id: "bank-account-name"
+      - inputText: "Operating"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "bank-name"
+      - inputText: "ANZ"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "bank-account-number"
+      - inputText: "01-1234-5678901-00"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "bank-account-save"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - takeScreenshot: 20-bank-form
+      - tapOn:
+          id: "bank-account-save"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 12000
+          visible: "Operating"
+      - takeScreenshot: 21-bank-saved
+
+- tapOn:
+    text: "Customers"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 10000
+    visible:
+      id: "customer-new"
+- takeScreenshot: 22-customers
+- tapOn:
+    id: "customer-new"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 8000
+    visible:
+      id: "customer-name"
+- runFlow:
+    when:
+      visible:
+        id: "customer-name"
+    commands:
+      - tapOn:
+          id: "customer-name"
+      - inputText: "Aroha Consulting"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "customer-email"
+      - inputText: "aroha@example.test"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "customer-phone"
+          optional: true
+      - inputText: "+64210002222"
+      - hideKeyboard:
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "customer-save"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - takeScreenshot: 23-customer-form
+      - tapOn:
+          id: "customer-save"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 12000
+          visible: "Aroha Consulting"
+      - takeScreenshot: 24-customer-saved
+
+- tapOn:
+    text: "Invoices"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 10000
+    visible:
+      id: "invoice-new"
+- takeScreenshot: 25-invoices
+- tapOn:
+    id: "invoice-new"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 15000
+    visible:
+      id: "invoice-number"
+- takeScreenshot: 26-invoice-form
+- tapOn:
+    id: "profile-completeness-dismiss"
+    optional: true
+- runFlow:
+    when:
+      visible:
+        id: "invoice-line-0"
+    commands:
+      - scrollUntilVisible:
+          element:
+            id: "invoice-line-0"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - tapOn:
+          id: "invoice-line-0"
+      - extendedWaitUntil:
+          optional: true
+          timeout: 8000
+          visible:
+            id: "line-description"
+      - tapOn:
+          id: "line-description"
+          optional: true
+      - inputText: "Discovery workshop"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "line-quantity"
+          optional: true
+      - eraseText
+      - inputText: "2"
+      - hideKeyboard:
+          optional: true
+      - tapOn:
+          id: "line-rate"
+          optional: true
+      - eraseText
+      - inputText: "100"
+      - hideKeyboard:
+          optional: true
+      - takeScreenshot: 27-line-item
+      - tapOn:
+          id: "line-done"
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "tax-option-gst"
+          direction: DOWN
+          timeout: 10000
+          optional: true
+      - tapOn:
+          id: "tax-option-gst"
+          optional: true
+      - scrollUntilVisible:
+          element:
+            id: "invoice-form-total"
+          direction: DOWN
+          timeout: 8000
+          optional: true
+      - takeScreenshot: 28-invoice-totals
+      - scrollUntilVisible:
+          element:
+            id: "invoice-save"
+          direction: UP
+          timeout: 8000
+          optional: true
+      - tapOn:
+          id: "invoice-save"
+          optional: true
+      - extendedWaitUntil:
+          optional: true
+          timeout: 20000
+          visible: "Invoice created successfully"
+      - takeScreenshot: 29-invoice-created
+      - tapOn:
+          text: "OK"
+          optional: true
+
+- extendedWaitUntil:
+    optional: true
+    timeout: 12000
+    visible: "Aroha Consulting"
+- takeScreenshot: 30-invoice-list
+- tapOn:
+    text: "Aroha Consulting"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 15000
+    visible:
+      id: "invoice-detail-total"
+- takeScreenshot: 31-invoice-detail
+- scrollUntilVisible:
+    element:
+      id: "invoice-share"
+    direction: DOWN
+    timeout: 8000
+    optional: true
+- tapOn:
+    id: "invoice-share"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 8000
+    visible:
+      id: "share-action-pdf"
+- takeScreenshot: 32-share-actions
+- tapOn:
+    id: "share-action-pdf"
+    optional: true
+- extendedWaitUntil:
+    optional: true
+    timeout: 20000
+    notVisible:
+      id: "share-action-pdf"
+- takeScreenshot: 33-share-sheet
+- pressKey: back
+- tapOn:
+    id: "invoice-share"
+    optional: true
+- tapOn:
+    id: "share-action-download"
+    optional: true
+- takeScreenshot: 34-pdf-download
+- tapOn:
+    text: "OK"
+    optional: true
+- takeScreenshot: 35-finished

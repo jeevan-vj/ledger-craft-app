@@ -28,6 +28,7 @@ interface ModernButtonProps {
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';
   style?: object;
+  testID?: string;
 }
 
 export function ModernButton({
@@ -41,6 +42,7 @@ export function ModernButton({
   icon,
   iconPosition = 'left',
   style,
+  testID,
 }: ModernButtonProps) {
   const theme = useTheme();
   const { colors: palette, type } = theme;
@@ -92,6 +94,7 @@ export function ModernButton({
   return (
     <GestureDetector gesture={tapGesture}>
       <Animated.View
+        testID={testID}
         accessible
         accessibilityRole="button"
         accessibilityState={{ disabled: isDisabled, busy: loading }}

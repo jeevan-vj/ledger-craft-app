@@ -1,0 +1,46 @@
+# Future EAS Maestro job. workflow_dispatch only, so a push does not start a paid build.
+# Do not wire this into .github/workflows/ci.yml.
+# EXPO_TOKEN was not available in the discovery environment. Do not invent one.
+#
+# Android uses the existing preview profile (APK, JavaScript bundled) on an emulator.
+# iOS uses the existing development profile because it is the profile with
+# ios.simulator: true. That profile is a development client, so a future iOS
+# run still needs a reachable Metro server or a simulator profile. eas.json is
+# unchanged (it is a high-risk path).
+#
+# Run from mobile/:
+# npx --yes eas-cli@25.3.0 workflow:run .eas/workflows/maestro-e2e.yml
+name: Maestro end to end
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  build_android:
+    name: Android APK for emulator
+    type: build
+    params:
+      platform: android
+      profile: preview
+  maestro_android:
+    name: Android emulator
+    needs: [build_android]
+    type: maestro
+    params:
+      build_id: ${{ needs.build_android.outputs.build_id }}
+      flow_path:
+        - .maestro/owner-signup-invoice.yaml
+  build_ios:
+    name: iOS simulator build
+    type: build
+    params:
+      platform: ios
+      profile: development
+  maestro_ios:
+    name: iOS simulator
+    needs: [build_ios]
+    type: maestro
+    params:
+      build_id: ${{ needs.build_ios.outputs.build_id }}
+      flow_path:
+        - .maestro/owner-signup-invoice.yaml

@@ -95,6 +95,7 @@ export function CompactLineItem({
       <GestureDetector gesture={gesture}>
         <Animated.View style={[styles.card, animatedStyle]}>
           <TouchableOpacity
+            testID={`invoice-line-${index}`}
             style={styles.touchable}
             onPress={handleTap}
             activeOpacity={0.7}
@@ -172,6 +173,7 @@ export function CompactLineItem({
               </TouchableOpacity>
 
               <ModernInput
+                testID="line-description"
                 label="Description"
                 value={item.description}
                 onChangeText={(text) => onUpdate(index, 'description', text)}
@@ -181,6 +183,7 @@ export function CompactLineItem({
               <View style={styles.row}>
                 <View style={styles.quarterWidth}>
                   <ModernInput
+                    testID="line-quantity"
                     label="Quantity"
                     value={String(item.quantity)}
                     onChangeText={(text) => onUpdate(index, 'quantity', Number(text) || 0)}
@@ -190,6 +193,7 @@ export function CompactLineItem({
                 </View>
                 <View style={styles.halfWidth}>
                   <ModernInput
+                    testID="line-rate"
                     label="Rate"
                     value={String(item.rate)}
                     onChangeText={(text) => onUpdate(index, 'rate', Number(text) || 0)}
@@ -220,10 +224,11 @@ export function CompactLineItem({
 
               <View style={styles.totalRow}>
                 <Text style={styles.totalLabel}>Total</Text>
-                <Text style={styles.totalValue}>{formatCurrency(item.total)}</Text>
+                <Text testID="line-total" style={styles.totalValue}>{formatCurrency(item.total)}</Text>
               </View>
 
               <TouchableOpacity
+                testID="line-done"
                 style={styles.doneButton}
                 onPress={() => setShowEditModal(false)}
                 activeOpacity={0.8}

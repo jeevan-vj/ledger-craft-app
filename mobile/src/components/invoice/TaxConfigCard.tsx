@@ -82,6 +82,7 @@ export function TaxConfigCard({
           return (
             <Pressable
               key={option.id}
+              testID={`tax-option-${option.id}`}
               onPress={() => handleOptionSelect(option.id)}
               accessibilityRole="button"
               accessibilityState={{ selected }}
@@ -113,19 +114,19 @@ export function TaxConfigCard({
       <View style={styles.summary}>
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Subtotal</Text>
-          <Text style={styles.summaryValue}>{formatCurrency(subtotal)}</Text>
+          <Text testID="invoice-form-subtotal" style={styles.summaryValue}>{formatCurrency(subtotal)}</Text>
         </View>
         {taxEnabled ? (
           <View style={styles.summaryRow}>
             <Text style={styles.summaryLabel}>
               {taxOption === 'gst' ? 'GST' : 'Tax'} ({taxRate}%)
             </Text>
-            <Text style={styles.summaryValue}>{formatCurrency(taxAmount)}</Text>
+            <Text testID="invoice-form-gst" style={styles.summaryValue}>{formatCurrency(taxAmount)}</Text>
           </View>
         ) : null}
         <View style={[styles.summaryRow, styles.summaryRowTotal]}>
           <Text style={styles.summaryLabelTotal}>Total</Text>
-          <Text style={styles.summaryValueTotal}>{formatCurrency(total)}</Text>
+          <Text testID="invoice-form-total" style={styles.summaryValueTotal}>{formatCurrency(total)}</Text>
         </View>
       </View>
     </View>

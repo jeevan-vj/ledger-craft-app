@@ -35,6 +35,7 @@ export function InvoiceDetailActions({
       style={[styles.container, { paddingBottom: bottomInset + space.xl }]}
     >
       <ModernButton
+        testID="invoice-preview"
         onPress={onPreview}
         variant="primary"
         size="lg"
@@ -50,6 +51,7 @@ export function InvoiceDetailActions({
       ) : null}
       <View style={styles.secondaryRow}>
         <Pressable
+          testID="invoice-share"
           onPress={onShare}
           accessibilityRole="button"
           accessibilityLabel="Share invoice"
