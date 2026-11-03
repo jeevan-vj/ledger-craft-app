@@ -8,7 +8,7 @@ import type { InvoiceImportMimeType } from '@ledgercraft/contracts';
 import { AppPressable, EmptyState, ModernButton } from '@/components/ui';
 import { canImportInvoices } from '@/features/auth/invoiceAccess';
 import { documentImportApi } from '@/features/invoice-import/api/documentImportApi';
-import { prepareCameraPhoto } from '@/features/invoice-import/cameraPhoto';
+import { CAMERA_CAPTURE_QUALITY, prepareCameraPhoto } from '@/features/invoice-import/cameraPhoto';
 import { readDocumentBase64 } from '@/features/invoice-import/sourceFile';
 import { OFFLINE_MESSAGE } from '@/features/auth/api/http';
 import type { RootStackParamList } from '@/navigation/types';
@@ -37,6 +37,7 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
   const allowed = useStore((state) => canImportInvoices(state.permissions));
   const [source, setSource] = useState<SelectedSource | null>(null);
   const [status, setStatus] = useState<'idle' | 'uploading' | 'processing' | 'failed'>('idle');
+  const [preparing, setPreparing] = useState<'photo' | 'file' | null>(null);
   const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
@@ -60,14 +61,24 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
       Alert.alert('Camera access needed', 'Allow camera access to photograph an invoice or bill.');
       return;
     }
-    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: 1 });
+    const result = await ImagePicker.launchCameraAsync({ mediaTypes: ['images'], quality: CAMERA_CAPTURE_QUALITY });
     if (result.canceled) return;
+    setSource(null);
+    setError(null);
+    setStatus('idle');
     const asset = result.assets[0];
-    if (!asset) { setError('The photo could not be read. Try again.'); return; }
+    if (!asset) {
+      setStatus('failed');
+      setError('The photo could not be read. Try again.');
+      return;
+    }
+    setPreparing('photo');
     try {
       const prepared = await prepareCameraPhoto(asset);
+      setPreparing(null);
       await upload(prepared);
     } catch (caught) {
+      setPreparing(null);
       setStatus('failed');
       setError(caught instanceof Error ? caught.message : 'The photo could not be prepared. Try again.');
     }
@@ -76,18 +87,29 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
   const chooseFile = async () => {
     const result = await DocumentPicker.getDocumentAsync({ type: ['application/pdf', 'image/*'], copyToCacheDirectory: true, multiple: false, base64: true });
     if (result.canceled) return;
+    setSource(null);
+    setError(null);
+    setStatus('idle');
     const asset = result.assets[0];
+    if (!asset) {
+      setStatus('failed');
+      setError('The selected file could not be read. Choose a PDF, JPG or PNG and try again.');
+      return;
+    }
+    setPreparing('file');
     try {
       const contentBase64 = await readDocumentBase64(asset);
+      setPreparing(null);
       await upload({ uri: asset.uri, filename: asset.name, contentType: contentType(asset.name, asset.mimeType), contentBase64 });
     } catch {
+      setPreparing(null);
       setStatus('failed'); setError('The selected file could not be read. Choose a PDF, JPG or PNG and try again.');
     }
   };
 
   if (!allowed) return <View style={styles.state}><EmptyState title="Import access restricted" description="You don't have permission to import invoices. Ask an owner or administrator for invoice import access." actionLabel="Go back" actionVariant="link" onAction={() => navigation.goBack()} /></View>;
 
-  const busy = status === 'uploading' || status === 'processing';
+  const busy = preparing || status === 'uploading' || status === 'processing';
   return <ScrollView style={styles.canvas} contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content}>
     <View style={styles.heroIcon}><Feather name="file-plus" size={28} color={theme.colors.accentText} /></View>
     <Text style={styles.title}>Bring in an invoice or bill</Text>
@@ -98,8 +120,8 @@ export default function ImportCaptureScreen({ navigation, route }: Props) {
       <SourceChoice icon="upload" title="Choose a file" detail="PDF, JPG, PNG, WebP or HEIC" onPress={() => void chooseFile()} />
     </View> : <View style={styles.progressCard} accessibilityLiveRegion="polite">
       {source?.contentType.startsWith('image/') ? <Image source={{ uri: source.uri }} style={styles.thumb} accessibilityLabel={`Selected document ${source.filename}`} /> : <View style={styles.pdfThumb}><Feather name="file-text" size={30} color={theme.colors.accentText} /><Text style={styles.pdfLabel}>PDF</Text></View>}
-      <View style={styles.progressCopy}><Text style={styles.progressTitle}>{status === 'uploading' ? 'Uploading securely' : 'Extracting and checking'}</Text><Text style={styles.progressText}>{source?.filename}</Text><View style={styles.track}><View style={[styles.fill, { width: status === 'processing' ? '100%' : `${Math.max(8, progress * 100)}%` }]} /></View></View>
-      <ActivityIndicator color={theme.colors.accent} accessibilityLabel={status === 'uploading' ? 'Uploading document' : 'Processing document'} />
+      <View style={styles.progressCopy}><Text style={styles.progressTitle}>{preparing === 'photo' ? 'Preparing photo' : preparing === 'file' ? 'Reading file' : status === 'uploading' ? 'Uploading securely' : 'Extracting and checking'}</Text><Text style={styles.progressText}>{preparing === 'photo' ? 'Getting the picture ready' : preparing === 'file' ? 'Checking the selected file' : source?.filename}</Text><View style={styles.track}><View style={[styles.fill, { width: status === 'processing' ? '100%' : `${Math.max(8, progress * 100)}%` }]} /></View></View>
+      <ActivityIndicator color={theme.colors.accent} accessibilityLabel={preparing === 'photo' ? 'Preparing photo' : preparing === 'file' ? 'Reading file' : status === 'uploading' ? 'Uploading document' : 'Processing document'} />
     </View>}
 
     {error ? <View style={styles.error} accessibilityRole="alert"><Text style={styles.errorTitle}>Upload failed</Text><Text style={styles.errorText}>{error === OFFLINE_MESSAGE ? OFFLINE_MESSAGE : error}</Text>{source ? <ModernButton fullWidth variant="secondary" onPress={() => void upload(source)}>Retry</ModernButton> : null}</View> : null}

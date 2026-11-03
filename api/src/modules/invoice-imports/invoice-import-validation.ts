@@ -39,10 +39,88 @@ export function sniffInvoiceImportMimeType(bytes: Uint8Array): InvoiceImportMime
   return undefined;
 }
 
+const PDF_WHITESPACE = new Set([0x00, 0x09, 0x0a, 0x0c, 0x0d, 0x20]);
+
+function isPdfWhitespace(byte: number | undefined): boolean {
+  return byte !== undefined && PDF_WHITESPACE.has(byte);
+}
+
+function keywordAt(bytes: Uint8Array, index: number, word: string): boolean {
+  if (index < 0 || index + word.length > bytes.length) return false;
+  for (let offset = 0; offset < word.length; offset += 1) {
+    if (bytes[index + offset] !== word.charCodeAt(offset)) return false;
+  }
+  const previous = index === 0 ? undefined : bytes[index - 1];
+  if (previous === 0x2f) return false;
+  return previous === undefined || isPdfWhitespace(previous) || previous === 0x3e || previous === 0x5d;
+}
+
+function skipPdfStream(bytes: Uint8Array, index: number): number {
+  let cursor = index;
+  while (cursor < bytes.length && !keywordAt(bytes, cursor, 'endstream')) cursor += 1;
+  return cursor < bytes.length ? cursor + 'endstream'.length : bytes.length;
+}
+
+function startsWithAscii(bytes: Uint8Array, index: number, word: string): boolean {
+  if (index < 0 || index + word.length > bytes.length) return false;
+  for (let offset = 0; offset < word.length; offset += 1) {
+    if (bytes[index + offset] !== word.charCodeAt(offset)) return false;
+  }
+  return true;
+}
+
+function isNameContinuation(byte: number | undefined): boolean {
+  if (byte === undefined) return false;
+  return (byte >= 0x30 && byte <= 0x39) || (byte >= 0x41 && byte <= 0x5a) || (byte >= 0x61 && byte <= 0x7a);
+}
+
+function isPageName(bytes: Uint8Array, index: number): boolean {
+  const page = '/Page';
+  if (!startsWithAscii(bytes, index, page)) return false;
+  return !isNameContinuation(bytes[index + page.length]);
+}
+
+function matchStructuralPage(bytes: Uint8Array, index: number): boolean {
+  if (!startsWithAscii(bytes, index, '/Type')) return false;
+  let cursor = index + '/Type'.length;
+  while (isPdfWhitespace(bytes[cursor])) cursor += 1;
+  return isPageName(bytes, cursor);
+}
+
 export function countPdfPages(bytes: Uint8Array): number | null {
-  const text = new TextDecoder('latin1').decode(bytes);
-  const matches = text.match(/\/Type\s*\/Page(?!s)\b/g);
-  return matches?.length ? matches.length : null;
+  let count = 0;
+  let stringDepth = 0;
+  for (let index = 0; index < bytes.length; index += 1) {
+    const byte = bytes[index]!;
+    if (stringDepth > 0) {
+      if (byte === 0x5c) {
+        index += 1;
+        continue;
+      }
+      if (byte === 0x28) stringDepth += 1;
+      else if (byte === 0x29) stringDepth -= 1;
+      continue;
+    }
+    if (byte === 0x28) {
+      stringDepth = 1;
+      continue;
+    }
+    if (byte === 0x25) {
+      while (index + 1 < bytes.length && bytes[index + 1] !== 0x0a && bytes[index + 1] !== 0x0d) index += 1;
+      continue;
+    }
+    if (keywordAt(bytes, index, 'stream')) {
+      const after = index + 'stream'.length;
+      if (bytes[after] === 0x0d || bytes[after] === 0x0a) {
+        let body = after + 1;
+        if (bytes[after] === 0x0d && bytes[body] === 0x0a) body += 1;
+        index = skipPdfStream(bytes, body) - 1;
+        continue;
+      }
+    }
+    if (matchStructuralPage(bytes, index)) count += 1;
+  }
+  return count > 0 ? count : null;
 }
 
 function positiveInteger(value: string | undefined, fallback: number): number {
@@ -57,6 +135,14 @@ export function invoiceImportMaxBytes(storageDefault = DEFAULT_INVOICE_IMPORT_MA
 
 export function invoiceImportMaxPages(): number {
   return positiveInteger(process.env.INVOICE_IMPORT_MAX_PAGES, DEFAULT_INVOICE_IMPORT_MAX_PAGES);
+}
+
+export function assertPdfWithinPageCap(bytes: Uint8Array, maxPages = invoiceImportMaxPages()): number | null {
+  const pageCount = countPdfPages(bytes);
+  if (pageCount !== null && pageCount > maxPages) {
+    throw apiError(400, 'TOO_MANY_PAGES', `PDF has too many pages (maximum ${maxPages})`);
+  }
+  return pageCount;
 }
 
 export function validateInvoiceImportFile(input: {
@@ -76,11 +162,8 @@ export function validateInvoiceImportFile(input: {
   if (declared !== mimeType) {
     throw apiError(415, 'MIME_TYPE_MISMATCH', 'Declared content type does not match the uploaded file');
   }
-  const pageCount = mimeType === 'application/pdf' ? countPdfPages(input.bytes) : 1;
   const maxPages = input.maxPages ?? invoiceImportMaxPages();
-  if (pageCount !== null && pageCount > maxPages) {
-    throw apiError(400, 'TOO_MANY_PAGES', `PDF has too many pages (maximum ${maxPages})`);
-  }
+  const pageCount = mimeType === 'application/pdf' ? assertPdfWithinPageCap(input.bytes, maxPages) : 1;
   return { mimeType, pageCount };
 }
 

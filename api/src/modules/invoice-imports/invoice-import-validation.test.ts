@@ -47,6 +47,55 @@ describe('invoice import file validation', () => {
       declaredContentType: 'application/pdf',
       maxPages: 1,
     })).toThrowError(/too many pages/i);
+
+    const objectStream = encoder.encode([
+      '%PDF-1.7',
+      '1 0 obj',
+      '<< /Type /ObjStm /N 1 /Filter /FlateDecode /Length 24 >>',
+      'stream',
+      '/Type /Page /Type /Page',
+      'endstream',
+      'endobj',
+      '%%EOF',
+    ].join('\n'));
+    expect(countPdfPages(objectStream)).toBeNull();
+    expect(validateInvoiceImportFile({
+      bytes: objectStream,
+      declaredContentType: 'application/pdf',
+    })).toEqual({ mimeType: 'application/pdf', pageCount: null });
+
+    const planted = encoder.encode([
+      '%PDF-1.4',
+      '1 0 obj',
+      '<< /Length 22 >>',
+      'stream',
+      '/Type /Page planted',
+      'endstream',
+      'endobj',
+      '2 0 obj',
+      '<< /Type /Page /Note (see /Type /Page inside) >>',
+      'endobj',
+      '%%EOF',
+    ].join('\n'));
+    expect(countPdfPages(planted)).toBe(1);
+    expect(validateInvoiceImportFile({
+      bytes: planted,
+      declaredContentType: 'application/pdf',
+      maxPages: 1,
+    })).toEqual({ mimeType: 'application/pdf', pageCount: 1 });
+
+    const uncountable = encoder.encode('%PDF-1.7\n1 0 obj << /Filter /FlateDecode >>\n%%EOF');
+    expect(countPdfPages(uncountable)).toBeNull();
+    expect(validateInvoiceImportFile({
+      bytes: uncountable,
+      declaredContentType: 'application/pdf',
+      maxBytes: uncountable.byteLength,
+    })).toEqual({ mimeType: 'application/pdf', pageCount: null });
+    expect(() => validateInvoiceImportFile({
+      bytes: uncountable,
+      declaredContentType: 'application/pdf',
+      maxBytes: uncountable.byteLength - 1,
+    })).toThrowError(/too large/i);
   });
 
   it('returns sniffed metadata and counts one-page PDFs without counting /Pages', () => {
