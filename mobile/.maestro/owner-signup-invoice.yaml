@@ -1,8 +1,7 @@
-# Discovery flow: signup, business profile (logo from the library), bank account,
-# customer, invoice, PDF share. Commands that can miss stay optional and short
-# so one run records later steps instead of stopping at the first failure.
-# Launch with a fresh app state. The API is the local Hono server, reached with
-# adb reverse so the app keeps its default http://127.0.0.1:3001 base URL.
+# Strict discovery flow. A missed required step fails the run.
+# optional: true is only for system UI whose labels vary by Android image
+# (permission dialogs, the photo picker, keyboard dismissal, and the share target).
+# The app is a standalone release APK. EXPO_PUBLIC_API_URL is http://10.0.2.2:3001.
 appId: com.easybizinvoice.app
 name: Owner signup through invoice PDF
 env:
@@ -14,621 +13,488 @@ env:
 - launchApp:
     clearState: true
 - takeScreenshot: 01-launched
-
+# Fail immediately if this binary is still the Expo development launcher.
 - extendedWaitUntil:
-    optional: true
-    timeout: 30000
+    timeout: 45000
     visible:
-      id: "intro-create-account"
-- takeScreenshot: 02-intro
-- runFlow:
-    when:
-      visible:
-        id: "intro-create-account"
-    commands:
-      - tapOn:
-          id: "intro-create-account"
-
+      text: "Create an account|Development Build"
+- assertNotVisible: "Development Build"
+- assertNotVisible: "npx expo start"
+- assertVisible:
+    id: "intro-create-account"
+- takeScreenshot: 02-signup-entry
+- tapOn:
+    id: "intro-create-account"
 - extendedWaitUntil:
-    optional: true
     timeout: 15000
     visible:
       id: "signup-full-name"
 - takeScreenshot: 03-signup-name
-- runFlow:
-    when:
-      visible:
-        id: "signup-full-name"
-    commands:
-      - tapOn:
-          id: "signup-full-name"
-      - inputText: "Maestro Owner"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "signup-continue"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "signup-phone"
-      - tapOn:
-          id: "signup-phone"
-          optional: true
-      - inputText: "+64210001111"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "signup-continue"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "signup-email"
-      - tapOn:
-          id: "signup-email"
-          optional: true
-      - inputText: ${OWNER_EMAIL}
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "signup-continue"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "signup-password"
-      - tapOn:
-          id: "signup-password"
-          optional: true
-      - inputText: ${OWNER_PASSWORD}
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "signup-terms"
-          optional: true
-      - tapOn:
-          id: "signup-continue"
-          optional: true
-
-- extendedWaitUntil:
+- tapOn:
+    id: "signup-full-name"
+- inputText: "Maestro Owner"
+- hideKeyboard:
     optional: true
-    timeout: 25000
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "signup-continue"
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "signup-phone"
+- tapOn:
+    id: "signup-phone"
+- inputText: "+64210001111"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "signup-continue"
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "signup-email"
+- takeScreenshot: 04-signup-email
+- tapOn:
+    id: "signup-email"
+- inputText: ${OWNER_EMAIL}
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "signup-continue"
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "signup-password"
+- tapOn:
+    id: "signup-password"
+- inputText: ${OWNER_PASSWORD}
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "signup-terms"
+- tapOn:
+    id: "signup-continue"
+- extendedWaitUntil:
+    timeout: 30000
     visible:
       id: "onboarding-business-name"
-- takeScreenshot: 04-after-signup
-- runFlow:
-    when:
-      visible:
-        id: "onboarding-business-name"
-    commands:
-      - tapOn:
-          id: "onboarding-business-name"
-      - inputText: "Kauri Discovery Ltd"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "onboarding-continue"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "onboarding-country"
-      - takeScreenshot: 05-onboarding-country
-      - tapOn:
-          id: "onboarding-continue"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "onboarding-gst-yes"
-      - takeScreenshot: 06-onboarding-gst
-      - tapOn:
-          id: "onboarding-gst-yes"
-          optional: true
-      - tapOn:
-          id: "onboarding-continue"
-          optional: true
-
-- extendedWaitUntil:
-    optional: true
-    timeout: 25000
-    visible: "Home"
-- takeScreenshot: 07-home
+- takeScreenshot: 05-signup-succeeded
 - tapOn:
-    text: "More"
+    id: "onboarding-business-name"
+- inputText: "Kauri Discovery Ltd"
+- hideKeyboard:
     optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "onboarding-continue"
 - extendedWaitUntil:
-    optional: true
     timeout: 10000
     visible:
-      id: "more-BusinessSettings"
-- takeScreenshot: 08-more
+      id: "onboarding-country"
+- takeScreenshot: 06-onboarding-country
 - tapOn:
-    id: "more-BusinessSettings"
-    optional: true
-
+    id: "onboarding-continue"
 - extendedWaitUntil:
-    optional: true
+    timeout: 10000
+    visible:
+      id: "onboarding-gst-yes"
+- takeScreenshot: 07-onboarding-gst
+- tapOn:
+    id: "onboarding-gst-yes"
+- tapOn:
+    id: "onboarding-continue"
+- extendedWaitUntil:
+    timeout: 30000
+    visible: "New invoice"
+- takeScreenshot: 08-home
+- tapOn: "More"
+- extendedWaitUntil:
     timeout: 15000
     visible:
+      id: "more-BusinessSettings"
+- takeScreenshot: 09-more
+- tapOn:
+    id: "more-BusinessSettings"
+- extendedWaitUntil:
+    timeout: 20000
+    visible:
       id: "business-logo"
-- takeScreenshot: 09-business-profile
-- runFlow:
-    when:
-      visible:
-        id: "business-logo"
+- takeScreenshot: 10-business-profile
+- tapOn:
+    id: "business-logo"
+- repeat:
+    times: 3
     commands:
       - tapOn:
-          id: "business-logo"
-      - repeat:
-          times: 3
-          commands:
-            - tapOn:
-                text: "Allow"
-                optional: true
-            - tapOn:
-                text: "While using the app"
-                optional: true
-            - tapOn:
-                text: "Allow all"
-                optional: true
-      - takeScreenshot: 10-logo-chooser
+          text: "Allow"
+          optional: true
+          label: "Environment-dependent permission dialog"
       - tapOn:
-          text: "Gallery"
+          text: "While using the app"
           optional: true
+          label: "Environment-dependent permission dialog"
       - tapOn:
-          text: "Photo library"
+          text: "Allow all"
           optional: true
-      - tapOn:
-          text: "logo"
-          optional: true
-      - tapOn:
-          text: "logo.png"
-          optional: true
-      - tapOn:
-          text: "Crop"
-          optional: true
-      - tapOn:
-          text: "Done"
-          optional: true
-      - tapOn:
-          text: "OK"
-          optional: true
-      - takeScreenshot: 11-after-logo
-      - scrollUntilVisible:
-          element:
-            id: "business-tax-id"
-          direction: DOWN
-          timeout: 12000
-          optional: true
-      - tapOn:
-          id: "business-tax-id"
-          optional: true
-      - eraseText
-      - inputText: "123-456-789"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "business-address"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - tapOn:
-          id: "business-address"
-          optional: true
-      - eraseText
-      - inputText: "12 Queen Street"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "business-city"
-          optional: true
-      - eraseText
-      - inputText: "Auckland"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "business-state"
-          optional: true
-      - eraseText
-      - inputText: "Auckland"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "business-zip"
-          optional: true
-      - eraseText
-      - inputText: "1010"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "business-website"
-          direction: UP
-          timeout: 8000
-          optional: true
-      - tapOn:
-          id: "business-website"
-          optional: true
-      - eraseText
-      - inputText: "https://kauri.example.test"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "business-tax-rate"
-          direction: DOWN
-          timeout: 10000
-          optional: true
-      - tapOn:
-          id: "business-tax-rate"
-          optional: true
-      - eraseText
-      - inputText: "15"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "business-save"
-          direction: DOWN
-          timeout: 10000
-          optional: true
-      - takeScreenshot: 12-business-before-save
-      - tapOn:
-          id: "business-save"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 15000
-          visible: "Business profile updated successfully"
-      - takeScreenshot: 13-business-saved
-      - tapOn:
-          text: "OK"
-          optional: true
-
+          label: "Environment-dependent permission dialog"
+- assertVisible: "Gallery"
+- takeScreenshot: 11-logo-chooser
+- tapOn: "Gallery"
+- tapOn:
+    text: "logo.png"
+    optional: true
+    label: "Environment-dependent photo picker row"
+- tapOn:
+    text: "logo"
+    optional: true
+    label: "Environment-dependent photo picker row"
+- tapOn:
+    text: "Crop"
+    optional: true
+    label: "Environment-dependent image crop confirm"
+- tapOn:
+    text: "Done"
+    optional: true
+    label: "Environment-dependent picker confirm"
+- assertNotVisible: "Tap to upload"
+- takeScreenshot: 12-logo-selected
+- scrollUntilVisible:
+    element:
+      id: "business-tax-id"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    id: "business-tax-id"
+- eraseText
+- inputText: "123-456-789"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- scrollUntilVisible:
+    element:
+      id: "business-address"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "business-address"
+- eraseText
+- inputText: "12 Queen Street"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "business-city"
+- eraseText
+- inputText: "Auckland"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "business-state"
+- eraseText
+- inputText: "Auckland"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "business-zip"
+- eraseText
+- inputText: "1010"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- scrollUntilVisible:
+    element:
+      id: "business-website"
+    direction: UP
+    timeout: 10000
+- tapOn:
+    id: "business-website"
+- eraseText
+- inputText: "https://kauri.example.test"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- scrollUntilVisible:
+    element:
+      id: "business-save"
+    direction: DOWN
+    timeout: 15000
+- takeScreenshot: 13-business-before-save
+- tapOn:
+    id: "business-save"
+- extendedWaitUntil:
+    timeout: 20000
+    visible: "Business profile updated successfully"
+- takeScreenshot: 14-business-saved
+- tapOn: "OK"
 - tapOn:
     id: "business-tab-currency"
-    optional: true
 - extendedWaitUntil:
-    optional: true
-    timeout: 10000
+    timeout: 15000
     visible:
       id: "currency-save"
-- takeScreenshot: 14-currency
-- runFlow:
-    when:
-      visible:
-        id: "currency-save"
-    commands:
-      - tapOn:
-          text: "NZD"
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "currency-save"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - tapOn:
-          id: "currency-save"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 12000
-          visible: "Saved"
-      - takeScreenshot: 15-currency-saved
-      - tapOn:
-          text: "OK"
-          optional: true
-
+- takeScreenshot: 15-currency
+- tapOn: "NZD"
+- scrollUntilVisible:
+    element:
+      id: "currency-save"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "currency-save"
+- extendedWaitUntil:
+    timeout: 20000
+    visible: "Saved"
+- takeScreenshot: 16-currency-saved
+- tapOn: "OK"
 - tapOn:
     id: "business-tab-preferences"
-    optional: true
 - extendedWaitUntil:
-    optional: true
-    timeout: 8000
+    timeout: 10000
     visible:
       id: "business-terms"
-- takeScreenshot: 16-preferences
-- runFlow:
-    when:
-      visible:
-        id: "business-terms"
-    commands:
-      - tapOn:
-          id: "business-terms"
-      - eraseText
-      - inputText: "Payment due within 14 days"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "business-notes"
-          optional: true
-      - eraseText
-      - inputText: "Thank you for your business"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "business-save"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 12000
-          visible: "Business profile updated successfully"
-      - takeScreenshot: 17-preferences-saved
-      - tapOn:
-          text: "OK"
-          optional: true
-
+- takeScreenshot: 17-preferences
+- tapOn:
+    id: "business-terms"
+- eraseText
+- inputText: "Payment due within 14 days"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "business-notes"
+- eraseText
+- inputText: "Thank you for your business"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "business-save"
+- extendedWaitUntil:
+    timeout: 20000
+    visible: "Business profile updated successfully"
+- takeScreenshot: 18-preferences-saved
+- tapOn: "OK"
 - tapOn:
     id: "business-tab-appearance"
-    optional: true
-- takeScreenshot: 18-appearance
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "business-save-theme"
+- takeScreenshot: 19-appearance
 - tapOn:
     id: "business-save-theme"
-    optional: true
-- tapOn:
-    text: "OK"
-    optional: true
-
+- extendedWaitUntil:
+    timeout: 20000
+    visible: "Theme saved"
+- takeScreenshot: 20-appearance-saved
+- tapOn: "OK"
 - pressKey: back
-- tapOn:
-    text: "More"
-    optional: true
+- tapOn: "More"
 - scrollUntilVisible:
     element:
       id: "more-BankAccountList"
     direction: DOWN
-    timeout: 8000
-    optional: true
+    timeout: 10000
 - tapOn:
     id: "more-BankAccountList"
-    optional: true
-- takeScreenshot: 19-bank-list
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "bank-account-new"
+- takeScreenshot: 21-bank-list
 - tapOn:
     id: "bank-account-new"
-    optional: true
 - extendedWaitUntil:
-    optional: true
-    timeout: 8000
+    timeout: 10000
     visible:
       id: "bank-account-name"
-- runFlow:
-    when:
-      visible:
-        id: "bank-account-name"
-    commands:
-      - tapOn:
-          id: "bank-account-name"
-      - inputText: "Operating"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "bank-name"
-      - inputText: "ANZ"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "bank-account-number"
-      - inputText: "01-1234-5678901-00"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "bank-account-save"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - takeScreenshot: 20-bank-form
-      - tapOn:
-          id: "bank-account-save"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 12000
-          visible: "Operating"
-      - takeScreenshot: 21-bank-saved
-
 - tapOn:
-    text: "Customers"
+    id: "bank-account-name"
+- inputText: "Operating"
+- hideKeyboard:
     optional: true
-- extendedWaitUntil:
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "bank-name"
+- inputText: "ANZ"
+- hideKeyboard:
     optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "bank-account-number"
+- inputText: "01-1234-5678901-00"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- scrollUntilVisible:
+    element:
+      id: "bank-account-save"
+    direction: DOWN
     timeout: 10000
-    visible:
-      id: "customer-new"
-- takeScreenshot: 22-customers
+- takeScreenshot: 22-bank-form
 - tapOn:
-    id: "customer-new"
-    optional: true
+    id: "bank-account-save"
 - extendedWaitUntil:
-    optional: true
-    timeout: 8000
-    visible:
-      id: "customer-name"
-- runFlow:
-    when:
-      visible:
-        id: "customer-name"
-    commands:
-      - tapOn:
-          id: "customer-name"
-      - inputText: "Aroha Consulting"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "customer-email"
-      - inputText: "aroha@example.test"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "customer-phone"
-          optional: true
-      - inputText: "+64210002222"
-      - hideKeyboard:
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "customer-save"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - takeScreenshot: 23-customer-form
-      - tapOn:
-          id: "customer-save"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 12000
-          visible: "Aroha Consulting"
-      - takeScreenshot: 24-customer-saved
-
-- tapOn:
-    text: "Invoices"
-    optional: true
+    timeout: 15000
+    visible: "Operating"
+- takeScreenshot: 23-bank-saved
+- tapOn: "Customers"
 - extendedWaitUntil:
-    optional: true
-    timeout: 10000
-    visible:
-      id: "invoice-new"
-- takeScreenshot: 25-invoices
-- tapOn:
-    id: "invoice-new"
-    optional: true
-- extendedWaitUntil:
-    optional: true
     timeout: 15000
     visible:
+      id: "customer-new"
+- takeScreenshot: 24-customers
+- tapOn:
+    id: "customer-new"
+- extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "customer-name"
+- tapOn:
+    id: "customer-name"
+- inputText: "Aroha Consulting"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "customer-email"
+- inputText: "aroha@example.test"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- scrollUntilVisible:
+    element:
+      id: "customer-save"
+    direction: DOWN
+    timeout: 10000
+- takeScreenshot: 25-customer-form
+- tapOn:
+    id: "customer-save"
+- extendedWaitUntil:
+    timeout: 15000
+    visible: "Aroha Consulting"
+- takeScreenshot: 26-customer-saved
+- tapOn: "Invoices"
+- extendedWaitUntil:
+    timeout: 15000
+    visible:
+      id: "invoice-new"
+- takeScreenshot: 27-invoices
+- tapOn:
+    id: "invoice-new"
+- extendedWaitUntil:
+    timeout: 20000
+    visible:
       id: "invoice-number"
-- takeScreenshot: 26-invoice-form
+- takeScreenshot: 28-invoice-form
 - tapOn:
     id: "profile-completeness-dismiss"
     optional: true
-- runFlow:
-    when:
-      visible:
-        id: "invoice-line-0"
-    commands:
-      - scrollUntilVisible:
-          element:
-            id: "invoice-line-0"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - tapOn:
-          id: "invoice-line-0"
-      - extendedWaitUntil:
-          optional: true
-          timeout: 8000
-          visible:
-            id: "line-description"
-      - tapOn:
-          id: "line-description"
-          optional: true
-      - inputText: "Discovery workshop"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "line-quantity"
-          optional: true
-      - eraseText
-      - inputText: "2"
-      - hideKeyboard:
-          optional: true
-      - tapOn:
-          id: "line-rate"
-          optional: true
-      - eraseText
-      - inputText: "100"
-      - hideKeyboard:
-          optional: true
-      - takeScreenshot: 27-line-item
-      - tapOn:
-          id: "line-done"
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "tax-option-gst"
-          direction: DOWN
-          timeout: 10000
-          optional: true
-      - tapOn:
-          id: "tax-option-gst"
-          optional: true
-      - scrollUntilVisible:
-          element:
-            id: "invoice-form-total"
-          direction: DOWN
-          timeout: 8000
-          optional: true
-      - takeScreenshot: 28-invoice-totals
-      - scrollUntilVisible:
-          element:
-            id: "invoice-save"
-          direction: UP
-          timeout: 8000
-          optional: true
-      - tapOn:
-          id: "invoice-save"
-          optional: true
-      - extendedWaitUntil:
-          optional: true
-          timeout: 20000
-          visible: "Invoice created successfully"
-      - takeScreenshot: 29-invoice-created
-      - tapOn:
-          text: "OK"
-          optional: true
-
-- extendedWaitUntil:
-    optional: true
-    timeout: 12000
-    visible: "Aroha Consulting"
-- takeScreenshot: 30-invoice-list
+    label: "Profile reminder only appears when the profile is still incomplete"
+- assertVisible: "Aroha Consulting"
+- scrollUntilVisible:
+    element:
+      id: "invoice-line-0"
+    direction: DOWN
+    timeout: 10000
 - tapOn:
-    text: "Aroha Consulting"
-    optional: true
+    id: "invoice-line-0"
 - extendedWaitUntil:
+    timeout: 10000
+    visible:
+      id: "line-description"
+- tapOn:
+    id: "line-description"
+- inputText: "Discovery workshop"
+- hideKeyboard:
     optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "line-quantity"
+- eraseText
+- inputText: "2"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- tapOn:
+    id: "line-rate"
+- eraseText
+- inputText: "100"
+- hideKeyboard:
+    optional: true
+    label: "Environment-dependent keyboard dismissal"
+- takeScreenshot: 29-line-item
+- tapOn:
+    id: "line-done"
+- scrollUntilVisible:
+    element:
+      id: "tax-option-gst"
+    direction: DOWN
+    timeout: 10000
+- tapOn:
+    id: "tax-option-gst"
+- scrollUntilVisible:
+    element:
+      id: "invoice-form-total"
+    direction: DOWN
+    timeout: 10000
+- assertVisible: "$200.00"
+- assertVisible: "$30.00"
+- assertVisible: "$230.00"
+- takeScreenshot: 30-invoice-totals
+- tapOn:
+    id: "invoice-save"
+- extendedWaitUntil:
+    timeout: 25000
+    visible: "Invoice created successfully"
+- takeScreenshot: 31-invoice-created
+- tapOn: "OK"
+- extendedWaitUntil:
     timeout: 15000
+    visible: "Aroha Consulting"
+- takeScreenshot: 32-invoice-list
+- tapOn: "Aroha Consulting"
+- extendedWaitUntil:
+    timeout: 20000
     visible:
       id: "invoice-detail-total"
-- takeScreenshot: 31-invoice-detail
+- assertVisible:
+    id: "invoice-detail-subtotal"
+- assertVisible: "$200.00"
+- assertVisible: "$30.00"
+- assertVisible: "$230.00"
+- takeScreenshot: 33-invoice-detail
 - scrollUntilVisible:
     element:
       id: "invoice-share"
     direction: DOWN
-    timeout: 8000
-    optional: true
+    timeout: 10000
 - tapOn:
     id: "invoice-share"
-    optional: true
 - extendedWaitUntil:
-    optional: true
-    timeout: 8000
+    timeout: 10000
     visible:
       id: "share-action-pdf"
-- takeScreenshot: 32-share-actions
+- takeScreenshot: 34-share-actions
 - tapOn:
     id: "share-action-pdf"
-    optional: true
 - extendedWaitUntil:
+    timeout: 25000
+    visible:
+      text: "Nearby Share|Quick Share|Bluetooth|Copy|Gmail|Messages"
+- takeScreenshot: 35-share-sheet
+- tapOn:
+    text: "Gmail|Messages|Bluetooth|Nearby Share|Quick Share|Copy"
     optional: true
-    timeout: 20000
-    notVisible:
-      id: "share-action-pdf"
-- takeScreenshot: 33-share-sheet
+    label: "Environment-dependent share-sheet target"
 - pressKey: back
 - tapOn:
     id: "invoice-share"
-    optional: true
 - tapOn:
     id: "share-action-download"
-    optional: true
-- takeScreenshot: 34-pdf-download
-- tapOn:
-    text: "OK"
-    optional: true
-- takeScreenshot: 35-finished
+- takeScreenshot: 36-pdf-download

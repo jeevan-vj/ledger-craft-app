@@ -1,5 +1,10 @@
 const appJson = require('./app.json');
 const EAS_PROJECT_ID = '6bb662da-bb2f-405d-876f-cea471908f74';
+// Local Maestro only. Set E2E_BUILD=1 for the standalone Android APK so it
+// embeds this build's JavaScript, allows http to the local API, and does not
+// download a published update. Unset for every other build. eas.json profiles
+// are unchanged.
+const e2eBuild = process.env.E2E_BUILD === '1';
 
 module.exports = {
   expo: {
@@ -8,9 +13,9 @@ module.exports = {
     slug: 'easybizinvoice',
     version: appJson.expo.version,
     runtimeVersion: { policy: 'fingerprint' },
-    updates: {
-      url: `https://u.expo.dev/${EAS_PROJECT_ID}`,
-    },
+    updates: e2eBuild
+      ? { enabled: false }
+      : { url: `https://u.expo.dev/${EAS_PROJECT_ID}` },
     orientation: 'portrait',
     icon: './assets/icon.png',
     userInterfaceStyle: 'automatic',
@@ -67,6 +72,7 @@ module.exports = {
       // Keep first: Expo runs native mods from later plugins first, so listing the gate
       // first makes it run after Sentry adds sentry.gradle and its Xcode build phases.
       './plugins/withSentryUploadGate',
+      ...(e2eBuild ? ['./plugins/withE2eCleartext.js'] : []),
       'expo-secure-store',
       'react-native-bottom-tabs',
       [
