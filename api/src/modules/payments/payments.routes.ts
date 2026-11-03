@@ -1,4 +1,4 @@
-import { createPaymentRequestSchema } from '@ledgercraft/contracts';
+import { createPaymentRequestSchema, reversePaymentRequestSchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../types';
@@ -36,6 +36,12 @@ export function paymentRoutes() {
           }
         : undefined;
       return c.json(await paymentsService.createPaymentForUser(db, user.id, input, idempotency), 201);
+    });
+
+    routes.post(`${prefix}/payments/:id/reverse`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = reversePaymentRequestSchema.parse(await c.req.json());
+      return c.json(await paymentsService.reversePaymentForUser(db, user.id, c.req.param('id'), input));
     });
   }
 

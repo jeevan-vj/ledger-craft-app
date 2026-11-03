@@ -4,6 +4,7 @@ import type {
   CreatePaymentRequest,
   InitializeAccountsRequest,
   PaymentDto,
+  ReversePaymentRequest,
   UpdateAccountRequest,
 } from '@ledgercraft/contracts';
 import type { Account, AccountType } from '@/types';
@@ -20,14 +21,17 @@ export function accountsApiEnabled(): boolean {
 
 export class PaymentsApiError extends Error {
   readonly requestId?: string;
+  readonly code?: string;
 
   constructor(
     message: string,
     readonly status: number,
+    code?: string,
     requestId?: string,
   ) {
     super(message);
     this.name = 'PaymentsApiError';
+    this.code = code;
     this.requestId = requestId;
   }
 }
@@ -44,6 +48,9 @@ function toPayment(dto: PaymentDto): Payment {
     referenceNumber: dto.referenceNumber ?? undefined,
     notes: dto.notes ?? undefined,
     status: dto.status,
+    reversalReason: dto.reversalReason,
+    reversalDate: dto.reversalDate,
+    reversedAt: dto.reversedAt,
     createdAt: dto.createdAt,
     updatedAt: dto.updatedAt,
   };
@@ -81,7 +88,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   }
   if (!response.ok) {
     const failure = await readApiFailure(response);
-    throw new PaymentsApiError(failure.message, failure.status, failure.requestId);
+    throw new PaymentsApiError(failure.message, failure.status, failure.code, failure.requestId);
   }
   return (await response.json()) as T;
 }
@@ -116,6 +123,15 @@ export const paymentsApi = {
   async create(input: CreatePaymentRequest): Promise<Payment> {
     return toPayment(
       await request<PaymentDto>('/api/payments', { method: 'POST', body: JSON.stringify(input) }),
+    );
+  },
+
+  async reverse(id: string, input: ReversePaymentRequest): Promise<Payment> {
+    return toPayment(
+      await request<PaymentDto>(`/api/payments/${id}/reverse`, {
+        method: 'POST',
+        body: JSON.stringify(input),
+      }),
     );
   },
 };

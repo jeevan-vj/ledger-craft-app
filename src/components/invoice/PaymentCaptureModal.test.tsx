@@ -23,6 +23,45 @@ function invoice(total: number, balanceDue = total): Invoice {
 }
 
 describe('PaymentCaptureModal half amount', () => {
+  it('defaults to the remaining balance and never offers an invoice overpayment', async () => {
+    const user = userEvent.setup();
+    render(
+      <PaymentCaptureModal
+        open
+        onOpenChange={vi.fn()}
+        invoice={invoice(100, 40)}
+        onPaymentRecord={vi.fn()}
+      />,
+    );
+
+    const amount = screen.getByLabelText(/amount received/i) as HTMLInputElement;
+    expect(amount.value).toBe('40');
+    expect(screen.getByText(/balance due/i).parentElement).toHaveTextContent('$40.00');
+    expect(screen.getByRole('button', { name: /full remaining balance/i })).toHaveTextContent('$40.00');
+
+    await user.clear(amount);
+    await user.type(amount, '40.01');
+    expect(screen.getByText(/cannot exceed the balance due/i)).toBeInTheDocument();
+    expect(screen.queryByText(/customer credit/i)).not.toBeInTheDocument();
+  });
+
+  it('calculates a partial instalment from the current balance, not the original total', async () => {
+    const user = userEvent.setup();
+    render(
+      <PaymentCaptureModal
+        open
+        onOpenChange={vi.fn()}
+        invoice={invoice(100, 40)}
+        onPaymentRecord={vi.fn()}
+      />,
+    );
+
+    const amount = screen.getByLabelText(/amount received/i) as HTMLInputElement;
+    await user.clear(amount);
+    await user.type(amount, '10');
+    expect(screen.getByText(/remaining balance of/i)).toHaveTextContent('$30.00');
+  });
+
   it.each([
     [100.01, '50.01'],
     [11.51, '5.76'],
@@ -41,7 +80,7 @@ describe('PaymentCaptureModal half amount', () => {
     expect(Number(amount.value)).toBeLessThanOrEqual(total);
   });
 
-  it('caps a half of the invoice total at the remaining balance', async () => {
+  it('halves the remaining balance when earlier payments already exist', async () => {
     const user = userEvent.setup();
     render(
       <PaymentCaptureModal
@@ -53,11 +92,11 @@ describe('PaymentCaptureModal half amount', () => {
     );
 
     const button = screen.getByRole('button', { name: /half/i });
-    expect(button).toHaveTextContent('40.00');
+    expect(button).toHaveTextContent('20.00');
     await user.click(button);
     const amount = screen.getByLabelText(/amount received/i) as HTMLInputElement;
     expect(amount.value).toMatch(/^\d+(?:\.\d{1,2})?$/);
-    expect(Number(amount.value)).toBe(40);
+    expect(Number(amount.value)).toBe(20);
     expect(Number(amount.value)).toBeLessThanOrEqual(40);
   });
 });

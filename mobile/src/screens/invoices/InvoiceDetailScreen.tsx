@@ -18,14 +18,16 @@ import { InvoiceStackParamList, MainTabParamList, type RootStackParamList } from
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { BusinessProfile } from '@/types/invoice';
-import type { CreatePaymentRequest } from '@/types/payment';
+import type { CreatePaymentRequest, Payment } from '@/types/payment';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import InvoicePreviewWithTemplates from '@/components/invoice/InvoicePreviewWithTemplates';
 import { businessProfileService } from '@/services/businessProfileService';
 import StatusPicker from '@/components/invoice/StatusPicker';
 import PaymentCaptureModal from '@/components/invoice/PaymentCaptureModal';
 import { PaymentHistoryList } from '@/components/invoice/PaymentHistoryList';
+import { PaymentReversalModal } from '@/components/invoice/PaymentReversalModal';
 import {
+  invalidateAfterInvoicePayment,
   invoiceDetailQueryKey,
   invoicePaymentsQueryKey,
   submitInvoicePayment,
@@ -55,7 +57,7 @@ type InvoiceDetailNavigationProp = CompositeNavigationProp<
 >;
 type InvoiceDetailRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceDetail'>;
 
-export default function InvoiceDetailScreen() {
+export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orchestration predates this isolated payment flow
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -80,6 +82,7 @@ export default function InvoiceDetailScreen() {
   const [shareActionsVisible, setShareActionsVisible] = useState(false);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+  const [paymentToReverse, setPaymentToReverse] = useState<Payment | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
   const [history, setHistory] = useState<{ id: string; action: string; createdAt: string }[]>([]);
@@ -161,6 +164,14 @@ export default function InvoiceDetailScreen() {
     await submitInvoicePayment(queryClient, paymentData, idempotencyKey);
     setPaymentModalVisible(false);
     Alert.alert('Payment recorded', 'The invoice balance has been updated.');
+  };
+
+  const handlePaymentReversal = async (input: { reason: string; reversalDate: string }) => {
+    if (!paymentToReverse) return;
+    await paymentService.reversePayment(paymentToReverse.id, input);
+    await invalidateAfterInvoicePayment(queryClient, invoiceId);
+    setPaymentToReverse(null);
+    Alert.alert('Payment reversed', 'The invoice balance and accounting journal have been updated.');
   };
 
   const handleMarkAsPaid = () => {
@@ -439,6 +450,7 @@ export default function InvoiceDetailScreen() {
           loading={paymentsQuery.isPending}
           error={paymentsQuery.isError ? 'Payments could not be loaded.' : null}
           onRetry={() => { void paymentsQuery.refetch(); }}
+          onReverse={canWrite ? setPaymentToReverse : undefined}
         />
 
         {/* Notes Card */}
@@ -519,6 +531,13 @@ export default function InvoiceDetailScreen() {
         invoice={invoice}
         onSubmit={handlePaymentSubmit}
         onClose={() => setPaymentModalVisible(false)}
+      />
+
+      <PaymentReversalModal
+        visible={Boolean(paymentToReverse)}
+        payment={paymentToReverse}
+        onClose={() => setPaymentToReverse(null)}
+        onSubmit={handlePaymentReversal}
       />
 
       <InvoiceShareActions

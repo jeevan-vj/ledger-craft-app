@@ -2,6 +2,7 @@ import {
   paymentSchema,
   type CreatePaymentRequest,
   type PaymentDto,
+  type ReversePaymentRequest,
 } from '@ledgercraft/contracts';
 import { and, desc, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
@@ -23,6 +24,9 @@ function toPaymentDto(
     referenceNumber: row.referenceNumber ?? null,
     notes: row.notes ?? null,
     status: row.status,
+    reversalReason: row.reversalReason ?? null,
+    reversalDate: row.reversalDate ?? null,
+    reversedAt: row.reversedAt?.toISOString() ?? null,
     createdAt: row.createdAt.toISOString(),
     updatedAt: row.updatedAt.toISOString(),
   });
@@ -98,4 +102,32 @@ export async function sumCompletedPayments(
       ),
     );
   return rows.reduce((sum, row) => sum.add(row.amount), decimal(0)).toFixed();
+}
+
+export async function reversePayment(
+  tx: Database,
+  ctx: { organisationId: string; userId: string },
+  id: string,
+  input: ReversePaymentRequest,
+): Promise<PaymentDto | undefined> {
+  const [row] = await tx
+    .update(payments)
+    .set({
+      status: 'refunded',
+      reversalReason: input.reason,
+      reversalDate: input.reversalDate,
+      reversedAt: new Date(),
+      reversedByUserId: ctx.userId,
+      updatedAt: new Date(),
+    })
+    .where(
+      and(
+        eq(payments.organisationId, ctx.organisationId),
+        eq(payments.id, id),
+        eq(payments.status, 'completed'),
+      ),
+    )
+    .returning();
+  if (!row) return undefined;
+  return getPayment(tx, ctx.organisationId, row.id);
 }

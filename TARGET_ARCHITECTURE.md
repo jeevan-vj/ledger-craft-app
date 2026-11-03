@@ -1,5 +1,35 @@
 # LedgerCraft target architecture
 
+**Invoice payment integrity (implemented locally, 2026-10-31):** SQLite
+migration `0022_payment-reversals.sql` adds immutable reversal metadata to
+invoice payments. Existing-invoice payments remain exact instalments capped at
+the current balance due; each completed payment credits accounts receivable and
+updates the invoice from unpaid to partially paid or paid. Web and Expo now
+default capture to the remaining balance and expose auditable reversal actions.
+`POST /api/payments/:id/reverse` preserves the original payment, records the
+reason/date/actor, posts an equal opposite journal, and recalculates invoice
+totals atomically. Cross-organisation access, pre-payment reversal dates,
+duplicate reversals, and overpayments are rejected. Pre-invoice advances remain
+a separate future customer-credit/liability workflow and are not represented as
+invoice overpayments.
+
+**Stripe Connect invoice payments (implemented locally, 2026-10-29):** SQLite
+migration `0021_stripe-connect-phase1.sql` stores organisation-scoped connected
+accounts, public Checkout links, and idempotent webhook events. Owners and admins
+complete Stripe-hosted onboarding; the platform creates NZD destination charges
+with a configurable application fee. A verified paid Checkout webhook records
+one invoice payment, receipt provenance, and Stripe-clearing journal even when
+Stripe retries the event. Web Settings exposes account readiness and invoice
+detail exposes a link/QR flow with the exact platform fee. Test-mode defaults are
+4% plus NZD 0.30 and remain environment configuration, not a live pricing policy.
+The local-only `STRIPE_MOCK_MODE=true` simulator requires a localhost
+`APP_URL`, is rejected in production, and drives the same webhook settlement
+path without Stripe credentials. Browser proof covers onboarding readiness,
+the exact fee, checkout, the paid invoice, receipt, and balanced journal. The
+web production build and focused contract/API/UI tests pass. Real Stripe
+test-account onboarding, hosted Checkout, webhook delivery, screenshots, and
+deployment remain pending authenticated Stripe access.
+
 **POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales` composes
 the existing invoice, payment, and receipt use cases in one organisation
 transaction. The walk-in customer is tag `walk-in` and is scoped to the
@@ -109,8 +139,9 @@ financial-year settings, a precision-aware currency catalogue, explicit dated
 exchange rates, and immutable document-rate usage. Hono exposes canonical
 decimal DTOs; web and Expo expose responsive settings. Invoices, bills,
 expenses, and explicit-rate base/foreign transfers snapshot exact transaction
-and base amounts and reject missing rates. Base-currency reporting and
-realized/unrealized posting remain dependent on AKP-05 authoritative ledger rules.
+and base amounts and reject missing rates. Financial reports stay NZD-only.
+Foreign-currency documents are excluded from GST rather than converted, and
+realized or unrealized exchange-difference journals are not posted.
 
 **Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Contracts,
 Hono, per-organisation SQLite migration `0012_invoice-lifecycle.sql`, responsive web, and Expo cover cancel/restore,
@@ -470,9 +501,10 @@ general ledger, account statements, aging, sales/purchase and tax summaries are
 calculated by Hono from posted journal lines, never trusted from client totals.
 Migration `0013_server-authoritative-reports.sql` adds the reporting indexes and
 posted-journal immutability triggers. Query contracts validate date range, cash/accrual basis, comparison period and
-tenant-scoped filters. Base currency is NZD-only until AKP-06 supplies exchange
-rates, and category filtering remains deferred until category dimensions are
-represented on journal lines.
+tenant-scoped filters. Report `baseCurrency` is NZD only. Document exchange
+rates exist, and reports do not convert foreign amounts or post
+exchange-difference journals. Category filtering remains deferred until category
+dimensions are represented on journal lines.
 
 Operating plan: specialist agents, two lanes (compatibility boot vs Hono target), TDD, and a knowledge loop. Session start: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`. Other skills in `.cursor/skills/`. Roster and protocol in `AGENTS.md`.
 

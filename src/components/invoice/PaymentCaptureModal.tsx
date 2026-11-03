@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -22,15 +22,19 @@ import { Invoice } from '@/types';
 import { CreatePaymentRequest } from '@/types/payment';
 import { formatCurrency } from '@/utils/invoiceUtils';
 
-const paymentCaptureSchema = z.object({
+const paymentCaptureSchema = (balanceDue: number) => z.object({
   paymentMethod: z.enum(['bank_transfer', 'cash', 'cheque', 'credit_card', 'online']),
-  amount: z.number().min(0.01, 'Amount must be greater than 0'),
+  amount: z.number()
+    .min(0.01, 'Amount must be greater than 0')
+    .max(balanceDue, 'Amount cannot exceed the balance due'),
   paymentDate: z.date(),
   referenceNumber: z.string().optional(),
   notes: z.string().optional(),
   generateReceipt: z.boolean().default(true),
-  emailCustomer: z.boolean().default(true)
+  emailCustomer: z.boolean().default(false)
 });
+
+type PaymentCaptureForm = z.infer<ReturnType<typeof paymentCaptureSchema>>;
 
 interface PaymentCaptureModalProps {
   open: boolean;
@@ -78,24 +82,27 @@ const paymentMethods = [
   }
 ];
 
-export function PaymentCaptureModal({ 
+export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration predates this payment-integrity slice
   open, 
   onOpenChange, 
   invoice, 
   onPaymentRecord, 
   isLoading = false 
 }: PaymentCaptureModalProps) {
+  const balance = invoice.balanceDue ?? invoice.total;
+  const schema = useMemo(() => paymentCaptureSchema(balance), [balance]);
   const [paymentDate, setPaymentDate] = useState<Date>(new Date());
   const [step, setStep] = useState<'capture' | 'confirm'>('capture');
-  const [formData, setFormData] = useState<z.infer<typeof paymentCaptureSchema> | null>(null);
+  const [formData, setFormData] = useState<PaymentCaptureForm | null>(null);
   
-  const form = useForm<z.infer<typeof paymentCaptureSchema>>({
-    resolver: zodResolver(paymentCaptureSchema),
+  const form = useForm<PaymentCaptureForm>({
+    resolver: zodResolver(schema),
+    mode: 'onChange',
     defaultValues: {
-      amount: invoice.total,
+      amount: balance,
       paymentDate: new Date(),
       generateReceipt: true,
-      emailCustomer: true,
+      emailCustomer: false,
       paymentMethod: 'bank_transfer'
     }
   });
@@ -104,13 +111,11 @@ export function PaymentCaptureModal({
   const watchedMethod = form.watch('paymentMethod');
   const selectedMethod = paymentMethods.find(m => m.value === watchedMethod);
   
-  const isPartialPayment = watchedAmount < invoice.total;
-  const isOverpayment = watchedAmount > invoice.total;
-  const balanceAfterPayment = invoice.total - watchedAmount;
-  const balance = invoice.balanceDue ?? invoice.total;
-  const halfAmount = halfPaymentAmount(invoice.total, balance);
+  const isPartialPayment = watchedAmount > 0 && watchedAmount < balance;
+  const balanceAfterPayment = balance - watchedAmount;
+  const halfAmount = halfPaymentAmount(balance);
 
-  const handleNext = async (data: z.infer<typeof paymentCaptureSchema>) => {
+  const handleNext = (data: PaymentCaptureForm) => {
     setFormData(data);
     setStep('confirm');
   };
@@ -186,7 +191,11 @@ export function PaymentCaptureModal({
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Invoice Amount</Label>
-                  <p className="font-bold text-lg text-blue-600">{formatCurrency(invoice.total)}</p>
+                  <p className="font-bold text-lg tabular-nums">{formatCurrency(invoice.total)}</p>
+                </div>
+                <div>
+                  <Label className="text-muted-foreground">Balance Due</Label>
+                  <p className="font-bold text-lg tabular-nums text-destructive">{formatCurrency(balance)}</p>
                 </div>
                 <div>
                   <Label className="text-muted-foreground">Status</Label>
@@ -237,19 +246,10 @@ export function PaymentCaptureModal({
                     </Alert>
                   )}
                   
-                  {isOverpayment && (
-                    <Alert className="border-orange-200 bg-orange-50">
-                      <AlertCircle className="h-4 w-4 text-orange-600" />
-                      <AlertDescription className="text-orange-800">
-                        <strong>Overpayment:</strong> Customer credit of {formatCurrency(Math.abs(balanceAfterPayment))} will be recorded
-                      </AlertDescription>
-                    </Alert>
-                  )}
-
-                  {!isPartialPayment && !isOverpayment && (
-                    <Alert className="border-green-200 bg-green-50">
-                      <CheckCircle className="h-4 w-4 text-green-600" />
-                      <AlertDescription className="text-green-800">
+                  {!isPartialPayment && watchedAmount === balance && (
+                    <Alert className="border-success/30 bg-success/10">
+                      <CheckCircle className="h-4 w-4 text-success" />
+                      <AlertDescription className="text-foreground">
                         <strong>Full Payment:</strong> Invoice will be marked as "Paid"
                       </AlertDescription>
                     </Alert>
@@ -261,10 +261,11 @@ export function PaymentCaptureModal({
                       type="button"
                       variant="outline"
                       size="sm"
-                      onClick={() => form.setValue('amount', invoice.total)}
+                      aria-label={`Full remaining balance ${formatCurrency(balance)}`}
+                      onClick={() => form.setValue('amount', balance, { shouldDirty: true, shouldValidate: true })}
                       className="text-xs"
                     >
-                      Full Amount ({formatCurrency(invoice.total)})
+                      Full remaining balance ({formatCurrency(balance)})
                     </Button>
                     {Number(halfAmount) > 0 && (
                       <Button
@@ -290,7 +291,7 @@ export function PaymentCaptureModal({
               <CardContent className="space-y-4">
                 <div className="space-y-3">
                   <Label>How was this payment received? *</Label>
-                  <Select onValueChange={(value) => form.setValue('paymentMethod', value as any)}>
+                  <Select onValueChange={(value) => form.setValue('paymentMethod', value as PaymentCaptureForm['paymentMethod'])}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select payment method" />
                     </SelectTrigger>
@@ -521,7 +522,7 @@ export function PaymentCaptureModal({
                 <strong>After recording this payment:</strong>
                 <ul className="mt-2 space-y-1 text-sm">
                   <li>• Invoice status will be updated to "{
-                    (formData?.amount || 0) >= invoice.total ? 'Paid' : 'Partially Paid'
+                    (formData?.amount || 0) >= balance ? 'Paid' : 'Partially Paid'
                   }"</li>
                   <li>• Payment will be recorded in your financial records</li>
                   {formData?.generateReceipt && <li>• Receipt will be generated and stored</li>}

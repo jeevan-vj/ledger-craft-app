@@ -9,12 +9,14 @@ export type PostingLine = { accountId: string; description: string; debit: strin
 
 const SYSTEM_ACCOUNTS: Record<string, { name: string; type: string; accountClass: string; normalBalance: string }> = {
   '1110': { name: 'Bank Account - Current', type: 'bank', accountClass: 'asset', normalBalance: 'debit' },
+  '1130': { name: 'Stripe Clearing', type: 'bank', accountClass: 'asset', normalBalance: 'debit' },
   '1200': { name: 'Accounts Receivable', type: 'asset', accountClass: 'asset', normalBalance: 'debit' },
   '2100': { name: 'Accounts Payable', type: 'liability', accountClass: 'liability', normalBalance: 'credit' },
   '2150': { name: 'GST Paid on Purchases', type: 'asset', accountClass: 'asset', normalBalance: 'debit' },
   '2200': { name: 'GST Collected on Sales', type: 'liability', accountClass: 'liability', normalBalance: 'credit' },
   '4900': { name: 'Other Income', type: 'revenue', accountClass: 'revenue', normalBalance: 'credit' },
   '5000': { name: 'Operating Expenses', type: 'expense', accountClass: 'expense', normalBalance: 'debit' },
+  '5100': { name: 'Merchant and Platform Fees', type: 'expense', accountClass: 'expense', normalBalance: 'debit' },
 };
 
 export async function systemAccount(tx: Database, ctx: PostingContext, accountNumber: keyof typeof SYSTEM_ACCOUNTS) {

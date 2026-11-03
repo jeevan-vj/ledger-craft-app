@@ -1,5 +1,31 @@
 # AGENTS.md
 
+**Invoice payment integrity (implemented locally, 2026-10-31):** Migration
+`0022_payment-reversals.sql` adds organisation-scoped reversal reason, date,
+timestamp, and actor fields. Web and Expo record exact instalments only up to the
+current invoice balance. Completed payments remain immutable: reversal uses
+`POST /api/payments/:id/reverse`, retains the source payment and receipt, posts
+an equal opposite journal, and recalculates the invoice in the same transaction.
+Tenant isolation, reversal chronology, and duplicate reversal guards are tested.
+Do not model a pre-invoice advance as an invoice overpayment; customer credits
+require a separate liability-ledger workflow.
+
+**Stripe Connect invoice payments (implemented locally, 2026-10-29):** Migration
+`0021_stripe-connect-phase1.sql` adds tenant-scoped connected-account readiness,
+Stripe Checkout payment links, public redirects, and idempotent event claims.
+Owner/admin setup uses Stripe-hosted onboarding. NZD Checkout uses destination
+charges and `application_fee_amount`; the fee is configured by
+`STRIPE_PLATFORM_FEE_BPS` and `STRIPE_PLATFORM_FEE_FIXED_CENTS`. Verified paid
+webhooks create one invoice payment, receipt, and Stripe Clearing posting.
+Settings shows charges/payouts readiness, while invoice detail creates a link
+and QR code with the exact fee. Secrets are server-only. Focused tests and the
+web build pass. `STRIPE_MOCK_MODE=true` provides a deterministic local-only
+onboarding and Checkout simulator that exercises the same webhook settlement
+path without Stripe credentials; browser proof covers readiness, the exact fee,
+payment, receipt, and balanced journal. It is rejected in production and for a
+non-local `APP_URL`. Real test-account onboarding/Checkout/webhook screenshots
+and deployment remain pending authenticated Stripe access.
+
 **POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales`
 takes a cart of at most 100 catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
 and an optional customer. Quantity and price are positive decimal text with at most 2 decimal places. In one organisation transaction it finds or creates the
@@ -106,8 +132,9 @@ Currency/localization is implemented locally through migration
 precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
 formats, and financial-year start. Used rates are immutable. Invoice, bill,
 expense, and explicit-rate base/foreign transfer records snapshot transaction
-and base values. Do not claim base-currency reports or realized/unrealized
-postings until AKP-05 ledger/report rules land.
+and base values. Financial reports stay NZD-only: foreign-currency documents are
+excluded from GST rather than converted, and realized or unrealized
+exchange-difference journals are not posted.
 
 ## Stack that is current
 
@@ -138,10 +165,11 @@ excluded and posted journals are immutable at both service and SQLite-trigger
 boundaries. Hono exposes financial statements, general ledger, and account
 statements with organisation isolation, date/basis/comparison and relevant
 account/customer/vendor filters. Web provides responsive statements, ledger,
-aging, tax and CSV workflows; Expo provides native period/basis summaries. The
-base currency is deliberately restricted to NZD until AKP-06 adds exchange-rate
-accounting. Category filtering is accepted by the shared query contract but is
-not yet applied to reports because journal lines do not carry category links.
+aging, tax and CSV workflows; Expo provides native period/basis summaries. Report
+`baseCurrency` accepts only NZD. Document exchange rates exist, and reports do
+not convert foreign amounts or post exchange-difference journals. Category
+filtering is accepted by the shared query contract but is not applied, because
+journal lines do not carry category links.
 
 Configurable dashboards and saved reports are implemented locally through
 `api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and

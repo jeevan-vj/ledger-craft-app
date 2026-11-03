@@ -1,0 +1,6 @@
+overpayment rejected: status=400 code=PAYMENT_EXCEEDS_BALANCE
+invoice after reversal: totalPaid=500.00 balanceDue=4675.00 paymentStatus=partially_paid
+payment after reversal: status=refunded reason="Payment entered against the wrong invoice" reversalDate=2026-10-31
+invoice INV-2026-0001: total=5175.00 paid=500.00 balance=4675.00 status=partially_paid
+source payment: amount=1200.00 status=refunded reason="Payment entered against the wrong invoice" date=2026-10-31
+source journal status=reversed; reversal journal status=posted; debit=1200.00; credit=1200.00

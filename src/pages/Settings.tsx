@@ -17,6 +17,7 @@ import { PageHeader } from '@/components/layout/PageHeader';
 import { CompanyTeamPanel } from '@/components/organisations/CompanyTeamPanel';
 import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
 import { CurrencyLocalizationSettings } from '@/components/settings/CurrencyLocalizationSettings';
+import { StripePaymentsPanel } from '@/components/settings/StripePaymentsPanel';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, { message: "Business name is required" }),
@@ -50,7 +51,7 @@ const Settings = () => {
   const { businessProfile, isLoadingBusinessProfile, updateBusinessProfile, refreshBusinessProfile } = useAppData();
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
-  const [activeTab, setActiveTab] = useState("profile");
+  const [activeTab, setActiveTab] = useState(() => new URLSearchParams(window.location.search).get('tab') || 'profile');
   const [previewLogoUrl, setPreviewLogoUrl] = useState<string | undefined>(businessProfile?.logoUrl || undefined);
   const [currentTheme, setCurrentTheme] = useState<BusinessTheme>(businessProfile?.theme || DEFAULT_BUSINESS_THEME);
 
@@ -228,6 +229,7 @@ const Settings = () => {
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="team">Company & team</TabsTrigger>
             <TabsTrigger value="currency">Currency & locale</TabsTrigger>
+            <TabsTrigger value="payments">Card payments</TabsTrigger>
           </TabsList>
         </div>
         <Form {...form}>
@@ -657,6 +659,7 @@ const Settings = () => {
         </Form>
         <TabsContent value="team" className="mt-4"><CompanyTeamPanel /></TabsContent>
         <TabsContent value="currency" className="mt-4"><CurrencyLocalizationSettings /></TabsContent>
+        <TabsContent value="payments" className="mt-4"><StripePaymentsPanel /></TabsContent>
       </Tabs>
     </div>
   );

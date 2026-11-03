@@ -5,6 +5,7 @@ const allPermissions: OrganisationPermission[] = [
   'customers.read', 'customers.write', 'invoices.read', 'invoices.write', 'bills.read', 'bills.write',
   'banking.read', 'banking.write', 'reports.read', 'settings.read', 'settings.write',
   'users.read', 'users.manage', 'api.access', 'invoices.import', 'ai.use',
+  'payments.manage',
 ];
 
 export const ROLE_PERMISSIONS: Record<OrganisationRole, readonly OrganisationPermission[]> = {

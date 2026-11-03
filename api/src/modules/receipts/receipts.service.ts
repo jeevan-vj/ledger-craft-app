@@ -42,6 +42,7 @@ export async function createReceiptInTx(
   tx: Database,
   ctx: { organisationId: string; userId: string },
   input: CreatePaymentReceiptRequest,
+  providerMetadata?: { provider: 'stripe'; paymentIntentId: string; checkoutSessionId: string },
 ): Promise<PaymentReceiptDto> {
   const existing = await repo.getReceiptByPayment(tx, ctx.organisationId, input.paymentId);
   if (existing) return existing;
@@ -76,6 +77,7 @@ export async function createReceiptInTx(
       invoiceTotal: invoice.total,
       totalPaid: invoice.totalPaid,
       balanceDue: invoice.balanceDue,
+      ...providerMetadata,
     },
   });
 }

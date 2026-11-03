@@ -6,6 +6,7 @@ import { accountingJournalService } from './accountingJournalService';
 import { paymentsApi, paymentsApiEnabled, toCreatePaymentRequest } from '@/features/payments/api/paymentsApi';
 import { receiptsApi, receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
 import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import type { ReversePaymentRequest } from '@ledgercraft/contracts';
 
 // Map Supabase payment to Payment type
 const mapSupabasePaymentToPayment = (payment: any): Payment => ({
@@ -166,6 +167,13 @@ export class PaymentService {
     }
 
     return payment ? mapSupabasePaymentToPayment(payment) : null;
+  }
+
+  async reversePayment(paymentId: string, input: ReversePaymentRequest): Promise<Payment> {
+    if (!paymentsApiEnabled()) {
+      throw new Error('Payment reversals require the LedgerCraft API');
+    }
+    return paymentsApi.reverse(paymentId, input);
   }
 
   // Update invoice payment status and amounts after payment
