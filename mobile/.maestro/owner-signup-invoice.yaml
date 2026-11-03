@@ -57,7 +57,7 @@ env:
 - takeScreenshot: 04-signup-email
 - tapOn:
     id: "signup-email"
-- inputText: ${OWNER_EMAIL}
+- inputText: ${typeof MAESTRO_OWNER_EMAIL !== 'undefined' ? MAESTRO_OWNER_EMAIL : OWNER_EMAIL}
 - hideKeyboard:
     optional: true
     label: "Environment-dependent keyboard dismissal"

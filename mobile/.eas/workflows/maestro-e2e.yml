@@ -2,11 +2,10 @@
 # Do not wire this into .github/workflows/ci.yml.
 # EXPO_TOKEN was not available in the discovery environment. Do not invent one.
 #
-# Android uses the existing preview profile (APK, JavaScript bundled) on an emulator.
-# iOS uses the existing development profile because it is the profile with
-# ios.simulator: true. That profile is a development client, so a future iOS
-# run still needs a reachable Metro server or a simulator profile. eas.json is
-# unchanged (it is a high-risk path).
+# Both platforms use the non-production e2e profile in eas.json: standalone
+# (developmentClient false, JS embedded), E2E_BUILD=1 so expo-updates is off,
+# Android APK for the emulator and an iOS simulator build. Each Maestro job signs
+# up a distinct e2e account (MAESTRO_OWNER_EMAIL) on resend.dev's test domain.
 #
 # Run from mobile/:
 # npx --yes eas-cli@25.3.0 workflow:run .eas/workflows/maestro-e2e.yml
@@ -21,11 +20,14 @@ jobs:
     type: build
     params:
       platform: android
-      profile: preview
+      profile: e2e
   maestro_android:
     name: Android emulator
     needs: [build_android]
     type: maestro
+    runs_on: linux-medium-nested-virtualization
+    env:
+      MAESTRO_OWNER_EMAIL: delivered+e2e-android-202611031222@resend.dev
     params:
       build_id: ${{ needs.build_android.outputs.build_id }}
       flow_path:
@@ -35,11 +37,14 @@ jobs:
     type: build
     params:
       platform: ios
-      profile: development
+      profile: e2e
   maestro_ios:
     name: iOS simulator
     needs: [build_ios]
     type: maestro
+    runs_on: macos-medium
+    env:
+      MAESTRO_OWNER_EMAIL: delivered+e2e-ios-202611031222@resend.dev
     params:
       build_id: ${{ needs.build_ios.outputs.build_id }}
       flow_path:

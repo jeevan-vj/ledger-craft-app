@@ -52,6 +52,23 @@
         "SENTRY_PROJECT": "ledgercraft-mobile"
       },
       "channel": "development-device"
+    },
+    "e2e": {
+      "developmentClient": false,
+      "distribution": "internal",
+      "environment": "preview",
+      "env": {
+        "E2E_BUILD": "1",
+        "EXPO_PUBLIC_API_URL": "https://ledgercraft-api.jeevan90wijerathna.workers.dev",
+        "SENTRY_PROJECT": "ledgercraft-mobile",
+        "SENTRY_DISABLE_AUTO_UPLOAD": "true"
+      },
+      "android": {
+        "buildType": "apk"
+      },
+      "ios": {
+        "simulator": true
+      }
     }
   },
   "submit": {
