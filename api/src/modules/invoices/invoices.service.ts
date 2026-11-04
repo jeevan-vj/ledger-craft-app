@@ -163,6 +163,9 @@ export async function updateInvoiceForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const existing = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Invoice not found' });
+    if (input.expectedUpdatedAt && input.expectedUpdatedAt !== existing.updatedAt) {
+      throw apiError(409, 'INVOICE_CHANGED', 'This invoice changed. Review it and try again.');
+    }
 
     const date = input.date ?? existing.date;
     const dueDate = input.dueDate ?? existing.dueDate;

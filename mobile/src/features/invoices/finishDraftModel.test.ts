@@ -120,4 +120,38 @@ describe('finish draft', () => {
       amount: '10',
     })?.items?.[1]).not.toHaveProperty('taxes');
   });
+
+  it('keeps an exempt line exempt when another line already has GST', () => {
+    const mixed = invoice({
+      items: [
+        line({ taxes: [{ id: 'default', name: 'GST', rate: 15 }] }),
+        line({ id: 'line-2', description: 'Exempt supply', rate: 40, total: 40, taxes: [] }),
+      ],
+      subtotal: 120,
+      taxAmount: 12,
+      total: 132,
+    });
+
+    expect(buildDraftLineUpdate(mixed, {
+      description: 'Hosting',
+      quantity: '1',
+      amount: '20',
+    })).toMatchObject({
+      taxRate: '15',
+      items: [
+        { description: 'Logo design', taxes: [{ id: 'default', name: 'GST', rate: '15' }] },
+        { description: 'Exempt supply', taxes: [] },
+        { description: 'Hosting', taxes: [{ id: 'default', name: 'GST', rate: '15' }] },
+      ],
+    });
+  });
+
+  it('sends the draft version so a newer save is not overwritten', () => {
+    const versioned = invoice({ updatedAt: '2026-11-05T01:02:03.000Z' });
+    expect(buildDraftLineUpdate(versioned, {
+      description: 'Hosting',
+      quantity: '1',
+      amount: '20',
+    })?.expectedUpdatedAt).toBe('2026-11-05T01:02:03.000Z');
+  });
 });

@@ -25,6 +25,7 @@ export interface DraftUpdate {
   dueDate?: string;
   taxInclusive?: boolean;
   taxRate?: string;
+  expectedUpdatedAt?: string;
   items?: DraftItemUpdate[];
 }
 
@@ -92,9 +93,13 @@ export function preservedTaxRate(invoice: Pick<Invoice, 'subtotal' | 'taxAmount'
   return '0';
 }
 
-function taxesForLine(item: LineItem, headerRate: string, sample: DraftTax[] | null): DraftTax[] | undefined {
-  const own = taxAssignments(item);
-  if (own.length > 0) return own;
+function taxesForExistingLine(item: LineItem, headerRate: string): DraftTax[] | undefined {
+  if (item.taxes) return taxAssignments(item);
+  if (headerRate === '0') return [];
+  return undefined;
+}
+
+function taxesForNewLine(headerRate: string, sample: DraftTax[] | null): DraftTax[] | undefined {
   if (sample && sample.length > 0) return sample;
   if (headerRate === '0') return [];
   return undefined;
@@ -121,7 +126,7 @@ export function buildDraftLineUpdate(invoice: Invoice, input: AddedLineInput): D
 
   const headerRate = preservedTaxRate(invoice);
   const sample = invoice.items.map(taxAssignments).find((taxes) => taxes.length > 0) ?? null;
-  const existing = invoice.items.map((item) => toItemUpdate(item, taxesForLine(item, headerRate, null)));
+  const existing = invoice.items.map((item) => toItemUpdate(item, taxesForExistingLine(item, headerRate)));
   const added = toItemUpdate(
     {
       id: 'new',
@@ -131,10 +136,11 @@ export function buildDraftLineUpdate(invoice: Invoice, input: AddedLineInput): D
       rate,
       total: Math.round(quantity * rate * 100) / 100,
     },
-    taxesForLine({ id: 'new', description: '', quantity, unit: 'each', rate, total: 0 }, headerRate, sample),
+    taxesForNewLine(headerRate, sample),
   );
 
   return {
+    ...(invoice.updatedAt ? { expectedUpdatedAt: invoice.updatedAt } : {}),
     taxInclusive: invoice.taxInclusive,
     taxRate: headerRate,
     items: [...existing, added],

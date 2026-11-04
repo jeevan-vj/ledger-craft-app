@@ -624,4 +624,127 @@ describe('invoice routes', () => {
       }
     });
   });
+
+  it('rejects a stale expectedUpdatedAt and leaves the saved lines in place', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner Version');
+        const customer = await seedCustomerAndProfile(app, owner.cookie);
+        const headers = { ...originHeaders, Cookie: owner.cookie };
+        const created = await app.request('/api/invoices', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            customerId: customer.id,
+            date: '2026-11-05',
+            dueDate: '2026-12-05',
+            taxInclusive: false,
+            taxRate: '15',
+            items: [{ description: 'Logo design', quantity: '1', rate: '80' }],
+          }),
+        });
+        expect(created.status).toBe(201);
+        const invoice = invoiceSchema.parse(await created.json());
+
+        const patch = (body: unknown) => app.request(`/api/invoices/${invoice.id}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify(body),
+        });
+
+        const moved = await patch({ dueDate: '2026-11-12', expectedUpdatedAt: invoice.updatedAt });
+        expect(moved.status).toBe(200);
+        let current = invoiceSchema.parse(await moved.json());
+        if (current.updatedAt === invoice.updatedAt) {
+          await new Promise((resolve) => setTimeout(resolve, 5));
+          const bumped = await patch({ notes: 'bump', expectedUpdatedAt: invoice.updatedAt });
+          expect(bumped.status).toBe(200);
+          current = invoiceSchema.parse(await bumped.json());
+        }
+        expect(current.updatedAt).not.toBe(invoice.updatedAt);
+        expect(current.dueDate).toBe('2026-11-12');
+
+        const stale = await patch({
+          expectedUpdatedAt: invoice.updatedAt,
+          taxRate: '15',
+          taxInclusive: false,
+          items: [
+            { description: 'Logo design', quantity: '1', rate: '80' },
+            { description: 'Hosting', quantity: '2', rate: '40.50' },
+          ],
+        });
+        expect(stale.status).toBe(409);
+        expect(errorEnvelopeSchema.parse(await stale.json()).error.code).toBe('INVOICE_CHANGED');
+
+        const read = await app.request(`/api/invoices/${invoice.id}`, { headers });
+        const stored = invoiceSchema.parse(await read.json());
+        expect(stored.dueDate).toBe('2026-11-12');
+        expect(stored.items.map((item) => item.description)).toEqual(['Logo design']);
+
+        const unversioned = await patch({ notes: 'Edited from the long form' });
+        expect(unversioned.status).toBe(200);
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
+
+  it('keeps an explicit empty tax list exempt when the header rate is set', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Owner Mixed Tax');
+        const customer = await seedCustomerAndProfile(app, owner.cookie);
+        const headers = { ...originHeaders, Cookie: owner.cookie };
+        const gst = { id: 'gst', name: 'GST', rate: '15' };
+        const created = await app.request('/api/invoices', {
+          method: 'POST',
+          headers,
+          body: JSON.stringify({
+            customerId: customer.id,
+            date: '2026-11-05',
+            dueDate: '2026-12-05',
+            taxInclusive: false,
+            taxRate: '15',
+            items: [
+              { description: 'Logo design', quantity: '1', rate: '80', taxes: [gst] },
+              { description: 'Exempt supply', quantity: '1', rate: '40', taxes: [] },
+            ],
+          }),
+        });
+        expect(created.status).toBe(201);
+        const invoice = invoiceSchema.parse(await created.json());
+        expect(invoice.taxAmount).toBe('12.00');
+        expect(invoice.total).toBe('132.00');
+        expect(invoice.items.find((item) => item.description === 'Exempt supply')?.tax).toBe('0.00');
+
+        const added = await app.request(`/api/invoices/${invoice.id}`, {
+          method: 'PATCH',
+          headers,
+          body: JSON.stringify({
+            expectedUpdatedAt: invoice.updatedAt,
+            taxInclusive: false,
+            taxRate: '15',
+            items: [
+              { description: 'Logo design', quantity: '1', rate: '80', taxes: [gst] },
+              { description: 'Exempt supply', quantity: '1', rate: '40', taxes: [] },
+              { description: 'Hosting', quantity: '1', rate: '20', taxes: [gst] },
+            ],
+          }),
+        });
+        expect(added.status).toBe(200);
+        const updated = invoiceSchema.parse(await added.json());
+        expect(updated.items.map((item) => item.tax)).toEqual(['12.00', '0.00', '3.00']);
+        expect(updated.taxAmount).toBe('15.00');
+        expect(updated.total).toBe('155.00');
+      } finally {
+        await sql.end({ timeout: 5 });
+      }
+    });
+  });
 });

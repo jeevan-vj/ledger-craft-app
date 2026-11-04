@@ -46,6 +46,7 @@ import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
 import { FinishDraftCard } from '@/components/invoice/FinishDraftCard';
 import { InvoiceDeliverySection } from '@/components/invoice/InvoiceDeliverySection';
 import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
+import { AuthApiError } from '@/features/auth/api/http';
 import { buildDraftLineUpdate, dueDateError, showFinishDraft } from '@/features/invoices/finishDraftModel';
 import { canWriteInvoices } from '@/features/auth/invoiceAccess';
 import { useStore } from '@/store';
@@ -158,7 +159,11 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
     } catch (error) {
       console.error('Error updating the draft invoice:', error);
       if (request === finishRequest.current) {
-        setFinishError('The invoice could not be updated. Check your connection and try again.');
+        const stale = error instanceof AuthApiError && error.status === 409;
+        setFinishError(stale
+          ? 'This invoice changed. Review it and try again.'
+          : 'The invoice could not be updated. Check your connection and try again.');
+        if (stale) await refreshInvoice().catch(() => undefined);
       }
     } finally {
       if (request === finishRequest.current) {
@@ -176,7 +181,10 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
       return;
     }
     if (dueDate === invoice.dueDate) return;
-    void saveDraft(() => invoiceService.updateDraft(invoice.id, { dueDate }).then(() => undefined));
+    void saveDraft(() => invoiceService.updateDraft(invoice.id, {
+      dueDate,
+      ...(invoice.updatedAt ? { expectedUpdatedAt: invoice.updatedAt } : {}),
+    }).then(() => undefined));
   };
 
   const addDraftLine = (line: { description: string; quantity: string; amount: string }) => {

@@ -225,6 +225,7 @@ export const invoicesApi = {
           dueDate: patch.dueDate,
           taxInclusive: patch.taxInclusive,
           taxRate: patch.taxRate,
+          expectedUpdatedAt: patch.expectedUpdatedAt,
           items: patch.items,
         }),
       }),

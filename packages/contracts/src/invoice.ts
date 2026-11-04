@@ -95,6 +95,7 @@ export const updateInvoiceRequestSchema = z
     discount: money.nullable().optional(),
     taxInclusive: z.boolean().optional(),
     taxRate: money.nullable().optional(),
+    expectedUpdatedAt: z.string().min(1).optional(),
     additionalCharges: money.nullable().optional(),
     additionalChargesList: z.array(additionalChargeSchema).max(100).optional(),
     items: z.array(invoiceLineInputSchema).min(1).optional(),
