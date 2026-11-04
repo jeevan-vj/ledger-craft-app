@@ -10,6 +10,38 @@ export const gstRegistrationStatusSchema = z.enum([
 /** Light canvas used when a client theme omits `background`. */
 export const defaultBusinessThemeBackground = '#F5F6F3';
 
+/** Decoded logo bytes. The stored data URL is this size plus base64 overhead. */
+export const LOGO_MAX_DECODED_BYTES = 950_000;
+/** https logo links stay short. Data URLs use the larger decoded cap. */
+export const LOGO_HTTPS_MAX_LENGTH = 2_048;
+const LOGO_DATA_URL_PREFIX = 'data:image/jpeg;base64,';
+/** Longest allowed logo string: JPEG prefix plus base64 for the decoded cap. */
+export const LOGO_DATA_URL_MAX_LENGTH =
+  LOGO_DATA_URL_PREFIX.length + Math.ceil(LOGO_MAX_DECODED_BYTES / 3) * 4;
+
+const DATA_LOGO = /^data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/]+={0,2})$/;
+const HTTPS_LOGO = /^https:\/\/[^\s"'<>\\]+$/;
+
+function decodedBase64Bytes(value: string): number {
+  const padding = value.endsWith('==') ? 2 : value.endsWith('=') ? 1 : 0;
+  return Math.max(0, Math.floor((value.length * 3) / 4) - padding);
+}
+
+export function isAllowedLogoUrl(value: string): boolean {
+  if (value.length === 0 || value.length > LOGO_DATA_URL_MAX_LENGTH) return false;
+  const data = DATA_LOGO.exec(value);
+  if (data) {
+    const payload = data[2] ?? '';
+    const decoded = decodedBase64Bytes(payload);
+    return decoded > 0 && decoded <= LOGO_MAX_DECODED_BYTES;
+  }
+  return value.length <= LOGO_HTTPS_MAX_LENGTH && HTTPS_LOGO.test(value);
+}
+
+export const logoUrlSchema = z.string().refine(isAllowedLogoUrl, {
+  message: 'Use a PNG, JPEG, or WebP data URL, or an https URL, within the logo size limit.',
+});
+
 const themeSchema = z
   .object({
     primary: z.string(),
@@ -66,7 +98,7 @@ export const upsertBusinessProfileRequestSchema = z
     zip: z.string().nullable().optional(),
     country: z.string().min(1).optional(),
     taxId: z.string().nullable().optional(),
-    logoUrl: z.string().nullable().optional(),
+    logoUrl: logoUrlSchema.nullable().optional(),
     website: z.string().nullable().optional(),
     defaultTaxRate: money.nullable().optional(),
     gstRegistrationStatus: gstRegistrationStatusSchema.optional(),

@@ -7,6 +7,7 @@ import {
   Image,
   Alert,
   KeyboardAvoidingView,
+  Platform,
   ActivityIndicator,
   StyleSheet,
 } from 'react-native';
@@ -21,6 +22,7 @@ import { LoadingOverlay } from '@/components/ui/LoadingOverlay';
 import { Feather } from '@expo/vector-icons';
 import { control, hairline, radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import {
   normalizeBusinessTheme,
@@ -41,8 +43,9 @@ function emptyToNull(value: string): string | null {
 }
 
 export default function BusinessSettingsScreen() {
-  const { safeArea, tabBarHeight } = useTabScreenInsets();
-  const saveBarPadding = tabBarHeight + safeArea.bottom;
+  const { tabBarClearance } = useTabScreenInsets();
+  const headerHeight = useHeaderHeight();
+  const saveBarPadding = tabBarClearance;
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -577,8 +580,8 @@ export default function BusinessSettingsScreen() {
   return (
     <KeyboardAvoidingView
       style={styles.container}
-      behavior="padding"
-      keyboardVerticalOffset={safeArea.top}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+      keyboardVerticalOffset={headerHeight}
     >
       {renderTabButtons()}
 

@@ -1,9 +1,10 @@
 import * as FileSystem from 'expo-file-system/legacy';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { LOGO_MAX_DECODED_BYTES } from '@ledgercraft/contracts';
 import { AuthApiError, OFFLINE_MESSAGE } from '@/features/auth/api/http';
 
-/** Stay under the API's 1 MB object cap after base64 expansion. */
-export const LOGO_UPLOAD_MAX_BYTES = 950_000;
+/** Decoded logo bytes. The profile stores the base64 form of this cap. */
+export const LOGO_UPLOAD_MAX_BYTES = LOGO_MAX_DECODED_BYTES;
 
 export const LOGO_UPLOAD_FAILED = 'The logo could not be uploaded. Use a JPG, PNG, or WebP image under 1 MB.';
 export const LOGO_TOO_LARGE = 'The logo is still too large after resizing. Choose a smaller image.';

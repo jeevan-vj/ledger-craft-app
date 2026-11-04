@@ -46,6 +46,51 @@ describe('business profile contracts', () => {
     expect(result.success).toBe(false);
   });
 
+  it('accepts a safe logo and rejects every other logo URL', () => {
+    const base = { name: 'Kauri Studio Ltd', email: 'hello@kauristudio.nz' };
+    const png = 'data:image/png;base64,iVBORw0KGgo=';
+    expect(upsertBusinessProfileRequestSchema.parse({ ...base, logoUrl: png }).logoUrl).toBe(png);
+    expect(upsertBusinessProfileRequestSchema.parse({
+      ...base,
+      logoUrl: 'data:image/jpeg;base64,c21hbGw=',
+    }).logoUrl).toBe('data:image/jpeg;base64,c21hbGw=');
+    expect(upsertBusinessProfileRequestSchema.parse({
+      ...base,
+      logoUrl: 'data:image/webp;base64,UklGRg==',
+    }).logoUrl).toBe('data:image/webp;base64,UklGRg==');
+    expect(upsertBusinessProfileRequestSchema.parse({
+      ...base,
+      logoUrl: 'https://cdn.example.com/logo.png',
+    }).logoUrl).toBe('https://cdn.example.com/logo.png');
+    expect(upsertBusinessProfileRequestSchema.parse({ ...base, logoUrl: null }).logoUrl).toBeNull();
+
+    for (const logoUrl of [
+      'javascript:alert(1)',
+      'http://cdn.example.com/logo.png',
+      'data:image/jpg;base64,iVBORw0KGgo=',
+      'data:image/svg+xml;base64,PHN2Zz4=',
+      'data:text/html;base64,PHNjcmlwdD4=',
+      `https://cdn.example.com/${'a'.repeat(3000)}.png`,
+      `data:image/png;base64,${'A'.repeat(1_400_000)}`,
+      '',
+    ]) {
+      const result = upsertBusinessProfileRequestSchema.safeParse({ ...base, logoUrl });
+      expect(result.success).toBe(false);
+    }
+  });
+
+  it('still reads a legacy http logo without accepting it on write', () => {
+    expect(businessProfileSchema.parse({
+      ...profile,
+      logoUrl: 'http://cdn.example.com/logo.png',
+    }).logoUrl).toBe('http://cdn.example.com/logo.png');
+    expect(upsertBusinessProfileRequestSchema.safeParse({
+      name: profile.name,
+      email: profile.email,
+      logoUrl: 'http://cdn.example.com/logo.png',
+    }).success).toBe(false);
+  });
+
   it('accepts paymentTermDays on upsert', () => {
     const parsed = upsertBusinessProfileRequestSchema.parse({
       name: 'Kauri Studio Ltd',

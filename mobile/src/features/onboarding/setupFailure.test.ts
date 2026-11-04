@@ -1,4 +1,5 @@
 import { AuthApiError } from '@/features/auth/api/http';
+import { LogoUploadError } from '@/features/business-profile/logoFile';
 import { setupFailureAlert } from './setupFailure';
 
 describe('setup failure copy', () => {
@@ -38,6 +39,13 @@ describe('setup failure copy', () => {
       'req_mail',
     ));
     expect(alert.message).toBe('Add an email to this customer. Your answers are still here. Ref: req_mail');
+  });
+
+  it('shows a logo failure and keeps the answers already entered', () => {
+    const alert = setupFailureAlert(new LogoUploadError('The logo could not be read. Try a different photo.'));
+    expect(alert.title).toBe('Logo wasn’t saved');
+    expect(alert.message).toContain('The logo could not be read. Try a different photo.');
+    expect(alert.message).toContain('Your answers are still here.');
   });
 
   it('keeps a local sentence and falls back when the text is a schema diagnostic', () => {

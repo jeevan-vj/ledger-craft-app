@@ -141,6 +141,11 @@ export {
 export {
   businessProfileSchema,
   gstRegistrationStatusSchema,
+  isAllowedLogoUrl,
+  LOGO_DATA_URL_MAX_LENGTH,
+  LOGO_HTTPS_MAX_LENGTH,
+  LOGO_MAX_DECODED_BYTES,
+  logoUrlSchema,
   quoteKindSchema,
   upsertBusinessProfileRequestSchema,
   type BusinessProfileDto,

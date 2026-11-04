@@ -126,13 +126,6 @@ describe('BusinessProfileService (Hono)', () => {
     manipulateAsync.mockResolvedValue({ uri: 'file:///cache/logo.png', width: 1024, height: 683 });
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce(jsonResponse(dto))
-      .mockResolvedValueOnce(jsonResponse({
-        key: 'org/logos/logo.png',
-        url: '/api/objects?key=org%2Flogos%2Flogo.png',
-        contentType: 'image/png',
-        size: 8,
-        kind: 'logo',
-      }, 201))
       .mockResolvedValueOnce(jsonResponse({ ...dto, logoUrl: `data:image/png;base64,${png}` }));
 
     const saved = await businessProfileService.updateBusinessProfile({
@@ -146,15 +139,9 @@ describe('BusinessProfileService (Hono)', () => {
     });
 
     expect(saved.logoUrl).toBe(`data:image/png;base64,${png}`);
-    const post = (global.fetch as jest.Mock).mock.calls.find((call) => String(call[0]).endsWith('/api/objects'));
-    expect(post?.[1].method).toBe('POST');
-    expect(JSON.parse(post[1].body as string)).toEqual({
-      kind: 'logo',
-      filename: 'logo.png',
-      contentType: 'image/png',
-      contentBase64: png,
-    });
-    const put = JSON.parse((global.fetch as jest.Mock).mock.calls[2][1].body as string);
+    expect((global.fetch as jest.Mock).mock.calls.some((call) => String(call[0]).endsWith('/api/objects'))).toBe(false);
+    const putCall = (global.fetch as jest.Mock).mock.calls.find((call) => call[1]?.method === 'PUT');
+    const put = JSON.parse(putCall[1].body as string);
     expect(put.logoUrl).toBe(`data:image/png;base64,${png}`);
     expect(manipulateAsync).toHaveBeenCalledWith(
       'content://media/external/images/media/42',
@@ -171,13 +158,6 @@ describe('BusinessProfileService (Hono)', () => {
     manipulateAsync.mockResolvedValue({ uri: 'file:///cache/logo.jpg', width: 1024, height: 768 });
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce(jsonResponse(dto))
-      .mockResolvedValueOnce(jsonResponse({
-        key: 'org/logos/logo.jpg',
-        url: '/api/objects?key=org%2Flogos%2Flogo.jpg',
-        contentType: 'image/jpeg',
-        size: 6,
-        kind: 'logo',
-      }, 201))
       .mockResolvedValueOnce(jsonResponse({ ...dto, logoUrl: `data:image/jpeg;base64,${jpeg}` }));
 
     await businessProfileService.updateBusinessProfile({
@@ -189,12 +169,12 @@ describe('BusinessProfileService (Hono)', () => {
       },
     });
 
-    const post = (global.fetch as jest.Mock).mock.calls.find((call) => String(call[0]).endsWith('/api/objects'));
-    const body = JSON.parse(post[1].body as string);
-    expect(body.contentType).toBe('image/jpeg');
-    expect(body.filename).toBe('logo.jpg');
-    expect(body.contentType).not.toContain('content://');
-    expect(body.filename).not.toContain('session');
+    expect((global.fetch as jest.Mock).mock.calls.some((call) => String(call[0]).endsWith('/api/objects'))).toBe(false);
+    const putCall = (global.fetch as jest.Mock).mock.calls.find((call) => call[1]?.method === 'PUT');
+    const put = JSON.parse(putCall[1].body as string);
+    expect(put.logoUrl).toBe(`data:image/jpeg;base64,${jpeg}`);
+    expect(put.logoUrl).not.toContain('content://');
+    expect(put.logoUrl).not.toContain('session');
   });
 
   it('refuses to save the profile when the logo upload is rejected', async () => {
@@ -211,10 +191,22 @@ describe('BusinessProfileService (Hono)', () => {
       logo: { uri: 'file:///logo.png', mimeType: 'image/png', width: 400, height: 400 },
     })).rejects.toThrow('The logo could not be uploaded. Use a JPG, PNG, or WebP image under 1 MB.');
 
-    const puts = (global.fetch as jest.Mock).mock.calls.filter((call) => (
-      String(call[0]).includes('/api/business-profile') && call[1]?.method === 'PUT'
-    ));
-    expect(puts).toHaveLength(0);
+    expect((global.fetch as jest.Mock).mock.calls.some((call) => String(call[0]).endsWith('/api/objects'))).toBe(false);
+  });
+
+  it('reports a logo failure during setup and does not save the profile', async () => {
+    getInfoAsync.mockResolvedValue({ exists: false, isDirectory: false, uri: 'file:///missing.jpg' });
+    manipulateAsync.mockResolvedValue({ uri: 'file:///cache/logo.jpg', width: 100, height: 100 });
+    (global.fetch as jest.Mock).mockResolvedValue(jsonResponse(dto));
+
+    await expect(businessProfileService.createBusinessProfile({
+      ...mockOnboardingData,
+      businessName: dto.name,
+      businessEmail: dto.email,
+      logoUri: 'file:///logo.jpg',
+    })).rejects.toThrow('The logo could not be read. Try a different photo.');
+
+    expect((global.fetch as jest.Mock).mock.calls.filter((call) => call[1]?.method === 'PUT')).toHaveLength(0);
   });
 
   it('reports a connection failure instead of saving the profile without the logo', async () => {
@@ -229,10 +221,7 @@ describe('BusinessProfileService (Hono)', () => {
       logo: { uri: 'file:///logo.png', mimeType: 'image/png', width: 400, height: 400 },
     })).rejects.toThrow('Check your connection and try again.');
 
-    const puts = (global.fetch as jest.Mock).mock.calls.filter((call) => (
-      String(call[0]).includes('/api/business-profile') && call[1]?.method === 'PUT'
-    ));
-    expect(puts).toHaveLength(0);
+    expect((global.fetch as jest.Mock).mock.calls.some((call) => String(call[0]).endsWith('/api/objects'))).toBe(false);
   });
 
   it('refuses to save when the resized logo is still too large', async () => {

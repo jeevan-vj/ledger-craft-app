@@ -1,3 +1,4 @@
+import { isAllowedLogoUrl, LOGO_DATA_URL_MAX_LENGTH } from '@ledgercraft/contracts';
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
@@ -78,13 +79,12 @@ function currencyCode(currency: string | null | undefined): string {
   return /^[A-Z]{3}$/.test(code) ? code : '';
 }
 
-const SAFE_DATA_LOGO = /^data:image\/(?:jpeg|jpg|png|webp);base64,[a-z0-9+/]+={0,2}$/i;
-
 function safeLogoUrl(url: string | null | undefined): string | null | undefined {
   if (url == null) return url;
   const trimmed = url.trim();
+  if (trimmed.length > LOGO_DATA_URL_MAX_LENGTH) return null;
   if (/^https?:\/\//i.test(trimmed)) return escapeHtml(trimmed);
-  if (SAFE_DATA_LOGO.test(trimmed)) return trimmed;
+  if (trimmed.startsWith('data:') && isAllowedLogoUrl(trimmed)) return trimmed;
   return null;
 }
 

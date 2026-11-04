@@ -1,4 +1,5 @@
 import React from 'react';
+import { isAllowedLogoUrl } from '@ledgercraft/contracts';
 import { createRoot } from 'react-dom/client';
 import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
 import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
@@ -11,6 +12,11 @@ import MinimalTemplate from '../components/invoice/preview/templates/MinimalTemp
 import ExecutiveTemplate from '../components/invoice/preview/templates/ExecutiveTemplate';
 import CorporateTemplate from '../components/invoice/preview/templates/CorporateTemplate';
 import ModernInvoiceTemplate from '../components/invoice/preview/templates/ModernInvoiceTemplate';
+
+function emailLogoUrl(url: string | null | undefined): string {
+  const trimmed = url?.trim() ?? '';
+  return trimmed && isAllowedLogoUrl(trimmed) ? trimmed : '';
+}
 
 interface TemplateData {
   invoice: Invoice;
@@ -56,7 +62,7 @@ export const createTemplateData = (
     ].filter(Boolean).join(', ') || '',
     taxRate: invoiceDisplayTaxRate(invoice),
     tax: invoice.taxAmount,
-    businessLogo: businessProfile?.logoUrl || '',
+    businessLogo: emailLogoUrl(businessProfile?.logoUrl),
     theme: businessProfile?.theme || DEFAULT_BUSINESS_THEME,
     labels: resolveDocumentLabels(labels),
   };
@@ -110,6 +116,7 @@ export const createEmailCompatibleInvoiceHtml = (
 ): string => {
   const templateData = createTemplateData(invoice, businessProfile, labels);
   const copy = templateData.labels ?? invoiceDocumentLabels;
+  const logoUrl = emailLogoUrl(businessProfile?.logoUrl);
   const escapeHtml = (value: string) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char]!));
   const bankRows = [
     ['Account name:', businessProfile?.bankAccountName?.trim()],
@@ -125,7 +132,7 @@ export const createEmailCompatibleInvoiceHtml = (
           <table width="100%" cellpadding="0" cellspacing="0">
             <tr>
               <td>
-                ${businessProfile?.logoUrl ? `<img src="${businessProfile.logoUrl}" alt="${templateData.companyName}" style="height: 40px; margin-bottom: 10px;">` : ''}
+                ${logoUrl ? `<img src="${escapeHtml(logoUrl)}" alt="${templateData.companyName}" style="height: 40px; margin-bottom: 10px;">` : ''}
                 <h1 style="margin: 0; font-size: 32px; font-weight: bold;">${copy.title}</h1>
                 <p style="margin: 5px 0 0 0; font-size: 18px; opacity: 0.9;">#${invoice.invoiceNumber}</p>
               </td>

@@ -18,6 +18,7 @@ import { CompanyTeamPanel } from '@/components/organisations/CompanyTeamPanel';
 import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
 import { CurrencyLocalizationSettings } from '@/components/settings/CurrencyLocalizationSettings';
 import { StripePaymentsPanel } from '@/components/settings/StripePaymentsPanel';
+import { logoChoiceError, logoDataUrlError } from '@/features/business-profile/logoChoice';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, { message: "Business name is required" }),
@@ -129,10 +130,17 @@ const Settings = () => {
 
       if (data.logoFile && data.logoFile.length > 0) {
         const file = data.logoFile[0] as File;
+        const choiceError = logoChoiceError(file);
+        if (choiceError) throw new Error(choiceError);
         logoUrlToSave = await new Promise<string>((resolve, reject) => {
           const reader = new FileReader();
-          reader.onload = () => resolve(String(reader.result));
-          reader.onerror = () => reject(new Error('Failed to read logo file'));
+          reader.onload = () => {
+            const value = String(reader.result ?? '');
+            const dataError = logoDataUrlError(value);
+            if (dataError) reject(new Error(dataError));
+            else resolve(value);
+          };
+          reader.onerror = () => reject(new Error('The logo could not be read. Try a different image.'));
           reader.readAsDataURL(file);
         });
       }
@@ -172,9 +180,10 @@ const Settings = () => {
       setPreviewLogoUrl(updated.logoUrl || undefined);
     } catch (error) {
       console.error("Error saving profile:", error);
+      const message = error instanceof Error ? error.message.trim() : '';
       toast({
         title: "Error",
-        description: "Failed to update business profile",
+        description: /logo/i.test(message) ? message : "Failed to update business profile",
         variant: "destructive"
       });
     } finally {
@@ -183,12 +192,17 @@ const Settings = () => {
   };
 
   const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      form.setValue("logoFile", e.target.files);
-      const file = e.target.files[0];
-      const previewUrl = URL.createObjectURL(file);
-      setPreviewLogoUrl(previewUrl);
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const problem = logoChoiceError(file);
+    if (problem) {
+      e.target.value = '';
+      form.setValue('logoFile', undefined);
+      toast({ title: 'Couldn’t use that logo', description: problem, variant: 'destructive' });
+      return;
     }
+    form.setValue("logoFile", e.target.files);
+    setPreviewLogoUrl(URL.createObjectURL(file));
   };
 
   const handleThemeChange = async (theme: BusinessTheme) => {
@@ -252,7 +266,7 @@ const Settings = () => {
                       <input
                         id="logoUpload"
                         type="file"
-                        accept="image/*"
+                        accept="image/png,image/jpeg,image/webp"
                         className="hidden"
                         onChange={handleLogoChange}
                       />

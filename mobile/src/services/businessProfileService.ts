@@ -1,7 +1,6 @@
 import { supabase } from './supabaseClient';
 import { toContractTheme } from '@/features/business-profile/theme';
 import { OnboardingData, BusinessTheme } from '@/types/onboarding';
-import { objectsApi } from '@/features/storage/api/objectsApi';
 import {
   businessProfileApi,
   businessProfileApiEnabled,
@@ -83,14 +82,7 @@ class BusinessProfileService {
   async createBusinessProfile(data: OnboardingData): Promise<BusinessProfile> {
     try {
       if (businessProfileApiEnabled()) {
-        let logoUrl: string | null = null;
-        if (data.logoUri) {
-          try {
-            logoUrl = await this.uploadLogo(data.logoUri);
-          } catch (error) {
-            console.warn('Logo upload failed - continuing without logo:', error);
-          }
-        }
+        const logoUrl = data.logoUri ? await this.uploadLogo(data.logoUri) : null;
 
         return businessProfileApi.upsert({
           name: data.businessName,
@@ -115,19 +107,7 @@ class BusinessProfileService {
         throw new Error('User not authenticated');
       }
 
-      // Upload logo if provided (optional)
-      let logoUrl: string | null = null;
-      if (data.logoUri) {
-        try {
-          logoUrl = await this.uploadLogo(data.logoUri);
-          if (!logoUrl) {
-            console.warn('Logo upload skipped - continuing without logo');
-          }
-        } catch (error) {
-          console.warn('Logo upload failed - continuing without logo:', error);
-          // Continue without logo - it's optional
-        }
-      }
+      const logoUrl = data.logoUri ? await this.uploadLogo(data.logoUri) : null;
 
       // Prepare data for insertion (using snake_case for database)
       // Note: Web app stores theme as JSON, not individual columns
@@ -202,8 +182,9 @@ class BusinessProfileService {
     try {
       if (businessProfileApiEnabled()) {
         const current = await businessProfileApi.get();
+        const savingLogo = Boolean(updates.logo || updates.logoUri);
         let logoUrl = current?.logoUrl ?? null;
-        if (updates.logo || updates.logoUri) {
+        if (savingLogo) {
           logoUrl = await this.uploadLogo(updates.logo ?? updates.logoUri!);
         }
 
@@ -213,7 +194,8 @@ class BusinessProfileService {
           throw new Error('Business name and email are required');
         }
 
-        return businessProfileApi.upsert({
+        try {
+          return await businessProfileApi.upsert({
           name,
           email,
           phone: keptText(updates.phone, current?.phone),
@@ -240,7 +222,11 @@ class BusinessProfileService {
             : current?.theme
               ? toContractTheme(current.theme)
               : null,
-        });
+          });
+        } catch (error) {
+          if (!savingLogo || error instanceof LogoUploadError) throw error;
+          throw new LogoUploadError(logoFailureMessage(error));
+        }
       }
 
       const { data: { user } } = await supabase.auth.getUser();
@@ -312,9 +298,8 @@ class BusinessProfileService {
   }
 
   /**
-   * Read, resize, and store a logo. Object storage checks the type and size.
-   * The profile stores a data URL because `/api/objects` requires the session
-   * cookie, which invoice HTML and React Native Image cannot send.
+   * Resize the picked logo and return a data URL for logo_url.
+   * The row is the only copy: a private object URL cannot render in invoice HTML.
    */
   async uploadLogo(source: string | PickedLogo): Promise<string> {
     const asset = typeof source === 'string' ? { uri: source } : source;
@@ -323,16 +308,6 @@ class BusinessProfileService {
       prepared = await prepareLogoFile(asset);
     } catch (error) {
       if (error instanceof LogoUploadError) throw error;
-      throw new LogoUploadError(logoFailureMessage(error));
-    }
-    try {
-      await objectsApi.upload({
-        kind: 'logo',
-        filename: prepared.filename,
-        contentType: prepared.contentType,
-        contentBase64: prepared.contentBase64,
-      });
-    } catch (error) {
       throw new LogoUploadError(logoFailureMessage(error));
     }
     return `data:${prepared.contentType};base64,${prepared.contentBase64}`;

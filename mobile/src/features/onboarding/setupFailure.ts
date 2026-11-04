@@ -1,4 +1,5 @@
 import { AuthApiError } from '@/features/auth/api/http';
+import { LogoUploadError } from '@/features/business-profile/logoFile';
 
 const CONNECTION_MESSAGE = 'Check your connection and try again. Your answers are still here.';
 const VALIDATION_MESSAGE = "Something in your details didn't save. Please try again, and contact support if it keeps happening.";
@@ -31,6 +32,9 @@ function withAnswers(text: string, requestId?: string): string {
 
 export function setupFailureAlert(error: unknown): { title: string; message: string } {
   const title = 'Couldn’t finish setup';
+  if (error instanceof LogoUploadError) {
+    return { title: 'Logo wasn’t saved', message: withAnswers(error.message) };
+  }
   if (error instanceof AuthApiError && error.status === 0) {
     return { title, message: CONNECTION_MESSAGE };
   }
