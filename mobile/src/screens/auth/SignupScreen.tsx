@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
   KeyboardAvoidingView,
+  Linking,
   Platform,
   Pressable,
   ScrollView,
@@ -32,7 +33,7 @@ import { useTheme } from '@/theme';
 type Navigation = NativeStackNavigationProp<AuthStackParamList, 'Signup'>;
 
 const steps = [
-  { title: 'What should we call you?', body: 'Use the name you want to see around LedgerCraft.' },
+  { title: 'What should we call you?', body: 'Use the name you want to see around EasyBizInvoice.' },
   { title: 'What is your phone number?', body: 'Optional. We use it only for your business contact details.' },
   { title: 'What is your email?', body: 'This becomes the email you use to sign in.' },
   { title: 'Secure your account', body: 'Choose a password and confirm you agree to our policies.' },
@@ -140,13 +141,21 @@ export default function SignupScreen() {
               <ModernInput ref={inputRef} label="Password" value={draft.password} onChangeText={(password) => update({ password })}
                 placeholder="At least 8 characters" secureTextEntry showPasswordToggle autoComplete="new-password" returnKeyType="done"
                 error={error && draft.password.length < 8 ? error : undefined} onSubmitEditing={() => void continueFlow()} />
-              <Pressable onPress={() => update({ acceptedTerms: !draft.acceptedTerms })} accessibilityRole="checkbox"
-                accessibilityState={{ checked: draft.acceptedTerms }} style={styles.consent}>
-                <View style={[styles.checkbox, draft.acceptedTerms && styles.checkboxChecked]}>
-                  {draft.acceptedTerms ? <Feather name="check" size={16} color={theme.colors.accentForeground} /> : null}
-                </View>
-                <Text style={styles.consentText}>I agree to LedgerCraft’s terms of use and privacy policy.</Text>
-              </Pressable>
+              <View style={styles.consent}>
+                <Pressable onPress={() => update({ acceptedTerms: !draft.acceptedTerms })} accessibilityRole="checkbox"
+                  accessibilityLabel="Agree to the terms of use and privacy policy"
+                  accessibilityState={{ checked: draft.acceptedTerms }} style={styles.checkboxHit}>
+                  <View style={[styles.checkbox, draft.acceptedTerms && styles.checkboxChecked]}>
+                    {draft.acceptedTerms ? <Feather name="check" size={16} color={theme.colors.accentForeground} /> : null}
+                  </View>
+                </Pressable>
+                <Text style={styles.consentText}>
+                  I agree to EasyBizInvoice’s{' '}
+                  <Text style={styles.consentLink} onPress={() => void Linking.openURL('https://easybiz.iamjeevan.com/terms')}>terms of use</Text>
+                  {' '}and{' '}
+                  <Text style={styles.consentLink} onPress={() => void Linking.openURL('https://easybiz.iamjeevan.com/privacy')}>privacy policy</Text>.
+                </Text>
+              </View>
               {error && draft.password.length >= 8 ? <Text style={styles.error}>{error}</Text> : null}
             </>
             ) : null}
@@ -181,9 +190,11 @@ const createStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   title: { ...theme.type.display, fontSize: 34, lineHeight: 40, marginBottom: space.md },
   subtitle: { ...theme.type.body, color: theme.colors.textSecondary, lineHeight: 24, marginBottom: space.section },
   consent: { minHeight: 56, flexDirection: 'row', alignItems: 'center', gap: space.md, padding: space.md, borderRadius: radius.md, backgroundColor: theme.colors.fillMuted },
+  checkboxHit: { width: 44, height: 44, alignItems: 'center', justifyContent: 'center' },
   checkbox: { width: 24, height: 24, borderRadius: 8, borderWidth: 1.5, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center' },
   checkboxChecked: { backgroundColor: theme.colors.accent, borderColor: theme.colors.accent },
   consentText: { ...theme.type.subhead, flex: 1, lineHeight: 21 },
+  consentLink: { color: theme.colors.accentText, fontWeight: '700' },
   error: { ...theme.type.footnote, color: theme.colors.danger, marginTop: space.sm },
   footer: { paddingHorizontal: space.xxl, paddingBottom: space.lg, gap: space.sm },
 });

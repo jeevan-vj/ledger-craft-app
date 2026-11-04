@@ -11,6 +11,19 @@ export function getDefaultTaxRate(country: string): number | undefined {
   return COUNTRY_TAX_RATES[country];
 }
 
+export type GstRegistrationStatus = 'unknown' | 'registered' | 'not_registered';
+
+/** Same rule as mobile onboarding: GST is added only after an explicit yes. */
+export function businessTaxDefaults(
+  country: string,
+  status: GstRegistrationStatus,
+): { gstRegistrationStatus: GstRegistrationStatus; defaultTaxRate: number } {
+  if (status !== 'registered') {
+    return { gstRegistrationStatus: status, defaultTaxRate: 0 };
+  }
+  return { gstRegistrationStatus: status, defaultTaxRate: getDefaultTaxRate(country) ?? 0 };
+}
+
 export function stubBusinessName(user?: {
   email?: string | null;
   user_metadata?: { full_name?: string };

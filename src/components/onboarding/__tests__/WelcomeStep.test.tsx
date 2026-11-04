@@ -34,27 +34,43 @@ describe('WelcomeStep', () => {
     expect(screen.getByTestId('onboarding-submit')).toBeDisabled();
   });
 
-  it('submits a valid name and updates tax when country changes', async () => {
+  it('keeps the country change separate and submits only after a GST choice', async () => {
     const user = userEvent.setup();
     const onDataChange = vi.fn();
     const onNext = vi.fn();
 
-    render(
+    const { rerender } = render(
       <WelcomeStep
         data={{ ...baseData, businessName: 'North Shore Studio' }}
         onDataChange={onDataChange}
         onNext={onNext}
-        onSkip={vi.fn()}
       />
     );
 
     await user.selectOptions(screen.getByTestId('onboarding-country'), 'Australia');
-    expect(onDataChange).toHaveBeenCalledWith({
-      country: 'Australia',
-      defaultTaxRate: 10,
-    });
+    expect(onDataChange).toHaveBeenCalledWith({ country: 'Australia' });
+    expect(screen.getByTestId('onboarding-submit')).toBeDisabled();
 
+    await user.click(screen.getByTestId('onboarding-gst-registered'));
+    expect(onDataChange).toHaveBeenCalledWith({ gstRegistrationStatus: 'registered' });
+    expect(onNext).not.toHaveBeenCalled();
+
+    rerender(
+      <WelcomeStep
+        data={{
+          ...baseData,
+          businessName: 'North Shore Studio',
+          country: 'Australia',
+          gstRegistrationStatus: 'registered',
+        }}
+        onDataChange={onDataChange}
+        onNext={onNext}
+      />
+    );
+
+    expect(screen.getByText('Default tax rate set to 10% for Australia.')).toBeInTheDocument();
+    expect(screen.getByTestId('onboarding-submit')).toBeEnabled();
     await user.click(screen.getByTestId('onboarding-submit'));
-    expect(onNext).toHaveBeenCalled();
+    expect(onNext).toHaveBeenCalledTimes(1);
   });
 });

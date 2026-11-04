@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { AuthMocker } from './auth-utils';
+import { AuthMocker, chooseNotRegistered } from './auth-utils';
 
 const testUser = {
   fullName: 'Alex Rivera',
@@ -35,6 +35,7 @@ test.describe('Signup to onboarding', () => {
     });
     await page.goto('/onboarding');
     await page.getByTestId('onboarding-business-name').fill('Rivera Design');
+    await chooseNotRegistered(page);
     await expect(page.getByTestId('onboarding-submit')).toBeEnabled();
     await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);

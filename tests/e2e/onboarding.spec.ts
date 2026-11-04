@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { AuthMocker } from './auth-utils';
+import { AuthMocker, chooseNotRegistered } from './auth-utils';
 
 test.describe('Onboarding Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -17,8 +17,10 @@ test.describe('Onboarding Flow', () => {
     await expect(page.getByPlaceholder(/business email/i)).toHaveCount(0);
     await expect(page.getByText(/invoice number format/i)).toHaveCount(0);
     await expect(page.getByText(/upload logo/i)).toHaveCount(0);
+    await expect(page.getByTestId('onboarding-gst-registered')).toBeVisible();
+    await expect(page.getByTestId('onboarding-gst-not-registered')).toBeVisible();
     await expect(page.getByTestId('onboarding-submit')).toBeVisible();
-    await expect(page.getByTestId('onboarding-skip')).toBeVisible();
+    await expect(page.getByTestId('onboarding-skip')).toHaveCount(0);
   });
 
   test('blocks submit without a business name', async ({ page }) => {
@@ -29,13 +31,15 @@ test.describe('Onboarding Flow', () => {
 
   test('completes setup and leaves onboarding', async ({ page }) => {
     await page.getByTestId('onboarding-business-name').fill('North Shore Studio');
+    await expect(page.getByTestId('onboarding-submit')).toBeDisabled();
+    await chooseNotRegistered(page);
     await expect(page.getByTestId('onboarding-submit')).toBeEnabled();
     await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);
   });
 
-  test('skip creates a stub profile and leaves onboarding', async ({ page }) => {
-    await page.getByTestId('onboarding-skip').click();
-    await expect(page).not.toHaveURL(/\/onboarding/);
+  test('does not offer a skip that invents a business name', async ({ page }) => {
+    await expect(page.getByTestId('onboarding-skip')).toHaveCount(0);
+    await expect(page).toHaveURL(/\/onboarding/);
   });
 });

@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { AuthMocker } from './auth-utils';
+import { AuthMocker, chooseNotRegistered } from './auth-utils';
 
 test.describe('Direct Onboarding Flow', () => {
   test.beforeEach(async ({ page }) => {
@@ -12,9 +12,11 @@ test.describe('Direct Onboarding Flow', () => {
   test('completes one-screen onboarding', async ({ page }) => {
     await expect(page.getByRole('heading', { name: /what is your business called/i })).toBeVisible();
     await page.getByTestId('onboarding-business-name').fill('North Shore Studio');
-    await expect(page.getByTestId('onboarding-submit')).toBeEnabled();
+    await expect(page.getByTestId('onboarding-submit')).toBeDisabled();
     await page.getByTestId('onboarding-country').selectOption('Australia');
+    await page.getByTestId('onboarding-gst-registered').click();
     await expect(page.getByText(/default tax rate set to 10%/i)).toBeVisible();
+    await expect(page.getByTestId('onboarding-submit')).toBeEnabled();
     await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);
   });
@@ -27,6 +29,7 @@ test.describe('Direct Onboarding Flow', () => {
   test('works on a mobile viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.getByTestId('onboarding-business-name').fill('Mobile Studio');
+    await chooseNotRegistered(page);
     await expect(page.getByTestId('onboarding-submit')).toBeEnabled();
     await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);

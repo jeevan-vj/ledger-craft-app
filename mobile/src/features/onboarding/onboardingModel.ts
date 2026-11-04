@@ -44,6 +44,6 @@ export function businessTaxDefaults(
   status: GstRegistrationStatus,
 ): { gstRegistrationStatus: GstRegistrationStatus; defaultTaxRate: number } {
   if (status !== 'registered') return { gstRegistrationStatus: status, defaultTaxRate: 0 };
-  const rate = country === 'New Zealand' ? 15 : country === 'Australia' ? 10 : 0;
-  return { gstRegistrationStatus: status, defaultTaxRate: rate };
+  const rates: Record<string, number> = { 'New Zealand': 15, Australia: 10, 'United Kingdom': 20 };
+  return { gstRegistrationStatus: status, defaultTaxRate: rates[country] ?? 0 };
 }

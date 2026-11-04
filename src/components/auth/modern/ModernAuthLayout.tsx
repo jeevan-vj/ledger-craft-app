@@ -1,6 +1,6 @@
 import React from 'react';
 import { ThemeToggle } from '../../ui/theme-toggle';
-import { CheckCircle, TrendingUp, Users, Shield, Zap } from 'lucide-react';
+import { TrendingUp, Users, Shield, Zap } from 'lucide-react';
 
 interface ModernAuthLayoutProps {
   children: React.ReactNode;
@@ -32,19 +32,6 @@ const features = [
   }
 ];
 
-const testimonials = [
-  {
-    text: "EasyBizInvoice transformed how we handle invoicing. It's simply amazing!",
-    author: "Sarah Chen",
-    role: "Freelance Designer"
-  },
-  {
-    text: "The most intuitive invoicing app I've ever used. Highly recommended!",
-    author: "Michael Rodriguez", 
-    role: "Small Business Owner"
-  }
-];
-
 export default function ModernAuthLayout({ children, title, subtitle, showFeatures = true }: ModernAuthLayoutProps) {
   return (
     <div className="min-h-screen bg-background">
@@ -53,11 +40,11 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
         <ThemeToggle />
       </div>
       
-      <div className="flex min-h-screen">
+      <div className="flex min-h-dvh lg:h-dvh lg:overflow-hidden">
         {/* Left Panel - Brand & Features */}
-        <div className="hidden lg:flex lg:flex-1 relative overflow-hidden bg-accent/[0.45]">
+        <div className="hidden lg:flex lg:flex-1 lg:overflow-y-auto relative bg-accent/[0.45]">
             
-            <div className="relative flex flex-col justify-center px-12 py-16">
+            <div className="relative flex flex-col justify-center px-12 py-10">
             {/* Logo & Brand */}
             <div className="mb-12">
               <div className="flex items-center mb-6">
@@ -105,31 +92,12 @@ export default function ModernAuthLayout({ children, title, subtitle, showFeatur
               </div>
             )}
 
-            {/* Testimonials */}
-            <div className="space-y-6">
-              {testimonials.map((testimonial, index) => (
-                  <div key={index} className="rounded-2xl bg-card p-6 shadow-surface">
-                    <div className="flex items-start space-x-3">
-                      <div className="flex-shrink-0 w-8 h-8 bg-success/[0.10] rounded-full flex items-center justify-center">
-                        <CheckCircle className="h-4 w-4 text-success" />
-                      </div>
-                      <div>
-                        <p className="text-foreground italic mb-2">"{testimonial.text}"</p>
-                        <div className="text-sm">
-                          <div className="font-medium text-foreground">{testimonial.author}</div>
-                          <div className="text-muted-foreground">{testimonial.role}</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-              ))}
-            </div>
           </div>
         </div>
 
         {/* Right Panel - Auth Form */}
-          <div className="flex-1 lg:flex-none lg:w-96 xl:w-[480px] flex items-center justify-center p-6 lg:p-12">
-            <div className="w-full max-w-sm">
+          <div className="flex min-h-dvh flex-1 flex-col items-center overflow-y-auto p-6 lg:h-dvh lg:w-96 lg:flex-none lg:p-8 xl:w-[480px]">
+            <div className="my-auto w-full max-w-sm py-4">
               {/* Mobile Logo */}
                 <div className="lg:hidden text-center mb-8">
                   <div className="inline-flex items-center mb-4">

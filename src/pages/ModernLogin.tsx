@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from "@/context/StableAuthContext";
 import { useToast } from '@/hooks/use-toast';
-import { Mail, Lock, ArrowRight, Github, Chrome } from 'lucide-react';
+import { Mail, Lock, ArrowRight } from 'lucide-react';
 import ModernAuthLayout from '../components/auth/modern/ModernAuthLayout';
 import { ModernInput } from '../components/auth/modern/ModernInput';
 import { ModernButton } from '../components/auth/modern/ModernButton';
@@ -18,12 +18,11 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>;
 
 const ModernLogin = () => {
-  const { signIn, signInWithGoogle } = useAuth();
+  const { signIn } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const location = useLocation();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
 
   const {
@@ -84,30 +83,6 @@ const ModernLogin = () => {
       });
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleGoogleSignIn = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const { error } = await signInWithGoogle();
-      
-      if (error) {
-        toast({
-          title: 'Google Sign In Failed',
-          description: error.message,
-          variant: 'destructive'
-        });
-      }
-      // If successful, the OAuth flow will redirect to the callback page
-    } catch (error) {
-      toast({
-        title: 'Google Sign In Failed', 
-        description: 'An unexpected error occurred. Please try again.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsGoogleLoading(false);
     }
   };
 
@@ -175,47 +150,6 @@ const ModernLogin = () => {
         >
           {isLoading ? 'Signing in...' : 'Sign in'}
         </ModernButton>
-
-        {/* Divider */}
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-          </div>
-        </div>
-
-        {/* Social Login Buttons */}
-        <div className="grid gap-3">
-          <ModernButton
-            type="button"
-            variant="outline"
-            fullWidth
-            icon={Chrome}
-            disabled={isLoading || isGoogleLoading}
-            loading={isGoogleLoading}
-            onClick={handleGoogleSignIn}
-          >
-            {isGoogleLoading ? 'Signing in...' : 'Google'}
-          </ModernButton>
-          
-          {/* <ModernButton
-            type="button"
-            variant="outline"
-            size="md"
-            icon={Github}
-            disabled={isLoading || isGoogleLoading}
-            onClick={() => {
-              toast({
-                title: 'Coming Soon',
-                description: 'GitHub login will be available soon!',
-              });
-            }}
-          >
-            GitHub
-          </ModernButton> */}
-        </div>
 
         {/* Sign Up Link */}
         <div className="text-center">

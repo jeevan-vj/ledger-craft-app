@@ -46,7 +46,7 @@ export default function LoginScreen() {
   const validatePassword = (text: string) => {
     setPassword(text);
     if (text && text.length < 8) {
-      setPasswordError('Password must be at least 8 characters');
+      setPasswordError('Use at least 8 characters.');
     } else {
       setPasswordError('');
     }
@@ -88,7 +88,7 @@ export default function LoginScreen() {
           <View style={styles.mark}>
             <Text style={styles.markText}>LC</Text>
           </View>
-          <Text style={styles.wordmark}>LedgerCraft</Text>
+          <Text style={styles.wordmark}>EasyBizInvoice</Text>
         </View>
 
         <Text style={styles.title}>Welcome back</Text>

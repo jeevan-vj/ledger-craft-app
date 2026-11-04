@@ -159,6 +159,8 @@ export default function DashboardScreen() {
   const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
   const openQuotes = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'QuoteList' }));
   const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
+  const openFirstInvoice = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
+  const firstInvoice = invoices.length === 0;
   const dismissTasks = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setTasksDismissed(true);
@@ -262,8 +264,8 @@ export default function DashboardScreen() {
     {tasksDismissed === false ? <>
       <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>
       <Card>
-        <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : 'Add your business details before sending an invoice.'}</Text></View></View>
-        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : 'Continue'} onPress={overdue.length ? openInvoices : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={dismissTasks} /></View>
+        <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : firstInvoice ? 'Create your first invoice' : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : firstInvoice ? 'Add a customer and one line item, then send it when you are ready.' : 'Add your business details before sending an invoice.'}</Text></View></View>
+        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : firstInvoice ? 'Create invoice' : 'Continue'} onPress={overdue.length ? openInvoices : firstInvoice ? openFirstInvoice : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={dismissTasks} /></View>
       </Card>
     </> : tasksDismissed ? <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" /> : null}
 

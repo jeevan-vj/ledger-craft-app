@@ -6,6 +6,7 @@ import React, { createContext, useContext, useState, useEffect, useMemo, useCall
 import { useNavigate } from 'react-router-dom';
 import type { MeResponse } from '@ledgercraft/contracts';
 import { AuthApiError, getMe, signInEmail, signOutSession, signUpEmail } from '@/features/auth/api/authApi';
+import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
 import { setSentryUser } from '@/lib/sentry/init';
 
 export type AuthUser = {
@@ -63,8 +64,8 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   const [me, setMe] = useState<MeResponse | null>(null);
   const navigate = useNavigate();
 
-  const applySession = useCallback((me: MeResponse | null) => {
-    if (!me) {
+  const applySession = useCallback(async (session: MeResponse | null) => {
+    if (!session) {
       setSentryUser(null);
       setMe(null);
       setUser(null);
@@ -72,16 +73,20 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       setOnboardingChecked(true);
       return;
     }
-    setSentryUser(me.user.id);
-    setMe(me);
-    setUser(toAuthUser(me));
-    // Business profile is still on supabase-js. A Better Auth session is enough to enter the app.
-    setHasCompletedOnboarding(true);
+    setSentryUser(session.user.id);
+    setMe(session);
+    setUser(toAuthUser(session));
+    try {
+      const profile = await businessProfileApi.get();
+      setHasCompletedOnboarding(profile != null);
+    } catch {
+      setHasCompletedOnboarding(false);
+    }
     setOnboardingChecked(true);
   }, []);
 
   const refreshUser = useCallback(async () => {
-    applySession(await getMe());
+    await applySession(await getMe());
   }, [applySession]);
 
   const signUp = useCallback(
@@ -93,7 +98,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
           email,
           password,
         });
-        applySession(await getMe());
+        await applySession(await getMe());
         return { error: null, needsEmailConfirmation: false };
       } catch (error) {
         return { error: toAuthError(error) };
@@ -109,7 +114,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(true);
       try {
         await signInEmail({ email, password });
-        applySession(await getMe());
+        await applySession(await getMe());
         return { error: null };
       } catch (error) {
         return { error: toAuthError(error) };
@@ -150,11 +155,11 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       try {
         const me = await getMe();
         if (isMounted) {
-          applySession(me);
+          await applySession(me);
         }
       } catch {
         if (isMounted) {
-          applySession(null);
+          await applySession(null);
         }
       } finally {
         if (isMounted) {

@@ -7,10 +7,9 @@ import { businessProfileService } from '../services/supabaseService';
 import OnboardingLayout from '../components/onboarding/OnboardingLayout';
 import WelcomeStep from '../components/onboarding/WelcomeStep';
 import {
+  businessTaxDefaults,
   DEFAULT_INVOICE_NUMBER_FORMAT,
   DEFAULT_ONBOARDING_COUNTRY,
-  getDefaultTaxRate,
-  stubBusinessName,
 } from '@/utils/countryTaxDefaults';
 
 export default function Onboarding() {
@@ -24,7 +23,8 @@ export default function Onboarding() {
     businessEmail: user?.email || '',
     country: DEFAULT_ONBOARDING_COUNTRY,
     invoiceNumberFormat: DEFAULT_INVOICE_NUMBER_FORMAT,
-    defaultTaxRate: getDefaultTaxRate(DEFAULT_ONBOARDING_COUNTRY),
+    defaultTaxRate: 0,
+    gstRegistrationStatus: 'unknown',
     theme: DEFAULT_BUSINESS_THEME,
   });
 
@@ -42,6 +42,11 @@ export default function Onboarding() {
       return;
     }
 
+    const tax = businessTaxDefaults(data.country, data.gstRegistrationStatus ?? 'unknown');
+    if (tax.gstRegistrationStatus === 'unknown') {
+      return;
+    }
+
     setIsLoading(true);
     try {
       await businessProfileService.createOrUpdateBusinessProfile({
@@ -52,7 +57,8 @@ export default function Onboarding() {
         city: data.city || null,
         state: data.state || null,
         zip: data.zip || null,
-        defaultTaxRate: data.defaultTaxRate ?? getDefaultTaxRate(data.country) ?? null,
+        defaultTaxRate: tax.defaultTaxRate,
+        gstRegistrationStatus: tax.gstRegistrationStatus,
         invoiceNumberFormat: data.invoiceNumberFormat || DEFAULT_INVOICE_NUMBER_FORMAT,
         invoiceNumberSequence: 1,
         theme: data.theme || DEFAULT_BUSINESS_THEME,
@@ -63,7 +69,7 @@ export default function Onboarding() {
       markOnboardingComplete();
 
       toast({
-        title: 'You are in',
+        title: 'Your business is ready',
         description: 'Create your first invoice whenever you are ready.',
       });
 
@@ -84,16 +90,6 @@ export default function Onboarding() {
     void completeOnboarding(onboardingData);
   };
 
-  const handleSkip = () => {
-    void completeOnboarding({
-      ...onboardingData,
-      businessName: stubBusinessName(user),
-      country: onboardingData.country || DEFAULT_ONBOARDING_COUNTRY,
-      defaultTaxRate:
-        onboardingData.defaultTaxRate ?? getDefaultTaxRate(DEFAULT_ONBOARDING_COUNTRY),
-    });
-  };
-
   return (
     <OnboardingLayout
       title="What is your business called?"
@@ -103,7 +99,6 @@ export default function Onboarding() {
         data={onboardingData}
         onDataChange={updateData}
         onNext={handleSubmit}
-        onSkip={handleSkip}
         isLoading={isLoading}
       />
     </OnboardingLayout>
