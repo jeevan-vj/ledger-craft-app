@@ -29,6 +29,7 @@ import { newInvoiceDefaults } from '@/features/invoices/firstInvoiceModel';
 import GuidedInvoiceCreate from '@/screens/invoices/GuidedInvoiceCreate';
 import { formatMoney } from '@/utils/money';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
+import { HeaderActionButton, HeaderActions, ScreenHeaderBar } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
 import { CompactLineItem } from '@/components/invoice/CompactLineItem';
@@ -380,27 +381,34 @@ function InvoiceEditor() {
   handlePreviewRef.current = handlePreview;
 
   useLayoutEffect(() => {
+    const title = isEditMode ? 'Edit invoice' : 'New invoice';
     navigation.setOptions({
-      title: isEditMode ? 'Edit invoice' : 'New invoice',
-      headerLeft: () => (
-        <NativeHeaderButton
-          label="Cancel"
-          onPress={() => handleCancelRef.current()}
+      title,
+      header: () => (
+        <ScreenHeaderBar
+          title={title}
+          left={(
+            <NativeHeaderButton
+              label="Cancel"
+              onPress={() => handleCancelRef.current()}
+            />
+          )}
+          right={(
+            <HeaderActions>
+              <HeaderActionButton
+                label="Preview"
+                tone="secondary"
+                onPress={() => handlePreviewRef.current()}
+              />
+              <HeaderActionButton
+                label={isEditMode ? 'Update' : 'Save'}
+                tone="primary"
+                disabled={loading}
+                onPress={() => handleSaveRef.current()}
+              />
+            </HeaderActions>
+          )}
         />
-      ),
-      headerRight: () => (
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-          <NativeHeaderButton
-            label="Preview"
-            onPress={() => handlePreviewRef.current()}
-          />
-          <NativeHeaderButton
-            label={isEditMode ? 'Update' : 'Save'}
-            primary
-            onPress={() => handleSaveRef.current()}
-            disabled={loading}
-          />
-        </View>
       ),
     });
   }, [navigation, isEditMode, loading]);

@@ -17,6 +17,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { FilterPills } from '@/components/ui/FilterPills';
+import { HeaderActionButton, HeaderActions } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { purchasesApi, type BillDto, type VendorDto } from '@/features/purchases/api/purchasesApi';
 import type { PurchaseStackParamList, RootStackParamList } from '@/navigation/types';
@@ -29,8 +30,6 @@ import { useStore } from '@/store';
 
 type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'PurchaseList'>;
 type Mode = 'bills' | 'vendors';
-
-const headerActionsStyle = { flexDirection: 'row', alignItems: 'center', gap: space.sm } as const;
 
 export default function PurchaseListScreen() {
   const theme = useTheme();
@@ -52,10 +51,20 @@ export default function PurchaseListScreen() {
         hideWhenScrolling: true,
         onChangeText: (event) => setSearch(event.nativeEvent.text),
       } : undefined,
-      headerRight: () => mode === 'bills' ? <View style={headerActionsStyle}>
-        {canImport ? <NativeHeaderButton label="Import" accessibilityHint="Imports a PDF or photo as a draft" onPress={() => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'purchases' })} /> : null}
-        <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={() => navigation.navigate('BillCreate')} />
-      </View> : null,
+      headerRight: () => {
+        if (mode !== 'bills') return null;
+        const openImport = () => (navigation.getParent()?.getParent() as NavigationProp<RootStackParamList> | undefined)?.navigate('ImportCapture', { entry: 'purchases' });
+        const openCreate = () => navigation.navigate('BillCreate');
+        if (!canImport) {
+          return <NativeHeaderButton label="New" primary accessibilityHint="Creates a supplier bill" onPress={openCreate} />;
+        }
+        return (
+          <HeaderActions>
+            <HeaderActionButton label="Import" tone="secondary" accessibilityHint="Imports a PDF or photo as a draft" onPress={openImport} />
+            <HeaderActionButton label="New" tone="primary" accessibilityHint="Creates a supplier bill" onPress={openCreate} />
+          </HeaderActions>
+        );
+      },
     });
   }, [canImport, mode, navigation]);
 

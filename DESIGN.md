@@ -81,6 +81,7 @@ The mobile system is native-first, spacious, and direct. It follows the system a
 - `ModernInput` and `FormInput` share muted resting fills, surface focus, and explicit errors.
 - `GroupedSection`, `ListRow`, `IconWell`, `QuickAction`, and `EmptyState` form the native content grammar.
 - `AppPressable` is the pressable for a `style` callback. NativeWind's JSX runtime otherwise replaces that callback with an empty object, so the background, padding, radius, and pressed opacity never appear. It keeps the callback, accessibility props, and press feedback.
+- `HeaderActions` is a transparent row with an 8pt gap for two or more header buttons. `HeaderActionButton` `tone="primary"` is lime with forest text; `tone="secondary"` is a tonal fill with a hairline border. Each target is at least 44pt. `ScreenHeaderBar` hosts Cancel, the title, and those actions on form screens. A single header action stays on `NativeHeaderButton`.
 - `SelectionSheet` and `SelectionRow` are the standard searchable picker pattern: page-sheet presentation, one grouped list, 44pt minimum controls, accessible selected state, and forest checks on lime.
 
 ## Contribution rules
