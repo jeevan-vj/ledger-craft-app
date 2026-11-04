@@ -1,5 +1,9 @@
 import { Page } from '@playwright/test';
 
+export async function chooseNotRegistered(page: Page) {
+  await page.getByTestId('onboarding-gst-not-registered').click();
+}
+
 export interface MockUser {
   id: string;
   email: string;
@@ -163,6 +167,140 @@ export class AuthMocker {
    * Set up all necessary route interceptions for auth
    */
   private async setupRouteInterceptions() {
+    const profileDto = (overrides: Record<string, unknown> = {}) => {
+      const mockUser = this.mockState.user as { id?: string; email?: string; user_metadata?: { full_name?: string } } | null;
+      const now = new Date().toISOString();
+      return {
+        id: '11111111-1111-4111-8111-111111111112',
+        name: 'Test Business',
+        email: mockUser?.email || 'business@test.com',
+        phone: null,
+        address: null,
+        city: null,
+        state: null,
+        zip: null,
+        country: 'New Zealand',
+        taxId: null,
+        logoUrl: null,
+        website: null,
+        defaultTaxRate: '0',
+        gstRegistrationStatus: 'not_registered',
+        defaultTerms: null,
+        paymentTermDays: 30,
+        defaultNotes: null,
+        bankInfo: null,
+        bankAccountName: null,
+        bankAccountNumber: null,
+        theme: null,
+        invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
+        invoiceNumberSequence: 1,
+        quoteNumberFormat: 'QUO-{YYYY}-{SEQ}',
+        quoteNumberSequence: 1,
+        quoteValidityDays: 30,
+        defaultQuoteKind: 'quote',
+        createdAt: now,
+        updatedAt: now,
+        ...overrides,
+      };
+    };
+
+    await this.page.route('**/api/me', async (route) => {
+      if (!this.mockState.session) {
+        await route.fulfill({ status: 401, contentType: 'application/json', body: '{"message":"Unauthorized"}' });
+        return;
+      }
+      const mockUser = this.mockState.user as { id?: string; email?: string; user_metadata?: { full_name?: string } };
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          user: {
+            id: mockUser.id,
+            email: mockUser.email,
+            name: mockUser.user_metadata?.full_name || 'Test User',
+          },
+          organisation: { id: '11111111-1111-4111-8111-111111111111', name: "Test User's organisation" },
+          membership: { role: 'owner' },
+          permissions: [],
+        }),
+      });
+    });
+
+    await this.page.route('**/api/auth/sign-up/email', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
+
+    await this.page.route('**/api/auth/sign-in/email', async (route) => {
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
+
+    await this.page.route('**/api/business-profile', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (path !== '/api/business-profile') {
+        await route.continue();
+        return;
+      }
+      if (route.request().method() === 'GET' && !this.mockState.hasBusinessProfile) {
+        await route.fulfill({ status: 404, contentType: 'application/json', body: '{"message":"Not found"}' });
+        return;
+      }
+      if (route.request().method() === 'PUT' || route.request().method() === 'POST') {
+        this.mockState.hasBusinessProfile = true;
+      }
+      await route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(profileDto()) });
+    });
+
+    await this.page.route('**/api/invoices**', async (route) => {
+      const path = new URL(route.request().url()).pathname;
+      if (route.request().method() === 'GET' && path === '/api/invoices') {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: '{"invoices":[]}' });
+        return;
+      }
+      await route.continue();
+    });
+
+    await this.page.route((url) => url.pathname === '/api/dashboard', async (route) => {
+      if (route.request().method() !== 'GET') {
+        await route.continue();
+        return;
+      }
+      const filters = { from: '2026-01-01', to: '2026-11-04', comparison: 'previous_period' };
+      const kinds = ['summary', 'receivables', 'payables', 'cash', 'tax', 'activity'];
+      const now = new Date().toISOString();
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({
+          layout: {
+            id: '11111111-1111-4111-8111-111111111113',
+            name: 'My dashboard',
+            isDefault: true,
+            filters,
+            widgets: kinds.map((kind, order) => ({ kind, order, visible: true, size: 'medium' })),
+            createdAt: now,
+            updatedAt: now,
+          },
+          reports: kinds.map((type) => ({
+            type,
+            filters,
+            authority: type === 'activity'
+              ? { status: 'operational', source: 'operational_records', message: 'Recent activity.' }
+              : { status: 'authoritative', source: 'posted_ledger', message: 'Posted ledger.' },
+            metrics: [],
+            rows: [],
+          })),
+        }),
+      });
+    });
+
+    await this.page.route('**/api/saved-reports**', async (route) => {
+      if (route.request().method() === 'GET') {
+        await route.fulfill({ status: 200, contentType: 'application/json', body: '{"reports":[]}' });
+        return;
+      }
+      await route.continue();
+    });
+
     // Mock auth session endpoint
     await this.page.route('**/auth/v1/user', async route => {
       if (this.mockState.session) {

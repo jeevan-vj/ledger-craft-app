@@ -46,6 +46,8 @@ const TransactionImport = lazy(() => import("@/pages/TransactionImport"));
 const ReconciliationPage = lazy(() => import("@/pages/ReconciliationPage"));
 const Onboarding = lazy(() => import("@/pages/Onboarding"));
 const EmailConfirmation = lazy(() => import("@/pages/EmailConfirmation"));
+const TermsPage = lazy(() => import("@/pages/LegalPage").then((module) => ({ default: module.TermsPage })));
+const PrivacyPage = lazy(() => import("@/pages/LegalPage").then((module) => ({ default: module.PrivacyPage })));
 
 // Payment & Accounting Pages
 const PaymentsPage = lazy(() => import("@/pages/PaymentsPage"));
@@ -119,6 +121,14 @@ const appRoutes: RouteObject[] = [
       {
         path: "/confirm-email",
         element: <SuspenseWrapper><EmailConfirmation /></SuspenseWrapper>,
+      },
+      {
+        path: "/terms",
+        element: <SuspenseWrapper><TermsPage /></SuspenseWrapper>,
+      },
+      {
+        path: "/privacy",
+        element: <SuspenseWrapper><PrivacyPage /></SuspenseWrapper>,
       },
       {
         path: "/auth/callback",

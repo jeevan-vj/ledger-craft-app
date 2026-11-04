@@ -5,30 +5,25 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useAuth } from "@/context/StableAuthContext";
 import { useToast } from '@/hooks/use-toast';
-import { User, Mail, Lock, ArrowRight, Chrome, Shield } from 'lucide-react';
+import { User, Mail, Lock, ArrowRight } from 'lucide-react';
 import ModernAuthLayout from '../components/auth/modern/ModernAuthLayout';
 import { ModernInput } from '../components/auth/modern/ModernInput';
 import { ModernButton } from '../components/auth/modern/ModernButton';
-import PasswordStrengthIndicator from '../components/auth/modern/PasswordStrengthIndicator';
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
   email: z.string().email('Invalid email address'),
-  password: z.string()
-    .min(8, 'Password must be at least 8 characters')
-    .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/, 'Password must contain uppercase, lowercase, and number'),
+  password: z.string().min(8, 'Use at least 8 characters.'),
   agreeToTerms: z.boolean().refine(val => val === true, 'You must agree to the terms and conditions')
 });
 
 type SignupFormValues = z.infer<typeof signupSchema>;
 
 const ModernSignup = () => {
-  const { signUp, signInWithGoogle } = useAuth();
+  const { signUp } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-  const [showPasswordStrength, setShowPasswordStrength] = useState(false);
 
   const {
     register,
@@ -40,7 +35,6 @@ const ModernSignup = () => {
     mode: 'onChange'
   });
 
-  const password = watch('password');
   const agreeToTerms = watch('agreeToTerms');
 
   const onSubmit = async (values: SignupFormValues) => {
@@ -86,31 +80,6 @@ const ModernSignup = () => {
     }
   };
 
-  const handleGoogleSignUp = async () => {
-    setIsGoogleLoading(true);
-    try {
-      const { error } = await signInWithGoogle();
-      
-      if (error) {
-        toast({
-          title: 'Google Sign Up Failed',
-          description: error.message,
-          variant: 'destructive'
-        });
-      }
-      // If successful, the OAuth flow will redirect to the callback page
-      // New users will be redirected to onboarding after successful OAuth
-    } catch (error) {
-      toast({
-        title: 'Google Sign Up Failed', 
-        description: 'An unexpected error occurred. Please try again.',
-        variant: 'destructive'
-      });
-    } finally {
-      setIsGoogleLoading(false);
-    }
-  };
-
   return (
     <ModernAuthLayout
       title="Create your account"
@@ -148,19 +117,12 @@ const ModernSignup = () => {
             label="Password"
             type="password"
             icon={Lock}
-            placeholder="Create a password"
+            placeholder="At least 8 characters"
             showPasswordToggle
             error={errors.password?.message}
             autoComplete="new-password"
-            onFocus={() => setShowPasswordStrength(true)}
           />
-          
-          {showPasswordStrength && password && (
-            <PasswordStrengthIndicator 
-              password={password} 
-              showCriteria={true}
-            />
-          )}
+          <p className="text-xs text-muted-foreground">Same rule as the mobile app: 8 or more characters.</p>
         </div>
 
         {/* Terms and Conditions */}
@@ -183,21 +145,8 @@ const ModernSignup = () => {
             </div>
           </label>
           {errors.agreeToTerms && (
-            <p className="text-xs text-destructive">{errors.agreeToTerms.message}</p>
+            <p className="text-xs text-destructive" role="alert">{errors.agreeToTerms.message}</p>
           )}
-        </div>
-
-        {/* Security Notice */}
-        <div className="bg-muted/50 border border-border/50 rounded-lg p-4">
-          <div className="flex items-start space-x-3">
-            <Shield className="h-5 w-5 text-primary flex-shrink-0 mt-0.5" />
-            <div>
-              <h4 className="text-sm font-medium text-foreground mb-1">Your data is secure</h4>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                We use bank-level encryption to protect your information and never store your password in plain text.
-              </p>
-            </div>
-          </div>
         </div>
 
         {/* Create Account Button */}
@@ -213,47 +162,6 @@ const ModernSignup = () => {
         >
           {isLoading ? 'Creating account...' : 'Create account'}
         </ModernButton>
-
-        {/* Divider */}
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-border" />
-          </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-card px-2 text-muted-foreground">Or continue with</span>
-          </div>
-        </div>
-
-        {/* Social Signup Buttons */}
-        <div className="grid gap-3">
-          <ModernButton
-            type="button"
-            variant="outline"
-            fullWidth
-            icon={Chrome}
-            disabled={isLoading || isGoogleLoading}
-            loading={isGoogleLoading}
-            onClick={handleGoogleSignUp}
-          >
-            {isGoogleLoading ? 'Signing up...' : 'Google'}
-          </ModernButton>
-          
-          {/* <ModernButton
-            type="button"
-            variant="outline"
-            size="md"
-            icon={Github}
-            disabled={isLoading || isGoogleLoading}
-            onClick={() => {
-              toast({
-                title: 'Coming Soon',
-                description: 'GitHub signup will be available soon!',
-              });
-            }}
-          >
-            GitHub
-          </ModernButton> */}
-        </div>
 
         {/* Sign In Link */}
         <div className="text-center">

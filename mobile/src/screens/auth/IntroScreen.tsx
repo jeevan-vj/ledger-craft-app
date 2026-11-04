@@ -69,7 +69,7 @@ export default function IntroScreen() {
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.topBar}>
-        <Text style={styles.brand}>LedgerCraft</Text>
+        <Text style={styles.brand}>EasyBizInvoice</Text>
         <Text style={styles.counter} accessibilityLabel={`Page ${index + 1} of ${slides.length}`}>
           {index + 1}/{slides.length}
         </Text>

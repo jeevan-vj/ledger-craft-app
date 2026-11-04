@@ -41,5 +41,7 @@ describe('onboarding model', () => {
       gstRegistrationStatus: 'not_registered',
       defaultTaxRate: 0,
     });
+    expect(businessTaxDefaults('Australia', 'registered').defaultTaxRate).toBe(10);
+    expect(businessTaxDefaults('United Kingdom', 'registered').defaultTaxRate).toBe(20);
   });
 });

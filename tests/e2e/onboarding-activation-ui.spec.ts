@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { AuthMocker } from './auth-utils';
+import { AuthMocker, chooseNotRegistered } from './auth-utils';
 
 async function dismissUpdate(page: import('@playwright/test').Page) {
   await page.getByRole('button', { name: /dismiss update/i }).click({ timeout: 2000 }).catch(() => undefined);
@@ -42,13 +42,15 @@ async function stubEmptyLists(page: import('@playwright/test').Page) {
 }
 
 test.describe('Onboarding activation UI', () => {
-  test('skip lands on dashboard empty CTA then create invoice', async ({ page }) => {
+  test('setup lands on dashboard empty CTA then create invoice', async ({ page }) => {
     const auth = new AuthMocker(page);
     await auth.mockImmediateAuth({ email: 'skip-ui@example.com', fullName: 'Skip UI' });
     await stubEmptyLists(page);
     await page.goto('/onboarding');
     await dismissUpdate(page);
-    await page.getByTestId('onboarding-skip').click();
+    await page.getByTestId('onboarding-business-name').fill('Skip UI Studio');
+    await chooseNotRegistered(page);
+    await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);
     await expect(page.getByTestId('dashboard-empty-create-invoice')).toBeVisible();
     await page.getByTestId('dashboard-empty-create-invoice').click();
@@ -63,6 +65,7 @@ test.describe('Onboarding activation UI', () => {
     await page.goto('/onboarding');
     await dismissUpdate(page);
     await page.getByTestId('onboarding-business-name').fill('Harbour Cafe');
+    await chooseNotRegistered(page);
     await page.getByTestId('onboarding-submit').click();
     await expect(page).not.toHaveURL(/\/onboarding/);
     await expect(page.getByTestId('dashboard-empty-create-invoice')).toBeVisible();

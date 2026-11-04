@@ -29,7 +29,7 @@ const PwaUpdatePrompt: React.FC<PwaUpdatePromptProps> = ({
     >
       <div
         role="alertdialog"
-        aria-modal="true"
+        aria-modal="false"
         aria-labelledby="pwa-update-title"
         aria-describedby="pwa-update-description"
         className="pointer-events-auto mb-4 w-full max-w-md rounded-2xl bg-card p-5 text-card-foreground shadow-surface-lg"
@@ -43,7 +43,7 @@ const PwaUpdatePrompt: React.FC<PwaUpdatePromptProps> = ({
               Update available
             </h3>
             <p id="pwa-update-description" className="mt-1 text-sm text-muted-foreground">
-              Refresh LedgerCraft to use the latest improvements and fixes.
+              Refresh EasyBizInvoice to use the latest improvements and fixes.
             </p>
           </div>
           <Button variant="ghost" size="icon" onClick={onClose} aria-label="Dismiss update prompt">

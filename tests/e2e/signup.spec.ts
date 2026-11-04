@@ -8,10 +8,7 @@ const validUser = {
 };
 
 const invalidPasswords = [
-  { password: 'weak', error: 'Password must be at least 8 characters' },
-  { password: 'alllowercase123', error: 'Password must contain uppercase, lowercase, and number' },
-  { password: 'ALLUPPERCASE123', error: 'Password must contain uppercase, lowercase, and number' },
-  { password: 'NoNumbers', error: 'Password must contain uppercase, lowercase, and number' },
+  { password: 'weak', error: 'Use at least 8 characters.' },
 ];
 
 test.describe('Sign Up Flow', () => {
@@ -33,7 +30,7 @@ test.describe('Sign Up Flow', () => {
     // Verify placeholders - first field is autofocused so has empty placeholder, others show placeholders
     await expect(page.locator('input[name="fullName"]')).toHaveAttribute('placeholder', 'Enter your full name');
     await expect(page.locator('input[name="email"]')).toHaveAttribute('placeholder', 'Enter your email');
-    await expect(page.locator('input[name="password"]')).toHaveAttribute('placeholder', 'Create a password');
+    await expect(page.locator('input[name="password"]')).toHaveAttribute('placeholder', 'At least 8 characters');
     
     // Check terms checkbox
     await expect(page.getByRole('checkbox')).toBeVisible();
@@ -61,11 +58,10 @@ test.describe('Sign Up Flow', () => {
     // Test initial placeholder behavior - first field is autofocused so placeholder is empty
     await expect(nameInput).toHaveAttribute('placeholder', 'Enter your full name');
     await expect(emailInput).toHaveAttribute('placeholder', 'Enter your email');
-    await expect(passwordInput).toHaveAttribute('placeholder', 'Create a password');
+    await expect(passwordInput).toHaveAttribute('placeholder', 'At least 8 characters');
     
-    // Test that placeholder disappears when focused (better UX with floating label)
     await nameInput.focus();
-    await expect(nameInput).toHaveAttribute('placeholder', '');
+    await expect(nameInput).toHaveAttribute('placeholder', 'Enter your full name');
     
     // Test that floating label works and placeholder returns when unfocused without value
     await nameInput.blur();
@@ -76,19 +72,14 @@ test.describe('Sign Up Flow', () => {
     await nameInput.fill('John Doe');
     await expect(nameInput).toHaveValue('John Doe');
     
-    // When field has value, placeholder should remain empty even when unfocused
     await nameInput.blur();
-    await expect(nameInput).toHaveAttribute('placeholder', '');
+    await expect(nameInput).toHaveValue('John Doe');
+    await expect(nameInput).toHaveAttribute('placeholder', 'Enter your full name');
   });
 
-  test('should show password strength indicator on focus', async ({ page }) => {
-    const passwordInput = page.locator('input[name="password"]');
-    
-    // Focus on password field
-    await passwordInput.focus();
-    
-    // Password strength indicator should appear
-    await expect(page.locator('.password-strength, [data-testid="password-strength"]')).toBeVisible();
+  test('explains the shared 8 character password rule', async ({ page }) => {
+    await expect(page.getByText('Same rule as the mobile app: 8 or more characters.')).toBeVisible();
+    await expect(page.locator('.password-strength, [data-testid="password-strength"]')).toHaveCount(0);
   });
 
   test('should toggle password visibility', async ({ page }) => {
@@ -114,20 +105,14 @@ test.describe('Sign Up Flow', () => {
     // Submit button should be disabled initially with empty form
     await expect(submitButton).toBeDisabled();
     
-    // Interact with fields to trigger validation
-    await page.locator('input[name="fullName"]').focus();
-    await page.locator('input[name="fullName"]').blur();
+    // Type invalid values so onChange validation runs
+    await page.locator('input[name="fullName"]').fill('J');
+    await page.locator('input[name="email"]').fill('not-an-email');
+    await page.locator('input[name="password"]').fill('short');
     
-    await page.locator('input[name="email"]').focus();
-    await page.locator('input[name="email"]').blur();
-    
-    await page.locator('input[name="password"]').focus();
-    await page.locator('input[name="password"]').blur();
-    
-    // Should show validation errors after interaction
     await expect(page.getByText('Full name must be at least 2 characters')).toBeVisible();
     await expect(page.getByText('Invalid email address')).toBeVisible();
-    await expect(page.getByText('Password must be at least 8 characters')).toBeVisible();
+    await expect(page.getByText('Use at least 8 characters.', { exact: true })).toBeVisible();
     
     // Submit button should still be disabled
     await expect(submitButton).toBeDisabled();
@@ -141,11 +126,8 @@ test.describe('Sign Up Flow', () => {
         await page.locator('input[name="email"]').fill(validUser.email);
         await page.locator('input[name="password"]').fill(password);
         
-        // Try to submit
-        await page.getByRole('button', { name: /create account/i }).click();
-        
-        // Should show password validation error
-        await expect(page.getByText(error)).toBeVisible();
+        await expect(page.getByText(error, { exact: true })).toBeVisible();
+        await expect(page.getByRole('button', { name: /create account/i })).toBeDisabled();
       });
     });
   });
@@ -157,11 +139,8 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="password"]').fill(validUser.password);
     await page.getByRole('checkbox').check();
     
-    // Try to submit
-    await page.getByRole('button', { name: /create account/i }).click();
-    
-    // Should show email validation error
     await expect(page.getByText('Invalid email address')).toBeVisible();
+    await expect(page.getByRole('button', { name: /create account/i })).toBeDisabled();
   });
 
   test('should require terms agreement', async ({ page }) => {
@@ -170,11 +149,8 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="email"]').fill(validUser.email);
     await page.locator('input[name="password"]').fill(validUser.password);
     
-    // Try to submit without checking terms
-    await page.getByRole('button', { name: /create account/i }).click();
-    
-    // Should show terms validation error
-    await expect(page.getByText('You must agree to the terms and conditions')).toBeVisible();
+    // Create account stays disabled until the terms checkbox is checked
+    await expect(page.getByRole('button', { name: /create account/i })).toBeDisabled();
   });
 
   test('should navigate to login page', async ({ page }) => {
@@ -193,36 +169,45 @@ test.describe('Sign Up Flow', () => {
     await page.locator('input[name="password"]').fill(validUser.password);
     await page.getByRole('checkbox').check();
     
-    // Mock slow network response to see loading state
-    await page.route('**/auth/v1/signup', async route => {
-      await page.waitForTimeout(1000); // Simulate slow response
-      await route.continue();
+    let releaseSignup: () => void = () => undefined;
+    const signupGate = new Promise<void>((resolve) => {
+      releaseSignup = resolve;
     });
-    
+    await page.route('**/api/auth/sign-up/email', async (route) => {
+      await signupGate;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
+
     const submitButton = page.getByRole('button', { name: /create account/i });
-    
-    // Submit form
     await submitButton.click();
-    
-    // Should show loading state
-    await expect(submitButton).toBeDisabled();
-    await expect(page.getByText(/creating account/i)).toBeVisible();
+    await expect(page.getByRole('button', { name: /creating account/i })).toBeDisabled();
+    releaseSignup();
   });
 
   test('should handle successful signup', async ({ page }) => {
-    // Mock successful signup response
-    await page.route('**/auth/v1/signup', async route => {
+    let signedUp = false;
+    await page.route('**/api/auth/sign-up/email', async (route) => {
+      signedUp = true;
+      await route.fulfill({ status: 200, contentType: 'application/json', body: '{}' });
+    });
+    await page.route('**/api/me', async (route) => {
+      if (!signedUp) {
+        await route.fulfill({ status: 401, contentType: 'application/json', body: '{"message":"Unauthorized"}' });
+        return;
+      }
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({
-          user: {
-            id: 'test-user-id',
-            email: validUser.email,
-            user_metadata: { full_name: validUser.fullName }
-          }
-        })
+          user: { id: 'test-user-id', email: validUser.email, name: validUser.fullName },
+          organisation: { id: '11111111-1111-4111-8111-111111111111', name: "John Doe's organisation" },
+          membership: { role: 'owner' },
+          permissions: [],
+        }),
       });
+    });
+    await page.route('**/api/business-profile', async (route) => {
+      await route.fulfill({ status: 404, contentType: 'application/json', body: '{"message":"Not found"}' });
     });
     
     // Fill and submit valid form
@@ -238,14 +223,11 @@ test.describe('Sign Up Flow', () => {
   });
 
   test('should handle signup errors', async ({ page }) => {
-    // Mock error response
-    await page.route('**/auth/v1/signup', async route => {
+    await page.route('**/api/auth/sign-up/email', async (route) => {
       await route.fulfill({
         status: 400,
         contentType: 'application/json',
-        body: JSON.stringify({
-          error: 'User already registered'
-        })
+        body: JSON.stringify({ message: 'User already registered' }),
       });
     });
     
@@ -257,8 +239,7 @@ test.describe('Sign Up Flow', () => {
     
     await page.getByRole('button', { name: /create account/i }).click();
     
-    // Should show error message
-    await expect(page.getByText(/user already registered/i)).toBeVisible();
+    await expect(page.getByTestId('toast-message')).toContainText(/something in your details didn't save/i);
   });
 
   test('should be responsive on mobile', async ({ page }) => {
@@ -276,19 +257,16 @@ test.describe('Sign Up Flow', () => {
     expect(boundingBox?.width).toBeGreaterThan(200); // Should have reasonable width
   });
 
-  test('should show social signup options as coming soon', async ({ page }) => {
-    // Check if social signup buttons exist
-    const googleButton = page.getByRole('button', { name: /google/i });
-    const githubButton = page.getByRole('button', { name: /github/i });
-    
-    await expect(googleButton).toBeVisible();
-    await expect(githubButton).toBeVisible();
-    
-    // Click Google button
-    await googleButton.click();
-    
-    // Should show "Coming Soon" toast
-    await expect(page.getByText(/coming soon/i)).toBeVisible();
+  test('does not offer a Google or GitHub signup that cannot complete', async ({ page }) => {
+    await expect(page.getByRole('button', { name: /google/i })).toHaveCount(0);
+    await expect(page.getByRole('button', { name: /github/i })).toHaveCount(0);
+  });
+
+  test('terms and privacy pages are reachable', async ({ page }) => {
+    await page.goto('/terms');
+    await expect(page.getByRole('heading', { name: 'Terms of Service' })).toBeVisible();
+    await page.goto('/privacy');
+    await expect(page.getByRole('heading', { name: 'Privacy Policy' })).toBeVisible();
   });
 
   test('should have proper accessibility attributes', async ({ page }) => {

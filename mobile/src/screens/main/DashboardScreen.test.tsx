@@ -162,10 +162,17 @@ describe('Home quick actions', () => {
     });
   });
 
-  it('renders Continue as a lime button and remembers Dismiss', async () => {
+  it('opens create invoice from an empty home and remembers Dismiss', async () => {
     const first = renderHome();
-    const continueButton = await first.findByRole('button', { name: 'Continue' });
-    expect(flatStyle(continueButton.props.style).backgroundColor).toBe(darkPalette.accent);
+    const createButton = await first.findByRole('button', { name: 'Create invoice' });
+    expect(flatStyle(createButton.props.style).backgroundColor).toBe(darkPalette.accent);
+    fireEvent.press(createButton);
+    expect(mockNavigate).toHaveBeenCalledWith('Invoices', {
+      state: {
+        index: 1,
+        routes: [{ name: 'InvoiceList' }, { name: 'InvoiceCreate' }],
+      },
+    });
 
     fireEvent.press(first.getByRole('button', { name: 'Dismiss' }));
     expect(SecureStore.setItemAsync).toHaveBeenCalled();
@@ -177,9 +184,9 @@ describe('Home quick actions', () => {
     ));
     const second = renderHome();
     expect(await second.findByText("You're all caught up")).toBeTruthy();
-    expect(second.queryByText('Finish setting up')).toBeNull();
+    expect(second.queryByText('Create your first invoice')).toBeNull();
     await waitFor(() => {
-      expect(second.queryByRole('button', { name: 'Continue' })).toBeNull();
+      expect(second.queryByRole('button', { name: 'Create invoice' })).toBeNull();
     });
   });
 });

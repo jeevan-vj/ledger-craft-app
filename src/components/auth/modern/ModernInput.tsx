@@ -147,7 +147,9 @@ const ModernInput = forwardRef<HTMLInputElement, ModernInputProps>(
 
         {/* Help Text or Error */}
         {(error || helpText) && (
-          <div className={cn(
+          <div
+            role={hasError ? 'alert' : undefined}
+            className={cn(
             "text-xs transition-all duration-300 ease-out animate-in slide-in-from-top-1",
             "transform-gpu", // Hardware acceleration
             hasError ? "text-destructive animate-pulse" : "text-muted-foreground"

@@ -5,6 +5,7 @@ import { jsPDF } from 'jspdf';
 import { Archive, ArrowDown, ArrowUp, Copy, Download, FileDown, Pin, Plus, Printer, RefreshCw, Save, Settings2 } from 'lucide-react';
 import type { DashboardWidgetKind, DashboardWidgetPreference, ReportFilters, ReportResultDto, SavedReportDefinitionDto } from '@ledgercraft/contracts';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
+import { useAppData } from '@/hooks/useAppData';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { ContentPanel } from '@/components/ui/ContentPanel';
 import { Button } from '@/components/ui/button';
@@ -97,6 +98,20 @@ function SavedReports({ reports, onOpen, onChange, onDuplicate }: { reports: Sav
   return <ContentPanel className="print:hidden"><h2 className="text-lg font-semibold">Saved reports</h2><p className="mt-1 text-sm text-muted-foreground">Reusable filters for web and mobile.</p>{reports.length ? <div className="mt-5 divide-y divide-border">{reports.map((report) => <div key={report.id} className="flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between"><button type="button" className="text-left" onClick={() => onOpen(report)}><span className="font-medium">{report.name}</span><span className="block text-xs capitalize text-muted-foreground">{report.reportType} · {report.filters.from} – {report.filters.to}</span></button><div className="flex gap-1"><button type="button" className="rounded-full p-2 hover:bg-muted" aria-label={`${report.isPinned ? 'Unpin' : 'Pin'} ${report.name}`} onClick={() => onChange(report, { isPinned: !report.isPinned })}><Pin className={cn('h-4 w-4', report.isPinned && 'fill-current')} /></button><button type="button" className="rounded-full p-2 hover:bg-muted" aria-label={`Rename ${report.name}`} onClick={() => { const name = window.prompt('Report name', report.name)?.trim(); if (name) onChange(report, { name }); }}><Settings2 className="h-4 w-4" /></button><button type="button" className="rounded-full p-2 hover:bg-muted" aria-label={`Duplicate ${report.name}`} onClick={() => onDuplicate(report.id)}><Copy className="h-4 w-4" /></button><button type="button" className="rounded-full p-2 hover:bg-muted" aria-label={`Archive ${report.name}`} onClick={() => onChange(report, { isArchived: true })}><Archive className="h-4 w-4" /></button></div></div>)}</div> : <p className="mt-5 rounded-xl bg-muted/50 px-4 py-5 text-sm text-muted-foreground">Save a widget to reuse its date and comparison filters.</p>}</ContentPanel>;
 }
 
+function FirstInvoiceCard() {
+  const { invoices, isLoadingInvoices } = useAppData();
+  if (isLoadingInvoices || invoices.length > 0) return null;
+  return (
+    <ContentPanel>
+      <h2 className="text-lg font-semibold">Create your first invoice</h2>
+      <p className="mt-1 text-sm text-muted-foreground">Add a customer and one line item. You can send it when you are ready.</p>
+      <Button className="mt-4" asChild>
+        <Link to="/invoices/new" data-testid="dashboard-empty-create-invoice">Create invoice</Link>
+      </Button>
+    </ContentPanel>
+  );
+}
+
 export default function Dashboard() {
   const queryClient = useQueryClient();
   const [searchParams, setSearchParams] = useSearchParams();
@@ -119,10 +134,11 @@ export default function Dashboard() {
   const updateFilters = (patch: Partial<ReportFilters>) => { const next = { ...filters, ...patch }; setSearchParams({ from: next.from, to: next.to, comparison: next.comparison, ...(layoutId ? { layout: layoutId } : {}) }); };
 
   if (dashboard.isLoading) return <div role="status" aria-live="polite" className="space-y-6"><div className="h-12 w-52 animate-pulse rounded-xl bg-muted" /><div className="grid gap-6 lg:grid-cols-2"><div className="h-64 animate-pulse rounded-2xl bg-muted" /><div className="h-64 animate-pulse rounded-2xl bg-muted" /></div><span className="sr-only">Loading dashboard</span></div>;
-  if (dashboard.isError || !dashboard.data) return <ContentPanel><div role="alert"><h1 className="text-xl font-semibold">Dashboard unavailable</h1><p className="mt-2 text-sm text-muted-foreground">{dashboard.error instanceof Error ? dashboard.error.message : 'The dashboard could not be loaded.'}</p><Button className="mt-5" onClick={() => dashboard.refetch()}><RefreshCw className="mr-2 h-4 w-4" />Try again</Button></div></ContentPanel>;
+  if (dashboard.isError || !dashboard.data) return <div className="space-y-8"><FirstInvoiceCard /><ContentPanel><div role="alert"><h1 className="text-xl font-semibold">Dashboard unavailable</h1><p className="mt-2 text-sm text-muted-foreground">{dashboard.error instanceof Error ? dashboard.error.message : 'The dashboard could not be loaded.'}</p><Button className="mt-5" onClick={() => dashboard.refetch()}><RefreshCw className="mr-2 h-4 w-4" />Try again</Button></div></ContentPanel></div>;
 
   return <div className="space-y-8">
     <PageHeader title="Dashboard" description="Configurable financial insights derived from the posted ledger, with recent operational activity." actions={<><Button variant="outline" onClick={() => window.print()}><Printer className="mr-2 h-4 w-4" />Print</Button><Button onClick={() => setEditing((value) => !value)}><Settings2 className="mr-2 h-4 w-4" />Configure</Button></>} />
+    <FirstInvoiceCard />
     <ContentPanel className="print:hidden"><div className="grid gap-4 md:grid-cols-[1fr_1fr_1fr_auto] md:items-end"><label className="grid gap-1 text-sm font-medium">From<input className="rounded-xl border border-input bg-background px-3 py-2" type="date" value={filters.from} max={filters.to} onChange={(event) => updateFilters({ from: event.target.value })} /></label><label className="grid gap-1 text-sm font-medium">To<input className="rounded-xl border border-input bg-background px-3 py-2" type="date" value={filters.to} min={filters.from} onChange={(event) => updateFilters({ to: event.target.value })} /></label><label className="grid gap-1 text-sm font-medium">Compare<select className="rounded-xl border border-input bg-background px-3 py-2" value={filters.comparison} onChange={(event) => updateFilters({ comparison: event.target.value as ReportFilters['comparison'] })}><option value="previous_period">Previous period</option><option value="previous_year">Previous year</option><option value="none">No comparison</option></select></label><Button variant="outline" onClick={() => updateFilters(initialRange())}><RefreshCw className="mr-2 h-4 w-4" />Year to date</Button></div></ContentPanel>
     {editing && <LayoutEditor widgets={draftWidgets} onChange={setDraftWidgets} onCancel={() => setEditing(false)} onSave={() => saveLayout.mutate()} saving={saveLayout.isPending} />}
     <div className="grid gap-6 lg:grid-cols-2">{orderedReports.map(({ report, preference }) => <ReportCard key={report.type} report={report} preference={preference} onSave={(type) => createReport.mutate(type)} />)}</div>
