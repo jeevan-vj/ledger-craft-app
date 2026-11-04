@@ -6,6 +6,7 @@ import {
   type MobileShareInvoiceResponse,
 } from '@/features/invoices/api/invoicesApi';
 import { supabase } from './supabaseClient';
+import type { DraftUpdate } from '@/features/invoices/finishDraftModel';
 import type { Invoice, LineItem, Customer } from '@/types/invoice';
 
 export class InvoiceService {
@@ -310,6 +311,10 @@ export class InvoiceService {
       console.error('Error updating invoice:', error);
       throw error;
     }
+  }
+
+  async updateDraft(id: string, patch: DraftUpdate): Promise<Invoice> {
+    return invoicesApi.updateDraft(id, patch);
   }
 
   // Fetch all customers

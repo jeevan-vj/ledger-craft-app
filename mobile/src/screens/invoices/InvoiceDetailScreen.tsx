@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   View,
   Text,
@@ -43,8 +43,10 @@ import { formatInvoiceDate, invoiceAmountDue } from '@/utils/invoiceTemplates';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { useTheme } from '@/theme';
 import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
+import { FinishDraftCard } from '@/components/invoice/FinishDraftCard';
 import { InvoiceDeliverySection } from '@/components/invoice/InvoiceDeliverySection';
 import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
+import { buildDraftLineUpdate, dueDateError, showFinishDraft } from '@/features/invoices/finishDraftModel';
 import { canWriteInvoices } from '@/features/auth/invoiceAccess';
 import { useStore } from '@/store';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
@@ -86,6 +88,10 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   const [paymentToReverse, setPaymentToReverse] = useState<Payment | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
+  const [finishSaving, setFinishSaving] = useState(false);
+  const [finishError, setFinishError] = useState<string>();
+  const finishRequest = useRef(0);
+  const finishLock = useRef(false);
   const [history, setHistory] = useState<{ id: string; action: string; createdAt: string }[]>([]);
   const [attachments, setAttachments] = useState<{ id: string; filename: string; size: number; contentType: string; role: 'attachment' | 'source_document'; locked: boolean }[]>([]);
   const loading = invoiceQuery.isPending;
@@ -136,6 +142,51 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
 
   const handleEdit = () => {
     navigation.navigate('InvoiceEdit', { invoiceId });
+  };
+
+  const saveDraft = async (run: () => Promise<void>) => {
+    if (finishLock.current) return;
+    finishLock.current = true;
+    const request = finishRequest.current + 1;
+    finishRequest.current = request;
+    setFinishSaving(true);
+    setFinishError(undefined);
+    try {
+      await run();
+      if (request !== finishRequest.current) return;
+      await refreshInvoice();
+    } catch (error) {
+      console.error('Error updating the draft invoice:', error);
+      if (request === finishRequest.current) {
+        setFinishError('The invoice could not be updated. Check your connection and try again.');
+      }
+    } finally {
+      if (request === finishRequest.current) {
+        finishLock.current = false;
+        setFinishSaving(false);
+      }
+    }
+  };
+
+  const saveDueDate = (dueDate: string) => {
+    if (!invoice) return;
+    const validation = dueDateError(invoice.date, dueDate);
+    if (validation) {
+      setFinishError(validation);
+      return;
+    }
+    if (dueDate === invoice.dueDate) return;
+    void saveDraft(() => invoiceService.updateDraft(invoice.id, { dueDate }).then(() => undefined));
+  };
+
+  const addDraftLine = (line: { description: string; quantity: string; amount: string }) => {
+    if (!invoice) return;
+    const patch = buildDraftLineUpdate(invoice, line);
+    if (!patch) {
+      setFinishError('Enter a description, quantity, and amount.');
+      return;
+    }
+    void saveDraft(() => invoiceService.updateDraft(invoice.id, patch).then(() => undefined));
   };
 
   const handleStatusChange = async (newStatus: string) => {
@@ -254,6 +305,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
         style={styles.scrollView}
         contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomBarHeight + space.lg }]}
         contentInsetAdjustmentBehavior="automatic"
+        keyboardShouldPersistTaps="handled"
       >
         <View style={styles.hero}>
           <Text style={styles.customerName}>{invoice.customer?.name || 'No customer'}</Text>
@@ -268,6 +320,25 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             </Text>
           </Text>
         </View>
+
+        {showFinishDraft(invoice.status, canWrite) ? (
+          <>
+            <FinishDraftCard
+              invoice={invoice}
+              saving={finishSaving}
+              saveError={finishError}
+              onDueDate={saveDueDate}
+              onAddLine={addDraftLine}
+              onPreview={() => setShowPreview(true)}
+            />
+            <InvoiceDeliverySection
+              invoice={invoice}
+              canSend={canWrite}
+              onShareInstead={() => setShareActionsVisible(true)}
+              onSent={() => { void refreshInvoice(); }}
+            />
+          </>
+        ) : null}
 
         {invoice.sourceImportDocumentId ? <View style={styles.card}>
           <Text style={styles.sectionTitle}>Source document</Text>
@@ -472,12 +543,14 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </View>
         )}
 
-        <InvoiceDeliverySection
-          invoice={invoice}
-          canSend={canWrite}
-          onShareInstead={() => setShareActionsVisible(true)}
-          onSent={() => { void refreshInvoice(); }}
-        />
+        {showFinishDraft(invoice.status, canWrite) ? null : (
+          <InvoiceDeliverySection
+            invoice={invoice}
+            canSend={canWrite}
+            onShareInstead={() => setShareActionsVisible(true)}
+            onSent={() => { void refreshInvoice(); }}
+          />
+        )}
 
         {hideProfilePrompt ? null : (
           <View style={{ paddingBottom: 8 }}>

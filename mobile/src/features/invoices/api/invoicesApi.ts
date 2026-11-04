@@ -5,6 +5,7 @@ import {
   type MobileBusinessProfileDto,
 } from '@/features/business-profile/api/businessProfileApi';
 import { customersApi, customersApiEnabled } from '@/features/customers/api/customersApi';
+import type { DraftUpdate } from '@/features/invoices/finishDraftModel';
 import type { BusinessProfile, Customer, Invoice, InvoiceStatus, LineItem } from '@/types/invoice';
 import { randomId } from '@/utils/id';
 
@@ -212,6 +213,20 @@ export const invoicesApi = {
         method: 'POST',
         headers: { 'Idempotency-Key': randomId() },
         body: JSON.stringify(toCreateBody(invoice, lineItems)),
+      }),
+    );
+  },
+
+  async updateDraft(id: string, patch: DraftUpdate): Promise<Invoice> {
+    return toInvoice(
+      await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify({
+          dueDate: patch.dueDate,
+          taxInclusive: patch.taxInclusive,
+          taxRate: patch.taxRate,
+          items: patch.items,
+        }),
       }),
     );
   },
