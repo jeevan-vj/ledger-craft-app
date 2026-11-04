@@ -8,6 +8,7 @@ import { invoiceService } from '@/services/invoiceService';
 import { useStore } from '@/store';
 import { darkPalette } from '@/theme/tokens';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
+import { FIRST_INVOICE_PROMPT_KEY } from '@/features/onboarding/onboardingStorage';
 
 const mockNavigate = jest.fn();
 
@@ -188,5 +189,22 @@ describe('Home quick actions', () => {
     await waitFor(() => {
       expect(second.queryByRole('button', { name: 'Create invoice' })).toBeNull();
     });
+  });
+
+  it('opens a new invoice once after onboarding', async () => {
+    (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (storedKey: string) => (
+      storedKey === FIRST_INVOICE_PROMPT_KEY ? 'pending' : null
+    ));
+    renderHome();
+    await waitFor(() => {
+      expect(mockNavigate).toHaveBeenCalledWith('Invoices', {
+        state: {
+          index: 1,
+          routes: [{ name: 'InvoiceList' }, { name: 'InvoiceCreate' }],
+        },
+      });
+    });
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith(FIRST_INVOICE_PROMPT_KEY);
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
   });
 });

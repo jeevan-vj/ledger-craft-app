@@ -32,7 +32,7 @@ export type InvoiceStackParamList = {
   InvoiceList: undefined;
   InvoiceCreate: { customerId?: string } | undefined;
   InvoiceEdit: { invoiceId: string };
-  InvoiceDetail: { invoiceId: string };
+  InvoiceDetail: { invoiceId: string; entry?: 'create' };
   QuoteList: undefined;
   QuoteCreate: { customerId?: string } | undefined;
   QuoteEdit: { quoteId: string };

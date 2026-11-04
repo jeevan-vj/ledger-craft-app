@@ -98,6 +98,11 @@ export default function RootNavigator() {
     return <AnimatedLoadingScreen />;
   }
 
+  // Auth and Main are different screen sets. Remount when that set changes so
+  // finishing setup opens Main. Otherwise the stack falls onto PublicInvoice
+  // with no share token and crashes.
+  const session = !user ? 'signed-out' : hasCompletedOnboarding ? 'app' : 'onboarding';
+
   return (
     <NavigationContainer
       ref={navigationRef}
@@ -108,7 +113,8 @@ export default function RootNavigator() {
       }}
     >
       <Stack.Navigator
-        initialRouteName={user && hasCompletedOnboarding ? 'Main' : 'Auth'}
+        key={session}
+        initialRouteName={session === 'app' ? 'Main' : 'Auth'}
         screenOptions={{
           ...rootNavigatorOptions,
           // Smooth fade between Auth and Main stacks

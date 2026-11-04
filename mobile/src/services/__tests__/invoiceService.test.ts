@@ -76,18 +76,43 @@ describe('InvoiceService (Hono)', () => {
   });
 
   it('loads an invoice through GET /api/invoices/:id', async () => {
-    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse(invoiceDto));
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse(invoiceDto))
+      .mockResolvedValueOnce(jsonResponse({
+        id: invoiceDto.customerId,
+        name: 'Acme Ltd',
+        email: 'north@wharf.test',
+      }));
 
     const invoice = await invoiceService.fetchInvoiceById(invoiceDto.id);
 
     expect(invoice.items).toHaveLength(1);
     expect(invoice.items[0].description).toBe('Work');
+    expect(invoice.customer?.email).toBe('north@wharf.test');
     expect(invoice.balanceDueText).toBe(invoiceDto.balanceDue);
     expect(typeof invoice.balanceDueText).toBe('string');
-    expect(global.fetch).toHaveBeenCalledWith(
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      1,
       `http://127.0.0.1:3001/api/invoices/${invoiceDto.id}`,
       expect.objectContaining({ method: 'GET' }),
     );
+    expect(global.fetch).toHaveBeenNthCalledWith(
+      2,
+      `http://127.0.0.1:3001/api/customers/${invoiceDto.customerId}`,
+      expect.any(Object),
+    );
+  });
+
+  it('uses the invoice customer email when the payload includes it', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({
+      ...invoiceDto,
+      customerEmail: 'ada@harbour.test',
+    }));
+
+    const invoice = await invoiceService.fetchInvoiceById(invoiceDto.id);
+
+    expect(invoice.customer?.email).toBe('ada@harbour.test');
+    expect(global.fetch).toHaveBeenCalledTimes(1);
   });
 
   it('creates an invoice through POST /api/invoices', async () => {
