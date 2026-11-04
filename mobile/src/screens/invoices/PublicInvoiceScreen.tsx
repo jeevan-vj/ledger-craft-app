@@ -27,10 +27,17 @@ export default function PublicInvoiceScreen() {
   const [phase, setPhase] = useState<'loading' | 'ready' | 'inactive' | 'missing' | 'offline'>('loading');
   const [busy, setBusy] = useState<'download' | 'share' | null>(null);
 
+  const shareToken = route.params?.shareToken;
+
   const load = useCallback(async () => {
+    if (!shareToken) {
+      setSnapshot(null);
+      setPhase('missing');
+      return;
+    }
     setPhase('loading');
     try {
-      const next = await invoiceService.fetchSharedInvoice(route.params.shareToken);
+      const next = await invoiceService.fetchSharedInvoice(shareToken);
       if (next === 'inactive') {
         setSnapshot(null);
         setPhase('inactive');
@@ -45,7 +52,7 @@ export default function PublicInvoiceScreen() {
       setSnapshot(null);
       setPhase('offline');
     }
-  }, [route.params.shareToken]);
+  }, [shareToken]);
 
   useEffect(() => {
     load();

@@ -63,7 +63,8 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   const styles = createStyles(theme);
   const navigation = useNavigation<InvoiceDetailNavigationProp>();
   const route = useRoute<InvoiceDetailRouteProp>();
-  const { invoiceId } = route.params;
+  const { invoiceId, entry } = route.params;
+  const hideProfilePrompt = entry === 'create';
   const { tabBarClearance } = useTabScreenInsets();
   const canWrite = useStore((state) => canWriteInvoices(state.permissions));
   const queryClient = useQueryClient();
@@ -478,12 +479,14 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           onSent={() => { void refreshInvoice(); }}
         />
 
-        <View style={{ paddingBottom: 8 }}>
-          <ProfileCompletenessBanner
-            profile={businessProfile}
-            onCompleteProfile={() => navigation.navigate('BusinessSettings')}
-          />
-        </View>
+        {hideProfilePrompt ? null : (
+          <View style={{ paddingBottom: 8 }}>
+            <ProfileCompletenessBanner
+              profile={businessProfile}
+              onCompleteProfile={() => navigation.navigate('BusinessSettings')}
+            />
+          </View>
+        )}
       </ScrollView>
 
       <InvoiceDetailActions
@@ -508,6 +511,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             invoice={invoice}
             businessProfile={businessProfile || undefined}
             initialTemplate={(invoice.templateName as InvoiceTemplateId | undefined) || 'classic'}
+            showProfilePrompt={!hideProfilePrompt}
             onClose={() => setShowPreview(false)}
             onCompleteProfile={() => {
               setShowPreview(false);

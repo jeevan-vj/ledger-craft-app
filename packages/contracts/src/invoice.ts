@@ -169,6 +169,7 @@ export const invoiceSchema = z.object({
   baseTaxAmount: money.default('0'),
   baseTotal: money.default('0'),
   customerName: z.string().nullable(),
+  customerEmail: z.string().nullable().optional(),
   items: z.array(invoiceLineSchema),
   sourceQuoteId: z.string().uuid().optional(),
   sourceQuoteNumber: z.string().min(1).optional(),

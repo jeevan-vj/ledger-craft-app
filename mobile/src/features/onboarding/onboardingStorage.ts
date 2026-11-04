@@ -4,6 +4,8 @@ import type { GstRegistrationStatus, SafeAccountDraft } from './onboardingModel'
 const INTRO_KEY = 'ledgercraft.onboarding.intro.v1';
 const ACCOUNT_KEY = 'ledgercraft.onboarding.account.v1';
 const BUSINESS_KEY = 'ledgercraft.onboarding.business.v1';
+export const FIRST_INVOICE_PROMPT_KEY = 'ledgercraft.onboarding.firstInvoice.v1';
+const FIRST_INVOICE_PENDING = 'pending';
 
 export interface BusinessDraft {
   step: number;
@@ -36,4 +38,18 @@ export const onboardingStorage = {
   loadBusinessDraft: () => readJson<BusinessDraft>(BUSINESS_KEY),
   saveBusinessDraft: (draft: BusinessDraft) => SecureStore.setItemAsync(BUSINESS_KEY, JSON.stringify(draft)),
   clearBusinessDraft: () => SecureStore.deleteItemAsync(BUSINESS_KEY),
+  async markFirstInvoicePending(): Promise<void> {
+    await SecureStore.setItemAsync(FIRST_INVOICE_PROMPT_KEY, FIRST_INVOICE_PENDING);
+  },
+  async consumeFirstInvoicePending(): Promise<boolean> {
+    try {
+      const value = await SecureStore.getItemAsync(FIRST_INVOICE_PROMPT_KEY);
+      if (value !== FIRST_INVOICE_PENDING) return false;
+      await SecureStore.deleteItemAsync(FIRST_INVOICE_PROMPT_KEY);
+      return true;
+    } catch (error) {
+      console.error('Error reading the first invoice prompt:', error);
+      return false;
+    }
+  },
 };

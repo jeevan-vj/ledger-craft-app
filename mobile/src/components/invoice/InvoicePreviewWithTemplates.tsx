@@ -29,6 +29,7 @@ interface InvoicePreviewWithTemplatesProps {
   onClose?: () => void;
   onTemplateChange?: (templateId: InvoiceTemplateId) => void;
   onCompleteProfile?: () => void;
+  showProfilePrompt?: boolean;
 }
 
 export default function InvoicePreviewWithTemplates({
@@ -40,6 +41,7 @@ export default function InvoicePreviewWithTemplates({
   onClose,
   onTemplateChange,
   onCompleteProfile,
+  showProfilePrompt = true,
 }: InvoicePreviewWithTemplatesProps) {
   const theme = useTheme();
   const { colors: palette, type } = theme;
@@ -139,12 +141,14 @@ export default function InvoicePreviewWithTemplates({
         </View>
       </View>
 
-      <View style={styles.profileBanner}>
-        <ProfileCompletenessBanner
-          profile={businessProfile}
-          onCompleteProfile={onCompleteProfile}
-        />
-      </View>
+      {showProfilePrompt ? (
+        <View style={styles.profileBanner}>
+          <ProfileCompletenessBanner
+            profile={businessProfile}
+            onCompleteProfile={onCompleteProfile}
+          />
+        </View>
+      ) : null}
 
       <TemplateSelector selectedTemplate={selectedTemplate} onSelectTemplate={selectTemplate} />
 

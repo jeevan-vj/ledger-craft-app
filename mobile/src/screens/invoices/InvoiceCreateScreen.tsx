@@ -25,6 +25,9 @@ import { Customer as CustomerType } from '@/services/customerService';
 import { ItemPicker } from '@/components/items/ItemPicker';
 import { Item } from '@/services/itemService';
 import { businessProfileService } from '@/services/businessProfileService';
+import { newInvoiceDefaults } from '@/features/invoices/firstInvoiceModel';
+import GuidedInvoiceCreate from '@/screens/invoices/GuidedInvoiceCreate';
+import { formatMoney } from '@/utils/money';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { SmartDatePicker } from '@/components/ui/SmartDatePicker';
@@ -42,7 +45,7 @@ type InvoiceCreateNavigationProp = CompositeNavigationProp<
 >;
 type InvoiceFormRouteProp = RouteProp<InvoiceStackParamList, 'InvoiceCreate' | 'InvoiceEdit'>;
 
-export default function InvoiceCreateScreen() {
+function InvoiceEditor() {
   const theme = useTheme();
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
@@ -100,16 +103,10 @@ export default function InvoiceCreateScreen() {
 
   const loadInitialData = async () => {
     try {
-      const fallbackNumber = () => {
-        const now = new Date();
-        const year = now.getFullYear();
-        return `INV-${year}-0001`;
-      };
-
       const [number, customerList, profile] = await Promise.all([
         invoiceService.generateInvoiceNumber().catch((error) => {
           console.warn('Invoice number unavailable:', error);
-          return fallbackNumber();
+          return '';
         }),
         invoiceService.fetchCustomers().catch((error) => {
           console.warn('Customers unavailable:', error);
@@ -166,15 +163,19 @@ export default function InvoiceCreateScreen() {
         }
       } else {
         setInvoiceNumber(number);
-        
-        // Only set defaults for new invoices
+
         if (profile) {
           if (profile.defaultTerms) setTerms(profile.defaultTerms);
           if (profile.defaultNotes) setNotes(profile.defaultNotes);
-          if (profile.defaultTaxRate) setTaxRate(profile.defaultTaxRate);
+          const defaults = newInvoiceDefaults(profile);
+          setCurrency(defaults.currency);
+          setTaxEnabled(defaults.taxEnabled);
+          setTaxRate(defaults.taxRate);
         }
-        
-        const initialCustomer = customerList.find((customer) => customer.id === requestedCustomerId) ?? customerList[0];
+
+        const initialCustomer = requestedCustomerId
+          ? customerList.find((customer) => customer.id === requestedCustomerId)
+          : undefined;
         if (initialCustomer) {
           setCustomerId(initialCustomer.id);
           setSelectedCustomer(initialCustomer as CustomerType);
@@ -267,9 +268,7 @@ export default function InvoiceCreateScreen() {
     setShowItemPicker(true);
   };
 
-  const formatCurrency = (amount: number) => {
-    return `$${amount.toFixed(2)}`;
-  };
+  const formatCurrency = (amount: number) => formatMoney(amount, currency || 'NZD');
 
   const isFormValid = (): boolean => {
     if (!invoiceNumber) return false;
@@ -664,6 +663,13 @@ export default function InvoiceCreateScreen() {
       </Modal>
     </KeyboardAvoidingView>
   );
+}
+
+export default function InvoiceCreateScreen() {
+  const route = useRoute<InvoiceFormRouteProp>();
+  if (route.name === 'InvoiceEdit') return <InvoiceEditor />;
+  const requestedCustomerId = route.params && 'customerId' in route.params ? route.params.customerId : undefined;
+  return <GuidedInvoiceCreate requestedCustomerId={requestedCustomerId} />;
 }
 
 const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({

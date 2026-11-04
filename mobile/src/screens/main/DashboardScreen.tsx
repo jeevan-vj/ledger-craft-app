@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
@@ -21,6 +21,7 @@ import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { homeTaskStorage } from './homeTaskStorage';
+import { onboardingStorage } from '@/features/onboarding/onboardingStorage';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
@@ -159,7 +160,26 @@ export default function DashboardScreen() {
   const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
   const openQuotes = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'QuoteList' }));
   const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
-  const openFirstInvoice = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
+  const openFirstInvoice = useCallback(() => {
+    navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
+  }, [navigation]);
+  const openedFirstInvoice = useRef(false);
+  useEffect(() => {
+    if (openedFirstInvoice.current) return;
+    let active = true;
+    onboardingStorage.consumeFirstInvoicePending()
+      .then((pending) => {
+        if (!active || !pending) return;
+        openedFirstInvoice.current = true;
+        openFirstInvoice();
+      })
+      .catch((storageError) => {
+        console.error('Error opening the first invoice:', storageError);
+      });
+    return () => {
+      active = false;
+    };
+  }, [openFirstInvoice]);
   const firstInvoice = invoices.length === 0;
   const dismissTasks = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
@@ -192,6 +212,16 @@ export default function DashboardScreen() {
     );
   }
 
+  const taskSection = tasksDismissed === false ? (
+    <>
+      {firstInvoice ? null : <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>}
+      <Card style={firstInvoice ? styles.firstInvoiceCard : undefined}>
+        <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : firstInvoice ? 'Create your first invoice' : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : firstInvoice ? 'Add a customer and one line item, then send it when you are ready.' : 'Add your business details before sending an invoice.'}</Text></View></View>
+        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : firstInvoice ? 'Create invoice' : 'Continue'} onPress={overdue.length ? openInvoices : firstInvoice ? openFirstInvoice : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={dismissTasks} /></View>
+      </Card>
+    </>
+  ) : tasksDismissed ? <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" /> : null;
+
   return <ScrollView
     style={{ backgroundColor: theme.colors.background }}
     contentContainerStyle={[styles.content, { paddingTop: 20 + insets.top, paddingBottom: bottomPadding }]}
@@ -202,6 +232,8 @@ export default function DashboardScreen() {
       <View><Text style={theme.type.subhead}>Good to see you</Text><Text style={[theme.type.title, { marginTop: 2 }]}>{firstName}</Text></View>
       <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={[styles.avatarText, { color: theme.colors.accentForeground }]}>{name.slice(0, 1).toUpperCase()}</Text></View>
     </View>
+
+    {firstInvoice ? taskSection : null}
 
     <View style={styles.balanceRow}>
       <View style={{ flex: 1 }}><Text style={theme.type.subhead}>Closing cash</Text><Text selectable style={[theme.type.money, styles.money]} accessibilityLabel={balanceVisible ? `Closing cash ${formatMoney(balance, 'NZD')}` : 'Closing cash hidden'}>{balanceVisible ? formatMoney(balance, 'NZD') : '••••••'}</Text></View>
@@ -261,13 +293,7 @@ export default function DashboardScreen() {
       </Card>
     </AppPressable>
 
-    {tasksDismissed === false ? <>
-      <Text style={[theme.type.headline, styles.sectionTitle]}>Tasks</Text>
-      <Card>
-        <View style={styles.taskHeader}><View style={[styles.taskIcon, { backgroundColor: theme.colors.accentFill }]}><Feather name={overdue.length ? 'clock' : 'zap'} size={20} color={theme.colors.accentText} /></View><View style={{ flex: 1 }}><Text style={theme.type.headline}>{overdue.length ? `${overdue.length} overdue invoice${overdue.length === 1 ? '' : 's'}` : firstInvoice ? 'Create your first invoice' : 'Finish setting up'}</Text><Text style={[theme.type.subhead, { marginTop: 3 }]}>{overdue.length ? 'Follow up and keep cash flow moving.' : firstInvoice ? 'Add a customer and one line item, then send it when you are ready.' : 'Add your business details before sending an invoice.'}</Text></View></View>
-        <View style={styles.taskActions}><PillButton label={overdue.length ? 'Review' : firstInvoice ? 'Create invoice' : 'Continue'} onPress={overdue.length ? openInvoices : firstInvoice ? openFirstInvoice : openBusiness} style={{ flex: 1 }} /><PillButton label="Dismiss" variant="ghost" onPress={dismissTasks} /></View>
-      </Card>
-    </> : tasksDismissed ? <DashedSetupCard title="You're all caught up" description="New tasks and overdue invoices will show here." icon="check" /> : null}
+    {firstInvoice ? null : taskSection}
 
     <View style={styles.sectionHead}>
       <Text style={theme.type.headline}>Needs action</Text>
@@ -322,6 +348,7 @@ const styles = StyleSheet.create({
   savedReports: { gap: 8, paddingBottom: 16 },
   reportList: { gap: 12, marginBottom: 28 },
   reportMetric: { flexDirection: 'row', alignItems: 'baseline', justifyContent: 'space-between', gap: 12, marginTop: 12 },
+  firstInvoiceCard: { marginBottom: 28 },
   taskHeader: { flexDirection: 'row', gap: 14, alignItems: 'center' }, taskIcon: { width: 44, height: 44, borderRadius: 22, alignItems: 'center', justifyContent: 'center' },
   taskActions: { flexDirection: 'row', gap: 10, marginTop: 20 },
   sectionHead: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14, marginTop: 28 },

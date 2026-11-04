@@ -44,6 +44,7 @@ export interface MobileInvoiceDto {
   terms: string | null;
   currency: string;
   customerName: string | null;
+  customerEmail?: string | null;
   sourceQuoteId?: string;
   sourceQuoteNumber?: string;
   items: Array<{
@@ -113,7 +114,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
       ? {
           id: dto.customerId,
           name: dto.customerName,
-          email: '',
+          email: dto.customerEmail ?? '',
         }
       : undefined,
     date: dto.date,
@@ -181,6 +182,17 @@ function toCreateBody(
   };
 }
 
+async function withCustomerEmail(dto: MobileInvoiceDto, invoice: Invoice): Promise<Invoice> {
+  if (dto.customerEmail || !invoice.customer) return invoice;
+  try {
+    const customer = await customersApi.get(invoice.customerId);
+    return { ...invoice, customer: { ...invoice.customer, email: customer.email } };
+  } catch (error) {
+    console.warn('Customer email unavailable:', error);
+    return invoice;
+  }
+}
+
 export const invoicesApi = {
   async list(): Promise<Invoice[]> {
     const body = await apiRequest<{ invoices: MobileInvoiceDto[] }>('/api/invoices', {
@@ -190,7 +202,8 @@ export const invoicesApi = {
   },
 
   async get(id: string): Promise<Invoice> {
-    return toInvoice(await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}`, { method: 'GET' }));
+    const dto = await apiRequest<MobileInvoiceDto>(`/api/invoices/${id}`, { method: 'GET' });
+    return withCustomerEmail(dto, toInvoice(dto));
   },
 
   async create(invoice: Partial<Invoice>, lineItems: LineItem[]): Promise<Invoice> {
