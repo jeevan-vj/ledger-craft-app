@@ -16,7 +16,7 @@ Use [docs/FACTORY_LOOP.md](../../../docs/FACTORY_LOOP.md) as the dispatcher and 
 ## One-issue rule
 
 - A run resumes existing factory work before selecting anything new.
-- At most one issue may carry `agent:building` across this factory.
+- At most one open issue may carry either runner label across this factory. That runner label is the durable lock from claim through merge or explicit abandonment, including after review passes.
 - Do not select another issue while its implementation PR is open, pending CI, awaiting review, or awaiting a human decision.
 - Each new issue starts in a fresh Codex session and isolated worktree from the current upstream base.
 
@@ -30,12 +30,13 @@ Cloud is the only dispatcher. It may hand work to the MacBook, but the two surfa
 
 ## State transitions
 
-1. `spec-ready` → claim by adding one runner label and `agent:building`, then removing `spec-ready`.
+1. `spec-ready` → claim by adding one runner label and `agent:building`, then removing `spec-ready`. Keep that runner label on the open issue until merge or explicit abandonment.
 2. Build test-first, verify proportionately, self-review, commit, push, and open one PR linked with `Closes #<issue>`.
-3. When CI and required local evidence are green, replace `agent:building` with `agent:review`. Add `device-qa-pending` instead when Android/device evidence is missing.
+3. When CI and required local evidence are green, replace `agent:building` with `agent:review` but retain the runner label. Add `device-qa-pending` instead when Android/device evidence is missing.
 4. A different Codex session performs the independent review from `ledgercraft-reviewer`.
 5. The original builder session handles review fixes. After two delta-review rounds, use `needs-human`.
-6. Risk-medium/high work stays human-merge only. Never merge, deploy, publish OTA, submit stores, or alter production merely because the loop is scheduled.
+6. A passing review may replace `agent:review` with `review-passed`, but the runner lock remains while the implementation PR is open. Merge closes the linked issue; explicit abandonment removes its runner label.
+7. Risk-medium/high work stays human-merge only. Never merge, deploy, publish OTA, submit stores, or alter production merely because the loop is scheduled.
 
 ## Stop and report
 

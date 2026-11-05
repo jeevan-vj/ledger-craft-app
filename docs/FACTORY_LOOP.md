@@ -16,26 +16,26 @@ Only Cloud selects new issues. This avoids a MacBook run and a Cloud run claimin
 | --- | --- |
 | `spec-ready` | Acceptance criteria are buildable without guessing. |
 | `agent:building` | The single issue currently owned by the factory. |
-| `runner:cloud` | The claimed issue can be completed in Cloud. |
-| `runner:macbook` | The claimed issue needs local Android or another local-only capability. |
+| `runner:cloud` | The open issue is factory-locked and assigned to Cloud until merge or abandonment. |
+| `runner:macbook` | The open issue is factory-locked and assigned to the MacBook until merge or abandonment. |
 | `device-qa-pending` | Code checks pass but named installed-device evidence is missing. |
 | `agent:review` | Builder work, required evidence, and CI are ready for an independent session. |
 | `needs-human` | Scope, credentials, product decision, conflict, or high-risk merge needs a person. |
 
-There must be zero or one `agent:building` issues. More than one is a stop condition. Runner labels describe execution location, not approval or quality.
+There must be zero or one open issue carrying a runner label. More than one is a stop condition. That runner label is the durable lock from claim through review and any human-merge wait. It remains after `agent:building` and `agent:review` are removed, and disappears from the open queue when merge closes the linked issue or explicit abandonment removes it. Runner labels describe execution location, not approval or quality.
 
 ## Dispatcher selection
 
 Every Cloud invocation reads live GitHub state before acting:
 
-1. If an issue has `agent:building`, resume or report it.
-2. If that active issue has a linked PR, wait for or repair CI/review; do not select new work. Unrelated legacy PRs are outside this factory lock.
-3. If a PR has `agent:review`, use a separate review session; the builder cannot review itself.
+1. If exactly one open issue has either runner label, it is active regardless of whether its current state is building, review, review-passed, or needs-human. Resume or report it. More than one is an inconsistent-state stop.
+2. If that active issue has a linked PR, wait for or repair CI/review; do not select new work until merge or explicit abandonment. Unrelated legacy PRs are outside this factory lock.
+3. If its PR has `agent:review`, use a separate review session; the builder cannot review itself. If it has `review-passed` or `needs-human`, report the merge/decision wait and stop.
 4. If the current issue needs a decision or credentials, apply/retain `needs-human` and stop.
 5. Only when no work is active, walk epic #140 in dependency order and select the first open `spec-ready` issue whose dependencies are complete.
 6. Route any `area:mobile` issue or installed-device acceptance criterion to `runner:macbook`; otherwise prefer `runner:cloud`.
 
-Claim before creating a worktree: add `agent:building` and one runner label, remove `spec-ready`, comment the base SHA and execution surface, then read the issue back. If the state is inconsistent, stop without coding.
+Claim before creating a worktree: add `agent:building` and one runner label, remove `spec-ready`, comment the base SHA and execution surface, then read the issue back. Keep the runner label on the open issue until merge or explicit abandonment. If the state is inconsistent, stop without coding.
 
 ## Builder contract
 

@@ -99,10 +99,10 @@
 
 - name: "runner:cloud"
   color: "5319e7"
-  description: "The factory assigned this issue to a Codex Cloud session."
+  description: "Active factory lock assigned to Codex Cloud until merge or abandonment."
 - name: "runner:macbook"
   color: "0e8a16"
-  description: "The factory assigned this issue to local MacBook tools or Android device QA."
+  description: "Active factory lock assigned to MacBook tools until merge or abandonment."
 - name: "device-qa-pending"
   color: "fbca04"
   description: "Named installed-device evidence is still required; exports alone do not pass."

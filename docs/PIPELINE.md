@@ -45,7 +45,7 @@ These labels describe the handoff. Nothing in this repository moves them automat
 
 ## Factory dispatcher
 
-The cross-machine selection and handoff contract is [FACTORY_LOOP.md](FACTORY_LOOP.md). GitHub is the durable queue: Cloud is the only selector, at most one issue carries `agent:building`, and exactly one runner label names where it continues. `device-qa-pending` records a missing installed-device gate and is never equivalent to verification. The factory resumes open work before selecting a new issue and stops at one PR until review and merge or explicit abandonment.
+The cross-machine selection and handoff contract is [FACTORY_LOOP.md](FACTORY_LOOP.md). GitHub is the durable queue: Cloud is the only selector, and at most one open issue carries a runner label. That runner label is the factory lock through build, review, and any human-merge wait; merge closes the linked issue, while explicit abandonment removes the label. `device-qa-pending` records a missing installed-device gate and is never equivalent to verification. The factory resumes open work before selecting a new issue and stops at one PR until review and merge or explicit abandonment.
 
 These coordination labels do not change the review, risk, merge, deployment, or publication permissions below.
 
