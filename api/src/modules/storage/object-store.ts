@@ -24,8 +24,9 @@ export function createMemoryObjectStore(): ObjectStore {
     async delete(key) {
       objects.delete(key);
     },
-    async purgePrefix(prefix) {
+    purgePrefix(prefix) {
       for (const key of objects.keys()) if (key.startsWith(prefix)) objects.delete(key);
+      return Promise.resolve();
     },
   };
 }

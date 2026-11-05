@@ -53,8 +53,9 @@ export function createMemoryFileStorage(): FileStorage {
       const { bytes: _bytes, ...head } = file;
       return head;
     },
-    async purgePrefix(prefix) {
+    purgePrefix(prefix) {
       for (const key of files.keys()) if (key.startsWith(prefix)) files.delete(key);
+      return Promise.resolve();
     },
   };
 }
