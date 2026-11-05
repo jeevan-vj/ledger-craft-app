@@ -17,6 +17,7 @@ const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['nam
   BusinessSettings: 'briefcase',
   CompanyTeam: 'users',
   RecurringSchedules: 'repeat',
+  AccountDeletion: 'trash-2',
   ItemList: 'tag',
   BankAccountList: 'dollar-sign',
   ExpenseList: 'credit-card',

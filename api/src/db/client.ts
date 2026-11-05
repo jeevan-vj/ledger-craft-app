@@ -6,6 +6,7 @@ import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
   activeOrganisationSelections,
+  accountDeletionTombstones,
   authAccounts,
   organisationInvitations,
   organisationMemberships,
@@ -51,6 +52,7 @@ export const schema = {
   organisations,
   organisationMemberships,
   activeOrganisationSelections,
+  accountDeletionTombstones,
   organisationInvitations,
   customers,
   businessProfiles,

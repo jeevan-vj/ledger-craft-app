@@ -8,6 +8,7 @@ export type ObjectStore = {
   put(object: StoredObject): Promise<void>;
   get(key: string): Promise<StoredObject | undefined>;
   delete(key: string): Promise<void>;
+  purgePrefix?(prefix: string): Promise<void>;
 };
 
 export function createMemoryObjectStore(): ObjectStore {
@@ -22,6 +23,10 @@ export function createMemoryObjectStore(): ObjectStore {
     },
     async delete(key) {
       objects.delete(key);
+    },
+    purgePrefix(prefix) {
+      for (const key of objects.keys()) if (key.startsWith(prefix)) objects.delete(key);
+      return Promise.resolve();
     },
   };
 }

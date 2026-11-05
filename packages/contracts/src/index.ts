@@ -59,10 +59,14 @@ export {
 } from './health';
 
 export {
+  deleteAccountRequestSchema,
+  deleteAccountResponseSchema,
   meResponseSchema,
   sessionMembershipSchema,
   sessionOrganisationSchema,
   sessionUserSchema,
+  type DeleteAccountRequest,
+  type DeleteAccountResponse,
   type MeResponse,
   type SessionMembership,
   type SessionOrganisation,

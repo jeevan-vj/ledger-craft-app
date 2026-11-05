@@ -8,6 +8,7 @@ import type { FileStorage } from './modules/storage/file-storage';
 import type { InvoiceImportExtractionProvider } from './modules/invoice-imports/extraction';
 import type { WorkersAiBinding } from './modules/ai/workers-ai';
 import type { StripeConfig, StripeGateway } from './modules/stripe/stripe.gateway';
+import type { AccountPreDeleteHook } from './modules/auth/account-deletion.service';
 
 export type AppCapabilities = { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
 
@@ -29,6 +30,9 @@ export type AppEnv = {
     capabilities?: AppCapabilities;
     stripeGateway?: StripeGateway;
     stripeConfig?: StripeConfig;
+    accountPreDeleteHooks?: readonly AccountPreDeleteHook[];
+    purgeOrganisation?: (organisationId: string) => Promise<void>;
+    removeOrganisationMembership?: (organisationId: string, userId: string) => Promise<void>;
   };
 };
 
@@ -48,4 +52,7 @@ export type AppDependencies = {
   capabilities?: AppCapabilities;
   stripeGateway?: StripeGateway;
   stripeConfig?: StripeConfig;
+  accountPreDeleteHooks?: readonly AccountPreDeleteHook[];
+  purgeOrganisation?: (organisationId: string) => Promise<void>;
+  removeOrganisationMembership?: (organisationId: string, userId: string) => Promise<void>;
 };

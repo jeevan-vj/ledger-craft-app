@@ -51,6 +51,9 @@ function setExtendedDependencies(c: Context<AppEnv>, deps: AppDependencies) {
   if (deps.stripeGateway) c.set('stripeGateway', deps.stripeGateway);
   if (deps.stripeConfig) c.set('stripeConfig', deps.stripeConfig);
   if (deps.actorUserId) c.set('actorUserId', deps.actorUserId);
+  if (deps.accountPreDeleteHooks) c.set('accountPreDeleteHooks', deps.accountPreDeleteHooks);
+  if (deps.purgeOrganisation) c.set('purgeOrganisation', deps.purgeOrganisation);
+  if (deps.removeOrganisationMembership) c.set('removeOrganisationMembership', deps.removeOrganisationMembership);
   if (deps.scheduleRecurringAlarm) c.set('scheduleRecurringAlarm', deps.scheduleRecurringAlarm);
 }
 

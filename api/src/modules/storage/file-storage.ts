@@ -24,6 +24,7 @@ export interface FileStorage {
   get(key: string): Promise<StoredFile | undefined>;
   delete(key: string): Promise<void>;
   head(key: string): Promise<FileStorageHead | undefined>;
+  purgePrefix?(prefix: string): Promise<void>;
 }
 
 export function createMemoryFileStorage(): FileStorage {
@@ -51,6 +52,10 @@ export function createMemoryFileStorage(): FileStorage {
       if (!file) return undefined;
       const { bytes: _bytes, ...head } = file;
       return head;
+    },
+    purgePrefix(prefix) {
+      for (const key of files.keys()) if (key.startsWith(prefix)) files.delete(key);
+      return Promise.resolve();
     },
   };
 }

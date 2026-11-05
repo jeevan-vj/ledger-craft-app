@@ -31,11 +31,13 @@ export function TermsPage() {
 
 export function PrivacyPage() {
   return (
-    <LegalLayout title="Privacy Policy" updated="4 November 2026">
+    <LegalLayout title="Privacy Policy" updated="6 November 2026">
       <p>We collect the name, email address, and password you use to create an account, plus the business profile, customers, invoices, and other records you choose to enter.</p>
       <p>We use that information to sign you in, show your business records, and keep the service working. Your password is stored as a hash. Sign-in uses a session cookie.</p>
       <p>We do not sell your information. We share it only when you ask us to, such as when you send an invoice, or when the law requires it.</p>
       <p>You can update your business details in Settings. The same account works on the EasyBizInvoice website and the mobile app.</p>
+      <p>You can permanently delete your account in Settings. We delete your identity, sessions, company records, files, public share links, and recurring schedules for companies you own alone. In shared companies with another owner, we remove only your membership. We retain only a non-identifying deletion tombstone with the deletion time.</p>
+      <p>Export your records before deletion. New Zealand businesses may be required by Inland Revenue to keep tax records for 7 years. EasyBizInvoice does not retain deleted records on your behalf.</p>
     </LegalLayout>
   );
 }

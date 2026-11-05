@@ -1,4 +1,5 @@
-import { getMe, signInEmail, signOutSession, signUpEmail } from './authApi';
+import * as SecureStore from 'expo-secure-store';
+import { deleteAccount, getMe, signInEmail, signOutSession, signUpEmail } from './authApi';
 import { clearCookies } from './cookieJar';
 
 function jsonResponse(
@@ -184,5 +185,12 @@ describe('mobile authApi', () => {
     expect(signOutInit.headers['Content-Type']).toBe('application/json');
     expect(signOutInit.body).toBe('{}');
     expect(JSON.parse(signOutInit.body as string)).toEqual({});
+  });
+
+  it('deletes through Hono and clears the native bearer token from SecureStore', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({ deleted: true, deletedAt: '2026-11-06T00:00:00.000Z' }));
+    await expect(deleteAccount({ password: 'password123', confirmation: 'DELETE' })).resolves.toMatchObject({ deleted: true });
+    expect(fetch).toHaveBeenCalledWith('http://127.0.0.1:3001/api/me', expect.objectContaining({ method: 'DELETE' }));
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('ledgercraft.auth.cookie');
   });
 });

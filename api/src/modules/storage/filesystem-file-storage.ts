@@ -1,4 +1,4 @@
-import { mkdir, readFile, stat, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, stat, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import type { FileStorage, FileStorageHead } from './file-storage';
 
@@ -37,6 +37,19 @@ export function createFilesystemFileStorage(rootDir?: string): FileStorage {
     async delete(key) {
       const destination = paths(key);
       await Promise.allSettled([unlink(destination.data), unlink(destination.meta)]);
+    },
+    async purgePrefix(prefix) {
+      const names = await readdir(root).catch(() => []);
+      const keys = names.filter((name) => !name.endsWith('.json')).flatMap((name) => {
+        try {
+          const decoded = Buffer.from(name, 'base64url').toString('utf8');
+          return decoded.startsWith('invoice-import:') ? [decoded.slice('invoice-import:'.length)] : [];
+        } catch { return []; }
+      }).filter((key) => key.startsWith(prefix));
+      await Promise.all(keys.map(async (key) => {
+        const target = paths(key);
+        await Promise.allSettled([unlink(target.data), unlink(target.meta)]);
+      }));
     },
     head,
   };

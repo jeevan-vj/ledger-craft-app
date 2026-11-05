@@ -1,4 +1,4 @@
-import { meResponseSchema, type MeResponse } from '@ledgercraft/contracts';
+import { deleteAccountResponseSchema, meResponseSchema, type DeleteAccountRequest, type DeleteAccountResponse, type MeResponse } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
 
 export class AuthApiError extends Error {
@@ -70,4 +70,8 @@ export async function signInEmail(input: { email: string; password: string }): P
 
 export async function signOutSession(): Promise<void> {
   await request('/api/auth/sign-out', { method: 'POST' });
+}
+
+export async function deleteAccount(input: DeleteAccountRequest): Promise<DeleteAccountResponse> {
+  return deleteAccountResponseSchema.parse(await request('/api/me', { method: 'DELETE', body: JSON.stringify(input) }));
 }

@@ -18,6 +18,7 @@ import { CompanyTeamPanel } from '@/components/organisations/CompanyTeamPanel';
 import { PAYMENT_TERM_PRESETS, paymentTermCodeFromDays } from '@/features/invoices/paymentTerms';
 import { CurrencyLocalizationSettings } from '@/components/settings/CurrencyLocalizationSettings';
 import { StripePaymentsPanel } from '@/components/settings/StripePaymentsPanel';
+import { AccountDeletionPanel } from '@/components/settings/AccountDeletionPanel';
 import { logoChoiceError, logoDataUrlError } from '@/features/business-profile/logoChoice';
 
 const profileFormSchema = z.object({
@@ -244,6 +245,7 @@ const Settings = () => {
             <TabsTrigger value="team">Company & team</TabsTrigger>
             <TabsTrigger value="currency">Currency & locale</TabsTrigger>
             <TabsTrigger value="payments">Card payments</TabsTrigger>
+            <TabsTrigger value="account">Account</TabsTrigger>
           </TabsList>
         </div>
         <Form {...form}>
@@ -674,6 +676,7 @@ const Settings = () => {
         <TabsContent value="team" className="mt-4"><CompanyTeamPanel /></TabsContent>
         <TabsContent value="currency" className="mt-4"><CurrencyLocalizationSettings /></TabsContent>
         <TabsContent value="payments" className="mt-4"><StripePaymentsPanel /></TabsContent>
+        <TabsContent value="account" className="mt-4"><AccountDeletionPanel /></TabsContent>
       </Tabs>
     </div>
   );
