@@ -76,3 +76,12 @@ export async function signOutSession(): Promise<void> {
     await clearSessionCookies();
   }
 }
+
+export async function deleteAccount(input: { password: string; confirmation: 'DELETE' }): Promise<{ deleted: true; deletedAt: string }> {
+  const response = await apiRequest<{ deleted: true; deletedAt: string }>('/api/me', {
+    method: 'DELETE',
+    body: JSON.stringify(input),
+  });
+  await clearSessionCookies();
+  return response;
+}

@@ -79,6 +79,11 @@ export const moreMenuSections = [
         subtitle: 'Automated documents and transactions',
         screen: 'RecurringSchedules',
       },
+      {
+        label: 'Delete account',
+        subtitle: 'Export first, then permanently delete',
+        screen: 'AccountDeletion',
+      },
     ],
   },
   {
@@ -117,6 +122,7 @@ type MoreDestination =
   | { name: 'BusinessSettings' }
   | { name: 'CompanyTeam'; params?: { invite?: string } }
   | { name: 'RecurringSchedules' }
+  | { name: 'AccountDeletion' }
   | { name: 'ItemList' }
   | { name: 'BankAccountList' }
   | { name: 'ExpenseList' }

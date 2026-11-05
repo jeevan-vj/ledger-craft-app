@@ -98,7 +98,7 @@ export const organisationInvitations = sqliteTable('organisation_invitations', {
   role: text('role').notNull(),
   tokenHash: text('token_hash').notNull().unique(),
   status: text('status').notNull().default('pending'),
-  invitedByUserId: text('invited_by_user_id').notNull().references(() => users.id, { onDelete: 'cascade' }),
+  invitedByUserId: text('invited_by_user_id').references(() => users.id, { onDelete: 'set null' }),
   expiresAt: timestamptz('expires_at').notNull(),
   acceptedAt: timestamptz('accepted_at'),
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
@@ -107,3 +107,8 @@ export const organisationInvitations = sqliteTable('organisation_invitations', {
   index('organisation_invitations_org_idx').on(table.organisationId),
   index('organisation_invitations_email_idx').on(table.email),
 ]);
+
+export const accountDeletionTombstones = sqliteTable('account_deletion_tombstones', {
+  userIdHash: text('user_id_hash').primaryKey(),
+  deletedAt: timestamptz('deleted_at').notNull(),
+});

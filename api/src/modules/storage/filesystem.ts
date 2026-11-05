@@ -1,4 +1,4 @@
-import { mkdir, readFile, unlink, writeFile } from 'node:fs/promises';
+import { mkdir, readFile, readdir, unlink, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import type { ObjectStore, StoredObject } from './object-store';
 
@@ -37,6 +37,16 @@ export function createFilesystemObjectStore(rootDir?: string): ObjectStore {
     async delete(key) {
       const { data, meta } = paths(key);
       await Promise.allSettled([unlink(data), unlink(meta)]);
+    },
+    async purgePrefix(prefix) {
+      const names = await readdir(root).catch(() => []);
+      const keys = names.filter((name) => !name.endsWith('.json')).flatMap((name) => {
+        try { return [Buffer.from(name, 'base64url').toString('utf8')]; } catch { return []; }
+      }).filter((key) => key.startsWith(prefix));
+      await Promise.all(keys.map(async (key) => {
+        const target = paths(key);
+        await Promise.allSettled([unlink(target.data), unlink(target.meta)]);
+      }));
     },
   };
 }

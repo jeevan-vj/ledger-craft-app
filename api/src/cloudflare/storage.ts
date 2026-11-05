@@ -45,6 +45,7 @@ export function durableObjectStore(storage: DurableObjectStorage): ObjectStore {
       return row ? { key, contentType: row.content_type, bytes: new Uint8Array(row.bytes) } : undefined;
     },
     async delete(key) { storage.sql.exec('DELETE FROM _objects WHERE key=?', key); },
+    async purgePrefix(prefix) { storage.sql.exec('DELETE FROM _objects WHERE key LIKE ?', `${prefix}%`); },
   };
 }
 
@@ -71,6 +72,9 @@ export function durableFileStorage(storage: DurableObjectStorage): FileStorage {
     },
     async delete(key) {
       storage.sql.exec('DELETE FROM _objects WHERE key=?', key);
+    },
+    async purgePrefix(prefix) {
+      storage.sql.exec('DELETE FROM _objects WHERE key LIKE ?', `${prefix}%`);
     },
     async head(key) {
       const row = storage.sql.exec<{content_type: string; size: number}>(

@@ -1,7 +1,21 @@
 import { describe, expect, it } from 'vitest';
-import { meResponseSchema } from './session';
+import { deleteAccountRequestSchema, deleteAccountResponseSchema, meResponseSchema } from './session';
 
 describe('meResponseSchema', () => {
+  it('requires password re-authentication and the exact typed confirmation', () => {
+    expect(deleteAccountRequestSchema.safeParse({ password: 'password123', confirmation: 'DELETE' }).success).toBe(true);
+    expect(deleteAccountRequestSchema.safeParse({ password: '', confirmation: 'DELETE' }).success).toBe(false);
+    expect(deleteAccountRequestSchema.safeParse({ password: 'password123', confirmation: 'delete' }).success).toBe(false);
+    expect(deleteAccountRequestSchema.safeParse({ password: 'password123', confirmation: 'DELETE', userId: 'forged' }).success).toBe(false);
+  });
+
+  it('keeps the deletion response free of account PII', () => {
+    expect(deleteAccountResponseSchema.parse({ deleted: true, deletedAt: '2026-11-06T00:00:00.000Z' })).toEqual({
+      deleted: true,
+      deletedAt: '2026-11-06T00:00:00.000Z',
+    });
+  });
+
   it('accepts a session-bound user, organisation, and membership', () => {
     const payload = {
       user: {

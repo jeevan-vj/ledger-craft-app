@@ -130,6 +130,50 @@ describe('session routes', () => {
     });
   });
 
+  it('requires confirmation and password, revokes old sessions, and permits clean re-signup with the same email', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db);
+        const purged: string[] = [];
+        const app = createApp({ auth, db, purgeOrganisation: async (id) => { purged.push(id); } });
+        const email = `delete-${crypto.randomUUID()}@example.com`;
+        const signUp = await app.request('/api/auth/sign-up/email', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:8080' },
+          body: JSON.stringify({ name: 'Delete Owner', email, password: 'password123' }),
+        });
+        const bearerToken = signUp.headers.get('set-auth-token');
+        expect(bearerToken).toBeTruthy();
+        const headers = { 'Content-Type': 'application/json', Cookie: cookieHeader(signUp), Origin: 'http://localhost:8080' };
+        const bearerHeaders = { Origin: 'http://localhost:8080', Authorization: `Bearer ${bearerToken}` };
+        const original = meResponseSchema.parse(await (await app.request('/api/me', { headers })).json());
+        expect((await app.request('/api/me', { headers: bearerHeaders })).status).toBe(200);
+
+        expect((await app.request('/api/me', { method: 'DELETE', headers })).status).toBe(400);
+        expect((await app.request('/api/me', { method: 'DELETE', headers, body: JSON.stringify({ password: 'password123' }) })).status).toBe(400);
+        expect((await app.request('/api/me', { method: 'DELETE', headers, body: JSON.stringify({ password: 'wrong-password', confirmation: 'DELETE' }) })).status).toBe(401);
+        expect((await app.request('/api/me', { headers })).status).toBe(200);
+
+        const deleted = await app.request('/api/me', { method: 'DELETE', headers, body: JSON.stringify({ password: 'password123', confirmation: 'DELETE' }) });
+        expect(deleted.status).toBe(200);
+        expect(await deleted.json()).toMatchObject({ deleted: true });
+        expect(purged).toEqual([original.organisation.id]);
+        expect((await app.request('/api/me', { headers })).status).toBe(401);
+        expect((await app.request('/api/me', { headers: bearerHeaders })).status).toBe(401);
+
+        const newSignUp = await app.request('/api/auth/sign-up/email', {
+          method: 'POST', headers: { 'Content-Type': 'application/json', Origin: 'http://localhost:8080' },
+          body: JSON.stringify({ name: 'New Owner', email, password: 'new-password123' }),
+        });
+        expect(newSignUp.status).toBeLessThan(400);
+        const fresh = meResponseSchema.parse(await (await app.request('/api/me', { headers: { Cookie: cookieHeader(newSignUp), Origin: 'http://localhost:8080' } })).json());
+        expect(fresh.user.id).not.toBe(original.user.id);
+        expect(fresh.organisation.id).not.toBe(original.organisation.id);
+      } finally { await sql.end({ timeout: 5 }); }
+    });
+  });
+
   it('does not point Vitest at the app database', () => {
     expect(new URL(getDatabaseUrl()).pathname).toMatch(/ledgercraft-sqlite-test-[^/]+\/ledgercraft_test\.sqlite$/);
   });

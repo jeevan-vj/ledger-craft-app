@@ -22,7 +22,19 @@ export const meResponseSchema = z.object({
   permissions: z.array(z.string()).default([]),
 });
 
+export const deleteAccountRequestSchema = z.object({
+  password: z.string().min(1, 'Enter your current password'),
+  confirmation: z.literal('DELETE'),
+}).strict();
+
+export const deleteAccountResponseSchema = z.object({
+  deleted: z.literal(true),
+  deletedAt: z.string().datetime(),
+});
+
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 export type SessionOrganisation = z.infer<typeof sessionOrganisationSchema>;
 export type SessionMembership = z.infer<typeof sessionMembershipSchema>;
 export type MeResponse = z.infer<typeof meResponseSchema>;
+export type DeleteAccountRequest = z.infer<typeof deleteAccountRequestSchema>;
+export type DeleteAccountResponse = z.infer<typeof deleteAccountResponseSchema>;

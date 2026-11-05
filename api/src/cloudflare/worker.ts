@@ -21,6 +21,7 @@ import type { WorkersAiBinding } from '../modules/ai/workers-ai';
 import { stripeRuntimeFromEnv } from '../modules/stripe/stripe.real-gateway';
 import { processVerifiedWebhook } from '../modules/stripe/stripe.service';
 import type { StripeWebhookEvent } from '../modules/stripe/stripe.gateway';
+import { purgeLedgerAccountData } from './account-purge';
 
 setErrorReporter(createSentryReporter());
 
@@ -109,7 +110,12 @@ class IdentityBase extends DurableObject<Env> {
       const session = await this.auth.api.getSession({headers:request.headers});
       if (!session) return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
       if (path === '/api/me' || path.startsWith('/api/organisations') || path.startsWith('/api/invitations')) {
-        return createApp({ db: this.db, auth: this.auth }).fetch(request);
+        return createApp({
+          db: this.db,
+          auth: this.auth,
+          purgeOrganisation: async (organisationId) => this.env.LEDGERS.getByName(organisationId).purgeAccountData(organisationId),
+          removeOrganisationMembership: async (organisationId, userId) => this.env.LEDGERS.getByName(organisationId).removeAccountMembership(userId),
+        }).fetch(request);
       }
       const memberships = await this.db.select({ membership: organisationMemberships, organisation: organisations })
         .from(organisationMemberships)
@@ -131,6 +137,7 @@ class IdentityBase extends DurableObject<Env> {
 
 class LedgerBase extends DurableObject<Env> {
   private db;
+  private accountPurged = false;
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => migrateStorage(ctx.storage));
@@ -144,6 +151,9 @@ class LedgerBase extends DurableObject<Env> {
     const report = { source: 'ledger' as const, requestId, route, userId };
     try {
       tagActiveRequest(report);
+      // deleteAll removes the live SQLite database. Keep a warm, already-purged
+      // instance from querying those deleted tables before Cloudflare evicts it.
+      if (this.accountPurged) return failureResponse(404, 'NOT_FOUND', 'Not found', requestId);
       // RPC arguments originate only in this Worker. Public HTTP headers cannot select a user or organisation.
       if (identity) {
         await this.db.transaction(async (db) => {
@@ -189,6 +199,15 @@ class LedgerBase extends DurableObject<Env> {
     const stripe = stripeRuntimeFromEnv(this.env as unknown as Record<string, string | undefined>);
     if (!stripe) throw new Error('Stripe payments are not enabled');
     return processVerifiedWebhook(this.db, event, stripe.gateway, stripe.config);
+  }
+
+  async purgeAccountData(organisationId: string): Promise<void> {
+    await purgeLedgerAccountData(this.ctx.storage, this.env.DOCUMENTS, organisationId);
+    this.accountPurged = true;
+  }
+
+  async removeAccountMembership(userId: string): Promise<void> {
+    await this.db.delete(organisationMemberships).where(eq(organisationMemberships.userId, userId));
   }
 
   async alarm(): Promise<void> {
