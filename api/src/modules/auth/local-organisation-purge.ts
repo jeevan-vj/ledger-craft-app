@@ -30,7 +30,7 @@ export async function purgeLocalOrganisationRows(db: Database, organisationId: s
     `));
     for (const trigger of triggers) {
       const identifier = `"${trigger.name.replaceAll('"', '""')}"`;
-      await tx.execute(sql.raw(`DROP TRIGGER ${identifier}`));
+      await tx.execute(sql.raw(`DROP TRIGGER ${identifier}`)); // NOSONAR -- SQLite DDL order must be deterministic.
     }
     const tables = await tx.execute<{ name: string }>(sql.raw(`
       SELECT schema.name AS name
@@ -46,8 +46,10 @@ export async function purgeLocalOrganisationRows(db: Database, organisationId: s
     `));
     for (const table of tables) {
       const identifier = `"${table.name.replaceAll('"', '""')}"`;
-      await tx.execute(sql.raw(`DELETE FROM ${identifier} WHERE organisation_id = '${organisationId.replaceAll("'", "''")}'`));
+      await tx.execute(sql.raw(`DELETE FROM ${identifier} WHERE organisation_id = '${organisationId.replaceAll("'", "''")}'`)); // NOSONAR -- shared connection writes stay sequential.
     }
-    for (const trigger of triggers) await tx.execute(sql.raw(trigger.sql));
+    for (const trigger of triggers) {
+      await tx.execute(sql.raw(trigger.sql)); // NOSONAR -- restore triggers in their captured order.
+    }
   });
 }

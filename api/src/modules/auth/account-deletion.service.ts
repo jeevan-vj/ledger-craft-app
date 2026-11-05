@@ -53,7 +53,8 @@ async function createDeletionPlan(
       plan.organisationsToLeave.push(membership.organisationId);
       continue;
     }
-    const activeMembers = await db.select().from(organisationMemberships).where(and(
+    const activeMembers = await db.select() // NOSONAR -- finish ownership preflight one organisation at a time.
+      .from(organisationMemberships).where(and(
       eq(organisationMemberships.organisationId, membership.organisationId),
       isNull(organisationMemberships.removedAt),
     ));
@@ -73,7 +74,7 @@ async function runPreDeleteHooks(
 ): Promise<void> {
   for (const hook of hooks) {
     try {
-      await hook.onBeforeAccountDelete(context);
+      await hook.onBeforeAccountDelete(context); // NOSONAR -- provider revocations are an ordered hook chain.
     } catch {
       if (hook.required) {
         throw new HTTPException(503, { message: `Account deletion stopped because ${hook.name} access could not be revoked. Try again.` });
@@ -87,9 +88,11 @@ async function applyOrganisationPlan(
   plan: DeletionPlan,
   userId: string,
 ): Promise<void> {
-  for (const organisationId of plan.organisationsToPurge) await options.purgeOrganisation(organisationId);
+  for (const organisationId of plan.organisationsToPurge) {
+    await options.purgeOrganisation(organisationId); // NOSONAR -- destructive purges are ordered for retry safety.
+  }
   for (const organisationId of plan.organisationsToLeave) {
-    await options.removeOrganisationMembership?.(organisationId, userId);
+    await options.removeOrganisationMembership?.(organisationId, userId); // NOSONAR -- preserve purge-before-leave ordering.
   }
 }
 
@@ -102,7 +105,8 @@ async function deleteIdentityData(
 ): Promise<void> {
   await db.transaction(async (tx) => {
     for (const organisationId of plan.organisationsToPurge) {
-      await tx.delete(organisations).where(eq(organisations.id, organisationId));
+      await tx.delete(organisations) // NOSONAR -- keep transaction writes sequential on every SQLite adapter.
+        .where(eq(organisations.id, organisationId));
     }
     await tx.delete(organisationMemberships).where(eq(organisationMemberships.userId, user.id));
     await tx.delete(organisationInvitations).where(eq(organisationInvitations.email, user.email));

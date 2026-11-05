@@ -14,8 +14,10 @@ export async function purgeLedgerAccountData(storage: PurgeStorage, bucket: Purg
   if (bucket) {
     let cursor: string | undefined;
     do {
-      const page = await bucket.list({ prefix: `${organisationId}/`, cursor });
-      if (page.objects.length > 0) await bucket.delete(page.objects.map((object) => object.key));
+      const page = await bucket.list({ prefix: `${organisationId}/`, cursor }); // NOSONAR -- each page supplies the next cursor.
+      if (page.objects.length > 0) {
+        await bucket.delete(page.objects.map((object) => object.key)); // NOSONAR -- delete each page before advancing.
+      }
       cursor = page.truncated ? page.cursor : undefined;
     } while (cursor);
   }
