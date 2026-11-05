@@ -96,3 +96,13 @@
 - name: "auto-merge-eligible"
   color: "0366d6"
   description: "Every PIPELINE.md stage-6 gate holds. Review and risk:low are not enough."
+
+- name: "runner:cloud"
+  color: "5319e7"
+  description: "Active factory lock assigned to Codex Cloud until merge or abandonment."
+- name: "runner:macbook"
+  color: "0e8a16"
+  description: "Active factory lock assigned to MacBook tools until merge or abandonment."
+- name: "device-qa-pending"
+  color: "fbca04"
+  description: "Named installed-device evidence is still required; exports alone do not pass."
