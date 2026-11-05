@@ -46,6 +46,7 @@ import InvoiceShareActions from '@/components/invoice/InvoiceShareActions';
 import { FinishDraftCard } from '@/components/invoice/FinishDraftCard';
 import { InvoiceDeliverySection } from '@/components/invoice/InvoiceDeliverySection';
 import { InvoiceDetailActions } from '@/components/invoice/InvoiceDetailActions';
+import { CreatedInvoiceCard } from '@/components/invoice/CreatedInvoiceCard';
 import { AuthApiError } from '@/features/auth/api/http';
 import { buildDraftLineUpdate, dueDateError, showFinishDraft } from '@/features/invoices/finishDraftModel';
 import { canWriteInvoices } from '@/features/auth/invoiceAccess';
@@ -103,9 +104,10 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   }, [invoiceId]);
 
   useLayoutEffect(() => {
+    const createdDraft = entry === 'create' && invoice?.status === 'draft';
     navigation.setOptions({
       title: invoice?.invoiceNumber || 'Invoice',
-      headerRight: invoice
+      headerRight: invoice && !createdDraft
         ? () => (
             <NativeHeaderButton
               label="Preview"
@@ -115,7 +117,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           )
         : undefined,
     });
-  }, [navigation, invoice]);
+  }, [navigation, invoice, entry]);
 
   const loadData = async () => {
     try {
@@ -306,12 +308,16 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   }
 
   const ink = statusInk(invoice.status, palette);
+  const createdDraft = entry === 'create' && invoice.status === 'draft';
 
   return (
     <View style={styles.container}>
       <ScrollView
         style={styles.scrollView}
-        contentContainerStyle={[styles.scrollContent, { paddingBottom: bottomBarHeight + space.lg }]}
+        contentContainerStyle={[
+          styles.scrollContent,
+          { paddingBottom: createdDraft ? tabBarClearance + space.lg : bottomBarHeight + space.lg },
+        ]}
         contentInsetAdjustmentBehavior="automatic"
         keyboardShouldPersistTaps="handled"
       >
@@ -329,7 +335,13 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </Text>
         </View>
 
-        {showFinishDraft(invoice.status, canWrite) ? (
+        {createdDraft ? (
+          <CreatedInvoiceCard
+            invoiceNumber={invoice.invoiceNumber}
+            onPreview={() => setShowPreview(true)}
+            onEdit={handleEdit}
+          />
+        ) : showFinishDraft(invoice.status, canWrite) ? (
           <>
             <FinishDraftCard
               invoice={invoice}
@@ -348,6 +360,8 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </>
         ) : null}
 
+        {createdDraft ? null : (
+          <>
         {invoice.sourceImportDocumentId ? <View style={styles.card}>
           <Text style={styles.sectionTitle}>Source document</Text>
           <View style={styles.detailRow}><Text style={styles.detailLabel}>External issuer</Text><Text style={styles.detailValue}>{invoice.externalIssuerName ?? '—'}</Text></View>
@@ -551,7 +565,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </View>
         )}
 
-        {showFinishDraft(invoice.status, canWrite) ? null : (
+        {createdDraft || showFinishDraft(invoice.status, canWrite) ? null : (
           <InvoiceDeliverySection
             invoice={invoice}
             canSend={canWrite}
@@ -568,17 +582,22 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             />
           </View>
         )}
+          </>
+        )}
       </ScrollView>
 
-      <InvoiceDetailActions
-        isPaid={invoice.status === 'paid'}
-        bottomInset={tabBarClearance}
-        onPreview={() => setShowPreview(true)}
-        onRecordPayment={handleMarkAsPaid}
-        onShare={() => setShareActionsVisible(true)}
-        onEdit={handleEdit}
-        onHeightChange={setBottomBarHeight}
-      />
+      {createdDraft ? null : (
+        <InvoiceDetailActions
+          isPaid={invoice.status === 'paid'}
+          isDraft={invoice.status === 'draft'}
+          bottomInset={tabBarClearance}
+          onPreview={() => setShowPreview(true)}
+          onRecordPayment={handleMarkAsPaid}
+          onShare={() => setShareActionsVisible(true)}
+          onEdit={handleEdit}
+          onHeightChange={setBottomBarHeight}
+        />
+      )}
 
       {/* Preview Modal */}
       <Modal

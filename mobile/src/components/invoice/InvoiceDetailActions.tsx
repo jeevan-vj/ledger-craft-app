@@ -7,6 +7,7 @@ import { useTheme } from '@/theme';
 
 interface InvoiceDetailActionsProps {
   isPaid: boolean;
+  isDraft?: boolean;
   bottomInset: number;
   onPreview: () => void;
   onRecordPayment: () => void;
@@ -17,6 +18,7 @@ interface InvoiceDetailActionsProps {
 
 export function InvoiceDetailActions({
   isPaid,
+  isDraft = false,
   bottomInset,
   onPreview,
   onRecordPayment,
@@ -43,7 +45,7 @@ export function InvoiceDetailActions({
       >
         Preview invoice
       </ModernButton>
-      {!isPaid ? (
+      {!isPaid && !isDraft ? (
         <ModernButton onPress={onRecordPayment} variant="secondary" size="lg" fullWidth>
           Record payment
         </ModernButton>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, LayoutAnimation, RefreshControl, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { CompositeNavigationProp, useNavigation } from '@react-navigation/native';
@@ -21,7 +21,6 @@ import { getStatusIcon, getStatusLabel } from '@/utils/statusUtils';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { homeTaskStorage } from './homeTaskStorage';
-import { onboardingStorage } from '@/features/onboarding/onboardingStorage';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
@@ -163,23 +162,6 @@ export default function DashboardScreen() {
   const openFirstInvoice = useCallback(() => {
     navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
   }, [navigation]);
-  const openedFirstInvoice = useRef(false);
-  useEffect(() => {
-    if (openedFirstInvoice.current) return;
-    let active = true;
-    onboardingStorage.consumeFirstInvoicePending()
-      .then((pending) => {
-        if (!active || !pending) return;
-        openedFirstInvoice.current = true;
-        openFirstInvoice();
-      })
-      .catch((storageError) => {
-        console.error('Error opening the first invoice:', storageError);
-      });
-    return () => {
-      active = false;
-    };
-  }, [openFirstInvoice]);
   const firstInvoice = invoices.length === 0;
   const dismissTasks = () => {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);

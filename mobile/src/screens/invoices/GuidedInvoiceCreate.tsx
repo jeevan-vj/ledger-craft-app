@@ -46,7 +46,7 @@ interface ListedCustomer {
 const stepCopy = [
   {
     title: 'Who is this invoice for?',
-    body: 'Add their name. Email is optional and only appears on the invoice.',
+    body: 'Choose a customer, or add someone new. Email is optional.',
   },
   {
     title: 'What are you charging?',
@@ -76,6 +76,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
   const [customers, setCustomers] = useState<ListedCustomer[]>([]);
   const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [addingNewCustomer, setAddingNewCustomer] = useState(false);
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
   const [description, setDescription] = useState('');
@@ -97,7 +98,9 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
       setInvoiceNumber(number.trim());
       setCustomers(customerList);
       setProfile(businessProfile);
-      setSelectedCustomerId(matchedCustomerId(customerList, requestedCustomerId));
+      const requestedId = matchedCustomerId(customerList, requestedCustomerId);
+      setSelectedCustomerId(requestedId);
+      setAddingNewCustomer(!requestedId && customerList.length === 0);
       setDates(defaultInvoiceDates());
     } catch (caught) {
       console.error('Error preparing a new invoice:', caught);
@@ -119,7 +122,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
   const reviewEmail = selectedCustomer?.email || customerEmail.trim();
 
   const dirty = Boolean(
-    customerName.trim() || customerEmail.trim() || selectedCustomerId || description.trim() || amount.trim(),
+    addingNewCustomer || customerName.trim() || customerEmail.trim() || selectedCustomerId || description.trim() || amount.trim(),
   );
 
   const cancel = useCallback(() => {
@@ -156,11 +159,13 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
 
   const continueFlow = () => {
     if (step === 0) {
-      const validation = customerStepError({
-        selectedId: selectedCustomerId,
-        name: customerName,
-        email: customerEmail,
-      });
+      const validation = !selectedCustomerId && !addingNewCustomer
+        ? 'Choose a customer or add someone new.'
+        : customerStepError({
+            selectedId: selectedCustomerId,
+            name: customerName,
+            email: customerEmail,
+          });
       if (validation) {
         setError(validation);
         return;
@@ -183,11 +188,13 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
   const save = async () => {
     if (savingRef.current || !profile) return;
     const amountValue = parseMoneyInput(amount);
-    const validation = customerStepError({
-      selectedId: selectedCustomerId,
-      name: customerName,
-      email: customerEmail,
-    }) || lineStepError(description, amount);
+    const validation = (!selectedCustomerId && !addingNewCustomer
+      ? 'Choose a customer or add someone new.'
+      : customerStepError({
+          selectedId: selectedCustomerId,
+          name: customerName,
+          email: customerEmail,
+        })) || lineStepError(description, amount);
     if (validation || amountValue == null) {
       setError(validation || 'Enter an amount greater than zero.');
       return;
@@ -298,6 +305,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
                       accessibilityState={{ selected }}
                       onPress={() => {
                         setSelectedCustomerId(customer.id);
+                        setAddingNewCustomer(false);
                         setCustomerName('');
                         setCustomerEmail('');
                         setError(undefined);
@@ -314,37 +322,57 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
                     </Pressable>
                   );
                 })}
-                <Text style={styles.fieldLabel}>Or someone new</Text>
+                <Pressable
+                  accessibilityRole="radio"
+                  accessibilityLabel="Add someone new"
+                  accessibilityState={{ selected: addingNewCustomer }}
+                  onPress={() => {
+                    setSelectedCustomerId(null);
+                    setAddingNewCustomer(true);
+                    setError(undefined);
+                  }}
+                  style={[styles.option, addingNewCustomer && styles.optionSelected]}
+                >
+                  <View style={[styles.radio, addingNewCustomer && styles.radioSelected]}>
+                    {addingNewCustomer ? <View style={styles.radioDot} /> : null}
+                  </View>
+                  <View style={styles.optionCopy}>
+                    <Text style={styles.optionTitle}>Add someone new</Text>
+                    <Text style={styles.optionBody}>Create a customer for this invoice</Text>
+                  </View>
+                </Pressable>
               </View>
             ) : null}
-            <ModernInput
-              label="Customer name"
-              value={customerName}
-              onChangeText={(value) => {
-                setCustomerName(value);
-                setSelectedCustomerId(null);
-                setError(undefined);
-              }}
-              placeholder="Harbour Cafe"
-              autoCapitalize="words"
-              autoComplete="name"
-              returnKeyType="next"
-            />
-            <ModernInput
-              label="Email"
-              value={customerEmail}
-              onChangeText={(value) => {
-                setCustomerEmail(value);
-                setSelectedCustomerId(null);
-                setError(undefined);
-              }}
-              placeholder="name@email.com"
-              autoCapitalize="none"
-              autoComplete="email"
-              keyboardType="email-address"
-              returnKeyType="done"
-              onSubmitEditing={continueFlow}
-            />
+            {addingNewCustomer ? (
+              <>
+                <ModernInput
+                  label="Customer name"
+                  value={customerName}
+                  onChangeText={(value) => {
+                    setCustomerName(value);
+                    setError(undefined);
+                  }}
+                  placeholder="Harbour Cafe"
+                  autoCapitalize="words"
+                  autoComplete="name"
+                  returnKeyType="next"
+                />
+                <ModernInput
+                  label="Email"
+                  value={customerEmail}
+                  onChangeText={(value) => {
+                    setCustomerEmail(value);
+                    setError(undefined);
+                  }}
+                  placeholder="name@email.com"
+                  autoCapitalize="none"
+                  autoComplete="email"
+                  keyboardType="email-address"
+                  returnKeyType="done"
+                  onSubmitEditing={continueFlow}
+                />
+              </>
+            ) : null}
           </View>
         ) : null}
 
@@ -403,7 +431,7 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
       </ScrollView>
       <View style={[styles.footer, { paddingBottom: bottomPadding }]}>
         <PillButton
-          label={step === 2 ? (saving ? 'Saving…' : 'Save draft') : 'Continue'}
+          label={step === 2 ? (saving ? 'Saving…' : 'Create draft') : 'Continue'}
           loading={saving}
           onPress={() => {
             if (step === 2) void save();
