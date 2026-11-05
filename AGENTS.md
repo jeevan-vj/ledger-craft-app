@@ -238,7 +238,7 @@ Leave `src/` and `mobile/` where they are until a change is only about moving th
 
 ## Software factory
 
-`docs/PIPELINE.md` is the label and risk contract, and the only high-risk path list. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, and the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the label file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `.github/CODEOWNERS` requests `@jeevan-vj` on a subset of the high-risk paths. An auto-merge gate is not implemented. `auto-merge-eligible` requires every stage-6 condition in `docs/PIPELINE.md`, not `review-passed` plus `risk:low` alone. The author does not apply `review-passed` or `auto-merge-eligible`.
+`docs/PIPELINE.md` is the label and risk contract, and the only high-risk path list. `docs/FACTORY_LOOP.md` coordinates one-issue-at-a-time Codex Cloud and MacBook work without changing those gates. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`, plus runner/device-evidence handoff labels. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the label file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `.github/CODEOWNERS` requests `@jeevan-vj` on a subset of the high-risk paths. An auto-merge gate is not implemented. `auto-merge-eligible` requires every stage-6 condition in `docs/PIPELINE.md`, not `review-passed` plus `risk:low` alone. The author does not apply `review-passed` or `auto-merge-eligible`.
 
 Before opening a pull request, follow `.cursor/skills/ledgercraft-verify/SKILL.md` and paste the command output. Draft pull request #63 proposes a lint-baseline file and warning ceilings. Until that merges, the web ceilings stay the numbers in `.github/workflows/ci.yml` (468 ESLint errors, 728 TypeScript errors). The review loop is the Review loop section of `docs/PIPELINE.md`.
 
@@ -333,6 +333,7 @@ Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and Ja
 | `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS, TestFlight, App Store Connect |
 | `.cursor/skills/ledgercraft-eas-update/SKILL.md` | Compatible mobile OTA changes, publishing, device verification, rollback |
 | `.cursor/skills/ledgercraft-mobile-loop/SKILL.md` | Repeated mobile backlog cycle |
+| `.cursor/skills/ledgercraft-factory-loop/SKILL.md` | One issue per fresh Cloud/MacBook session through PR and review |
 | `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema reconstruction |
 | `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |
 | `.cursor/skills/ledgercraft-agent-roster/SKILL.md` | Splitting work across specialist agents |

@@ -18,6 +18,8 @@ GitHub allows 100 characters in a label description. The `risk:high` label carri
 | Size | `size:xs`, `size:s`, `size:m`, `size:l`, `size:xl` |
 | Risk | `risk:low`, `risk:medium`, `risk:high` |
 | State | `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, `auto-merge-eligible` |
+| Runner | `runner:cloud`, `runner:macbook` |
+| Evidence | `device-qa-pending` |
 
 Use one label from each group that applies. Priority `p0` is a production break or data risk. Size `xl` should be split before an agent builds it.
 
@@ -40,6 +42,12 @@ These labels describe the handoff. Nothing in this repository moves them automat
    - no changed file matches a path in `.github/CODEOWNERS`
 
 `risk:medium` and `risk:high` stay on `needs-human`. A person merges them. Nothing in this repository applies the label or merges on its own.
+
+## Factory dispatcher
+
+The cross-machine selection and handoff contract is [FACTORY_LOOP.md](FACTORY_LOOP.md). GitHub is the durable queue: Cloud is the only selector, at most one issue carries `agent:building`, and exactly one runner label names where it continues. `device-qa-pending` records a missing installed-device gate and is never equivalent to verification. The factory resumes open work before selecting a new issue and stops at one PR until review and merge or explicit abandonment.
+
+These coordination labels do not change the review, risk, merge, deployment, or publication permissions below.
 
 ## Review loop
 
