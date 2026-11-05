@@ -41,6 +41,22 @@ describe('InvoiceDetailActions', () => {
     expect(queryByText('Preview invoice')).toBeTruthy();
   });
 
+  it('does not offer payment collection while an invoice is still a draft', () => {
+    const { queryByText } = render(
+      <InvoiceDetailActions
+        isPaid={false}
+        isDraft
+        bottomInset={82}
+        onPreview={jest.fn()}
+        onRecordPayment={jest.fn()}
+        onShare={jest.fn()}
+        onEdit={jest.fn()}
+      />,
+    );
+
+    expect(queryByText('Record payment')).toBeNull();
+  });
+
   it('keeps the action content above the native tab bar with breathing room', () => {
     const { getByTestId } = render(
       <InvoiceDetailActions

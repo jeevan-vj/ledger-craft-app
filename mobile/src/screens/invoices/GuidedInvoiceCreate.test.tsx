@@ -102,13 +102,19 @@ describe('GuidedInvoiceCreate', () => {
   it('does not preselect a customer and keeps GST in the country currency', async () => {
     const screen = renderCreate();
 
-    const existing = await screen.findByRole('radio', { name: 'Old Client' });
+    const existing = await screen.findByLabelText('Old Client');
+    expect(existing).toHaveProp('accessibilityRole', 'radio');
     expect(existing).toHaveProp('accessibilityState', { selected: false });
+    expect(screen.getByLabelText('Add someone new')).toHaveProp(
+      'accessibilityState',
+      { selected: false },
+    );
+    expect(screen.queryByLabelText('Customer name')).toBeNull();
     expect(screen.queryByTestId('profile-completeness-banner')).toBeNull();
     expect(screen.queryByText(/before you send/i)).toBeNull();
 
     fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
-    expect(await screen.findByTestId('first-invoice-error')).toHaveTextContent('Enter the customer name.');
+    expect(await screen.findByTestId('first-invoice-error')).toHaveTextContent('Choose a customer or add someone new.');
 
     fireEvent.press(existing);
     fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
@@ -121,7 +127,7 @@ describe('GuidedInvoiceCreate', () => {
     expect(screen.getByText('A$88.00')).toBeTruthy();
     expect(screen.getByText('INV-2026-0004')).toBeTruthy();
 
-    fireEvent.press(screen.getByRole('button', { name: 'Save draft' }));
+    fireEvent.press(screen.getByRole('button', { name: 'Create draft' }));
     await waitFor(() => expect(mockReplace).toHaveBeenCalledWith('InvoiceDetail', {
       invoiceId: 'inv-1',
       entry: 'create',
@@ -152,7 +158,7 @@ describe('GuidedInvoiceCreate', () => {
     fireEvent.changeText(screen.getByLabelText('Email'), 'hi@harbour.test');
     fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
     await fillLine(screen);
-    fireEvent.press(screen.getByRole('button', { name: 'Save draft' }));
+    fireEvent.press(screen.getByRole('button', { name: 'Create draft' }));
 
     await waitFor(() => expect(customerService.createCustomer).toHaveBeenCalledWith(
       expect.objectContaining({ name: 'Harbour Cafe', email: 'hi@harbour.test', country: 'Australia' }),

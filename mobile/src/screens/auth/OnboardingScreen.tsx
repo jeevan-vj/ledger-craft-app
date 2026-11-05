@@ -121,7 +121,6 @@ export default function OnboardingScreen() {
       await Promise.all([
         onboardingStorage.clearAccountDraft(),
         onboardingStorage.clearBusinessDraft(),
-        onboardingStorage.markFirstInvoicePending(),
       ]).catch(() => undefined);
       setOnboardingStatus(true, true);
     } catch (caught) {

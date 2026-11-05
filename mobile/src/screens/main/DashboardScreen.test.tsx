@@ -1,5 +1,5 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
 import { StyleSheet, type ViewStyle } from 'react-native';
@@ -191,20 +191,19 @@ describe('Home quick actions', () => {
     });
   });
 
-  it('opens a new invoice once after onboarding', async () => {
+  it('keeps a new user on Home after onboarding and offers the first-invoice action', async () => {
     (SecureStore.getItemAsync as jest.Mock).mockImplementation(async (storedKey: string) => (
       storedKey === FIRST_INVOICE_PROMPT_KEY ? 'pending' : null
     ));
-    renderHome();
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith('Invoices', {
-        state: {
-          index: 1,
-          routes: [{ name: 'InvoiceList' }, { name: 'InvoiceCreate' }],
-        },
-      });
+    const screen = renderHome();
+
+    expect(await screen.findByText('Create your first invoice')).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Create invoice' })).toBeTruthy();
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
-    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith(FIRST_INVOICE_PROMPT_KEY);
-    expect(mockNavigate).toHaveBeenCalledTimes(1);
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(SecureStore.deleteItemAsync).not.toHaveBeenCalledWith(FIRST_INVOICE_PROMPT_KEY);
   });
 });
