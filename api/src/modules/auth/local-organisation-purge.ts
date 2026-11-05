@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
 import type { Database } from '../../db/client';
+import { runSequentially } from '../../lib/run-sequentially';
 import type { FileStorage } from '../storage/file-storage';
 import type { ObjectStore } from '../storage/object-store';
 
@@ -28,10 +29,10 @@ export async function purgeLocalOrganisationRows(db: Database, organisationId: s
       WHERE type = 'trigger' AND sql IS NOT NULL
       ORDER BY name
     `));
-    for (const trigger of triggers) {
+    await runSequentially(triggers, async (trigger) => {
       const identifier = `"${trigger.name.replaceAll('"', '""')}"`;
-      await tx.execute(sql.raw(`DROP TRIGGER ${identifier}`)); // NOSONAR -- SQLite DDL order must be deterministic.
-    }
+      await tx.execute(sql.raw(`DROP TRIGGER ${identifier}`));
+    });
     const tables = await tx.execute<{ name: string }>(sql.raw(`
       SELECT schema.name AS name
       FROM sqlite_schema AS schema
@@ -44,12 +45,12 @@ export async function purgeLocalOrganisationRows(db: Database, organisationId: s
         )
       ORDER BY schema.name
     `));
-    for (const table of tables) {
+    await runSequentially(tables, async (table) => {
       const identifier = `"${table.name.replaceAll('"', '""')}"`;
-      await tx.execute(sql.raw(`DELETE FROM ${identifier} WHERE organisation_id = '${organisationId.replaceAll("'", "''")}'`)); // NOSONAR -- shared connection writes stay sequential.
-    }
-    for (const trigger of triggers) {
-      await tx.execute(sql.raw(trigger.sql)); // NOSONAR -- restore triggers in their captured order.
-    }
+      await tx.execute(sql.raw(`DELETE FROM ${identifier} WHERE organisation_id = '${organisationId.replaceAll("'", "''")}'`));
+    });
+    await runSequentially(triggers, async (trigger) => {
+      await tx.execute(sql.raw(trigger.sql));
+    });
   });
 }

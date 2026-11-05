@@ -1,6 +1,7 @@
 import { and, eq, isNull } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { runSequentially } from '../../lib/run-sequentially';
 import {
   accountDeletionTombstones,
   activeOrganisationSelections,
@@ -48,13 +49,12 @@ async function createDeletionPlan(
   memberships: ActiveMembership[],
 ): Promise<DeletionPlan> {
   const plan: DeletionPlan = { organisationsToPurge: [], organisationsToLeave: [] };
-  for (const membership of memberships) {
+  await runSequentially(memberships, async (membership) => {
     if (membership.role !== 'owner') {
       plan.organisationsToLeave.push(membership.organisationId);
-      continue;
+      return;
     }
-    const activeMembers = await db.select() // NOSONAR -- finish ownership preflight one organisation at a time.
-      .from(organisationMemberships).where(and(
+    const activeMembers = await db.select().from(organisationMemberships).where(and(
       eq(organisationMemberships.organisationId, membership.organisationId),
       isNull(organisationMemberships.removedAt),
     ));
@@ -64,7 +64,7 @@ async function createDeletionPlan(
     }
     const destination = otherOwners.length === 0 ? plan.organisationsToPurge : plan.organisationsToLeave;
     destination.push(membership.organisationId);
-  }
+  });
   return plan;
 }
 
@@ -72,15 +72,15 @@ async function runPreDeleteHooks(
   hooks: readonly AccountPreDeleteHook[],
   context: AccountDeletionContext,
 ): Promise<void> {
-  for (const hook of hooks) {
+  await runSequentially(hooks, async (hook) => {
     try {
-      await hook.onBeforeAccountDelete(context); // NOSONAR -- provider revocations are an ordered hook chain.
+      await hook.onBeforeAccountDelete(context);
     } catch {
       if (hook.required) {
         throw new HTTPException(503, { message: `Account deletion stopped because ${hook.name} access could not be revoked. Try again.` });
       }
     }
-  }
+  });
 }
 
 async function applyOrganisationPlan(
@@ -88,12 +88,10 @@ async function applyOrganisationPlan(
   plan: DeletionPlan,
   userId: string,
 ): Promise<void> {
-  for (const organisationId of plan.organisationsToPurge) {
-    await options.purgeOrganisation(organisationId); // NOSONAR -- destructive purges are ordered for retry safety.
-  }
-  for (const organisationId of plan.organisationsToLeave) {
-    await options.removeOrganisationMembership?.(organisationId, userId); // NOSONAR -- preserve purge-before-leave ordering.
-  }
+  await runSequentially(plan.organisationsToPurge, options.purgeOrganisation);
+  await runSequentially(plan.organisationsToLeave, async (organisationId) => {
+    await options.removeOrganisationMembership?.(organisationId, userId);
+  });
 }
 
 async function deleteIdentityData(
@@ -104,10 +102,9 @@ async function deleteIdentityData(
   deletedAt: Date,
 ): Promise<void> {
   await db.transaction(async (tx) => {
-    for (const organisationId of plan.organisationsToPurge) {
-      await tx.delete(organisations) // NOSONAR -- keep transaction writes sequential on every SQLite adapter.
-        .where(eq(organisations.id, organisationId));
-    }
+    await runSequentially(plan.organisationsToPurge, async (organisationId) => {
+      await tx.delete(organisations).where(eq(organisations.id, organisationId));
+    });
     await tx.delete(organisationMemberships).where(eq(organisationMemberships.userId, user.id));
     await tx.delete(organisationInvitations).where(eq(organisationInvitations.email, user.email));
     await tx.delete(activeOrganisationSelections).where(eq(activeOrganisationSelections.userId, user.id));

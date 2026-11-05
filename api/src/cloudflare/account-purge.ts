@@ -11,15 +11,12 @@ type PurgeBucket = {
 /** Stops generation first, removes every organisation R2 object, then drops all Ledger DO state. */
 export async function purgeLedgerAccountData(storage: PurgeStorage, bucket: PurgeBucket | undefined, organisationId: string): Promise<void> {
   await storage.deleteAlarm();
-  if (bucket) {
-    let cursor: string | undefined;
-    do {
-      const page = await bucket.list({ prefix: `${organisationId}/`, cursor }); // NOSONAR -- each page supplies the next cursor.
-      if (page.objects.length > 0) {
-        await bucket.delete(page.objects.map((object) => object.key)); // NOSONAR -- delete each page before advancing.
-      }
-      cursor = page.truncated ? page.cursor : undefined;
-    } while (cursor);
-  }
+  if (bucket) await purgeBucketPrefix(bucket, `${organisationId}/`);
   await storage.deleteAll();
+}
+
+async function purgeBucketPrefix(bucket: PurgeBucket, prefix: string, cursor?: string): Promise<void> {
+  const page = await bucket.list({ prefix, cursor });
+  if (page.objects.length > 0) await bucket.delete(page.objects.map((object) => object.key));
+  if (page.truncated && page.cursor) await purgeBucketPrefix(bucket, prefix, page.cursor);
 }
