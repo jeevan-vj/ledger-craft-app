@@ -8,9 +8,10 @@ type PurgeBucket = {
   delete(keys: string[]): Promise<void>;
 };
 
-/** Prevents any alarm write from racing past the point where account purge deletes it. */
+/** Prevents a recurring execution or alarm write from racing account purge. */
 export class AccountPurgeGate {
   private purgeStarted = false;
+  private readonly alarmExecutions = new Set<Promise<void>>();
   private readonly alarmWrites = new Set<Promise<void>>();
 
   get isPurged(): boolean {
@@ -32,8 +33,29 @@ export class AccountPurgeGate {
     }
   }
 
+  async runRecurringAlarm(
+    run: () => Promise<{ nextAlarmAt?: string | null }>,
+    setAlarm: (timestamp: number) => Promise<void>,
+  ): Promise<void> {
+    if (this.purgeStarted) return;
+    const pending = (async () => {
+      const result = await run();
+      if (!result.nextAlarmAt) return;
+      await this.scheduleAlarm(() => setAlarm(new Date(result.nextAlarmAt!).getTime()));
+    })();
+    this.alarmExecutions.add(pending);
+    try {
+      await pending;
+    } catch (error) {
+      if (!this.purgeStarted) throw error;
+    } finally {
+      this.alarmExecutions.delete(pending);
+    }
+  }
+
   async beginPurge(): Promise<void> {
     this.purgeStarted = true;
+    await Promise.allSettled(this.alarmExecutions);
     await Promise.allSettled(this.alarmWrites);
   }
 }
@@ -43,10 +65,7 @@ export async function runRecurringAlarm(
   run: () => Promise<{ nextAlarmAt?: string | null }>,
   setAlarm: (timestamp: number) => Promise<void>,
 ): Promise<void> {
-  if (gate.isPurged) return;
-  const result = await run();
-  if (!result.nextAlarmAt) return;
-  await gate.scheduleAlarm(() => setAlarm(new Date(result.nextAlarmAt!).getTime()));
+  await gate.runRecurringAlarm(run, setAlarm);
 }
 
 /** Stops generation first, removes every organisation R2 object, then drops all Ledger DO state. */

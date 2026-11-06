@@ -38,6 +38,9 @@ describe('purgeLedgerAccountData', () => {
     expect(alarmStarted).toHaveBeenCalledOnce();
 
     const purge = purgeLedgerAccountData(storage, undefined, 'org-1', gate);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(storage.deleteAlarm).not.toHaveBeenCalled();
+    expect(storage.deleteAll).not.toHaveBeenCalled();
     finishAlarm({ nextAlarmAt: '2026-11-07T00:00:00.000Z' });
     await Promise.all([runningAlarm, purge]);
 
@@ -68,5 +71,59 @@ describe('purgeLedgerAccountData', () => {
     await Promise.all([scheduling, purge]);
 
     expect(order).toEqual(['set-alarm', 'delete-alarm', 'delete-storage']);
+  });
+
+  it('contains an in-flight alarm failure after purge starts so Cloudflare is not asked to retry it', async () => {
+    let rejectAlarm!: (error: Error) => void;
+    const alarmResult = new Promise<{ nextAlarmAt: string }>((_resolve, reject) => { rejectAlarm = reject; });
+    const storage = {
+      deleteAlarm: vi.fn(async () => undefined),
+      deleteAll: vi.fn(async () => undefined),
+    };
+    const gate = new AccountPurgeGate();
+
+    const runningAlarm = runRecurringAlarm(gate, () => alarmResult, vi.fn(async () => undefined));
+    const purge = purgeLedgerAccountData(storage, undefined, 'org-1', gate);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(storage.deleteAlarm).not.toHaveBeenCalled();
+
+    rejectAlarm(new Error('recurring generation failed during purge'));
+
+    await expect(runningAlarm).resolves.toBeUndefined();
+    await purge;
+    expect(storage.deleteAlarm).toHaveBeenCalledOnce();
+    expect(storage.deleteAll).toHaveBeenCalledOnce();
+  });
+
+  it('still rejects a failed recurring execution when no purge has started', async () => {
+    const gate = new AccountPurgeGate();
+
+    await expect(runRecurringAlarm(
+      gate,
+      async () => { throw new Error('retry this alarm'); },
+      vi.fn(async () => undefined),
+    )).rejects.toThrow('retry this alarm');
+  });
+
+  it('keeps purge state tenant-local and permits an idempotent purge retry', async () => {
+    const purgedTenant = new AccountPurgeGate();
+    const activeTenant = new AccountPurgeGate();
+    const storage = {
+      deleteAlarm: vi.fn(async () => undefined),
+      deleteAll: vi.fn(async () => undefined),
+    };
+    const activeTenantSetAlarm = vi.fn(async () => undefined);
+
+    await purgeLedgerAccountData(storage, undefined, 'purged-org', purgedTenant);
+    await purgeLedgerAccountData(storage, undefined, 'purged-org', purgedTenant);
+    await runRecurringAlarm(
+      activeTenant,
+      async () => ({ nextAlarmAt: '2026-11-07T00:00:00.000Z' }),
+      activeTenantSetAlarm,
+    );
+
+    expect(storage.deleteAlarm).toHaveBeenCalledTimes(2);
+    expect(storage.deleteAll).toHaveBeenCalledTimes(2);
+    expect(activeTenantSetAlarm).toHaveBeenCalledOnce();
   });
 });
