@@ -1,5 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
+  darkMode: 'class',
+  // React Native Web supplies its own reset. Tailwind's button reset otherwise
+  // overrides RNW background classes and makes primary actions transparent.
+  corePlugins: { preflight: false },
   content: [
     "./App.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",

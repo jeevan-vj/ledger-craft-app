@@ -90,6 +90,7 @@ export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList 
 
 export type SellStackParamList = {
   SellHome: undefined;
+  SalesSummary: undefined;
 };
 
 export type MainTabParamList = {

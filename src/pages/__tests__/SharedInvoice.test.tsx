@@ -82,3 +82,14 @@ it('keeps a connection failure on the generic error path', async () => {
   expect(screen.getByText('Failed to load invoice')).toBeInTheDocument();
   expect(screen.queryByText('This link is no longer active')).not.toBeInTheDocument();
 });
+it('labels the persisted paid shared invoice as Paid for the buyer', async () => {
+  vi.mocked(invoicesApi.getShared).mockResolvedValue({ ...snapshot, invoiceData: { ...snapshot.invoiceData, status: 'paid' } } as never);
+  mount();
+  expect(await screen.findByLabelText('Payment status: Paid')).toHaveTextContent('Paid');
+});
+it('does not label a draft snapshot as Paid even if its balance is zero', async () => {
+  vi.mocked(invoicesApi.getShared).mockResolvedValue({ ...snapshot, invoiceData: { ...snapshot.invoiceData, status: 'draft', balanceDue: '0.00' } } as never);
+  mount();
+  expect(await screen.findByText('Recipient Ltd')).toBeInTheDocument();
+  expect(screen.queryByLabelText('Payment status: Paid')).not.toBeInTheDocument();
+});

@@ -9,11 +9,7 @@ export interface SaleResult {
   receipt: { id: string };
 }
 
-/**
- * Receipt-sheet handoff for PR D.
- * PR D replaces the success state with the QR and share sheet and creates the
- * invoice share link only when that sheet opens. This slice does not.
- */
+/** Immutable IDs from a saved sale; receipt actions never submit another sale. */
 export interface SaleReceiptHandoff {
   invoiceId: string;
   invoiceNumber: string;

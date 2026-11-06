@@ -27,7 +27,30 @@ pending authenticated Stripe access.
 POS quick sale API is implemented locally (2026-10-27): `POST /api/sales` creates
 the walk-in invoice, full payment, and receipt in one transaction. `Idempotency-Key`
 is required. `GET /api/sales/summary?date=YYYY-MM-DD` aggregates those stored rows
-for one business-timezone calendar day. The Expo Sell tab uses that API when the device Quick sale switch is on (off by default). Receipt QR and the receipt sheet are not on this screen. No migration.
+for one business-timezone calendar day. No migration.
+
+Mobile quick sale is completed locally (2026-11-06): the Sell tab is hidden until
+the device Quick sale switch is enabled (off by default). Active priced tiles
+support device favourites and ordering through Arrange tiles. The receipt screen
+offers Show receipt QR, native Share receipt, Done, and No receipt; QR or Share
+lazily creates or reuses the invoice share link, and a link failure leaves the
+sale saved. QR generation uses pure-JavaScript `qrcode-generator`, without a
+native QR module. Public web and Expo invoices mark a paid snapshot as Paid.
+Sell → Day summary shows today in the business timezone or a chosen date, server
+count/gross/GST/method totals/item rankings, and invoice-detail links. Amounts
+stay decimal strings. Invoice-list Sales / Regular invoices filtering uses the
+customer `walk-in` tag; named-customer quick sales stay in the summary but fall
+under Regular invoices in that filter.
+
+Native cart, pending-key, toggle, and tile storage use SecureStore; Expo web
+uses localStorage. Expo web transforms `import.meta` through Babel, uses class
+dark mode, and disables Tailwind preflight to preserve React Native Web button
+backgrounds. Local API/contracts/web/mobile suites pass. Reproduce the local
+walkthrough with `scripts/quick-sale-mobile-screens.mjs` after starting Hono,
+Vite, and Expo web with matching local API/web origins. Signed iOS/Android
+receipt scanning, native sharing, back navigation, and offline/background QA
+remain pending. No deployment or publication is recorded. Offline sales remain
+refused, and cash ledger routing, email, and printers are unchanged.
 
 Invoice-import Phase 2 is implemented locally (2026-10-26) through migration
 `0019_invoice-import-phase2.sql`: guarded OpenAI/xAI/mock extraction, strict

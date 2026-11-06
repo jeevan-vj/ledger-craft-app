@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import { emptySaleDraft } from './saleCart';
 import {
   clearSaleAttempt,
@@ -60,5 +61,29 @@ describe('sale storage', () => {
     expect(await loadSaleAttempt()).toBeNull();
     memory.set('ledgercraft.quickSale.attempt', 'nope');
     expect(await loadSaleAttempt()).toBeNull();
+  });
+
+  it('persists device settings and the cart on Expo web without native SecureStore', async () => {
+    const platform = Platform.OS;
+    const originalStorage = Object.getOwnPropertyDescriptor(globalThis, 'localStorage');
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'web' });
+    Object.defineProperty(globalThis, 'localStorage', { configurable: true, value: {
+      getItem: (key: string) => memory.get(key) ?? null,
+      setItem: (key: string, value: string) => { memory.set(key, value); },
+      removeItem: (key: string) => { memory.delete(key); },
+    } });
+    jest.mocked(SecureStore.setItemAsync).mockRejectedValue(new Error('Not available on web'));
+    try {
+      await saveQuickSaleEnabled(true);
+      expect(await loadQuickSaleEnabled()).toBe(true);
+      await saveSaleDraft({ ...emptySaleDraft(), lines: [{ kind: 'custom', id: 'custom', label: 'Bread', quantity: '1.00', price: '4.50' }] });
+      expect((await loadSaleDraft()).lines[0]?.price).toBe('4.50');
+      await saveQuickSaleEnabled(false);
+      expect(await loadQuickSaleEnabled()).toBe(false);
+    } finally {
+      Object.defineProperty(Platform, 'OS', { configurable: true, value: platform });
+      if (originalStorage) Object.defineProperty(globalThis, 'localStorage', originalStorage);
+      else Reflect.deleteProperty(globalThis, 'localStorage');
+    }
   });
 });

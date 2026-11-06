@@ -19,6 +19,8 @@ jest.mock('@/services/invoiceService', () => ({
   },
 }));
 
+jest.mock('@/utils/invoiceTemplates', () => ({ generateInvoiceHTML: jest.fn(() => '<html>Invoice</html>') }));
+
 jest.mock('@/utils/pdfUtils', () => ({
   downloadInvoicePDF: jest.fn(),
   shareInvoicePDF: jest.fn(),
@@ -62,4 +64,21 @@ describe('PublicInvoiceScreen', () => {
     await waitFor(() => expect(view.getByLabelText('Try again')).toBeTruthy());
     expect(view.queryByText('This link is no longer active.')).toBeNull();
   });
+});
+
+const sharedSnapshot = {
+  invoice: { id: 'invoice-1', invoiceNumber: 'INV-SALE-1', status: 'paid', total: '13.50', balanceDue: '0.00' },
+  businessProfile: { name: 'Market stall' },
+  templateName: 'classic',
+};
+it('shows Paid on a paid shared invoice opened from a quick-sale QR link', async () => {
+  (invoiceService.fetchSharedInvoice as jest.Mock).mockResolvedValue(sharedSnapshot);
+  const view = render(<PublicInvoiceScreen />);
+  expect(await view.findByLabelText('Payment status: Paid')).toHaveTextContent('Paid');
+});
+it('does not infer Paid from a zero balance on a draft snapshot', async () => {
+  (invoiceService.fetchSharedInvoice as jest.Mock).mockResolvedValue({ ...sharedSnapshot, invoice: { ...sharedSnapshot.invoice, status: 'draft' } });
+  const view = render(<PublicInvoiceScreen />);
+  expect(await view.findByText('Invoice INV-SALE-1')).toBeTruthy();
+  expect(view.queryByLabelText('Payment status: Paid')).toBeNull();
 });

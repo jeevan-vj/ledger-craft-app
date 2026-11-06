@@ -1,0 +1,110 @@
+{
+  "platform": "Expo web in Chromium",
+  "viewport": "390x844",
+  "invoiceNumber": "INV-2026-0001",
+  "total": "13.50",
+  "gst": "1.76",
+  "summary": {
+    "date": "2026-11-06",
+    "count": 1,
+    "grossTotal": "13.50",
+    "gstTotal": "1.76",
+    "paymentMethods": [
+      {
+        "paymentMethod": "cash",
+        "total": "13.50"
+      }
+    ],
+    "topItemsByQuantity": [
+      {
+        "description": "Pie",
+        "quantity": "1.00",
+        "amount": "4.50"
+      },
+      {
+        "description": "Roll",
+        "quantity": "1.00",
+        "amount": "9.00"
+      }
+    ],
+    "topItemsByAmount": [
+      {
+        "description": "Roll",
+        "quantity": "1.00",
+        "amount": "9.00"
+      },
+      {
+        "description": "Pie",
+        "quantity": "1.00",
+        "amount": "4.50"
+      }
+    ],
+    "sales": [
+      {
+        "invoiceId": "52f2626b-d4d7-42de-ab78-c255ed80a08b",
+        "invoiceNumber": "INV-2026-0001",
+        "total": "13.50",
+        "taxAmount": "1.76"
+      }
+    ]
+  },
+  "afterRetry": {
+    "date": "2026-11-06",
+    "count": 2,
+    "grossTotal": "18.00",
+    "gstTotal": "2.35",
+    "paymentMethods": [
+      {
+        "paymentMethod": "cash",
+        "total": "13.50"
+      },
+      {
+        "paymentMethod": "credit_card",
+        "total": "4.50"
+      }
+    ],
+    "topItemsByQuantity": [
+      {
+        "description": "Pie",
+        "quantity": "2.00",
+        "amount": "9.00"
+      },
+      {
+        "description": "Roll",
+        "quantity": "1.00",
+        "amount": "9.00"
+      }
+    ],
+    "topItemsByAmount": [
+      {
+        "description": "Pie",
+        "quantity": "2.00",
+        "amount": "9.00"
+      },
+      {
+        "description": "Roll",
+        "quantity": "1.00",
+        "amount": "9.00"
+      }
+    ],
+    "sales": [
+      {
+        "invoiceId": "52f2626b-d4d7-42de-ab78-c255ed80a08b",
+        "invoiceNumber": "INV-2026-0001",
+        "total": "13.50",
+        "taxAmount": "1.76"
+      },
+      {
+        "invoiceId": "4b4d0e15-75d4-4289-8c01-5bf85e959198",
+        "invoiceNumber": "INV-2026-0002",
+        "total": "4.50",
+        "taxAmount": "0.59"
+      }
+    ]
+  },
+  "offlineGuard": true,
+  "retryVerified": true,
+  "shareToken": "1d56c114-529c-40aa-b7c6-7e193bc4a64d_907c5b3f-85f3-4cf6-8ceb-424e200e94b8",
+  "browserErrors": [],
+  "qrDecoded": true
+}

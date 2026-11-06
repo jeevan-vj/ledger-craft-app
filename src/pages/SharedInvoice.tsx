@@ -194,6 +194,11 @@ const SharedInvoice: React.FC = () => {
                 <p className="text-sm text-muted-foreground">
                   From {businessProfile?.name || 'Business'}
                 </p>
+                {invoiceData?.status === 'paid' ? (
+                  <p aria-label="Payment status: Paid" className="mt-2 inline-flex rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-foreground">
+                    Paid
+                  </p>
+                ) : null}
               </div>
             </div>
             
