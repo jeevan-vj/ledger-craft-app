@@ -21,7 +21,7 @@ import type { WorkersAiBinding } from '../modules/ai/workers-ai';
 import { stripeRuntimeFromEnv } from '../modules/stripe/stripe.real-gateway';
 import { processVerifiedWebhook } from '../modules/stripe/stripe.service';
 import type { StripeWebhookEvent } from '../modules/stripe/stripe.gateway';
-import { purgeLedgerAccountData } from './account-purge';
+import { AccountPurgeGate, purgeLedgerAccountData, runRecurringAlarm } from './account-purge';
 
 setErrorReporter(createSentryReporter());
 
@@ -137,7 +137,7 @@ class IdentityBase extends DurableObject<Env> {
 
 class LedgerBase extends DurableObject<Env> {
   private db;
-  private accountPurged = false;
+  private readonly accountPurgeGate = new AccountPurgeGate();
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => migrateStorage(ctx.storage));
@@ -153,7 +153,7 @@ class LedgerBase extends DurableObject<Env> {
       tagActiveRequest(report);
       // deleteAll removes the live SQLite database. Keep a warm, already-purged
       // instance from querying those deleted tables before Cloudflare evicts it.
-      if (this.accountPurged) return failureResponse(404, 'NOT_FOUND', 'Not found', requestId);
+      if (this.accountPurgeGate.isPurged) return failureResponse(404, 'NOT_FOUND', 'Not found', requestId);
       // RPC arguments originate only in this Worker. Public HTTP headers cannot select a user or organisation.
       if (identity) {
         await this.db.transaction(async (db) => {
@@ -185,7 +185,7 @@ class LedgerBase extends DurableObject<Env> {
           extractDocument: (file, context) => createExtractionProvider({ env: this.env }).extractDocument(file, context),
         },
         actorUserId: userId,
-        scheduleRecurringAlarm: async (timestamp) => this.ctx.storage.setAlarm(timestamp),
+        scheduleRecurringAlarm: async (timestamp) => this.accountPurgeGate.scheduleAlarm(() => this.ctx.storage.setAlarm(timestamp)),
         stripeGateway: stripe?.gateway,
         stripeConfig: stripe?.config,
       });
@@ -202,8 +202,7 @@ class LedgerBase extends DurableObject<Env> {
   }
 
   async purgeAccountData(organisationId: string): Promise<void> {
-    await purgeLedgerAccountData(this.ctx.storage, this.env.DOCUMENTS, organisationId);
-    this.accountPurged = true;
+    await purgeLedgerAccountData(this.ctx.storage, this.env.DOCUMENTS, organisationId, this.accountPurgeGate);
   }
 
   async removeAccountMembership(userId: string): Promise<void> {
@@ -211,8 +210,11 @@ class LedgerBase extends DurableObject<Env> {
   }
 
   async alarm(): Promise<void> {
-    const result = await runDue(this.db, new Date(), 100, undefined, createInvoiceMailerFromEnv(this.env));
-    if (result.nextAlarmAt) await this.ctx.storage.setAlarm(new Date(result.nextAlarmAt).getTime());
+    await runRecurringAlarm(
+      this.accountPurgeGate,
+      () => runDue(this.db, new Date(), 100, undefined, createInvoiceMailerFromEnv(this.env)),
+      (timestamp) => this.ctx.storage.setAlarm(timestamp),
+    );
   }
 }
 

@@ -34,6 +34,7 @@ export function AccountDeletionPanel() {
     </CardHeader>
     <CardContent className="space-y-4">
       <p className="text-sm text-muted-foreground">Export invoices, reports, and tax records first. New Zealand businesses may need to keep tax records for 7 years. EasyBizInvoice does not retain those records on your behalf after deletion.</p>
+      <p className="text-sm text-muted-foreground">A non-identifying deletion tombstone containing only a one-way account hash and deletion time is retained indefinitely so deletion retries stay safe.</p>
       <Button asChild variant="outline"><Link to="/reports">Export your data first</Link></Button>
       {!open ? <Button type="button" variant="destructive" onClick={() => setOpen(true)}>Delete account</Button> : <div className="space-y-4 rounded-lg border border-destructive/40 p-4">
         <p className="text-sm font-medium">Enter your current password and type DELETE to confirm.</p>

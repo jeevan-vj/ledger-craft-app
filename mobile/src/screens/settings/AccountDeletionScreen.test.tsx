@@ -16,6 +16,7 @@ describe('AccountDeletionScreen', () => {
     (deleteAccount as jest.Mock).mockResolvedValue({ deleted: true, deletedAt: '2026-11-06T00:00:00.000Z' });
     const view = render(<AccountDeletionScreen />);
     expect(view.getByText(/7 years/i)).toBeTruthy();
+    expect(view.getByText(/deletion tombstone.*indefinitely/i)).toBeTruthy();
     expect(view.getByRole('button', { name: 'Permanently delete account' })).toHaveProp('accessibilityState', { disabled: true, busy: false });
     fireEvent.changeText(view.getByLabelText('Current password'), 'password123');
     fireEvent.changeText(view.getByLabelText('Type DELETE to confirm'), 'DELETE');

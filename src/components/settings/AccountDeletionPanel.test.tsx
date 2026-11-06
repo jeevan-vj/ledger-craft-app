@@ -18,6 +18,7 @@ describe('AccountDeletionPanel', () => {
     render(<MemoryRouter><AccountDeletionPanel /></MemoryRouter>);
 
     expect(screen.getByText(/7 years/i)).toBeInTheDocument();
+    expect(screen.getByText(/deletion tombstone.*indefinitely/i)).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Delete account' }));
     const submit = screen.getByRole('button', { name: 'Permanently delete account' });
     expect(submit).toBeDisabled();

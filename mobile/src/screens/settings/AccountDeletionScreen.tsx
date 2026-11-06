@@ -38,6 +38,7 @@ export default function AccountDeletionScreen() {
     <View style={[styles.notice, { backgroundColor: theme.colors.fillMuted }]}>
       <Text style={theme.type.headline}>Export your records first</Text>
       <Text style={[theme.type.subhead, styles.noticeCopy]}>New Zealand businesses may need to keep tax records for 7 years. EasyBizInvoice does not retain them on your behalf after deletion.</Text>
+      <Text style={[theme.type.subhead, styles.noticeCopy]}>A non-identifying deletion tombstone containing only a one-way account hash and deletion time is retained indefinitely so deletion retries stay safe.</Text>
       <AppPressable accessibilityRole="button" accessibilityLabel="Open financial reports to export" onPress={() => navigation.navigate('Reports')} style={styles.exportLink}><Text style={{ color: theme.colors.accentText, fontWeight: '700' }}>Open financial reports to export</Text></AppPressable>
     </View>
     <ModernInput label="Current password" value={password} onChangeText={setPassword} secureTextEntry showPasswordToggle autoComplete="current-password" />
