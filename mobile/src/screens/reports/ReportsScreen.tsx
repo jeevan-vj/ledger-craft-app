@@ -7,6 +7,7 @@ import { reportsApi, type ReportBasis } from '@/features/reports/api/reportsApi'
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { radius, space, useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
+import { GstPreparationPanel } from '@/components/reports/GstPreparationPanel';
 
 type Period = 'month' | 'year';
 const iso = (date: Date) => date.toISOString().slice(0, 10);
@@ -63,6 +64,7 @@ export default function ReportsScreen() {
       {(data.taxSummary.warnings ?? []).map((warning) => <Text key={warning} accessibilityRole="alert" style={[theme.type.caption, styles.footnote, { color: theme.colors.warning }]}>{warning}</Text>)}
       <Text style={[theme.type.caption, styles.footnote]}>Generated {new Date(data.meta.generatedAt).toLocaleString()} · NZD · Draft documents excluded</Text>
     </> : null}
+    <GstPreparationPanel />
   </ScrollView>;
 }
 

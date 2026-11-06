@@ -219,7 +219,7 @@ export function IRDReportingDashboard({
               <Alert className="border-green-200 bg-green-50">
                 <CheckCircle className="h-4 w-4 text-green-600" />
                 <AlertDescription className="text-green-800">
-                  All tax obligations are up to date. Next GST return due on {format(new Date(nextGSTDueDate), 'dd MMMM yyyy')}.
+                  No unresolved draft filing issues detected. Confirm your registered period and due date in myIR.
                 </AlertDescription>
               </Alert>
             )}
@@ -278,9 +278,9 @@ export function IRDReportingDashboard({
                 <Calendar className="h-5 w-5 text-red-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Next Due</p>
+                <p className="text-sm text-muted-foreground">Filing due date</p>
                 <p className="text-sm font-bold">
-                  {format(new Date(nextGSTDueDate), 'dd MMM')}
+                  Confirm in myIR
                 </p>
               </div>
             </div>
@@ -480,11 +480,7 @@ export function IRDReportingDashboard({
         </TabsContent>
 
         <TabsContent value="compliance" className="space-y-6">
-          <ComplianceMonitoring 
-            taxReturns={taxReturns}
-            nextDueDate={nextGSTDueDate}
-            complianceStatus={complianceStatus}
-          />
+          <ComplianceMonitoring />
         </TabsContent>
       </Tabs>
 
@@ -536,15 +532,7 @@ export function IRDReportingDashboard({
 }
 
 // Compliance Monitoring Component
-function ComplianceMonitoring({
-  taxReturns,
-  nextDueDate,
-  complianceStatus
-}: {
-  taxReturns: TaxReturn[];
-  nextDueDate: string;
-  complianceStatus: any;
-}) {
+function ComplianceMonitoring() {
   return (
     <div className="space-y-6">
       <Card>
@@ -556,11 +544,11 @@ function ComplianceMonitoring({
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div>
                 <p className="font-medium">GST Return</p>
-                <p className="text-sm text-muted-foreground">Quarterly filing</p>
+                <p className="text-sm text-muted-foreground">Use your registered filing frequency</p>
               </div>
               <div className="text-right">
-                <p className="font-medium">Next due: {format(new Date(nextDueDate), 'dd MMM yyyy')}</p>
-                <Badge variant="outline">28 days after quarter end</Badge>
+                <p className="font-medium">Confirm in myIR</p>
+                <Badge variant="outline">Period-specific deadlines apply</Badge>
               </div>
             </div>
             
@@ -570,8 +558,8 @@ function ComplianceMonitoring({
                 <p className="text-sm text-muted-foreground">Annual filing</p>
               </div>
               <div className="text-right">
-                <p className="font-medium">Due: 7 July 2024</p>
-                <Badge variant="outline">Annual deadline</Badge>
+                <p className="font-medium">Confirm entity-specific deadline</p>
+                <Badge variant="outline">Check myIR or your accountant</Badge>
               </div>
             </div>
           </div>
@@ -585,24 +573,20 @@ function ComplianceMonitoring({
         <CardContent>
           <div className="space-y-3">
             <div className="flex items-center gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <span>GST registration is active</span>
+              <Info className="h-5 w-5 text-blue-500" />
+              <span>Confirm GST registration in myIR</span>
             </div>
             <div className="flex items-center gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <span>Tax calculations are configured</span>
+              <Info className="h-5 w-5 text-blue-500" />
+              <span>Review tax configuration and GST claimability</span>
             </div>
             <div className="flex items-center gap-3">
-              <CheckCircle className="h-5 w-5 text-green-500" />
-              <span>Invoice tax codes are correct</span>
+              <Info className="h-5 w-5 text-blue-500" />
+              <span>Review invoice and purchase tax codes</span>
             </div>
             <div className="flex items-center gap-3">
-              {complianceStatus.isCompliant ? (
-                <CheckCircle className="h-5 w-5 text-green-500" />
-              ) : (
-                <AlertTriangle className="h-5 w-5 text-yellow-500" />
-              )}
-              <span>All returns filed on time</span>
+              <Info className="h-5 w-5 text-blue-500" />
+              <span>Check filing confirmations and deadlines in myIR</span>
             </div>
           </div>
         </CardContent>

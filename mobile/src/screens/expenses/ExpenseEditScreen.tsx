@@ -1,3 +1,4 @@
+import { expenseTotals, expenseNet, expenseTaxRate } from '@/features/expenses/expenseTotals';
 import React, { useState, useEffect, useCallback } from 'react';
 import {
   View,
@@ -16,7 +17,7 @@ import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppTabParamList } from '@/navigation/types';
 import { expenseService } from '@/services/expenseService';
-import type { Expense, ExpenseCategory, Account, PaymentMethod } from '@/types/expense';
+import type { Expense, ExpenseCategory, Account, PaymentMethod, ExpenseStatus } from '@/types/expense';
 import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { CategoryPicker } from '@/components/expense/CategoryPicker';
@@ -53,6 +54,7 @@ export default function ExpenseEditScreen() {
   
   // Form state
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<ExpenseStatus>('pending');
   const [amount, setAmount] = useState('');
   const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split('T')[0]);
   const [vendorName, setVendorName] = useState('');
@@ -97,13 +99,12 @@ export default function ExpenseEditScreen() {
     
     try {
       setLoadingExpense(true);
-      console.log('Loading expense with ID:', expenseId);
       const expense = await expenseService.fetchExpenseById(expenseId);
-      console.log('Expense loaded successfully:', expense);
       
       // Populate form with expense data
       setDescription(expense.description || '');
-      setAmount(expense.amount?.toString() || '');
+      setStatus(expense.status);
+      setAmount(expenseNet(expense.amount || 0, expense.taxAmount || 0));
       setExpenseDate(expense.expenseDate || new Date().toISOString().split('T')[0]);
       setVendorName(expense.vendorName || '');
       setNotes(expense.notes || '');
@@ -111,7 +112,7 @@ export default function ExpenseEditScreen() {
       setPaymentMethod(expense.paymentMethod || null);
       setIsBillable(expense.isBillable || false);
       setTaxEnabled(expense.taxAmount ? expense.taxAmount > 0 : false);
-      setTaxRate(15); // Could calculate from tax amount if needed
+      setTaxRate(expenseTaxRate(expense.amount || 0, expense.taxAmount || 0));
       
       // Set selected items
       setSelectedCategory(expense.category || null);
@@ -162,9 +163,10 @@ export default function ExpenseEditScreen() {
   }
   
   // Calculated tax
-  const amountNum = parseFloat(amount) || 0;
-  const taxAmount = taxEnabled ? (amountNum * taxRate) / 100 : 0;
-  const totalAmount = amountNum + taxAmount;
+  const totals = expenseTotals(amount, taxEnabled, taxRate);
+  const amountNum = Number(totals.net);
+  const taxAmount = Number(totals.tax);
+  const totalAmount = Number(totals.gross);
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -173,7 +175,7 @@ export default function ExpenseEditScreen() {
       newErrors.description = 'Description is required';
     }
     
-    if (!amount || parseFloat(amount) <= 0) {
+    if (!totals.valid) {
       newErrors.amount = 'Amount must be greater than 0';
     }
     
@@ -196,7 +198,8 @@ export default function ExpenseEditScreen() {
       
       const expenseData = {
         description: description.trim(),
-        amount: parseFloat(amount),
+        status,
+        amount: totalAmount,
         expenseDate,
         categoryId: selectedCategory?.id || null,
         accountId: selectedAccount?.id || null,
@@ -212,6 +215,7 @@ export default function ExpenseEditScreen() {
 
       await expenseService.updateExpense(expenseId, expenseData);
       
+      if (Platform.OS === 'web') { navigation.goBack(); return; }
       Alert.alert('Success', 'Expense updated successfully', [
         {
           text: 'OK',
@@ -252,7 +256,7 @@ export default function ExpenseEditScreen() {
         </View>
       );
     }
-    return <Text style={styles.placeholderText}>Tap to select account</Text>;
+    return <Text style={styles.placeholderText}>Choose payment account</Text>;
   };
 
   const getCustomerDisplay = () => {
@@ -379,7 +383,7 @@ export default function ExpenseEditScreen() {
           </View>
 
           <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Account</Text>
+            <Text style={styles.fieldLabel}>Paid from account</Text>
             <TouchableOpacity
               onPress={() => setShowAccountPicker(true)}
               style={styles.pickerButton}
@@ -519,6 +523,17 @@ export default function ExpenseEditScreen() {
             multiline
             numberOfLines={4}
           />
+        </View>
+
+        <View style={styles.card}>
+          <Text style={styles.cardTitle}>Approval status</Text>
+          <Text style={{ color: palette.textSecondary, marginBottom: 12 }}>Only approved expenses are included in posted accounts and GST reports.</Text>
+          {(['pending', 'approved', 'rejected'] as const).map((value) => (
+            <ModernButton key={value} variant={status === value ? 'primary' : 'outline'}
+              onPress={() => setStatus(value)}>
+              {value.charAt(0).toUpperCase() + value.slice(1)}
+            </ModernButton>
+          ))}
         </View>
 
         {/* Submit Button */}

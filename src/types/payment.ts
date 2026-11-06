@@ -163,6 +163,7 @@ export interface GstReconciliationSnapshot {
 }
 
 export interface IRDReturnData {
+  preparation?: { basis: 'invoice'; baseCurrency: 'NZD'; dueDate: string };
   // GST Return specific data
   gstReturn?: {
     salesDetails: {

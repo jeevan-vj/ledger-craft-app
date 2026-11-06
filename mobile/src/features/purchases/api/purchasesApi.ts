@@ -1,5 +1,6 @@
 import { apiRequest } from '@/features/auth/api/http';
 import { randomId } from '@/utils/id';
+import type { CreateVendorRequest } from '@ledgercraft/contracts';
 
 export interface VendorDto {
   id: string;
@@ -122,6 +123,9 @@ export interface BankAccountDto {
 }
 
 export const purchasesApi = {
+  createVendor(input: CreateVendorRequest): Promise<VendorDto> {
+    return apiRequest('/api/vendors', { method: 'POST', body: JSON.stringify(input) });
+  },
   async listVendors(): Promise<VendorDto[]> {
     return (await apiRequest<{ vendors: VendorDto[] }>('/api/vendors', { method: 'GET' })).vendors;
   },

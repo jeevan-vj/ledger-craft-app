@@ -3,16 +3,23 @@ import {
   fileTaxReturnRequestSchema,
   updateTaxReturnRequestSchema,
   upsertTaxConfigurationRequestSchema,
+  gstPreparationQuerySchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import * as taxService from './tax.service';
+import { gstPreparationForUser } from './gst-preparation';
 
 export function taxRoutes() {
   const routes = new Hono<AppEnv>();
 
   for (const prefix of ['', '/api'] as const) {
+    routes.get(`${prefix}/tax/gst-preparation`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const period = gstPreparationQuerySchema.parse(c.req.query());
+      return c.json(await gstPreparationForUser(db, user.id, period));
+    });
     routes.get(`${prefix}/tax-configurations`, async (c) => {
       const { db, user } = await requireSession(c);
       return c.json(await taxService.getTaxConfigurationForUser(db, user.id, c.req.query('countryCode') ?? 'NZ'));

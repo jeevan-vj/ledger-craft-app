@@ -8,6 +8,7 @@ import {
   IRDReturnData 
 } from '@/types/payment';
 import { taxApi, taxApiEnabled } from '@/features/tax/api/taxApi';
+import { loadGstPreparation } from '@/features/tax/gstPreparation';
 import { summarizeGst } from '@/features/tax/api/periodRows';
 import { accountsApi, accountsApiEnabled } from '@/features/payments/api/paymentsApi';
 import { journalsApi, journalsApiEnabled } from '@/features/journals/api/journalsApi';
@@ -917,6 +918,8 @@ export class SupabaseDataService {
     gstOnPurchases: number;
     netGstPosition: number;
   }> {
+    if (taxApiEnabled()) return loadGstPreparation(periodStart, periodEnd);
+
     const [invoices, expenses] = await Promise.all([
       this.getInvoicesByPeriod(userId, periodStart, periodEnd),
       this.getExpensesByPeriod(userId, periodStart, periodEnd),

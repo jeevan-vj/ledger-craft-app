@@ -6,7 +6,7 @@ describe('GST quarter periods', () => {
     expect(getQuarterPeriod(2026, 'Q1')).toEqual({
       startDate: '2026-01-01',
       endDate: '2026-03-31',
-      dueDate: '2026-04-28',
+      dueDate: '2026-05-07',
     });
     expect(getQuarterPeriod(2026, 'Q4')).toEqual({
       startDate: '2026-10-01',

@@ -17,6 +17,11 @@ export const gstReconciliationSnapshotSchema = z.object({
 });
 
 export const irdReturnDataSchema = z.object({
+  preparation: z.object({
+    basis: z.literal('invoice'),
+    baseCurrency: z.literal('NZD'),
+    dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  }).optional(),
   gstReturn: z.object({
     salesDetails: z.object({
       standardRated: z.number(),

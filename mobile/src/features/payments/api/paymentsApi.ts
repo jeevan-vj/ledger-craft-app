@@ -68,6 +68,7 @@ function toAccount(dto: AccountDto): Account {
     currency: dto.currency,
     openingBalance: Number(dto.openingBalance),
     currentBalance: Number(dto.currentBalance),
+    isActive: dto.isActive,
   };
 }
 

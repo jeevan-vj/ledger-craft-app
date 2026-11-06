@@ -15,6 +15,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigation, usePreventRemove, useRoute, type NavigationAction, type RouteProp } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { FormSwitch } from '@/components/ui/FormSwitch';
+import { VendorCreateForm } from '@/components/purchases/VendorCreateForm';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { GroupedSection } from '@/components/ui/GroupedSection';
 import { ListRow } from '@/components/ui/ListRow';
@@ -191,7 +192,7 @@ export default function BillFormScreen() {
         <ModernButton fullWidth loading={save.isPending} disabled={!valid} onPress={() => save.mutate()}>{billId ? 'Save changes' : 'Save draft'}</ModernButton>
       </ScrollView>
 
-      <SelectionSheet visible={vendorPicker} title="Vendor" searchPlaceholder="Search vendors" searchQuery={search} onSearchChange={setSearch} onClose={() => setVendorPicker(false)} loading={vendors.isLoading} empty={(vendors.data ?? []).length === 0} emptyTitle="No vendors" emptyDescription="Create a vendor on the web first.">
+      <SelectionSheet visible={vendorPicker} title="Vendor" searchPlaceholder="Search vendors" searchQuery={search} onSearchChange={setSearch} onClose={() => setVendorPicker(false)} loading={vendors.isLoading} empty={false} emptyTitle="No vendors">
         {(vendors.data ?? []).filter((vendor) => vendor.isActive && (!search || vendor.name.toLowerCase().includes(search.toLowerCase()))).map((vendor) => <SelectionRow key={vendor.id} title={vendor.name} subtitle={`${vendor.paymentTermDays} day terms`} selected={vendor.id === form.vendorId} onPress={() => {
           setForm((current) => ({
             ...current,
@@ -205,6 +206,11 @@ export default function BillFormScreen() {
           }));
           setVendorPicker(false);
         }} />)}
+        <VendorCreateForm onCreated={(vendor) => {
+          queryClient.setQueryData(['purchases', 'vendors'], [...(vendors.data ?? []), vendor]);
+          setForm((current) => ({ ...current, vendorId: vendor.id, dueDate: plusDays(current.issueDate, vendor.paymentTermDays) }));
+          setVendorPicker(false);
+        }} />
       </SelectionSheet>
       <SelectionSheet visible={accountLine !== null} title="Account" searchPlaceholder="Search accounts" searchQuery={search} onSearchChange={setSearch} onClose={() => setAccountLine(null)} loading={accounts.isLoading} empty={eligibleAccounts.length === 0} emptyTitle="No expense accounts" emptyDescription="Initialize the chart of accounts before receiving bills.">
         {eligibleAccounts.filter((account) => !search || account.name.toLowerCase().includes(search.toLowerCase())).map((account) => <SelectionRow key={account.id} title={account.name} subtitle={account.accountNumber ?? account.accountClass ?? account.type} selected={accountLine !== null && form.lines[accountLine]?.accountId === account.id} onPress={() => { if (accountLine !== null) updateLine(accountLine, { accountId: account.id }); setAccountLine(null); }} />)}

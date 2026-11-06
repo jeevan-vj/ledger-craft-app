@@ -35,6 +35,13 @@ describe('IRD reporting filing flow', () => {
         onExportReturn={vi.fn()}
       />,
     );
+    expect(screen.queryByText(/All tax obligations are up to date/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/Confirm your registered period and due date in myIR/i)).toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'Compliance' }));
+    expect(screen.queryByText('Quarterly filing')).not.toBeInTheDocument();
+    expect(screen.queryByText('Due: 7 July 2024')).not.toBeInTheDocument();
+    expect(screen.queryByText('GST registration is active')).not.toBeInTheDocument();
+    await user.click(screen.getByRole('tab', { name: 'GST Returns' }));
 
     await user.click(screen.getByRole('button', { name: /record gst return.*as filed/i }));
     expect(screen.getByText(/cannot submit directly to ird/i)).toBeInTheDocument();

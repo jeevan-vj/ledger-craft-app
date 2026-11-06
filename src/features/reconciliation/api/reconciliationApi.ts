@@ -19,7 +19,7 @@ import type {
 } from '@/types/reconciliation';
 
 export function reconciliationApiEnabled(): boolean {
-  return import.meta.env.VITE_RECONCILIATION_API === 'true';
+  return import.meta.env.VITE_RECONCILIATION_API !== 'false';
 }
 
 export class ReconciliationApiError extends Error {

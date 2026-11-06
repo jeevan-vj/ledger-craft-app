@@ -6,6 +6,7 @@ import { customers } from '../../db/schema/customers';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { bills, vendors } from '../../db/schema/purchases';
+import { exchangeRates, exchangeRateUsage } from '../../db/schema/currency';
 
 export type LedgerRow = {
   journalEntryId: string;
@@ -123,10 +124,27 @@ export async function account(tx: Database, organisationId: string, accountId: s
  * posting time), so they must not be summed into a base-currency GST return.
  */
 export async function foreignCurrencyDocumentIds(tx: Database, organisationId: string, baseCurrency: string): Promise<Set<string>> {
+  return new Set((await foreignCurrencyDocumentReferences(tx, organisationId, baseCurrency)).keys());
+}
+
+export async function foreignCurrencyDocumentReferences(tx: Database, organisationId: string, baseCurrency: string): Promise<Map<string, string>> {
   const [invoiceRows, billRows, expenseRows] = await Promise.all([
     tx.select({ id: invoices.id }).from(invoices).where(and(eq(invoices.organisationId, organisationId), ne(invoices.currency, baseCurrency))),
     tx.select({ id: bills.id }).from(bills).where(and(eq(bills.organisationId, organisationId), ne(bills.currency, baseCurrency))),
     tx.select({ id: expenses.id }).from(expenses).where(and(eq(expenses.organisationId, organisationId), ne(expenses.currency, baseCurrency))),
   ]);
-  return new Set([...invoiceRows, ...billRows, ...expenseRows].map((row) => row.id));
+  // Rate usage survives deletion of a source expense. Its immutable journals
+  // must remain excluded, including reversals that reference the source journal.
+  const history = await tx.select({ id: exchangeRateUsage.documentId }).from(exchangeRateUsage)
+    .innerJoin(exchangeRates, and(eq(exchangeRates.id, exchangeRateUsage.exchangeRateId), eq(exchangeRates.organisationId, organisationId)))
+    .where(and(eq(exchangeRateUsage.organisationId, organisationId), ne(exchangeRates.currencyCode, baseCurrency),
+      inArray(exchangeRateUsage.documentType, ['invoice', 'bill', 'expense'])));
+  const ids = [...invoiceRows, ...billRows, ...expenseRows, ...history].map((row) => row.id);
+  const references = new Map(ids.map((id) => [id, id]));
+  if (ids.length) {
+    const expenseJournals = await tx.select({ id: journalEntries.id, sourceId: journalEntries.referenceId }).from(journalEntries)
+      .where(and(eq(journalEntries.organisationId, organisationId), eq(journalEntries.referenceType, 'expense'), inArray(journalEntries.referenceId, ids)));
+    for (const row of expenseJournals) if (row.sourceId) references.set(row.id, row.sourceId);
+  }
+  return references;
 }

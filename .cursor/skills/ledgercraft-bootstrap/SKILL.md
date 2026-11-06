@@ -9,6 +9,21 @@ Read this before writing code. Then follow the named skill for the wave you are 
 
 ## You are here (2026-10-18)
 
+The local business-accountant review (2026-11-06) is recorded in
+`docs/evidence/business-accounting/README.md`. Web and mobile use the shared
+invoice-basis NZD GST-preparation route, include received bills and approved
+expenses, preserve historical cancellation/reinstatement gross movements, and
+save draft returns. Negative gross or GST components require manual review;
+a net refund alone remains valid. Expense claim percentages apply once to raw
+GST, and paid-from accounts are restricted to bank/cash/card/loan sources.
+Unsupported legacy invoice/bill matches fail closed. Web supports custom registered periods and
+myIR due dates; automatic income-tax return calculation remains unsupported.
+Selected-bank supplier postings, cumulative balance-sheet profit, web account
+mutations/live posted balances, and mobile gross/GST expense, approval, vendor
+and onboarding-storage paths are corrected locally. Read the evidence report
+for passing final local checks and reconciliation completion; signed iOS/Android QA and
+real filing are not established by these local screens.
+
 Invoice payment integrity is implemented locally (2026-10-31) through
 `0022_payment-reversals.sql`. Web and Expo cap instalments at the live invoice
 balance and provide auditable reversals that preserve the source payment, post

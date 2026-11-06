@@ -22,11 +22,11 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     const ledgerTaxRows = query.basis === 'accrual' && !query.accountIds?.length
       ? periodRows
       : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual', accountIds: undefined });
-    const foreignIds = await repo.foreignCurrencyDocumentIds(tx, organisationId, query.baseCurrency);
+    const foreignIds = await repo.foreignCurrencyDocumentReferences(tx, organisationId, query.baseCurrency);
     const excludedDocuments = new Set<string>();
     const taxRows = ledgerTaxRows.filter((row) => {
       if (!row.referenceId || !foreignIds.has(row.referenceId)) return true;
-      if (row.accountNumber === '2150' || row.accountNumber === '2200') excludedDocuments.add(row.referenceId);
+      if (row.accountNumber === '2150' || row.accountNumber === '2200') excludedDocuments.add(foreignIds.get(row.referenceId)!);
       return false;
     });
     let comparison;

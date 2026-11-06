@@ -19,6 +19,8 @@ import * as invoicesRepo from '../invoices/invoices.repository';
 import * as paymentsRepo from '../payments/payments.repository';
 import * as purchasesRepo from '../purchases/purchases.repository';
 import * as repo from './reconciliation.repository';
+import { existingPostingRetry, matchExistingPosting } from './existing-posting';
+import { bankLedgerBalance } from './existing-posting.repository';
 
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
@@ -82,7 +84,8 @@ export async function createSessionForUser(
       input.bankAccountId,
       input.statementStartDate,
     );
-    return repo.insertSession(tx, ctx, input, previous ?? account.openingBalance);
+    const opening = await bankLedgerBalance(tx, ctx.organisationId, account.id, input.statementStartDate, true);
+    return repo.insertSession(tx, ctx, input, opening.hasEntries ? opening.balance : previous ?? account.openingBalance);
   });
 }
 
@@ -108,9 +111,14 @@ export async function createMatchForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
+    const retry = await existingPostingRetry(tx, ctx.organisationId, input);
+    if (retry) return retry;
+    if (session.status !== 'in_progress') throw new HTTPException(409, { message: 'Completed reconciliation cannot be changed' });
     const bankTx = await bankRepo.getTransaction(tx, ctx.organisationId, input.bankTransactionId);
     if (!bankTx) throw new HTTPException(400, { message: 'Bank transaction not found' });
+    if (bankTx.bankAccountId !== session.bankAccountId) throw new HTTPException(400, { message: 'Bank transaction belongs to another bank account' });
     const book = await bookAmount(tx, ctx.organisationId, input.bookItemType, input.bookItemId);
+    await matchExistingPosting(tx, ctx, bankTx, input, book);
     const match = await repo.insertMatch(tx, ctx, sessionId, input, {
       bankAmount: bankTx.amount,
       bookAmount: book,
@@ -132,10 +140,16 @@ export async function confirmMatchesForUser(
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
     const saved: ReconciliationMatchDto[] = [];
+    if (session.status !== 'in_progress') throw new HTTPException(409, { message: 'Completed reconciliation cannot be changed' });
     for (const input of matches) {
+      const confirmed = { ...input, status: input.status ?? 'confirmed' };
+      const retry = await existingPostingRetry(tx, ctx.organisationId, confirmed);
+      if (retry) { saved.push(retry); continue; }
       const bankTx = await bankRepo.getTransaction(tx, ctx.organisationId, input.bankTransactionId);
       if (!bankTx) throw new HTTPException(400, { message: 'Bank transaction not found' });
+      if (bankTx.bankAccountId !== session.bankAccountId) throw new HTTPException(400, { message: 'Bank transaction belongs to another bank account' });
       const book = await bookAmount(tx, ctx.organisationId, input.bookItemType, input.bookItemId);
+      await matchExistingPosting(tx, ctx, bankTx, confirmed, book);
       const match = await repo.insertMatch(tx, ctx, sessionId, { ...input, status: input.status ?? 'confirmed' }, {
         bankAmount: bankTx.amount,
         bookAmount: book,
@@ -180,6 +194,11 @@ export async function completeSessionForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
+    if (session.status === 'completed') return session;
+    if (session.status === 'locked') throw new HTTPException(409, { message: 'Reconciliation is locked' });
+    const account = await bankRepo.getAccount(tx, ctx.organisationId, session.bankAccountId);
+    if (!account) throw new HTTPException(404, { message: 'Bank account not found' });
+    const closing = await bankLedgerBalance(tx, ctx.organisationId, account.id, session.statementEndDate);
     const adjustments = await repo.listAdjustments(tx, ctx.organisationId, sessionId);
     const deposits = adjustments
       .filter((row) => row.adjustmentType === 'deposit_in_transit')
@@ -195,7 +214,10 @@ export async function completeSessionForUser(
         return sum;
       }, decimal(0));
     const adjustedBank = decimal(session.statementClosingBalance).add(deposits).sub(checks);
-    const adjustedBook = decimal(session.bookClosingBalance ?? '0').add(other);
+    // A declared opening is only a fallback for a bank with no ledger history.
+    // Once journals exist the ledger is authoritative; adding metadata opening
+    // would count an already posted capital/opening journal twice.
+    const adjustedBook = decimal(closing.hasEntries ? closing.balance : account.openingBalance).add(other);
     const difference = roundMoney(adjustedBank.sub(adjustedBook));
     if (moneyToCents(difference) !== 0n) {
       throw apiError(400, 'RECONCILIATION_UNBALANCED', 'Reconciliation still has a difference');

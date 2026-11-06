@@ -107,6 +107,57 @@ async function createReceivedBill(app: ReturnType<typeof createApp>, cookie: str
 }
 
 describe('bank reconciliation phase 1', () => {
+  it('matches an already posted payment and expense without duplicating cash or profit, and can undo and retry', async () => {
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Existing posting owner');
+        await seedBusiness(app, owner);
+        const headers = { ...jsonHeaders, Cookie: owner };
+        const post = async (path: string, body: unknown, expected = 201) => {
+          const response = await app.request(path, { method: 'POST', headers, body: JSON.stringify(body) });
+          expect(response.status, path).toBe(expected);
+          return await response.json() as Record<string, any>;
+        };
+        const bank = await createBankAccount(app, owner, 'Operating');
+        const invoice = await createIssuedInvoice(app, owner, '100.00', 'Paid Customer');
+        const payment = await post('/api/payments', { invoiceId: invoice.id, amount: '100.00', paymentDate: '2026-11-06', paymentMethod: 'bank_transfer' });
+        const expense = await post('/api/expenses', { description: 'Paid cost', amount: '23.00', taxAmount: '3.00', status: 'approved', expenseDate: '2026-11-06', currency: 'NZD' });
+        const deposit = await importTransaction(app, owner, bank.id, { amount: '100.00', type: 'credit', description: 'Existing receipt' });
+        const withdrawal = await importTransaction(app, owner, bank.id, { amount: '23.00', type: 'debit', description: 'Existing cost' });
+        const session = await post('/api/reconciliation-sessions', { bankAccountId: bank.id, statementStartDate: '2026-11-01', statementEndDate: '2026-11-30', statementOpeningBalance: '0.00', statementClosingBalance: '77.00' });
+        const match = { bankTransactionId: deposit.id, bookItemType: 'payment', bookItemId: payment.id, status: 'confirmed' };
+        const journalCountBeforeUnsafe = (await sql.unsafe('SELECT count(*) AS count FROM journal_entries'))[0]?.count;
+        const unsafeInvoice = await app.request(`/api/reconciliation-sessions/${session.id}/matches`, { method: 'POST', headers, body: JSON.stringify({ ...match, bookItemType: 'invoice', bookItemId: invoice.id }) });
+        expect(unsafeInvoice.status).toBe(409);
+        expect((await app.request(`/api/bank-transactions/${deposit.id}`, { headers })).status).toBe(200);
+        const unchanged = await (await app.request(`/api/bank-transactions/${deposit.id}`, { headers })).json() as { isReconciled: boolean };
+        expect(unchanged.isReconciled).toBe(false);
+        expect((await sql.unsafe('SELECT count(*) AS count FROM journal_entries'))[0]?.count).toBe(journalCountBeforeUnsafe);
+        expect((await sql.unsafe('SELECT count(*) AS count FROM reconciliation_matches'))[0]?.count).toBe(0);
+        const first = await post(`/api/reconciliation-sessions/${session.id}/matches`, match);
+        await post(`/api/reconciliation-sessions/${session.id}/matches`, { bankTransactionId: withdrawal.id, bookItemType: 'expense', bookItemId: expense.id, status: 'confirmed' });
+        const report = async () => financialReportResponseSchema.parse(await (await app.request('/api/reports/financial?from=2026-11-01&to=2026-11-30', { headers })).json());
+        expect((await report()).profitLoss).toMatchObject({ revenue: '100.00', expenses: '20.00', netIncome: '80.00' });
+        expect((await report()).cashFlow.closingCash).toBe('77.00');
+        expect((await report()).taxSummary.netGst).toBe('-3.00');
+        expect((await post(`/api/reconciliation-sessions/${session.id}/matches`, match)).id).toBe(first.id);
+        expect((await report()).cashFlow.closingCash).toBe('77.00');
+        await post(`/api/bank-transactions/${withdrawal.id}/undo`, { reason: 'Wrong statement row', reversalDate: '2026-11-06' }, 200);
+        expect((await report()).cashFlow.closingCash).toBe('54.00');
+        await post(`/api/reconciliation-sessions/${session.id}/matches`, { bankTransactionId: withdrawal.id, bookItemType: 'expense', bookItemId: expense.id, status: 'confirmed' });
+        expect((await report()).cashFlow.closingCash).toBe('77.00');
+        expect((await report()).trialBalance.balanced).toBe(true);
+        const paidInvoice = await (await app.request(`/api/invoices/${invoice.id}`, { headers })).json() as { totalPaid: string };
+        expect(paidInvoice.totalPaid).toBe('100.00');
+        const partial = await importTransaction(app, owner, bank.id, { amount: '10.00', type: 'debit', description: 'Partial statement row' });
+        await post(`/api/reconciliation-sessions/${session.id}/matches`, { bankTransactionId: partial.id, bookItemType: 'expense', bookItemId: expense.id, status: 'confirmed' }, 409);
+        const unequalExpense = await post('/api/expenses', { description: 'Different full cost', amount: '25.00', taxAmount: '0.00', status: 'approved', expenseDate: '2026-11-06', currency: 'NZD' });
+        await post(`/api/reconciliation-sessions/${session.id}/matches`, { bankTransactionId: partial.id, bookItemType: 'expense', bookItemId: unequalExpense.id, status: 'confirmed' }, 400);
+      } finally { await sql.end(); }
+    });
+  });
   it('ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects', async () => {
     await assertLocalDatabaseReachable();
     await withTestDb(async () => {
@@ -179,6 +230,11 @@ describe('bank reconciliation phase 1', () => {
         });
         expect(billMatch.status).toBe(201);
         expect(reconciliationMatchSchema.parse(await billMatch.json()).billId).toBe(bill.id);
+        const unsafeBillMatch = await app.request(`/api/reconciliation-sessions/${session.id}/matches`, {
+          method: 'POST', headers: { ...jsonHeaders, Cookie: owner },
+          body: JSON.stringify({ bankTransactionId: debit.id, bookItemType: 'bill', bookItemId: bill.id, status: 'confirmed' }),
+        });
+        expect(unsafeBillMatch.status).toBe(409);
         const accepted = await app.request(`/api/bank-transactions/${debit.id}/accept`, {
           method: 'POST', headers: { ...jsonHeaders, Cookie: owner },
           body: JSON.stringify({ allocations: [{ documentType: 'bill', documentId: bill.id, amount: '99.00' }], bankFee: '1.00' }),

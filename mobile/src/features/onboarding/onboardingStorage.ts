@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import type { GstRegistrationStatus, SafeAccountDraft } from './onboardingModel';
 
 const INTRO_KEY = 'ledgercraft.onboarding.intro.v1';
@@ -14,38 +15,50 @@ export interface BusinessDraft {
   gstRegistrationStatus: GstRegistrationStatus;
 }
 
+async function read(key: string): Promise<string | null> {
+  return Platform.OS === 'web' ? globalThis.localStorage.getItem(key) : SecureStore.getItemAsync(key);
+}
+async function write(key: string, value: string): Promise<void> {
+  if (Platform.OS === 'web') globalThis.localStorage.setItem(key, value);
+  else await SecureStore.setItemAsync(key, value);
+}
+async function remove(key: string): Promise<void> {
+  if (Platform.OS === 'web') globalThis.localStorage.removeItem(key);
+  else await SecureStore.deleteItemAsync(key);
+}
+
 async function readJson<T>(key: string): Promise<T | null> {
-  const value = await SecureStore.getItemAsync(key);
+  const value = await read(key);
   if (!value) return null;
   try {
     return JSON.parse(value) as T;
   } catch {
-    await SecureStore.deleteItemAsync(key);
+    await remove(key);
     return null;
   }
 }
 
 export const onboardingStorage = {
   async hasSeenIntro(): Promise<boolean> {
-    return (await SecureStore.getItemAsync(INTRO_KEY)) === 'seen';
+    return (await read(INTRO_KEY)) === 'seen';
   },
   async markIntroSeen(): Promise<void> {
-    await SecureStore.setItemAsync(INTRO_KEY, 'seen');
+    await write(INTRO_KEY, 'seen');
   },
   loadAccountDraft: () => readJson<SafeAccountDraft>(ACCOUNT_KEY),
-  saveAccountDraft: (draft: SafeAccountDraft) => SecureStore.setItemAsync(ACCOUNT_KEY, JSON.stringify(draft)),
-  clearAccountDraft: () => SecureStore.deleteItemAsync(ACCOUNT_KEY),
+  saveAccountDraft: (draft: SafeAccountDraft) => write(ACCOUNT_KEY, JSON.stringify(draft)),
+  clearAccountDraft: () => remove(ACCOUNT_KEY),
   loadBusinessDraft: () => readJson<BusinessDraft>(BUSINESS_KEY),
-  saveBusinessDraft: (draft: BusinessDraft) => SecureStore.setItemAsync(BUSINESS_KEY, JSON.stringify(draft)),
-  clearBusinessDraft: () => SecureStore.deleteItemAsync(BUSINESS_KEY),
+  saveBusinessDraft: (draft: BusinessDraft) => write(BUSINESS_KEY, JSON.stringify(draft)),
+  clearBusinessDraft: () => remove(BUSINESS_KEY),
   async markFirstInvoicePending(): Promise<void> {
-    await SecureStore.setItemAsync(FIRST_INVOICE_PROMPT_KEY, FIRST_INVOICE_PENDING);
+    await write(FIRST_INVOICE_PROMPT_KEY, FIRST_INVOICE_PENDING);
   },
   async consumeFirstInvoicePending(): Promise<boolean> {
     try {
-      const value = await SecureStore.getItemAsync(FIRST_INVOICE_PROMPT_KEY);
+      const value = await read(FIRST_INVOICE_PROMPT_KEY);
       if (value !== FIRST_INVOICE_PENDING) return false;
-      await SecureStore.deleteItemAsync(FIRST_INVOICE_PROMPT_KEY);
+      await remove(FIRST_INVOICE_PROMPT_KEY);
       return true;
     } catch (error) {
       console.error('Error reading the first invoice prompt:', error);

@@ -10,6 +10,7 @@ import { supabaseDataService } from '@/services/supabaseDataService';
 import { taxCalculationService } from '@/services/taxCalculationService';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { downloadGstReturnPdf } from '@/features/tax/export/gstReturnPdf';
+import { netGstAfterAdjustments } from '@/features/tax/gstPreparation';
 
 export default function IRDReportingPage() {
   const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
@@ -99,7 +100,7 @@ export default function IRDReportingPage() {
     try {
       toast({
         title: 'Saving GST Return',
-        description: 'Creating a draft from your invoices, expenses, and reconciliations...',
+        description: 'Creating an invoice-basis draft from posted invoices, supplier bills, expenses, and reconciliations...',
       });
 
       const irdReturnData = await taxCalculationService.generateIRDGSTReturn(
@@ -108,12 +109,12 @@ export default function IRDReportingPage() {
         returnData.returnPeriod.endDate
       );
 
-      const netGst =
-        returnData.salesData.gstOnSales -
-        (returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods) -
-        (returnData.adjustments.badDebtAdjustments +
-          returnData.adjustments.creditNoteAdjustments +
-          returnData.adjustments.otherAdjustments);
+      const netGst = netGstAfterAdjustments(returnData.salesData.gstOnSales,
+        returnData.purchaseData.gstOnPurchases,
+        returnData.purchaseData.gstOnCapitalGoods,
+        returnData.adjustments.badDebtAdjustments,
+        returnData.adjustments.creditNoteAdjustments,
+        returnData.adjustments.otherAdjustments);
 
       const newReturnData: Omit<TaxReturn, 'id' | 'createdAt' | 'updatedAt'> = {
         userId: user.id,
@@ -124,10 +125,11 @@ export default function IRDReportingPage() {
         totalPurchases: returnData.purchaseData.totalPurchases,
         gstOnSales: returnData.salesData.gstOnSales,
         gstOnPurchases: returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods,
-        netGst: Math.round(netGst * 100) / 100,
+        netGst,
         status: 'draft',
         returnData: {
           ...irdReturnData,
+          preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: returnData.dueDate },
           gstReturn: {
             salesDetails: {
               standardRated: irdReturnData.gstReturn?.salesDetails.standardRated ?? returnData.salesData.totalSales,
@@ -170,68 +172,11 @@ export default function IRDReportingPage() {
     }
   };
 
-  const handleCreateIncomeReturn = async (period: { start: string; end: string }) => {
-    if (!user?.id) return;
-    
-    try {
-      toast({
-        title: "Creating Income Tax Return",
-        description: "Calculating annual income and deductions..."
-      });
-
-      // Calculate income tax data from real transactions
-      const [invoices, expenses] = await Promise.all([
-        supabaseDataService.getInvoicesByPeriod(user.id, period.start, period.end),
-        supabaseDataService.getExpensesByPeriod(user.id, period.start, period.end)
-      ]);
-
-      const totalSales = invoices.reduce((sum, invoice) => sum + invoice.total, 0);
-      const totalPurchases = expenses.reduce((sum, expense) => sum + expense.amount, 0);
-      const taxableIncome = Math.max(0, totalSales - totalPurchases);
-      
-      // Simplified NZ tax calculation (actual rates are progressive)
-      const taxDue = taxableIncome > 14000 ? 
-        (taxableIncome - 14000) * 0.175 + // 17.5% for income over $14,000
-        (taxableIncome > 48000 ? (taxableIncome - 48000) * 0.135 : 0) // Additional 13.5% for income over $48,000
-        : 0;
-
-      const newReturnData: Omit<TaxReturn, 'id' | 'createdAt' | 'updatedAt'> = {
-        userId: user.id,
-        periodStart: period.start,
-        periodEnd: period.end,
-        returnType: 'Income_Tax',
-        totalSales,
-        totalPurchases,
-        gstOnSales: 0,
-        gstOnPurchases: 0,
-        netGst: 0,
-        status: 'draft',
-        returnData: {
-          incomeTax: {
-            grossIncome: totalSales,
-            allowableDeductions: totalPurchases,
-            taxableIncome,
-            taxDue: Math.round(taxDue * 100) / 100,
-            provisionalTax: Math.round(taxDue * 0.333 * 100) / 100 // Roughly 1/3 for provisional tax
-          }
-        }
-      };
-
-      const createdReturn = await supabaseDataService.createTaxReturn(newReturnData);
-      setTaxReturns(prev => [createdReturn, ...prev]);
-      
-      toast({
-        title: "Success",
-        description: `Income tax return created. Tax due: $${newReturnData.returnData?.incomeTax?.taxDue.toFixed(2)}`
-      });
-    } catch (error) {
-      console.error('Error creating income tax return:', error);
-      toast({
-        title: "Error",
-        description: "Failed to create income tax return",
-        variant: "destructive"
-      });
-    }
+  const handleCreateIncomeReturn = () => {
+    toast({
+      title: 'Income tax calculation is not supported',
+      description: 'Use the profit and loss report and general ledger to prepare records for your accountant. This app does not determine company or personal income-tax liabilities.',
+    });
   };
 
   const handleSubmitReturn = async (returnId: string, irdReference: string) => {

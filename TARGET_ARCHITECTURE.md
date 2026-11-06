@@ -1,5 +1,28 @@
 # LedgerCraft target architecture
 
+**Business accountant workflow (local validation, 2026-11-06):** A shared typed
+GST-preparation route returns company-scoped invoice-basis NZD figures from
+posted GST and immutable historical gross movements, including cancellations
+and reinstatements in their journal periods. Partial/private expense claim
+percentages apply exactly once to preserved raw tax; explicit paid-from accounts
+are restricted to bank/cash/card/loan sources. Legacy confirmed invoice/bill
+matches fail closed; supported settlement matching does not duplicate journals.
+Web and Expo consume that
+route, prepare selected periods, and persist GST drafts without claiming IRD
+submission. Received bills and approved expenses are included; unposted and
+foreign records, including deleted FX sources, are excluded. Negative gross or
+GST components require manual review, distinct from an ordinary net refund.
+The web wizard supports custom registered dates,
+an explicit myIR due date, and guarded reconciliation review. Unsupported
+income-tax estimates are no longer offered as company return calculations.
+Supplier payments use the selected bank ledger, and later balance sheets retain
+unclosed prior profit. Web account management uses Hono and report-derived
+balances. Mobile supports correct gross/GST expense create/edit, approvals,
+vendor creation and GST draft reload; Expo web preserves onboarding contacts.
+See [business accounting evidence](docs/evidence/business-accounting/README.md)
+for the independent worksheet, passing local check results, reconciliation boundaries
+and remaining signed-device work. No production filing or deployment is implied.
+
 **Account recovery and session security (implemented locally, 2026-11-06):**
 Better Auth owns password reset, verification, verified email changes, password
 changes, and session revocation for web and Expo. Reset responses are neutral;

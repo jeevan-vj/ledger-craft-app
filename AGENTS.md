@@ -1,5 +1,29 @@
 # AGENTS.md
 
+**Business accountant workflow (implemented locally, 2026-11-06):** Web and
+Expo share invoice-basis NZD preparation through
+`GET /api/tax/gst-preparation?from=YYYY-MM-DD&to=YYYY-MM-DD`. It uses posted
+ledger GST and historical gross journal movements, including cancellations and
+reinstatements in their own periods. Draft, foreign and unapproved sources are
+excluded; negative gross or GST components require manual review, while a net
+refund alone is valid. Partial/private-use expense GST is claimed exactly once
+from preserved raw tax. Explicit paid-from sources are bank/cash/card/loan
+accounts. Legacy confirmed invoice/bill matches fail closed; existing payment
+and approved-expense matching and accepting unpaid bills are supported. Both clients
+save preparation as a draft, not an IRD submission. Web supports custom
+registered periods and explicit myIR due dates. Automatic income-tax return
+calculation is unavailable. Selected-bank supplier postings and cumulative
+balance-sheet profit are corrected locally. Web Accounts uses Hono mutations
+and posted ledger balances; opening metadata still needs an opening journal.
+Mobile expense gross/GST editing, approvals, vendor creation, GST draft reload
+and Expo web onboarding contact persistence are implemented. The independent
+company worksheet and exact verification boundaries are in
+[`docs/evidence/business-accounting/README.md`](docs/evidence/business-accounting/README.md).
+Final API/contracts/mobile suites, web regression gates and real local browser
+proofs pass; bank-session completion preserves the independent cash totals.
+Signed-device QA and actual filing remain unverified; read the report for
+precise scope and existing web lint/type errors.
+
 **Account recovery and session security (implemented locally, 2026-11-06):**
 Better Auth provides neutral password-reset requests, expiring single-use reset
 and verification tokens, verified email changes, password changes, and explicit

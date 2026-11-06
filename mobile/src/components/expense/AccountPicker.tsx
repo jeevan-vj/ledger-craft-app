@@ -41,9 +41,9 @@ export function AccountPicker({ visible, onSelect, onClose, selectedAccountId }:
 
   const filteredAccounts = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    if (!query) return accounts;
     return accounts.filter((account) =>
-      account.name.toLowerCase().includes(query) || account.type.toLowerCase().includes(query)
+      account.isActive === true && ['bank', 'cash', 'credit_card', 'loan'].includes(account.type)
+      && (!query || account.name.toLowerCase().includes(query) || account.type.toLowerCase().includes(query))
     );
   }, [accounts, searchQuery]);
 
@@ -55,7 +55,7 @@ export function AccountPicker({ visible, onSelect, onClose, selectedAccountId }:
   return (
     <SelectionSheet
       visible={visible}
-      title="Select account"
+      title="Paid from account"
       searchPlaceholder="Search accounts"
       searchQuery={searchQuery}
       onSearchChange={setSearchQuery}

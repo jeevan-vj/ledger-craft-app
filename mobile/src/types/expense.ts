@@ -10,6 +10,7 @@ export interface Account {
   currency: string;
   openingBalance: number;
   currentBalance: number;
+  isActive?: boolean;
   userId?: string;
   createdAt?: string;
   updatedAt?: string;

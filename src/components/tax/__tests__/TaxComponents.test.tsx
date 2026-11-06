@@ -6,6 +6,14 @@ import { ExpenseGSTSummary } from '../../expense/ExpenseGSTSummary';
 import { BulkExpenseProcessor } from '../../expense/BulkExpenseProcessor';
 import { GSTReturnWizard } from '../GSTReturnWizard';
 
+vi.mock('@/features/tax/gstPreparation', async () => {
+  const actual = await vi.importActual<typeof import('@/features/tax/gstPreparation')>('@/features/tax/gstPreparation');
+  return { ...actual, loadGstPreparation: vi.fn(async () => ({
+    basis: 'invoice', totalSales: 3450, totalPurchases: 2875,
+    gstOnSales: 450, gstOnPurchases: 375, netGstPosition: 75, warnings: [],
+  })) };
+});
+
 // Mock the router
 vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn(),

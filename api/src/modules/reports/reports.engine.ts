@@ -71,7 +71,13 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
   const expenses = rows.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero()); const netIncome = revenue.sub(expenses);
   const assets = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'asset').reduce((sum, row) => sum.add(row.balance), zero());
   const liabilities = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'liability').reduce((sum, row) => sum.add(row.balance), zero());
-  const ledgerEquity = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'equity').reduce((sum, row) => sum.add(row.balance), zero()); const equity = ledgerEquity.add(netIncome);
+  const closingRows = accountRows([...openingRows, ...periodRows]);
+  const ledgerEquity = closingRows.filter((row) => row.accountClass === 'equity').reduce((sum, row) => sum.add(row.balance), zero());
+  // The balance sheet is cumulative as of `to`, unlike the period profit and
+  // loss statement. Include unclosed profits/losses brought forward as well.
+  const cumulativeIncome = closingRows.reduce((sum, row) => row.accountClass === 'revenue'
+    ? sum.add(row.balance) : row.accountClass === 'expense' ? sum.sub(row.balance) : sum, zero());
+  const equity = ledgerEquity.add(cumulativeIncome);
   const cashRows = periodRows.filter((row) => ['bank', 'cash'].includes(row.accountType)); const openingCashRows = openingRows.filter((row) => ['bank', 'cash'].includes(row.accountType));
   const inflows = cashRows.reduce((sum, row) => sum.add(row.debit), zero()); const outflows = cashRows.reduce((sum, row) => sum.add(row.credit), zero()); const openingCash = openingCashRows.reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero());
   const comparisonRows = input.comparison?.rows ?? []; const comparisonAccounts = accountRows(comparisonRows); const compRevenue = comparisonAccounts.filter((row) => row.accountClass === 'revenue').reduce((sum, row) => sum.add(row.balance), zero()); const compExpenses = comparisonAccounts.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero());

@@ -6,6 +6,8 @@ import { nextJournalEntryNumber } from '../accounting/entry-number';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { decimal } from '../invoices/money';
+import { bankLedgerAccount } from '../accounting/posting';
+import { getAccount as getBankAccount } from '../bank/bank.repository';
 
 type OrganisationContext = { organisationId: string; userId: string };
 const SYSTEM_ACCOUNTS = {
@@ -110,7 +112,9 @@ export async function postBillPayment(
   payment: BillPaymentDto,
 ) {
   const payableId = await systemAccount(tx, ctx, '2100');
-  const bankId = await systemAccount(tx, ctx, '1110');
+  const bank = await getBankAccount(tx, ctx.organisationId, payment.bankAccountId);
+  if (!bank) throw new HTTPException(400, { message: 'Bank account not found' });
+  const bankId = await bankLedgerAccount(tx, ctx, bank);
   await post(tx, ctx, {
     date: payment.paymentDate,
     description: `Payment for ${bill.billNumber}`,

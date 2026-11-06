@@ -15,6 +15,7 @@ describe('permissionForRequest', () => {
     ['GET', '/api/reconciliation-sessions', 'banking.read'],
     ['POST', '/api/book-entries', 'banking.write'],
     ['GET', '/api/tax-returns', 'reports.read'],
+    ['GET', '/api/tax/gst-preparation', 'reports.read'],
     ['POST', '/api/tax-returns', 'reports.read'],
     ['GET', '/api/items', 'settings.read'],
     ['POST', '/api/recurring-templates/preview', 'settings.read'],

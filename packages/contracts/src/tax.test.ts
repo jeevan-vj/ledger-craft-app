@@ -3,9 +3,14 @@ import {
   createTaxReturnRequestSchema,
   fileTaxReturnRequestSchema,
   taxReturnSchema,
+  irdReturnDataSchema,
 } from './tax';
 
 describe('tax contracts', () => {
+  it('retains the user-selected GST preparation due date across a snapshot round trip', () => {
+    const snapshot = { preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: '2026-08-28' } };
+    expect(irdReturnDataSchema.parse(JSON.parse(JSON.stringify(snapshot)))).toEqual(snapshot);
+  });
   it('rejects ownership ids on tax return create', () => {
     expect(
       createTaxReturnRequestSchema.safeParse({

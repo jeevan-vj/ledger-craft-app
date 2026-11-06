@@ -16,6 +16,7 @@ import { decimal } from '../invoices/money';
 import * as paymentsService from '../payments/payments.service';
 import * as purchasesService from '../purchases/purchases.service';
 import * as actionRepo from './reconciliation-actions.repository';
+import { hasCompletedStatement, rejectTransactionMatches } from './existing-posting.repository';
 
 async function requireTargetAccount(tx: Database, organisationId: string, id: string) {
   const [account] = await tx.select().from(accounts).where(and(eq(accounts.organisationId, organisationId), eq(accounts.id, id)));
@@ -182,6 +183,9 @@ export async function undoReconciliationForUser(
     if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
     const action = await actionRepo.getActiveAction(tx, ctx.organisationId, transactionId);
     if (!action) throw new HTTPException(409, { message: 'Bank transaction has no undoable reconciliation action' });
+    if (await hasCompletedStatement(tx, ctx.organisationId, transaction.bankAccountId, transaction.transactionDate)) {
+      throw new HTTPException(409, { message: 'Completed bank reconciliation cannot be undone' });
+    }
     for (const item of await actionRepo.listActionItems(tx, ctx.organisationId, action.id)) {
       if (item.paymentId) await paymentsService.reversePaymentInTx(tx, ctx, item.paymentId, input, { skipPosting: true });
       if (item.billPaymentId) {
@@ -197,6 +201,7 @@ export async function undoReconciliationForUser(
     });
     if (action.actionType === 'accept') await detailsRepo.removeAllocations(tx, ctx.organisationId, transactionId);
     await bankRepo.markTransactionReconciled(tx, ctx.organisationId, transactionId, false);
+    await rejectTransactionMatches(tx, ctx.organisationId, transactionId);
     return actionRepo.markActionReversed(tx, ctx.organisationId, action.id, input.reason);
   });
 }

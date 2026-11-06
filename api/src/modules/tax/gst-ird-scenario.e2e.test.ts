@@ -291,7 +291,7 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         ]));
         expect(linesFor(ledger, 'bill_payment', billPayment.payments[0].id)).toEqual(expect.arrayContaining([
           { accountNumber: '2100', debit: '115.00', credit: '0.00' },
-          { accountNumber: '1110', debit: '0.00', credit: '115.00' },
+          { accountNumber: `BANK-${bankAccount.id.slice(0, 8).toUpperCase()}`, debit: '0.00', credit: '115.00' },
         ]));
 
         // C1: invoice + bill only => 30 output - 15 input = 15 payable.
@@ -308,7 +308,8 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         expect(rowFor(invoiceAndBillReport, '1200')).toMatchObject({ balance: '0.00' });
         expect(rowFor(invoiceAndBillReport, '5000')).toMatchObject({ balance: '100.00' });
         expect(rowFor(invoiceAndBillReport, '2100')).toMatchObject({ balance: '0.00' });
-        expect(rowFor(invoiceAndBillReport, '1110')).toMatchObject({ debit: '230.00', credit: '115.00', balance: '115.00' });
+        expect(rowFor(invoiceAndBillReport, '1110')).toMatchObject({ debit: '230.00', credit: '0.00', balance: '230.00' });
+        expect(rowFor(invoiceAndBillReport, `BANK-${bankAccount.id.slice(0, 8).toUpperCase()}`)).toMatchObject({ debit: '0.00', credit: '115.00', balance: '-115.00' });
 
         // C2: a direct paid inclusive expense contributes another 15 input GST.
         const expense = await requestJson(app, '/api/expenses', {

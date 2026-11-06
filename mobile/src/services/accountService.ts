@@ -32,6 +32,7 @@ export class AccountService {
         currency: account.currency,
         openingBalance: account.opening_balance,
         currentBalance: account.current_balance,
+        isActive: account.is_active !== false,
         userId: account.user_id,
         createdAt: account.created_at,
         updatedAt: account.updated_at,

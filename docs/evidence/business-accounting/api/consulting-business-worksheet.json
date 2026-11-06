@@ -1,0 +1,984 @@
+{
+  "report": {
+    "meta": {
+      "from": "2026-04-01",
+      "to": "2026-06-30",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T09:05:01.982Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "5000.00",
+          "credit": "280.00",
+          "balance": "4720.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "4720.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3a17dc98-eea2-4a86-999d-4d23a6e18d23",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "5000.00",
+          "balance": "5000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "5000.00"
+        },
+        {
+          "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "230.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1400.00"
+        },
+        {
+          "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "210.00"
+        },
+        {
+          "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+          "accountNumber": "BANK-2B488134",
+          "accountName": "Operating",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "1069.00",
+          "balance": "311.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "311.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "550.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "75.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "276.00"
+        },
+        {
+          "accountId": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+          "accountNumber": "BANK-39032002",
+          "accountName": "Savings",
+          "accountClass": "asset",
+          "debit": "1000.00",
+          "credit": "0.00",
+          "balance": "1000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1000.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "9684.00",
+      "totalCredits": "9684.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00"
+        },
+        {
+          "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00"
+        }
+      ],
+      "revenue": "1400.00",
+      "expenses": "550.00",
+      "netIncome": "850.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "5000.00",
+          "credit": "280.00",
+          "balance": "4720.00"
+        },
+        {
+          "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00"
+        },
+        {
+          "accountId": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00"
+        },
+        {
+          "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        },
+        {
+          "accountId": "3a17dc98-eea2-4a86-999d-4d23a6e18d23",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "5000.00",
+          "balance": "5000.00"
+        },
+        {
+          "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+          "accountNumber": "BANK-2B488134",
+          "accountName": "Operating",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "1069.00",
+          "balance": "311.00"
+        },
+        {
+          "accountId": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+          "accountNumber": "BANK-39032002",
+          "accountName": "Savings",
+          "accountClass": "asset",
+          "debit": "1000.00",
+          "credit": "0.00",
+          "balance": "1000.00"
+        }
+      ],
+      "assets": "6336.00",
+      "liabilities": "486.00",
+      "equity": "5850.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "5000.00",
+          "credit": "280.00",
+          "balance": "4720.00"
+        },
+        {
+          "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+          "accountNumber": "BANK-2B488134",
+          "accountName": "Operating",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "1069.00",
+          "balance": "311.00"
+        },
+        {
+          "accountId": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+          "accountNumber": "BANK-39032002",
+          "accountName": "Savings",
+          "accountClass": "asset",
+          "debit": "1000.00",
+          "credit": "0.00",
+          "balance": "1000.00"
+        }
+      ],
+      "openingCash": "0.00",
+      "inflows": "7380.00",
+      "outflows": "1349.00",
+      "netCashFlow": "6031.00",
+      "closingCash": "6031.00"
+    },
+    "receivablesAging": {
+      "total": "230.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "230.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "06d8f86d-3552-4632-8f85-ff252228cd86",
+          "number": "INV-2026-0002",
+          "partyId": "b7e3d7de-3162-4093-915c-f1adfa4ae070",
+          "partyName": "Harbour Consulting Customer",
+          "issueDate": "2026-04-05",
+          "dueDate": "2026-04-05",
+          "balanceDue": "230.00",
+          "daysOverdue": 86,
+          "bucket": "61-90"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "276.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "276.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "f37922b1-e0cc-4631-b893-5377d95b34c5",
+          "number": "BILL-0001",
+          "partyId": "4fce6e9b-4838-4648-8320-bb76d4007aed",
+          "partyName": "Harbour Consulting Supplier",
+          "issueDate": "2026-04-15",
+          "dueDate": "2026-04-15",
+          "balanceDue": "276.00",
+          "daysOverdue": 76,
+          "bucket": "61-90"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "1400.00",
+      "tax": "210.00",
+      "total": "1610.00",
+      "paid": "1380.00",
+      "outstanding": "230.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "300.00",
+      "tax": "45.00",
+      "total": "345.00",
+      "paid": "69.00",
+      "outstanding": "276.00"
+    },
+    "taxSummary": {
+      "collected": "210.00",
+      "paid": "75.00",
+      "netPayable": "135.00",
+      "outputGst": "210.00",
+      "inputGst": "75.00",
+      "netGst": "135.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "5000.00",
+          "credit": "280.00",
+          "balance": "4720.00"
+        },
+        {
+          "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00"
+        },
+        {
+          "accountId": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00"
+        },
+        {
+          "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        },
+        {
+          "accountId": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00"
+        },
+        {
+          "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00"
+        },
+        {
+          "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+          "accountNumber": "BANK-2B488134",
+          "accountName": "Operating",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "1069.00",
+          "balance": "311.00"
+        },
+        {
+          "accountId": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+          "accountNumber": "BANK-39032002",
+          "accountName": "Savings",
+          "accountClass": "asset",
+          "debit": "1000.00",
+          "credit": "0.00",
+          "balance": "1000.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "generalLedger": {
+    "meta": {
+      "from": "2026-04-01",
+      "to": "2026-06-30",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T09:05:02.005Z"
+    },
+    "lines": [
+      {
+        "journalEntryId": "fe223e53-760b-400c-b642-958ab6d8399b",
+        "entryNumber": "JE-2026-001",
+        "date": "2026-04-01",
+        "description": "Owner funds business",
+        "referenceType": "manual",
+        "referenceId": null,
+        "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+        "accountNumber": "1110",
+        "accountName": "Bank Account - Current",
+        "debit": "5000.00",
+        "credit": "0.00",
+        "runningBalance": "5000.00"
+      },
+      {
+        "journalEntryId": "fe223e53-760b-400c-b642-958ab6d8399b",
+        "entryNumber": "JE-2026-001",
+        "date": "2026-04-01",
+        "description": "Owner funds business",
+        "referenceType": "manual",
+        "referenceId": null,
+        "accountId": "3a17dc98-eea2-4a86-999d-4d23a6e18d23",
+        "accountNumber": "3000",
+        "accountName": "Owner capital",
+        "debit": "0.00",
+        "credit": "5000.00",
+        "runningBalance": "-5000.00"
+      },
+      {
+        "journalEntryId": "f1d1135b-9fdd-410e-8a08-3a6ca46b5969",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5a0fab30-084d-4286-a377-f32e7477760e",
+        "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "1150.00"
+      },
+      {
+        "journalEntryId": "f1d1135b-9fdd-410e-8a08-3a6ca46b5969",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5a0fab30-084d-4286-a377-f32e7477760e",
+        "accountId": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "0.00",
+        "credit": "1000.00",
+        "runningBalance": "-1000.00"
+      },
+      {
+        "journalEntryId": "f1d1135b-9fdd-410e-8a08-3a6ca46b5969",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5a0fab30-084d-4286-a377-f32e7477760e",
+        "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "0.00",
+        "credit": "150.00",
+        "runningBalance": "-150.00"
+      },
+      {
+        "journalEntryId": "382a65ec-6735-4015-8740-ef5ca8c4e3d5",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "06d8f86d-3552-4632-8f85-ff252228cd86",
+        "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "460.00",
+        "credit": "0.00",
+        "runningBalance": "1610.00"
+      },
+      {
+        "journalEntryId": "382a65ec-6735-4015-8740-ef5ca8c4e3d5",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "06d8f86d-3552-4632-8f85-ff252228cd86",
+        "accountId": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "0.00",
+        "credit": "400.00",
+        "runningBalance": "-1400.00"
+      },
+      {
+        "journalEntryId": "382a65ec-6735-4015-8740-ef5ca8c4e3d5",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-04-05",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "06d8f86d-3552-4632-8f85-ff252228cd86",
+        "accountId": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "0.00",
+        "credit": "60.00",
+        "runningBalance": "-210.00"
+      },
+      {
+        "journalEntryId": "51229b5d-b55e-429c-9a2f-b62c50c87f2e",
+        "entryNumber": "JE-2026-68053C45",
+        "date": "2026-04-10",
+        "description": "Payment for INV-2026-0002",
+        "referenceType": "invoice_payment",
+        "referenceId": "f49a87ca-90e9-42d2-bf56-0264fc9c80da",
+        "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+        "accountNumber": "BANK-2B488134",
+        "accountName": "Operating",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "230.00"
+      },
+      {
+        "journalEntryId": "51229b5d-b55e-429c-9a2f-b62c50c87f2e",
+        "entryNumber": "JE-2026-68053C45",
+        "date": "2026-04-10",
+        "description": "Payment for INV-2026-0002",
+        "referenceType": "invoice_payment",
+        "referenceId": "f49a87ca-90e9-42d2-bf56-0264fc9c80da",
+        "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "1380.00"
+      },
+      {
+        "journalEntryId": "0338a9e6-d3bc-4d71-abea-f573e4e12b7e",
+        "entryNumber": "JE-2026-EA97C40B",
+        "date": "2026-04-10",
+        "description": "Payment for INV-2026-0001",
+        "referenceType": "invoice_payment",
+        "referenceId": "16dc671d-fcf0-423f-872e-a78589e100e1",
+        "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+        "accountNumber": "BANK-2B488134",
+        "accountName": "Operating",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "1380.00"
+      },
+      {
+        "journalEntryId": "0338a9e6-d3bc-4d71-abea-f573e4e12b7e",
+        "entryNumber": "JE-2026-EA97C40B",
+        "date": "2026-04-10",
+        "description": "Payment for INV-2026-0001",
+        "referenceType": "invoice_payment",
+        "referenceId": "16dc671d-fcf0-423f-872e-a78589e100e1",
+        "accountId": "21226f45-a291-4154-9ff7-1616a51ec162",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "230.00"
+      },
+      {
+        "journalEntryId": "a27fac43-5f31-4306-bbf0-f736949cf045",
+        "entryNumber": "JE-2026-7D15F5C5",
+        "date": "2026-04-12",
+        "description": "Business operating cost",
+        "referenceType": "expense",
+        "referenceId": "74cf410a-80b4-4752-9ef7-7ef3042105a9",
+        "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "200.00",
+        "credit": "0.00",
+        "runningBalance": "200.00"
+      },
+      {
+        "journalEntryId": "a27fac43-5f31-4306-bbf0-f736949cf045",
+        "entryNumber": "JE-2026-7D15F5C5",
+        "date": "2026-04-12",
+        "description": "Business operating cost",
+        "referenceType": "expense",
+        "referenceId": "74cf410a-80b4-4752-9ef7-7ef3042105a9",
+        "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+        "accountNumber": "2150",
+        "accountName": "GST Paid on Purchases",
+        "debit": "30.00",
+        "credit": "0.00",
+        "runningBalance": "30.00"
+      },
+      {
+        "journalEntryId": "a27fac43-5f31-4306-bbf0-f736949cf045",
+        "entryNumber": "JE-2026-7D15F5C5",
+        "date": "2026-04-12",
+        "description": "Business operating cost",
+        "referenceType": "expense",
+        "referenceId": "74cf410a-80b4-4752-9ef7-7ef3042105a9",
+        "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+        "accountNumber": "1110",
+        "accountName": "Bank Account - Current",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "4770.00"
+      },
+      {
+        "journalEntryId": "46a52497-504b-4a3b-942e-465628c107df",
+        "entryNumber": "JE-2026-D4D3E052",
+        "date": "2026-04-12",
+        "description": "Business operating cost",
+        "referenceType": "expense",
+        "referenceId": "decd9698-362a-4c17-9174-0e2e7726ab18",
+        "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "50.00",
+        "credit": "0.00",
+        "runningBalance": "250.00"
+      },
+      {
+        "journalEntryId": "46a52497-504b-4a3b-942e-465628c107df",
+        "entryNumber": "JE-2026-D4D3E052",
+        "date": "2026-04-12",
+        "description": "Business operating cost",
+        "referenceType": "expense",
+        "referenceId": "decd9698-362a-4c17-9174-0e2e7726ab18",
+        "accountId": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+        "accountNumber": "1110",
+        "accountName": "Bank Account - Current",
+        "debit": "0.00",
+        "credit": "50.00",
+        "runningBalance": "4720.00"
+      },
+      {
+        "journalEntryId": "d14785a9-9cae-4f6a-aabb-f5a3dc75ee01",
+        "entryNumber": "JE-2026-004",
+        "date": "2026-04-15",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "f37922b1-e0cc-4631-b893-5377d95b34c5",
+        "accountId": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "300.00",
+        "credit": "0.00",
+        "runningBalance": "550.00"
+      },
+      {
+        "journalEntryId": "d14785a9-9cae-4f6a-aabb-f5a3dc75ee01",
+        "entryNumber": "JE-2026-004",
+        "date": "2026-04-15",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "f37922b1-e0cc-4631-b893-5377d95b34c5",
+        "accountId": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+        "accountNumber": "2150",
+        "accountName": "GST Paid on Purchases",
+        "debit": "45.00",
+        "credit": "0.00",
+        "runningBalance": "75.00"
+      },
+      {
+        "journalEntryId": "d14785a9-9cae-4f6a-aabb-f5a3dc75ee01",
+        "entryNumber": "JE-2026-004",
+        "date": "2026-04-15",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "f37922b1-e0cc-4631-b893-5377d95b34c5",
+        "accountId": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+        "accountNumber": "2100",
+        "accountName": "Accounts Payable",
+        "debit": "0.00",
+        "credit": "345.00",
+        "runningBalance": "-345.00"
+      },
+      {
+        "journalEntryId": "c47235b0-d5fa-4f62-acfd-1269ebb1c631",
+        "entryNumber": "JE-2026-005",
+        "date": "2026-04-20",
+        "description": "Payment for BILL-0001",
+        "referenceType": "bill_payment",
+        "referenceId": "aa8d834a-eef8-43cb-a6a3-609875381b1c",
+        "accountId": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+        "accountNumber": "2100",
+        "accountName": "Accounts Payable",
+        "debit": "69.00",
+        "credit": "0.00",
+        "runningBalance": "-276.00"
+      },
+      {
+        "journalEntryId": "c47235b0-d5fa-4f62-acfd-1269ebb1c631",
+        "entryNumber": "JE-2026-005",
+        "date": "2026-04-20",
+        "description": "Payment for BILL-0001",
+        "referenceType": "bill_payment",
+        "referenceId": "aa8d834a-eef8-43cb-a6a3-609875381b1c",
+        "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+        "accountNumber": "BANK-2B488134",
+        "accountName": "Operating",
+        "debit": "0.00",
+        "credit": "69.00",
+        "runningBalance": "1311.00"
+      },
+      {
+        "journalEntryId": "eb1cbc80-6b8b-439d-926a-4c6b93a26c2c",
+        "entryNumber": "JE-2026-D3AC3F5E",
+        "date": "2026-04-22",
+        "description": "Reserve cash",
+        "referenceType": "bank_transfer",
+        "referenceId": "dce2054b-91c3-4df7-b516-64e1be1dd968",
+        "accountId": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+        "accountNumber": "BANK-39032002",
+        "accountName": "Savings",
+        "debit": "1000.00",
+        "credit": "0.00",
+        "runningBalance": "1000.00"
+      },
+      {
+        "journalEntryId": "eb1cbc80-6b8b-439d-926a-4c6b93a26c2c",
+        "entryNumber": "JE-2026-D3AC3F5E",
+        "date": "2026-04-22",
+        "description": "Reserve cash",
+        "referenceType": "bank_transfer",
+        "referenceId": "dce2054b-91c3-4df7-b516-64e1be1dd968",
+        "accountId": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+        "accountNumber": "BANK-2B488134",
+        "accountName": "Operating",
+        "debit": "0.00",
+        "credit": "1000.00",
+        "runningBalance": "311.00"
+      }
+    ]
+  },
+  "preparedReturn": {
+    "id": "957213cf-d4b8-4990-9e86-e89dd1c57cc5",
+    "periodStart": "2026-04-01",
+    "periodEnd": "2026-06-30",
+    "returnType": "GST",
+    "totalSales": "1610.00",
+    "totalPurchases": "625.00",
+    "gstOnSales": "210.00",
+    "gstOnPurchases": "75.00",
+    "netGst": "135.00",
+    "status": "draft",
+    "submittedAt": null,
+    "irdReference": null,
+    "returnData": {},
+    "createdAt": "2026-11-06T09:05:02.000Z",
+    "updatedAt": "2026-11-06T09:05:02.000Z"
+  },
+  "chartOfAccounts": {
+    "accounts": [
+      {
+        "id": "e7f4644d-dab3-42ad-a753-fe899b82526e",
+        "name": "Bank Account - Current",
+        "type": "bank",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "1110",
+        "accountClass": "asset",
+        "isActive": true
+      },
+      {
+        "id": "913d1739-d5e7-44c8-bef1-fa7da2c1d559",
+        "name": "Cash on Hand",
+        "type": "cash",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "1120",
+        "accountClass": "asset",
+        "isActive": true
+      },
+      {
+        "id": "21226f45-a291-4154-9ff7-1616a51ec162",
+        "name": "Accounts Receivable",
+        "type": "asset",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "1200",
+        "accountClass": "asset",
+        "isActive": true
+      },
+      {
+        "id": "41ad556e-f2eb-44b7-9eb5-f60945f068d8",
+        "name": "Accounts Payable",
+        "type": "liability",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "2100",
+        "accountClass": "liability",
+        "isActive": true
+      },
+      {
+        "id": "bae27b78-5059-4cd9-b83c-a037b8df1b81",
+        "name": "GST Paid on Purchases",
+        "type": "asset",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "2150",
+        "accountClass": "asset",
+        "isActive": true
+      },
+      {
+        "id": "eabef4a5-e3ed-4511-a18e-34567e847ed3",
+        "name": "GST Collected on Sales",
+        "type": "liability",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "2200",
+        "accountClass": "liability",
+        "isActive": true
+      },
+      {
+        "id": "0d788f07-9158-41e8-885c-3b35d09cd67e",
+        "name": "Credit Card",
+        "type": "credit_card",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "2300",
+        "accountClass": "liability",
+        "isActive": true
+      },
+      {
+        "id": "3a17dc98-eea2-4a86-999d-4d23a6e18d23",
+        "name": "Owner capital",
+        "type": "equity",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "3000",
+        "accountClass": "equity",
+        "isActive": true
+      },
+      {
+        "id": "b526eda6-4292-4e4a-b4a4-253c48b5796a",
+        "name": "Sales Revenue",
+        "type": "revenue",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "4000",
+        "accountClass": "revenue",
+        "isActive": true
+      },
+      {
+        "id": "173cb2ec-7036-44d4-9408-95714b431abd",
+        "name": "Service Revenue",
+        "type": "revenue",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "4100",
+        "accountClass": "revenue",
+        "isActive": true
+      },
+      {
+        "id": "841c0fb2-a933-4be6-9867-5eee9dff6ecd",
+        "name": "Operating Expenses",
+        "type": "expense",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "5000",
+        "accountClass": "expense",
+        "isActive": true
+      },
+      {
+        "id": "77595545-8ef6-4e6b-9835-58cc2c34a9ba",
+        "name": "Operating",
+        "type": "bank",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "BANK-2B488134",
+        "accountClass": "asset",
+        "isActive": true
+      },
+      {
+        "id": "1ea0186a-9d20-4f01-9c33-0d9e48850888",
+        "name": "Savings",
+        "type": "bank",
+        "currency": "NZD",
+        "openingBalance": "0.00",
+        "currentBalance": "0.00",
+        "accountNumber": "BANK-39032002",
+        "accountClass": "asset",
+        "isActive": true
+      }
+    ]
+  },
+  "gstPreparation": {
+    "basis": "invoice",
+    "from": "2026-04-01",
+    "to": "2026-06-30",
+    "baseCurrency": "NZD",
+    "totalSales": "1610.00",
+    "totalPurchases": "625.00",
+    "gstOnSales": "210.00",
+    "gstOnPurchases": "75.00",
+    "netGstPosition": "135.00",
+    "warnings": []
+  }
+}
