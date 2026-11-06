@@ -5,11 +5,7 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['https://easybiz.iamjeevan.com', 'easybizinvoice://'],
   config: {
     screens: {
-      Auth: {
-        screens: {
-          ResetPassword: 'reset-password',
-        },
-      },
+      ResetPassword: 'reset-password',
       PublicInvoice: 'shared/invoice/:shareToken',
       PublicQuote: 'shared/quote/:shareToken',
       ImportCapture: 'imports/new/:entry',

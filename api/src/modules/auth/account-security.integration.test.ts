@@ -5,7 +5,7 @@ import { getDatabaseUrl } from '../../env';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
 import { createAuth, type AuthEmail } from './auth';
 import { eq } from 'drizzle-orm';
-import { verifications } from '../../db/schema/identity';
+import { authRateLimits, verifications } from '../../db/schema/identity';
 
 const origin = 'http://localhost:8080';
 let clientIp = '203.0.113.10';
@@ -106,6 +106,8 @@ describe('account recovery and session security', () => {
           method: 'POST', headers: jsonHeaders(), body: JSON.stringify({ name: 'Session owner', email, password: 'password123' }),
         });
         const currentCookie = cookieHeader(signUp);
+        const currentBearer = signUp.headers.get('set-auth-token');
+        expect(currentBearer).toBeTruthy();
         const second = await app.request('/api/auth/sign-in/email', {
           method: 'POST', headers: jsonHeaders(), body: JSON.stringify({ email, password: 'password123' }),
         });
@@ -128,6 +130,8 @@ describe('account recovery and session security', () => {
           method: 'POST', headers: jsonHeaders(), body: JSON.stringify({ email, password: 'password123' }),
         });
         const thirdCookie = cookieHeader(third);
+        const thirdBearer = third.headers.get('set-auth-token');
+        expect(thirdBearer).toBeTruthy();
         const changed = await app.request('/api/auth/change-password', {
           method: 'POST', headers: currentHeaders,
           body: JSON.stringify({ currentPassword: 'password123', newPassword: 'changed-password123', revokeOtherSessions: true }),
@@ -137,6 +141,8 @@ describe('account recovery and session security', () => {
         expect(replacementCookie).toContain('better-auth.session_token=');
         expect((await app.request('/api/me', { headers: { Cookie: currentCookie, Origin: origin } })).status).toBe(401);
         expect((await app.request('/api/me', { headers: { Cookie: thirdCookie, Origin: origin } })).status).toBe(401);
+        expect((await app.request('/api/me', { headers: { Authorization: `Bearer ${currentBearer}`, Origin: origin } })).status).toBe(401);
+        expect((await app.request('/api/me', { headers: { Authorization: `Bearer ${thirdBearer}`, Origin: origin } })).status).toBe(401);
         expect((await app.request('/api/me', { headers: { Cookie: replacementCookie, Origin: origin } })).status).toBe(200);
       } finally {
         await sql.end({ timeout: 5 });
@@ -201,6 +207,8 @@ describe('account recovery and session security', () => {
         }
         expect(statuses).toEqual([200, 200, 200, 429]);
         expect(sent).toHaveLength(3);
+        const persistedLimits = await db.select().from(authRateLimits);
+        expect(persistedLimits.some((entry) => entry.key.includes('/request-password-reset'))).toBe(true);
       } finally { await sql.end({ timeout: 5 }); }
     });
   });

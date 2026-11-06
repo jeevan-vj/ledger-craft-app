@@ -3,6 +3,12 @@ import { getStateFromPath } from '@react-navigation/native';
 import { customerTabParams, homeQuickActionLink, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
 
 describe('mobile navigation links', () => {
+  it('keeps password reset on the always-mounted root stack', () => {
+    expect(mobileLinking.config?.screens).toMatchObject({
+      ResetPassword: 'reset-password',
+    });
+  });
+
   it('keeps customers as a tab and expenses and purchases under More', () => {
     expect(mainTabs).toEqual(['Dashboard', 'Invoices', 'Customers', 'More']);
     const screens = moreMenuSections.flatMap((section) => section.rows.map((row) => row.screen));

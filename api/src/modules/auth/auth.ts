@@ -2,7 +2,7 @@ import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins';
 import type { Database } from '../../db/client';
-import { authAccounts, sessions, users, verifications } from '../../db/schema/identity';
+import { authAccounts, authRateLimits, sessions, users, verifications } from '../../db/schema/identity';
 import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl } from '../../env';
 import { provisionOrganisationForUser } from './provision';
 import { scrubText } from '../../observability/scrub';
@@ -27,6 +27,8 @@ const identitySchema = {
   auth_accounts: authAccounts,
   verification: verifications,
   verifications,
+  rateLimit: authRateLimits,
+  auth_rate_limits: authRateLimits,
 };
 
 export function createAuth(db: Database, options: CreateAuthOptions = {}) {
@@ -77,7 +79,13 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
     },
     rateLimit: {
       enabled: options.enableRateLimit ?? process.env.NODE_ENV !== 'test',
+      storage: 'database',
+      modelName: 'auth_rate_limits',
       customRules: {
+        '/sign-in/email': { window: 10, max: 3 },
+        '/sign-up/email': { window: 10, max: 3 },
+        '/request-password-reset': { window: 60, max: 3 },
+        '/send-verification-email': { window: 60, max: 3 },
         '/reset-password': { window: 60, max: 5 },
         '/verify-email': { window: 60, max: 5 },
       },

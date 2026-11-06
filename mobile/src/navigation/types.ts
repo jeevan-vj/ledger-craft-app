@@ -3,6 +3,8 @@ import type { NavigatorScreenParams } from '@react-navigation/native';
 export type RootStackParamList = {
   Auth: undefined;
   Main: NavigatorScreenParams<MainTabParamList> | undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token?: string; error?: string } | undefined;
   PublicInvoice: { shareToken: string };
   PublicQuote: { shareToken: string };
   ImportCapture: { entry: 'invoices' | 'purchases' };

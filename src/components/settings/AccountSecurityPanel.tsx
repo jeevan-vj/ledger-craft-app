@@ -20,12 +20,19 @@ export function AccountSecurityPanel() {
   const { toast } = useToast();
   const { signOut, refreshUser } = useAuth();
   const [sessions, setSessions] = useState<AccountSession[]>([]);
+  const [sessionsLoading, setSessionsLoading] = useState(true);
+  const [sessionsError, setSessionsError] = useState('');
   const [busy, setBusy] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [newEmail, setNewEmail] = useState('');
-  const load = useCallback(async () => setSessions(await listAccountSessions()), []);
-  useEffect(() => { void load(); }, [load]);
+  const load = useCallback(async () => {
+    setSessionsLoading(true); setSessionsError('');
+    try { setSessions(await listAccountSessions()); }
+    catch (error) { setSessionsError(error instanceof Error ? error.message : 'Could not load signed-in devices.'); throw error; }
+    finally { setSessionsLoading(false); }
+  }, []);
+  useEffect(() => { void load().catch(() => undefined); }, [load]);
   const action = async (task: () => Promise<void>, message: string, reload = true) => {
     setBusy(true);
     try { await task(); if (reload) await load(); toast({ title: message }); }
@@ -49,6 +56,9 @@ export function AccountSecurityPanel() {
 
     <Card><CardHeader><CardTitle>Signed-in devices</CardTitle><CardDescription>Review active sessions. “Sign out other devices” keeps this browser active; “Sign out everywhere” includes it.</CardDescription></CardHeader>
       <CardContent className="space-y-3">
+        {sessionsLoading ? <p role="status" className="text-sm text-muted-foreground">Loading signed-in devices…</p> : null}
+        {sessionsError ? <p role="alert" className="text-sm text-destructive">{sessionsError}</p> : null}
+        {!sessionsLoading && !sessionsError && sessions.length === 0 ? <p className="text-sm text-muted-foreground">No active sessions found.</p> : null}
         {sessions.map((session) => <div key={session.token} className="flex flex-col justify-between gap-3 rounded-lg border p-3 sm:flex-row sm:items-center">
           <div><p className="font-medium">{deviceName(session)} {session.current ? '(this browser)' : ''}</p><p className="text-sm text-muted-foreground">Signed in {session.createdAt.toLocaleString()}{session.ipAddress ? ` · ${session.ipAddress}` : ''}</p></div>
           {!session.current ? <Button variant="outline" disabled={busy} onClick={() => void action(() => revokeAccountSession(session.token), 'Device signed out')}>Sign out device</Button> : null}

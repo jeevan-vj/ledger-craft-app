@@ -32,6 +32,7 @@ import PublicQuoteScreen from '@/screens/quotes/PublicQuoteScreen';
 import ImportCaptureScreen from '@/screens/imports/ImportCaptureScreen';
 import ImportReviewScreen from '@/screens/imports/ImportReviewScreen';
 import ImportOriginalScreen from '@/screens/imports/ImportOriginalScreen';
+import { RootForgotPasswordScreen, RootResetPasswordScreen } from '@/screens/auth/PasswordRecoveryScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -123,6 +124,8 @@ export default function RootNavigator() {
           gestureEnabled: false,
         }}
       >
+        <Stack.Screen name="ForgotPassword" component={RootForgotPasswordScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
+        <Stack.Screen name="ResetPassword" component={RootResetPasswordScreen} options={{ headerShown: false, animation: 'slide_from_right' }} />
         <Stack.Screen
           name="PublicInvoice"
           component={PublicInvoiceScreen}
