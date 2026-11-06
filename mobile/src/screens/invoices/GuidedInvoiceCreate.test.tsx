@@ -187,3 +187,13 @@ describe('GuidedInvoiceCreate', () => {
     expect(await screen.findByText('Who is this invoice for?')).toBeTruthy();
   });
 });
+
+it('blocks an NZ tax invoice over1000 when the selected buyer lacks every identifier', async () => {
+ (invoiceService.createInvoice as jest.Mock).mockClear();
+ (invoiceService.fetchCustomers as jest.Mock).mockResolvedValue([{ id: 'no-id', name: 'Buyer without identifier', email: '' }]);
+ (businessProfileService.getBusinessProfile as jest.Mock).mockResolvedValue({ ...profile, country: 'New Zealand', gstRegistrationStatus: 'registered', defaultTaxRate: 15 });
+ const screen = renderCreate('no-id'); await screen.findByText('Who is this invoice for?'); fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+ fireEvent.changeText(await screen.findByLabelText('Description'), 'Consulting'); fireEvent.changeText(screen.getByLabelText('Amount'), '1001'); fireEvent.press(screen.getByRole('button', { name: 'Continue' }));
+ await screen.findByText('Review and save'); fireEvent.press(screen.getByRole('button', { name: 'Create draft' }));
+ expect(await screen.findByTestId('first-invoice-error')).toHaveTextContent(/buyer identifier/i); expect(invoiceService.createInvoice).not.toHaveBeenCalled();
+});

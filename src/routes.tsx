@@ -223,7 +223,7 @@ const appRoutes: RouteObject[] = [
           { 
             path: "tax-config", 
             element: (
-              <PermissionGuard permission="settings:manage">
+              <PermissionGuard permission="reports:view">
                 <TaxConfigurationPage />
               </PermissionGuard>
             )
@@ -257,7 +257,7 @@ const appRoutes: RouteObject[] = [
           { 
             path: "ird-reports", 
             element: (
-              <PermissionGuard permission="reports:generate">
+              <PermissionGuard permission="reports:view">
                 <IRDReportingPage />
               </PermissionGuard>
             )

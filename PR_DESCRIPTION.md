@@ -1,38 +1,44 @@
-# Protect completed bank statements and show complete journal postings
+# Complete the selected GST settings, audited returns and invoice-compliance scope
 
-Reconciliation declarations could make an unposted bank fee look like a book entry, and completed statements could still be changed through adjustments, backdated cash/manual journals, bank metadata or linked chart-account edits. Only valid bank-side timing differences and signed bank errors now adjust statements. Books remain the posted ledger, unsupported historical declarations surface review warnings, and completed bank cash cutoffs reject later changes. Names can still be corrected. No migration or original journal is rewritten.
+GST settings were not persisted, the tax dashboard used a browser quarterly calendar, and return creation could retain caller-supplied totals. NZ invoice documents also omitted registration-effective GST identity and buyer-information checks. Web and Expo now use saved registration choices, server periods and exact canonical calculations for invoice, payments and hybrid bases. Draft revisions retain originals; filed records are immutable, with read-only original-settings recalculation and exact PDF exports. Filing records require explicit confirmation of a separate myIR submission; the app does not submit to IRD.
 
-Journal responses previously exposed only the first debit and credit, hiding GST on three-line journals. The API now includes every line and exact totals; web journal views and real spreadsheet-safe CSV downloads retain all postings. Legacy fields remain compatible.
+This is the user-selected scope of epic #115: Refs #84, #85, #111, #24. It does not complete or close the entire epic. It also fixes inclusive invoice preview/save parity and the Worker health endpoint's false-positive email capability for placeholder credentials.
 
-## Expected versus actual
+## Accounting and browser evidence
 
-A separate synthetic company posts capital10,000; sales2,000+GST300 and a zero-rated sale500; receipt1,150; supplier bill1,000+GST150 with575 paid; expense200+GST30; and credit200+GST30. Both independent working paper and real Hono/SQLite report profit1,100, cash10,345, receivables1,420, payables575, invoice GST90 and payments GST45. November settlements and reversals preserve October reports and original journal lines. All13 journals balance individually.
+Independent synthetic books match expected invoice/payments/hybrid net GST30/15/90; separate canonical snapshot books match75/36/111. Actual web UI checks135 invoice,141 payments and171 hybrid; a late receipt changes current hybrid to186 and original-payments recalculation to156 while the filed141 stays unchanged. Expo UI/PDF checks45/120/105. These are separate labelled companies, not alternate results for one dataset.
 
-Desktop and phone browser checks show statement0.14 minus a signed bank correction0.04 equals posted books0.10, difference0, then actual UI completion0.10. A historical unposted fee instead leaves books0/statement−10/difference−10; Expo displays the warning, sends no completion request and the API rejects completion400. Journal browser/CSV checks retain expense1,000 + GST150 against payable1,150.
+Tests cover registration ancestry through expense/invoice/bill reversals and credit refunds, eligible versus operational purchase gross, unknown zero-tax classification, unsupported tax rates, fingerprint staleness, client tampering, immutable revisions, future/overlapping filing, tenant isolation and permissions. The invoice boundary check preserves inclusive1,000 = net869.57 + GST130.43;1,000.01 and USD700 at reviewed NZD1,120 require buyer identification. All six web templates and mobile generators have registration-aware coverage.
 
-## Verification evidence
+[Expected/actual working papers, epic status, screenshots, PDFs and raw logs](docs/evidence/issue-115/README.md). [Independent local code review](docs/evidence/issue-115/REVIEW.md). Browser screenshots use real local Hono/SQLite, desktop1440×900 and phone390×844; Expo web is not installed-device acceptance.
 
-| Job / command | Node | Result |
+## Local verification
+
+pnpm11.19.0. All results are actual local checks; remote CI remains to be checked after PR creation.
+
+| Command | Node | Actual result |
 | --- | --- | --- |
-| `pnpm lint` |22.23.4 |Exit0;0 errors/119 warnings |
-| `pnpm type-check` (app + Node) |22.23.4 |Exit0;0 errors |
-| `pnpm test:run` |22.23.4 |Exit0;146 suites/793 tests passed |
-| `pnpm build` |22.23.4 |Exit0; postbuild verifies0.0.8/build62ec9ab8d0fe |
-| `pnpm test:api` |24.22.1 |Exit0;101 suites/467 tests passed, no skips |
-| `pnpm test:contracts` |24.22.1 |Exit0;35 suites/141 tests passed |
-| `pnpm type-check:api` |24.22.1 |Exit0; API/contracts types clean |
-| Exact CI readiness group + web sourcemap checker |22.23.4 |Exit0;23+1 tests passed |
-| `verify-akaunting-core.mjs --report` |22.23.4 |Exit0; report generation does not establish full parity |
-| Mobile lint / TypeScript / Jest |20.20.2 |Exit0;0 errors/74 warnings;115 suites/551 tests passed |
-| Mobile `expo export --platform ios` |20.20.2 |Exit0; existing Jest teardown warning noted; no forceExit flag |
-| Worker `wrangler deploy --dry-run` |24.22.1 |Exit0; nothing deployed |
+| `pnpm lint` |22.23.4 |Exit0;0 errors /117 warnings |
+| `pnpm type-check` |22.23.4 |Exit0; app and Node projects clean |
+| `pnpm test:run` |22.23.4 |154 files /840 tests passed |
+| `pnpm build` |22.23.4 |Exit0; postbuild0.0.8 /864ff69fb4d9 |
+| `pnpm test:api` |24.22.1 |107 files /508 tests passed |
+| `pnpm test:contracts` |24.22.1 |38 files /149 tests passed |
+| `pnpm type-check:api` |24.22.1 |Exit0; API and contracts clean |
+| Exact CI readiness group / web sourcemap checker |22.23.4 |Exit0;23+3 tests passed |
+| `verify-akaunting-core.mjs --report` |22.23.4 |Exit0; open core parity still reported |
+| Mobile lint / types / Jest |20.20.2 |Exit0;0 errors /74 warnings;123 suites /588 tests passed |
+| Mobile `expo export --platform ios` |20.20.2 |Exit0; Hermes bundle exported |
+| SQLite migration verification |22.23.4 |Exit0; schema/decimal/tenant constraints pass |
+| Actual local Worker health HTTP test |22.23.4 |Exit0;4 passing entries |
+| Pages compile / Worker TypeScript / Worker dry-run |22.23.4 |Exit0; nothing deployed |
 
-[Each fix, raw expected/actual books and screenshots](docs/evidence/accountant-followup/README.md). [Independent local review](docs/evidence/accountant-followup/REVIEW.md). Screenshots are actual Chromium desktop1440×900 and phone390×844, including Expo web; they are not native-device captures.
+The four full product suites total2,085 passing tests. Jest retains an existing worker-teardown warning; no `forceExit`, skipped failing case, quality-gate suppression or CI modification was introduced. All299 web application source-map entries match final source. Invoice browser evidence records build6489cf661d77; the subsequent CSS-only GST button wrapping fix is represented by final GST build864ff69fb4d9. Initial red/diagnostic runs and fixture corrections are disclosed in the evidence rather than counted as passes.
 
-## Risk and rollback
+## Risk, rollout and limits
 
-Risk: **high** (accounting, cash posting, contracts); CODEOWNERS includes `api/src/modules/purchases/purchases.journal.ts`. Human review is required; no auto-merge eligibility or approval is claimed. Labels have not been applied because GitHub API access is forbidden. Revert this follow-up commit to roll back; no migrations changed.
+**Risk: high.** Migration/schema, tax/financial calculations, invoice issuance, shared DTOs, permissions and Worker paths require human/CODEOWNERS review. Independent local production review passed; its reviewer authored four reproducer tests at the builder's request, disclosed in the report. No external approval or auto-merge eligibility is claimed.
 
-These are bank-statement cutoffs, not an organisation-wide fiscal/GST period-lock calendar or legal tax certification. Zero-rating eligibility is a synthetic-case assumption. Native iOS/Android, real inbox delivery, IRD acceptance and production-data audit remain unverified. No deployment, production correction or filing occurred.
+Migration0028 adds four nullable profile columns; historical SQL and source financial records stay unchanged. Existing unknown registration choices need explicit review. Confirm real IRD basis/frequency/calendar and classification before preparing a return. Unsupported mapping blocks filing rather than inventing myIR boxes. Current-law/accountant acceptance, native iOS/Android print/share and background behavior, live providers and deployment remain unverified. Calendar source limitations and mapping provenance are recorded in the evidence.
 
-Base: origin/main7ebbab0 (PR158 already merged). Follow-up branch: codex/accountant-close-followup. Remote PR/CI status cannot be verified here: GitHub GraphQL API access returns Forbidden. All results above are actual local checks, not claims of remote CI completion.
+Rollback requires a reviewed application revert while retaining additive migration0028 and financial audit history. No destructive down migration, real filing, production correction or provider message is included.

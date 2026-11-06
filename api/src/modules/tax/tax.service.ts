@@ -1,6 +1,8 @@
 import {
   taxReturnListResponseSchema,
   taxReturnSchema,
+  gstReturnRecalculationResponseSchema,
+  type GstReturnRecalculationResponse,
   type CreateTaxReturnRequest,
   type FileTaxReturnRequest,
   type TaxConfigurationDto,
@@ -14,6 +16,12 @@ import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './tax.repository';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
+import { assertNoFiledGstOverlap, canonicalGstReturnInput, preparationForStoredGst } from './gst-return-validation';
+import { gstSettingsInTx } from './gst-settings';
+import { decimal, roundMoney } from '../invoices/money';
+import { stableGstFingerprint } from './gst-calculation';
+import { apiError } from '../../http-error';
+import { organisationToday } from '../accounting/organisation-date';
 
 function bindPreparationAudit(data: CreateTaxReturnRequest['returnData'], userId: string): CreateTaxReturnRequest['returnData'] {
   if (!data) return data;
@@ -69,7 +77,9 @@ export async function createTaxReturnForUser(
       const replay = await getIdempotencyRecord(tx, ctx, scope);
       if (replay) { assertReplayMatches(replay.requestHash, scope.requestHash); return taxReturnSchema.parse(replay.responseBody); }
     }
-    const created = await repo.insertReturn(tx, ctx, { ...input, returnData: bindPreparationAudit(input.returnData, ctx.userId) });
+    if ((input.returnType ?? 'GST') === 'GST') await assertNoFiledGstOverlap(tx, ctx.organisationId, input.periodStart, input.periodEnd);
+    const canonical = (input.returnType ?? 'GST') === 'GST' ? await canonicalGstReturnInput(tx, ctx, input) : input;
+    const created = await repo.insertReturn(tx, ctx, { ...canonical, returnData: bindPreparationAudit(canonical.returnData, ctx.userId) });
     if (scope) await insertIdempotencyRecord(tx, ctx, scope, { status: 201, body: created });
     return created;
   });
@@ -85,7 +95,17 @@ export async function updateTaxReturnForUser(
     const existing = await repo.getReturn(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
     if (existing.status !== 'draft') throw new HTTPException(409, { message: 'Filed tax records are immutable; prepare a separate correction instead' });
-    const row = await repo.updateReturn(tx, ctx.organisationId, id, { ...input, returnData: bindPreparationAudit(input.returnData, ctx.userId) });
+    if (existing.returnType === 'GST' && input.returnType && input.returnType !== 'GST') throw apiError(422, 'GST_RETURN_TYPE_IMMUTABLE', 'A GST return cannot be converted to another tax type.');
+    if (existing.returnType === 'GST' && !existing.returnData?.gstCalculation) throw apiError(409, 'GST_SNAPSHOT_IMMUTABLE', 'This legacy GST draft has no authoritative snapshot. Prepare a new draft; the original record is retained.');
+    const merged = { ...existing, ...input, status: 'draft' as const, returnData: input.returnData === undefined ? existing.returnData : input.returnData };
+    const canonical = merged.returnType === 'GST' ? await canonicalGstReturnInput(tx, ctx, merged) : input;
+    if (existing.returnType === 'GST') {
+      if (canonical.returnData?.gstCalculation?.fingerprint !== existing.returnData?.gstCalculation?.fingerprint || (input.irdReference !== undefined && input.irdReference !== existing.irdReference)) {
+        throw apiError(409, 'GST_SNAPSHOT_IMMUTABLE', 'Saved GST calculation snapshots are immutable. Prepare a new draft to retain this original calculation and settings.');
+      }
+      return existing;
+    }
+    const row = await repo.updateReturn(tx, ctx.organisationId, id, { ...canonical, returnData: bindPreparationAudit(canonical.returnData, ctx.userId) });
     if (!row) throw new HTTPException(404, { message: 'Tax return not found' });
     return row;
   });
@@ -103,9 +123,32 @@ export async function fileTaxReturnForUser(
     if (existing.status !== 'draft') {
       throw new HTTPException(409, { message: 'Only a draft tax return can be recorded as filed' });
     }
+    if (existing.returnType === 'GST') {
+      if (existing.periodEnd >= await organisationToday(tx, ctx.organisationId)) throw apiError(422, 'GST_PERIOD_NOT_ENDED', 'Only a completed taxable period can be recorded as filed. Save this calculation as a draft until the period has ended.');
+      await assertNoFiledGstOverlap(tx, ctx.organisationId, existing.periodStart, existing.periodEnd, existing.id);
+      const current = await preparationForStoredGst(tx, ctx, existing);
+      const recorded = existing.returnData?.gstCalculation;
+      if (!recorded || !current.calculation || current.calculation.fingerprint !== recorded.fingerprint) {
+        throw apiError(409, 'GST_CALCULATION_STALE', 'The books changed after this draft was prepared. Recalculate and review before recording it as filed.');
+      }
+      if (recorded.mappingStatus !== 'supported') throw apiError(422, 'GST_MAPPING_REVIEW_REQUIRED', 'Complete the supported myIR box mapping before recording this return as filed.');
+    }
     const filed = await repo.fileReturn(tx, ctx.organisationId, id, input.irdReference);
     if (!filed) throw new HTTPException(409, { message: 'Tax return is no longer a draft' });
     return filed;
+  });
+}
+
+export async function recalculateGstReturnForUser(db: Database, userId: string, id: string): Promise<GstReturnRecalculationResponse> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const recorded = await repo.getReturn(tx, ctx.organisationId, id);
+    if (!recorded) throw new HTTPException(404, { message: 'Tax return not found' });
+    if (recorded.returnType !== 'GST') throw apiError(422, 'GST_RETURN_REQUIRED', 'Only GST returns have a GST source recalculation.');
+    const current = await preparationForStoredGst(tx, ctx, recorded);
+    const settings = await gstSettingsInTx(tx, ctx.organisationId);
+    const currentFigures = { totalSales: current.totalSales, totalPurchases: current.totalPurchases, gstOnSales: current.gstOnSales, gstOnPurchases: current.gstOnPurchases, netGst: current.netGstPosition };
+    const difference = Object.fromEntries((['totalSales', 'totalPurchases', 'gstOnSales', 'gstOnPurchases', 'netGst'] as const).map(field => [field, roundMoney(decimal(currentFigures[field]).sub(recorded[field]))]));
+    return gstReturnRecalculationResponseSchema.parse({ recorded, current, difference, settingsChanged: stableGstFingerprint(settings) !== stableGstFingerprint(recorded.returnData?.gstCalculation?.settings) });
   });
 }
 
@@ -114,6 +157,7 @@ export async function deleteTaxReturnForUser(db: Database, userId: string, id: s
     const existing = await repo.getReturn(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
     if (existing.status !== 'draft') throw new HTTPException(409, { message: 'Filed tax records cannot be deleted; retain the filing history and record a correction separately' });
+    if (existing.returnType === 'GST' && existing.returnData?.gstCalculation) throw apiError(409, 'GST_SNAPSHOT_IMMUTABLE', 'Saved GST calculation snapshots are retained for audit. Prepare a new draft or correction instead of deleting the original calculation.');
     const deleted = await repo.deleteReturn(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Tax return not found' });
   });

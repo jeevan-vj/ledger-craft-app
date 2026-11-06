@@ -67,6 +67,7 @@ async function setUpOrganisation(app: TestApp, name: string) {
       country: 'NZ',
       defaultTaxRate: '15',
       gstRegistrationStatus: 'registered',
+      taxId: '49091850', gstRegisteredFrom: '2026-04-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'six_monthly', gstPeriodAnchor: 6,
       invoiceNumberFormat: 'INV-{YYYY}-{SEQ}',
       invoiceNumberSequence: 1,
     }),

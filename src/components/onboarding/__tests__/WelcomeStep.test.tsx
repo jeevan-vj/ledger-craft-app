@@ -15,6 +15,16 @@ const baseData = {
 };
 
 describe('WelcomeStep', () => {
+  it('requires the NZ GST number and registration date without inventing IRD choices', async () => {
+    const onDataChange = vi.fn();
+    const { rerender } = render(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'registered' }} onDataChange={onDataChange} onNext={vi.fn()} />);
+    expect(screen.getByLabelText('NZ GST number')).toBeInTheDocument();
+    expect(screen.getByLabelText('GST registration date')).toHaveValue('');
+    expect(screen.getByTestId('onboarding-submit')).toBeDisabled();
+    rerender(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'registered', taxId: '49098576', gstRegisteredFrom: '2026-04-01' }} onDataChange={onDataChange} onNext={vi.fn()} />);
+    expect(screen.getByTestId('onboarding-submit')).toBeEnabled();
+    expect(screen.getByText(/confirm.*IRD.*GST settings/i)).toBeInTheDocument();
+  });
   it('shows name, country, prefilled email, and no extra setup fields', () => {
     render(
       <WelcomeStep

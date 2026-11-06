@@ -29,7 +29,7 @@ describe('invoice restore journal repair', () => {
         });
         const cookie = signUp.headers.getSetCookie().map((value) => value.split(';')[0]).join('; ');
         const auth = { ...headers, Cookie: cookie };
-        await call(app, '/api/business-profile', { method: 'PUT', headers: auth, body: JSON.stringify({ name: 'Repair Ltd', email: 'repair@example.nz', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1 }) }, 200);
+        await call(app, '/api/business-profile', { method: 'PUT', headers: auth, body: JSON.stringify({ name: 'Repair Ltd', email: 'repair@example.nz', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01', invoiceNumberFormat: 'INV-{YYYY}-{SEQ}', invoiceNumberSequence: 1 }) }, 200);
         const customer = await call(app, '/api/customers', { method: 'POST', headers: auth, body: JSON.stringify({ name: 'Repair Customer', email: 'c@example.nz', country: 'NZ' }) }, 201);
         const draft = await call(app, '/api/invoices', { method: 'POST', headers: { ...auth, 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ customerId: customer.id, date: '2026-05-01', dueDate: '2026-05-01', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'Sale', quantity: '1', rate: '200.00' }] }) }, 201);
         await call(app, `/api/invoices/${draft.id}`, { method: 'PATCH', headers: auth, body: JSON.stringify({ status: 'sent' }) }, 200);

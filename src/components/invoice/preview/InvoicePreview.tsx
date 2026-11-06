@@ -1,5 +1,6 @@
+import { createTemplateData } from '@/services/invoiceTemplateRenderer';
 import React, { useRef, useState } from 'react';
-import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
+import { Invoice, BusinessProfile } from '@/types';
 import { InvoiceTemplateId } from '../templates/InvoiceTemplates';
 import ClassicTemplate from './templates/ClassicTemplate';
 import ModernTemplate from './templates/ModernTemplate';
@@ -11,7 +12,6 @@ import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { Download, Maximize2, Minimize2, ZoomIn, ZoomOut, Printer, ArrowLeft, Save } from 'lucide-react';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
-import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
 import { resolveDocumentLabels, type DocumentLabels } from './documentLabels';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
@@ -52,34 +52,7 @@ const InvoicePreview = ({
   const contextBusinessProfile = useAppData().businessProfile;
   const effectiveBusinessProfile = businessProfile !== undefined ? businessProfile : contextBusinessProfile;
 
-  // Create template data from invoice
-  const templateData = {
-    invoice,
-    companyName: effectiveBusinessProfile?.name || 'Business Name',
-    companyAddress: [
-      effectiveBusinessProfile?.address,
-      effectiveBusinessProfile?.city,
-      effectiveBusinessProfile?.state,
-      effectiveBusinessProfile?.zip,
-      effectiveBusinessProfile?.country
-    ].filter(Boolean).join(', ') || '',
-    companyPhone: effectiveBusinessProfile?.phone || '',
-    bankAccountName: effectiveBusinessProfile?.bankAccountName,
-    bankAccountNumber: effectiveBusinessProfile?.bankAccountNumber,
-    clientName: invoice.customer?.name || 'Client Name',
-    clientAddress: [
-      invoice.customer?.address,
-      invoice.customer?.city,
-      invoice.customer?.state,
-      invoice.customer?.zip,
-      invoice.customer?.country
-    ].filter(Boolean).join(', ') || '',
-    taxRate: invoiceDisplayTaxRate(invoice),
-    tax: invoice.taxAmount,
-    businessLogo: effectiveBusinessProfile?.logoUrl || '',
-    theme: effectiveBusinessProfile?.theme || DEFAULT_BUSINESS_THEME,
-    labels,
-  };
+  const templateData = createTemplateData(invoice, effectiveBusinessProfile, documentLabels);
 
   const handleDownloadPdf = async () => {
     if (contentRef.current && templateRef.current && !isGeneratingPdf) {

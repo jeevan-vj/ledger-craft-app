@@ -1,0 +1,21 @@
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/ird-reports
+desktop NAVIGATION http://127.0.0.1:8080/ird-reports
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/tax-config
+desktop NAVIGATION http://127.0.0.1:8080/ird-reports
+desktop NAVIGATION http://127.0.0.1:8080/ird-reports
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/ird-reports
+phone NAVIGATION http://127.0.0.1:8080/ird-reports
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/tax-config
+phone NAVIGATION http://127.0.0.1:8080/ird-reports
+phone NAVIGATION http://127.0.0.1:8080/ird-reports
+PASS: actual desktop/phone GST settings, closedOctober30November+November15Januaryperiods, payments141 saved/filed/PDF, hybrid171→186, original-basis readonlyrecalc156 versus saved141 difference15; no page errors

@@ -4,7 +4,7 @@ import { createRoot } from 'react-dom/client';
 import { Invoice, BusinessProfile, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
-import { invoiceDocumentLabels, resolveDocumentLabels, type DocumentLabels } from '@/components/invoice/preview/documentLabels';
+import { invoiceDocumentLabels, type DocumentLabels } from '@/components/invoice/preview/documentLabels';
 import { InvoiceTemplateId } from '../components/invoice/templates/InvoiceTemplates';
 import ClassicTemplate from '../components/invoice/preview/templates/ClassicTemplate';
 import ModernTemplate from '../components/invoice/preview/templates/ModernTemplate';
@@ -12,6 +12,7 @@ import MinimalTemplate from '../components/invoice/preview/templates/MinimalTemp
 import ExecutiveTemplate from '../components/invoice/preview/templates/ExecutiveTemplate';
 import CorporateTemplate from '../components/invoice/preview/templates/CorporateTemplate';
 import ModernInvoiceTemplate from '../components/invoice/preview/templates/ModernInvoiceTemplate';
+import { gstDocumentLabels } from '@/components/invoice/preview/gstDocumentIdentity';
 
 function emailLogoUrl(url: string | null | undefined): string {
   const trimmed = url?.trim() ?? '';
@@ -64,7 +65,7 @@ export const createTemplateData = (
     tax: invoice.taxAmount,
     businessLogo: emailLogoUrl(businessProfile?.logoUrl),
     theme: businessProfile?.theme || DEFAULT_BUSINESS_THEME,
-    labels: resolveDocumentLabels(labels),
+    labels: gstDocumentLabels(businessProfile, invoice.taxAmount, labels, invoice.date, invoice.taxInclusive),
   };
 };
 
@@ -153,6 +154,9 @@ export const createEmailCompatibleInvoiceHtml = (
                 <h3 style="margin: 0 0 10px 0; color: #374151; font-size: 16px;">From</h3>
                 <p style="margin: 0; color: #111827; font-weight: bold; font-size: 16px;">${templateData.companyName}</p>
                 ${templateData.companyAddress ? `<p style="margin: 5px 0; color: #6b7280; font-size: 14px;">${templateData.companyAddress}</p>` : ''}
+                ${copy.sellerTaxId ? `<p style="margin:5px 0;font-size:14px;">GST No: ${escapeHtml(copy.sellerTaxId)}</p>` : ''}
+                ${copy.taxPriceNote ? `<p style="font-size:12px;">${escapeHtml(copy.taxPriceNote)}</p>` : ''}
+                ${copy.taxReviewWarning ? `<p>${escapeHtml(copy.taxReviewWarning)}</p>` : ''}
                 ${templateData.companyPhone ? `<p style="margin: 5px 0; color: #6b7280; font-size: 14px;">${templateData.companyPhone}</p>` : ''}
               </td>
               <td width="50%" style="vertical-align: top;">
@@ -224,9 +228,9 @@ export const createEmailCompatibleInvoiceHtml = (
                     <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Subtotal:</td>
                     <td style="padding: 8px 0; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${invoice.subtotal.toFixed(2)}</td>
                   </tr>
-                  ${showPositiveAmount(invoice.taxAmount) ? `
+                  ${copy.showTax !== false && (copy.taxLabel === 'GST' || showPositiveAmount(invoice.taxAmount)) ? `
                     <tr>
-                      <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">Tax (${templateData.taxRate}%):</td>
+                      <td style="padding: 8px 0; color: #6b7280; font-size: 14px;">${copy.taxLabel ?? 'Tax'} (${templateData.taxRate}%):</td>
                       <td style="padding: 8px 0; text-align: right; color: #111827; font-weight: bold;">${invoice.currency}${invoice.taxAmount.toFixed(2)}</td>
                     </tr>
                   ` : ''}

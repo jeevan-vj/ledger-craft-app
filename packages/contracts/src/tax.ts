@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import { gstPreparationResponseSchema, companyIncomeTaxPreparationResponseSchema } from './gst-preparation';
+import { gstCalculationSnapshotSchema } from './gst-calculation';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 
@@ -19,11 +20,13 @@ export const gstReconciliationSnapshotSchema = z.object({
 
 export const irdReturnDataSchema = z.object({
   preparation: z.object({
-    basis: z.enum(['invoice', 'payments']),
+    basis: z.enum(['invoice', 'payments', 'hybrid']),
     baseCurrency: z.literal('NZD'),
     dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+    calculationFingerprint: z.string().regex(/^[a-f0-9]{64}$/).optional(),
   }).optional(),
   gstReview: gstPreparationResponseSchema.shape.review,
+  gstCalculation: gstCalculationSnapshotSchema.optional(),
   companyIncomeTax: companyIncomeTaxPreparationResponseSchema.optional(),
   gstReturn: z.object({
     salesDetails: z.object({
@@ -126,6 +129,14 @@ export const fileTaxReturnRequestSchema = z.object({
 export const taxReturnListResponseSchema = z.object({
   taxReturns: z.array(taxReturnSchema),
 });
+
+export const gstReturnRecalculationResponseSchema = z.object({
+  recorded: taxReturnSchema,
+  current: gstPreparationResponseSchema,
+  difference: z.object({ totalSales: money, totalPurchases: money, gstOnSales: money, gstOnPurchases: money, netGst: money }).strict(),
+  settingsChanged: z.boolean(),
+}).strict();
+export type GstReturnRecalculationResponse = z.infer<typeof gstReturnRecalculationResponseSchema>;
 
 export type TaxConfigurationDto = z.infer<typeof taxConfigurationSchema>;
 export type UpsertTaxConfigurationRequest = z.infer<typeof upsertTaxConfigurationRequestSchema>;

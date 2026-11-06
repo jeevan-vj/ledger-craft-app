@@ -1,0 +1,62 @@
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mProxy environment variables detected. We'll use your proxy for fetch requests.[0m
+
+
+▶ Worker health reports the same email readiness as the actual mailer
+  ✖ placeholder key (1630.689127ms)
+  ✔ missing sender (1769.64466ms)
+  ✔ configured settings (1338.219351ms)
+✖ Worker health reports the same email readiness as the actual mailer (4741.860026ms)
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mFailed to write to log file Error: ENOENT: no such file or directory, open '/tmp/issue-115-worker-health-CNTL6S/wrangler.log'[0m
+
+      at async open (node:internal/fs/promises:1345:25)
+      at async writeFile (node:internal/fs/promises:1972:14)
+      at async /workspace/ledger-craft-app/node_modules/.pnpm/wrangler@4.131.0_@types+node@22.7.9/node_modules/wrangler/wrangler-dist/cli.js:63109:7
+      at async Mutex.runWith (/workspace/ledger-craft-app/node_modules/.pnpm/miniflare@5.20260910.0-alpha_@types+node@22.7.9/node_modules/miniflare/dist/src/index.js:54781:16)
+      at async appendToDebugLogFile (/workspace/ledger-craft-app/node_modules/.pnpm/wrangler@4.131.0_@types+node@22.7.9/node_modules/wrangler/wrangler-dist/cli.js:63106:3) {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'open',
+    path: '/tmp/issue-115-worker-health-CNTL6S/wrangler.log'
+  }
+
+
+[31m✘ [41;31m[[41;97mERROR[41;31m][0m [1mWould have written: [0m
+
+  --- 2026-11-06T23:00:16.883Z debug
+  DevEnv teardown complete
+  ---
+
+
+
+ℹ tests 4
+ℹ suites 0
+ℹ pass 2
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5604.218877
+
+✖ failing tests:
+
+test at scripts/issue-115-worker-health.test.mjs:36:15
+✖ placeholder key (1630.689127ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+
+  + 'available'
+  - 'unavailable'
+
+      at TestContext.<anonymous> (file:///workspace/ledger-craft-app/scripts/issue-115-worker-health.test.mjs:48:18)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async TestContext.<anonymous> (file:///workspace/ledger-craft-app/scripts/issue-115-worker-health.test.mjs:36:7)
+      at async Test.run (node:internal/test_runner/test:1409:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'available',
+    expected: 'unavailable',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

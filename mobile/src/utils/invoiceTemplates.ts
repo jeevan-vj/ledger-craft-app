@@ -1,4 +1,4 @@
-import { isAllowedLogoUrl, LOGO_DATA_URL_MAX_LENGTH } from '@ledgercraft/contracts';
+import { isAllowedLogoUrl, LOGO_DATA_URL_MAX_LENGTH, normalizeNzGstNumber, formatNzGstNumber, gstDateSchema, isNzBusinessCountry } from '@ledgercraft/contracts';
 import type { Invoice, BusinessProfile } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
@@ -1806,12 +1806,23 @@ export function generateInvoiceHTML(
   labels: DocumentLabels = invoiceDocumentLabels,
 ): string {
   const themeCss = invoiceDocumentCss(resolveInvoiceTheme(businessProfile?.theme));
+  const isInvoice = labels.showPayment;
+  const declaredRegistered = isInvoice && businessProfile?.gstRegistrationStatus === 'registered' && isNzBusinessCountry(businessProfile.country ?? 'NZ');
+  const registrationReady = declaredRegistered && Boolean(normalizeNzGstNumber(businessProfile?.taxId ?? '') && gstDateSchema.safeParse(businessProfile?.gstRegisteredFrom).success);
+  const beforeRegistration = registrationReady && invoice.date.slice(0, 10) < businessProfile!.gstRegisteredFrom!;
+  const registered = registrationReady && !beforeRegistration;
+  const unregistered = isInvoice && businessProfile?.gstRegistrationStatus === 'not_registered';
+  const documentLabels = registered ? { ...labels, title: 'Tax invoice', titleUpper: 'TAX INVOICE' } : labels;
+  // Rendering only: do not change stored invoice amounts or derive new GST.
+  const displayed = unregistered || beforeRegistration ? { ...invoice, taxAmount: 0 } : invoice;
+  const gstIdentity = registered ? `<section data-gst-supplier="true" style="padding:16px 32px;font:12px Arial,sans-serif;color:var(--inv-text);background:var(--inv-surface)"><strong>${escapeHtml(businessProfile?.name)}</strong><br>${businessProfile?.taxId?.trim() ? `GST No: ${escapeHtml(formatNzGstNumber(businessProfile.taxId))}` : 'GST number missing — review GST settings before issuing'}<br>${invoice.taxInclusive ? 'Amounts include GST' : 'Amounts exclude GST; GST is shown separately'}</section>` : beforeRegistration ? '<section style="padding:16px 32px;font:12px Arial,sans-serif">Invoice date precedes GST registration. Any stored tax requires review before issuing; stored amounts are unchanged.</section>' : declaredRegistered ? '<section style="padding:16px 32px;font:12px Arial,sans-serif">GST registration requires review: confirm the GST number and registration date in GST settings before issuing.</section>' : '';
   return getRawTemplateHTML(
     templateId,
-    escapeInvoiceText(invoice),
+    escapeInvoiceText(displayed),
     escapeBusinessProfileText(businessProfile),
-    labels,
+    documentLabels,
   )
+    .replace('<body>', `<body>${gstIdentity}`)
     .replace(
       /<meta\s+name="viewport"\s+content="[^"]*">/i,
       '<meta name="viewport" content="width=595, shrink-to-fit=yes, maximum-scale=5, user-scalable=yes">',

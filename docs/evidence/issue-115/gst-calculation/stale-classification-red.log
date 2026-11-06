@@ -1,0 +1,207 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_37e96a22-6492-46e4-9d09-dfe24de4192e","route":"/api/auth/*","method":"POST","status":200,"durationMs":122}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_15f97e4f-23dd-47b8-b725-1330cdbc348d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_d3b2aea8-6fbc-4746-9a04-8ea0ac147eb9","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_c9ef4860-c045-44b9-89d6-fa65a8e84cd6","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_dead4874-4492-43d1-b37a-72aa7bc19fec","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_9d8daeda-10cb-4770-90e2-8789df4551cb","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_15190c57-db9e-4aa3-b3dc-9dbfb7d79cef","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_c2cc5d2e-d67b-488c-b23f-fc736a6ad7c4","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_2a1717d8-f9ae-4024-b49d-766e0661af2b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_0433389b-6382-4169-9427-e6183a2cd002","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_f20d46bc-ccb7-4586-8eff-3de940a5ed3b","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_bf58dce3-295e-44e9-8337-de27556746ef","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_ee78a4aa-3da2-4151-8047-60f255a6063d","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_920af0a5-ac52-4164-bd69-3eef6445e9a3","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_3942f3f2-e216-4c66-9dfc-3284af38d14e","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_04552bec-4074-479f-85cb-585145bf276e","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_28077028-5107-4cfd-8741-7b2ebdaf03bb","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_f1910826-8266-4eac-9826-e3366db67d19","route":"/api/tax/gst-preparation","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_8608b202-9a3e-4ba8-8012-97f6c3ea4c54","route":"/api/tax-returns","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_41e45934-a0b1-48b7-be32-5e5eeeba23cd","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_e05e245f-a1ed-4b31-b827-b0890abf6dd2","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_086c1d8f-f007-4a46-8997-25a84ad3faab","route":"/api/tax-returns/:id/recalculation","method":"GET","status":422,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_75c21c71-c64c-4107-ab34-b6ffa18278d2","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_ad02ada9-9880-4c61-a340-b34ebfe33148","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_c1a60414-048e-4321-b7dc-ec312a97f7a4","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_889faff9-8b05-47c6-99a4-c303f3377225","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_4ce16df3-8a88-4edd-aab8-9875fd19da20","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_b7831275-40f3-4648-a62e-dbfa4f01d394","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_7bec37c6-8bbf-4338-ad1e-c82854f0efff","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_6d7042ae-cf90-4315-b191-4419e99e3b80","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_bda245b5-e779-4019-9b8b-fafb671cbcb3","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_41f3e14d-04e6-442d-bc2c-5a38aed5b66b","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_5a36ed41-599d-43ec-806e-10c5113df46d","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_190f70ab-9a3d-4455-b9b8-78447b2c499f","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_f286d89b-0ba1-41e5-a3bd-9913a9576e7a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_b244ff4f-3db5-4103-9531-75c687cc0c0d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_11c77694-175c-4611-982e-e762f868fbf0","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_2a5f2a63-d489-4d85-8d48-4078050c39c0","route":"/api/tax-returns","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_4a9f25f6-d7ae-4724-a872-dd24e9554109","route":"/api/tax/gst-settings","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_67892ecc-efa3-4bf1-9da5-688f41f19d71","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_7c3dc70d-d12b-4bfb-881a-eec3ea7c144a","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_9260255b-0d07-47c2-81b8-a5509bb5b77c","route":"/api/tax/gst-settings","method":"PUT","status":403,"durationMs":17}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_a631ecba-29ec-408d-97c1-2855f3a8f912","route":"/api/tax-returns","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_a4c1a5ea-62d2-4fb1-904e-7aa5eccd6d4a","route":"/api/tax-returns/:id","method":"PATCH","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_636a7279-35cb-4211-bd78-1e728eb6ef1f","route":"/api/tax-returns/:id/file","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_ea6caf9f-d5b6-4b43-ad61-9d6f3e69bc31","route":"/api/tax/gst-settings","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_bf089e21-9ce9-49f6-9990-45b950b239b6","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_8029803a-74d0-4c15-973a-902f63060ec8","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_32a59435-1caa-41d5-aa6e-cfa70b32d740","route":"/api/tax/gst-settings","method":"PUT","status":403,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_dc0ddc5d-70d7-4569-b8d1-5d6d7c25ac93","route":"/api/tax-returns","method":"POST","status":403,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_4f712ca6-7922-4380-b1c5-0fbb114ae86f","route":"/api/tax-returns/:id","method":"PATCH","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_02aa8a7a-33f3-4380-aca6-ea404e382e93","route":"/api/tax-returns/:id/file","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_e7156071-ebc7-405f-b74a-83982f5577b7","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":4}
+
+ ❯ src/modules/tax/gst-calculation.test.ts (10 tests | 1 failed | 8 skipped) 1892ms
+   ↓ authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+   ↓ authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+   ↓ authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+   ↓ authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+   ↓ authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+   ↓ authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+   ↓ authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+   ↓ authoritative saved GST calculation > does not record a future taxable period as already filed
+   × authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale 994ms
+     → {"error":{"code":"GST_SALES_CLASSIFICATION_REQUIRED","message":"Explicitly classify the full untaxed sales amount as zero-rated or exempt using reviewed source evidence.","requestId":"req_086c1d8f-f007-4a46-8997-25a84ad3faab"}}: expected 422 to be 200 // Object.is equality
+   ✓ authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access  896ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+AssertionError: {"error":{"code":"GST_SALES_CLASSIFICATION_REQUIRED","message":"Explicitly classify the full untaxed sales amount as zero-rated or exempt using reviewed source evidence.","requestId":"req_086c1d8f-f007-4a46-8997-25a84ad3faab"}}: expected 422 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 422
+
+ ❯ Object.request src/modules/tax/gst-calculation.test.ts:21:52
+     19|     const response = await app.request(path, { method, headers, ...(bo…
+     20|     const value = response.status === 204 ? null : await response.json…
+     21|     expect(response.status, JSON.stringify(value)).toBe(expected);
+       |                                                    ^
+     22|     return value as T;
+     23|   };
+ ❯ src/modules/tax/gst-calculation.test.ts:157:24
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed | 8 skipped (10)
+   Start at  23:23:08
+   Duration  4.68s (transform 1.15s, setup 33ms, collect 2.47s, tests 1.89s, environment 0ms, prepare 92ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/tax/gst-calculation.test.ts -t 'read-only comparison requiring|real HTTP member'

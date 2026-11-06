@@ -27,6 +27,10 @@ export interface BusinessProfile {
   defaultQuoteKind?: 'quote' | 'estimate';
   defaultTaxRate?: number;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
+  gstRegisteredFrom?: string | null;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   address?: string;
   city?: string;
   state?: string;
@@ -58,6 +62,10 @@ export interface BusinessProfileUpdate {
   zip?: string | null;
   defaultTaxRate?: number | null;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
+  gstRegisteredFrom?: string | null;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   invoiceNumberFormat?: string;
@@ -92,6 +100,8 @@ class BusinessProfileService {
           invoiceNumberFormat: data.invoiceNumberFormat,
           defaultTaxRate: data.defaultTaxRate ?? null,
           gstRegistrationStatus: data.gstRegistrationStatus,
+          ...(data.taxId ? { taxId: data.taxId } : {}),
+          ...(data.gstRegisteredFrom ? { gstRegisteredFrom: data.gstRegisteredFrom } : {}),
           phone: data.phone ?? null,
           address: data.address ?? null,
           city: data.city ?? null,
@@ -215,6 +225,10 @@ class BusinessProfileService {
           defaultQuoteKind: updates.defaultQuoteKind ?? current?.defaultQuoteKind ?? 'quote',
           defaultTaxRate: updates.defaultTaxRate !== undefined ? updates.defaultTaxRate : (current?.defaultTaxRate ?? null),
           gstRegistrationStatus: updates.gstRegistrationStatus ?? current?.gstRegistrationStatus ?? 'unknown',
+          gstRegisteredFrom: updates.gstRegisteredFrom !== undefined ? updates.gstRegisteredFrom : current?.gstRegisteredFrom,
+          gstAccountingBasis: updates.gstAccountingBasis !== undefined ? updates.gstAccountingBasis : current?.gstAccountingBasis,
+          gstFilingFrequency: updates.gstFilingFrequency !== undefined ? updates.gstFilingFrequency : current?.gstFilingFrequency,
+          gstPeriodAnchor: updates.gstPeriodAnchor !== undefined ? updates.gstPeriodAnchor : current?.gstPeriodAnchor,
           defaultTerms: keptText(updates.defaultTerms, current?.defaultTerms),
           defaultNotes: keptText(updates.defaultNotes, current?.defaultNotes),
           logoUrl,

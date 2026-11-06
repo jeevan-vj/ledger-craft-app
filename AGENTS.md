@@ -1,5 +1,20 @@
 # AGENTS.md
 
+**Issue #115 GST slice (implemented locally, 2026-11-07):** Web and Expo
+persist GST registration date, invoice/payments/hybrid basis, frequency and
+ending-month anchor. Migration `0028_gst-registration-settings.sql` is additive;
+legacy unknown settings require confirmation. Server-generated periods and
+canonical `gst-ledger-v2` snapshots retain exact totals, source identities,
+fingerprints and supported myIR preparation boxes. Draft revisions preserve
+prior snapshots; filed records are immutable, with read-only original-settings
+recalculation. Pre-registration sources and their later reversals remain
+excluded. Unknown sales classification and unsupported purchase mapping block
+filing rather than inventing boxes. NZ invoices apply registration-effective
+seller identity and buyer-information checks against reviewed NZD totals.
+Evidence and remaining epic gaps: `docs/evidence/issue-115/README.md`.
+These are local preparation and external-filing records, not IRD submission or
+installed-device acceptance. The rest of epic #115 remains open.
+
 **Accountant follow-up (implemented locally, 2026-11-06):** Completed bank
 statements protect their cash cutoff and linked bank/chart financial identity.
 Statement declarations affect only the bank side; unposted book corrections

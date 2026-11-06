@@ -10,7 +10,7 @@ export async function financialReportForUser(db: Database, userId: string, query
   return withOrganisationTx(db, userId, (tx, ctx) => financialReportInTx(tx, ctx.organisationId, query));
 }
 
-export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery) {
+export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery, options?: { gstExcludedJournalIds?: ReadonlySet<string> }) {
     const [periodRows, openingRows, receivables, payables] = await Promise.all([
       repo.ledgerRows(tx, organisationId, query), repo.ledgerRows(tx, organisationId, query, query.from),
       repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query),
@@ -25,6 +25,7 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     const foreignIds = await repo.unconvertedForeignCurrencyDocumentReferences(tx, organisationId, query.baseCurrency);
     const excludedDocuments = new Set<string>();
     const taxRows = ledgerTaxRows.filter((row) => {
+      if (options?.gstExcludedJournalIds?.has(row.journalEntryId)) return false;
       if (!row.referenceId || !foreignIds.has(row.referenceId)) return true;
       if (row.accountNumber === '2150' || row.accountNumber === '2200') excludedDocuments.add(foreignIds.get(row.referenceId)!);
       return false;

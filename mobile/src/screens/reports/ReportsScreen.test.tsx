@@ -4,6 +4,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReportsScreen from './ReportsScreen';
 import { reportsApi, type FinancialReport } from '@/features/reports/api/reportsApi';
 
+jest.mock('@/components/reports/GstWorkspacePanel', () => ({ GstWorkspacePanel: () => null }));
+
 jest.mock('@/features/reports/api/reportsApi', () => ({
   reportsApi: { financial: jest.fn() },
 }));

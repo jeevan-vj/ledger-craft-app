@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { gstAccountingBasisSchema, gstFilingFrequencySchema, gstDateSchema } from './gst-settings';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 export const quoteKindSchema = z.enum(['quote', 'estimate']);
@@ -70,6 +71,10 @@ export const businessProfileSchema = z.object({
   website: z.string().nullable(),
   defaultTaxRate: money.nullable(),
   gstRegistrationStatus: gstRegistrationStatusSchema.default('unknown'),
+  gstRegisteredFrom: gstDateSchema.nullable().optional(),
+  gstAccountingBasis: gstAccountingBasisSchema.nullable().optional(),
+  gstFilingFrequency: gstFilingFrequencySchema.nullable().optional(),
+  gstPeriodAnchor: z.number().int().min(1).max(12).nullable().optional(),
   defaultTerms: z.string().nullable(),
   paymentTermDays: z.number().int().min(0).max(365),
   defaultNotes: z.string().nullable(),
@@ -102,6 +107,10 @@ export const upsertBusinessProfileRequestSchema = z
     website: z.string().nullable().optional(),
     defaultTaxRate: money.nullable().optional(),
     gstRegistrationStatus: gstRegistrationStatusSchema.optional(),
+    gstRegisteredFrom: gstDateSchema.nullable().optional(),
+    gstAccountingBasis: gstAccountingBasisSchema.nullable().optional(),
+    gstFilingFrequency: gstFilingFrequencySchema.nullable().optional(),
+    gstPeriodAnchor: z.number().int().min(1).max(12).nullable().optional(),
     defaultTerms: z.string().nullable().optional(),
     paymentTermDays: z.number().int().min(0).max(365).optional(),
     defaultNotes: z.string().nullable().optional(),

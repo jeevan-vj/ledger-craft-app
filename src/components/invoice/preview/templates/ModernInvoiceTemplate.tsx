@@ -1,3 +1,4 @@
+import { DocumentGstIdentity } from '../DocumentGstIdentity';
 import { BankPaymentDetails } from '../BankPaymentDetails';
 import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
@@ -74,6 +75,7 @@ const ModernInvoiceTemplate = ({
             )}
             <div>
               <h1 className="text-2xl font-extrabold tracking-tight">{companyName}</h1>
+            <DocumentGstIdentity labels={copy} />
               <p className="text-xs opacity-80 whitespace-pre-line">{companyAddress}</p>
               {companyPhone && (
                 isMobile ? (
@@ -172,9 +174,9 @@ const ModernInvoiceTemplate = ({
               <span className="font-medium" style={{ color: theme.textLight }}>Subtotal</span>
               <span className="font-semibold" style={{ color: theme.text }}>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
             </div>
-            {showPositiveAmount(tax) && (
+            {copy.showTax !== false && (copy.taxLabel === 'GST' || showPositiveAmount(tax)) && (
             <div className="flex justify-between py-1 text-sm">
-              <span className="font-medium" style={{ color: theme.textLight }}>Tax ({taxRate}%)</span>
+              <span className="font-medium" style={{ color: theme.textLight }}>{copy.taxLabel ?? 'Tax'} ({taxRate}%)</span>
               <span className="font-semibold" style={{ color: theme.text }}>{formatCurrency(tax, invoice.currency)}</span>
             </div>
             )}

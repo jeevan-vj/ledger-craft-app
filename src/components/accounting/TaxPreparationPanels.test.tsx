@@ -126,3 +126,34 @@ describe('exact tax preparation', () => {
     expect(saved.returnData).toMatchObject({ companyIncomeTax: { incomeTaxPayable: '198.40', taxableIncome: '780.00' } });
   });
 });
+
+it('requires explicit supported classification before sending zero-rated or exempt sales evidence', async () => {
+  render(<GstPreparationPanel />);
+  fireEvent.click(screen.getByLabelText('I need to classify zero-rated or exempt sales'));
+  fireEvent.change(screen.getByLabelText('Reviewed zero-rated sales'), { target: { value: '100.00' } });
+  fireEvent.change(screen.getByLabelText('Reviewed exempt sales'), { target: { value: '50.00' } });
+  fireEvent.change(screen.getByLabelText('Sales classification reason'), { target: { value: 'Reviewed export and exempt source records' } });
+  fireEvent.change(screen.getByLabelText('Sales classification source'), { target: { value: 'GST-SALES-REVIEW' } });
+  expect(screen.getByRole('button', { name: 'Prepare GST worksheet' })).toBeDisabled();
+  fireEvent.click(screen.getByLabelText('I have reviewed the adjustment sources and tax treatment'));
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare GST worksheet' }));
+  await screen.findByText('NZD 126.00');
+  expect(calls.find(call => call.body?.salesClassificationReview)?.body).toMatchObject({ salesClassificationReview: { zeroRatedSales: '100.00', exemptSales: '50.00', reason: 'Reviewed export and exempt source records', sourceReference: 'GST-SALES-REVIEW' } });
+});
+it('uses the persisted hybrid basis and server-generated period without an editable per-return override', () => {
+  render(<GstPreparationPanel registeredBasis="hybrid" period={{ periodStart: '2026-11-01', periodEnd: '2026-11-30', dueDate: '2027-01-15' }} />);
+  expect(screen.getByLabelText('Registered GST basis')).toHaveValue('hybrid');
+  expect(screen.getByLabelText('Registered GST basis')).toBeDisabled();
+  expect(screen.getByLabelText('GST period start')).toHaveValue('2026-11-01');
+  expect(screen.getByLabelText('GST period start')).toBeDisabled();
+  expect(screen.getByLabelText('GST due date (confirm in myIR)')).toHaveValue('2027-01-15');
+});
+it('allows read-only GST preview but prevents review and draft mutation controls', async () => {
+  render(<GstPreparationPanel registeredBasis="payments" canWrite={false} />);
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare GST worksheet' }));
+  await screen.findByText('NZD 141.00');
+  expect(screen.getByLabelText('I need to classify zero-rated or exempt sales')).toBeDisabled();
+  expect(screen.getByLabelText('I have reviewed the worksheet and bank reconciliation')).toBeDisabled();
+  expect(screen.getByRole('button', { name: 'Save GST worksheet draft' })).toBeDisabled();
+  expect(calls.some(call => call.body)).toBe(false);
+});

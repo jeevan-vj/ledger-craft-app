@@ -14,9 +14,11 @@ import * as taxService from './tax.service';
 import { gstPreparationForUser, reviewedGstPreparationForUser } from './gst-preparation';
 import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 import { companyIncomeTaxPreparationForUser } from './company-income-tax';
+import { gstSettingsRoutes } from './gst-settings';
 
 export function taxRoutes() {
   const routes = new Hono<AppEnv>();
+  routes.route('', gstSettingsRoutes());
 
   for (const prefix of ['', '/api'] as const) {
     routes.get(`${prefix}/tax/gst-preparation`, async (c) => {
@@ -48,6 +50,11 @@ export function taxRoutes() {
     routes.get(`${prefix}/tax-returns`, async (c) => {
       const { db, user } = await requireSession(c);
       return c.json(await taxService.listTaxReturnsForUser(db, user.id));
+    });
+
+    routes.get(`${prefix}/tax-returns/:id/recalculation`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await taxService.recalculateGstReturnForUser(db, user.id, c.req.param('id')));
     });
 
     routes.get(`${prefix}/tax-returns/:id`, async (c) => {

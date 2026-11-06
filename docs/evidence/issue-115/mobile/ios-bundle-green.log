@@ -1,0 +1,78 @@
+Starting Metro Bundler
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+| [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+iOS ./index.ts ░░░░░░░░░░░░░░░░  0.0% (0/1)
+| (node:61656) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+| [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+| [baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+| (node:61664) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+iOS ./index.ts ▓▓░░░░░░░░░░░░░░ 13.1% (17/47)
+| (node:61677) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+| (node:61676) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+| (Use `node --trace-warnings ...` to show where the warning was created)
+iOS ./index.ts ▓▓░░░░░░░░░░░░░░ 17.0% ( 63/228)
+iOS ./index.ts ▓▓░░░░░░░░░░░░░░ 17.0% (125/341)
+iOS ./index.ts ▓▓▓▓░░░░░░░░░░░░ 30.0% (237/439)
+iOS ./index.ts ▓▓▓▓░░░░░░░░░░░░ 30.0% (316/828)
+iOS ./index.ts ▓▓▓▓░░░░░░░░░░░░ 30.0% (445/977)
+iOS ./index.ts ▓▓▓▓░░░░░░░░░░░░ 30.0% ( 509/1002)
+iOS ./index.ts ▓▓▓▓▓░░░░░░░░░░░ 32.4% ( 580/1019)
+iOS ./index.ts ▓▓▓▓▓▓░░░░░░░░░░ 40.7% ( 694/1088)
+iOS ./index.ts ▓▓▓▓▓▓▓░░░░░░░░░ 43.8% ( 772/1216)
+iOS ./index.ts ▓▓▓▓▓▓▓░░░░░░░░░ 43.8% ( 801/1289)
+iOS ./index.ts ▓▓▓▓▓▓▓░░░░░░░░░ 45.5% ( 919/1363)
+iOS ./index.ts ▓▓▓▓▓▓▓▓░░░░░░░░ 55.0% (1056/1424)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓░░░░░░░ 59.3% (1165/1562)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓░░░░░░░ 59.3% (1249/1668)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓░░░░░░░ 60.7% (1317/1690)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓░░░░░ 73.0% (1536/1803)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓░░░░ 78.7% (1623/1830)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓░░░ 83.2% (1729/1895)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓░░ 92.7% (1895/1977)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 95.8% (2007/2056)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (2114/2114)
+iOS Bundled 94803ms index.ts (2114 modules)
+iOS ./index.ts ▓▓▓▓▓▓▓▓▓▓▓▓▓▓▓░ 99.9% (2114/2114)
+
+› Assets (40):
+assets/tabs/customers.png (574 B)
+assets/tabs/home.png (1.14 kB)
+assets/tabs/invoices.png (1.03 kB)
+assets/tabs/sell.png (246 B)
+assets/tabs/settings.png (2.99 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/AntDesign.ttf (70.3 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Entypo.ttf (66.2 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/EvilIcons.ttf (13.5 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Feather.ttf (56.2 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome.ttf (166 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Brands.ttf (134 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Regular.ttf (33.7 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome5_Solid.ttf (203 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Brands.ttf (209 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Regular.ttf (68 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/FontAwesome6_Solid.ttf (424 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Fontisto.ttf (314 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Foundation.ttf (57 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Ionicons.ttf (443 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialCommunityIcons.ttf (1.15 MB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/MaterialIcons.ttf (357 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Octicons.ttf (49.4 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/SimpleLineIcons.ttf (54.1 kB)
+node_modules/@expo/vector-icons/build/vendor/react-native-vector-icons/Fonts/Zocial.ttf (25.8 kB)
+node_modules/@react-navigation/elements/lib/module/assets/back-icon-mask.png (653 B)
+node_modules/@react-navigation/elements/lib/module/assets/back-icon.png (4 variations | 566 B)
+node_modules/@react-navigation/elements/lib/module/assets/clear-icon.png (4 variations | 425 B)
+node_modules/@react-navigation/elements/lib/module/assets/close-icon.png (4 variations | 235 B)
+node_modules/@react-navigation/elements/lib/module/assets/search-icon.png (3 variations | 582 B)
+
+› ios bundles (1):
+_expo/static/js/ios/index-c55fe442a5467a4e52fd3bc99cdb492f.hbc (7.72 MB)
+
+› Files (1):
+metadata.json (2.85 kB)
+
+Exported: /tmp/ledgercraft-issue115-mobile-ios-locked

@@ -82,7 +82,7 @@ function identityHealthResponse(storage: DurableObjectState['storage'], env: Env
   storage.sql.exec('SELECT 1').toArray();
   const applied = storage.sql.exec<{name:string}>('SELECT name FROM _migrations ORDER BY name DESC LIMIT 1').toArray()[0];
   const capabilities = {
-    email: env.RESEND_API_KEY?.trim() && env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
+    email: createInvoiceMailerFromEnv(env).availability ?? 'unavailable',
     ai: env.OPENAI_API_KEY?.trim() || env.XAI_API_KEY?.trim() || env.AI ? 'available' : 'unavailable',
     stripe: stripePaymentsCapability(env as unknown as Record<string, string | undefined>),
   };

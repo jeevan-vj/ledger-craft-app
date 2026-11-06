@@ -1,0 +1,134 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false
+
+PASS src/screens/accounting/AccountingToolsScreen.test.tsx (7.156 s)
+PASS src/components/invoice/InvoiceCreditNotesSection.test.tsx (7.367 s)
+PASS src/components/reports/GstPreparationPanel.test.tsx (8.338 s)
+PASS src/components/invoice/PaymentCaptureModal.test.tsx (8.503 s)
+PASS src/features/reports/api/gstProfileMappings.test.ts
+PASS src/screens/sales/SellScreen.test.tsx
+PASS src/screens/main/DashboardScreen.test.tsx
+PASS src/screens/imports/ImportCaptureScreen.test.tsx
+PASS src/screens/settings/BusinessSettingsScreen.test.tsx
+PASS src/components/accounting/FxRevaluationPanel.test.tsx
+PASS src/components/reports/CompanyTaxPanel.test.tsx
+PASS src/components/invoice/InvoiceShareActions.test.tsx
+PASS src/screens/invoices/InvoiceListScreen.sale.test.tsx
+PASS src/screens/auth/OnboardingGst.test.tsx
+PASS src/screens/reports/ReportsScreen.test.tsx
+PASS src/screens/sales/SalesSummaryScreen.test.tsx
+PASS src/components/banking/StatementSummaryPanel.test.tsx
+PASS src/screens/sales/SaleSuccessState.test.tsx
+PASS src/components/sales/SaleTileGrid.test.tsx
+PASS src/components/banking/ExistingSettlementPanel.test.tsx
+PASS src/screens/invoices/GuidedInvoiceCreate.test.tsx
+PASS src/features/reports/model/gstReturnDocument.test.ts
+PASS src/components/accounting/LedgerAuditPanel.test.tsx
+PASS src/components/currency/SettlementRatePicker.test.tsx
+PASS src/components/reports/GstWorkspacePanel.test.tsx
+PASS src/screens/invoices/PublicInvoiceScreen.test.tsx
+PASS src/screens/expenses/ExpenseEditScreen.test.tsx
+PASS src/components/purchases/VendorCreateForm.test.tsx
+PASS src/screens/settings/AccountDeletionScreen.test.tsx
+PASS src/components/invoice/InvoiceDetailActions.test.tsx
+PASS src/screens/expenses/ExpenseCreateScreen.test.tsx
+PASS src/screens/auth/PasswordRecoveryScreen.test.tsx
+PASS src/utils/__tests__/gstInvoiceCompliance.test.ts
+PASS src/screens/quotes/PublicQuoteScreen.test.tsx
+PASS src/features/invoice-import/cameraPhoto.test.ts
+PASS src/components/invoice/StripePaymentLinkSection.test.tsx
+PASS src/components/invoice/PaymentReversalModal.test.tsx
+PASS src/features/quotes/api/quotesApi.test.ts
+PASS scripts/babel-web.test.js
+PASS src/components/invoice/FinishDraftCard.test.tsx
+PASS src/services/__tests__/invoiceService.test.ts
+PASS src/services/__tests__/paymentService.test.ts
+PASS src/components/AppErrorBoundary.test.tsx
+PASS src/components/settings/StripeSettingsSection.test.tsx
+PASS src/components/ui/HeaderActions.test.tsx
+PASS src/components/ui/PillButton.test.tsx
+PASS src/features/reports/api/gstPreparationApi.snapshot.test.ts
+PASS src/features/auth/api/authApi.test.ts
+PASS src/features/onboarding/setupFailure.test.ts
+PASS src/utils/__tests__/invoiceHtml.test.ts
+PASS src/components/ui/EmptyState.test.tsx
+PASS src/components/invoice/InvoiceDeliverySection.test.tsx
+PASS src/features/sales/salesApi.test.ts
+PASS src/features/invoice-import/api/documentImportApi.test.ts
+PASS src/features/payments/paymentQueries.test.ts
+PASS src/utils/__tests__/pdfUtils.test.ts
+PASS src/features/payments/paymentModel.test.ts
+PASS src/features/invoices/pendingCreditOperation.test.ts
+PASS src/components/invoice/PaymentHistoryList.test.tsx
+PASS src/components/expense/AccountPicker.test.tsx
+PASS src/features/sales/quickSalePreference.test.tsx
+PASS src/services/__tests__/businessProfileService.test.ts
+PASS src/features/sales/saleAttempt.test.ts
+PASS src/features/purchases/api/purchasesApi.test.ts
+PASS src/features/banking/model/statementImport.test.ts
+PASS src/features/sales/saleSession.test.ts
+PASS src/features/sales/tilePreferences.test.ts
+PASS src/features/banking/api/bankingApi.test.ts
+PASS src/utils/__tests__/invoiceBuyerCompliance.test.ts
+PASS src/store/authSlice.queryCache.test.ts
+PASS src/observability/scrub.test.ts
+PASS src/features/sales/salesSummaryApi.test.ts
+PASS scripts/publish-update.test.js
+PASS src/features/sales/saleStorage.test.ts
+PASS src/features/reports/api/gstPreparationApi.test.ts
+PASS src/utils/__tests__/statusUtils.test.ts
+PASS src/features/items/model/itemForms.test.ts
+PASS src/features/invoices/firstInvoiceModel.test.ts
+PASS src/features/quotes/quoteModel.test.ts
+PASS src/utils/__tests__/countryTaxDefaults.test.ts
+PASS src/features/banking/model/bankingForms.test.ts
+PASS src/features/auth/api/http.error.test.ts
+PASS src/features/stripe/api/stripeApi.test.ts
+PASS src/features/auth/invoiceAccess.test.ts
+PASS src/features/purchases/model/purchaseForms.test.ts
+PASS src/components/invoice/CreatedInvoiceCard.test.tsx
+PASS scripts/eas-update-config.test.js
+PASS src/features/sales/saleCart.test.ts
+PASS src/features/purchases/model/pendingBillPayment.test.ts
+PASS src/navigation/links.test.ts
+PASS src/features/invoices/__tests__/invoiceSharing.test.ts
+PASS src/features/invoice-import/sourceFile.test.ts
+PASS src/features/invoices/finishDraftModel.test.ts
+PASS src/services/__tests__/customerService.test.ts
+PASS src/features/payments/api/paymentsApi.test.ts
+PASS src/components/ui/datePickerModel.test.ts
+PASS src/utils/__tests__/money.test.ts
+PASS src/components/ui/ModernInput.test.tsx
+PASS src/observability/sentryOptions.test.ts
+PASS src/navigation/appLinks.test.ts
+PASS plugins/sentryUploadGate.test.js
+PASS src/services/__tests__/itemService.test.ts
+PASS src/features/dashboard/api/dashboardApi.test.ts
+PASS src/features/banking/model/reconciliationMath.test.ts
+PASS src/utils/__tests__/quoteHtml.test.ts
+PASS src/features/reports/api/gstWorkspaceApi.test.ts
+PASS src/layout/__tests__/tabScreenInsets.test.ts
+PASS src/features/customers/model/filterCustomers.test.ts
+PASS src/features/quotes/quoteTotals.test.ts
+PASS src/features/customers/model/customerForms.test.ts
+PASS src/features/quotes/quoteSharing.test.ts
+PASS src/services/__tests__/organisationService.test.ts
+PASS src/utils/__tests__/invoiceLineDisplay.test.ts
+PASS src/lib/queryClient.test.ts
+PASS src/features/expenses/expenseTotals.test.ts
+PASS src/features/onboarding/onboardingStorage.test.ts
+PASS src/features/invoice-import/model/reviewDecision.test.ts
+PASS ./eas.test.js
+PASS src/features/invoices/settlementLabel.test.ts
+PASS src/features/onboarding/onboardingModel.test.ts
+PASS src/features/reports/api/reportsApi.test.ts
+PASS src/features/banking/model/bankAccountForms.test.ts
+PASS src/navigation/mainTabs.test.ts
+A worker process has failed to exit gracefully and has been force exited. This is likely caused by tests leaking due to improper teardown. Try running with --detectOpenHandles to find leaks. Active timers can also cause this, ensure that .unref() was called on them.
+
+Test Suites: 123 passed, 123 total
+Tests:       588 passed, 588 total
+Snapshots:   0 total
+Time:        30.581 s, estimated 39 s
+Ran all test suites.

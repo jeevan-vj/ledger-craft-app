@@ -109,6 +109,10 @@ export interface BusinessProfile {
   website?: string | null;
   defaultTaxRate?: number | null;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
+  gstRegisteredFrom?: string | null;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   defaultTerms?: string | null;
   defaultNotes?: string | null;
   bankInfo?: string | null;
@@ -213,6 +217,9 @@ export interface Invoice {
   balanceDue?: number;
   paymentStatus?: 'unpaid' | 'partially_paid' | 'paid' | 'overdue' | 'cancelled';
   taxInclusive?: boolean;
+  taxRate?: number;
+  baseCurrency?: string;
+  baseTotal?: string;
   status: InvoiceStatus;
   notes?: string | null;
   terms?: string | null;
@@ -476,6 +483,8 @@ export interface OnboardingData {
   invoiceNumberFormat?: string;
   defaultTaxRate?: number;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
+  taxId?: string;
+  gstRegisteredFrom?: string;
   address?: string;
   city?: string;
   state?: string;

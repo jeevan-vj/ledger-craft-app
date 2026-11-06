@@ -453,6 +453,8 @@ export {
   taxConfigurationSchema,
   taxReturnListResponseSchema,
   taxReturnSchema,
+  gstReturnRecalculationResponseSchema,
+  type GstReturnRecalculationResponse,
   updateTaxReturnRequestSchema,
   upsertTaxConfigurationRequestSchema,
   type CreateTaxReturnRequest,
@@ -609,3 +611,6 @@ export * from './accounting-recovery';
 export * from './credit-note';
 
 export * from './fx-revaluation';
+
+export * from "./gst-settings";
+export * from './gst-calculation';

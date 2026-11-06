@@ -1,0 +1,635 @@
+$ vitest run src/modules/tax/gst-registration-reversals.test.ts src/modules/invoices/invoice-gst-compliance.test.ts
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_70f0eeb2-9d24-4ad2-970e-a5e5eae479e8","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_de69f84a-a128-4fc2-901a-3fce0bc49bf6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_c3fbfafe-290b-4bfe-9ab9-02e474ef1e2c","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_eb4eb1fd-57dd-4d00-a283-494360bb1a53","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_1e8db77a-727c-4611-8a60-98634a0dadd1","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_b1721bd8-c64c-42d4-8d93-eba1e8564b4a","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_84fa3ef6-35b8-49fe-ab93-05ae52568922","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_c1804623-9a45-471b-80f4-d817fb85b851","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_88b85e88-ee06-46dd-b1d9-dc3473506070","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_6a1ac030-8a91-4cc6-962c-3bcbc179c030","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_f2d77633-cf89-4fed-890f-bf623187015d","route":"/api/business-profile","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_9ac7ab85-1efc-4f7b-a502-d214beaf78ad","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_b5ca2fca-cde5-4e40-acba-c347bd0f882e","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_ccb02541-db57-4b46-a428-963698cda019","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_74b7bd36-36c6-431a-9759-97696c1a39a6","route":"/api/invoices","method":"POST","status":422,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_59dc42c3-4390-4477-89b7-2bebaa90938d","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_1d721bb8-e2a5-4a7e-820a-06a7a5d6cd55","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_b7b5d497-3fb8-4938-adec-76f812ef4806","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_f14f479e-e4b9-4c1b-9968-f7e7c7375360","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_4daeb3cd-007b-408d-a72b-350cfa04f1ef","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_85b54f63-d75c-4ff4-9878-ae3dd2d4d8d5","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_c0a94946-d8e6-4d75-8e77-c852b235ef7e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_31bea493-13a1-4d58-892e-f1da997062e4","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_270a578c-f731-44fd-b725-28e251167842","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_5ae888f1-6b99-46cd-8ea2-e324b9b0e26f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_c99c3adf-0efa-43a9-8433-527056bccbdb","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_aefe7972-0fe3-4b88-8101-becad12fabcc","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_4ababe35-b101-4271-a132-ad7838ee1aa9","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_4e76c5a9-8cca-4145-bdfa-5102977cd7be","route":"/api/business-profile","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_5403f7d4-2418-4cbf-95e7-39bb7ba0edb6","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_632bb25d-9600-4b1f-a2f8-a12f05063aaf","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_aecbb606-1bc1-463e-830b-9b11b3c5ad52","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_0e04c8ed-6712-4c2d-a5c6-51df7dce1d72","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_e54f7fbe-9a6d-413b-88b2-3554371ac0af","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_80a4333c-3515-4d74-afee-4bd876c77955","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_5b5fd12a-8439-44fa-a158-bca268406d27","route":"/api/invoices/:id/send","method":"POST","status":422,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_580428ad-9b2f-45f8-ad07-ba1ad704253c","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_a183e9e9-5844-4462-a68a-bed3c3c00a7f","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_b197258d-e493-4f1c-ac3a-14a10b432af0","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_ebe431e1-ca23-407a-8742-1584ebe38441","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_c7ae960e-7036-47d7-a872-1d812796513f","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_4595ec8a-b661-40fc-9027-cf22ecf5a678","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_2feb4de2-bb17-4627-bce7-b633b6c97815","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_7ad6fd3f-5af1-471d-a2af-27a920ef6285","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_6d58fadd-82f2-40ad-b409-bae57f96b3fa","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_4079b7ed-ee0a-4bbb-9558-033c62f0fcd1","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_af99ccaf-f943-45c0-be7a-ade128ba37a9","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_e00ffad1-9315-43d7-bd19-7fa35b8fcfc3","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_d804c6b8-e0c0-4f64-ae34-b392e2ab78fc","route":"/api/business-profile","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_acf48261-a792-4832-ac54-487261dad424","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_004684f5-4fda-4fff-ba8a-6e6b9fd23604","route":"/api/business-profile","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_48944b03-b6ed-4990-8c3c-0f53cb88703c","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_0e77ffb4-59ca-4fb8-b691-8acca3070266","route":"/api/auth/*","method":"POST","status":200,"durationMs":80}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_5f64be6b-bcf3-4d49-81d2-f4e168f53d92","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_7e9a3046-91fd-4dfd-96ef-7b83186b8422","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_3f479e94-d948-4521-b6ec-fc564a75d33c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_f5034c14-d0a9-4bf7-a6d0-9a5ca8b98100","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_80a71767-9d1d-4f71-a679-51cf2489efad","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_65060735-0920-426e-9430-4cc995fd99ee","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_fef12c73-8111-4b77-9846-5f8d53cde65c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_f1439a35-2572-48e4-b339-c7d68b959f94","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_ad78673b-fbf1-4213-8a8d-f52a1fac23ec","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_dede8cc1-d212-490c-90e6-5f52bd46329a","route":"/api/business-profile","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_a29dfd3a-1427-4046-94f6-e7cf2cb316c0","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_db9b5c0f-324c-4ef0-8604-0687d7113642","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_1772c1b6-4e5c-41ce-8f8a-bff2587cb57d","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_26e75371-16f3-4277-a18b-257c2e8cfd84","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_e279b0b6-809c-401c-981b-76c8dc91bd2d","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_613fcf2e-2ac9-415b-bd10-6ffb445d2aed","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_09065a72-dbf0-493e-99c0-df5a81ad830d","route":"/api/auth/*","method":"POST","status":200,"durationMs":82}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_e4404cb4-d8bd-4fc1-b65e-fdeda8e60392","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_fe413d28-bc73-4088-ad4b-b84c1325fe27","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_46974c37-0920-43a1-a551-bb5d6a02b928","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_1f10d76c-de6c-473c-a45d-4a3b8f9d14ee","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_3ea57082-1d96-429d-a496-eb459250c316","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_3e39bea2-15ba-4ba2-a506-ad0f169d2ea5","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_0dffca25-c9c3-4a64-abf2-943e1ce85dfb","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_1da6f4c9-eaec-47bb-bc26-ff9dc8757d51","route":"/api/invoices","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_22413576-8213-4138-a0ea-b932be3747e2","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_1f99e36f-c32f-4e45-8a75-dd98d68af1b6","route":"/api/business-profile","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_553708bf-4c86-4772-a741-cbc189382677","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_a5e3fa4b-412c-4c22-84a9-7bfcbb15aec6","route":"/api/business-profile","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_6d12bef8-52a7-451a-9e8a-fc98defc9f74","route":"/api/invoices","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_3ad7d763-f47c-47f3-99c1-22a8b753dd2a","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_88a2c90e-479b-4e09-81e9-9f56fc2815bf","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_3e7735a6-b1c4-4433-9084-c9d5d20d5e7d","route":"/api/invoices/:id/send","method":"POST","status":422,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_0bb18931-12b7-47b7-b1ad-589e29b6cdcd","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_e9d1b496-21f4-489d-bd1c-13a865ced8a6","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_66775fca-9dd2-493c-a2fb-22704180f19e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_343ba391-d542-4bba-878d-c2c52b9668a2","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_b43a692c-b133-4c66-b6d9-e9fc7299d87b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_005bb90b-4af2-41cf-af6d-ca9131d3210c","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_48a05a48-78ea-451c-a59c-5478f72b6bd1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_712d1e47-9e75-435f-98e1-0b39bf4669f8","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_3a429b89-e0cf-4d48-a7b0-306970346650","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_e793ce53-7878-40e4-9e34-5bc8ed9224c7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_cf70e1d9-4b4d-4eb4-9825-9f66ae34f2de","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_aec5569f-5377-4566-8101-b876940642af","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_103112ff-1231-4a82-a6d2-693692d9fc55","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_39144f8b-bd6c-4be0-8c13-d3780ec23cde","route":"/api/business-profile","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_683643c6-f1c0-4a24-9b2f-fa085c1e87d9","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_784884d9-3b33-4a45-a1f8-f5f43200c18c","route":"/api/business-profile","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_c07f3933-fa31-45ec-92d2-8833c8d7bfdd","route":"/api/invoices","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_48d081f3-eba6-4952-9ee9-63a1951e8e82","route":"/api/auth/*","method":"POST","status":200,"durationMs":82}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_bf088394-612b-48e9-ad02-71882168eb73","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_dbe83463-956a-462c-855d-84a7edd6c88e","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_c9a46e38-2027-4bf3-a2ef-6ee270bf6428","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_fc494ac8-76be-46a7-a5c1-00129e781696","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_2efc8b9b-3f73-48a5-b031-0e364c7104e2","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_559e2f4e-0444-4e60-9f1e-7d4860cf2c45","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_98cce5f8-0e37-4cb3-bb35-79fef81003cc","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_bb26f904-ad44-4364-a965-d2b2152ae1db","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_7f94fd21-e733-4fc5-b44b-9761cc479dad","route":"/api/bills","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_d7f35fe3-ea81-4c12-b928-50179b38f08d","route":"/api/business-profile","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_fad9feac-1c20-41cf-ad2b-d2d3f1702c3b","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_6d89f520-4972-4618-bc6a-8203e2291dbc","route":"/api/invoices","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_f35f6f5e-8568-4bd8-9094-8ef716823a7b","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_9bb821ce-2a63-4050-8381-c718c050066b","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_65baddb2-82b0-405e-a9b7-be97190b8414","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_8f2e90fc-8105-4d9e-b424-6eb16e89d0a2","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_33b6f9c1-c112-484c-bf2c-a0ad8940300a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_3dad66ea-5c9d-41a0-a5da-0f191aa9bb81","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_9110e7d7-870b-49da-b9d6-affeb215a51e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_e34746d6-a701-40f1-bb37-e6771e16c1ba","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_c04aed02-fceb-4560-aab2-3e4d7a841172","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_c796be6e-4dc9-42e3-8c1a-2b63a7be200e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_575d34b8-430a-437b-b711-c1e359e5ae92","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_21607c10-2e9c-4e2d-94fe-8b08e0a23e92","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_a6097f11-f17b-478b-bd29-b7b63495d7d6","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_5cf0778b-19b5-4a94-81eb-0bff9bef99c8","route":"/api/business-profile","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_6b932618-e510-4b65-90ad-0e17604b3c17","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_1893a5e5-539d-4eaf-8919-902b9ff5d573","route":"/api/invoices","method":"POST","status":422,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_bc18c7a5-b130-434f-8e2b-d53a3e39901b","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_f40606d5-b155-4f0b-b62e-417400c25a7a","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+ ✓ src/modules/invoices/invoice-gst-compliance.test.ts (8 tests) 6256ms
+   ✓ GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence  837ms
+   ✓ GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed  830ms
+   ✓ GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller  823ms
+   ✓ GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits  767ms
+   ✓ GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review  814ms
+   ✓ GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business  706ms
+   ✓ GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim  752ms
+   ✓ GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds  725ms
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_1eedfba9-b763-4026-92a5-763f5bedd617","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_7bd38d4c-7e31-4d99-a9a0-0c3980098010","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_dc0dfe6b-e91c-43d2-aa6d-c90f824492a1","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_73adffc9-873b-4b0d-8c8f-7cc3ea9fc711","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_593ffb30-be3d-4cf1-83ad-20cba0f02347","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_f5a116d1-14f0-4ec4-b48c-241e4ed87c15","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_86aba4eb-83e1-46c9-8d63-3c180d2c2960","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_8fc0ffa4-d8aa-46e0-942d-593b7c6d765c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_becae8e4-ad6e-4be4-a961-80957c590757","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_d033e170-93a2-4eda-966b-40e846466b0a","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_aae07025-0c75-481a-97eb-0410dffb5eec","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_d73f2b76-bc26-4444-8f68-e56ff17c9024","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_a02c5d3b-c89e-4e53-9da8-0d6c2d4b6153","route":"/api/expenses/:id","method":"DELETE","status":204,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_9d78190d-f755-4f71-96be-9e904a8dfffd","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_9cc99d90-ff1f-455b-bd68-e9d218fc1a5c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_e52b0b49-541d-4ac8-a081-bfcc3a374763","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_febb81b6-bf5a-499f-8c2d-5d53341dae5f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_91f6b637-af07-421b-82d1-418f12d3bc8f","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_4fbcaa9d-9692-4bc5-8552-0a8780cbb7d3","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_b134139a-dccc-4209-8e0f-c1462a2458c3","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_cd2708b1-fdd8-4746-8598-4a89afe4e313","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_0c924003-fea9-48cd-8c2a-9470898d0718","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_bf978e8e-ff0c-45b5-b887-4934b897c2ad","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_5eb04641-7971-4594-880c-3f1bae3a741e","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_0d2f3d51-c51d-43b2-911c-736ffeb64fe5","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_edc2eaef-032a-4301-8afa-528b3d63ff0d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_43a43841-c7e9-4972-832d-20b568d4ca87","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_98b1048c-137a-4d9f-ac18-1b4f6c29b932","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_652e4363-eeb4-4f19-8d2d-998e175d610e","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_1337ae56-62a3-4eaa-b3d6-c98476202ce3","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_bb87987a-2f29-4327-80e0-d89d95a6a062","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_82c5e697-4151-4a80-930f-3d8fc975d4e5","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_dd161c59-f130-4c86-9d8d-f2ce6e885547","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_9d294b81-3cc3-402d-a6e4-cd2512eec520","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_fcfc628f-614e-46f2-87d8-f2b76ba6b011","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_54e3325a-ada4-403a-a3bb-f94b9478a98f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_b526423d-d7bc-4c61-9132-7d1611ef3e59","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_5954928a-ce28-4c53-ad6b-f4076fcf0afd","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_99ae59b9-065e-4b74-9bd8-e602d499ae6f","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_fc8d4f53-7a49-45b6-a495-b20f97ccf199","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_169344c5-d0d5-41b7-9f7a-860af05614d6","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_8c964598-07c6-4a33-ade4-3c039abb6334","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_f935c011-2241-42a2-9909-1d22f768dffc","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_40242ecc-5d75-488c-975a-01fbaeaf078d","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_fd2ca6b9-8bdf-4fa8-a387-733a0a905ece","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_474300f4-b954-453a-903c-5ba16a7743f1","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_dc732bae-df1f-4ed1-89c7-ea5e5ad93493","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_ddf170a9-c672-4b33-8ccd-01f7d8fae982","route":"/api/bills/:id/void","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_5d8d0adf-14a1-42e8-a3b9-9df82d6f03be","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_10196fda-202a-4705-b09d-d0f99204fbd5","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_86e74d04-5614-468a-bf75-e78125908879","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_cde09833-949b-4660-baf3-fef935080fef","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_e9e5a5fc-f4a8-4299-a21a-2db1489de4a4","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_5bf1c299-78f1-4a03-9de4-7000e0fb8520","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_b5912ace-40cb-4919-a619-a71f0c6543d9","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_21c09287-1b48-4730-8162-a0472b766b86","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_aeb98b3d-0935-490f-8a3a-9c22ba87d3bc","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_6c76332d-e960-42a4-af98-8736c7fed802","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_91917ea8-2a79-4c8c-b787-cd34ba9637b7","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_9af45352-b620-4796-a319-3ba366118902","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_e2f71185-b905-41b2-b241-9d1558e10f7f","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_e0ab9245-f61a-4e39-81f9-f85aa3a0319d","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_650e4057-2496-4b32-b56f-ecb27aa8e204","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_354b402d-eabd-4e41-83c7-5087649e8d22","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_bba46b7d-2b4f-4b28-a8fa-9e99662f78c6","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_8dbd3587-186f-4e34-adec-7a00aaf1aae0","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_fe89334e-4f51-4a45-9620-4468ef57ef61","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_3d802121-6da1-4003-acae-3173f5dd91f2","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_67a253a0-5c6a-4ad3-acb3-d09025bc0547","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_19c78b37-dc72-42ff-b851-9e6026ec4ae8","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+ ✓ src/modules/tax/gst-registration-reversals.test.ts (4 tests) 12370ms
+   ✓ GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return  1692ms
+   ✓ GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales  2102ms
+   ✓ GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return  3365ms
+   ✓ GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply  5210ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  23:33:24
+   Duration  23.74s (transform 1.68s, setup 55ms, collect 4.45s, tests 18.63s, environment 0ms, prepare 222ms)

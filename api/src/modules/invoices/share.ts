@@ -17,6 +17,8 @@ import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import * as invoicesRepo from './invoices.repository';
+import * as customersRepo from '../customers/customers.repository';
+import { assertGstBuyerInformation, assertGstSellerReady } from './gst-compliance';
 
 type ShareRow = typeof sharedInvoices.$inferSelect;
 
@@ -112,6 +114,10 @@ export async function createShareForUser(
     if (!profile) {
       throw new HTTPException(400, { message: 'Set up your business profile first' });
     }
+    const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
+    if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
+    assertGstBuyerInformation(profile, customer, invoice.currency, invoice.total, invoice.date, invoice);
+    assertGstSellerReady(profile, invoice.date, invoice.taxAmount);
 
     const templateName = input.templateName ?? 'classic';
     const now = new Date();

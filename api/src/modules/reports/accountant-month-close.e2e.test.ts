@@ -34,7 +34,7 @@ describe('independent accountant month-close acceptance', () => {
         return JSON.parse(text) as T;
       }
       const post = <T = { id: string }>(path: string, body: unknown, status = 201) => request<T>(path, 'POST', body, status);
-      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered' });
+      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' });
       const customer = await post('/api/customers', { name: 'October client', email: 'client@example.test' });
       const invoice = await post('/api/invoices', { customerId: customer.id, date: '2026-10-05', dueDate: '2026-10-31', taxInclusive: false, taxRate: '15', currency: 'NZD', items: [{ description: 'October services', quantity: '1', rate: '2000' }] });
       await request(`/api/invoices/${invoice.id}`, 'PATCH', { status: 'sent' });
@@ -84,8 +84,11 @@ describe('independent accountant month-close acceptance', () => {
       expect(creditReversed.receivablesAging.total).toBe('730.00'); expect(creditReversed.profitLoss.netIncome).toBe('1300.00');
       const closedAfter = await report('2026-10-31');
       for (const section of ['profitLoss', 'cashFlow', 'balanceSheet', 'receivablesAging', 'payablesAging', 'trialBalance', 'taxSummary'] as const) expect(closedAfter[section]).toEqual(october[section]);
-      expect(await gst('2026-10-01', '2026-10-31')).toEqual(invoiceGst);
-      expect(await gst('2026-10-01', '2026-10-31', 'payments')).toEqual(cashGst);
+      // Calculations are freshly timestamped; every monetary value, source ID,
+      // source fingerprint and all remaining audit fields must remain equal.
+      const stableGst = (value: Awaited<ReturnType<typeof gst>>) => ({ ...value, ...(value.calculation ? { calculation: { ...value.calculation, calculatedAt: '<fresh calculation time>' } } : {}) });
+      expect(stableGst(await gst('2026-10-01', '2026-10-31'))).toEqual(stableGst(invoiceGst));
+      expect(stableGst(await gst('2026-10-01', '2026-10-31', 'payments'))).toEqual(stableGst(cashGst));
       const novemberCashGst = await gst('2026-11-01', '2026-11-30', 'payments');
       expect(novemberCashGst).toMatchObject({ totalSales: '920.00', totalPurchases: '575.00', gstOnSales: '120.00', gstOnPurchases: '75.00', netGstPosition: '45.00' });
       const entries = await db.select().from(journalEntries);

@@ -1,3 +1,4 @@
+import { DocumentGstIdentity } from '../DocumentGstIdentity';
 import { BankPaymentDetails } from '../BankPaymentDetails';
 import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
@@ -86,6 +87,7 @@ const ClassicTemplate = ({
           </div>
           <div className="text-right">
             <p className="text-sm sm:text-base font-semibold">{companyName}</p>
+            <DocumentGstIdentity labels={copy} />
             <p className="text-xs sm:text-sm text-gray-600 no-underline no-autolink">{companyAddressParts.join(', ')}</p>
             {companyPhone && (
               isMobile ? (
@@ -189,9 +191,9 @@ const ClassicTemplate = ({
             <span>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
           </div>
           
-          {showPositiveAmount(tax) && (
+          {copy.showTax !== false && (copy.taxLabel === 'GST' || showPositiveAmount(tax)) && (
             <div className="flex justify-between py-1">
-              <span className="font-semibold">Tax ({taxRate}%):</span>
+              <span className="font-semibold">{copy.taxLabel ?? 'Tax'} ({taxRate}%):</span>
               <span>{formatCurrency(tax, invoice.currency)}</span>
             </div>
           )}

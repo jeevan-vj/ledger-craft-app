@@ -16,7 +16,8 @@ async function scenario(run: (app: App, headers: Record<string, string>) => Prom
       const signup = await app.request('/api/auth/sign-up/email', { method: 'POST', headers: origin, body: JSON.stringify({ name: 'Tax completion', email: `tax-${crypto.randomUUID()}@example.test`, password: 'Local-tax-2026-123!' }) });
       expect(signup.status).toBe(200);
       const headers = { ...origin, Cookie: signup.headers.getSetCookie().map(value => value.split(';')[0]).join('; ') };
-      await json(app, headers, '/api/business-profile', { name: 'Tax Reference Limited', email: 'owner@reference.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered' }, 200, 'PUT');
+      await json(app, headers, '/api/business-profile', { name: 'Tax Reference Limited', email: 'owner@reference.example.test', country: 'NZ', defaultTaxRate: '15' }, 200, 'PUT');
+      await json(app, headers, '/api/tax/gst-settings', gstSettings('invoice'), 200, 'PUT');
       await run(app, headers);
     } finally { await sql.end(); }
   });
@@ -45,6 +46,7 @@ async function reference(app: App, headers: Record<string, string>) {
   return invoices;
 }
 const period = { from: '2026-04-01', to: '2026-04-30' };
+const gstSettings = (basis: 'invoice' | 'payments' | 'hybrid') => ({ gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-04-01', gstAccountingBasis: basis, gstFilingFrequency: 'monthly', gstPeriodAnchor: 3 });
 
 describe('completed company tax preparation', () => {
   it('prepares independently expected invoice GST135 and payments GST141, preserving period and company isolation', async () => {
@@ -52,6 +54,7 @@ describe('completed company tax preparation', () => {
       await reference(app, headers);
       const invoice = await json(app, headers, '/api/tax/gst-preparation?from=2026-04-01&to=2026-04-30', undefined, 200);
       expect(invoice).toMatchObject({ basis: 'invoice', totalSales: '1610.00', totalPurchases: '625.00', gstOnSales: '210.00', gstOnPurchases: '75.00', netGstPosition: '135.00' });
+      await json(app, headers, '/api/tax/gst-settings', gstSettings('payments'), 200, 'PUT');
       const cash = await json(app, headers, '/api/tax/gst-preparation?from=2026-04-01&to=2026-04-30&basis=payments', undefined, 200);
       expect(cash).toMatchObject({ basis: 'payments', totalSales: '1380.00', totalPurchases: '349.00', gstOnSales: '180.00', gstOnPurchases: '39.00', netGstPosition: '141.00' });
       const empty = await json(app, headers, '/api/tax/gst-preparation?from=2026-05-01&to=2026-05-31&basis=payments', undefined, 200);
@@ -82,6 +85,7 @@ describe('completed company tax preparation', () => {
       await post(`/api/bills/${bill.id}/payments`, { bankAccountId: bank.id, amount: '69.00', paymentDate: '2026-04-20' });
       const invoiceBasis = await json(app, headers, '/api/tax/gst-preparation?from=2026-04-01&to=2026-04-30', undefined, 200);
       expect(invoiceBasis).toMatchObject({ totalSales: '184.00', totalPurchases: '736.00', gstOnSales: '24.00', gstOnPurchases: '96.00', netGstPosition: '-72.00' });
+      await json(app, headers, '/api/tax/gst-settings', gstSettings('payments'), 200, 'PUT');
       const paymentBasis = gstPreparationResponseSchema.parse(await json(app, headers, '/api/tax/gst-preparation?from=2026-04-01&to=2026-04-30&basis=payments', undefined, 200));
       expect(paymentBasis).toMatchObject({ totalSales: '92.00', totalPurchases: '294.40', gstOnSales: '12.00', gstOnPurchases: '38.40', netGstPosition: '-26.40', requiresReview: true });
       expect(paymentBasis.warnings.join(' ')).toMatch(/document.*rate|carrying/i);

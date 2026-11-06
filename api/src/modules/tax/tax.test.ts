@@ -66,12 +66,27 @@ describe('tax routes', () => {
         expect(upserted.status).toBe(200);
         expect(taxConfigurationSchema.parse(await upserted.json()).taxRate).toBe('0.10');
 
+        // The old test posted invented quarterly GST totals. Configure an
+        // actual IRD monthly period and post the unchanged120 working paper.
+        const post = async (path: string, method: string, body: unknown, status = 201) => {
+          const response = await app.request(path, { method, headers: { ...originHeaders, Cookie: ownerA.cookie }, body: JSON.stringify(body) });
+          const value = await response.json() as Record<string, unknown>;
+          expect(response.status, JSON.stringify(value)).toBe(status);
+          return value;
+        };
+        await post('/api/business-profile', 'PUT', { name: 'Tax ledger owner', email: 'owner@example.test', country: 'NZ', defaultTaxRate: '15' }, 200);
+        await post('/api/tax/gst-settings', 'PUT', { gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-07-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 3 }, 200);
+        const customer = await post('/api/customers', 'POST', { name: 'Ledger customer', email: 'buyer@example.test' });
+        const invoice = await post('/api/invoices', 'POST', { customerId: customer.id, date: '2026-07-05', dueDate: '2026-07-31', currency: 'NZD', taxInclusive: false, taxRate: '15', items: [{ description: 'Services', quantity: '1', rate: '1000' }] });
+        await post(`/api/invoices/${invoice.id}`, 'PATCH', { status: 'sent' }, 200);
+        await post('/api/expenses', 'POST', { description: 'Supported purchase', amount: '230', taxAmount: '30', gstTreatment: 'standard', expenseDate: '2026-07-10', currency: 'NZD', status: 'approved' });
+
         const created = await app.request('/api/tax-returns', {
           method: 'POST',
           headers: { ...originHeaders, Cookie: ownerA.cookie },
           body: JSON.stringify({
             periodStart: '2026-07-01',
-            periodEnd: '2026-09-30',
+            periodEnd: '2026-07-31',
             totalSales: '1150.00',
             totalPurchases: '230.00',
             gstOnSales: '150.00',
@@ -169,7 +184,8 @@ describe('tax routes', () => {
           await (await app.request('/api/tax-returns', { headers: { Cookie: ownerA.cookie } })).json(),
         );
         expect(listA.taxReturns.map((row) => row.id)).toEqual([taxReturn.id]);
-        expect(listA.taxReturns[0]?.returnData?.gstReturn?.salesDetails.totalSales).toBe(1150);
+        expect(listA.taxReturns[0]?.returnData?.gstCalculation?.figures.totalSales).toBe('1150.00');
+        expect(listA.taxReturns[0]?.returnData?.gstCalculation?.myIrBoxes['10']).toBe('150.00');
 
         const listB = taxReturnListResponseSchema.parse(
           await (await app.request('/api/tax-returns', { headers: { Cookie: ownerB.cookie } })).json(),

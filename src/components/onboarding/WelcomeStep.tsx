@@ -2,6 +2,7 @@ import React from 'react';
 import { Building2, Globe } from 'lucide-react';
 import { OnboardingStepProps } from '../../types';
 import { businessTaxDefaults } from '@/utils/countryTaxDefaults';
+import { gstDateSchema, isNzBusinessCountry, normalizeNzGstNumber } from '@ledgercraft/contracts';
 
 const countries = [
   'New Zealand',
@@ -25,7 +26,9 @@ export default function WelcomeStep({
 }: OnboardingStepProps) {
   const gstStatus = data.gstRegistrationStatus ?? 'unknown';
   const tax = businessTaxDefaults(data.country, gstStatus);
-  const isValid = data.businessName.trim().length >= 2 && gstStatus !== 'unknown';
+  const needsNzRegistration = isNzBusinessCountry(data.country) && gstStatus === 'registered';
+  const registrationValid = !needsNzRegistration || (Boolean(normalizeNzGstNumber(data.taxId ?? '')) && gstDateSchema.safeParse(data.gstRegisteredFrom).success);
+  const isValid = data.businessName.trim().length >= 2 && gstStatus !== 'unknown' && registrationValid;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,6 +106,13 @@ export default function WelcomeStep({
           <p className="text-sm text-muted-foreground">New invoices will not add GST by default.</p>
         )}
       </fieldset>
+
+      {needsNzRegistration ? <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
+        <div><label htmlFor="onboarding-gst-number" className="mb-1 block text-sm font-medium">NZ GST number</label><input id="onboarding-gst-number" value={data.taxId ?? ''} onChange={event => onDataChange({ taxId: event.target.value })} inputMode="numeric" className="w-full rounded-lg border border-border bg-background px-3 py-2" placeholder="49-098-576" /></div>
+        <div><label htmlFor="onboarding-gst-date" className="mb-1 block text-sm font-medium">GST registration date</label><input id="onboarding-gst-date" type="date" value={data.gstRegisteredFrom ?? ''} onChange={event => onDataChange({ gstRegisteredFrom: event.target.value })} className="w-full rounded-lg border border-border bg-background px-3 py-2" /></div>
+        {!registrationValid ? <p role="alert" className="text-sm text-amber-700">Enter a valid NZ IRD/GST number and the registration date confirmed by IRD.</p> : null}
+        <p className="text-sm text-muted-foreground">After setup, confirm your IRD accounting basis and filing frequency in GST settings. We do not choose these for you.</p>
+      </div> : null}
 
       {data.businessEmail && (
         <p className="text-sm text-muted-foreground" data-testid="onboarding-email-hint">

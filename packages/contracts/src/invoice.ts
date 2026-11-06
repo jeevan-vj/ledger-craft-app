@@ -175,6 +175,10 @@ export const invoiceSchema = z.object({
   baseTotal: money.default('0'),
   customerName: z.string().nullable(),
   customerEmail: z.string().nullable().optional(),
+  customerDetails: z.object({
+    name: z.string(), email: z.string(), address: z.string().nullable(), phone: z.string().nullable(),
+    city: z.string().nullable(), state: z.string().nullable(), zip: z.string().nullable(), country: z.string(),
+  }).optional(),
   items: z.array(invoiceLineSchema),
   sourceQuoteId: z.string().uuid().optional(),
   sourceQuoteNumber: z.string().min(1).optional(),

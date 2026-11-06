@@ -23,6 +23,10 @@ export const businessProfiles = sqliteTable('business_profiles', {
   gstRegistrationStatus: text('gst_registration_status', {
     enum: ['unknown', 'registered', 'not_registered'],
   }).notNull().default('unknown'),
+  gstRegisteredFrom: text('gst_registered_from'),
+  gstAccountingBasis: text('gst_accounting_basis', { enum: ['invoice', 'payments', 'hybrid'] }),
+  gstFilingFrequency: text('gst_filing_frequency', { enum: ['monthly', 'two_monthly', 'six_monthly'] }),
+  gstPeriodAnchor: integer('gst_period_anchor'),
   defaultTerms: text('default_terms'),
   paymentTermDays: integer('payment_term_days').notNull().default(30),
   defaultNotes: text('default_notes'),

@@ -27,6 +27,7 @@ import { formatInvoiceNumber } from './numbering';
 import { computeInvoiceTotals } from './totals';
 import { convertToBase, currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
 import * as shareService from './share';
+import { assertGstBuyerInformation, assertGstSellerReady } from './gst-compliance';
 
 const PUBLIC_APP_URL = 'https://easybiz.iamjeevan.com';
 
@@ -96,7 +97,10 @@ export async function createInvoiceInTx(
   const defaultTaxRate = profile.defaultTaxRate ?? '0';
   const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.date);
   const totals = computeInvoiceTotals(input, defaultTaxRate, resolved.currency.precision);
+  const baseTotal = convertToBase(totals.total, resolved.rate, resolved.base.precision);
+  assertGstBuyerInformation(profile, customer, resolved.currency.code, totals.total, input.date, { baseCurrency: resolved.base.code, baseTotal });
   const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
+  if (status !== 'draft') assertGstSellerReady(profile, input.date, totals.taxAmount);
   const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
     customerId: input.customerId,
     invoiceNumber,
@@ -112,7 +116,7 @@ export async function createInvoiceInTx(
     baseCurrency: resolved.base.code,
     baseSubtotal: convertToBase(totals.subtotal, resolved.rate, resolved.base.precision),
     baseTaxAmount: convertToBase(totals.taxAmount, resolved.rate, resolved.base.precision),
-    baseTotal: convertToBase(totals.total, resolved.rate, resolved.base.precision),
+    baseTotal,
     status,
     totals,
   });
@@ -221,6 +225,15 @@ export async function updateInvoiceForUser(
       );
     }
 
+    const complianceProfile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    const complianceCustomer = await customersRepo.getCustomer(tx, ctx.organisationId, existing.customerId);
+    if (!complianceCustomer) throw new HTTPException(400, { message: 'Customer not found' });
+    assertGstBuyerInformation(complianceProfile, complianceCustomer, existing.currency, totals?.total ?? existing.total, date, {
+      baseCurrency: existing.baseCurrency,
+      baseTotal: totals ? convertToBase(totals.total, existing.exchangeRate, resolvedCurrency.base.precision) : existing.baseTotal,
+    });
+    if (input.status && input.status !== 'draft' && input.status !== existing.status) assertGstSellerReady(complianceProfile, date, totals?.taxAmount ?? existing.taxAmount);
+
     const currencySnapshot = totals ? {
       exchangeRate: existing.exchangeRate, exchangeRateId: existing.exchangeRateId,
       baseCurrency: existing.baseCurrency,
@@ -277,6 +290,8 @@ export async function sendInvoiceForUser(
     }
 
     const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    assertGstBuyerInformation(profile, customer, invoice.currency, invoice.total, invoice.date, invoice);
+    assertGstSellerReady(profile, invoice.date, invoice.taxAmount);
     return { invoice, recipients: validRecipients, businessName: profile?.name ?? 'EasyBizInvoice' };
   });
 

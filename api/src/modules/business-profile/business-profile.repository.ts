@@ -25,6 +25,10 @@ function toDto(row: typeof businessProfiles.$inferSelect): BusinessProfileDto {
     website: row.website ?? null,
     defaultTaxRate: row.defaultTaxRate ?? null,
     gstRegistrationStatus: row.gstRegistrationStatus,
+    gstRegisteredFrom: row.gstRegisteredFrom ?? null,
+    gstAccountingBasis: row.gstAccountingBasis ?? null,
+    gstFilingFrequency: row.gstFilingFrequency ?? null,
+    gstPeriodAnchor: row.gstPeriodAnchor ?? null,
     defaultTerms: row.defaultTerms ?? null,
     paymentTermDays: row.paymentTermDays,
     defaultNotes: row.defaultNotes ?? null,
@@ -80,6 +84,10 @@ export async function upsertBusinessProfile(
   if (input.website !== undefined) values.website = input.website;
   if (input.defaultTaxRate !== undefined) values.defaultTaxRate = input.defaultTaxRate;
   if (input.gstRegistrationStatus !== undefined) values.gstRegistrationStatus = input.gstRegistrationStatus;
+  if (input.gstRegisteredFrom !== undefined) values.gstRegisteredFrom = input.gstRegisteredFrom;
+  if (input.gstAccountingBasis !== undefined) values.gstAccountingBasis = input.gstAccountingBasis;
+  if (input.gstFilingFrequency !== undefined) values.gstFilingFrequency = input.gstFilingFrequency;
+  if (input.gstPeriodAnchor !== undefined) values.gstPeriodAnchor = input.gstPeriodAnchor;
   if (input.defaultTerms !== undefined) values.defaultTerms = input.defaultTerms;
   if (input.paymentTermDays !== undefined) values.paymentTermDays = input.paymentTermDays;
   if (input.defaultNotes !== undefined) values.defaultNotes = input.defaultNotes;
@@ -122,6 +130,10 @@ export async function upsertBusinessProfile(
       website: input.website ?? null,
       defaultTaxRate: input.defaultTaxRate ?? null,
       gstRegistrationStatus: input.gstRegistrationStatus ?? 'unknown',
+      gstRegisteredFrom: input.gstRegisteredFrom ?? null,
+      gstAccountingBasis: input.gstAccountingBasis ?? null,
+      gstFilingFrequency: input.gstFilingFrequency ?? null,
+      gstPeriodAnchor: input.gstPeriodAnchor ?? null,
       defaultTerms: input.defaultTerms ?? null,
       paymentTermDays: input.paymentTermDays ?? 30,
       defaultNotes: input.defaultNotes ?? null,

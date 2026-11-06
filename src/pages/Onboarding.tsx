@@ -6,6 +6,7 @@ import { useAuth } from '../context/StableAuthContext';
 import { businessProfileService } from '../services/supabaseService';
 import OnboardingLayout from '../components/onboarding/OnboardingLayout';
 import WelcomeStep from '../components/onboarding/WelcomeStep';
+import { gstDateSchema, isNzBusinessCountry, normalizeNzGstNumber } from '@ledgercraft/contracts';
 import {
   businessTaxDefaults,
   DEFAULT_INVOICE_NUMBER_FORMAT,
@@ -46,6 +47,9 @@ export default function Onboarding() {
     if (tax.gstRegistrationStatus === 'unknown') {
       return;
     }
+    const nzRegistration = isNzBusinessCountry(data.country) && tax.gstRegistrationStatus === 'registered';
+    const taxId = nzRegistration ? normalizeNzGstNumber(data.taxId ?? '') : null;
+    if (nzRegistration && (!taxId || !gstDateSchema.safeParse(data.gstRegisteredFrom).success)) return;
 
     setIsLoading(true);
     try {
@@ -59,6 +63,8 @@ export default function Onboarding() {
         zip: data.zip || null,
         defaultTaxRate: tax.defaultTaxRate,
         gstRegistrationStatus: tax.gstRegistrationStatus,
+        taxId,
+        gstRegisteredFrom: nzRegistration ? data.gstRegisteredFrom : null,
         invoiceNumberFormat: data.invoiceNumberFormat || DEFAULT_INVOICE_NUMBER_FORMAT,
         invoiceNumberSequence: 1,
         theme: data.theme || DEFAULT_BUSINESS_THEME,

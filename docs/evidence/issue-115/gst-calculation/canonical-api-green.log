@@ -1,0 +1,625 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_0744d0d7-d93a-4873-8fa3-dbe7ca75ea99","route":"/api/auth/*","method":"POST","status":200,"durationMs":154}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_6c6ca411-e9fa-4715-bdf7-b619f10de719","route":"/api/business-profile","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_8322c7c0-6267-4347-9120-85bdb5e57e47","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_ed5b4e5b-e032-4957-ac16-b0bba4226d22","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_7e6d3cb2-6678-49f8-9c8e-eef53ffb2582","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_2e58241c-92b9-42c7-948b-902da0cab847","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_34df94d3-3526-4d7d-99a0-618dd8cdf3c3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_db13b7ef-691a-4317-aa45-b6563983c573","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_a9205d2e-31a5-43c6-90cd-4b061b60fce2","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_30db0da7-3138-4bf6-8b26-9c6d11e05573","route":"/api/bills","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_eaadf1be-0ed4-4adc-86cf-c257dd489cb7","route":"/api/tax-returns","method":"POST","status":422,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_d41feedc-54a8-4888-a958-54e448586230","route":"/api/tax-returns","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_29e0fde3-9426-4ddd-ab0e-6e69fdd3ed95","route":"/api/auth/*","method":"POST","status":200,"durationMs":108}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_eb968584-a313-48e5-8f18-a550ce636700","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_035a0095-b583-4e1b-9a46-b034c6741b59","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_1a7dfd6b-be95-4be3-9a92-c46c2ef08af2","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_635573cb-e053-4d0b-8423-85ff976db3ff","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_d3f35d45-9b28-49db-9b56-78d28c4e25c1","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":23}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_4007a99c-1c5d-4f69-ae7f-28d3efd121df","route":"/api/payments","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_945f9a07-6b61-420d-8e03-4827c161cbe5","route":"/api/expenses","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_47a31535-2d4a-4f37-9c5e-4781a0225084","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_eb076b1d-7a70-49e8-ada0-a66c0a93d4cb","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_5ccd8c41-a96b-4ee7-b216-a0bd097a973f","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e14b5fb5-edcd-4855-8016-cd626ffb0b08","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_1bd8a148-6250-4f38-b092-40769650a70e","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_1672e634-06ac-4a6c-afa3-ee98af6f0797","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_cb93f2f9-b615-4ba1-8bf7-5488a90f477c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":32}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_889215f8-e93a-4eb2-b7a7-89f0c90d4935","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_5c491eed-2085-4d6c-940d-edd9291d7ae4","route":"/api/tax-returns","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_5b37fb9e-bc99-4796-8718-82bcaabc0651","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_cb067e42-d1ae-4d69-a091-7680d6fa4b97","route":"/api/tax-returns","method":"POST","status":422,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_404c90b3-1e61-47cc-b36a-c1d7f2b05bf1","route":"/api/tax-returns","method":"POST","status":422,"durationMs":23}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_375dadbe-70f2-45e9-a715-8f898e02c635","route":"/api/auth/*","method":"POST","status":200,"durationMs":136}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_f0b582f8-c15d-4bf1-a188-692889a7890a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_d0e5039c-8fab-4985-b558-0c06264258d4","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e8de6e51-5501-4487-90f7-010926c1255a","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_753972b1-e879-458a-be83-6ddffab583b3","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_aca47c91-a1f6-4be6-8de0-42fa63a2fc82","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":28}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e5e530d0-7032-4026-b9f4-b91e8ce77889","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_7967042b-25e3-40fe-856d-9f05fd316611","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_f1a40fc9-d1c3-4bf7-892f-cb18d5570b6b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_05728772-2b48-4885-b1b4-3e2c821e5944","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_d77ebf81-b232-46b3-ab32-a745a6340f7b","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_477a2983-157c-485a-89e9-cc81bd8d8cb9","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_11938115-acff-405c-b9fe-592d99152a9d","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_7334de6a-e3f2-444d-81fe-1ec85fd14c5e","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_cceaa111-bc0c-41e4-a751-dccd942c3344","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_4ff4be3c-fb20-4c24-8f46-f3478ad15c7c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_6403d78c-7698-496d-9aaf-936f7401fcee","route":"/api/tax-returns","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_79dd020f-3661-4d82-8747-81d2806b3955","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_85f98836-ed11-4145-99ed-f9062c6748ff","route":"/api/tax-returns","method":"POST","status":422,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_6a68a2d9-c7a5-4797-862e-28c371ac9258","route":"/api/tax-returns","method":"POST","status":422,"durationMs":23}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_7df29af1-9bf5-491e-82c4-9ef3eb35c749","route":"/api/auth/*","method":"POST","status":200,"durationMs":200}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_9f5954fb-31cf-47bd-aac4-b0f706277307","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e53e9930-f5bc-4ea4-8d08-2a2745bf223c","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":63}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_23272fb1-d0a4-454f-8592-02a1bdeecf84","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_864830a9-de6b-46fe-a61b-cec99396a0a0","route":"/api/invoices","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_39e5eb54-7bee-48aa-b93f-1cf62f7b5388","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":38}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_d3e552c0-e941-4709-a59e-9b9dc7bc85b3","route":"/api/payments","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_135fd3da-5c53-4a5c-84cb-d5080395132b","route":"/api/expenses","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_8a5dc93f-3c95-4904-a2c5-f715d26e0545","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_27232cbb-4a36-4702-b834-eb21018616b8","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e05501a0-c510-4bc4-9b1b-39b2dfdeda4b","route":"/api/accounts","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_2eeb918a-2c49-46c6-bd27-df3824794740","route":"/api/bills","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_fd3b6916-5e6e-4dfc-8201-ecdbaba0e6d5","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":26}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_d385b952-0d54-4a3f-a1ed-75c2a25aae8c","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_3927367e-4d24-4c7b-84f2-902990704e83","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_7f0c65ea-f389-4294-b606-06896f5df138","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_1751502f-fcc9-4051-b698-e1632d3f370e","route":"/api/tax-returns","method":"POST","status":201,"durationMs":75}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_dcf08a96-afc6-4b97-9c5e-96595efc00ed","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_e72454d7-8e14-4165-bedf-43933830916d","route":"/api/tax-returns","method":"POST","status":422,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence
+{"msg":"http_request","requestId":"req_1a8e63d2-24ed-4038-868c-427ce214acd1","route":"/api/tax-returns","method":"POST","status":422,"durationMs":46}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_74f40426-5c59-4992-a8e7-d457dd8e1fd3","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_3824859a-8a70-47cb-a857-73b08aec976b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_62497ccc-c61e-4498-b948-6ba9001d97b0","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_822b141d-12a9-4d9f-b785-e334effb8bf7","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_3ad2547a-4176-453a-81cb-96a03e80ba0b","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_540e9d46-6599-4fef-852c-b5185f0c01a4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_dfb7beb5-547f-4a21-88e9-5c3c17d15e1d","route":"/api/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_cd1fdc4e-946d-40a8-bc60-eb9f85f51dcf","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_def21168-796c-4cff-9388-5ae4ff8f8dfc","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_2f49a67c-314d-41a8-8a9d-aab23d1e0217","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_ea6ccf83-4710-40c6-93ca-e1b4db766227","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_09b5a60e-338a-4ae8-a549-c7f024396575","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_1c4e40a3-fe48-495b-93bb-0e16c1b94e37","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":21}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_eb30ceb2-3fe0-47d1-a192-36fdae9e5078","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_07b23422-a2f4-4dcc-9b7b-261ae267084f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_061aba83-7a1f-4b08-aa35-4654788f797c","route":"/api/tax-returns","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_69362ee2-2693-4c61-bec3-cdd04e87d2c9","route":"/api/tax-returns/:id/file","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_e66b7373-456a-456f-8502-565fed2ba80c","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_bb331200-c960-409e-85a7-bf96220fc37a","route":"/api/tax-returns","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_ef9bec62-94f1-4676-b058-f5fa5c0be024","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_ad7c119f-366b-4022-94ec-17992f1c0796","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_ff1cc4b1-7730-4d0b-acaf-e44a592cffc7","route":"/api/tax-returns/:id","method":"PATCH","status":409,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_917100fe-a285-4eff-8c44-7d51a2d8f1be","route":"/api/auth/*","method":"POST","status":200,"durationMs":157}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot
+{"msg":"http_request","requestId":"req_51dd146e-a6f4-4c25-b41b-facb3d46a19e","route":"/api/tax-returns/:id/recalculation","method":"GET","status":404,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_ed3b4738-aefe-41b7-81c1-0f689f62a635","route":"/api/auth/*","method":"POST","status":200,"durationMs":80}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_b4f357f9-3bb1-49f0-b1d3-9ed4a3d042fe","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_0d2e1d0f-9c9b-4e33-a4ba-03cd9f010bb2","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_1919f3fa-54b4-477e-8179-95a06644b7d4","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_03e0ec8c-5b12-4ea8-a54d-105d0ed5f07e","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_2af58197-665c-4089-97f0-00901af1a105","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_6e8bb261-37a6-4d6e-b290-fffcdd9cd59e","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_ec571d00-5f75-4849-8f64-e165a2832b6f","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_815f845e-48a2-4f80-913f-276f6855321c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_fc482829-868e-413f-9f64-66cfb7bd74ae","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_5e1b4a52-a475-41a6-975a-39c89f665d05","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_434331bc-86ac-432b-93f4-a6d7d7870f08","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_4deec1b6-523a-4810-a767-4113720cc9c4","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_d1f6b57f-979d-4836-8129-0d02a2ea3b33","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_52cf7cf1-9705-4b3a-af29-01d9e24ec1d6","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_6e8e125f-0ddc-453a-b2ae-a4840050c550","route":"/api/tax-returns","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_36438ef4-240c-4947-aa46-400f7b8c3338","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_6248b90a-be03-4efc-8ed9-58883ef4c82d","route":"/api/tax-returns/:id","method":"PATCH","status":409,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes
+{"msg":"http_request","requestId":"req_9d1731fa-e1c4-4581-9fc9-2a0884837656","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_ed74aab6-ef6b-41c2-9d3d-a4d6d6ab879f","route":"/api/auth/*","method":"POST","status":200,"durationMs":127}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_4bca96db-c6e0-4e51-8e14-bb1f88d9575a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_65643d0e-ad69-457b-a98c-d6501670d619","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_65b6d743-c260-4d35-8188-326d2af0cf2d","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_9aab78b7-cc52-41ae-bfd4-92b030e5e6ba","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_c99385bc-b4ab-4d77-bfd2-d8530446491d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_e23b3922-9c09-4de6-8ebd-789046070b14","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_7c23d324-00c1-4e36-8f88-f25811711a0e","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_0a58d03d-d976-4c4b-9fe4-5252e57edbe0","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_2be78f69-13ee-45d3-9d64-085d1e039f16","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_09f2073d-ee33-4799-a645-d3b4fe9aeee0","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_ee3a8e04-2bf4-47e2-9766-2c06e19afca7","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_c962a2a7-aa5e-48ab-860a-51b003f6555a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_77d208f2-b83c-418c-b56c-7bb5f97c3cbf","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_505b26fc-8e85-43e9-b4f1-0dc27d749582","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_6674678b-efe7-4cc6-8b6e-aeb6161e2345","route":"/api/tax-returns","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_194e715d-6a6e-4211-adf8-dc7e68e7599b","route":"/api/tax-returns/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_9407688d-7065-4662-b5c3-770353441b59","route":"/api/tax-returns/:id","method":"DELETE","status":409,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_00f6f714-e2e6-4d2f-989c-c1581ce939fa","route":"/api/expenses","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_344352fe-5028-45e3-9601-c75382f0ce1f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":23}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_e44d3ae7-d6c7-4c24-87cb-94a283f2d35e","route":"/api/tax-returns/:id","method":"PATCH","status":409,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_6eac7df4-fe31-4c3c-bdb8-ba5682c7b811","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_c8fee744-607c-411a-bcce-7158ada513a9","route":"/api/tax-returns","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_d283b7ae-1d47-438c-94ce-fa109ce4a713","route":"/api/tax-returns","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_d54493eb-99ed-4905-9228-38d01c98c460","route":"/api/tax-returns/:id/file","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_648bdf2f-d3b1-4175-8fc6-a3dc47e399c8","route":"/api/tax-returns/:id/file","method":"POST","status":409,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods
+{"msg":"http_request","requestId":"req_5b3a05c2-547b-4a85-ab2e-9c3f75bcf347","route":"/api/tax-returns","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_b141a740-8b40-43cb-bf82-d7f060723d69","route":"/api/auth/*","method":"POST","status":200,"durationMs":208}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_0dc3e1f0-7e34-4514-a6bd-7dcb193ce4d9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":72}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_40a60601-dd39-4653-b905-0f78108e29fa","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":48}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_5f7d7288-9111-479d-9563-d73c0bd36005","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":25}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_0fba716c-236a-41be-93a5-9f5f650964fa","route":"/api/tax-returns","method":"POST","status":201,"durationMs":60}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_93433b26-8cc3-46a4-8e90-08493164712f","route":"/api/tax-returns/:id/file","method":"POST","status":422,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > does not record a future taxable period as already filed
+{"msg":"http_request","requestId":"req_c36437b7-7877-4a06-9a1b-8bae9a05f371","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_492dcc31-c8b2-4886-90a8-0e07c584eb57","route":"/api/auth/*","method":"POST","status":200,"durationMs":308}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_8862f4c0-132d-4f87-aee0-56bbcddf97f8","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_b59acefc-bc3c-45a1-a6b3-36a64509a9f2","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_5141d5f3-56fb-40d5-bda9-d8c73c6cb9ff","route":"/api/customers","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_289abeca-468a-4475-addd-4d9c11b03c02","route":"/api/invoices","method":"POST","status":201,"durationMs":63}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_db38e926-93a0-48c1-934c-af33136f5610","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":35}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_25e96ce5-7b8a-46fb-9302-191155e5caef","route":"/api/payments","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_c1afa5b4-2c6d-4544-b59d-a4efe8c7ac2b","route":"/api/expenses","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_c27b8a0e-3b34-41f3-930d-d2f617c2549f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_94b170ae-f0a6-4baf-9240-66e2d16051f5","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_3c82c6b9-e748-4dc1-b298-868d60e39ff1","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_96a76df6-662b-4383-a3fa-b62813df5a3f","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_d46c2d2a-cec2-4a75-ab97-b249a7251ce1","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":40}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_21bf79b6-e09e-4e83-b7d5-373ca53d520f","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_a4e193ad-88a9-47bb-84f6-8191a9285006","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_ce568f2b-85b6-481e-a4f2-1d8a56087bff","route":"/api/invoices","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_9cd27771-f69d-462f-8587-ce4c374f73bf","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":55}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_692a3a31-c401-4371-8d3f-7cc78d7e31d8","route":"/api/tax/gst-preparation","method":"POST","status":200,"durationMs":39}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_c4605585-b9bb-4fb9-b2d7-5da5163c70f5","route":"/api/tax-returns","method":"POST","status":201,"durationMs":69}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_73a5a3f6-5a81-43aa-b88b-3540d747d669","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_0f18c670-01c4-45e7-b9a9-6e98358affe7","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":65}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale
+{"msg":"http_request","requestId":"req_609185cb-b0d6-45fc-8c8e-b099afee4cb8","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":41}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_ef021bda-136d-4dce-8368-0168590187bc","route":"/api/auth/*","method":"POST","status":200,"durationMs":307}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_350a7258-b63c-4313-a381-f33dca130b53","route":"/api/business-profile","method":"PUT","status":200,"durationMs":37}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_d103bf51-f0c2-41e0-973d-987fb113cf8c","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_4eed10ae-2ffe-49be-912c-f565f3d2a9ae","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_173cb7f0-0b30-4307-bd02-16cc1683d045","route":"/api/invoices","method":"POST","status":201,"durationMs":61}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_385501b5-38d3-4f79-a231-515e0191135f","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":94}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_efafec9a-6f54-470c-9450-03e289e7d238","route":"/api/payments","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_9004570d-22f4-448d-9ad7-d74c53b53ff7","route":"/api/expenses","method":"POST","status":201,"durationMs":92}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_f9c590c2-1792-4c8a-93ae-0880931322b6","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_7036f024-1b81-4112-a918-a0491307f1c9","route":"/api/vendors","method":"POST","status":201,"durationMs":50}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_6252542b-9276-4243-9842-3ce6f1421251","route":"/api/accounts","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_f9d1daf8-7152-4229-ba0c-cde15833e155","route":"/api/bills","method":"POST","status":201,"durationMs":71}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_ed2c6526-6d60-47b9-af50-14d97abb8380","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":49}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_abda2e52-8db3-455d-bee3-47d057aa0fb1","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_71ab5187-cd7d-4ac2-9931-29298d23257e","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_6c6fb9de-7b62-4ada-825c-b0379bd3d7bc","route":"/api/tax-returns","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_20f33246-419f-4cbd-b555-1e0e3741dd1b","route":"/api/tax/gst-settings","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_7ca1cf1b-fe4f-4825-90df-0dfc6b90ec3e","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_2e699d76-1817-4081-99d9-554c36d4a706","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_449155e9-87c5-4428-af59-ccfb4068332d","route":"/api/tax/gst-settings","method":"PUT","status":403,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_54376d8e-cf0a-45d9-a990-2e0f1c6ca747","route":"/api/tax-returns","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_625b70fd-15ba-4ea4-8647-05c5d2c6c217","route":"/api/tax-returns/:id","method":"PATCH","status":403,"durationMs":19}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_a638def8-e96f-4f19-9bbb-bc5ef0bf36a2","route":"/api/tax-returns/:id/file","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_94068f55-9ca9-4e50-a448-7dbe1498b586","route":"/api/tax/gst-settings","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_4fbae337-4b6f-4a34-94ea-659d395b24eb","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_47b3eee4-1092-409a-9ea2-3c582999a738","route":"/api/tax-returns/:id/recalculation","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_873a3bb7-121c-460b-baba-6e6fe5b2e060","route":"/api/tax/gst-settings","method":"PUT","status":403,"durationMs":2}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_c82e091e-28d5-4220-b79e-f2474912074b","route":"/api/tax-returns","method":"POST","status":403,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_48a9e00b-ca8a-470b-be0d-4f6ba406e7c0","route":"/api/tax-returns/:id","method":"PATCH","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_ed3aa896-f751-403c-aa0e-1662993c3e93","route":"/api/tax-returns/:id/file","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access
+{"msg":"http_request","requestId":"req_20d70954-460d-4657-b25c-8c76bf85bd11","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":2}
+
+ ✓ src/modules/tax/gst-calculation.test.ts (10 tests) 18193ms
+   ✓ authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings  966ms
+   ✓ authoritative saved GST calculation > uses registered invoice basis and stores exact source/version/myIR evidence  1302ms
+   ✓ authoritative saved GST calculation > uses registered payments basis and stores exact source/version/myIR evidence  1573ms
+   ✓ authoritative saved GST calculation > uses registered hybrid basis and stores exact source/version/myIR evidence  2578ms
+   ✓ authoritative saved GST calculation > rejects a stale draft and compares changed books without altering the filed source snapshot  1638ms
+   ✓ authoritative saved GST calculation > retains original basis/settings in recalculation after current registration basis changes  1104ms
+   ✓ authoritative saved GST calculation > preserves saved draft snapshots, allows a new revision and blocks duplicate filed periods  1292ms
+   ✓ authoritative saved GST calculation > does not record a future taxable period as already filed  1930ms
+   ✓ authoritative saved GST calculation > returns a read-only comparison requiring fresh classification when original zero-rated review is stale  2610ms
+   ✓ authoritative saved GST calculation > enforces real HTTP member/read-only GST write restrictions while preserving read access  3180ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  23:23:52
+   Duration  22.02s (transform 1.78s, setup 33ms, collect 3.49s, tests 18.19s, environment 0ms, prepare 82ms)
