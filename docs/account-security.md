@@ -20,7 +20,9 @@ verification mail uses the existing server-side Resend configuration
   the current session; “Sign out everywhere” includes it.
 - Login, signup, verification, password-reset request, and reset submission are
   rate limited by client IP in the Identity Durable Object, independent of any
-  organisation membership.
+  organisation membership. Counters are stored in the Identity SQLite database
+  by migration `0024_auth-rate-limits.sql`, so object eviction does not reset
+  the window.
 - Recovery callbacks are restricted by Better Auth trusted origins. Production
   clients use `https://easybiz.iamjeevan.com/reset-password` or
   `easybizinvoice://reset-password`.
@@ -35,4 +37,6 @@ part of issue #144. After the reviewed change is deployed, use an authorized
 synthetic account to verify one delivered reset email, successful reset, token
 replay rejection, and 401 responses from a pre-reset cookie and bearer token.
 Run the installed Android and iOS flows against that deployment and record the
-build/runtime identifiers. Do not use a real customer account.
+build/runtime identifiers. Authenticated browser proof, installed-device deep
+link proof, production inbox proof, and an iOS export were not run locally. Do
+not use a real customer account.

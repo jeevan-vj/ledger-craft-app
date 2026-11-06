@@ -23,6 +23,15 @@ describe('password recovery pages', () => {
     expect(requestPasswordReset).toHaveBeenCalledWith('unknown@example.com');
   });
 
+  it('keeps the form recoverable when the reset request is offline', async () => {
+    requestPasswordReset.mockRejectedValue(new Error('Check your connection and try again.'));
+    render(<MemoryRouter><ForgotPassword /></MemoryRouter>);
+    fireEvent.change(screen.getByLabelText('Email address'), { target: { value: 'owner@example.com' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Send reset link' }));
+    expect(await screen.findByRole('alert')).toHaveTextContent('Check your connection and try again.');
+    expect(screen.getByRole('button', { name: 'Send reset link' })).toBeEnabled();
+  });
+
   it('does not submit an expired callback and explains that every device is signed out on success', async () => {
     const expired = render(<MemoryRouter initialEntries={['/reset-password?error=INVALID_TOKEN']}><ResetPassword /></MemoryRouter>);
     expect(screen.getByRole('alert')).toHaveTextContent('invalid or has expired');

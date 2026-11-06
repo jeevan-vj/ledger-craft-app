@@ -1,5 +1,18 @@
 import * as SecureStore from 'expo-secure-store';
-import { deleteAccount, getMe, requestPasswordReset, signInEmail, signOutSession, signUpEmail } from './authApi';
+import {
+  changeEmail,
+  deleteAccount,
+  getMe,
+  listAccountSessions,
+  requestPasswordReset,
+  resetPassword,
+  revokeAccountSession,
+  revokeAllSessions,
+  revokeOtherSessions,
+  signInEmail,
+  signOutSession,
+  signUpEmail,
+} from './authApi';
 import { clearCookies } from './cookieJar';
 
 function jsonResponse(
@@ -165,6 +178,44 @@ describe('mobile authApi', () => {
     (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('offline'));
     await expect(requestPasswordReset('owner@example.com')).rejects.toThrow('Check your connection and try again.');
     expect(SecureStore.deleteItemAsync).not.toHaveBeenCalled();
+  });
+
+  it('submits the reset token, clears revoked credentials, and uses the verified email-change deep link', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse({ user: { id: 'u1' } }, 200, ['better-auth.session_token=old-session; Path=/']))
+      .mockResolvedValueOnce(jsonResponse({ status: true }))
+      .mockResolvedValueOnce(jsonResponse({ status: true }));
+
+    await signInEmail({ email: 'owner@example.com', password: 'password123' });
+    await resetPassword('single-use-token', 'new-password123');
+    await changeEmail('new-owner@example.com');
+
+    const [, resetInit] = (global.fetch as jest.Mock).mock.calls[1] as [string, RequestInit];
+    expect(JSON.parse(String(resetInit.body))).toEqual({ token: 'single-use-token', newPassword: 'new-password123' });
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('ledgercraft.auth.cookie');
+    const [, emailInit] = (global.fetch as jest.Mock).mock.calls[2] as [string, RequestInit];
+    expect(JSON.parse(String(emailInit.body))).toEqual({
+      newEmail: 'new-owner@example.com',
+      callbackURL: 'easybizinvoice://settings/security',
+    });
+  });
+
+  it('lists and revokes sessions with explicit current-device behavior', async () => {
+    (global.fetch as jest.Mock)
+      .mockResolvedValueOnce(jsonResponse([{ token: 'current', createdAt: '2026-11-06T00:00:00.000Z', updatedAt: '2026-11-06T00:00:00.000Z', expiresAt: '2026-11-13T00:00:00.000Z', current: true }]))
+      .mockResolvedValueOnce(jsonResponse({ status: true }))
+      .mockResolvedValueOnce(jsonResponse({ status: true }))
+      .mockResolvedValueOnce(jsonResponse({ status: true }));
+
+    await expect(listAccountSessions()).resolves.toMatchObject([{ token: 'current', current: true }]);
+    await revokeAccountSession('other-session');
+    await revokeOtherSessions();
+    await revokeAllSessions();
+
+    expect(fetch).toHaveBeenNthCalledWith(2, 'http://127.0.0.1:3001/api/me/sessions/revoke', expect.objectContaining({ method: 'POST' }));
+    expect(fetch).toHaveBeenNthCalledWith(3, 'http://127.0.0.1:3001/api/me/sessions/revoke-others', expect.objectContaining({ method: 'POST' }));
+    expect(fetch).toHaveBeenNthCalledWith(4, 'http://127.0.0.1:3001/api/me/sessions/revoke-all', expect.objectContaining({ method: 'POST' }));
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('ledgercraft.auth.cookie');
   });
 
   it('signs in and signs out through Hono', async () => {

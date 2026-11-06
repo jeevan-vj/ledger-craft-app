@@ -164,6 +164,10 @@ describe('account recovery and session security', () => {
         const signUp = await app.request('/api/auth/sign-up/email', {
           method: 'POST', headers: jsonHeaders(), body: JSON.stringify({ name: 'Email owner', email, password: 'password123' }),
         });
+        expect(sent).toHaveLength(1);
+        expect(sent[0]).toMatchObject({ kind: 'email-verification', to: email });
+        expect(sent[0]?.url).not.toContain('organisation');
+        expect(sent[0]?.url).not.toContain('userId');
         sent.length = 0;
         const cookie = cookieHeader(signUp);
         const changed = await app.request('/api/auth/change-email', {
@@ -177,6 +181,9 @@ describe('account recovery and session security', () => {
         const verificationUrl = new URL(sent[0]!.url);
         const verified = await app.request(`${verificationUrl.pathname}${verificationUrl.search}`, { headers: { Origin: origin }, redirect: 'manual' });
         expect(verified.status).toBe(302);
+        const replay = await app.request(`${verificationUrl.pathname}${verificationUrl.search}`, { headers: { Origin: origin }, redirect: 'manual' });
+        expect(replay.status).toBe(302);
+        expect(replay.headers.get('location')).toContain('error=USER_NOT_FOUND');
         const afterSignIn = await app.request('/api/auth/sign-in/email', {
           method: 'POST', headers: jsonHeaders(), body: JSON.stringify({ email: newEmail, password: 'password123' }),
         });
@@ -209,6 +216,52 @@ describe('account recovery and session security', () => {
         expect(sent).toHaveLength(3);
         const persistedLimits = await db.select().from(authRateLimits);
         expect(persistedLimits.some((entry) => entry.key.includes('/request-password-reset'))).toBe(true);
+      } finally { await sql.end({ timeout: 5 }); }
+    });
+  });
+
+  it('rate limits every public credential and verification entry point by client IP', async () => {
+    clientIp = '203.0.113.15';
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const auth = createAuth(db, { sendAuthEmail: async () => undefined, enableRateLimit: true });
+        const app = createApp({ auth, db, checkDatabase: async () => true });
+        const email = `entry-points-${crypto.randomUUID()}@example.com`;
+        const authPost = (path: string, body: Record<string, unknown>) => app.request(`/api/auth${path}`, {
+          method: 'POST', headers: jsonHeaders(), body: JSON.stringify(body),
+        });
+
+        const signUpStatuses: number[] = [];
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          signUpStatuses.push((await authPost('/sign-up/email', { name: 'Rate limited owner', email, password: 'password123' })).status);
+        }
+        expect(signUpStatuses).toEqual([200, 422, 422, 429]);
+
+        const signInStatuses: number[] = [];
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          signInStatuses.push((await authPost('/sign-in/email', { email: `missing-${crypto.randomUUID()}@example.com`, password: 'password123' })).status);
+        }
+        expect(signInStatuses).toEqual([401, 401, 401, 429]);
+
+        const verificationRequestStatuses: number[] = [];
+        for (let attempt = 0; attempt < 4; attempt += 1) {
+          verificationRequestStatuses.push((await authPost('/send-verification-email', { email: `missing-${crypto.randomUUID()}@example.com`, callbackURL: origin })).status);
+        }
+        expect(verificationRequestStatuses).toEqual([200, 200, 200, 429]);
+
+        const resetSubmissionStatuses: number[] = [];
+        for (let attempt = 0; attempt < 6; attempt += 1) {
+          resetSubmissionStatuses.push((await authPost('/reset-password', { token: `invalid-${attempt}`, newPassword: 'new-password123' })).status);
+        }
+        expect(resetSubmissionStatuses).toEqual([400, 400, 400, 400, 400, 429]);
+
+        const verificationStatuses: number[] = [];
+        for (let attempt = 0; attempt < 6; attempt += 1) {
+          verificationStatuses.push((await app.request(`/api/auth/verify-email?token=invalid-${attempt}`, { headers: jsonHeaders(), redirect: 'manual' })).status);
+        }
+        expect(verificationStatuses).toEqual([401, 401, 401, 401, 401, 429]);
       } finally { await sql.end({ timeout: 5 }); }
     });
   });

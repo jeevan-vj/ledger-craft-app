@@ -1,5 +1,17 @@
 # LedgerCraft target architecture
 
+**Account recovery and session security (implemented locally, 2026-11-06):**
+Better Auth owns password reset, verification, verified email changes, password
+changes, and session revocation for web and Expo. Reset responses are neutral;
+tokens are expiring and single-use; reset and password change invalidate the
+intended cookie and bearer sessions. Migration `0024_auth-rate-limits.sql`
+persists IP-scoped, organisation-independent limits for signup, login,
+verification, reset request, and reset submission. Recovery redirects are
+limited to the canonical web origin and `easybizinvoice://`, and auth secrets
+are removed from logs and Sentry. Resend credentials remain server-only. See
+`docs/account-security.md`; deployment, production inbox proof, authenticated
+browser proof, and installed-device deep-link QA remain pending.
+
 **Invoice payment integrity (implemented locally, 2026-10-31):** SQLite
 migration `0022_payment-reversals.sql` adds immutable reversal metadata to
 invoice payments. Existing-invoice payments remain exact instalments capped at

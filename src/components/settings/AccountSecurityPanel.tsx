@@ -65,7 +65,7 @@ export function AccountSecurityPanel() {
         </div>)}
         <div className="flex flex-wrap gap-2 pt-2">
           <Button variant="outline" disabled={busy} onClick={() => void action(revokeOtherSessions, 'Other devices signed out')}>Sign out other devices</Button>
-          <Button variant="destructive" disabled={busy} onClick={() => { if (window.confirm('Sign out every device, including this browser?')) void action(async () => { await revokeAllSessions(); await signOut(); }, 'Signed out everywhere', false); }}>Sign out everywhere</Button>
+          <Button variant="destructive" disabled={busy} onClick={() => { if (window.confirm('Sign out every device, including this browser?')) void action(async () => { await revokeAllSessions(); await signOut().catch(() => undefined); }, 'Signed out everywhere', false); }}>Sign out everywhere</Button>
           <Button variant="ghost" disabled={busy} onClick={() => void action(refreshUser, 'Account refreshed', false)}>Refresh account</Button>
         </div>
       </CardContent></Card>

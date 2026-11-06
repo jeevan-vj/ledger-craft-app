@@ -67,6 +67,30 @@ describe('auth session cache isolation', () => {
     expect(store.getState().onboardingChecked).toBe(true);
   });
 
+  it('returns a revoked SecureStore session to the signed-out auth state without retrying', async () => {
+    const authApi = jest.requireMock('@/features/auth/api/authApi') as { getMe: jest.Mock };
+    authApi.getMe.mockClear();
+    authApi.getMe.mockResolvedValueOnce(null);
+    const store = createStore<AuthSlice>()(createAuthSlice);
+    store.setState({
+      user: { id: 'stale-user', email: 'stale@example.com', user_metadata: {} },
+      session: { user: { id: 'stale-user', email: 'stale@example.com', user_metadata: {} } },
+      loading: true,
+      onboardingChecked: false,
+    });
+
+    await store.getState().initialize();
+
+    expect(authApi.getMe).toHaveBeenCalledTimes(1);
+    expect(store.getState()).toMatchObject({
+      user: null,
+      session: null,
+      loading: false,
+      onboardingChecked: true,
+      hasCompletedOnboarding: false,
+    });
+  });
+
   it('keeps invoice write permission from the session and clears it on sign out', async () => {
     const authApi = jest.requireMock('@/features/auth/api/authApi') as {
       signInEmail: jest.Mock;
