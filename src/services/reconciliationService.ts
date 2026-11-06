@@ -34,6 +34,7 @@ import {
   reconciliationApiEnabled,
   toCreateSessionRequest,
 } from '@/features/reconciliation/api/reconciliationApi';
+import { bankReconciliationApi } from '@/features/reconciliation/api/bankReconciliationApi';
 
 // ===============================
 // MAPPERS
@@ -472,6 +473,43 @@ export const reconciliationService = {
       { showReconciled: false }
     );
 
+    // The live Hono path always uses ranked server suggestions. The client
+    // scorer below is retained only for the explicit legacy/offline fallback.
+    if (bankApiEnabled()) {
+      const typedTransactions = bankTransactions as BankTransaction[];
+      const byId = new Map<string, BankTransaction>(typedTransactions.map((transaction) => [transaction.id, transaction]));
+      const batches = await bankReconciliationApi.suggestionsBatch(typedTransactions.map((transaction) => transaction.id));
+      return [...batches.values()].flatMap((response) => {
+        const bankTx = byId.get(response.transactionId);
+        const suggestion = response.suggestions.find((item) => item.type !== 'matching_rule');
+        if (!bankTx || !suggestion || suggestion.amount == null || suggestion.date == null || suggestion.type === 'matching_rule') return [];
+        return [{
+          bankTransaction: {
+            id: bankTx.id,
+            type: 'bank_transaction' as const,
+            date: bankTx.transactionDate,
+            description: bankTx.description,
+            amount: bankTx.amount,
+            reference: bankTx.reference,
+            isReconciled: bankTx.isReconciled,
+            category: bankTx.category,
+          },
+          bookItem: {
+            id: suggestion.id,
+            type: suggestion.type,
+            date: suggestion.date,
+            description: suggestion.description,
+            amount: Number(suggestion.amount),
+            reference: suggestion.reference ?? undefined,
+            isReconciled: false,
+          },
+          matchType: suggestion.score === 100 ? 'auto_exact' as const : 'auto_fuzzy' as const,
+          confidenceScore: suggestion.score,
+          matchReasons: suggestion.reasons,
+        }];
+      });
+    }
+
     // Get book entries
     const bookEntries = await this.getBookEntries(
       session.statementStartDate,
@@ -730,7 +768,7 @@ export const reconciliationService = {
   async createMatch(
     sessionId: string,
     bankTransactionId: string,
-    bookItemType: 'invoice' | 'payment' | 'expense',
+    bookItemType: 'invoice' | 'bill' | 'payment' | 'expense',
     bookItemId: string,
     notes?: string
   ): Promise<ReconciliationMatch> {
@@ -772,7 +810,7 @@ export const reconciliationService = {
       bank_transaction_id: bankTransactionId,
       invoice_id: bookItemType === 'invoice' ? bookItemId : null,
       payment_id: bookItemType === 'payment' ? bookItemId : null,
-      expense_id: bookItemType === 'expense' ? bookItemId : null,
+        expense_id: bookItemType === 'expense' ? bookItemId : null,
       match_type: 'manual' as MatchType,
       confidence_score: 100,
       bank_amount: bankAmount,
