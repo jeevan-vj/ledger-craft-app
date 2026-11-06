@@ -34,7 +34,7 @@ export class AccountPurgeGate {
 
   async beginPurge(): Promise<void> {
     this.purgeStarted = true;
-    await Promise.allSettled([...this.alarmWrites]);
+    await Promise.allSettled(this.alarmWrites);
   }
 }
 
