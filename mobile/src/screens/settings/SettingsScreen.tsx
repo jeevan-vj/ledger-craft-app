@@ -22,6 +22,7 @@ const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['nam
   AccountSecurity: 'shield',
   ItemList: 'tag',
   BankAccountList: 'dollar-sign',
+  BankReconciliation: 'check-square',
   ExpenseList: 'credit-card',
   PurchaseList: 'shopping-bag',
   Reports: 'bar-chart-2',

@@ -68,7 +68,7 @@ export async function createPaymentInTx(
   ctx: OrganisationContext,
   input: CreatePaymentRequest,
   idempotency?: IdempotencyScope,
-  options?: { clearingAccountNumber?: '1130' },
+  options?: { clearingAccountNumber?: '1130'; skipPosting?: boolean },
 ): Promise<PaymentDto> {
   if (idempotency) {
     const existing = await getIdempotencyRecord(tx, ctx, idempotency);
@@ -103,22 +103,24 @@ export async function createPaymentInTx(
     paymentStatus: next.paymentStatus,
     status: next.status,
   });
-  const receivableId = await systemAccount(tx, ctx, '1200');
-  const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
-  const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
-  let cashId: string;
-  if (options?.clearingAccountNumber) cashId = await systemAccount(tx, ctx, options.clearingAccountNumber);
-  else if (selectedBank) cashId = await bankLedgerAccount(tx, ctx, selectedBank);
-  else cashId = await systemAccount(tx, ctx, '1110');
-  await postBalancedEntry(tx, ctx, {
-    date: payment.paymentDate,
-    description: `Payment for ${invoice.invoiceNumber}`,
-    referenceType: 'invoice_payment', referenceId: payment.id,
-    lines: [
-      { accountId: cashId, description: `Payment for ${invoice.invoiceNumber}`, debit: payment.amount, credit: '0' },
-      { accountId: receivableId, description: `Payment for ${invoice.invoiceNumber}`, debit: '0', credit: payment.amount },
-    ],
-  });
+  if (!options?.skipPosting) {
+    const receivableId = await systemAccount(tx, ctx, '1200');
+    const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
+    const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
+    let cashId: string;
+    if (options?.clearingAccountNumber) cashId = await systemAccount(tx, ctx, options.clearingAccountNumber);
+    else if (selectedBank) cashId = await bankLedgerAccount(tx, ctx, selectedBank);
+    else cashId = await systemAccount(tx, ctx, '1110');
+    await postBalancedEntry(tx, ctx, {
+      date: payment.paymentDate,
+      description: `Payment for ${invoice.invoiceNumber}`,
+      referenceType: 'invoice_payment', referenceId: payment.id,
+      lines: [
+        { accountId: cashId, description: `Payment for ${invoice.invoiceNumber}`, debit: payment.amount, credit: '0' },
+        { accountId: receivableId, description: `Payment for ${invoice.invoiceNumber}`, debit: '0', credit: payment.amount },
+      ],
+    });
+  }
   if (idempotency) {
     await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: payment });
   }
@@ -131,7 +133,16 @@ export async function reversePaymentForUser(
   id: string,
   input: ReversePaymentRequest,
 ): Promise<PaymentDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => reversePaymentInTx(tx, ctx, id, input));
+}
+
+export async function reversePaymentInTx(
+  tx: Database,
+  ctx: OrganisationContext,
+  id: string,
+  input: ReversePaymentRequest,
+  options?: { skipPosting?: boolean },
+): Promise<PaymentDto> {
     const payment = await repo.getPayment(tx, ctx.organisationId, id);
     if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
     if (payment.status === 'refunded') {
@@ -151,13 +162,15 @@ export async function reversePaymentForUser(
       throw apiError(409, 'PAYMENT_NOT_REVERSIBLE', 'Payment is no longer reversible');
     }
 
-    await reversePosting(tx, ctx, {
-      referenceType: 'invoice_payment',
-      referenceId: payment.id,
-      reversalType: 'invoice_payment_reversal',
-      date: input.reversalDate,
-      description: `Reversal of payment for ${invoice.invoiceNumber}: ${input.reason}`,
-    });
+    if (!options?.skipPosting) {
+      await reversePosting(tx, ctx, {
+        referenceType: 'invoice_payment',
+        referenceId: payment.id,
+        reversalType: 'invoice_payment_reversal',
+        date: input.reversalDate,
+        description: `Reversal of payment for ${invoice.invoiceNumber}: ${input.reason}`,
+      });
+    }
 
     const totalPaid = roundMoney(await repo.sumCompletedPayments(tx, ctx.organisationId, invoice.id));
     const remaining = decimal(invoice.total).sub(totalPaid);
@@ -170,5 +183,4 @@ export async function reversePaymentForUser(
       status: next.status,
     });
     return reversed;
-  });
 }

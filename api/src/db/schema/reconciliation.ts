@@ -47,6 +47,7 @@ export const reconciliationMatches = sqliteTable('reconciliation_matches', {
   reconciliationId: text('reconciliation_id').notNull(),
   bankTransactionId: text('bank_transaction_id'),
   invoiceId: text('invoice_id'),
+  billId: text('bill_id'),
   paymentId: text('payment_id'),
   expenseId: text('expense_id'),
   journalEntryId: text('journal_entry_id'),

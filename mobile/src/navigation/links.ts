@@ -21,6 +21,9 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
             screens: {
               CompanyTeam: 'settings',
               AccountSecurity: 'settings/security',
+              BankReconciliation: 'banking/reconcile',
+              BankReconciliationMatch: 'banking/reconcile/:transactionId',
+              BankMatchingRules: 'banking/reconcile/rules',
             },
           },
         },
@@ -60,6 +63,11 @@ export const moreMenuSections = [
         label: 'Bank accounts',
         subtitle: 'Balances and imported transactions',
         screen: 'BankAccountList',
+      },
+      {
+        label: 'Reconcile',
+        subtitle: 'Match imported bank transactions',
+        screen: 'BankReconciliation',
       },
     ],
   },
@@ -133,6 +141,7 @@ type MoreDestination =
   | { name: 'AccountSecurity' }
   | { name: 'ItemList' }
   | { name: 'BankAccountList' }
+  | { name: 'BankReconciliation' }
   | { name: 'ExpenseList' }
   | { name: 'PurchaseList' }
   | { name: 'ExpenseCreate' };

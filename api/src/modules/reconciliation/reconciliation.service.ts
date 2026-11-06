@@ -17,12 +17,13 @@ import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as expensesRepo from '../expenses/expenses.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import * as paymentsRepo from '../payments/payments.repository';
+import * as purchasesRepo from '../purchases/purchases.repository';
 import * as repo from './reconciliation.repository';
 
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
   organisationId: string,
-  type: 'invoice' | 'payment' | 'expense',
+  type: 'invoice' | 'bill' | 'payment' | 'expense',
   id: string,
 ): Promise<string> {
   if (type === 'invoice') {
@@ -34,6 +35,11 @@ async function bookAmount(
     const expense = await expensesRepo.getExpense(tx, organisationId, id);
     if (!expense) throw new HTTPException(400, { message: 'Expense not found' });
     return expense.amount;
+  }
+  if (type === 'bill') {
+    const bill = await purchasesRepo.getBill(tx, organisationId, id);
+    if (!bill) throw new HTTPException(400, { message: 'Bill not found' });
+    return bill.total;
   }
   const payment = await paymentsRepo.getPayment(tx, organisationId, id);
   if (!payment) throw new HTTPException(400, { message: 'Payment not found' });

@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   Select,
   SelectContent,
@@ -43,6 +44,8 @@ import { ReconciliationSession } from '@/types/reconciliation';
 
 import { ReconciliationSetupDialog } from '@/components/reconciliation/ReconciliationSetupDialog';
 import { ReconciliationWorkspace } from '@/components/reconciliation/ReconciliationWorkspace';
+import { TransactionFeed } from '@/features/reconciliation/components/TransactionFeed';
+import { MatchingRules } from '@/features/reconciliation/components/MatchingRules';
 
 export default function ReconciliationPage() {
   const navigate = useNavigate();
@@ -194,10 +197,22 @@ export default function ReconciliationPage() {
     <div className="space-y-6">
       <PageHeader
         title="Bank Reconciliation"
-        description="Match bank statements with your accounting records"
+        description="Review bank lines, accept suggested matches, and keep every posting under your control"
         backTo="/bank-accounts"
       />
 
+      <Tabs defaultValue="transactions" className="space-y-4">
+        <TabsList className="h-auto w-full justify-start overflow-x-auto rounded-xl p-1 sm:w-auto">
+          <TabsTrigger value="transactions">Transactions</TabsTrigger>
+          <TabsTrigger value="sessions">Statement sessions</TabsTrigger>
+          <TabsTrigger value="rules">Matching rules</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="transactions" className="mt-0">
+          <TransactionFeed bankAccounts={bankAccounts} />
+        </TabsContent>
+
+        <TabsContent value="sessions" className="mt-0 space-y-6">
       {/* Bank Account Selector */}
       {bankAccounts.length === 0 ? (
         <Alert>
@@ -318,6 +333,12 @@ export default function ReconciliationPage() {
           )}
         </>
       )}
+        </TabsContent>
+
+        <TabsContent value="rules" className="mt-0">
+          <MatchingRules />
+        </TabsContent>
+      </Tabs>
 
       {/* Setup Dialog */}
       <ReconciliationSetupDialog

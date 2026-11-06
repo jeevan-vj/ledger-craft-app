@@ -145,6 +145,10 @@ export const billPaymentSchema = z.object({
   paymentDate: date,
   referenceNumber: z.string().nullable(),
   notes: z.string().nullable(),
+  status: z.enum(['completed', 'reversed']).default('completed'),
+  reversalReason: z.string().nullable().default(null),
+  reversalDate: date.nullable().default(null),
+  reversedAt: z.string().nullable().default(null),
   createdAt: z.string().min(1),
 });
 

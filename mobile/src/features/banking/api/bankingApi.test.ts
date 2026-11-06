@@ -80,4 +80,27 @@ describe('bankingApi', () => {
       method: 'POST', body: JSON.stringify(payload),
     }));
   });
+
+  it('constructs reconciliation feed filters without changing exact values', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ transactions: [], pagination: { page: 2, pageSize: 20, total: 21, totalPages: 2 } }));
+    await bankingApi.listReconciliationTransactions({ status: 'suggested', bankAccountId: 'bank id', from: '2026-11-01', to: '2026-11-30', direction: 'credit', search: '  INV 42  ', page: 2, pageSize: 20 });
+    expect(global.fetch).toHaveBeenCalledWith(
+      'https://api.example.test/api/bank-transactions?bankAccountId=bank%20id&from=2026-11-01&to=2026-11-30&status=suggested&direction=credit&search=INV%2042&page=2&pageSize=20',
+      expect.objectContaining({ method: 'GET' }),
+    );
+  });
+
+  it('accepts a multi-document match with exact decimal strings', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ id: 'action-1' }, 201));
+    const payload = { allocations: [{ documentType: 'invoice' as const, documentId: 'invoice-1', amount: '9007199254740993.01' }], splits: [{ accountId: 'account-1', amount: '0.99' }], bankFee: '0.01' };
+    await bankingApi.acceptSuggestion('tx-1', payload);
+    expect(global.fetch).toHaveBeenCalledWith('https://api.example.test/api/bank-transactions/tx-1/accept', expect.objectContaining({ method: 'POST', body: JSON.stringify(payload) }));
+  });
+
+  it('undoes reconciliation through the audited server endpoint', async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(response({ id: 'action-1', status: 'reversed' }));
+    const payload = { reason: 'Duplicate imported bank line', reversalDate: '2026-11-06' };
+    await bankingApi.undoReconciliation('tx-1', payload);
+    expect(global.fetch).toHaveBeenCalledWith('https://api.example.test/api/bank-transactions/tx-1/undo', expect.objectContaining({ method: 'POST', body: JSON.stringify(payload) }));
+  });
 });

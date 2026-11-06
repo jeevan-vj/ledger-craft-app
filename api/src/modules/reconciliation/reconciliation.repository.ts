@@ -16,6 +16,7 @@ import type { Database } from '../../db/client';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { payments } from '../../db/schema/payments';
+import { bills } from '../../db/schema/purchases';
 import {
   reconciliationAdjustments,
   reconciliationMatches,
@@ -55,6 +56,7 @@ function toMatchDto(row: typeof reconciliationMatches.$inferSelect): Reconciliat
     reconciliationId: row.reconciliationId,
     bankTransactionId: row.bankTransactionId ?? null,
     invoiceId: row.invoiceId ?? null,
+    billId: row.billId ?? null,
     paymentId: row.paymentId ?? null,
     expenseId: row.expenseId ?? null,
     journalEntryId: row.journalEntryId ?? null,
@@ -215,6 +217,7 @@ export async function insertMatch(
       reconciliationId,
       bankTransactionId: input.bankTransactionId,
       invoiceId: input.bookItemType === 'invoice' ? input.bookItemId : null,
+      billId: input.bookItemType === 'bill' ? input.bookItemId : null,
       paymentId: input.bookItemType === 'payment' ? input.bookItemId : null,
       expenseId: input.bookItemType === 'expense' ? input.bookItemId : null,
       matchType: input.matchType ?? 'manual',
@@ -302,6 +305,9 @@ export async function listBookEntries(
         eq(payments.status, 'completed'),
       ),
     );
+  const billRows = await tx.select().from(bills).where(and(
+    eq(bills.organisationId, organisationId), gte(bills.issueDate, from), lte(bills.issueDate, to),
+  ));
 
   const entries: BookEntryDto[] = [
     ...invoiceRows.map((row) =>
@@ -324,6 +330,14 @@ export async function listBookEntries(
         reference: row.vendorName ?? null,
       }),
     ),
+    ...billRows.map((row) => bookEntrySchema.parse({
+      id: row.id,
+      type: 'bill' as const,
+      date: row.issueDate,
+      description: `Bill ${row.billNumber}`,
+      amount: roundMoney(row.total),
+      reference: row.vendorReference ?? row.billNumber,
+    })),
     ...paymentRows.map((row) =>
       bookEntrySchema.parse({
         id: row.id,

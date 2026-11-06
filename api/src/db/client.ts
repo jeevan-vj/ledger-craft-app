@@ -20,6 +20,7 @@ import { quoteLineItems, quotes, sharedQuotes } from './schema/quotes';
 import { itemCategories, items } from './schema/items';
 import {
   bankAccounts,
+  bankMatchingRules,
   bankTransactionAttachments,
   bankTransactionDocumentConnections,
   bankTransactionSplits,
@@ -27,6 +28,7 @@ import {
   bankTransfers,
   transactionImportBatches,
 } from './schema/bank';
+import { bankReconciliationActionItems, bankReconciliationActions } from './schema/reconciliation-actions';
 import { expenseCategories, expenses } from './schema/expenses';
 import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
@@ -77,6 +79,9 @@ export const schema = {
   conversations,
   conversationMessages,
   bankAccounts,
+  bankMatchingRules,
+  bankReconciliationActions,
+  bankReconciliationActionItems,
   bankTransactions,
   bankTransactionSplits,
   bankTransactionDocumentConnections,

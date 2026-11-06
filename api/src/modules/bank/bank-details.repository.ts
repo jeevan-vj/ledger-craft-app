@@ -132,3 +132,19 @@ export async function hasDetails(tx: Database, organisationId: string, transacti
   const details = await getDetails(tx, organisationId, transactionId);
   return details.splits.length > 0 || details.documentConnections.length > 0 || details.attachments.length > 0;
 }
+
+export async function hasAllocations(tx: Database, organisationId: string, transactionId: string): Promise<boolean> {
+  const details = await getDetails(tx, organisationId, transactionId);
+  return details.splits.length > 0 || details.documentConnections.length > 0;
+}
+
+export async function removeAllocations(tx: Database, organisationId: string, transactionId: string) {
+  await tx.delete(bankTransactionDocumentConnections).where(and(
+    eq(bankTransactionDocumentConnections.organisationId, organisationId),
+    eq(bankTransactionDocumentConnections.transactionId, transactionId),
+  ));
+  await tx.delete(bankTransactionSplits).where(and(
+    eq(bankTransactionSplits.organisationId, organisationId),
+    eq(bankTransactionSplits.transactionId, transactionId),
+  ));
+}

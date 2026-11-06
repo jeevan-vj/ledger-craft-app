@@ -8,6 +8,7 @@ import {
   type BankTransactionListResponse,
   type BankTransactionDto,
   type BankTransactionDetailsRequest,
+  type BankTransactionListQuery,
   type DuplicateBankTransactionRequest,
   type BankTransferDto,
   type CreateBankTransactionRequest,
@@ -34,6 +35,7 @@ import {
 import { assertKeyOwned } from '../storage/keys';
 import { currencyRepository } from '../currency/currency.service';
 import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
+import { suggestionsForTransactionInTx } from '../reconciliation/suggestions.service';
 
 async function postBankTransaction(
   tx: Database,
@@ -113,14 +115,52 @@ export async function deleteBankAccountForUser(db: Database, userId: string, id:
 export async function listBankTransactionsForUser(
   db: Database,
   userId: string,
-  filters: { bankAccountId?: string; from?: string; to?: string },
+  filters: BankTransactionListQuery,
 ): Promise<BankTransactionListResponse> {
-  return withOrganisationTx(db, userId, async (tx, ctx) =>
-    bankTransactionListResponseSchema.parse({
-      transactions: await Promise.all((await repo.listTransactions(tx, ctx.organisationId, filters))
-        .map((transaction) => detailsRepo.hydrateTransaction(tx, ctx.organisationId, transaction))),
-    }),
-  );
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const status = filters.status === 'reconciled' ? true : filters.status === 'unreconciled' || filters.status === 'suggested' ? false : undefined;
+    let transactions = await repo.listTransactions(tx, ctx.organisationId, {
+      bankAccountId: filters.bankAccountId,
+      from: filters.from,
+      to: filters.to,
+      isReconciled: status,
+      direction: filters.direction === 'any' ? undefined : filters.direction,
+      search: filters.search,
+    });
+    if (filters.status === 'suggested') {
+      const withSuggestions = await Promise.all(transactions.map(async (transaction) => ({
+        transaction,
+        suggestions: (await suggestionsForTransactionInTx(tx, ctx.organisationId, transaction)).suggestions,
+      })));
+      transactions = withSuggestions.filter((item) => item.suggestions.length > 0).map((item) => item.transaction);
+    }
+    const total = transactions.length;
+    const start = (filters.page - 1) * filters.pageSize;
+    const page = transactions.slice(start, start + filters.pageSize);
+    return bankTransactionListResponseSchema.parse({
+      transactions: await Promise.all(page.map((transaction) => detailsRepo.hydrateTransaction(tx, ctx.organisationId, transaction))),
+      pagination: { page: filters.page, pageSize: filters.pageSize, total, totalPages: Math.ceil(total / filters.pageSize) },
+    });
+  });
+}
+
+export async function getBankTransactionSuggestionsForUser(db: Database, userId: string, id: string) {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const transaction = await repo.getTransaction(tx, ctx.organisationId, id);
+    if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
+    return suggestionsForTransactionInTx(tx, ctx.organisationId, transaction);
+  });
+}
+
+export async function getBankTransactionSuggestionsBatchForUser(db: Database, userId: string, ids: string[]) {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const items = [];
+    for (const id of ids) {
+      const transaction = await repo.getTransaction(tx, ctx.organisationId, id);
+      if (transaction) items.push(await suggestionsForTransactionInTx(tx, ctx.organisationId, transaction));
+    }
+    return { items };
+  });
 }
 
 export async function getBankTransactionForUser(
@@ -298,9 +338,9 @@ export async function duplicateBankTransactionForUser(
 }
 
 export async function exportBankTransactionsCsvForUser(db: Database, userId: string, bankAccountId?: string): Promise<string> {
-  const result = await listBankTransactionsForUser(db, userId, { bankAccountId });
+  const transactions = await withOrganisationTx(db, userId, (tx, ctx) => repo.listTransactions(tx, ctx.organisationId, { bankAccountId }));
   const header = ['Date', 'Description', 'Counterparty', 'Reference', 'Direction', 'Amount', 'Category', 'Source', 'Reconciled'];
-  return [header.join(','), ...result.transactions.map((transaction) => [
+  return [header.join(','), ...transactions.map((transaction) => [
     transaction.transactionDate, transaction.description, transaction.counterparty, transaction.reference,
     transaction.type, transaction.amount, transaction.category, transaction.source, transaction.isReconciled ? 'yes' : 'no',
   ].map(csvCell).join(','))].join('\n');

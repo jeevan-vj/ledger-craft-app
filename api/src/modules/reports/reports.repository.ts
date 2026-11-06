@@ -25,7 +25,7 @@ export type LedgerRow = {
   credit: string;
 };
 
-const CASH_REFERENCE_TYPES = ['invoice_payment', 'bill_payment', 'expense', 'expense_reversal', 'bank_transaction', 'bank_transaction_reversal', 'bank_transfer', 'bank_transfer_out', 'bank_transfer_in'];
+const CASH_REFERENCE_TYPES = ['invoice_payment', 'bill_payment', 'expense', 'expense_reversal', 'bank_transaction', 'bank_transaction_reversal', 'bank_reconciliation_accept', 'bank_reconciliation_personal', 'bank_reconciliation_undo', 'bank_transfer', 'bank_transfer_out', 'bank_transfer_in'];
 
 export async function ledgerRows(
   tx: Database,

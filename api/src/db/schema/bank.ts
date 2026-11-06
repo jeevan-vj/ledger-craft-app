@@ -1,3 +1,4 @@
+import { accounts } from './accounts';
 import { organisations, users } from './identity';
 import { sql } from 'drizzle-orm';
 import { check, foreignKey, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
@@ -25,7 +26,6 @@ export const bankAccounts = sqliteTable('bank_accounts', {
   uniqueIndex('bank_accounts_org_id_uidx').on(table.organisationId, table.id),
   index('bank_accounts_org_idx').on(table.organisationId),
 ]);
-
 export const bankTransfers = sqliteTable('bank_transfers', {
   id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),
@@ -51,7 +51,6 @@ export const bankTransfers = sqliteTable('bank_transfers', {
   foreignKey({ columns: [table.organisationId, table.sourceAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('restrict'),
   foreignKey({ columns: [table.organisationId, table.destinationAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('restrict'),
 ]);
-
 export const bankTransactions = sqliteTable('bank_transactions', {
   id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   organisationId: text('organisation_id').notNull().references(() => organisations.id),
@@ -158,4 +157,25 @@ export const transactionImportBatches = sqliteTable('transaction_import_batches'
   uniqueIndex('transaction_import_batches_org_id_uidx').on(table.organisationId, table.id),
   index('transaction_import_batches_org_idx').on(table.organisationId),
   foreignKey({ columns: [table.organisationId, table.bankAccountId], foreignColumns: [bankAccounts.organisationId, bankAccounts.id] }).onDelete('cascade'),
+]);
+
+export const bankMatchingRules = sqliteTable('bank_matching_rules', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').notNull().references(() => users.id),
+  descriptionContains: text('description_contains').notNull(),
+  amountMin: money('amount_min'),
+  amountMax: money('amount_max'),
+  direction: text('direction').notNull().default('any'),
+  targetAccountId: text('target_account_id').notNull(),
+  contactId: text('contact_id'),
+  enabled: integer('enabled', { mode: 'boolean' }).notNull().default(true),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+  updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  check('bank_matching_rules_description_check', sql`length(trim(${table.descriptionContains})) > 0`),
+  check('bank_matching_rules_direction_check', sql`${table.direction} IN ('debit','credit','any')`),
+  uniqueIndex('bank_matching_rules_org_id_uidx').on(table.organisationId, table.id),
+  index('bank_matching_rules_org_enabled_idx').on(table.organisationId, table.enabled),
+  foreignKey({ columns: [table.organisationId, table.targetAccountId], foreignColumns: [accounts.organisationId, accounts.id] }).onDelete('restrict'),
 ]);

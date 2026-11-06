@@ -13,7 +13,7 @@ import { HTTPException } from 'hono/http-exception';
 import { apiError } from '../../http-error';
 import type { Database } from '../../db/client';
 import { csvCell } from '../../lib/csv';
-import { withOrganisationTx } from '../auth/bind-organisation';
+import { withOrganisationTx, type OrganisationContext } from '../auth/bind-organisation';
 import { decimal } from '../invoices/money';
 import { postBillPayment, postReceivedBill, restoreBill, reverseBill } from './purchases.journal';
 import { assertKeyOwned } from '../storage/keys';
@@ -206,7 +206,16 @@ export async function recordBillPaymentForUser(
   id: string,
   input: RecordBillPaymentRequest,
 ) {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => recordBillPaymentInTx(tx, ctx, id, input));
+}
+
+export async function recordBillPaymentInTx(
+  tx: Database,
+  ctx: OrganisationContext,
+  id: string,
+  input: RecordBillPaymentRequest,
+  options?: { skipPosting?: boolean },
+) {
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
     if (bill.lifecycleStatus !== 'received') throw new HTTPException(409, { message: 'Only received bills can be paid' });
@@ -223,13 +232,24 @@ export async function recordBillPaymentForUser(
     const payments = [];
     for (const allocation of allocations) {
       const payment = await repo.insertPayment(tx, ctx, bill, { ...input, ...allocation });
-      await postBillPayment(tx, ctx, bill, payment);
+      if (!options?.skipPosting) await postBillPayment(tx, ctx, bill, payment);
       payments.push(payment);
     }
     await repo.applyPayment(tx, ctx.organisationId, bill, total.toFixed());
     await repo.appendBillHistory(tx, ctx, id, 'payment_recorded', `${payments.length} payment allocation${payments.length === 1 ? '' : 's'} recorded (${total.toFixed()})`);
     return { payments, total: total.toFixed() };
-  });
+}
+
+export async function reverseBillPaymentInTx(
+  tx: Database,
+  ctx: OrganisationContext,
+  paymentId: string,
+  input: { reason: string; reversalDate: string },
+) {
+  const reversed = await repo.reversePayment(tx, ctx, paymentId, input);
+  if (!reversed) throw new HTTPException(409, { message: 'Bill payment is not reversible' });
+  await repo.recalculateBillPayments(tx, ctx.organisationId, reversed.billId);
+  return reversed;
 }
 
 export async function attachBillObjectForUser(db: Database, userId: string, id: string, input: AttachBillObjectRequest) {

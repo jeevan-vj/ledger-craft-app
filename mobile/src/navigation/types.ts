@@ -74,6 +74,9 @@ export type BankingStackParamList = {
   BankTransactionEdit: { bankAccountId: string; transactionId: string };
   BankTransferCreate: { sourceAccountId: string };
   BankStatementImport: { bankAccountId: string };
+  BankReconciliation: undefined;
+  BankReconciliationMatch: { transactionId: string };
+  BankMatchingRules: undefined;
 };
 
 export type SettingsStackParamList = {

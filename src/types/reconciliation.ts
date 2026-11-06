@@ -264,7 +264,7 @@ export interface ReconciliationSetup {
 // For displaying matched items
 export interface MatchableItem {
   id: string;
-  type: 'bank_transaction' | 'invoice' | 'payment' | 'expense';
+  type: 'bank_transaction' | 'invoice' | 'bill' | 'payment' | 'expense';
   date: string;
   description: string;
   amount: number;
@@ -322,7 +322,7 @@ export interface ReconciliationTransaction {
   isReconciled: boolean;
   matchId: string | null;
   matchedTo: {
-    type: 'invoice' | 'payment' | 'expense' | 'journal_entry' | null;
+    type: 'invoice' | 'bill' | 'payment' | 'expense' | 'journal_entry' | null;
     id: string | null;
     description: string | null;
   } | null;

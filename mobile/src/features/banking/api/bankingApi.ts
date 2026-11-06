@@ -103,6 +103,116 @@ export interface BankStatementImportResponse {
   transactions: BankTransactionDto[];
 }
 
+export type ReconciliationStatus = 'unreconciled' | 'suggested' | 'reconciled';
+export type ReconciliationDirection = 'any' | 'debit' | 'credit';
+
+export interface BankTransactionFilters {
+  status?: ReconciliationStatus;
+  bankAccountId?: string;
+  from?: string;
+  to?: string;
+  direction?: ReconciliationDirection;
+  search?: string;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface BankTransactionListResponse {
+  transactions: BankTransactionDto[];
+  pagination?: { page: number; pageSize: number; total: number; totalPages: number };
+}
+
+export interface BankTransactionSuggestion {
+  id: string;
+  type: 'invoice' | 'bill' | 'expense' | 'matching_rule';
+  date: string | null;
+  description: string;
+  reference: string | null;
+  counterparty: string | null;
+  amount: string | null;
+  score: number;
+  reasons: string[];
+  matchingRuleId: string | null;
+  targetAccountId: string | null;
+  contactId: string | null;
+}
+
+export interface BankTransactionSuggestionResponse {
+  transactionId: string;
+  suggestions: BankTransactionSuggestion[];
+}
+
+export interface ReconciliationAllocation { documentType: 'invoice' | 'bill'; documentId: string; amount: string }
+export interface ReconciliationSplit { accountId: string; amount: string; description?: string }
+export interface AcceptReconciliationRequest {
+  allocations: ReconciliationAllocation[];
+  splits: ReconciliationSplit[];
+  bankFee?: string;
+  paymentDate?: string;
+  reference?: string | null;
+  notes?: string | null;
+}
+
+export interface BankReconciliationActionDto {
+  id: string;
+  transactionId: string;
+  actionType: 'accept' | 'personal';
+  journalEntryId: string;
+  status: 'active' | 'reversed';
+  paymentIds: string[];
+  billPaymentIds: string[];
+  createdAt: string;
+  reversedAt: string | null;
+}
+
+export interface BankMatchingRuleDto {
+  id: string;
+  descriptionContains: string;
+  amountMin: string | null;
+  amountMax: string | null;
+  direction: 'debit' | 'credit' | 'any';
+  targetAccountId: string;
+  contactId: string | null;
+  enabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface BankMatchingRuleWriteRequest {
+  descriptionContains: string;
+  amountMin?: string | null;
+  amountMax?: string | null;
+  direction?: 'debit' | 'credit' | 'any';
+  targetAccountId: string;
+  contactId?: string | null;
+  enabled?: boolean;
+}
+
+export interface ReconciliationDocumentDto {
+  id: string;
+  number: string;
+  partyName: string;
+  date: string;
+  balanceDue: string;
+  currency: string;
+  documentType: 'invoice' | 'bill';
+}
+
+export interface LedgerAccountDto { id: string; name: string; currency: string; isActive: boolean }
+
+export function bankTransactionQuery(filters: BankTransactionFilters): string {
+  const pairs: [string, string][] = [];
+  if (filters.bankAccountId) pairs.push(['bankAccountId', filters.bankAccountId]);
+  if (filters.from) pairs.push(['from', filters.from]);
+  if (filters.to) pairs.push(['to', filters.to]);
+  if (filters.status) pairs.push(['status', filters.status]);
+  if (filters.direction) pairs.push(['direction', filters.direction]);
+  if (filters.search?.trim()) pairs.push(['search', filters.search.trim()]);
+  if (filters.page) pairs.push(['page', String(filters.page)]);
+  if (filters.pageSize) pairs.push(['pageSize', String(filters.pageSize)]);
+  return pairs.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
+}
+
 export const bankingApi = {
   async listAccounts(): Promise<BankAccountDto[]> {
     return (await apiRequest<{ bankAccounts: BankAccountDto[] }>('/api/bank-accounts', { method: 'GET' })).bankAccounts;
@@ -122,6 +232,52 @@ export const bankingApi = {
   async listTransactions(bankAccountId?: string): Promise<BankTransactionDto[]> {
     const query = bankAccountId ? `?bankAccountId=${encodeURIComponent(bankAccountId)}` : '';
     return (await apiRequest<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query}`, { method: 'GET' })).transactions;
+  },
+  listReconciliationTransactions(filters: BankTransactionFilters): Promise<BankTransactionListResponse> {
+    const query = bankTransactionQuery(filters);
+    return apiRequest(`/api/bank-transactions${query ? `?${query}` : ''}`, { method: 'GET' });
+  },
+  suggestions(transactionId: string): Promise<BankTransactionSuggestionResponse> {
+    return apiRequest(`/api/bank-transactions/${transactionId}/suggestions`, { method: 'GET' });
+  },
+  async suggestionsBatch(transactionIds: string[]): Promise<Record<string, BankTransactionSuggestionResponse>> {
+    if (transactionIds.length === 0) return {};
+    const body = await apiRequest<{ items: BankTransactionSuggestionResponse[] }>('/api/bank-transactions/suggestions/batch', {
+      method: 'POST', body: JSON.stringify({ transactionIds }),
+    });
+    return Object.fromEntries(body.items.map((item) => [item.transactionId, item]));
+  },
+  acceptSuggestion(transactionId: string, input: AcceptReconciliationRequest): Promise<BankReconciliationActionDto> {
+    return apiRequest(`/api/bank-transactions/${transactionId}/accept`, { method: 'POST', body: JSON.stringify(input) });
+  },
+  markPersonal(transactionId: string, notes?: string | null): Promise<BankReconciliationActionDto> {
+    return apiRequest(`/api/bank-transactions/${transactionId}/personal`, { method: 'POST', body: JSON.stringify(notes ? { notes } : {}) });
+  },
+  undoReconciliation(transactionId: string, input: { reason: string; reversalDate: string }): Promise<BankReconciliationActionDto> {
+    return apiRequest(`/api/bank-transactions/${transactionId}/undo`, { method: 'POST', body: JSON.stringify(input) });
+  },
+  async listMatchingRules(): Promise<BankMatchingRuleDto[]> {
+    return (await apiRequest<{ rules: BankMatchingRuleDto[] }>('/api/bank-matching-rules', { method: 'GET' })).rules;
+  },
+  createMatchingRule(input: BankMatchingRuleWriteRequest): Promise<BankMatchingRuleDto> {
+    return apiRequest('/api/bank-matching-rules', { method: 'POST', body: JSON.stringify(input) });
+  },
+  updateMatchingRule(id: string, input: Partial<BankMatchingRuleWriteRequest>): Promise<BankMatchingRuleDto> {
+    return apiRequest(`/api/bank-matching-rules/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+  },
+  async removeMatchingRule(id: string): Promise<void> {
+    await apiRequest<void>(`/api/bank-matching-rules/${id}`, { method: 'DELETE' });
+  },
+  async listLedgerAccounts(): Promise<LedgerAccountDto[]> {
+    return (await apiRequest<{ accounts: LedgerAccountDto[] }>('/api/accounts', { method: 'GET' })).accounts.filter((account) => account.isActive);
+  },
+  async listReconciliationDocuments(type: 'invoice' | 'bill'): Promise<ReconciliationDocumentDto[]> {
+    if (type === 'invoice') {
+      const body = await apiRequest<{ invoices: { id: string; invoiceNumber: string; customerName: string | null; date: string; balanceDue: string; currency: string; status: string }[] }>('/api/invoices', { method: 'GET' });
+      return body.invoices.filter((item) => !['draft', 'cancelled'].includes(item.status) && cents(item.balanceDue) > 0n).map((item) => ({ id: item.id, number: item.invoiceNumber, partyName: item.customerName ?? 'Customer', date: item.date, balanceDue: item.balanceDue, currency: item.currency, documentType: 'invoice' }));
+    }
+    const body = await apiRequest<{ bills: { id: string; billNumber: string; vendorName: string; issueDate: string; balanceDue: string; currency: string; lifecycleStatus: string }[] }>('/api/bills', { method: 'GET' });
+    return body.bills.filter((item) => item.lifecycleStatus === 'received' && cents(item.balanceDue) > 0n).map((item) => ({ id: item.id, number: item.billNumber, partyName: item.vendorName, date: item.issueDate, balanceDue: item.balanceDue, currency: item.currency, documentType: 'bill' }));
   },
   getTransaction(id: string): Promise<BankTransactionDto> {
     return apiRequest(`/api/bank-transactions/${id}`, { method: 'GET' });
@@ -146,3 +302,8 @@ export const bankingApi = {
     });
   },
 };
+
+function cents(value: string): bigint {
+  const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(value.trim());
+  return match ? BigInt(match[1]) * 100n + BigInt((match[2] ?? '').padEnd(2, '0')) : 0n;
+}

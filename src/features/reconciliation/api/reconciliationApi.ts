@@ -196,7 +196,7 @@ export const reconciliationApi = {
           matches: matches.map(
             (match): CreateReconciliationMatchRequest => ({
               bankTransactionId: match.bankTransaction.id,
-              bookItemType: match.bookItem.type as 'invoice' | 'payment' | 'expense',
+              bookItemType: match.bookItem.type as 'invoice' | 'bill' | 'payment' | 'expense',
               bookItemId: match.bookItem.id,
               matchType: match.matchType,
               confidenceScore: match.confidenceScore,

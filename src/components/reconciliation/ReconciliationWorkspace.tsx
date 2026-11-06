@@ -181,7 +181,7 @@ export function ReconciliationWorkspace({
       await reconciliationService.createMatch(
         session.id,
         selectedBankTx,
-        bookEntry.type as 'invoice' | 'payment' | 'expense',
+        bookEntry.type as 'invoice' | 'bill' | 'payment' | 'expense',
         selectedBookEntry
       );
 

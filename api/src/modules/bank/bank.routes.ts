@@ -1,18 +1,27 @@
 import {
   createBankAccountRequestSchema,
   bankTransactionDetailsRequestSchema,
+  bankTransactionListQuerySchema,
+  bankTransactionSuggestionBatchRequestSchema,
+  acceptBankTransactionSuggestionRequestSchema,
+  createBankMatchingRuleRequestSchema,
   createBankTransactionRequestSchema,
   createBankTransferRequestSchema,
   duplicateBankTransactionRequestSchema,
   importBankTransactionsRequestSchema,
   updateBankAccountRequestSchema,
   updateBankTransactionRequestSchema,
+  updateBankMatchingRuleRequestSchema,
+  markBankTransactionPersonalRequestSchema,
+  undoBankTransactionReconciliationRequestSchema,
 } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import * as bankService from './bank.service';
+import * as actionService from '../reconciliation/reconciliation-actions.service';
+import * as ruleService from '../reconciliation/matching-rules.service';
 import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 
 export function bankRoutes() {
@@ -49,14 +58,17 @@ export function bankRoutes() {
 
     routes.get(`${prefix}/bank-transactions`, async (c) => {
       const { db, user } = await requireSession(c);
-      const bankAccountId = c.req.query('bankAccountId');
-      return c.json(
-        await bankService.listBankTransactionsForUser(db, user.id, {
-          bankAccountId: bankAccountId ? z.string().uuid().parse(bankAccountId) : undefined,
-          from: c.req.query('from') ?? undefined,
-          to: c.req.query('to') ?? undefined,
-        }),
-      );
+      const input = bankTransactionListQuerySchema.parse({
+        bankAccountId: c.req.query('bankAccountId') ?? undefined,
+        from: c.req.query('from') ?? undefined,
+        to: c.req.query('to') ?? undefined,
+        status: c.req.query('status') ?? undefined,
+        direction: c.req.query('direction') ?? undefined,
+        search: c.req.query('search') ?? undefined,
+        page: c.req.query('page') ?? undefined,
+        pageSize: c.req.query('pageSize') ?? undefined,
+      });
+      return c.json(await bankService.listBankTransactionsForUser(db, user.id, input));
     });
 
     routes.get(`${prefix}/bank-transactions/export.csv`, async (c) => {
@@ -76,6 +88,35 @@ export function bankRoutes() {
     routes.get(`${prefix}/bank-transactions/:id`, async (c) => {
       const { db, user } = await requireSession(c);
       return c.json(await bankService.getBankTransactionForUser(db, user.id, c.req.param('id')));
+    });
+
+    routes.get(`${prefix}/bank-transactions/:id/suggestions`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await bankService.getBankTransactionSuggestionsForUser(db, user.id, c.req.param('id')));
+    });
+
+    routes.post(`${prefix}/bank-transactions/suggestions/batch`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = bankTransactionSuggestionBatchRequestSchema.parse(await c.req.json());
+      return c.json(await bankService.getBankTransactionSuggestionsBatchForUser(db, user.id, input.transactionIds));
+    });
+
+    routes.post(`${prefix}/bank-transactions/:id/accept`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = acceptBankTransactionSuggestionRequestSchema.parse(await c.req.json());
+      return c.json(await actionService.acceptSuggestionForUser(db, user.id, c.req.param('id'), input), 201);
+    });
+
+    routes.post(`${prefix}/bank-transactions/:id/personal`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = markBankTransactionPersonalRequestSchema.parse(await c.req.json());
+      return c.json(await actionService.markPersonalForUser(db, user.id, c.req.param('id'), input), 201);
+    });
+
+    routes.post(`${prefix}/bank-transactions/:id/undo`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = undoBankTransactionReconciliationRequestSchema.parse(await c.req.json());
+      return c.json(await actionService.undoReconciliationForUser(db, user.id, c.req.param('id'), input));
     });
 
     routes.post(`${prefix}/bank-transactions`, async (c) => {
@@ -130,6 +171,29 @@ export function bankRoutes() {
       const { db, user } = await requireSession(c);
       const input = importBankTransactionsRequestSchema.parse(await c.req.json());
       return c.json(await bankService.importBankTransactionsForUser(db, user.id, input), 201);
+    });
+
+    routes.get(`${prefix}/bank-matching-rules`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await ruleService.listRulesForUser(db, user.id));
+    });
+
+    routes.post(`${prefix}/bank-matching-rules`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = createBankMatchingRuleRequestSchema.parse(await c.req.json());
+      return c.json(await ruleService.createRuleForUser(db, user.id, input), 201);
+    });
+
+    routes.patch(`${prefix}/bank-matching-rules/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = updateBankMatchingRuleRequestSchema.parse(await c.req.json());
+      return c.json(await ruleService.updateRuleForUser(db, user.id, c.req.param('id'), input));
+    });
+
+    routes.delete(`${prefix}/bank-matching-rules/:id`, async (c) => {
+      const { db, user } = await requireSession(c);
+      await ruleService.deleteRuleForUser(db, user.id, c.req.param('id'));
+      return c.body(null, 204);
     });
   }
 

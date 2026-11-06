@@ -11,6 +11,24 @@
         ],
         "createdAt": "2026-10-19T00:21:52.795Z",
         "reason": "Intentional circular loading spinner uses a partial accent border to communicate indeterminate progress; BankAccounts.tsx line 103 is the existing implementation evidence."
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/pages/ReconciliationPage.tsx"
+        ],
+        "createdAt": "2026-11-06T07:08:01.467Z",
+        "reason": "Codex triage: the flagged border is an intentional rounded-full animate-spin loading arc, not a rounded card border."
+      },
+      {
+        "rule": "border-accent-on-rounded",
+        "value": "*",
+        "files": [
+          "src/components/reconciliation/ReconciliationWorkspace.tsx"
+        ],
+        "createdAt": "2026-11-06T07:08:01.501Z",
+        "reason": "Codex triage: the flagged border is an intentional rounded-full animate-spin loading arc, not a rounded card border."
       }
     ]
   }
