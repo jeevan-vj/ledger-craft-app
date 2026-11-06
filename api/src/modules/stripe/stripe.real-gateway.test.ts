@@ -28,7 +28,7 @@ vi.mock('stripe', () => {
   return { default: StripeMock };
 });
 
-import { createStripeGateway } from './stripe.real-gateway';
+import { createStripeGateway, stripePaymentsCapability, stripeRuntimeFromEnv } from './stripe.real-gateway';
 
 describe('real Stripe gateway', () => {
   beforeEach(() => {
@@ -68,5 +68,22 @@ describe('real Stripe gateway', () => {
       identity: { country: 'NZ' },
       metadata: { organisation_id: 'org_123' },
     }), { idempotencyKey: 'connect-account-1' });
+  });
+
+  it.each([
+    [{}, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'TRUE' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect' }, 'available'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'http://localhost:8080' }, 'available'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'https://example.com' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'http://localhost:8080', NODE_ENV: 'production' }, 'unavailable'],
+  ])('reports Stripe capability without exposing configuration (%#)', (env, expected) => {
+    expect(stripePaymentsCapability(env)).toBe(expected);
+  });
+
+  it('fails closed without crashing when enabled real-mode configuration is incomplete', () => {
+    expect(stripeRuntimeFromEnv({ STRIPE_PAYMENTS_ENABLED: 'true' })).toBeUndefined();
   });
 });

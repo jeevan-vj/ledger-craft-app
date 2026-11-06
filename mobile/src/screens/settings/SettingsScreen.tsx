@@ -3,13 +3,14 @@ import { Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAuth } from '@/store';
+import { useAuth, useStore } from '@/store';
 import type { MoreStackParamList } from '@/navigation/types';
 import { moreMenuSections, type MoreMenuScreen } from '@/navigation/links';
 import { Card, DashedSetupCard, ListRow, AppPressable } from '@/components/ui';
 import { QuickSaleSwitch } from '@/features/sales/QuickSaleSwitch';
 import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
+import { StripeSettingsSection } from '@/components/settings/StripeSettingsSection';
 
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsList'>;
 
@@ -30,6 +31,7 @@ export default function SettingsScreen() {
   const theme = useTheme();
   const { safeArea: insets, bottomPadding } = useTabScreenInsets();
   const { signOut, user } = useAuth();
+  const canManagePayments = useStore((state) => state.permissions.includes('payments.manage'));
   const navigation = useNavigation<NavigationProp>();
   const name = user?.user_metadata?.full_name || 'LedgerCraft member';
   const confirmSignOut = () => Alert.alert('Sign out?', 'You can sign back in anytime.', [{ text: 'Cancel', style: 'cancel' }, { text: 'Sign out', style: 'destructive', onPress: signOut }]);
@@ -43,6 +45,8 @@ export default function SettingsScreen() {
 
     <Text style={[theme.type.headline, styles.sectionTitle]}>Selling</Text>
     <Card style={styles.sectionCard}><QuickSaleSwitch /></Card>
+
+    <StripeSettingsSection canManage={canManagePayments} />
 
     {moreMenuSections.map((section) => (
       <View key={section.title}>

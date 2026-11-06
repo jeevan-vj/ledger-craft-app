@@ -19,7 +19,7 @@ import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 import { createExtractionProvider } from '../modules/invoice-imports/extraction';
 import type { WorkersAiBinding } from '../modules/ai/workers-ai';
-import { stripeRuntimeFromEnv } from '../modules/stripe/stripe.real-gateway';
+import { stripePaymentsCapability, stripeRuntimeFromEnv } from '../modules/stripe/stripe.real-gateway';
 import { processVerifiedWebhook } from '../modules/stripe/stripe.service';
 import type { StripeWebhookEvent } from '../modules/stripe/stripe.gateway';
 import { AccountPurgeGate, purgeLedgerAccountData, runRecurringAlarm } from './account-purge';
@@ -46,6 +46,7 @@ export interface Env {
   SENTRY_RELEASE?: string;
   SENTRY_DEBUG_ROUTE?: string;
   STRIPE_PAYMENTS_ENABLED?: string;
+  STRIPE_MOCK_MODE?: string;
   STRIPE_SECRET_KEY?: string;
   STRIPE_WEBHOOK_SECRET?: string;
   STRIPE_CONNECT_WEBHOOK_SECRET?: string;
@@ -83,6 +84,7 @@ function identityHealthResponse(storage: DurableObjectState['storage'], env: Env
   const capabilities = {
     email: env.RESEND_API_KEY?.trim() && env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
     ai: env.OPENAI_API_KEY?.trim() || env.XAI_API_KEY?.trim() || env.AI ? 'available' : 'unavailable',
+    stripe: stripePaymentsCapability(env as unknown as Record<string, string | undefined>),
   };
   const body = path === '/api/healthz' ? { status: 'ok', capabilities } : { status: 'ok' };
   return Response.json(body, { headers: { 'X-Ledgercraft-Migration': applied?.name ?? 'none' } });
@@ -194,7 +196,11 @@ class LedgerBase extends DurableObject<Env> {
         invoiceMailer,
         receiptScanner,
         workersAi: this.env.AI,
-        capabilities: { email: invoiceMailer.availability ?? 'unavailable', ai: receiptScanner ? 'available' : 'unavailable' },
+        capabilities: {
+          email: invoiceMailer.availability ?? 'unavailable',
+          ai: receiptScanner ? 'available' : 'unavailable',
+          stripe: stripePaymentsCapability(this.env as unknown as Record<string, string | undefined>),
+        },
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
         invoiceImportExtractor: {
           extractDocument: (file, context) => createExtractionProvider({ env: this.env }).extractDocument(file, context),

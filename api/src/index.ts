@@ -10,7 +10,7 @@ import { purgeLocalOrganisationData } from './modules/auth/local-organisation-pu
 import { createRuntimeInvoiceMailer } from './modules/invoices/resend';
 import { createFilesystemObjectStore } from './modules/storage/filesystem';
 import { createFilesystemFileStorage } from './modules/storage/filesystem-file-storage';
-import { stripeRuntimeFromEnv } from './modules/stripe/stripe.real-gateway';
+import { stripePaymentsCapability, stripeRuntimeFromEnv } from './modules/stripe/stripe.real-gateway';
 
 function createRuntimeApp() {
   const { db, sql } = createAppDb();
@@ -19,12 +19,13 @@ function createRuntimeApp() {
     RESEND_FROM: process.env.RESEND_FROM,
   }) });
   const stripe = stripeRuntimeFromEnv(process.env);
+  const invoiceMailer = createRuntimeInvoiceMailer();
   const objectStore = createFilesystemObjectStore();
   const fileStorage = createFilesystemFileStorage();
   return createApp({
     auth,
     db,
-    invoiceMailer: createRuntimeInvoiceMailer(),
+    invoiceMailer,
     objectStore,
     fileStorage,
     purgeOrganisation: (organisationId) => purgeLocalOrganisationData(db, { objectStore, fileStorage }, organisationId),
@@ -32,6 +33,11 @@ function createRuntimeApp() {
     chatCompleter: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? createOpenAiChatCompleter() : undefined,
     stripeGateway: stripe?.gateway,
     stripeConfig: stripe?.config,
+    capabilities: {
+      email: invoiceMailer.availability ?? 'unavailable',
+      ai: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? 'available' : 'unavailable',
+      stripe: stripePaymentsCapability(process.env),
+    },
     checkDatabase: async () => {
       try {
         await sql`SELECT 1`;

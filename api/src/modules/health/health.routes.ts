@@ -35,5 +35,5 @@ export function healthRoutes() {
 }
   const response = (c: { get: (key: 'capabilities') => AppEnv['Variables']['capabilities'] }) => healthzResponseSchema.parse({
     status: 'ok' as const,
-    capabilities: c.get('capabilities') ?? { email: 'unavailable', ai: 'unavailable' },
+    capabilities: c.get('capabilities') ?? { email: 'unavailable', ai: 'unavailable', stripe: 'unavailable' },
   });

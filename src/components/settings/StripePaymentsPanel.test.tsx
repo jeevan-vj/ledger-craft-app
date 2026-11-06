@@ -29,4 +29,16 @@ describe('StripePaymentsPanel', () => {
     expect(screen.getByText('Payouts enabled')).toBeInTheDocument();
     expect(view.container.textContent).not.toMatch(/acct_|sk_test|whsec_/);
   });
+
+  it('refreshes an incomplete account without restarting onboarding', async () => {
+    vi.mocked(stripeApi.account).mockResolvedValue({ status: 'onboarding', chargesEnabled: false, payoutsEnabled: false, detailsSubmitted: true, requirementsDue: ['external_account'], disabledReason: null });
+    vi.mocked(stripeApi.refreshAccount).mockResolvedValue({ status: 'active', chargesEnabled: true, payoutsEnabled: true, detailsSubmitted: true, requirementsDue: [], disabledReason: null });
+    render(<StripePaymentsPanel />);
+
+    fireEvent.click(await screen.findByRole('button', { name: /refresh status/i }));
+
+    expect(await screen.findByText('Ready to accept card payments')).toBeInTheDocument();
+    expect(stripeApi.refreshAccount).toHaveBeenCalledTimes(1);
+    expect(stripeApi.createAccount).not.toHaveBeenCalled();
+  });
 });

@@ -67,6 +67,7 @@ export function createApp(deps: AppDependencies = {}) {
     c.set('capabilities', deps.capabilities ?? {
       email: deps.invoiceMailer?.availability === 'available' ? 'available' : 'unavailable',
       ai: deps.receiptScanner || deps.workersAi ? 'available' : 'unavailable',
+      stripe: deps.stripeConfig?.enabled && deps.stripeGateway ? 'available' : 'unavailable',
     });
     await next();
   });
