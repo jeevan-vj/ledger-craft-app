@@ -37,7 +37,7 @@ part of issue #144. After the reviewed change is deployed, use an authorized
 synthetic account to verify one delivered reset email, successful reset, token
 replay rejection, and 401 responses from a pre-reset cookie and bearer token.
 Run the installed Android and iOS flows against that deployment and record the
-build/runtime identifiers. Mobile production exports were deliberately skipped
-for this issue. Authenticated browser proof, installed-device deep-link proof,
-production inbox proof, and production deployment remain pending. Do not use a
-real customer account.
+build/runtime identifiers. Local production exports passed for both Android and
+iOS on 2026-11-06, but authenticated browser proof, installed-device deep-link
+proof, production inbox proof, and production deployment remain pending. Do not
+use a real customer account.
