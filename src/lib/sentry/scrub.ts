@@ -3,12 +3,20 @@ import { requestIdOf } from '@/lib/sentry/requestId';
 
 const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay|api\/auth\/reset-password)\/[^/?#\s"'<>\\]+/gi;
 const TOKEN_QUERY = /([?&](?:token|verificationToken|resetToken|shareToken|share_token)=)[^&#\s"'<>]+/gi;
-const SENSITIVE_KEY =
-  /^(authorization|proxy-authorization|cookie|cookies|set-cookie|x-api-key|x-auth-token|password|passwd|secret|token|verification_token|verificationtoken|reset_token|resettoken|access_token|refresh_token|id_token|credit_card|card_number|cvv|email|e-mail|username|ip_address|organisation|organization|organisationname|organizationname|orgname)$/i;
+const SENSITIVE_KEYS = new Set([
+  'authorization', 'proxyauthorization', 'cookie', 'cookies', 'setcookie', 'xapikey', 'xauthtoken',
+  'password', 'passwd', 'secret', 'token', 'verificationtoken', 'resettoken', 'accesstoken',
+  'refreshtoken', 'idtoken', 'creditcard', 'cardnumber', 'cvv', 'email', 'username',
+  'ipaddress', 'organisation', 'organization', 'organisationname', 'organizationname', 'orgname',
+]);
 const BODY_KEY = /(^|_)(request_)?body$/i;
 const HTTP_BODY_KEY = /body|cookie|authorization|header|password|token/i;
 const TOKEN_QUERY_KEYS = new Set(['token', 'verificationToken', 'resetToken', 'shareToken', 'share_token']);
 const FORM_INPUT_CATEGORIES = new Set(['ui.input', 'ui.change']);
+
+function isSensitiveKey(key: string): boolean {
+  return SENSITIVE_KEYS.has(key.toLowerCase().replace(/[-_]/g, ''));
+}
 
 export function redactShareTokens(value: string): string {
   return value.replace(SHARE_PATH, (match) => {
@@ -36,7 +44,7 @@ function scrubStringRecord(value: unknown, seen: WeakSet<object>): unknown {
   }
   const record = value as Record<string, unknown>;
   for (const key of Object.keys(record)) {
-    if (SENSITIVE_KEY.test(key) || BODY_KEY.test(key)) {
+    if (isSensitiveKey(key) || BODY_KEY.test(key)) {
       if (record[key] === '[redacted]') continue;
       delete record[key];
       continue;
@@ -72,7 +80,7 @@ function scrubRequest(event: ErrorEvent): void {
   if (request.query_string) request.query_string = scrubQuery(request.query_string);
   if (request.headers) {
     for (const key of Object.keys(request.headers)) {
-      if (SENSITIVE_KEY.test(key)) delete request.headers[key];
+      if (isSensitiveKey(key)) delete request.headers[key];
     }
   }
 }

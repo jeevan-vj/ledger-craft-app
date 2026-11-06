@@ -35,7 +35,11 @@ export function AccountSecurityPanel() {
   useEffect(() => { void load().catch(() => undefined); }, [load]);
   const action = async (task: () => Promise<void>, message: string, reload = true) => {
     setBusy(true);
-    try { await task(); if (reload) await load(); toast({ title: message }); }
+    try {
+      await task();
+      if (reload) await load();
+      toast({ title: message });
+    }
     catch (error) { toast({ title: 'Couldn’t update account security', description: error instanceof Error ? error.message : 'Try again.', variant: 'destructive' }); }
     finally { setBusy(false); }
   };
@@ -56,7 +60,7 @@ export function AccountSecurityPanel() {
 
     <Card><CardHeader><CardTitle>Signed-in devices</CardTitle><CardDescription>Review active sessions. “Sign out other devices” keeps this browser active; “Sign out everywhere” includes it.</CardDescription></CardHeader>
       <CardContent className="space-y-3">
-        {sessionsLoading ? <p role="status" className="text-sm text-muted-foreground">Loading signed-in devices…</p> : null}
+        {sessionsLoading ? <output className="block text-sm text-muted-foreground">Loading signed-in devices…</output> : null}
         {sessionsError ? <p role="alert" className="text-sm text-destructive">{sessionsError}</p> : null}
         {!sessionsLoading && !sessionsError && sessions.length === 0 ? <p className="text-sm text-muted-foreground">No active sessions found.</p> : null}
         {sessions.map((session) => <div key={session.token} className="flex flex-col justify-between gap-3 rounded-lg border p-3 sm:flex-row sm:items-center">

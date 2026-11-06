@@ -14,11 +14,11 @@ export function ForgotPassword() {
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setBusy(true); setError('');
     try { await requestPasswordReset(email.trim()); setSent(true); }
-    catch (value) { setError(value instanceof Error ? value.message : 'Could not request a reset link.'); }
+    catch (error_) { setError(error_ instanceof Error ? error_.message : 'Could not request a reset link.'); }
     finally { setBusy(false); }
   };
   return <ModernAuthLayout title="Reset your password" subtitle="We’ll send a secure, single-use link if an account exists.">
-    {sent ? <div role="status" className="space-y-4"><p>Check your email. If that address has an account, a reset link is on its way.</p><Link className="text-primary" to="/login">Back to sign in</Link></div> :
+    {sent ? <output className="block space-y-4"><p>Check your email. If that address has an account, a reset link is on its way.</p><Link className="text-primary" to="/login">Back to sign in</Link></output> :
       <form className="space-y-6" onSubmit={submit}>
         <ModernInput label="Email address" type="email" icon={Mail} value={email} onChange={(event) => setEmail(event.target.value)} autoComplete="email" required autoFocus />
         {error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}
@@ -47,7 +47,7 @@ export function ResetPassword() {
     finally { setBusy(false); }
   };
   return <ModernAuthLayout title="Choose a new password" subtitle="Completing this reset signs out every existing device.">
-    {done ? <div role="status" className="space-y-4"><p>Your password has been reset. Sign in again on this and every other device.</p><Link className="text-primary" to="/login">Sign in</Link></div> :
+    {done ? <output className="block space-y-4"><p>Your password has been reset. Sign in again on this and every other device.</p><Link className="text-primary" to="/login">Sign in</Link></output> :
       <form className="space-y-6" onSubmit={submit}>
         <ModernInput label="New password" type="password" icon={Lock} value={password} onChange={(event) => setPassword(event.target.value)} autoComplete="new-password" showPasswordToggle required />
         <ModernInput label="Confirm new password" type="password" icon={Lock} value={confirm} onChange={(event) => setConfirm(event.target.value)} autoComplete="new-password" showPasswordToggle required />

@@ -73,6 +73,28 @@ function reportFailure(error: unknown, report: ErrorReport): Response {
   return failureResponse(503, 'SERVICE_UNAVAILABLE', unavailable, report.requestId);
 }
 
+function isIdentityHealthPath(path: string): boolean {
+  return path === '/api/healthz' || path === '/api/readyz';
+}
+
+function identityHealthResponse(storage: DurableObjectState['storage'], env: Env, path: string): Response {
+  storage.sql.exec('SELECT 1').toArray();
+  const applied = storage.sql.exec<{name:string}>('SELECT name FROM _migrations ORDER BY name DESC LIMIT 1').toArray()[0];
+  const capabilities = {
+    email: env.RESEND_API_KEY?.trim() && env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
+    ai: env.OPENAI_API_KEY?.trim() || env.XAI_API_KEY?.trim() || env.AI ? 'available' : 'unavailable',
+  };
+  const body = path === '/api/healthz' ? { status: 'ok', capabilities } : { status: 'ok' };
+  return Response.json(body, { headers: { 'X-Ledgercraft-Migration': applied?.name ?? 'none' } });
+}
+
+function isIdentityApplicationPath(path: string): boolean {
+  return path === '/api/me'
+    || path.startsWith('/api/me/')
+    || path.startsWith('/api/organisations')
+    || path.startsWith('/api/invitations');
+}
+
 /** Identity coordinates unique emails and sessions; business data lives in separate organisation objects. */
 class IdentityBase extends DurableObject<Env> {
   private db;
@@ -97,20 +119,12 @@ class IdentityBase extends DurableObject<Env> {
           return reportFailure(error, { ...report, source: 'better-auth', route: toRouteTemplate(path) });
         }
       }
-      if (path === '/api/healthz' || path === '/api/readyz') {
-        this.ctx.storage.sql.exec('SELECT 1').toArray();
-        const applied = this.ctx.storage.sql.exec<{name:string}>('SELECT name FROM _migrations ORDER BY name DESC LIMIT 1').toArray()[0];
-        return Response.json(path === '/api/healthz' ? {
-          status: 'ok',
-          capabilities: {
-            email: this.env.RESEND_API_KEY?.trim() && this.env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
-            ai: this.env.OPENAI_API_KEY?.trim() || this.env.XAI_API_KEY?.trim() || this.env.AI ? 'available' : 'unavailable',
-          },
-        } : { status: 'ok' }, {headers:{'X-Ledgercraft-Migration':applied?.name ?? 'none'}});
+      if (isIdentityHealthPath(path)) {
+        return identityHealthResponse(this.ctx.storage, this.env, path);
       }
       const session = await this.auth.api.getSession({headers:request.headers});
       if (!session) return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
-      if (path === '/api/me' || path.startsWith('/api/me/') || path.startsWith('/api/organisations') || path.startsWith('/api/invitations')) {
+      if (isIdentityApplicationPath(path)) {
         return createApp({
           db: this.db,
           auth: this.auth,
