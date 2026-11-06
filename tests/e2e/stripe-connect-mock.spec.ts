@@ -106,12 +106,12 @@ test('mock Stripe Connect: onboard, payment link, checkout, receipt', async ({ b
       await page.getByRole('button', { name: 'Card payment' }).click();
       await page.getByRole('button', { name: 'Create payment link' }).click();
       await expect(page.getByLabel('Stripe payment QR code')).toBeVisible();
-      await expect(page.getByLabel('Payment link')).toHaveValue(/\/pay\//);
+      await expect(page.getByRole('textbox', { name: 'Payment link' })).toHaveValue(/\/pay\//);
       await page.screenshot({ path: path.join(artifacts, 'payment-link.png'), fullPage: true });
       results['payment-link'] = 'pass';
     });
 
-    const payUrl = await page.getByLabel('Payment link').inputValue();
+    const payUrl = await page.getByRole('textbox', { name: 'Payment link' }).inputValue();
     const checkout = await owner.newPage();
     checkout.setDefaultTimeout(20_000);
 
