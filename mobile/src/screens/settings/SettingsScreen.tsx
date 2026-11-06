@@ -18,6 +18,7 @@ const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['nam
   CompanyTeam: 'users',
   RecurringSchedules: 'repeat',
   AccountDeletion: 'trash-2',
+  AccountSecurity: 'shield',
   ItemList: 'tag',
   BankAccountList: 'dollar-sign',
   ExpenseList: 'credit-card',

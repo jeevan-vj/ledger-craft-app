@@ -57,6 +57,10 @@ function event(): ErrorEvent {
 }
 
 describe('redactShareTokens', () => {
+  it('redacts account recovery and verification tokens', () => {
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/api/auth/reset-password/${TOKEN}?callbackURL=/reset-password`)).toContain('/api/auth/reset-password/[redacted]');
+    expect(redactShareTokens(`https://easybiz.iamjeevan.com/reset-password?token=${TOKEN}`)).toBe('https://easybiz.iamjeevan.com/reset-password?token=[redacted]');
+  });
   it('redacts public invoice share tokens and leaves the route in place', () => {
     expect(redactShareTokens(`https://easybiz.iamjeevan.com/shared/invoice/${TOKEN}`)).toBe(
       'https://easybiz.iamjeevan.com/shared/invoice/[redacted]',
@@ -95,6 +99,13 @@ describe('redactShareTokens', () => {
 });
 
 describe('scrubSentryEvent', () => {
+  it('removes reset and verification token fields from nested context', () => {
+    const scrubbed = scrubSentryEvent({
+      extra: { token: 'reset-secret', verificationToken: 'verify-secret', safe: 'kept' },
+    } as unknown as ErrorEvent);
+    expect(scrubbed?.extra).toEqual({ safe: 'kept' });
+  });
+
   it('removes bodies, cookies, auth headers, form input, email, and organisation name', () => {
     const scrubbed = scrubSentryEvent(event(), {
       originalException: Object.assign(new Error('api failed'), { requestId: 'req_123' }),

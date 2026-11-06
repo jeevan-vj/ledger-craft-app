@@ -5,6 +5,7 @@ import { createAppDb } from './db/local';
 import { apiHost, apiPort } from './env';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from './modules/ai/openai';
 import { createAuth } from './modules/auth/auth';
+import { createAuthEmailSender } from './modules/auth/auth-email';
 import { purgeLocalOrganisationData } from './modules/auth/local-organisation-purge';
 import { createRuntimeInvoiceMailer } from './modules/invoices/resend';
 import { createFilesystemObjectStore } from './modules/storage/filesystem';
@@ -13,7 +14,10 @@ import { stripeRuntimeFromEnv } from './modules/stripe/stripe.real-gateway';
 
 function createRuntimeApp() {
   const { db, sql } = createAppDb();
-  const auth = createAuth(db);
+  const auth = createAuth(db, { sendAuthEmail: createAuthEmailSender({
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    RESEND_FROM: process.env.RESEND_FROM,
+  }) });
   const stripe = stripeRuntimeFromEnv(process.env);
   const objectStore = createFilesystemObjectStore();
   const fileStorage = createFilesystemFileStorage();

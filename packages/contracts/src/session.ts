@@ -32,9 +32,22 @@ export const deleteAccountResponseSchema = z.object({
   deletedAt: z.string().datetime(),
 });
 
+export const accountSessionSchema = z.object({
+  token: z.string().min(1),
+  createdAt: z.coerce.date(),
+  updatedAt: z.coerce.date(),
+  expiresAt: z.coerce.date(),
+  ipAddress: z.string().nullable().optional(),
+  userAgent: z.string().nullable().optional(),
+  current: z.boolean(),
+});
+
+export const accountSessionListSchema = z.array(accountSessionSchema);
+
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 export type SessionOrganisation = z.infer<typeof sessionOrganisationSchema>;
 export type SessionMembership = z.infer<typeof sessionMembershipSchema>;
 export type MeResponse = z.infer<typeof meResponseSchema>;
 export type DeleteAccountRequest = z.infer<typeof deleteAccountRequestSchema>;
 export type DeleteAccountResponse = z.infer<typeof deleteAccountResponseSchema>;
+export type AccountSession = z.infer<typeof accountSessionSchema>;

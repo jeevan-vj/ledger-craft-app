@@ -59,6 +59,8 @@ export {
 } from './health';
 
 export {
+  accountSessionListSchema,
+  accountSessionSchema,
   deleteAccountRequestSchema,
   deleteAccountResponseSchema,
   meResponseSchema,
@@ -67,6 +69,7 @@ export {
   sessionUserSchema,
   type DeleteAccountRequest,
   type DeleteAccountResponse,
+  type AccountSession,
   type MeResponse,
   type SessionMembership,
   type SessionOrganisation,

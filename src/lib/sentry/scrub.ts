@@ -1,13 +1,13 @@
 import type { Breadcrumb, ErrorEvent, EventHint } from '@sentry/react';
 import { requestIdOf } from '@/lib/sentry/requestId';
 
-const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay)\/[^/?#\s"'<>\\]+/gi;
-const TOKEN_QUERY = /([?&](?:token|shareToken|share_token)=)[^&#\s"'<>]+/gi;
+const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay|api\/auth\/reset-password)\/[^/?#\s"'<>\\]+/gi;
+const TOKEN_QUERY = /([?&](?:token|verificationToken|resetToken|shareToken|share_token)=)[^&#\s"'<>]+/gi;
 const SENSITIVE_KEY =
-  /^(authorization|proxy-authorization|cookie|cookies|set-cookie|x-api-key|x-auth-token|password|passwd|secret|access_token|refresh_token|id_token|credit_card|card_number|cvv|email|e-mail|username|ip_address|organisation|organization|organisationname|organizationname|orgname)$/i;
+  /^(authorization|proxy-authorization|cookie|cookies|set-cookie|x-api-key|x-auth-token|password|passwd|secret|token|verification_token|verificationtoken|reset_token|resettoken|access_token|refresh_token|id_token|credit_card|card_number|cvv|email|e-mail|username|ip_address|organisation|organization|organisationname|organizationname|orgname)$/i;
 const BODY_KEY = /(^|_)(request_)?body$/i;
 const HTTP_BODY_KEY = /body|cookie|authorization|header|password|token/i;
-const TOKEN_QUERY_KEYS = new Set(['token', 'shareToken', 'share_token']);
+const TOKEN_QUERY_KEYS = new Set(['token', 'verificationToken', 'resetToken', 'shareToken', 'share_token']);
 const FORM_INPUT_CATEGORIES = new Set(['ui.input', 'ui.change']);
 
 export function redactShareTokens(value: string): string {
@@ -16,6 +16,7 @@ export function redactShareTokens(value: string): string {
     if (path.includes('/api/public/quotes/')) return '/api/public/quotes/[redacted]';
     if (path.includes('/api/public/invoices/')) return '/api/public/invoices/[redacted]';
     if (path.includes('/api/public/pay/')) return '/api/public/pay/[redacted]';
+    if (path.includes('/api/auth/reset-password/')) return '/api/auth/reset-password/[redacted]';
     if (path.includes('/shared/quote/')) return '/shared/quote/[redacted]';
     if (path.includes('/pay/')) return '/pay/[redacted]';
     return '/shared/invoice/[redacted]';
@@ -36,6 +37,7 @@ function scrubStringRecord(value: unknown, seen: WeakSet<object>): unknown {
   const record = value as Record<string, unknown>;
   for (const key of Object.keys(record)) {
     if (SENSITIVE_KEY.test(key) || BODY_KEY.test(key)) {
+      if (record[key] === '[redacted]') continue;
       delete record[key];
       continue;
     }

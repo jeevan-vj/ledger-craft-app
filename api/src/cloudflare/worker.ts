@@ -5,6 +5,7 @@ import { and, eq, isNull } from 'drizzle-orm';
 import { createApp } from '../app';
 import { activeOrganisationSelections, organisationMemberships, organisations, users } from '../db/schema/identity';
 import { createAuth, type Auth } from '../modules/auth/auth';
+import { createAuthEmailSender } from '../modules/auth/auth-email';
 import { createInvoiceMailerFromEnv } from '../modules/invoices/resend';
 import { bindRequestId, failureResponse, resolveRequestId } from '../observability/request-id';
 import { reportUnhandledError, setErrorReporter, type ErrorReport } from '../observability/report';
@@ -80,7 +81,7 @@ class IdentityBase extends DurableObject<Env> {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => migrateStorage(ctx.storage));
     this.db = durableDatabase(ctx.storage);
-    this.auth = createAuth(this.db);
+    this.auth = createAuth(this.db, { sendAuthEmail: createAuthEmailSender(env) });
   }
   async dispatch(request: Request): Promise<Response> {
     const requestId = resolveRequestId(request.headers.get('x-request-id'));
@@ -109,7 +110,7 @@ class IdentityBase extends DurableObject<Env> {
       }
       const session = await this.auth.api.getSession({headers:request.headers});
       if (!session) return failureResponse(401, 'UNAUTHORIZED', 'Unauthorized', requestId);
-      if (path === '/api/me' || path.startsWith('/api/organisations') || path.startsWith('/api/invitations')) {
+      if (path === '/api/me' || path.startsWith('/api/me/') || path.startsWith('/api/organisations') || path.startsWith('/api/invitations')) {
         return createApp({
           db: this.db,
           auth: this.auth,

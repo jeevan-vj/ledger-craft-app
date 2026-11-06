@@ -14,6 +14,8 @@ export type AuthStackParamList = {
   Intro: undefined;
   Login: undefined;
   Signup: undefined;
+  ForgotPassword: undefined;
+  ResetPassword: { token?: string; error?: string } | undefined;
   Onboarding: undefined;
 };
 
@@ -79,6 +81,7 @@ export type SettingsStackParamList = {
   CompanyTeam: { invite?: string } | undefined;
   RecurringSchedules: undefined;
   AccountDeletion: undefined;
+  AccountSecurity: undefined;
 };
 
 export type MoreStackParamList = SettingsStackParamList & ExpenseStackParamList & PurchaseStackParamList & ItemStackParamList & BankingStackParamList;

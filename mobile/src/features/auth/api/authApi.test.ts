@@ -1,5 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
-import { deleteAccount, getMe, signInEmail, signOutSession, signUpEmail } from './authApi';
+import { deleteAccount, getMe, requestPasswordReset, signInEmail, signOutSession, signUpEmail } from './authApi';
 import { clearCookies } from './cookieJar';
 
 function jsonResponse(
@@ -152,6 +152,19 @@ describe('mobile authApi', () => {
     );
 
     await expect(getMe()).resolves.toBeNull();
+    expect(SecureStore.deleteItemAsync).toHaveBeenCalledWith('ledgercraft.auth.cookie');
+  });
+
+  it('uses the allow-listed app reset redirect and reports offline without clearing a possibly valid session', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce(jsonResponse({ status: true }));
+    await requestPasswordReset('owner@example.com');
+    const [, init] = (global.fetch as jest.Mock).mock.calls[0] as [string, RequestInit];
+    expect(JSON.parse(String(init.body))).toEqual({ email: 'owner@example.com', redirectTo: 'easybizinvoice://reset-password' });
+
+    jest.clearAllMocks();
+    (global.fetch as jest.Mock).mockRejectedValueOnce(new Error('offline'));
+    await expect(requestPasswordReset('owner@example.com')).rejects.toThrow('Check your connection and try again.');
+    expect(SecureStore.deleteItemAsync).not.toHaveBeenCalled();
   });
 
   it('signs in and signs out through Hono', async () => {
