@@ -1,3 +1,4 @@
+import { invoiceSettlementLabel } from '@/features/invoices/settlementLabel';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, StyleSheet, Text, View } from 'react-native';
 import type { RouteProp } from '@react-navigation/native';
@@ -122,7 +123,7 @@ export default function PublicInvoiceScreen() {
         <View style={styles.headerCopy}>
           <Text style={styles.title}>Invoice {snapshot.invoice.invoiceNumber}</Text>
           <Text style={styles.subtitle}>From {snapshot.businessProfile.name}</Text>
-          {snapshot.invoice.status === 'paid' ? <Text accessibilityLabel="Payment status: Paid" style={styles.paid}>Paid</Text> : null}
+          {snapshot.invoice.status === 'paid' ? <Text accessibilityLabel={`Payment status: ${invoiceSettlementLabel(snapshot.invoice)}`} style={styles.paid}>{invoiceSettlementLabel(snapshot.invoice)}</Text> : null}
         </View>
       </View>
       <WebView

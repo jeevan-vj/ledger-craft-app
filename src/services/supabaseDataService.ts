@@ -8,10 +8,16 @@ import {
   IRDReturnData 
 } from '@/types/payment';
 import { taxApi, taxApiEnabled } from '@/features/tax/api/taxApi';
-import { summarizeGst } from '@/features/tax/api/periodRows';
+import { loadGstPreparation } from '@/features/tax/gstPreparation';
+import { summarizeGst, toPeriodInvoice, toPeriodExpense, type PeriodExpense } from '@/features/tax/api/periodRows';
+import { mapSupabaseInvoiceToInvoice, mapSupabaseExpenseToExpense } from './supabaseService';
+import type { JournalEntryRow } from '@/features/journals/api/journalsApi';
+export interface JournalAccountOption { id: string; name: string; number: string | null; type: string; description: string | null }
 import { accountsApi, accountsApiEnabled } from '@/features/payments/api/paymentsApi';
 import { journalsApi, journalsApiEnabled } from '@/features/journals/api/journalsApi';
 import { businessProfileApi, businessProfileApiEnabled } from '@/features/business-profile/api/businessProfileApi';
+
+const supportedReturnType = (value: string): TaxReturn['returnType'] => { if (value === 'GST' || value === 'Income_Tax' || value === 'PAYE') return value; throw new Error('Unsupported return type'); };
 
 export class SupabaseDataService {
   /**
@@ -112,7 +118,7 @@ export class SupabaseDataService {
     userId: string,
     periodStart: string,
     periodEnd: string
-  ): Promise<EnhancedInvoice[]> {
+  ): Promise<import('@/features/tax/api/periodRows').PeriodInvoice[]> {
     if (taxApiEnabled()) {
       return taxApi.invoicesByPeriod(periodStart, periodEnd);
     }
@@ -132,18 +138,7 @@ export class SupabaseDataService {
       throw new Error(`Error fetching invoices: ${invoicesError.message}`);
     }
 
-    return invoicesData.map(invoice => ({
-      ...invoice,
-      taxInclusive: invoice.tax_inclusive ?? true,
-      paymentStatus: invoice.payment_status as 'unpaid' | 'partial' | 'paid' | 'overdue' | 'written_off',
-      balanceDue: invoice.balance_due ?? invoice.total,
-      taxBreakdown: invoice.tax_breakdown,
-      lineItems: invoice.line_items?.map(item => ({
-        ...item,
-        taxInclusive: item.tax_inclusive ?? true,
-        taxable: item.taxable ?? true
-      })) || []
-    }));
+    return invoicesData.map((invoice) => toPeriodInvoice(mapSupabaseInvoiceToInvoice(invoice, invoice.line_items ?? [])));
   }
 
   async updateInvoiceTaxData(
@@ -152,7 +147,7 @@ export class SupabaseDataService {
       taxAmount: number;
       taxRate?: number;
       taxInclusive?: boolean;
-      taxBreakdown?: any;
+      taxBreakdown?: import('@/types/payment').TaxBreakdown;
       balanceDue?: number;
     }
   ): Promise<void> {
@@ -179,7 +174,7 @@ export class SupabaseDataService {
     userId: string,
     periodStart: string,
     periodEnd: string
-  ): Promise<any[]> {
+  ): Promise<PeriodExpense[]> {
     if (taxApiEnabled()) {
       return taxApi.expensesByPeriod(periodStart, periodEnd);
     }
@@ -195,7 +190,7 @@ export class SupabaseDataService {
       throw new Error(`Error fetching expenses: ${error.message}`);
     }
 
-    return data || [];
+    return (data || []).map((expense) => toPeriodExpense(mapSupabaseExpenseToExpense(expense)));
   }
 
   async createExpense(expense: TablesInsert<'expenses'>): Promise<Tables<'expenses'>> {
@@ -306,7 +301,7 @@ export class SupabaseDataService {
         gstOnSales: String(taxReturn.gstOnSales),
         gstOnPurchases: String(taxReturn.gstOnPurchases),
         netGst: String(taxReturn.netGst),
-        status: taxReturn.status,
+        status: 'draft',
         irdReference: taxReturn.irdReference ?? null,
         returnData: taxReturn.returnData ?? null,
       });
@@ -323,7 +318,7 @@ export class SupabaseDataService {
         gst_on_sales: taxReturn.gstOnSales,
         gst_on_purchases: taxReturn.gstOnPurchases,
         net_gst: taxReturn.netGst,
-        status: taxReturn.status,
+        status: 'draft',
         ird_reference: taxReturn.irdReference,
         submitted_at: taxReturn.submittedAt,
         return_data: taxReturn.returnData
@@ -340,7 +335,7 @@ export class SupabaseDataService {
       userId: data.user_id,
       periodStart: data.period_start,
       periodEnd: data.period_end,
-      returnType: data.return_type as 'GST' | 'Income_Tax' | 'FBT' | 'PAYE',
+      returnType: supportedReturnType(data.return_type),
       totalSales: data.total_sales,
       totalPurchases: data.total_purchases,
       gstOnSales: data.gst_on_sales,
@@ -388,7 +383,7 @@ export class SupabaseDataService {
       userId: taxReturn.user_id,
       periodStart: taxReturn.period_start,
       periodEnd: taxReturn.period_end,
-      returnType: taxReturn.return_type as 'GST' | 'Income_Tax' | 'FBT' | 'PAYE',
+      returnType: supportedReturnType(taxReturn.return_type),
       totalSales: taxReturn.total_sales,
       totalPurchases: taxReturn.total_purchases,
       gstOnSales: taxReturn.gst_on_sales,
@@ -423,7 +418,7 @@ export class SupabaseDataService {
       userId: data.user_id,
       periodStart: data.period_start,
       periodEnd: data.period_end,
-      returnType: data.return_type as 'GST' | 'Income_Tax' | 'FBT' | 'PAYE',
+      returnType: supportedReturnType(data.return_type),
       totalSales: data.total_sales,
       totalPurchases: data.total_purchases,
       gstOnSales: data.gst_on_sales,
@@ -488,7 +483,7 @@ export class SupabaseDataService {
       userId: data.user_id,
       periodStart: data.period_start,
       periodEnd: data.period_end,
-      returnType: data.return_type as 'GST' | 'Income_Tax' | 'FBT' | 'PAYE',
+      returnType: supportedReturnType(data.return_type),
       totalSales: data.total_sales,
       totalPurchases: data.total_purchases,
       gstOnSales: data.gst_on_sales,
@@ -611,7 +606,7 @@ export class SupabaseDataService {
     statusFilter?: string,
     periodStart?: string,
     periodEnd?: string
-  ): Promise<any[]> {
+  ): Promise<JournalEntryRow[]> {
     if (journalsApiEnabled()) {
       const entries = await journalsApi.list();
       return entries
@@ -663,8 +658,8 @@ export class SupabaseDataService {
     // Transform the data to match the expected format
     return (data || []).map(entry => {
       const lines = entry.journal_entry_lines || [];
-      const debitLine = lines.find((line: any) => line.debit_amount > 0);
-      const creditLine = lines.find((line: any) => line.credit_amount > 0);
+      const debitLine = lines.find((line) => line.debit_amount > 0);
+      const creditLine = lines.find((line) => line.credit_amount > 0);
 
       return {
         id: entry.id,
@@ -699,7 +694,7 @@ export class SupabaseDataService {
       referenceNumber?: string;
       notes?: string;
     }
-  ): Promise<any> {
+  ): Promise<JournalEntryRow> {
     if (journalsApiEnabled()) {
       return journalsApi.create({
         description: entryData.description,
@@ -871,7 +866,7 @@ export class SupabaseDataService {
     return data;
   }
 
-  async getAccounts(userId: string): Promise<any[]> {
+  async getAccounts(userId: string): Promise<JournalAccountOption[]> {
     if (accountsApiEnabled()) {
       return (await accountsApi.list())
         .filter((account) => account.isActive !== false)
@@ -917,6 +912,8 @@ export class SupabaseDataService {
     gstOnPurchases: number;
     netGstPosition: number;
   }> {
+    if (taxApiEnabled()) return loadGstPreparation(periodStart, periodEnd);
+
     const [invoices, expenses] = await Promise.all([
       this.getInvoicesByPeriod(userId, periodStart, periodEnd),
       this.getExpensesByPeriod(userId, periodStart, periodEnd),

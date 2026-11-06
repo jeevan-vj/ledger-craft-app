@@ -20,7 +20,7 @@ export function CategoryForm({ initialData, onSubmit, onCancel, isLoading = fals
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleChange = (field: keyof ItemCategory, value: any) => {
+  const handleChange = <Key extends keyof ItemCategory,>(field: Key, value: ItemCategory[Key]) => {
     setFormData({
       ...formData,
       [field]: value

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -32,9 +32,8 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth } from "@/context/StableAuthContext";
-import { supabaseDataService } from '@/services/supabaseDataService';
 import { gstReconciliationService } from '@/services/gstReconciliationService';
-import { readMoney } from '@/features/tax/api/periodRows';
+import { loadGstPreparation, netGstAfterAdjustments } from '@/features/tax/gstPreparation';
 import { GSTReconciliationPanel } from '@/components/tax/GSTReconciliationPanel';
 import {
   GstPeriodReconciliation,
@@ -42,6 +41,7 @@ import {
 } from '@/utils/gstReconciliation';
 import { GstReconciliationSnapshot } from '@/types/payment';
 import { getQuarterPeriod } from '@/features/tax/gstPeriod';
+import { gstPreparationQuerySchema } from '@ledgercraft/contracts';
 
 export interface GSTReturnData {
   returnPeriod: {
@@ -97,10 +97,18 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
   const { user } = useAuth();
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState(false);
+  const [dataError, setDataError] = useState<string | null>(null);
+  const [sourceWarnings, setSourceWarnings] = useState<string[]>([]);
+  const periodRequest = useRef(0);
   const [reconLoading, setReconLoading] = useState(false);
+  const [reconError, setReconError] = useState(false);
+  const [reconRetry, setReconRetry] = useState(0);
   const [reconciliation, setReconciliation] = useState<GstPeriodReconciliation | null>(null);
   const [acknowledgedUnreconciled, setAcknowledgedUnreconciled] = useState(false);
   const [validationErrors, setValidationErrors] = useState<ValidationError[]>([]);
+  const [customStart, setCustomStart] = useState(initialData?.returnPeriod?.startDate ?? '');
+  const [customEnd, setCustomEnd] = useState(initialData?.returnPeriod?.endDate ?? '');
+  const [customDue, setCustomDue] = useState(initialData?.dueDate ?? '');
   
   const [returnData, setReturnData] = useState<GSTReturnData>({
     returnPeriod: {
@@ -147,7 +155,8 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     { value: 'Q1', label: 'Q1 (Jan-Mar)' },
     { value: 'Q2', label: 'Q2 (Apr-Jun)' },
     { value: 'Q3', label: 'Q3 (Jul-Sep)' },
-    { value: 'Q4', label: 'Q4 (Oct-Dec)' }
+    { value: 'Q4', label: 'Q4 (Oct-Dec)' },
+    { value: 'CUSTOM', label: 'Custom dates (monthly, two-monthly or six-monthly)' },
   ];
 
   useEffect(() => {
@@ -160,6 +169,7 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     let cancelled = false;
     const loadRecon = async () => {
       setReconLoading(true);
+      setReconError(false);
       try {
         const result = await gstReconciliationService.getPeriodReconciliation(
           user.id,
@@ -181,6 +191,7 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
         console.error('Error loading GST reconciliation:', error);
         if (!cancelled) {
           setReconciliation(null);
+          setReconError(true);
         }
       } finally {
         if (!cancelled) {
@@ -203,16 +214,16 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
     returnData.purchaseData.totalPurchases,
     returnData.purchaseData.gstOnPurchases,
     returnData.purchaseData.gstOnCapitalGoods,
+    reconRetry,
   ]);
 
   const calculateNetGST = () => {
-    const totalGSTCharged = returnData.salesData.gstOnSales;
-    const totalGSTPaid = returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods;
-    const totalAdjustments = returnData.adjustments.badDebtAdjustments + 
-                            returnData.adjustments.creditNoteAdjustments + 
-                            returnData.adjustments.otherAdjustments;
-    
-    const netGST = totalGSTCharged - totalGSTPaid - totalAdjustments;
+    const netGST = netGstAfterAdjustments(returnData.salesData.gstOnSales,
+      returnData.purchaseData.gstOnPurchases,
+      returnData.purchaseData.gstOnCapitalGoods,
+      returnData.adjustments.badDebtAdjustments,
+      returnData.adjustments.creditNoteAdjustments,
+      returnData.adjustments.otherAdjustments);
     
     setReturnData(prev => ({
       ...prev,
@@ -224,48 +235,38 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
 
   const loadPeriodData = async (startDate: string, endDate: string) => {
     if (!user?.id) return;
-    
+    const requestId = ++periodRequest.current;
     setLoading(true);
+    setDataError(null);
     try {
-      const [invoices, expenses] = await Promise.all([
-        supabaseDataService.getInvoicesByPeriod(user.id, startDate, endDate),
-        supabaseDataService.getExpensesByPeriod(user.id, startDate, endDate)
-      ]);
-
-      const totalSales = invoices.reduce((sum, inv) => sum + readMoney(inv, 'total', 'total_amount'), 0);
-      const gstOnSales = invoices.reduce((sum, inv) => sum + readMoney(inv, 'taxAmount', 'tax_amount', 'gstAmount'), 0);
-      
-      const totalPurchases = expenses.reduce((sum, exp) => sum + readMoney(exp, 'amount'), 0);
-      const gstOnPurchases = expenses
-        .filter(exp => (exp.is_claimable !== false) && !exp.is_capital_expense)
-        .reduce((sum, exp) => sum + readMoney(exp, 'taxAmount', 'tax_amount'), 0);
-      
-      const capitalGoods = expenses
-        .filter(exp => exp.is_capital_expense)
-        .reduce((sum, exp) => sum + readMoney(exp, 'amount'), 0);
-      const gstOnCapitalGoods = expenses
-        .filter(exp => exp.is_capital_expense && (exp.is_claimable !== false))
-        .reduce((sum, exp) => sum + readMoney(exp, 'taxAmount', 'tax_amount'), 0);
-
+      const figures = await loadGstPreparation(startDate, endDate);
+      if (requestId !== periodRequest.current) return;
+      setSourceWarnings(figures.warnings);
+      if ([figures.totalSales, figures.totalPurchases, figures.gstOnSales, figures.gstOnPurchases].some(value => value < 0)) {
+        setDataError('This period contains net reversals and needs manual GST adjustment review before a draft can be saved. Review the ledger and registered return with your accountant.');
+      }
+      setReconciliation(null);
+      setAcknowledgedUnreconciled(false);
       setReturnData(prev => ({
         ...prev,
         salesData: {
           ...prev.salesData,
-          totalSales,
-          gstOnSales
+          totalSales: figures.totalSales,
+          gstOnSales: figures.gstOnSales
         },
         purchaseData: {
           ...prev.purchaseData,
-          totalPurchases,
-          gstOnPurchases,
-          capitalGoods,
-          gstOnCapitalGoods
+          totalPurchases: figures.totalPurchases,
+          gstOnPurchases: figures.gstOnPurchases,
+          capitalGoods: 0,
+          gstOnCapitalGoods: 0
         }
       }));
     } catch (error) {
       console.error('Error loading period data:', error);
+      if (requestId === periodRequest.current) setDataError('Could not load posted GST figures. Check your connection and try again.');
     } finally {
-      setLoading(false);
+      if (requestId === periodRequest.current) setLoading(false);
     }
   };
 
@@ -289,12 +290,29 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
   };
 
   const handleQuarterChange = (quarter: string) => {
+    if (quarter === 'CUSTOM') {
+      setReturnData(prev => ({ ...prev, returnPeriod: { ...prev.returnPeriod, quarter, startDate: '', endDate: '' }, dueDate: '' }));
+      setDataError(null);
+      return;
+    }
     updatePeriod(returnData.returnPeriod.year, quarter);
   };
 
+  const applyCustomPeriod = () => {
+    if (!gstPreparationQuerySchema.safeParse({ from: customStart, to: customEnd }).success
+      || !gstPreparationQuerySchema.safeParse({ from: customDue, to: customDue }).success) {
+      setDataError('Enter valid registered period dates and confirm the due date in myIR.');
+      return;
+    }
+    setReturnData(prev => ({ ...prev, returnPeriod: { startDate: customStart, endDate: customEnd, quarter: 'CUSTOM', year: Number(customStart.slice(0, 4)) }, dueDate: customDue }));
+    void loadPeriodData(customStart, customEnd);
+  };
+  const customUnapplied = returnData.returnPeriod.quarter === 'CUSTOM' && (!returnData.returnPeriod.startDate
+    || customStart !== returnData.returnPeriod.startDate || customEnd !== returnData.returnPeriod.endDate || customDue !== returnData.dueDate);
+
   const handleYearChange = (value: string) => {
     const year = Number.parseInt(value, 10);
-    if (returnData.returnPeriod.quarter) {
+    if (returnData.returnPeriod.quarter && returnData.returnPeriod.quarter !== 'CUSTOM') {
       updatePeriod(year, returnData.returnPeriod.quarter);
       return;
     }
@@ -336,6 +354,7 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
         break;
 
       case 5:
+        if (reconLoading || !reconciliation) errors.push({ field: 'reconciliation', message: 'Wait for reconciliation to complete before reviewing this return.' });
         if (!returnData.returnPeriod.startDate) {
           errors.push({ field: 'period', message: 'Select a GST period before reconciling' });
         }
@@ -406,7 +425,7 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
               </div>
 
               <div>
-                <Label htmlFor="quarter">Quarter</Label>
+                <Label htmlFor="quarter">Period preset</Label>
                 <Select
                   value={returnData.returnPeriod.quarter}
                   onValueChange={handleQuarterChange}
@@ -424,6 +443,14 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
                 </Select>
               </div>
             </div>
+
+            <p className="text-sm text-muted-foreground">Use the period registered in myIR. Calendar quarters are convenience presets, not a filing-frequency recommendation. Confirm due dates and working-day extensions in myIR.</p>
+            {returnData.returnPeriod.quarter === 'CUSTOM' ? <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div><Label htmlFor="gst-period-start">Period start</Label><Input id="gst-period-start" type="date" value={customStart} onChange={(event) => setCustomStart(event.target.value)} /></div>
+              <div><Label htmlFor="gst-period-end">Period end</Label><Input id="gst-period-end" type="date" value={customEnd} onChange={(event) => setCustomEnd(event.target.value)} /></div>
+              <div><Label htmlFor="gst-period-due">Due date (confirm in myIR)</Label><Input id="gst-period-due" type="date" value={customDue} onChange={(event) => setCustomDue(event.target.value)} /></div>
+              <Button onClick={applyCustomPeriod} disabled={loading}>Load registered period</Button>
+            </div> : null}
 
             {returnData.returnPeriod.startDate && (
               <Alert>
@@ -848,6 +875,13 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
       </Card>
 
       {/* Progress */}
+      <Alert>
+        <Info className="h-4 w-4" />
+        <AlertDescription>Invoice basis · NZD only. GST comes from posted journals, including received supplier bills and approved expenses. Payments-basis GST is not supported by this preparation flow.</AlertDescription>
+      </Alert>
+      {sourceWarnings.map((warning) => <Alert key={warning}><AlertTriangle className="h-4 w-4" /><AlertDescription>{warning}</AlertDescription></Alert>)}
+      {dataError ? <Alert variant="destructive"><AlertDescription>{dataError} <Button variant="outline" onClick={() => { void loadPeriodData(returnData.returnPeriod.startDate, returnData.returnPeriod.endDate); }}>Retry GST figures</Button></AlertDescription></Alert> : null}
+      {currentStep === 5 && reconError ? <Alert variant="destructive"><AlertDescription>Could not check reconciliation. Your return has not been saved. <Button variant="outline" onClick={() => setReconRetry(value => value + 1)}>Retry reconciliation</Button></AlertDescription></Alert> : null}
       <Card>
         <CardContent className="pt-6">
           <div className="space-y-4">
@@ -918,12 +952,12 @@ export const GSTReturnWizard: React.FC<GSTReturnWizardProps> = ({
           </Button>
           
           {currentStep < steps.length ? (
-            <Button onClick={nextStep}>
+            <Button onClick={nextStep} disabled={loading || Boolean(dataError) || customUnapplied || (currentStep === 5 && (reconLoading || !reconciliation))}>
               Next
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
           ) : (
-            <Button onClick={handleSubmit} className="flex items-center gap-2">
+            <Button onClick={handleSubmit} disabled={loading || Boolean(dataError) || customUnapplied} className="flex items-center gap-2">
               <Send className="h-4 w-4" />
               Save GST Return
             </Button>

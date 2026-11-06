@@ -68,6 +68,7 @@ function toAccount(dto: AccountDto): Account {
     currency: dto.currency,
     openingBalance: Number(dto.openingBalance),
     currentBalance: Number(dto.currentBalance),
+    isActive: dto.isActive,
   };
 }
 
@@ -83,6 +84,7 @@ export const paymentsApi = {
   },
 
   async create(input: {
+    exchangeRateId?: string;
     invoiceId: string;
     paymentMethod: Payment['paymentMethod'];
     amount: string;

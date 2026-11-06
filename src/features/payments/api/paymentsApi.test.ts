@@ -27,6 +27,14 @@ describe('Hono payment and invoice adapters', () => {
     });
   });
 
+  it('sends the optional idempotency key and preserves the canonical payment body', async () => {
+    const response = { id: '11111111-1111-4111-8111-111111111111', invoiceId: '22222222-2222-4222-8222-222222222222', invoiceNumber: 'INV-1', paymentMethod: 'bank_transfer', amount: '50.00', paymentDate: '2026-11-06', referenceNumber: null, notes: null, status: 'completed', currency: 'USD', baseCurrency: 'NZD', exchangeRate: '1.6', baseAmount: '80.00', bookBaseAmount: '80.00', exchangeDifference: '0.00', createdAt: '2026-11-06T00:00:00Z', updatedAt: '2026-11-06T00:00:00Z' };
+    const fetcher = vi.fn().mockResolvedValue(new Response(JSON.stringify(response), { status: 201 })); vi.stubGlobal('fetch', fetcher);
+    const input = { invoiceId: response.invoiceId, paymentMethod: 'bank_transfer' as const, amount: '50.00', paymentDate: '2026-11-06', referenceNumber: null, notes: null };
+    await expect(paymentsApi.create(input, 'saved-invoice-payment-key')).resolves.toMatchObject({ amount: 50, invoiceId: response.invoiceId });
+    expect(fetcher).toHaveBeenCalledWith('/api/payments', expect.objectContaining({ method: 'POST', body: JSON.stringify(input), headers: expect.objectContaining({ 'Idempotency-Key': 'saved-invoice-payment-key' }) }));
+  });
+
   it('keeps authoritative payment totals returned with an invoice', async () => {
     vi.stubGlobal('fetch', vi.fn().mockResolvedValue(new Response(JSON.stringify({ invoices: [{
       id: '22222222-2222-2222-2222-222222222222',

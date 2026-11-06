@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { gstPreparationResponseSchema, companyIncomeTaxPreparationResponseSchema } from './gst-preparation';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 
@@ -17,6 +18,13 @@ export const gstReconciliationSnapshotSchema = z.object({
 });
 
 export const irdReturnDataSchema = z.object({
+  preparation: z.object({
+    basis: z.enum(['invoice', 'payments']),
+    baseCurrency: z.literal('NZD'),
+    dueDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
+  }).optional(),
+  gstReview: gstPreparationResponseSchema.shape.review,
+  companyIncomeTax: companyIncomeTaxPreparationResponseSchema.optional(),
   gstReturn: z.object({
     salesDetails: z.object({
       standardRated: z.number(),

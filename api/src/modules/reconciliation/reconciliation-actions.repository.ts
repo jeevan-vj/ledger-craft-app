@@ -3,6 +3,7 @@ import { and, eq } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { bankReconciliationActionItems, bankReconciliationActions } from '../../db/schema/reconciliation-actions';
 import { roundMoney } from '../invoices/money';
+import { journalEntries } from '../../db/schema/accounts';
 
 type ActionRow = typeof bankReconciliationActions.$inferSelect;
 
@@ -67,4 +68,10 @@ export async function markActionReversed(tx: Database, organisationId: string, i
     status: 'reversed', reversalReason: reason, reversedAt: new Date(), updatedAt: new Date(),
   }).where(and(eq(bankReconciliationActions.organisationId, organisationId), eq(bankReconciliationActions.id, id))).returning();
   return row ? toDto(tx, row) : undefined;
+}
+
+export async function actionJournalReference(tx: Database, organisationId: string, journalEntryId: string) {
+  const [row] = await tx.select({ referenceType: journalEntries.referenceType, referenceId: journalEntries.referenceId, status: journalEntries.status }).from(journalEntries)
+    .where(and(eq(journalEntries.organisationId, organisationId), eq(journalEntries.id, journalEntryId)));
+  return row;
 }

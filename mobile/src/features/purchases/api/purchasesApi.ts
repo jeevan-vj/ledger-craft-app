@@ -1,5 +1,6 @@
 import { apiRequest } from '@/features/auth/api/http';
 import { randomId } from '@/utils/id';
+import type { CreateVendorRequest } from '@ledgercraft/contracts';
 
 export interface VendorDto {
   id: string;
@@ -78,6 +79,7 @@ export interface BillWriteRequest {
 }
 
 export interface RecordBillPaymentRequest {
+  exchangeRateId?: string;
   bankAccountId?: string;
   amount?: string;
   allocations?: { bankAccountId: string; amount: string }[];
@@ -122,6 +124,9 @@ export interface BankAccountDto {
 }
 
 export const purchasesApi = {
+  createVendor(input: CreateVendorRequest): Promise<VendorDto> {
+    return apiRequest('/api/vendors', { method: 'POST', body: JSON.stringify(input) });
+  },
   async listVendors(): Promise<VendorDto[]> {
     return (await apiRequest<{ vendors: VendorDto[] }>('/api/vendors', { method: 'GET' })).vendors;
   },
@@ -155,9 +160,10 @@ export const purchasesApi = {
   removeAttachment(id: string, attachmentId: string): Promise<void> {
     return apiRequest(`/api/bills/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
   },
-  recordPayment(id: string, input: RecordBillPaymentRequest): Promise<BillPaymentBatchDto> {
+  recordPayment(id: string, input: RecordBillPaymentRequest, key?: string): Promise<BillPaymentBatchDto> {
     return apiRequest(`/api/bills/${id}/payments`, {
       method: 'POST',
+      ...(key ? { headers: { 'Idempotency-Key': key } } : {}),
       body: JSON.stringify(input),
     });
   },

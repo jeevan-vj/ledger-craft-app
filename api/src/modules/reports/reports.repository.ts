@@ -2,10 +2,12 @@ import { and, asc, eq, gte, inArray, lt, lte, ne } from 'drizzle-orm';
 import type { FinancialReportQuery } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
-import { customers } from '../../db/schema/customers';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
-import { bills, vendors } from '../../db/schema/purchases';
+import { bills } from '../../db/schema/purchases';
+import { decimal } from '../invoices/money';
+import { historicalAgingDocuments } from './reports-aging.repository';
+import { exchangeRates } from '../../db/schema/currency';
 
 export type LedgerRow = {
   journalEntryId: string;
@@ -87,29 +89,11 @@ function normalBalance(accountClass: string) {
 }
 
 export async function receivables(tx: Database, organisationId: string, query: FinancialReportQuery) {
-  const conditions = [eq(invoices.organisationId, organisationId), lte(invoices.date, query.to)];
-  if (query.customerIds?.length) conditions.push(inArray(invoices.customerId, query.customerIds));
-  const rows = await tx.select({
-    id: invoices.id, number: invoices.invoiceNumber, partyId: invoices.customerId, partyName: customers.name,
-    issueDate: invoices.date, dueDate: invoices.dueDate, subtotal: invoices.subtotal, tax: invoices.taxAmount,
-    total: invoices.total, paid: invoices.totalPaid, balanceDue: invoices.balanceDue, currency: invoices.currency,
-    status: invoices.status,
-  }).from(invoices).innerJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
-    .where(and(...conditions));
-  return rows.filter((row) => row.status !== 'draft' && row.currency === query.baseCurrency);
+  return historicalAgingDocuments(tx, organisationId, query, 'invoice');
 }
 
 export async function payables(tx: Database, organisationId: string, query: FinancialReportQuery) {
-  const conditions = [eq(bills.organisationId, organisationId), lte(bills.issueDate, query.to)];
-  if (query.vendorIds?.length) conditions.push(inArray(bills.vendorId, query.vendorIds));
-  const rows = await tx.select({
-    id: bills.id, number: bills.billNumber, partyId: bills.vendorId, partyName: vendors.name,
-    issueDate: bills.issueDate, dueDate: bills.dueDate, subtotal: bills.subtotal, tax: bills.taxAmount,
-    total: bills.total, paid: bills.totalPaid, balanceDue: bills.balanceDue, currency: bills.currency,
-    status: bills.lifecycleStatus,
-  }).from(bills).innerJoin(vendors, and(eq(vendors.id, bills.vendorId), eq(vendors.organisationId, organisationId)))
-    .where(and(...conditions));
-  return rows.filter((row) => row.status === 'received' && row.currency === query.baseCurrency);
+  return historicalAgingDocuments(tx, organisationId, query, 'bill');
 }
 
 export async function account(tx: Database, organisationId: string, accountId: string) {
@@ -117,16 +101,39 @@ export async function account(tx: Database, organisationId: string, accountId: s
   return row ?? null;
 }
 
-/**
- * Ids of invoices, bills and expenses not denominated in the report's base
- * currency. Their journals carry document-currency amounts (no FX conversion at
- * posting time), so they must not be summed into a base-currency GST return.
- */
-export async function foreignCurrencyDocumentIds(tx: Database, organisationId: string, baseCurrency: string): Promise<Set<string>> {
-  const [invoiceRows, billRows, expenseRows] = await Promise.all([
-    tx.select({ id: invoices.id }).from(invoices).where(and(eq(invoices.organisationId, organisationId), ne(invoices.currency, baseCurrency))),
-    tx.select({ id: bills.id }).from(bills).where(and(eq(bills.organisationId, organisationId), ne(bills.currency, baseCurrency))),
-    tx.select({ id: expenses.id }).from(expenses).where(and(eq(expenses.organisationId, organisationId), ne(expenses.currency, baseCurrency))),
+/** Only legacy foreign postings that cannot be matched to a reviewed NZD
+ * source snapshot are excluded. Valid base-currency journals are already NZD;
+ * converting those again would double-count FX. */
+export async function unconvertedForeignCurrencyDocumentIds(tx: Database, organisationId: string, baseCurrency: string): Promise<Set<string>> {
+  return new Set((await unconvertedForeignCurrencyDocumentReferences(tx, organisationId, baseCurrency)).keys());
+}
+
+export async function unconvertedForeignCurrencyDocumentReferences(tx: Database, organisationId: string, baseCurrency: string): Promise<Map<string, string>> {
+  const [invoiceRows, billRows, expenseRows, rates] = await Promise.all([
+    tx.select({ id: invoices.id, baseTotal: invoices.baseTotal, baseCurrency: invoices.baseCurrency, rateId: invoices.exchangeRateId, currency: invoices.currency, rate: invoices.exchangeRate }).from(invoices).where(and(eq(invoices.organisationId, organisationId), ne(invoices.currency, baseCurrency))),
+    tx.select({ id: bills.id, baseTotal: bills.baseTotal, baseCurrency: bills.baseCurrency, rateId: bills.exchangeRateId, currency: bills.currency, rate: bills.exchangeRate }).from(bills).where(and(eq(bills.organisationId, organisationId), ne(bills.currency, baseCurrency))),
+    tx.select({ id: expenses.id, baseTotal: expenses.baseAmount, baseCurrency: expenses.baseCurrency, rateId: expenses.exchangeRateId, currency: expenses.currency, rate: expenses.exchangeRate }).from(expenses).where(and(eq(expenses.organisationId, organisationId), ne(expenses.currency, baseCurrency))),
+    tx.select().from(exchangeRates).where(eq(exchangeRates.organisationId, organisationId)),
   ]);
-  return new Set([...invoiceRows, ...billRows, ...expenseRows].map((row) => row.id));
+  const documents = [...invoiceRows.map(row => ({ ...row, kind: 'invoice' })), ...billRows.map(row => ({ ...row, kind: 'bill' })), ...expenseRows.map(row => ({ ...row, kind: 'expense' }))];
+  if (!documents.length) return new Map<string, string>();
+  const sourceEntries = await tx.select({ id: journalEntries.id, kind: journalEntries.referenceType, sourceId: journalEntries.referenceId, total: journalEntries.totalAmount }).from(journalEntries)
+    .where(and(eq(journalEntries.organisationId, organisationId), inArray(journalEntries.referenceType, ['invoice', 'bill', 'expense']), inArray(journalEntries.status, ['posted', 'reversed']), inArray(journalEntries.referenceId, documents.map(row => row.id))));
+  const references = new Map<string, string>();
+  for (const document of documents) {
+    const entries = sourceEntries.filter(row => row.kind === document.kind && row.sourceId === document.id);
+    const rate = rates.find(row => row.id === document.rateId && row.currencyCode === document.currency && row.baseCurrency === baseCurrency);
+    const safe = document.baseCurrency === baseCurrency && rate && decimal(rate.rate).compare(document.rate) === 0
+      && entries.every(entry => decimal(entry.total).compare(document.baseTotal) === 0);
+    if (!safe && entries.length) {
+      references.set(document.id, document.id);
+      // Expense reversals reference their retained original journal, not the
+      // source record. Keep both references excluded for unsafe legacy rows.
+      if (document.kind === 'expense') for (const entry of entries) references.set(entry.id, document.id);
+    }
+  }
+  // Deleted expenses retain their original/reversal journals and rate usage.
+  // Expense postings have always used baseAmount since snapshots were added;
+  // these retained base journals do not need a live source to remain eligible.
+  return references;
 }

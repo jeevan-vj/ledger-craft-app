@@ -8,7 +8,7 @@ import {
   type UpdateExpenseCategoryRequest,
   type UpdateExpenseRequest,
 } from '@ledgercraft/contracts';
-import { and, desc, eq } from 'drizzle-orm';
+import { and, desc, eq, inArray } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { accounts } from '../../db/schema/accounts';
 import { customers } from '../../db/schema/customers';
@@ -273,7 +273,7 @@ export async function deleteExpense(
   return deleted.length > 0;
 }
 
-export async function orgHasAccount(
+export async function orgHasSettlementAccount(
   tx: Database,
   organisationId: string,
   id: string,
@@ -281,7 +281,8 @@ export async function orgHasAccount(
   const [row] = await tx
     .select({ id: accounts.id })
     .from(accounts)
-    .where(and(eq(accounts.id, id), eq(accounts.organisationId, organisationId)));
+    .where(and(eq(accounts.id, id), eq(accounts.organisationId, organisationId),
+      inArray(accounts.type, ['bank', 'cash', 'credit_card', 'loan'])));
   return Boolean(row);
 }
 

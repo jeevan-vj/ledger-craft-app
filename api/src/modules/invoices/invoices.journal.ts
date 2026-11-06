@@ -4,6 +4,7 @@ import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
+import { invoices } from '../../db/schema/invoices';
 
 const DEFAULT_ACCOUNTS = [
   { number: '1200', name: 'Accounts Receivable', type: 'asset', accountClass: 'asset', normalBalance: 'debit' },
@@ -62,6 +63,13 @@ export async function postInvoiceJournal(
       eq(journalEntries.referenceId, input.invoiceId),
     ));
   if (existing) return;
+
+  // Journals are in the company base currency; document amounts stay foreign.
+  const [source] = await tx.select().from(invoices).where(and(eq(invoices.organisationId, ctx.organisationId), eq(invoices.id, input.invoiceId)));
+  if (source && source.currency !== source.baseCurrency) {
+    if (!source.exchangeRateId || decimal(source.baseTotal).compare(0) <= 0) throw new HTTPException(422, { message: 'A reviewed source exchange rate is required before posting this foreign invoice' });
+    input = { ...input, subtotal: source.baseSubtotal, taxAmount: source.baseTaxAmount, total: source.baseTotal };
+  }
 
   const arId = await getOrCreateAccount(tx, ctx, '1200');
   const gstId = await getOrCreateAccount(tx, ctx, '2200');
@@ -126,36 +134,24 @@ export async function postInvoiceReversalJournal(
   ctx: { organisationId: string; userId: string },
   input: { invoiceId: string; invoiceNumber: string; date: string; taxAmount: string; total: string },
 ): Promise<void> {
-  const [original] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(
-    eq(journalEntries.organisationId, ctx.organisationId),
-    eq(journalEntries.referenceType, 'invoice'),
-    eq(journalEntries.referenceId, input.invoiceId),
+  const [original] = await tx.select().from(journalEntries).where(and(
+    eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.referenceType, 'invoice'), eq(journalEntries.referenceId, input.invoiceId),
   ));
   if (!original) return;
-  const arId = await getOrCreateAccount(tx, ctx, '1200');
-  const gstId = await getOrCreateAccount(tx, ctx, '2200');
-  const salesId = await getOrCreateAccount(tx, ctx, '4000');
+  const sourceLines = await tx.select().from(journalEntryLines).where(and(
+    eq(journalEntryLines.organisationId, ctx.organisationId), eq(journalEntryLines.journalEntryId, original.id),
+  )).orderBy(asc(journalEntryLines.lineOrder));
   const [entry] = await tx.insert(journalEntries).values({
     organisationId: ctx.organisationId, userId: ctx.userId,
     entryNumber: await nextJournalEntryNumber(tx, ctx.organisationId, input.date),
     entryDate: input.date, description: `Cancellation of Invoice ${input.invoiceNumber}`,
     referenceType: 'invoice_cancellation', referenceId: input.invoiceId,
-    totalAmount: input.total, status: 'posted',
+    totalAmount: original.totalAmount, status: 'posted',
   }).returning();
   if (!entry) throw new HTTPException(500, { message: 'Failed to reverse invoice journal' });
-  const tax = decimal(input.taxAmount);
-  const sales = decimal(input.total).sub(tax).toFixed();
-  const lines = [
-    { accountId: salesId, description: `Reverse sales - Invoice ${input.invoiceNumber}`, debit: sales, credit: '0.00', order: 1 },
-    ...(tax.compare(0) > 0 ? [{ accountId: gstId, description: `Reverse GST - Invoice ${input.invoiceNumber}`, debit: input.taxAmount, credit: '0.00', order: 2 }] : []),
-    { accountId: arId, description: `Reverse receivable - Invoice ${input.invoiceNumber}`, debit: '0.00', credit: input.total, order: 3 },
-  ];
-  const debit = lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
-  const credit = lines.reduce((sum, line) => sum.add(line.credit), decimal(0));
-  if (debit.compare(credit) !== 0) throw new HTTPException(500, { message: 'Cancellation journal is unbalanced' });
-  for (const line of lines) await tx.insert(journalEntryLines).values({
+  for (const [index, line] of sourceLines.entries()) await tx.insert(journalEntryLines).values({
     organisationId: ctx.organisationId, journalEntryId: entry.id, accountId: line.accountId,
-    description: line.description, debitAmount: line.debit, creditAmount: line.credit, lineOrder: line.order,
+    description: `Reverse ${line.description ?? input.invoiceNumber}`, debitAmount: line.creditAmount, creditAmount: line.debitAmount, lineOrder: index + 1,
   });
 }
 
@@ -206,7 +202,7 @@ export async function postInvoiceRestoreJournal(
     description: `Restore Invoice ${input.invoiceNumber}`,
     referenceType: 'invoice_restore',
     referenceId: input.invoiceId,
-    totalAmount: input.total,
+    totalAmount: cancellation.totalAmount,
     status: 'posted',
   }).returning();
   if (!entry) throw new HTTPException(500, { message: 'Failed to restore invoice journal' });

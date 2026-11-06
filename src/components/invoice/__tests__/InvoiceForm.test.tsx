@@ -63,7 +63,7 @@ vi.mock('@/features/recurring/invoiceTemplate', () => ({
 vi.mock('@/components/ui/form', () => ({
   Form: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormControl: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormField: ({ children, render }: { children?: React.ReactNode; render?: any }) => 
+  FormField: ({ children, render }: { children?: React.ReactNode; render?: (props: { field: { value: string; onChange: ReturnType<typeof vi.fn> } }) => React.ReactNode }) =>
     render ? render({ field: { value: '', onChange: vi.fn() } }) : <div>{children}</div>,
   FormItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormLabel: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,

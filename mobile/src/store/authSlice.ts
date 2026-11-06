@@ -29,6 +29,7 @@ export interface AuthSlice {
   session: AuthSession | null;
   permissions: string[];
   loading: boolean;
+  initializationError: boolean;
   hasCompletedOnboarding: boolean;
   onboardingChecked: boolean;
   error: string | null;
@@ -88,6 +89,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   session: null,
   permissions: [],
   loading: true,
+  initializationError: false,
   hasCompletedOnboarding: false,
   onboardingChecked: false,
   error: null,
@@ -210,6 +212,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   setError: (error) => set({ error }),
 
   initialize: async () => {
+    set({ loading: true, initializationError: false, error: null });
     try {
       const me = await getMe();
       if (me) {
@@ -219,6 +222,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
           hasCompletedOnboarding: Boolean(profile),
           onboardingChecked: true,
           loading: false,
+          initializationError: false,
           error: null,
         });
         return;
@@ -235,8 +239,9 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
       console.error('Error initializing auth:', error);
       set({
         loading: false,
-        onboardingChecked: true,
-        error: 'Failed to initialize authentication',
+        onboardingChecked: false,
+        initializationError: true,
+        error: 'We could not check your session. Check your connection and try again.',
       });
     }
   },

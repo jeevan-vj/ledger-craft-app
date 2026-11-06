@@ -4,6 +4,7 @@ import { expenses } from './expenses';
 import { organisations, users } from './identity';
 import { invoices } from './invoices';
 import { payments } from './payments';
+import { billPayments } from './purchases';
 import { sql } from 'drizzle-orm';
 import { check, foreignKey, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
 
@@ -97,4 +98,15 @@ export const reconciliationAdjustments = sqliteTable('reconciliation_adjustments
   index('reconciliation_adjustments_org_idx').on(table.organisationId),
   foreignKey({ columns: [table.organisationId, table.reconciliationId], foreignColumns: [reconciliationSessions.organisationId, reconciliationSessions.id] }).onDelete('cascade'),
   foreignKey({ columns: [table.organisationId, table.journalEntryId], foreignColumns: [journalEntries.organisationId, journalEntries.id] }).onDelete('restrict'),
+]);
+
+/** Additive identity link: historical match rows and their foreign keys stay intact. */
+export const reconciliationSupplierPaymentLinks = sqliteTable('reconciliation_supplier_payment_links', {
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  matchId: text('match_id').notNull().primaryKey(),
+  billPaymentId: text('bill_payment_id').notNull(),
+}, (table) => [
+  index('reconciliation_supplier_payment_links_org_payment_idx').on(table.organisationId, table.billPaymentId),
+  foreignKey({ columns: [table.organisationId, table.matchId], foreignColumns: [reconciliationMatches.organisationId, reconciliationMatches.id] }).onDelete('cascade'),
+  foreignKey({ columns: [table.organisationId, table.billPaymentId], foreignColumns: [billPayments.organisationId, billPayments.id] }).onDelete('restrict'),
 ]);

@@ -128,9 +128,9 @@ const MinimalTemplate = ({
                     <td className="py-2 sm:py-3" style={{ color: theme.text }}>
                       {item.description}
                       {/* Cast item to any and check for details */}
-                      {((item as any).details) && (
+                      {(item.details) && (
                         <div className="text-xs break-words" style={{ color: theme.textLight }}>
-                          {(item as any).details}
+                          {item.details}
                         </div>
                       )}
                     </td>

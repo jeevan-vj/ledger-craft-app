@@ -1,3 +1,4 @@
+import type { SupabaseCustomer, SupabaseInvoice, SupabaseLineItem } from '../../shared/types';
 import type { CreateShareInvoiceRequest } from '@ledgercraft/contracts';
 import {
   invoicesApi,
@@ -65,7 +66,7 @@ export class InvoiceService {
       if (error) throw error;
 
       // Transform snake_case to camelCase
-      return (data || []).map((inv: any) => ({
+      return (data || []).map((inv: SupabaseInvoice & { customers?: Customer }) => ({
         id: inv.id,
         invoiceNumber: inv.invoice_number,
         customerId: inv.customer_id,
@@ -140,7 +141,7 @@ export class InvoiceService {
         customer: data.customers,
         date: data.date,
         dueDate: data.due_date,
-        items: (lineItems || []).map((item: any) => ({
+        items: (lineItems || []).map((item: SupabaseLineItem) => ({
           id: item.id,
           description: item.description,
           quantity: item.quantity,
@@ -338,7 +339,7 @@ export class InvoiceService {
 
       if (error) throw error;
 
-      return (data || []).map((customer: any) => ({
+      return (data || []).map((customer: SupabaseCustomer) => ({
         id: customer.id,
         name: customer.name,
         email: customer.email,
@@ -418,7 +419,7 @@ export class InvoiceService {
       const month = String(currentDate.getMonth() + 1).padStart(2, '0');
       const seq = String(nextSeq).padStart(4, '0');
       
-      let invoiceNumber = format
+      const invoiceNumber = format
         .replace('{YYYY}', year.toString())
         .replace('{MM}', month)
         .replace('{SEQ}', seq);

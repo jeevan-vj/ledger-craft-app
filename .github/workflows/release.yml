@@ -66,19 +66,12 @@ jobs:
           node-version: 24
           cache: pnpm
       - run: pnpm install --frozen-lockfile --ignore-scripts
-      - name: Lint (non-blocking until pre-existing errors are fixed)
-        continue-on-error: true
+      - name: Lint web
         run: pnpm lint
-      - name: Typecheck web against the current baseline
-        shell: bash
+      - name: Typecheck web
         run: |
-          set +e
-          : > "$RUNNER_TEMP/web-tsc.txt"
-          pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
-          pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
-          set -e
-          cat "$RUNNER_TEMP/web-tsc.txt"
-          node .github/scripts/ci-baseline-gate.mjs tsc "$RUNNER_TEMP/web-tsc.txt" 728
+          pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false
+          pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false
       # Local-only checks + Worker dry run; makes no cloud changes.
       - run: pnpm run deploy:check
 

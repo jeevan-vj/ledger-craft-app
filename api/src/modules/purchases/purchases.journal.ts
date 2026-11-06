@@ -5,7 +5,10 @@ import { HTTPException } from 'hono/http-exception';
 import { nextJournalEntryNumber } from '../accounting/entry-number';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
-import { decimal } from '../invoices/money';
+import { decimal, roundMoney } from '../invoices/money';
+import { exchangeDifferenceLine } from '../currency/settlement.service';
+import { bankLedgerAccount } from '../accounting/posting';
+import { getAccount as getBankAccount } from '../bank/bank.repository';
 
 type OrganisationContext = { organisationId: string; userId: string };
 const SYSTEM_ACCOUNTS = {
@@ -78,27 +81,37 @@ async function post(
 export async function postReceivedBill(tx: Database, ctx: OrganisationContext, bill: BillDto) {
   const payableId = await systemAccount(tx, ctx, '2100');
   const gstId = await systemAccount(tx, ctx, '2150');
+  const foreign = bill.currency !== bill.baseCurrency;
+  if (foreign && !bill.exchangeRateId) throw new HTTPException(422, { message: 'A reviewed source exchange rate is required before receiving this foreign bill' });
+  const total = foreign ? bill.baseTotal : bill.total;
+  const tax = foreign ? bill.baseTaxAmount : bill.taxAmount;
   const expenses = new Map<string, ReturnType<typeof decimal>>();
   for (const line of bill.lines) {
     if (!line.accountId) throw new HTTPException(400, { message: 'Every bill line needs an account before receiving' });
     expenses.set(line.accountId, (expenses.get(line.accountId) ?? decimal(0)).add(line.subtotal));
   }
-  const lines = [...expenses.entries()].map(([accountId, amount]) => ({
-    accountId,
-    description: `Expense - ${bill.billNumber}`,
-    debit: amount.toFixed(),
-    credit: '0.00',
-  }));
-  if (decimal(bill.taxAmount).compare(0) > 0) {
-    lines.push({ accountId: gstId, description: `GST - ${bill.billNumber}`, debit: bill.taxAmount, credit: '0.00' });
+  let allocated = decimal(0);
+  let sourceAllocated = decimal(0);
+  const netBase = decimal(total).sub(tax);
+  const lines = [...expenses.entries()].map(([accountId, amount]) => {
+    sourceAllocated = sourceAllocated.add(amount);
+    // Cumulative allocation conserves the base total without a negative final
+    // line when many tiny source categories individually round upward.
+    const cumulative = foreign ? decimal(bill.subtotal).compare(0) === 0 ? decimal(0) : decimal(roundMoney(netBase.mul(sourceAllocated).div(bill.subtotal))) : sourceAllocated;
+    const debit = roundMoney(cumulative.sub(allocated));
+    allocated = cumulative;
+    return { accountId, description: `Expense - ${bill.billNumber}`, debit, credit: '0.00' };
+  });
+  if (decimal(tax).compare(0) > 0) {
+    lines.push({ accountId: gstId, description: `GST - ${bill.billNumber}`, debit: tax, credit: '0.00' });
   }
-  lines.push({ accountId: payableId, description: `Accounts payable - ${bill.billNumber}`, debit: '0.00', credit: bill.total });
+  lines.push({ accountId: payableId, description: `Accounts payable - ${bill.billNumber}`, debit: '0.00', credit: total });
   await post(tx, ctx, {
     date: bill.issueDate,
     description: `Bill ${bill.billNumber}`,
     referenceType: 'bill',
     referenceId: bill.id,
-    total: bill.total,
+    total,
     lines,
   });
 }
@@ -110,16 +123,22 @@ export async function postBillPayment(
   payment: BillPaymentDto,
 ) {
   const payableId = await systemAccount(tx, ctx, '2100');
-  const bankId = await systemAccount(tx, ctx, '1110');
+  const bank = await getBankAccount(tx, ctx.organisationId, payment.bankAccountId);
+  if (!bank) throw new HTTPException(400, { message: 'Bank account not found' });
+  if (bank.currency !== bill.baseCurrency) throw new HTTPException(422, { message: 'Select a bank account in the company base currency for this settlement' });
+  const bankId = await bankLedgerAccount(tx, ctx, bank);
+  const baseAmount = payment.baseAmount ?? payment.amount;
+  const bookBaseAmount = payment.bookBaseAmount ?? payment.amount;
   await post(tx, ctx, {
     date: payment.paymentDate,
     description: `Payment for ${bill.billNumber}`,
     referenceType: 'bill_payment',
     referenceId: payment.id,
-    total: payment.amount,
+    total: decimal(baseAmount).compare(bookBaseAmount) >= 0 ? baseAmount : bookBaseAmount,
     lines: [
-      { accountId: payableId, description: `Payment for ${bill.billNumber}`, debit: payment.amount, credit: '0.00' },
-      { accountId: bankId, description: payment.bankAccountName, debit: '0.00', credit: payment.amount },
+      { accountId: payableId, description: `Payment for ${bill.billNumber}`, debit: bookBaseAmount, credit: '0.00' },
+      { accountId: bankId, description: payment.bankAccountName, debit: '0.00', credit: baseAmount },
+      ...await exchangeDifferenceLine(tx, ctx, 'bill', payment.exchangeDifference ?? '0'),
     ],
   });
 }
@@ -140,7 +159,7 @@ export async function reverseBill(tx: Database, ctx: OrganisationContext, bill: 
     description: `Void ${bill.billNumber}`,
     referenceType: 'bill_void',
     referenceId: bill.id,
-    total: bill.total,
+    total: source.totalAmount,
     lines: sourceLines.map((line) => ({
       accountId: line.accountId,
       description: `Reverse ${line.description ?? bill.billNumber}`,
@@ -168,7 +187,7 @@ export async function restoreBill(tx: Database, ctx: OrganisationContext, bill: 
     description: `Restore ${bill.billNumber}`,
     referenceType: 'bill_restore',
     referenceId: bill.id,
-    total: bill.total,
+    total: voidEntry.totalAmount,
     lines: voidLines.map((line) => ({
       accountId: line.accountId,
       description: `Restore ${line.description ?? bill.billNumber}`,

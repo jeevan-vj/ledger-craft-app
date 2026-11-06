@@ -1,0 +1,8 @@
+Platform: Linux x86_64
+Available: Java
+Unavailable: adb, emulator, sdkmanager, Android SDK, /dev/kvm, xcodebuild, xcrun
+Command: mobile/scripts/verify-device-accounting.sh "Net GST payable: $141.00" /tmp/mobile-native/payments-gst
+Exit: 2
+BLOCKED: adb is unavailable; no Android device verification was performed.
+Native iOS/Android device tests: NOT RUN; require installed signed app and authorized test device.
+Expo iOS/Android/web bundle export is a separate local build check.

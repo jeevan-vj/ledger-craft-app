@@ -1,0 +1,3031 @@
+{
+  "email": "mobile-business-1793966701955@example.test",
+  "platform": "Expo web Chromium 390x844",
+  "errors": [],
+  "profile": {
+    "id": "fc44cae4-f05f-4496-a259-f1acb1a082a3",
+    "name": "Kauri Mobile Studio Ltd",
+    "email": "mobile-business-1793966701955@example.test",
+    "phone": "+64210000001",
+    "address": null,
+    "city": null,
+    "state": null,
+    "zip": null,
+    "country": "New Zealand",
+    "taxId": null,
+    "logoUrl": null,
+    "website": null,
+    "defaultTaxRate": "15",
+    "gstRegistrationStatus": "registered",
+    "defaultTerms": null,
+    "paymentTermDays": 30,
+    "defaultNotes": null,
+    "bankInfo": null,
+    "bankAccountName": null,
+    "bankAccountNumber": null,
+    "theme": {
+      "primary": "#163300",
+      "secondary": "#3B4DE6",
+      "accent": "#4F63D7",
+      "text": "#1E293B",
+      "textLight": "#64748B",
+      "background": "#F5F6F3",
+      "surface": "#FFFFFF"
+    },
+    "invoiceNumberFormat": "INV-{YYYY}-{SEQ}",
+    "invoiceNumberSequence": 1,
+    "quoteNumberFormat": "QUO-{YYYY}-{SEQ}",
+    "quoteNumberSequence": 1,
+    "quoteValidityDays": 30,
+    "defaultQuoteKind": "quote",
+    "createdAt": "2026-11-06T12:05:05.000Z",
+    "updatedAt": "2026-11-06T12:05:05.000Z"
+  },
+  "sessionRecoveredWithoutSigningInAgain": true,
+  "creditLostResponseVerified": true,
+  "unpaidCredit": {
+    "credit": {
+      "id": "67a675a8-8ae2-41fb-8900-980042cdf55a",
+      "creditNoteNumber": "CN-2026-67A675A8",
+      "invoiceId": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "issueDate": "2026-11-06",
+      "reason": "Reviewed customer credit on unpaid invoice",
+      "status": "issued",
+      "reversalDate": null,
+      "reversalReason": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "subtotal": "200.00",
+      "taxAmount": "30.00",
+      "total": "230.00",
+      "baseTotal": "230.00",
+      "baseTaxAmount": "30.00",
+      "receivableAmount": "230.00",
+      "baseReceivableAmount": "230.00",
+      "customerCreditAmount": "0.00",
+      "baseCustomerCreditAmount": "0.00",
+      "baseCustomerCreditTaxAmount": "0.00",
+      "refundedAmount": "0.00",
+      "baseRefundedAmount": "0.00",
+      "refundAvailable": "0.00",
+      "items": [
+        {
+          "id": "bf8f7079-2c79-4e7e-8b28-d1ad2c746df5",
+          "description": "Reviewed service credit",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "200.00",
+          "rateUnit": "ea",
+          "tax": "30.00",
+          "total": "200.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "refunds": [],
+      "createdAt": "2026-11-06T12:05:13.000Z",
+      "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+    },
+    "invoice": {
+      "id": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "invoiceNumber": "INV-2026-0001",
+      "externalNumber": null,
+      "externalIssuerName": null,
+      "sourceImportDocumentId": null,
+      "thirdPartyIssued": false,
+      "externalId": null,
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "date": "2026-11-06",
+      "dueDate": "2026-11-06",
+      "paymentTermDays": 30,
+      "subtotal": "1000.00",
+      "taxAmount": "150.00",
+      "discountType": "fixed",
+      "discountPercent": null,
+      "discount": null,
+      "additionalCharges": null,
+      "additionalChargesTotal": "0.00",
+      "total": "1150.00",
+      "totalPaid": "0.00",
+      "totalCredited": "230.00",
+      "taxCredited": "30.00",
+      "baseCredited": "230.00",
+      "baseTaxCredited": "30.00",
+      "balanceDue": "920.00",
+      "paymentStatus": "partially_paid",
+      "taxInclusive": false,
+      "status": "sent",
+      "notes": null,
+      "terms": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "baseSubtotal": "1000.00",
+      "baseTaxAmount": "150.00",
+      "baseTotal": "1150.00",
+      "customerName": "Mobile Credit Customer",
+      "customerEmail": "credit@example.test",
+      "items": [
+        {
+          "id": "523df30e-516d-4b97-8a39-e832f3b30171",
+          "description": "Reviewed services",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "1000.00",
+          "rateUnit": "ea",
+          "tax": "150.00",
+          "total": "1000.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:09.000Z",
+      "updatedAt": "2026-11-06T12:05:13.404Z",
+      "archivedAt": null
+    },
+    "report": {
+      "meta": {
+        "from": "2026-01-01",
+        "to": "2026-11-06",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T12:05:17.320Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "920.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "200.00",
+            "credit": "1000.00",
+            "balance": "800.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "800.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "30.00",
+            "credit": "150.00",
+            "balance": "120.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "120.00"
+          }
+        ],
+        "totalDebits": "1380.00",
+        "totalCredits": "1380.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "200.00",
+            "credit": "1000.00",
+            "balance": "800.00"
+          }
+        ],
+        "revenue": "800.00",
+        "expenses": "0.00",
+        "netIncome": "800.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "30.00",
+            "credit": "150.00",
+            "balance": "120.00"
+          }
+        ],
+        "assets": "920.00",
+        "liabilities": "120.00",
+        "equity": "800.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [],
+        "openingCash": "0.00",
+        "inflows": "0.00",
+        "outflows": "0.00",
+        "netCashFlow": "0.00",
+        "closingCash": "0.00"
+      },
+      "receivablesAging": {
+        "total": "920.00",
+        "unallocatedControl": "0.00",
+        "current": "920.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": [
+          {
+            "id": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+            "number": "INV-2026-0001",
+            "partyId": "2716b782-80c2-462f-b126-217479aeebf9",
+            "partyName": "Mobile Credit Customer",
+            "issueDate": "2026-11-06",
+            "dueDate": "2026-11-06",
+            "balanceDue": "920.00",
+            "daysOverdue": 0,
+            "bucket": "current"
+          }
+        ]
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "1000.00",
+        "tax": "150.00",
+        "total": "1150.00",
+        "paid": "0.00",
+        "outstanding": "920.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "0.00",
+        "tax": "0.00",
+        "total": "0.00",
+        "paid": "0.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "120.00",
+        "paid": "0.00",
+        "netPayable": "120.00",
+        "outputGst": "120.00",
+        "inputGst": "0.00",
+        "netGst": "120.00",
+        "position": "payable",
+        "gstAccounts": [
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "30.00",
+            "credit": "150.00",
+            "balance": "120.00"
+          }
+        ],
+        "keyAccounts": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "30.00",
+            "credit": "150.00",
+            "balance": "120.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "200.00",
+            "credit": "1000.00",
+            "balance": "800.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "paidCredit": {
+    "credit": {
+      "id": "c56de9d0-6912-4c35-b6a4-abb3af59be7f",
+      "creditNoteNumber": "CN-2026-C56DE9D0",
+      "invoiceId": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "issueDate": "2026-11-06",
+      "reason": "Reviewed paid invoice service credit",
+      "status": "issued",
+      "reversalDate": null,
+      "reversalReason": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "subtotal": "200.00",
+      "taxAmount": "30.00",
+      "total": "230.00",
+      "baseTotal": "230.00",
+      "baseTaxAmount": "30.00",
+      "receivableAmount": "0.00",
+      "baseReceivableAmount": "0.00",
+      "customerCreditAmount": "230.00",
+      "baseCustomerCreditAmount": "230.00",
+      "baseCustomerCreditTaxAmount": "30.00",
+      "refundedAmount": "0.00",
+      "baseRefundedAmount": "0.00",
+      "refundAvailable": "230.00",
+      "items": [
+        {
+          "id": "3f42cf40-11d0-43b2-8e35-87a3c2b21d4e",
+          "description": "Reviewed service credit",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "200.00",
+          "rateUnit": "ea",
+          "tax": "30.00",
+          "total": "200.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "refunds": [],
+      "createdAt": "2026-11-06T12:05:22.000Z",
+      "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+    },
+    "invoice": {
+      "id": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "invoiceNumber": "INV-2026-0001",
+      "externalNumber": null,
+      "externalIssuerName": null,
+      "sourceImportDocumentId": null,
+      "thirdPartyIssued": false,
+      "externalId": null,
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "date": "2026-11-06",
+      "dueDate": "2026-11-06",
+      "paymentTermDays": 30,
+      "subtotal": "1000.00",
+      "taxAmount": "150.00",
+      "discountType": "fixed",
+      "discountPercent": null,
+      "discount": null,
+      "additionalCharges": null,
+      "additionalChargesTotal": "0.00",
+      "total": "1150.00",
+      "totalPaid": "1150.00",
+      "totalCredited": "230.00",
+      "taxCredited": "30.00",
+      "baseCredited": "230.00",
+      "baseTaxCredited": "30.00",
+      "balanceDue": "0.00",
+      "paymentStatus": "paid",
+      "taxInclusive": false,
+      "status": "paid",
+      "notes": null,
+      "terms": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "baseSubtotal": "1000.00",
+      "baseTaxAmount": "150.00",
+      "baseTotal": "1150.00",
+      "customerName": "Mobile Credit Customer",
+      "customerEmail": "credit@example.test",
+      "items": [
+        {
+          "id": "523df30e-516d-4b97-8a39-e832f3b30171",
+          "description": "Reviewed services",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "1000.00",
+          "rateUnit": "ea",
+          "tax": "150.00",
+          "total": "1000.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:09.000Z",
+      "updatedAt": "2026-11-06T12:05:22.907Z",
+      "archivedAt": null
+    }
+  },
+  "refundLostResponseVerified": true,
+  "refund": {
+    "credit": {
+      "id": "c56de9d0-6912-4c35-b6a4-abb3af59be7f",
+      "creditNoteNumber": "CN-2026-C56DE9D0",
+      "invoiceId": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "issueDate": "2026-11-06",
+      "reason": "Reviewed paid invoice service credit",
+      "status": "issued",
+      "reversalDate": null,
+      "reversalReason": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "subtotal": "200.00",
+      "taxAmount": "30.00",
+      "total": "230.00",
+      "baseTotal": "230.00",
+      "baseTaxAmount": "30.00",
+      "receivableAmount": "0.00",
+      "baseReceivableAmount": "0.00",
+      "customerCreditAmount": "230.00",
+      "baseCustomerCreditAmount": "230.00",
+      "baseCustomerCreditTaxAmount": "30.00",
+      "refundedAmount": "230.00",
+      "baseRefundedAmount": "230.00",
+      "refundAvailable": "0.00",
+      "items": [
+        {
+          "id": "3f42cf40-11d0-43b2-8e35-87a3c2b21d4e",
+          "description": "Reviewed service credit",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "200.00",
+          "rateUnit": "ea",
+          "tax": "30.00",
+          "total": "200.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "refunds": [
+        {
+          "id": "56fcee47-2028-42a8-9db5-b3d85c03e365",
+          "creditNoteId": "c56de9d0-6912-4c35-b6a4-abb3af59be7f",
+          "amount": "230.00",
+          "refundDate": "2026-11-06",
+          "bankAccountId": "e449c09c-720f-47b4-b5bd-981448005c4f",
+          "currency": "NZD",
+          "baseCurrency": "NZD",
+          "exchangeRate": "1",
+          "exchangeRateId": null,
+          "baseAmount": "230.00",
+          "bookBaseAmount": "230.00",
+          "exchangeDifference": "0.00",
+          "reference": null,
+          "status": "completed",
+          "reversalDate": null,
+          "reversalReason": null,
+          "createdAt": "2026-11-06T12:05:24.000Z",
+          "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:22.000Z",
+      "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+    },
+    "report": {
+      "meta": {
+        "from": "2026-01-01",
+        "to": "2026-11-06",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T12:05:28.225Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1200.00",
+            "balance": "800.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "800.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "180.00",
+            "balance": "120.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "120.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "230.00",
+            "credit": "230.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "920.00",
+            "closingCredit": "0.00"
+          }
+        ],
+        "totalDebits": "3220.00",
+        "totalCredits": "3220.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1200.00",
+            "balance": "800.00"
+          }
+        ],
+        "revenue": "800.00",
+        "expenses": "0.00",
+        "netIncome": "800.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "180.00",
+            "balance": "120.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "230.00",
+            "credit": "230.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00"
+          }
+        ],
+        "assets": "920.00",
+        "liabilities": "120.00",
+        "equity": "800.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00"
+          }
+        ],
+        "openingCash": "0.00",
+        "inflows": "1150.00",
+        "outflows": "230.00",
+        "netCashFlow": "920.00",
+        "closingCash": "920.00"
+      },
+      "receivablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "1000.00",
+        "tax": "150.00",
+        "total": "1150.00",
+        "paid": "1150.00",
+        "outstanding": "0.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "0.00",
+        "tax": "0.00",
+        "total": "0.00",
+        "paid": "0.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "120.00",
+        "paid": "0.00",
+        "netPayable": "120.00",
+        "outputGst": "120.00",
+        "inputGst": "0.00",
+        "netGst": "120.00",
+        "position": "payable",
+        "gstAccounts": [
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "180.00",
+            "balance": "120.00"
+          }
+        ],
+        "keyAccounts": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "180.00",
+            "balance": "120.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1200.00",
+            "balance": "800.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "230.00",
+            "balance": "920.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "reversedCredit": {
+    "credit": {
+      "id": "c56de9d0-6912-4c35-b6a4-abb3af59be7f",
+      "creditNoteNumber": "CN-2026-C56DE9D0",
+      "invoiceId": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "issueDate": "2026-11-06",
+      "reason": "Reviewed paid invoice service credit",
+      "status": "reversed",
+      "reversalDate": "2026-11-06",
+      "reversalReason": "Reverse customer credit after refund reversal",
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "subtotal": "200.00",
+      "taxAmount": "30.00",
+      "total": "230.00",
+      "baseTotal": "230.00",
+      "baseTaxAmount": "30.00",
+      "receivableAmount": "0.00",
+      "baseReceivableAmount": "0.00",
+      "customerCreditAmount": "230.00",
+      "baseCustomerCreditAmount": "230.00",
+      "baseCustomerCreditTaxAmount": "30.00",
+      "refundedAmount": "0.00",
+      "baseRefundedAmount": "0.00",
+      "refundAvailable": "0.00",
+      "items": [
+        {
+          "id": "3f42cf40-11d0-43b2-8e35-87a3c2b21d4e",
+          "description": "Reviewed service credit",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "200.00",
+          "rateUnit": "ea",
+          "tax": "30.00",
+          "total": "200.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "refunds": [
+        {
+          "id": "56fcee47-2028-42a8-9db5-b3d85c03e365",
+          "creditNoteId": "c56de9d0-6912-4c35-b6a4-abb3af59be7f",
+          "amount": "230.00",
+          "refundDate": "2026-11-06",
+          "bankAccountId": "e449c09c-720f-47b4-b5bd-981448005c4f",
+          "currency": "NZD",
+          "baseCurrency": "NZD",
+          "exchangeRate": "1",
+          "exchangeRateId": null,
+          "baseAmount": "230.00",
+          "bookBaseAmount": "230.00",
+          "exchangeDifference": "0.00",
+          "reference": null,
+          "status": "reversed",
+          "reversalDate": "2026-11-06",
+          "reversalReason": "Reverse test bank refund with retained audit trail",
+          "createdAt": "2026-11-06T12:05:24.000Z",
+          "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:22.000Z",
+      "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+    },
+    "invoice": {
+      "id": "6f51c32e-82b3-4381-b4cc-ea8181ebacf7",
+      "invoiceNumber": "INV-2026-0001",
+      "externalNumber": null,
+      "externalIssuerName": null,
+      "sourceImportDocumentId": null,
+      "thirdPartyIssued": false,
+      "externalId": null,
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "date": "2026-11-06",
+      "dueDate": "2026-11-06",
+      "paymentTermDays": 30,
+      "subtotal": "1000.00",
+      "taxAmount": "150.00",
+      "discountType": "fixed",
+      "discountPercent": null,
+      "discount": null,
+      "additionalCharges": null,
+      "additionalChargesTotal": "0.00",
+      "total": "1150.00",
+      "totalPaid": "1150.00",
+      "totalCredited": "0.00",
+      "taxCredited": "0.00",
+      "baseCredited": "0.00",
+      "baseTaxCredited": "0.00",
+      "balanceDue": "0.00",
+      "paymentStatus": "paid",
+      "taxInclusive": false,
+      "status": "paid",
+      "notes": null,
+      "terms": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "baseSubtotal": "1000.00",
+      "baseTaxAmount": "150.00",
+      "baseTotal": "1150.00",
+      "customerName": "Mobile Credit Customer",
+      "customerEmail": "credit@example.test",
+      "items": [
+        {
+          "id": "523df30e-516d-4b97-8a39-e832f3b30171",
+          "description": "Reviewed services",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "1000.00",
+          "rateUnit": "ea",
+          "tax": "150.00",
+          "total": "1000.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:09.000Z",
+      "updatedAt": "2026-11-06T12:05:29.946Z",
+      "archivedAt": null
+    },
+    "report": {
+      "meta": {
+        "from": "2026-01-01",
+        "to": "2026-11-06",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T12:05:30.253Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1400.00",
+            "balance": "1000.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "1000.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "210.00",
+            "balance": "150.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "230.00",
+            "balance": "1150.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "1150.00",
+            "closingCredit": "0.00"
+          }
+        ],
+        "totalDebits": "3680.00",
+        "totalCredits": "3680.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1400.00",
+            "balance": "1000.00"
+          }
+        ],
+        "revenue": "1000.00",
+        "expenses": "0.00",
+        "netIncome": "1000.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "210.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "230.00",
+            "balance": "1150.00"
+          }
+        ],
+        "assets": "1150.00",
+        "liabilities": "150.00",
+        "equity": "1000.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "230.00",
+            "balance": "1150.00"
+          }
+        ],
+        "openingCash": "0.00",
+        "inflows": "1380.00",
+        "outflows": "230.00",
+        "netCashFlow": "1150.00",
+        "closingCash": "1150.00"
+      },
+      "receivablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "1000.00",
+        "tax": "150.00",
+        "total": "1150.00",
+        "paid": "1150.00",
+        "outstanding": "0.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "0.00",
+        "tax": "0.00",
+        "total": "0.00",
+        "paid": "0.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "150.00",
+        "paid": "0.00",
+        "netPayable": "150.00",
+        "outputGst": "150.00",
+        "inputGst": "0.00",
+        "netGst": "150.00",
+        "position": "payable",
+        "gstAccounts": [
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "210.00",
+            "balance": "150.00"
+          }
+        ],
+        "keyAccounts": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "1380.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "60.00",
+            "credit": "210.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "400.00",
+            "credit": "1400.00",
+            "balance": "1000.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1380.00",
+            "credit": "230.00",
+            "balance": "1150.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "fullyCredited": {
+    "credit": {
+      "id": "2d7f3022-be35-4cbe-aade-9d1a60880d40",
+      "creditNoteNumber": "CN-2026-2D7F3022",
+      "invoiceId": "cf28d954-7175-4ae0-9682-d5a08d99d03b",
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "issueDate": "2026-11-06",
+      "reason": "Reviewed full credit without receiving cash",
+      "status": "issued",
+      "reversalDate": null,
+      "reversalReason": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "subtotal": "1000.00",
+      "taxAmount": "150.00",
+      "total": "1150.00",
+      "baseTotal": "1150.00",
+      "baseTaxAmount": "150.00",
+      "receivableAmount": "1150.00",
+      "baseReceivableAmount": "1150.00",
+      "customerCreditAmount": "0.00",
+      "baseCustomerCreditAmount": "0.00",
+      "baseCustomerCreditTaxAmount": "0.00",
+      "refundedAmount": "0.00",
+      "baseRefundedAmount": "0.00",
+      "refundAvailable": "0.00",
+      "items": [
+        {
+          "id": "43e4d8cc-e4b3-4e9c-b0dd-7ef36f1adad6",
+          "description": "Reviewed service credit",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "1000.00",
+          "rateUnit": "ea",
+          "tax": "150.00",
+          "total": "1000.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "refunds": [],
+      "createdAt": "2026-11-06T12:05:36.000Z",
+      "createdBy": "f007b2e5-5cd3-4751-976b-95842a53b812"
+    },
+    "invoice": {
+      "id": "cf28d954-7175-4ae0-9682-d5a08d99d03b",
+      "invoiceNumber": "INV-2026-0002",
+      "externalNumber": null,
+      "externalIssuerName": null,
+      "sourceImportDocumentId": null,
+      "thirdPartyIssued": false,
+      "externalId": null,
+      "customerId": "2716b782-80c2-462f-b126-217479aeebf9",
+      "date": "2026-11-06",
+      "dueDate": "2026-11-06",
+      "paymentTermDays": 30,
+      "subtotal": "1000.00",
+      "taxAmount": "150.00",
+      "discountType": "fixed",
+      "discountPercent": null,
+      "discount": null,
+      "additionalCharges": null,
+      "additionalChargesTotal": "0.00",
+      "total": "1150.00",
+      "totalPaid": "0.00",
+      "totalCredited": "1150.00",
+      "taxCredited": "150.00",
+      "baseCredited": "1150.00",
+      "baseTaxCredited": "150.00",
+      "balanceDue": "0.00",
+      "paymentStatus": "paid",
+      "taxInclusive": false,
+      "status": "paid",
+      "notes": null,
+      "terms": null,
+      "currency": "NZD",
+      "exchangeRate": "1",
+      "exchangeRateId": null,
+      "baseCurrency": "NZD",
+      "baseSubtotal": "1000.00",
+      "baseTaxAmount": "150.00",
+      "baseTotal": "1150.00",
+      "customerName": "Mobile Credit Customer",
+      "customerEmail": "credit@example.test",
+      "items": [
+        {
+          "id": "65e98cdc-1bfd-4653-91e4-a87fe80a66c7",
+          "description": "Reviewed services",
+          "quantity": "1.00",
+          "unit": "ea",
+          "rate": "1000.00",
+          "rateUnit": "ea",
+          "tax": "150.00",
+          "total": "1000.00",
+          "discountType": "fixed",
+          "discountValue": null,
+          "discountAmount": "0.00",
+          "taxes": [
+            {
+              "id": "default",
+              "name": "Tax",
+              "rate": "15.00"
+            }
+          ]
+        }
+      ],
+      "createdAt": "2026-11-06T12:05:30.000Z",
+      "updatedAt": "2026-11-06T12:05:36.777Z",
+      "archivedAt": null
+    }
+  },
+  "foreignReceipt": {
+    "payment": {
+      "id": "1571398d-86fa-4fcb-b426-1c138052f02a",
+      "invoiceId": "9976ca42-b666-46a2-afc6-b01efa5675a1",
+      "invoiceNumber": "INV-2026-0003",
+      "paymentMethod": "bank_transfer",
+      "amount": "100.00",
+      "currency": "USD",
+      "baseCurrency": "NZD",
+      "exchangeRate": "1.65",
+      "exchangeRateId": "577b04ad-1ac1-4251-aa52-2fa71153faf7",
+      "baseAmount": "165.00",
+      "bookBaseAmount": "160.00",
+      "exchangeDifference": "5.00",
+      "paymentDate": "2026-11-06",
+      "referenceNumber": null,
+      "notes": null,
+      "status": "completed",
+      "reversalReason": null,
+      "reversalDate": null,
+      "reversedAt": null,
+      "createdAt": "2026-11-06T12:05:43.000Z",
+      "updatedAt": "2026-11-06T12:05:43.000Z"
+    },
+    "report": {
+      "meta": {
+        "from": "2026-01-01",
+        "to": "2026-11-06",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T12:05:44.065Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "1160.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "230.00",
+            "balance": "1315.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "1315.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "5.00"
+          }
+        ],
+        "totalDebits": "6305.00",
+        "totalCredits": "6305.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          }
+        ],
+        "revenue": "1165.00",
+        "expenses": "0.00",
+        "netIncome": "1165.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "230.00",
+            "balance": "1315.00"
+          }
+        ],
+        "assets": "1315.00",
+        "liabilities": "150.00",
+        "equity": "1165.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "230.00",
+            "balance": "1315.00"
+          }
+        ],
+        "openingCash": "0.00",
+        "inflows": "1545.00",
+        "outflows": "230.00",
+        "netCashFlow": "1315.00",
+        "closingCash": "1315.00"
+      },
+      "receivablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "2160.00",
+        "tax": "300.00",
+        "total": "2460.00",
+        "paid": "1310.00",
+        "outstanding": "0.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "0.00",
+        "tax": "0.00",
+        "total": "0.00",
+        "paid": "0.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "150.00",
+        "paid": "0.00",
+        "netPayable": "150.00",
+        "outputGst": "150.00",
+        "inputGst": "0.00",
+        "netGst": "150.00",
+        "position": "payable",
+        "gstAccounts": [
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          }
+        ],
+        "keyAccounts": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "230.00",
+            "balance": "1315.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "foreignSupplier": {
+    "payment": {
+      "id": "ea8d9e19-9cee-4d27-9df4-7463d5bf9578",
+      "billId": "f6d480dd-830b-4cb0-b162-45e65ed8e2cd",
+      "bankAccountId": "e449c09c-720f-47b4-b5bd-981448005c4f",
+      "bankAccountName": "Credit operations account",
+      "amount": "100.00",
+      "currency": "USD",
+      "baseCurrency": "NZD",
+      "exchangeRate": "1.65",
+      "exchangeRateId": "577b04ad-1ac1-4251-aa52-2fa71153faf7",
+      "baseAmount": "165.00",
+      "bookBaseAmount": "160.00",
+      "exchangeDifference": "5.00",
+      "paymentDate": "2026-11-06",
+      "referenceNumber": null,
+      "notes": null,
+      "status": "completed",
+      "reversalReason": null,
+      "reversalDate": null,
+      "reversedAt": null,
+      "createdAt": "2026-11-06T12:05:49.000Z"
+    },
+    "report": {
+      "meta": {
+        "from": "2026-01-01",
+        "to": "2026-11-06",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T12:05:49.865Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "1160.00"
+          },
+          {
+            "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+            "accountNumber": "5000",
+            "accountName": "Operating Expenses",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "160.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "160.00",
+            "credit": "160.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "395.00",
+            "balance": "1150.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "1150.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "5.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "5.00"
+          }
+        ],
+        "totalDebits": "6630.00",
+        "totalCredits": "6630.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+            "accountNumber": "5000",
+            "accountName": "Operating Expenses",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00"
+          }
+        ],
+        "revenue": "1165.00",
+        "expenses": "165.00",
+        "netIncome": "1000.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "160.00",
+            "credit": "160.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+            "accountNumber": "2300",
+            "accountName": "Customer Credits",
+            "accountClass": "liability",
+            "debit": "460.00",
+            "credit": "460.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "395.00",
+            "balance": "1150.00"
+          }
+        ],
+        "assets": "1150.00",
+        "liabilities": "150.00",
+        "equity": "1000.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "395.00",
+            "balance": "1150.00"
+          }
+        ],
+        "openingCash": "0.00",
+        "inflows": "1545.00",
+        "outflows": "395.00",
+        "netCashFlow": "1150.00",
+        "closingCash": "1150.00"
+      },
+      "receivablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "unallocatedControl": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "2160.00",
+        "tax": "300.00",
+        "total": "2460.00",
+        "paid": "1310.00",
+        "outstanding": "0.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "160.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "150.00",
+        "paid": "0.00",
+        "netPayable": "150.00",
+        "outputGst": "150.00",
+        "inputGst": "0.00",
+        "netGst": "150.00",
+        "position": "payable",
+        "gstAccounts": [
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          }
+        ],
+        "keyAccounts": [
+          {
+            "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "2690.00",
+            "credit": "2690.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "160.00",
+            "credit": "160.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+            "accountNumber": "2200",
+            "accountName": "GST Collected on Sales",
+            "accountClass": "liability",
+            "debit": "210.00",
+            "credit": "360.00",
+            "balance": "150.00"
+          },
+          {
+            "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "1400.00",
+            "credit": "2560.00",
+            "balance": "1160.00"
+          },
+          {
+            "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+            "accountNumber": "5000",
+            "accountName": "Operating Expenses",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+            "accountNumber": "BANK-E449C09C",
+            "accountName": "Credit operations account",
+            "accountClass": "asset",
+            "debit": "1545.00",
+            "credit": "395.00",
+            "balance": "1150.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "revaluation": {
+    "asOfDate": "2026-11-06",
+    "reversalDate": "2026-11-07",
+    "baseCurrency": "NZD",
+    "positions": [
+      {
+        "documentType": "invoice",
+        "documentId": "13373ede-0cf2-497d-b2f7-a156e914eb83",
+        "documentNumber": "INV-2026-0004",
+        "currency": "USD",
+        "foreignOutstanding": "100.00",
+        "bookBaseAmount": "160.00",
+        "revaluedBaseAmount": "165.00",
+        "exchangeDifference": "5.00",
+        "exchangeRateId": "577b04ad-1ac1-4251-aa52-2fa71153faf7",
+        "exchangeRate": "1.65"
+      },
+      {
+        "documentType": "bill",
+        "documentId": "e4bf9c12-8237-4a3e-b2bb-1be9fe9d0279",
+        "documentNumber": "BILL-0002",
+        "currency": "USD",
+        "foreignOutstanding": "100.00",
+        "bookBaseAmount": "160.00",
+        "revaluedBaseAmount": "165.00",
+        "exchangeDifference": "5.00",
+        "exchangeRateId": "577b04ad-1ac1-4251-aa52-2fa71153faf7",
+        "exchangeRate": "1.65"
+      }
+    ],
+    "unrealizedGain": "5.00",
+    "unrealizedLoss": "5.00",
+    "warnings": [
+      "Reviewed book revaluation only. Original document rates and GST are unchanged; each adjustment reverses on the following day."
+    ],
+    "journalEntryIds": [
+      "8d10fe67-0391-4357-b010-0fc6788115d9",
+      "929c9750-07e1-425c-8a06-0df9bed46fec"
+    ],
+    "reversalJournalEntryIds": [
+      "41c93f81-1a2d-45b5-9cb7-aed4e8e22721",
+      "afe2b13e-f624-4cc2-9d2b-6de8768d1fe0"
+    ],
+    "replayed": false
+  },
+  "reportAfterRevaluation": {
+    "meta": {
+      "from": "2026-01-01",
+      "to": "2026-11-06",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T12:05:53.621Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2690.00",
+          "balance": "165.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "165.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1320.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "320.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "160.00",
+          "credit": "325.00",
+          "balance": "165.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "165.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "150.00"
+        },
+        {
+          "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "460.00",
+          "credit": "460.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1150.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "5.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "5.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "5.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "6960.00",
+      "totalCredits": "6960.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        }
+      ],
+      "revenue": "1330.00",
+      "expenses": "330.00",
+      "netIncome": "1000.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2690.00",
+          "balance": "165.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "160.00",
+          "credit": "325.00",
+          "balance": "165.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        },
+        {
+          "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "460.00",
+          "credit": "460.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "assets": "1315.00",
+      "liabilities": "315.00",
+      "equity": "1000.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "openingCash": "0.00",
+      "inflows": "1545.00",
+      "outflows": "395.00",
+      "netCashFlow": "1150.00",
+      "closingCash": "1150.00"
+    },
+    "receivablesAging": {
+      "total": "165.00",
+      "unallocatedControl": "0.00",
+      "current": "165.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "13373ede-0cf2-497d-b2f7-a156e914eb83",
+          "number": "INV-2026-0004",
+          "partyId": "2716b782-80c2-462f-b126-217479aeebf9",
+          "partyName": "Mobile Credit Customer",
+          "issueDate": "2026-11-05",
+          "dueDate": "2026-11-06",
+          "balanceDue": "165.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "165.00",
+      "unallocatedControl": "0.00",
+      "current": "165.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "e4bf9c12-8237-4a3e-b2bb-1be9fe9d0279",
+          "number": "BILL-0002",
+          "partyId": "b91f1493-2238-42fd-a25c-7e921c5a3d5c",
+          "partyName": "Mobile FX supplier",
+          "issueDate": "2026-11-05",
+          "dueDate": "2026-11-06",
+          "balanceDue": "165.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "2320.00",
+      "tax": "300.00",
+      "total": "2620.00",
+      "paid": "1310.00",
+      "outstanding": "165.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "320.00",
+      "tax": "0.00",
+      "total": "320.00",
+      "paid": "160.00",
+      "outstanding": "165.00"
+    },
+    "taxSummary": {
+      "collected": "150.00",
+      "paid": "0.00",
+      "netPayable": "150.00",
+      "outputGst": "150.00",
+      "inputGst": "0.00",
+      "netGst": "150.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2690.00",
+          "balance": "165.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "160.00",
+          "credit": "325.00",
+          "balance": "165.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        },
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "reportAfterScheduledReversal": {
+    "meta": {
+      "from": "2026-01-01",
+      "to": "2026-11-07",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T12:05:53.634Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2695.00",
+          "balance": "160.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "160.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1320.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "320.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "165.00",
+          "credit": "325.00",
+          "balance": "160.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "160.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "150.00"
+        },
+        {
+          "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "460.00",
+          "credit": "460.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1150.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "5.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "6970.00",
+      "totalCredits": "6970.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00"
+        }
+      ],
+      "revenue": "1325.00",
+      "expenses": "325.00",
+      "netIncome": "1000.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2695.00",
+          "balance": "160.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "165.00",
+          "credit": "325.00",
+          "balance": "160.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        },
+        {
+          "accountId": "41c469f9-8c5d-4663-8472-5d701c7cd0bb",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "460.00",
+          "credit": "460.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "assets": "1310.00",
+      "liabilities": "310.00",
+      "equity": "1000.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "openingCash": "0.00",
+      "inflows": "1545.00",
+      "outflows": "395.00",
+      "netCashFlow": "1150.00",
+      "closingCash": "1150.00"
+    },
+    "receivablesAging": {
+      "total": "160.00",
+      "unallocatedControl": "0.00",
+      "current": "0.00",
+      "days1To30": "160.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "13373ede-0cf2-497d-b2f7-a156e914eb83",
+          "number": "INV-2026-0004",
+          "partyId": "2716b782-80c2-462f-b126-217479aeebf9",
+          "partyName": "Mobile Credit Customer",
+          "issueDate": "2026-11-05",
+          "dueDate": "2026-11-06",
+          "balanceDue": "160.00",
+          "daysOverdue": 1,
+          "bucket": "1-30"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "160.00",
+      "unallocatedControl": "0.00",
+      "current": "0.00",
+      "days1To30": "160.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "e4bf9c12-8237-4a3e-b2bb-1be9fe9d0279",
+          "number": "BILL-0002",
+          "partyId": "b91f1493-2238-42fd-a25c-7e921c5a3d5c",
+          "partyName": "Mobile FX supplier",
+          "issueDate": "2026-11-05",
+          "dueDate": "2026-11-06",
+          "balanceDue": "160.00",
+          "daysOverdue": 1,
+          "bucket": "1-30"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "2320.00",
+      "tax": "300.00",
+      "total": "2620.00",
+      "paid": "1310.00",
+      "outstanding": "160.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "320.00",
+      "tax": "0.00",
+      "total": "320.00",
+      "paid": "160.00",
+      "outstanding": "160.00"
+    },
+    "taxSummary": {
+      "collected": "150.00",
+      "paid": "0.00",
+      "netPayable": "150.00",
+      "outputGst": "150.00",
+      "inputGst": "0.00",
+      "netGst": "150.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "985593f3-74a7-4c96-8ce3-55d08799b52d",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "2855.00",
+          "credit": "2695.00",
+          "balance": "160.00"
+        },
+        {
+          "accountId": "e8921294-75ae-449c-81a6-38577c0e06c5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "165.00",
+          "credit": "325.00",
+          "balance": "160.00"
+        },
+        {
+          "accountId": "576adb4d-73a2-4a9c-bf05-45e37ea6917e",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "210.00",
+          "credit": "360.00",
+          "balance": "150.00"
+        },
+        {
+          "accountId": "1a91ccd9-d288-4547-97e2-9e763e5247be",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "1400.00",
+          "credit": "2720.00",
+          "balance": "1320.00"
+        },
+        {
+          "accountId": "d5006d0c-99ec-462f-af99-dc59ee8a9066",
+          "accountNumber": "4200",
+          "accountName": "Realized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "5.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "93bc7a7e-5bd9-4a9e-b220-5177d8bf138a",
+          "accountNumber": "4201",
+          "accountName": "Unrealized Foreign Exchange Gain",
+          "accountClass": "revenue",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "cb6d3222-c091-4cb9-a5a7-72fb16140e9a",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "320.00",
+          "credit": "0.00",
+          "balance": "320.00"
+        },
+        {
+          "accountId": "3b3f58b2-e433-45ee-a31f-a8a391b19d75",
+          "accountNumber": "5200",
+          "accountName": "Realized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "0.00",
+          "balance": "5.00"
+        },
+        {
+          "accountId": "7a47dd4c-9bc9-40dd-91f3-339058ca6c2e",
+          "accountNumber": "5201",
+          "accountName": "Unrealized Foreign Exchange Loss",
+          "accountClass": "expense",
+          "debit": "5.00",
+          "credit": "5.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "2057e549-d794-415b-b382-da6adbdf47aa",
+          "accountNumber": "BANK-E449C09C",
+          "accountName": "Credit operations account",
+          "accountClass": "asset",
+          "debit": "1545.00",
+          "credit": "395.00",
+          "balance": "1150.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  }
+}

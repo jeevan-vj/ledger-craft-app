@@ -285,7 +285,7 @@ class AccountantWorkflowHelper {
     }
   }
 
-  private async addInvoiceItem(item: any, index: number) {
+  private async addInvoiceItem(item: AccountantTestScenario['invoiceScenarios'][number]['items'][number], index: number) {
     await this.page.click('[data-testid="add-item"]');
     await this.page.fill(`[data-testid="item-description-${index}"]`, item.description);
     await this.page.fill(`[data-testid="item-quantity-${index}"]`, item.quantity.toString());
@@ -296,7 +296,7 @@ class AccountantWorkflowHelper {
     }
   }
 
-  private async verifyInvoiceTaxCalculations(scenario: any) {
+  private async verifyInvoiceTaxCalculations(scenario: AccountantTestScenario['invoiceScenarios'][number]) {
     // Wait for calculations to update
     await this.page.waitForTimeout(1000);
     
@@ -309,7 +309,7 @@ class AccountantWorkflowHelper {
     expect(parseFloat(totalAmount || '0')).toBeCloseTo(scenario.expectedTotal, 2);
   }
 
-  private async validateGSTCalculations(taxPeriod: any) {
+  private async validateGSTCalculations(taxPeriod: AccountantTestScenario['taxPeriod']) {
     // Verify sales GST
     const salesGST = await this.page.textContent('[data-testid="gst-on-sales"]');
     expect(parseFloat(salesGST || '0')).toBeGreaterThan(0);

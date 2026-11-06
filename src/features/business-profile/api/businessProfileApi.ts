@@ -1,6 +1,6 @@
 import type { BusinessProfileDto, UpsertBusinessProfileRequest } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
-import type { BusinessProfile } from '@/types';
+import { DEFAULT_BUSINESS_THEME, type BusinessProfile } from '@/types';
 
 export function businessProfileApiEnabled(): boolean {
   return import.meta.env.VITE_BUSINESS_API !== 'false';
@@ -41,7 +41,7 @@ export function toProfile(dto: BusinessProfileDto): BusinessProfile {
     bankInfo: dto.bankInfo,
     bankAccountName: dto.bankAccountName,
     bankAccountNumber: dto.bankAccountNumber,
-    theme: dto.theme,
+    theme: dto.theme ? { ...DEFAULT_BUSINESS_THEME, ...dto.theme } : null,
     invoiceNumberFormat: dto.invoiceNumberFormat,
     invoiceNumberSequence: dto.invoiceNumberSequence,
     paymentTermDays: dto.paymentTermDays,

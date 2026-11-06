@@ -21,7 +21,9 @@ import { moneyToCents, decimal, roundMoney } from '../invoices/money';
 import * as repo from './payments.repository';
 import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
 import * as bankRepo from '../bank/bank.repository';
+import { hasActiveCreditNotes, latestActiveCreditNoteDate } from '../credit-notes/credit-notes.repository';
 import { postInvoiceJournal } from '../invoices/invoices.journal';
+import { assertOpenSettlementPeriod, exchangeDifferenceLine, settlementSnapshot } from '../currency/settlement.service';
 
 function paymentState(total: string, totalPaid: string, currentStatus: string) {
   const paid = decimal(totalPaid);
@@ -80,6 +82,9 @@ export async function createPaymentInTx(
 
   const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, input.invoiceId);
   if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
+  if (input.paymentDate < invoice.date) throw apiError(400, 'PAYMENT_PRECEDES_INVOICE', 'Record a customer advance as a liability; an invoice payment cannot precede its invoice date');
+  const creditDate = await latestActiveCreditNoteDate(tx, ctx.organisationId, invoice.id);
+  if (creditDate && input.paymentDate < creditDate) throw new HTTPException(409, { message: 'A payment cannot precede an already allocated credit note; review the credit note first' });
   if (invoice.paymentStatus === 'cancelled') {
     throw new HTTPException(400, { message: 'Cannot pay a cancelled invoice' });
   }
@@ -92,11 +97,17 @@ export async function createPaymentInTx(
     await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, invoice.id, 'sent');
   }
 
-  const payment = await repo.insertPayment(tx, ctx, input);
+  const snapshot = await settlementSnapshot(tx, ctx.organisationId, {
+    type: 'invoice', documentId: invoice.id, currency: invoice.currency, baseCurrency: invoice.baseCurrency,
+    total: invoice.total, baseTotal: invoice.baseTotal, amount: input.amount, date: input.paymentDate,
+    exchangeRateId: input.exchangeRateId, outstanding: invoice.balanceDue, baseCredited: invoice.baseCredited,
+  });
+  const payment = await repo.insertPayment(tx, ctx, input, snapshot);
   const totalPaid = roundMoney(await repo.sumCompletedPayments(tx, ctx.organisationId, invoice.id));
-  const remaining = decimal(invoice.total).sub(totalPaid);
+  const collectible = roundMoney(decimal(invoice.total).sub(invoice.totalCredited ?? '0'));
+  const remaining = decimal(collectible).sub(totalPaid);
   const balanceDue = roundMoney(remaining.compare(0) < 0 ? '0' : remaining);
-  const next = paymentState(invoice.total, totalPaid, invoice.status === 'draft' ? 'sent' : invoice.status);
+  const next = paymentState(collectible, totalPaid, invoice.status === 'draft' ? 'sent' : invoice.status);
   await invoicesRepo.applyPaymentTotals(tx, ctx.organisationId, invoice.id, {
     totalPaid,
     balanceDue,
@@ -107,6 +118,7 @@ export async function createPaymentInTx(
     const receivableId = await systemAccount(tx, ctx, '1200');
     const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
     const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
+    if (selectedBank && selectedBank.currency !== snapshot.baseCurrency) throw new HTTPException(422, { message: 'Select a bank account in the company base currency for this settlement' });
     let cashId: string;
     if (options?.clearingAccountNumber) cashId = await systemAccount(tx, ctx, options.clearingAccountNumber);
     else if (selectedBank) cashId = await bankLedgerAccount(tx, ctx, selectedBank);
@@ -116,8 +128,9 @@ export async function createPaymentInTx(
       description: `Payment for ${invoice.invoiceNumber}`,
       referenceType: 'invoice_payment', referenceId: payment.id,
       lines: [
-        { accountId: cashId, description: `Payment for ${invoice.invoiceNumber}`, debit: payment.amount, credit: '0' },
-        { accountId: receivableId, description: `Payment for ${invoice.invoiceNumber}`, debit: '0', credit: payment.amount },
+        { accountId: cashId, description: `Payment for ${invoice.invoiceNumber}`, debit: snapshot.baseAmount, credit: '0' },
+        { accountId: receivableId, description: `Payment for ${invoice.invoiceNumber}`, debit: '0', credit: snapshot.bookBaseAmount },
+        ...await exchangeDifferenceLine(tx, ctx, 'invoice', snapshot.exchangeDifference),
       ],
     });
   }
@@ -157,6 +170,8 @@ export async function reversePaymentInTx(
 
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, payment.invoiceId);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
+    if (await hasActiveCreditNotes(tx, ctx.organisationId, invoice.id)) throw new HTTPException(409, { message: 'Reverse the active credit notes before reversing an invoice payment' });
+    if (invoice.currency !== invoice.baseCurrency) await assertOpenSettlementPeriod(tx, ctx.organisationId, 'invoice', invoice.id, input.reversalDate);
     const reversed = await repo.reversePayment(tx, ctx, id, input);
     if (!reversed) {
       throw apiError(409, 'PAYMENT_NOT_REVERSIBLE', 'Payment is no longer reversible');
@@ -173,9 +188,10 @@ export async function reversePaymentInTx(
     }
 
     const totalPaid = roundMoney(await repo.sumCompletedPayments(tx, ctx.organisationId, invoice.id));
-    const remaining = decimal(invoice.total).sub(totalPaid);
+    const collectible = roundMoney(decimal(invoice.total).sub(invoice.totalCredited ?? '0'));
+    const remaining = decimal(collectible).sub(totalPaid);
     const balanceDue = roundMoney(remaining.compare(0) < 0 ? '0' : remaining);
-    const next = paymentState(invoice.total, totalPaid, invoice.status);
+    const next = paymentState(collectible, totalPaid, invoice.status);
     await invoicesRepo.applyPaymentTotals(tx, ctx.organisationId, invoice.id, {
       totalPaid,
       balanceDue,

@@ -126,11 +126,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   
   // Expose clear function globally for development
   if (typeof window !== 'undefined' && process.env.NODE_ENV === 'development') {
-    (window as any).clearAppInitialization = () => {
+    Object.assign(window, { clearAppInitialization: () => {
       clearInitialized();
       initializationRef.current = false;
       console.log('App initialization state cleared. Refresh to reinitialize.');
-    };
+    } });
   }
 
   // Define all fetch functions first (no useCallback needed for internal functions)

@@ -7,6 +7,7 @@ import type {
   ReversePaymentRequest,
   UpdateAccountRequest,
 } from '@ledgercraft/contracts';
+import { createPaymentRequestSchema, paymentSchema } from '@ledgercraft/contracts';
 import type { Account, AccountType } from '@/types';
 import { readApiFailure } from '@/lib/api/readApiError';
 import type { CreatePaymentRequest as ClientPaymentRequest, Payment } from '@/types/payment';
@@ -101,6 +102,7 @@ export function toCreatePaymentRequest(payment: ClientPaymentRequest): CreatePay
     paymentDate: payment.paymentDate,
     referenceNumber: payment.referenceNumber ?? null,
     notes: payment.notes ?? null,
+    ...(payment.exchangeRateId ? { exchangeRateId: payment.exchangeRateId } : {}),
   };
 }
 
@@ -120,10 +122,10 @@ export const paymentsApi = {
     }
   },
 
-  async create(input: CreatePaymentRequest): Promise<Payment> {
-    return toPayment(
-      await request<PaymentDto>('/api/payments', { method: 'POST', body: JSON.stringify(input) }),
-    );
+  async create(input: CreatePaymentRequest, idempotencyKey?: string): Promise<Payment> {
+    const body = createPaymentRequestSchema.parse(input);
+    const response = await request<unknown>('/api/payments', { method: 'POST', body: JSON.stringify(body), ...(idempotencyKey ? { headers: { 'Idempotency-Key': idempotencyKey } } : {}) });
+    return toPayment(paymentSchema.parse(response));
   },
 
   async reverse(id: string, input: ReversePaymentRequest): Promise<Payment> {

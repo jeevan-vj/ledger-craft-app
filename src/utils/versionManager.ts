@@ -77,7 +77,16 @@ export const isVersionOutdated = async (): Promise<boolean> => {
   }
 };
 
-// Force complete cache clear and reload
+function clearRefreshableStorage(storage: Storage): void {
+  const keys = Array.from({ length: storage.length }, (_, index) => storage.key(index));
+  for (const key of keys) {
+    // A deployment refresh must not erase the identity of a financial request
+    // whose response may have been lost after the server committed it.
+    if (key && !(key.startsWith('ledgercraft') && key.toLowerCase().includes('pending'))) storage.removeItem(key);
+  }
+}
+
+// Refresh application caches while retaining unresolved financial operations.
 export const forceRefresh = async (): Promise<void> => {
   // Clear all caches
   if ('caches' in window) {
@@ -95,9 +104,8 @@ export const forceRefresh = async (): Promise<void> => {
     );
   }
   
-  // Clear storage
-  localStorage.clear();
-  sessionStorage.clear();
+  clearRefreshableStorage(localStorage);
+  clearRefreshableStorage(sessionStorage);
   
   // Force reload with cache bypass
   window.location.reload();

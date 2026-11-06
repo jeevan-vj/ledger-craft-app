@@ -93,3 +93,9 @@ it('does not label a draft snapshot as Paid even if its balance is zero', async 
   expect(await screen.findByText('Recipient Ltd')).toBeInTheDocument();
   expect(screen.queryByLabelText('Payment status: Paid')).not.toBeInTheDocument();
 });
+it('shows cash-plus-credit settlement without calling the whole invoice Paid', async () => {
+  vi.mocked(invoicesApi.getShared).mockResolvedValue({ ...snapshot, invoiceData: { ...snapshot.invoiceData, status: 'paid', totalPaid: '92.00', totalCredited: '23.00', balanceDue: '0.00' } } as never);
+  mount();
+  expect(await screen.findByLabelText('Payment status: Settled with credits')).toHaveTextContent('Settled with credits');
+  expect(screen.queryByLabelText('Payment status: Paid')).not.toBeInTheDocument();
+});

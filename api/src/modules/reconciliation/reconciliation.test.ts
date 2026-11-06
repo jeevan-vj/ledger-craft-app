@@ -122,7 +122,7 @@ describe('reconciliation routes', () => {
             statementStartDate: '2026-09-01',
             statementEndDate: '2026-09-30',
             statementOpeningBalance: '0.00',
-            statementClosingBalance: '0.00',
+            statementClosingBalance: '-79.00',
           }),
         });
         expect(sessionRes.status).toBe(201);

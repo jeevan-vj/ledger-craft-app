@@ -92,6 +92,7 @@ export function remainingAfterPayment(balanceDue: string, amount: string): strin
 }
 
 export function paymentFingerprint(input: {
+  exchangeRateId?: string;
   invoiceId: string;
   amount: string;
   paymentMethod: string;
@@ -106,6 +107,7 @@ export function paymentFingerprint(input: {
     paymentDate: input.paymentDate.trim(),
     referenceNumber: input.referenceNumber.trim(),
     notes: input.notes.trim(),
+    ...(input.exchangeRateId ? { exchangeRateId: input.exchangeRateId } : {}),
   });
 }
 
@@ -142,8 +144,8 @@ export function mapPaymentError(error: unknown, online: boolean): PaymentFailure
   if (apiError?.status === 409 && apiError.code === 'IDEMPOTENCY_CONFLICT') {
     return {
       kind: 'idempotency_conflict',
-      resetKey: true,
-      message: 'This payment attempt conflicted with a different request. Check the details and try again.',
+      resetKey: false,
+      message: 'This payment attempt conflicted with a different request. Review the invoice and saved attempt before retrying; do not record it as a new payment.',
     };
   }
   if (error instanceof Error && error.message.trim()) {
@@ -153,6 +155,7 @@ export function mapPaymentError(error: unknown, online: boolean): PaymentFailure
 }
 
 export interface PaymentAttemptFields {
+  exchangeRateId?: string;
   invoiceId: string;
   amount: string;
   paymentMethod: string;
@@ -164,6 +167,8 @@ export interface PaymentAttemptFields {
 const pendingKeys = new Map<string, Map<string, string>>();
 const latestAttempts = new Map<string, { fingerprint: string; fields: PaymentAttemptFields }>();
 const inFlightInvoices = new Set<string>();
+
+export function paymentAttemptInFlight(scope: string): boolean { return inFlightInvoices.has(scope); }
 
 export function resetPaymentAttemptStore() {
   pendingKeys.clear();

@@ -1,3 +1,4 @@
+import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
 import React from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
@@ -149,7 +150,7 @@ const Invoices = () => {
     setStatusLoading((prev) => ({ ...prev, [id]: true }));
     const prevInvoice = invoices.find(i => i.id === id);
     try {
-      await updateInvoiceStatus(id, newStatus as any);
+      await updateInvoiceStatus(id, newStatus as InvoiceStatus);
       toast({ title: 'Status updated', description: `Invoice status changed to ${newStatus}.` });
       // Force refresh from database after status update
       await refreshInvoices();
@@ -189,6 +190,7 @@ const Invoices = () => {
         description: 'Could not record payment. Please try again.', 
         variant: 'destructive' 
       });
+      throw error;
     } finally {
       setRecordingPayment(false);
     }
@@ -225,16 +227,18 @@ const Invoices = () => {
     switch (range) {
       case 'today':
         return invoiceDateObj.toDateString() === now.toDateString();
-      case 'week':
+      case 'week': {
         const weekStart = new Date(now.setDate(now.getDate() - now.getDay()));
         const weekEnd = new Date(now.setDate(now.getDate() - now.getDay() + 6));
         return invoiceDateObj >= weekStart && invoiceDateObj <= weekEnd;
+      }
       case 'month':
         return invoiceDateObj.getMonth() === now.getMonth() && invoiceDateObj.getFullYear() === now.getFullYear();
-      case 'quarter':
+      case 'quarter': {
         const quarter = Math.floor(now.getMonth() / 3);
         const invoiceQuarter = Math.floor(invoiceDateObj.getMonth() / 3);
         return quarter === invoiceQuarter && invoiceDateObj.getFullYear() === now.getFullYear();
+      }
       case 'year':
         return invoiceDateObj.getFullYear() === now.getFullYear();
       case 'overdue':
@@ -245,7 +249,7 @@ const Invoices = () => {
   };
 
   const filteredAndSortedInvoices = useMemo(() => {
-    let filtered = invoices.filter((invoice) => {
+    const filtered = invoices.filter((invoice) => {
       // Search filter
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
@@ -284,16 +288,16 @@ const Invoices = () => {
 
     // Sort filtered results
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: string | number, bValue: string | number;
       
       switch (filters.sortBy) {
         case 'date':
-          aValue = new Date(a.date);
-          bValue = new Date(b.date);
+          aValue = new Date(a.date).getTime();
+          bValue = new Date(b.date).getTime();
           break;
         case 'dueDate':
-          aValue = new Date(a.dueDate);
-          bValue = new Date(b.dueDate);
+          aValue = new Date(a.dueDate).getTime();
+          bValue = new Date(b.dueDate).getTime();
           break;
         case 'amount':
           aValue = a.total;
@@ -308,12 +312,12 @@ const Invoices = () => {
           bValue = b.status;
           break;
         case 'createdAt':
-          aValue = new Date(a.createdAt);
-          bValue = new Date(b.createdAt);
+          aValue = new Date(a.createdAt).getTime();
+          bValue = new Date(b.createdAt).getTime();
           break;
         default:
-          aValue = new Date(a.createdAt);
-          bValue = new Date(b.createdAt);
+          aValue = new Date(a.createdAt).getTime();
+          bValue = new Date(b.createdAt).getTime();
       }
 
       if (filters.sortOrder === 'asc') {
@@ -326,7 +330,7 @@ const Invoices = () => {
     return filtered;
   }, [invoices, filters]);
 
-  const updateFilter = (key: keyof InvoiceFilters, value: any) => {
+  const updateFilter = <Key extends keyof InvoiceFilters,>(key: Key, value: InvoiceFilters[Key]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
@@ -502,7 +506,7 @@ const Invoices = () => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Sort By</label>
                     <div className="flex gap-2">
-                      <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
+                      <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value as InvoiceFilters['sortBy'])}>
                         <SelectTrigger className="flex-1">
                           <SelectValue />
                         </SelectTrigger>
@@ -629,7 +633,7 @@ const Invoices = () => {
                         disabled={statusLoading[invoice.id]}
                       >
                         <SelectTrigger className={`px-2 py-1 text-xs rounded-full border min-w-[100px] ${getStatusColor(invoice.status)}`}> 
-                          <SelectValue />
+                          <SelectValue>{settlementLabel(invoice) ?? undefined}</SelectValue>
                           {statusLoading[invoice.id] && <Loader2 className="animate-spin w-4 h-4 text-muted-foreground ml-2" />}
                         </SelectTrigger>
                         <SelectContent>
@@ -710,6 +714,7 @@ const Invoices = () => {
                   >
                     <Share2 size={16} />
                   </Button>
+                  <Button variant="outline" size="sm" onClick={() => { setInvoiceForPayment(invoice); setPaymentCaptureOpen(true); }}>Recover payment</Button>
                   {(invoice.status === 'sent' || invoice.status === 'overdue') && (
                     <Button
                       variant="ghost"
@@ -765,7 +770,7 @@ const Invoices = () => {
                             disabled={statusLoading[invoice.id]}
                           >
                             <SelectTrigger className={`px-2 py-1 text-xs rounded-full border min-w-[100px] ${getStatusColor(invoice.status)}`}>
-                              <SelectValue />
+                              <SelectValue>{settlementLabel(invoice) ?? undefined}</SelectValue>
                               {statusLoading[invoice.id] && <Loader2 className="animate-spin w-4 h-4 text-muted-foreground ml-2" />}
                             </SelectTrigger>
                             <SelectContent>
@@ -818,6 +823,7 @@ const Invoices = () => {
                         >
                           <Share2 size={16} />
                         </Button>
+                        <Button variant="outline" size="sm" onClick={() => { setInvoiceForPayment(invoice); setPaymentCaptureOpen(true); }}>Recover payment</Button>
                         {(invoice.status === 'sent' || invoice.status === 'overdue') && (
                           <Button
                             variant="ghost"
@@ -899,6 +905,7 @@ const Invoices = () => {
           onOpenChange={setPaymentCaptureOpen}
           invoice={invoiceForPayment}
           onPaymentRecord={handlePaymentRecord}
+          onPaymentRecovered={async () => { await refreshInvoices(); setPaymentCaptureOpen(false); setInvoiceForPayment(null); }}
           isLoading={recordingPayment}
         />
       )}

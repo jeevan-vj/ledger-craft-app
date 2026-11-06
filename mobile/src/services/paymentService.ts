@@ -14,6 +14,7 @@ export class PaymentService {
     }
     return paymentsApi.create({
       invoiceId: paymentData.invoiceId,
+      ...(paymentData.exchangeRateId ? { exchangeRateId: paymentData.exchangeRateId } : {}),
       paymentMethod: paymentData.paymentMethod,
       amount: paymentData.amount,
       paymentDate: paymentData.paymentDate,

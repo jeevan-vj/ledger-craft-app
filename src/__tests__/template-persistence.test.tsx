@@ -80,7 +80,7 @@ vi.mock('@/hooks/useAppData', () => ({
 vi.mock('@/components/ui/form', () => ({
   Form: ({ children }: { children: React.ReactNode }) => <div data-testid="form">{children}</div>,
   FormControl: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormField: ({ children, render }: { children?: React.ReactNode; render?: any }) => 
+  FormField: ({ children, render }: { children?: React.ReactNode; render?: (props: { field: { value: string; onChange: ReturnType<typeof vi.fn> } }) => React.ReactNode }) =>
     render ? render({ field: { value: '', onChange: vi.fn() } }) : <div>{children}</div>,
   FormItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormLabel: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
@@ -98,7 +98,7 @@ vi.mock('@/components/ui/tabs', () => ({
 }));
 
 vi.mock('@/components/invoice/preview/InvoicePreview', () => ({
-  default: ({ selectedTemplate, invoice }: { selectedTemplate: string; invoice: any }) => (
+  default: ({ selectedTemplate, invoice }: { selectedTemplate: string; invoice: Invoice }) => (
     <div data-testid="invoice-preview" data-template={selectedTemplate} data-invoice-id={invoice?.id}>
       Preview using template: {selectedTemplate}
       {invoice && <div data-testid="invoice-data">Invoice: {invoice.invoiceNumber}</div>}
@@ -107,8 +107,8 @@ vi.mock('@/components/invoice/preview/InvoicePreview', () => ({
 }));
 
 vi.mock('@/components/invoice/templates/TemplateSelector', () => ({
-  default: ({ selectedTemplate, onSelectTemplate }: { 
-    selectedTemplate: string; 
+  default: ({ selectedTemplate, onSelectTemplate }: {
+    selectedTemplate: string;
     onSelectTemplate: (template: string) => void;
   }) => (
     <div data-testid="template-selector" data-selected={selectedTemplate}>
@@ -243,7 +243,7 @@ describe('Template Persistence Tests', () => {
 
     it('should use saved template in edit mode - modern template', async () => {
       const invoiceWithModernTemplate = createMockInvoice('modern');
-      
+
       const props = {
         mode: 'edit' as const,
         initialValues: invoiceWithModernTemplate,
@@ -270,7 +270,7 @@ describe('Template Persistence Tests', () => {
 
     it('should use saved template in edit mode - corporate template', async () => {
       const invoiceWithCorporateTemplate = createMockInvoice('corporate');
-      
+
       const props = {
         mode: 'edit' as const,
         initialValues: invoiceWithCorporateTemplate,
@@ -297,7 +297,7 @@ describe('Template Persistence Tests', () => {
 
     it('should default to classic when templateName is undefined in edit mode', async () => {
       const invoiceWithoutTemplate = createMockInvoice(undefined);
-      
+
       const props = {
         mode: 'edit' as const,
         initialValues: invoiceWithoutTemplate,
@@ -427,7 +427,7 @@ describe('Template Persistence Tests', () => {
     it('should handle null templateName gracefully', () => {
       const invoiceWithNullTemplate = {
         ...createMockInvoice(),
-        templateName: null as any,
+        templateName: null as unknown as Invoice['templateName'],
       };
 
       mockAppContext.invoices = [invoiceWithNullTemplate];
@@ -445,7 +445,7 @@ describe('Template Persistence Tests', () => {
     it('should handle invalid templateName gracefully', async () => {
       const invoiceWithInvalidTemplate = {
         ...createMockInvoice(),
-        templateName: 'invalid-template' as any,
+        templateName: 'invalid-template' as Invoice['templateName'],
       };
 
       const invoicePreview = await renderPublicInvoice(invoiceWithInvalidTemplate);

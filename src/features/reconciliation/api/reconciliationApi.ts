@@ -6,7 +6,8 @@ import type {
   ReconciliationAdjustmentDto,
   ReconciliationMatchDto,
   ReconciliationSessionDto,
-  ReconciliationSessionListResponse,
+  ReconciliationSummaryDto,
+
 } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
 import type {
@@ -15,11 +16,12 @@ import type {
   ReconciliationMatch,
   ReconciliationSession,
   ReconciliationSetup,
+  ReconciliationSummary,
   SuggestedMatch,
 } from '@/types/reconciliation';
 
 export function reconciliationApiEnabled(): boolean {
-  return import.meta.env.VITE_RECONCILIATION_API === 'true';
+  return import.meta.env.VITE_RECONCILIATION_API !== 'false';
 }
 
 export class ReconciliationApiError extends Error {
@@ -70,6 +72,7 @@ export function toMatch(dto: ReconciliationMatchDto): ReconciliationMatch {
     bankTransactionId: dto.bankTransactionId,
     invoiceId: dto.invoiceId,
     paymentId: dto.paymentId,
+    billPaymentId: dto.billPaymentId,
     expenseId: dto.expenseId,
     journalEntryId: dto.journalEntryId,
     matchType: dto.matchType,
@@ -148,9 +151,21 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const reconciliationApi = {
+  async getSummary(id: string): Promise<ReconciliationSummary> {
+    const dto = await request<ReconciliationSummaryDto>(`/api/reconciliation-sessions/${id}/summary`);
+    return {
+      session: toSession(dto.session), bankAccountName: dto.bankAccountName, bankName: dto.bankName,
+      bankBalance: Number(dto.bankBalance), adjustedBankBalance: Number(dto.adjustedBankBalance),
+      bookBalance: Number(dto.bookBalance), adjustedBookBalance: Number(dto.adjustedBookBalance),
+      outstandingDeposits: dto.outstandingDeposits.map(toAdjustment), outstandingChecks: dto.outstandingChecks.map(toAdjustment),
+      otherAdjustments: dto.otherAdjustments.map(toAdjustment), totalOutstandingDeposits: Number(dto.totalOutstandingDeposits),
+      totalOutstandingChecks: Number(dto.totalOutstandingChecks), totalOtherAdjustments: Number(dto.totalOtherAdjustments),
+      finalDifference: Number(dto.finalDifference), isReconciled: dto.isReconciled,
+    };
+  },
   async listSessions(bankAccountId?: string): Promise<ReconciliationSession[]> {
     const query = bankAccountId ? `?bankAccountId=${encodeURIComponent(bankAccountId)}` : '';
-    const body = await request<ReconciliationSessionListResponse>(`/api/reconciliation-sessions${query}`);
+    const body = await request<{ sessions: ReconciliationSessionDto[] }>(`/api/reconciliation-sessions${query}`);
     return body.sessions.map(toSession);
   },
 

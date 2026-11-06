@@ -41,7 +41,7 @@ export function RevolutBalanceCard({
       <div className="relative p-6 md:p-8">
         {/* Account Type Tabs */}
         {onAccountTypeChange && (
-          <Tabs value={accountType} onValueChange={(value) => onAccountTypeChange(value as any)} className="mb-6">
+          <Tabs value={accountType} onValueChange={(value) => onAccountTypeChange(value as 'personal' | 'business' | 'all')} className="mb-6">
             <TabsList className="bg-white/10 backdrop-blur-sm border-0">
               <TabsTrigger 
                 value="personal" 

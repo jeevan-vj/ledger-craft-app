@@ -6,9 +6,8 @@
  * before/after behaviour; by default nothing is written. System-dated actions
  * (cancel, void, restore) run under a frozen clock so the suite is date-independent.
  *
- * Credit notes are not a Hono accounting document in the current contracts or
- * API. The legacy web GST preparation form has a manual credit-note adjustment,
- * so no credit-note posting scenario is asserted here.
+ * Credit-note documents now post through Hono with source caps, receivable and
+ * customer-credit allocations, bounded refunds and immutable reversal journals.
  */
 import { mkdir, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -204,9 +203,29 @@ function expectGst(report: Json, output: string, input: string, net: string, pos
 describe('NZ GST journals and IRD reporting scenario', () => {
   afterEach(() => vi.useRealTimers());
 
-  it.skip('posts credit-note GST adjustments (no Hono credit-note accounting document exists yet)', () => {
-    // Enable this scenario when credit notes have a server-side document,
-    // posting route, and reversal semantics rather than only a manual web field.
+  it('posts a real credit-note GST adjustment and reverses it without rewriting the source invoice', async () => {
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const org = await setUpOrganisation(app, 'GST Credit Note');
+        const invoice = await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-04-05', amount: '1000.00', description: 'Consulting services' });
+        const credit = await requestJson(app, '/api/credit-notes', { method: 'POST', headers: { ...org.headers, 'Idempotency-Key': crypto.randomUUID() }, body: JSON.stringify({ invoiceId: invoice.id, issueDate: '2026-04-10', reason: 'Agreed service credit for customer', taxInclusive: false, taxRate: '15', items: [{ description: 'Service credit', quantity: '1', rate: '200' }] }) }, 201);
+        const credited = await financialReport(app, org.cookie);
+        expectGst(credited, '120.00', '0.00', '120.00', 'payable');
+        expect(credited.profitLoss).toMatchObject({ revenue: '800.00', netIncome: '800.00' });
+        const ledger = await generalLedger(app, org.cookie);
+        expect(linesFor(ledger, 'credit_note', credit.id)).toEqual(expect.arrayContaining([
+          expect.objectContaining({ accountNumber: '4000', debit: '200.00', credit: '0.00' }),
+          expect.objectContaining({ accountNumber: '2200', debit: '30.00', credit: '0.00' }),
+          expect.objectContaining({ accountNumber: '1200', debit: '0.00', credit: '230.00' }),
+        ]));
+        await requestJson(app, `/api/credit-notes/${credit.id}/reverse`, { method: 'POST', headers: org.headers, body: JSON.stringify({ date: '2026-05-01', reason: 'Credit agreement withdrawn by customer' }) }, 200);
+        expectGst(await financialReport(app, org.cookie), '150.00', '0.00', '150.00', 'payable');
+        const original = await requestJson(app, `/api/invoices/${invoice.id}`, { headers: org.headers }, 200);
+        expect(original).toMatchObject({ total: '1150.00', totalCredited: '0.00', balanceDue: '1150.00' });
+      } finally { await sql.end(); }
+    });
   });
 
   it('posts exact 15% NZD journals and derives the selected-period GST position from the ledger', async () => {
@@ -291,7 +310,7 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         ]));
         expect(linesFor(ledger, 'bill_payment', billPayment.payments[0].id)).toEqual(expect.arrayContaining([
           { accountNumber: '2100', debit: '115.00', credit: '0.00' },
-          { accountNumber: '1110', debit: '0.00', credit: '115.00' },
+          { accountNumber: `BANK-${bankAccount.id.slice(0, 8).toUpperCase()}`, debit: '0.00', credit: '115.00' },
         ]));
 
         // C1: invoice + bill only => 30 output - 15 input = 15 payable.
@@ -308,7 +327,8 @@ describe('NZ GST journals and IRD reporting scenario', () => {
         expect(rowFor(invoiceAndBillReport, '1200')).toMatchObject({ balance: '0.00' });
         expect(rowFor(invoiceAndBillReport, '5000')).toMatchObject({ balance: '100.00' });
         expect(rowFor(invoiceAndBillReport, '2100')).toMatchObject({ balance: '0.00' });
-        expect(rowFor(invoiceAndBillReport, '1110')).toMatchObject({ debit: '230.00', credit: '115.00', balance: '115.00' });
+        expect(rowFor(invoiceAndBillReport, '1110')).toMatchObject({ debit: '230.00', credit: '0.00', balance: '230.00' });
+        expect(rowFor(invoiceAndBillReport, `BANK-${bankAccount.id.slice(0, 8).toUpperCase()}`)).toMatchObject({ debit: '0.00', credit: '115.00', balance: '-115.00' });
 
         // C2: a direct paid inclusive expense contributes another 15 input GST.
         const expense = await requestJson(app, '/api/expenses', {
@@ -486,7 +506,7 @@ describe('NZ GST journals and IRD reporting scenario', () => {
     });
   });
 
-  it('excludes foreign-currency documents from the NZD GST return and flags them', async () => {
+  it('excludes legacy unconverted foreign postings from NZD GST and flags them for correction', async () => {
     await assertLocalDatabaseReachable();
     await withTestDb(async () => {
       const { db, sql } = createDb(getDatabaseUrl());
@@ -499,7 +519,16 @@ describe('NZ GST journals and IRD reporting scenario', () => {
           headers: org.headers,
           body: JSON.stringify({ currencyCode: 'USD', effectiveDate: '2026-04-01', rate: '1.60000' }),
         }, 201);
-        await createPostedInvoice(app, org.headers, org.customerId, { date: '2026-05-02', amount: '100.00', currency: 'USD', description: 'USD sale' });
+        const legacy = await requestJson(app, '/api/invoices', { method: 'POST', headers: org.headers, body: JSON.stringify({ customerId: org.customerId, date: '2026-05-02', dueDate: '2026-05-31', currency: 'USD', taxInclusive: false, taxRate: '15', items: [{ description: 'Legacy USD sale', quantity: '1', rate: '100' }] }) }, 201);
+        // Recreate the pre-fix posting using draft -> posted, never mutate an
+        // immutable posted entry. Source snapshot is NZD184 but old GL is115.
+        const legacyJournal = crypto.randomUUID();
+        await sql`INSERT INTO journal_entries (id, organisation_id, user_id, entry_number, entry_date, description, reference_type, reference_id, total_amount, status) SELECT ${legacyJournal}, organisation_id, user_id, 'JRN-LEGACY-USD', '2026-05-02', 'Legacy raw USD posting', 'invoice', id, '115.00', 'draft' FROM invoices WHERE id = ${legacy.id}`;
+        for (const [number, debit, credit, order] of [['1200', '115.00', '0.00', 1], ['4000', '0.00', '100.00', 2], ['2200', '0.00', '15.00', 3]] as const) {
+          await sql`INSERT INTO journal_entry_lines (id, organisation_id, journal_entry_id, account_id, description, debit_amount, credit_amount, line_order) SELECT ${crypto.randomUUID()}, a.organisation_id, ${legacyJournal}, a.id, 'Legacy USD', ${debit}, ${credit}, ${order} FROM accounts a INNER JOIN invoices i ON i.organisation_id = a.organisation_id WHERE i.id = ${legacy.id} AND a.account_number = ${number}`;
+        }
+        await sql`UPDATE journal_entries SET status = 'posted' WHERE id = ${legacyJournal}`;
+        await requestJson(app, `/api/invoices/${legacy.id}`, { method: 'PATCH', headers: org.headers, body: JSON.stringify({ status: 'sent' }) }, 200);
         const report = await financialReport(app, org.cookie);
         expectGst(report, '30.00', '0.00', '30.00', 'payable');
         expect(report.taxSummary.foreignCurrencyDocumentsExcluded).toBe(1);

@@ -1,5 +1,5 @@
-import { vi } from 'vitest';
-import { ConversationSession, ConversationMessage } from '../../types';
+import { vi, expect } from 'vitest';
+import { ConversationSession, ConversationMessage, ConversationEntity, ConversationAction } from '../../types';
 
 // Mock Supabase Client
 export const createMockSupabaseClient = () => {
@@ -29,7 +29,7 @@ export const createMockSupabaseClient = () => {
 };
 
 // Mock OpenAI Fetch Response
-export const mockOpenAIFetch = (response: any) => {
+export const mockOpenAIFetch = (response: unknown) => {
   global.fetch = vi.fn().mockResolvedValue({
     ok: true,
     json: async () => ({
@@ -61,7 +61,7 @@ export const createErrorResponse = (message: string) => ({
 // Mock Date for consistent testing
 export const mockDate = (dateString: string) => {
   const mockDate = new Date(dateString);
-  vi.spyOn(global, 'Date').mockImplementation(() => mockDate as any);
+  vi.spyOn(global, 'Date').mockImplementation(() => mockDate);
   return mockDate;
 };
 
@@ -131,7 +131,7 @@ export const mockNetworkDelay = (ms: number = 100) => {
 };
 
 // Error Testing Helpers
-export const expectAsyncError = async (promise: Promise<any>, expectedMessage?: string) => {
+export const expectAsyncError = async (promise: Promise<unknown>, expectedMessage?: string) => {
   try {
     await promise;
     throw new Error('Expected promise to reject');
@@ -171,7 +171,7 @@ export const expectValidConfidenceScore = (score: number) => {
 };
 
 // Entity Validation
-export const expectValidEntity = (entity: any) => {
+export const expectValidEntity = (entity: ConversationEntity) => {
   expect(entity).toHaveProperty('type');
   expect(entity).toHaveProperty('value');
   expect(entity).toHaveProperty('confidence');
@@ -182,7 +182,7 @@ export const expectValidEntity = (entity: any) => {
 };
 
 // Action Validation
-export const expectValidAction = (action: any) => {
+export const expectValidAction = (action: ConversationAction) => {
   expect(action).toHaveProperty('type');
   expect(action).toHaveProperty('parameters');
   expect(action).toHaveProperty('status');

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, type UseFormReturn } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { 
@@ -77,7 +77,9 @@ export function TaxConfigurationPanel({
   const handleSubmit = async (data: z.infer<typeof taxConfigSchema>) => {
     try {
       const configData = {
-        ...data,
+        taxType: data.taxType, taxRate: data.taxRate, taxName: data.taxName,
+        countryCode: data.countryCode, appliesToServices: data.appliesToServices,
+        appliesToGoods: data.appliesToGoods, effectiveFrom: data.effectiveFrom, effectiveTo: data.effectiveTo,
         isActive: true // New configurations are active by default
       };
 
@@ -372,8 +374,8 @@ function TaxConfigurationForm({
   isLoading,
   isEditing
 }: {
-  form: any;
-  onSubmit: (data: any) => Promise<void>;
+  form: UseFormReturn<z.infer<typeof taxConfigSchema>>;
+  onSubmit: (data: z.infer<typeof taxConfigSchema>) => Promise<void>;
   onCancel: () => void;
   isLoading: boolean;
   isEditing: boolean;
@@ -404,7 +406,7 @@ function TaxConfigurationForm({
           <Label htmlFor="taxType">Tax Type</Label>
           <Select 
             value={form.watch('taxType')} 
-            onValueChange={(value) => form.setValue('taxType', value)}
+            onValueChange={(value) => form.setValue('taxType', value as z.infer<typeof taxConfigSchema>['taxType'])}
           >
             <SelectTrigger>
               <SelectValue />

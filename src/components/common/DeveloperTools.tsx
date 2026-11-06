@@ -179,7 +179,7 @@ const DeveloperTools: React.FC<DeveloperToolsProps> = ({ isOpen, onClose }) => {
               </Button>
               <Button
                 variant="outline"
-                onClick={() => window.location.href = window.location.href}
+                onClick={() => window.location.reload()}
               >
                 🔀 Hard Reload
               </Button>

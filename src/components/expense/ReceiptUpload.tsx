@@ -215,7 +215,8 @@ export const ReceiptUpload: React.FC<ReceiptUploadProps> = ({
     // If a receipt URL was provided, set it as the receipt attachment
     if (receiptUrl) {
       console.log('Setting receipt URL:', receiptUrl);
-      setReceiptUrl(receiptUrl);
+      setPreviewUrl(receiptUrl);
+      setActiveTab('upload');
       onReceiptChange(receiptUrl, null);
     } else {
       console.warn('No receipt URL provided from scan');

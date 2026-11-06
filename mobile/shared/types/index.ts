@@ -253,6 +253,10 @@ export interface SupabaseLineItem {
 }
 
 export interface SupabaseBusinessProfile {
+  primary_color?: string;
+  secondary_color?: string;
+  accent_color?: string;
+  gst_registration_status?: 'unknown' | 'registered' | 'not_registered';
   id: string;
   name: string;
   email: string;
@@ -345,6 +349,7 @@ export interface Account {
 }
 
 export interface SupabaseAccount {
+  is_active?: boolean;
   id: string;
   name: string;
   type: AccountType;
@@ -467,8 +472,8 @@ export interface SharedInvoice {
 export interface SupabaseSharedInvoice {
   id: string;
   original_invoice_id: string;
-  invoice_data: any; // JSONB data
-  template_data: any; // JSONB data
+  invoice_data: unknown; // JSONB data
+  template_data: unknown; // JSONB data
   share_token: string;
   created_at: string;
   expires_at: string | null;
@@ -520,14 +525,14 @@ export interface ConversationEntity {
   value: string;
   confidence: number;
   resolved?: boolean;
-  resolvedValue?: any;
+  resolvedValue?: unknown;
 }
 
 export interface ConversationAction {
   type: string;
-  parameters: Record<string, any>;
+  parameters: Record<string, unknown>;
   status: 'pending' | 'in_progress' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
@@ -560,7 +565,7 @@ export interface InvoiceCreationContext {
 export interface ConversationContext {
   currentTask?: {
     type: ConversationIntent;
-    progress: Record<string, any>;
+    progress: Record<string, unknown>;
     requiredFields: string[];
     completedFields: string[];
   };
@@ -606,7 +611,7 @@ export interface AIResponse {
 
 export interface ActionResult {
   success: boolean;
-  data?: any;
+  data?: unknown;
   error?: string;
   needsInfo?: string;
   suggestions?: string[];
@@ -617,7 +622,7 @@ export interface SupabaseConversation {
   id: string;
   user_id: string;
   title: string | null;
-  context: any; // JSONB
+  context: unknown; // JSONB
   status: 'active' | 'completed' | 'paused';
   created_at: string;
   updated_at: string;
@@ -628,6 +633,6 @@ export interface SupabaseConversationMessage {
   conversation_id: string;
   role: ConversationRole;
   content: string;
-  metadata: any | null; // JSONB
+  metadata: unknown | null; // JSONB
   created_at: string;
 }

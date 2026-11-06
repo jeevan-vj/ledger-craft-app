@@ -111,11 +111,11 @@ export const BulkExpenseProcessor: React.FC<BulkExpenseProcessorProps> = ({
 
     // Map CSV columns to expense fields
     const fieldMapping = {
-      'description': 'description',
-      'amount': 'amount',
-      'category': 'category',
-      'date': 'date',
-      'supplier': 'supplier'
+      'description': 'description' as const,
+      'amount': 'amount' as const,
+      'category': 'category' as const,
+      'date': 'date' as const,
+      'supplier': 'supplier' as const
     };
 
     headers.forEach((header, index) => {
@@ -124,7 +124,7 @@ export const BulkExpenseProcessor: React.FC<BulkExpenseProcessorProps> = ({
         if (field === 'amount') {
           expense[field] = parseFloat(values[index]) || 0;
         } else {
-          expense[field as keyof BulkExpenseData] = values[index];
+          expense[field] = values[index];
         }
       }
     });

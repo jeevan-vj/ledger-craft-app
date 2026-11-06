@@ -25,6 +25,7 @@ export function getQuarterPeriod(
   return {
     startDate: dateOnly(year, startMonth, 1),
     endDate: dateOnly(year, endMonth, lastDayOfMonth(year, endMonth)),
-    dueDate: dateOnly(dueYear, dueMonth, 28),
+    // IRD's March period exception. Working-day extensions still need myIR confirmation.
+    dueDate: endMonth === 3 ? dateOnly(year, 5, 7) : dateOnly(dueYear, dueMonth, 28),
   };
 }

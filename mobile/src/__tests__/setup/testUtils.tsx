@@ -15,7 +15,7 @@ export const createMockStore = (initialState: Partial<AuthSlice> = {}) => {
 // Custom render function with providers
 interface CustomRenderOptions extends Omit<RenderOptions, 'wrapper'> {
   initialAuthState?: Partial<AuthSlice>;
-  navigationConfig?: any;
+  navigationConfig?: Partial<React.ComponentProps<typeof NavigationContainer>>;
 }
 
 export function renderWithProviders(

@@ -6,6 +6,14 @@ import { ExpenseGSTSummary } from '../../expense/ExpenseGSTSummary';
 import { BulkExpenseProcessor } from '../../expense/BulkExpenseProcessor';
 import { GSTReturnWizard } from '../GSTReturnWizard';
 
+vi.mock('@/features/tax/gstPreparation', async () => {
+  const actual = await vi.importActual<typeof import('@/features/tax/gstPreparation')>('@/features/tax/gstPreparation');
+  return { ...actual, loadGstPreparation: vi.fn(async () => ({
+    basis: 'invoice', totalSales: 3450, totalPurchases: 2875,
+    gstOnSales: 450, gstOnPurchases: 375, netGstPosition: 75, warnings: [],
+  })) };
+});
+
 // Mock the router
 vi.mock('react-router-dom', () => ({
   useNavigate: () => vi.fn(),
@@ -38,9 +46,9 @@ vi.mock('@/context/AuthContext', () => ({
 
 // Mock the recharts components
 vi.mock('recharts', () => ({
-  ResponsiveContainer: ({ children }: any) => <div data-testid="responsive-container">{children}</div>,
-  BarChart: ({ children }: any) => <div data-testid="bar-chart">{children}</div>,
-  PieChart: ({ children }: any) => <div data-testid="pie-chart">{children}</div>,
+  ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="responsive-container">{children}</div>,
+  BarChart: ({ children }: { children: React.ReactNode }) => <div data-testid="bar-chart">{children}</div>,
+  PieChart: ({ children }: { children: React.ReactNode }) => <div data-testid="pie-chart">{children}</div>,
   Bar: () => <div data-testid="bar" />,
   Pie: () => <div data-testid="pie" />,
   XAxis: () => <div data-testid="x-axis" />,

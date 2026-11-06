@@ -22,6 +22,8 @@ import { receiptRoutes } from './modules/receipts/receipts.routes';
 import { aiRoutes } from './modules/ai/ai.routes';
 import { conversationRoutes } from './modules/conversations/conversations.routes';
 import { journalRoutes } from './modules/journals/journals.routes';
+import { accountingRoutes } from './modules/accounting/accounting.routes';
+import { creditNoteRoutes } from './modules/credit-notes/credit-notes.routes';
 import { getBetterAuthTrustedOrigins } from './env';
 import { purchaseRoutes } from './modules/purchases/purchases.routes';
 import { dashboardRoutes } from './modules/dashboard/dashboard.routes';
@@ -102,6 +104,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', businessProfileRoutes());
   app.route('/', itemRoutes());
   app.route('/', invoiceRoutes());
+  app.route('/', creditNoteRoutes());
   app.route('/', quoteRoutes());
   app.route('/', expenseRoutes());
   app.route('/', paymentRoutes());
@@ -114,6 +117,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', receiptRoutes());
   app.route('/', aiRoutes());
   app.route('/', conversationRoutes());
+  app.route('/', accountingRoutes());
   app.route('/', journalRoutes());
   app.route('/', purchaseRoutes());
   app.route('/', recurringRoutes());

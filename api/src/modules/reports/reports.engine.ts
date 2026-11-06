@@ -24,6 +24,14 @@ function accountBalance(row: { source: LedgerRow; debit: ReturnType<typeof decim
   return row.source.normalBalance === 'credit' ? row.credit.sub(row.debit) : row.debit.sub(row.credit);
 }
 
+function balanceSides(normal: string, value: ReturnType<typeof decimal>) {
+  const signedDebit = normal === 'debit' ? value : zero().sub(value);
+  return {
+    debit: money(signedDebit.compare(0) > 0 ? signedDebit : zero()),
+    credit: money(signedDebit.compare(0) < 0 ? zero().sub(signedDebit) : zero()),
+  };
+}
+
 function accountRows(rows: LedgerRow[]) {
   return [...aggregate(rows).values()].map((row) => ({
     accountId: row.source.accountId,
@@ -34,7 +42,7 @@ function accountRows(rows: LedgerRow[]) {
   })).sort((a, b) => (a.accountNumber ?? '').localeCompare(b.accountNumber ?? '') || a.accountName.localeCompare(b.accountName));
 }
 
-function aging(rows: DocumentRow[], asOf: string) {
+function aging(rows: DocumentRow[], asOf: string, control?: ReturnType<typeof decimal>) {
   const result = { total: zero(), current: zero(), days1To30: zero(), days31To60: zero(), days61To90: zero(), over90: zero(), items: [] as Array<Record<string, unknown>> };
   const end = Date.parse(`${asOf}T00:00:00Z`);
   for (const row of rows) {
@@ -45,7 +53,7 @@ function aging(rows: DocumentRow[], asOf: string) {
     result.total = result.total.add(row.balanceDue); result[key] = result[key].add(row.balanceDue);
     result.items.push({ id: row.id, number: row.number, partyId: row.partyId, partyName: row.partyName, issueDate: row.issueDate, dueDate: row.dueDate, balanceDue: money(row.balanceDue), daysOverdue: days, bucket });
   }
-  return { total: money(result.total), current: money(result.current), days1To30: money(result.days1To30), days31To60: money(result.days31To60), days61To90: money(result.days61To90), over90: money(result.over90), items: result.items };
+  return { total: money(control ?? result.total), unallocatedControl: money(control ? control.sub(result.total) : zero()), current: money(result.current), days1To30: money(result.days1To30), days31To60: money(result.days31To60), days61To90: money(result.days61To90), over90: money(result.over90), items: result.items };
 }
 
 function summary(rows: DocumentRow[]) {
@@ -61,17 +69,25 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
     const current = period.get(id); const prior = opening.get(id); const source = current?.source ?? prior!.source;
     const openingNet = prior ? (source.normalBalance === 'credit' ? prior.credit.sub(prior.debit) : prior.debit.sub(prior.credit)) : zero();
     const movement = current ? accountBalance(current) : zero(); const closing = openingNet.add(movement);
+    const openingSides = balanceSides(source.normalBalance, openingNet);
+    const closingSides = balanceSides(source.normalBalance, closing);
     return { accountId: id, accountNumber: source.accountNumber, accountName: source.accountName, accountClass: source.accountClass as AccountClass,
-      openingDebit: money(source.normalBalance === 'debit' && openingNet.compare(0) >= 0 ? openingNet : zero()), openingCredit: money(source.normalBalance === 'credit' && openingNet.compare(0) >= 0 ? openingNet : zero()),
+      openingDebit: openingSides.debit, openingCredit: openingSides.credit,
       debit: money(current?.debit ?? zero()), credit: money(current?.credit ?? zero()),
-      balance: money(closing), closingDebit: money(source.normalBalance === 'debit' && closing.compare(0) >= 0 ? closing : zero()), closingCredit: money(source.normalBalance === 'credit' && closing.compare(0) >= 0 ? closing : zero()) };
+      balance: money(closing), closingDebit: closingSides.debit, closingCredit: closingSides.credit };
   });
   const totalDebits = periodRows.reduce((sum, row) => sum.add(row.debit), zero()); const totalCredits = periodRows.reduce((sum, row) => sum.add(row.credit), zero());
   const revenue = rows.filter((row) => row.accountClass === 'revenue').reduce((sum, row) => sum.add(row.balance), zero());
   const expenses = rows.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero()); const netIncome = revenue.sub(expenses);
   const assets = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'asset').reduce((sum, row) => sum.add(row.balance), zero());
   const liabilities = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'liability').reduce((sum, row) => sum.add(row.balance), zero());
-  const ledgerEquity = accountRows([...openingRows, ...periodRows]).filter((row) => row.accountClass === 'equity').reduce((sum, row) => sum.add(row.balance), zero()); const equity = ledgerEquity.add(netIncome);
+  const closingRows = accountRows([...openingRows, ...periodRows]);
+  const ledgerEquity = closingRows.filter((row) => row.accountClass === 'equity').reduce((sum, row) => sum.add(row.balance), zero());
+  // The balance sheet is cumulative as of `to`, unlike the period profit and
+  // loss statement. Include unclosed profits/losses brought forward as well.
+  const cumulativeIncome = closingRows.reduce((sum, row) => row.accountClass === 'revenue'
+    ? sum.add(row.balance) : row.accountClass === 'expense' ? sum.sub(row.balance) : sum, zero());
+  const equity = ledgerEquity.add(cumulativeIncome);
   const cashRows = periodRows.filter((row) => ['bank', 'cash'].includes(row.accountType)); const openingCashRows = openingRows.filter((row) => ['bank', 'cash'].includes(row.accountType));
   const inflows = cashRows.reduce((sum, row) => sum.add(row.debit), zero()); const outflows = cashRows.reduce((sum, row) => sum.add(row.credit), zero()); const openingCash = openingCashRows.reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero());
   const comparisonRows = input.comparison?.rows ?? []; const comparisonAccounts = accountRows(comparisonRows); const compRevenue = comparisonAccounts.filter((row) => row.accountClass === 'revenue').reduce((sum, row) => sum.add(row.balance), zero()); const compExpenses = comparisonAccounts.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero());
@@ -88,13 +104,16 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
   const keyAccounts = taxAccountRows.filter((row) => keyNumbers.has(row.accountNumber ?? '')
     || row.accountClass === 'revenue' || row.accountClass === 'expense'
     || (input.taxRows ?? periodRows).some((source) => source.accountId === row.accountId && ['bank', 'cash'].includes(source.accountType)));
+  const control = (code: string) => trialRows.filter(row => row.accountNumber === code).reduce((sum, row) => code === '1200'
+    ? sum.add(row.closingDebit).sub(row.closingCredit) : sum.add(row.closingCredit).sub(row.closingDebit), zero());
   return financialReportResponseSchema.parse({
     meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString() },
     trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), balanced: totalDebits.compare(totalCredits) === 0 },
     profitLoss: { rows: rows.filter((row) => row.accountClass === 'revenue' || row.accountClass === 'expense'), revenue: money(revenue), expenses: money(expenses), netIncome: money(netIncome) },
     balanceSheet: { rows: accountRows([...openingRows, ...periodRows]).filter((row) => ['asset', 'liability', 'equity'].includes(row.accountClass)), assets: money(assets), liabilities: money(liabilities), equity: money(equity), balanced: assets.compare(liabilities.add(equity)) === 0 },
     cashFlow: { rows: accountRows(cashRows), openingCash: money(openingCash), inflows: money(inflows), outflows: money(outflows), netCashFlow: money(inflows.sub(outflows)), closingCash: money(openingCash.add(inflows).sub(outflows)) },
-    receivablesAging: aging(input.receivables, query.to), payablesAging: aging(input.payables, query.to), salesSummary: sales, purchaseSummary: purchases,
+    receivablesAging: aging(input.receivables, query.to, query.basis === 'accrual' && !query.customerIds?.length && !query.accountIds?.length ? control('1200') : undefined),
+    payablesAging: aging(input.payables, query.to, query.basis === 'accrual' && !query.vendorIds?.length && !query.accountIds?.length ? control('2100') : undefined), salesSummary: sales, purchaseSummary: purchases,
     taxSummary: {
       collected: money(outputGst), paid: money(inputGst), netPayable: money(netGst),
       outputGst: money(outputGst), inputGst: money(inputGst), netGst: money(netGst), position,

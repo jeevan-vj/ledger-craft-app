@@ -1,0 +1,977 @@
+{
+  "email": "mobile-business-1793956571731@example.test",
+  "platform": "Expo web Chromium 390x844",
+  "errors": [],
+  "profile": {
+    "id": "beea9459-4da8-4685-af2a-eaf55a5f2eb0",
+    "name": "Kauri Mobile Studio Ltd",
+    "email": "mobile-business-1793956571731@example.test",
+    "phone": "+64210000001",
+    "address": null,
+    "city": null,
+    "state": null,
+    "zip": null,
+    "country": "New Zealand",
+    "taxId": null,
+    "logoUrl": null,
+    "website": null,
+    "defaultTaxRate": "15",
+    "gstRegistrationStatus": "registered",
+    "defaultTerms": null,
+    "paymentTermDays": 30,
+    "defaultNotes": null,
+    "bankInfo": null,
+    "bankAccountName": null,
+    "bankAccountNumber": null,
+    "theme": {
+      "primary": "#163300",
+      "secondary": "#3B4DE6",
+      "accent": "#4F63D7",
+      "text": "#1E293B",
+      "textLight": "#64748B",
+      "background": "#F5F6F3",
+      "surface": "#FFFFFF"
+    },
+    "invoiceNumberFormat": "INV-{YYYY}-{SEQ}",
+    "invoiceNumberSequence": 1,
+    "quoteNumberFormat": "QUO-{YYYY}-{SEQ}",
+    "quoteNumberSequence": 1,
+    "quoteValidityDays": 30,
+    "defaultQuoteKind": "quote",
+    "createdAt": "2026-11-06T09:16:15.000Z",
+    "updatedAt": "2026-11-06T09:16:15.000Z"
+  },
+  "invoice": {
+    "id": "2bdcc957-1f09-43a7-a1c3-a0aa9e9a8212",
+    "invoiceNumber": "INV-2026-0001",
+    "externalNumber": null,
+    "externalIssuerName": null,
+    "sourceImportDocumentId": null,
+    "thirdPartyIssued": false,
+    "externalId": null,
+    "customerId": "00017382-ebd8-400b-a187-21f1c5dd21e0",
+    "date": "2026-11-06",
+    "dueDate": "2026-12-06",
+    "paymentTermDays": 30,
+    "subtotal": "1000.00",
+    "taxAmount": "150.00",
+    "discountType": "fixed",
+    "discountPercent": null,
+    "discount": null,
+    "additionalCharges": null,
+    "additionalChargesTotal": "0.00",
+    "total": "1150.00",
+    "totalPaid": "0.00",
+    "balanceDue": "1150.00",
+    "paymentStatus": "unpaid",
+    "taxInclusive": false,
+    "status": "draft",
+    "notes": "",
+    "terms": "",
+    "currency": "NZD",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "baseCurrency": "NZD",
+    "baseSubtotal": "1000.00",
+    "baseTaxAmount": "150.00",
+    "baseTotal": "1150.00",
+    "customerName": "Harbour Mobile Cafe",
+    "customerEmail": "buyer@example.test",
+    "items": [
+      {
+        "id": "c7f1bc64-00dc-44a8-bb62-d7a260b639d0",
+        "description": "Consulting services",
+        "quantity": "1.00",
+        "unit": "each",
+        "rate": "1000.00",
+        "rateUnit": "each",
+        "tax": "150.00",
+        "total": "1000.00",
+        "discountType": "fixed",
+        "discountValue": null,
+        "discountAmount": "0.00",
+        "taxes": [
+          {
+            "id": "default",
+            "name": "Tax",
+            "rate": "15.00"
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-11-06T09:16:16.000Z",
+    "updatedAt": "2026-11-06T09:16:16.000Z",
+    "archivedAt": null
+  },
+  "payment": {
+    "id": "7a7ff2b5-2769-4c7e-b524-eda1d8cb5281",
+    "invoiceId": "2bdcc957-1f09-43a7-a1c3-a0aa9e9a8212",
+    "invoiceNumber": "INV-2026-0001",
+    "paymentMethod": "bank_transfer",
+    "amount": "1150.00",
+    "paymentDate": "2026-11-06",
+    "referenceNumber": null,
+    "notes": null,
+    "status": "completed",
+    "reversalReason": null,
+    "reversalDate": null,
+    "reversedAt": null,
+    "createdAt": "2026-11-06T09:16:21.000Z",
+    "updatedAt": "2026-11-06T09:16:21.000Z"
+  },
+  "expense": {
+    "id": "b0d85b5c-f31d-4b6c-a733-73b0195f4f83",
+    "description": "Office supplies",
+    "amount": "230.00",
+    "taxAmount": "30.00",
+    "currency": "NZD",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "baseCurrency": "NZD",
+    "baseAmount": "230.00",
+    "baseTaxAmount": "30.00",
+    "expenseDate": "2026-11-06",
+    "status": "pending",
+    "isBillable": false,
+    "categoryId": null,
+    "categoryName": null,
+    "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+    "accountName": "Bank Account - Current",
+    "customerId": null,
+    "customerName": null,
+    "vendorName": "Mobile Office Supplies",
+    "receiptUrl": null,
+    "paymentMethod": null,
+    "notes": null,
+    "gstTreatment": "standard",
+    "gstExemptionReason": "none",
+    "gstClaimablePercentage": 100,
+    "privateUsePercentage": 0,
+    "createdAt": "2026-11-06T09:16:22.000Z",
+    "updatedAt": "2026-11-06T09:16:22.000Z"
+  },
+  "pendingReport": {
+    "meta": {
+      "from": "2026-01-01",
+      "to": "2026-11-06",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T09:16:23.061Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "1150.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1000.00",
+          "balance": "1000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1000.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "150.00",
+          "balance": "150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "150.00"
+        },
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "0.00",
+          "balance": "1150.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1150.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "2300.00",
+      "totalCredits": "2300.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1000.00",
+          "balance": "1000.00"
+        }
+      ],
+      "revenue": "1000.00",
+      "expenses": "0.00",
+      "netIncome": "1000.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "0.00",
+          "balance": "1150.00"
+        },
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "1150.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "150.00",
+          "balance": "150.00"
+        }
+      ],
+      "assets": "1150.00",
+      "liabilities": "150.00",
+      "equity": "1000.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "0.00",
+          "balance": "1150.00"
+        }
+      ],
+      "openingCash": "0.00",
+      "inflows": "1150.00",
+      "outflows": "0.00",
+      "netCashFlow": "1150.00",
+      "closingCash": "1150.00"
+    },
+    "receivablesAging": {
+      "total": "0.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": []
+    },
+    "payablesAging": {
+      "total": "0.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": []
+    },
+    "salesSummary": {
+      "subtotal": "1000.00",
+      "tax": "150.00",
+      "total": "1150.00",
+      "paid": "1150.00",
+      "outstanding": "0.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "0.00",
+      "tax": "0.00",
+      "total": "0.00",
+      "paid": "0.00",
+      "outstanding": "0.00"
+    },
+    "taxSummary": {
+      "collected": "150.00",
+      "paid": "0.00",
+      "netPayable": "150.00",
+      "outputGst": "150.00",
+      "inputGst": "0.00",
+      "netGst": "150.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "150.00",
+          "balance": "150.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "0.00",
+          "balance": "1150.00"
+        },
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1150.00",
+          "credit": "1150.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "150.00",
+          "balance": "150.00"
+        },
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1000.00",
+          "balance": "1000.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "approvedExpense": {
+    "id": "b0d85b5c-f31d-4b6c-a733-73b0195f4f83",
+    "description": "Office supplies",
+    "amount": "230.00",
+    "taxAmount": "30.00",
+    "currency": "NZD",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "baseCurrency": "NZD",
+    "baseAmount": "230.00",
+    "baseTaxAmount": "30.00",
+    "expenseDate": "2026-11-06",
+    "status": "approved",
+    "isBillable": false,
+    "categoryId": null,
+    "categoryName": null,
+    "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+    "accountName": "Bank Account - Current",
+    "customerId": null,
+    "customerName": null,
+    "vendorName": "Mobile Office Supplies",
+    "receiptUrl": null,
+    "paymentMethod": null,
+    "notes": null,
+    "gstTreatment": "standard",
+    "gstExemptionReason": "none",
+    "gstClaimablePercentage": 100,
+    "privateUsePercentage": 0,
+    "createdAt": "2026-11-06T09:16:22.000Z",
+    "updatedAt": "2026-11-06T09:16:23.694Z"
+  },
+  "secondInvoice": {
+    "id": "11e4c4db-82b8-433a-85c6-29143cfa2d40",
+    "invoiceNumber": "INV-2026-0002",
+    "externalNumber": null,
+    "externalIssuerName": null,
+    "sourceImportDocumentId": null,
+    "thirdPartyIssued": false,
+    "externalId": null,
+    "customerId": "00017382-ebd8-400b-a187-21f1c5dd21e0",
+    "date": "2026-11-06",
+    "dueDate": "2026-12-06",
+    "paymentTermDays": 30,
+    "subtotal": "400.00",
+    "taxAmount": "60.00",
+    "discountType": "fixed",
+    "discountPercent": null,
+    "discount": null,
+    "additionalCharges": null,
+    "additionalChargesTotal": "0.00",
+    "total": "460.00",
+    "totalPaid": "0.00",
+    "balanceDue": "460.00",
+    "paymentStatus": "unpaid",
+    "taxInclusive": false,
+    "status": "draft",
+    "notes": "",
+    "terms": "",
+    "currency": "NZD",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "baseCurrency": "NZD",
+    "baseSubtotal": "400.00",
+    "baseTaxAmount": "60.00",
+    "baseTotal": "460.00",
+    "customerName": "Harbour Mobile Cafe",
+    "customerEmail": "buyer@example.test",
+    "items": [
+      {
+        "id": "fb2cdf98-3dca-42c0-b0a5-7dcb339399d6",
+        "description": "Maintenance services",
+        "quantity": "1.00",
+        "unit": "each",
+        "rate": "400.00",
+        "rateUnit": "each",
+        "tax": "60.00",
+        "total": "400.00",
+        "discountType": "fixed",
+        "discountValue": null,
+        "discountAmount": "0.00",
+        "taxes": [
+          {
+            "id": "default",
+            "name": "Tax",
+            "rate": "15.00"
+          }
+        ]
+      }
+    ],
+    "createdAt": "2026-11-06T09:16:24.000Z",
+    "updatedAt": "2026-11-06T09:16:24.000Z",
+    "archivedAt": null
+  },
+  "bank": {
+    "id": "fda11977-22bd-415b-b22c-be3259ae644c",
+    "accountName": "Mobile operating account",
+    "accountNumber": "12-3456-0000000-00",
+    "bankName": "Local Test Bank",
+    "accountType": "business",
+    "currency": "NZD",
+    "openingBalance": "0.00",
+    "currentBalance": "0.00",
+    "isActive": true,
+    "createdAt": "2026-11-06T09:16:32.000Z",
+    "updatedAt": "2026-11-06T09:16:32.000Z"
+  },
+  "vendor": {
+    "id": "32c4fb2b-1ecc-4b20-9ad5-f5473d3aff2a",
+    "name": "Mobile Studio Supplier",
+    "email": "supplier@example.test",
+    "phone": null,
+    "taxId": null,
+    "address": null,
+    "paymentTermDays": 30,
+    "notes": null,
+    "isActive": true,
+    "contactName": null,
+    "defaultAccountId": null,
+    "defaultTaxRate": "15.00",
+    "importIdentifier": null,
+    "createdAt": "2026-11-06T09:16:34.000Z",
+    "updatedAt": "2026-11-06T09:16:34.000Z"
+  },
+  "bill": {
+    "id": "79e7feb6-a376-4000-a426-204e355afe07",
+    "billNumber": "BILL-0001",
+    "vendorId": "32c4fb2b-1ecc-4b20-9ad5-f5473d3aff2a",
+    "vendorName": "Mobile Studio Supplier",
+    "vendorReference": null,
+    "externalNumber": null,
+    "externalIssuerName": null,
+    "sourceImportDocumentId": null,
+    "issueDate": "2026-11-06",
+    "dueDate": "2026-12-06",
+    "lifecycleStatus": "draft",
+    "paymentStatus": "unpaid",
+    "displayStatus": "draft",
+    "currency": "NZD",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "baseCurrency": "NZD",
+    "baseSubtotal": "300.00",
+    "baseTaxAmount": "45.00",
+    "baseTotal": "345.00",
+    "taxInclusive": true,
+    "subtotal": "300.00",
+    "taxAmount": "45.00",
+    "total": "345.00",
+    "totalPaid": "0.00",
+    "balanceDue": "345.00",
+    "notes": null,
+    "lines": [
+      {
+        "id": "6b44165c-b881-49d2-9b9d-4afed1890c7e",
+        "description": "Studio materials",
+        "quantity": "1.00",
+        "unitPrice": "345.00",
+        "taxRate": "15.00",
+        "subtotal": "300.00",
+        "taxAmount": "45.00",
+        "total": "345.00",
+        "accountId": "5d32f6f2-2906-4555-8040-b6bb49f282c5",
+        "accountName": "Operating Expenses"
+      }
+    ],
+    "payments": [],
+    "attachments": [],
+    "history": [
+      {
+        "id": "6ed84bd9-57f4-4012-a26e-340b48b6b686",
+        "event": "created",
+        "summary": "Bill created",
+        "createdAt": "2026-11-06T09:16:34.000Z"
+      }
+    ],
+    "createdAt": "2026-11-06T09:16:34.000Z",
+    "updatedAt": "2026-11-06T09:16:34.000Z"
+  },
+  "report": {
+    "meta": {
+      "from": "2026-01-01",
+      "to": "2026-11-06",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-06T09:16:38.078Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "230.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1400.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "210.00"
+        },
+        {
+          "accountId": "5d32f6f2-2906-4555-8040-b6bb49f282c5",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "550.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "7a0bd6ed-7646-4a37-9c83-4ba95297a964",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "75.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "d94f7734-c46d-467c-9ff3-ce8cf9217701",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "276.00"
+        },
+        {
+          "accountId": "fe0d9f8c-f5fa-4ca4-b481-b7617d89667a",
+          "accountNumber": "BANK-FDA11977",
+          "accountName": "Mobile operating account",
+          "accountClass": "asset",
+          "debit": "0.00",
+          "credit": "69.00",
+          "balance": "-69.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "280.00",
+          "balance": "1100.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1100.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "3684.00",
+      "totalCredits": "3684.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00"
+        },
+        {
+          "accountId": "5d32f6f2-2906-4555-8040-b6bb49f282c5",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00"
+        }
+      ],
+      "revenue": "1400.00",
+      "expenses": "550.00",
+      "netIncome": "850.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "280.00",
+          "balance": "1100.00"
+        },
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00"
+        },
+        {
+          "accountId": "d94f7734-c46d-467c-9ff3-ce8cf9217701",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00"
+        },
+        {
+          "accountId": "7a0bd6ed-7646-4a37-9c83-4ba95297a964",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        },
+        {
+          "accountId": "fe0d9f8c-f5fa-4ca4-b481-b7617d89667a",
+          "accountNumber": "BANK-FDA11977",
+          "accountName": "Mobile operating account",
+          "accountClass": "asset",
+          "debit": "0.00",
+          "credit": "69.00",
+          "balance": "-69.00"
+        }
+      ],
+      "assets": "1336.00",
+      "liabilities": "486.00",
+      "equity": "850.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "280.00",
+          "balance": "1100.00"
+        },
+        {
+          "accountId": "fe0d9f8c-f5fa-4ca4-b481-b7617d89667a",
+          "accountNumber": "BANK-FDA11977",
+          "accountName": "Mobile operating account",
+          "accountClass": "asset",
+          "debit": "0.00",
+          "credit": "69.00",
+          "balance": "-69.00"
+        }
+      ],
+      "openingCash": "0.00",
+      "inflows": "1380.00",
+      "outflows": "349.00",
+      "netCashFlow": "1031.00",
+      "closingCash": "1031.00"
+    },
+    "receivablesAging": {
+      "total": "230.00",
+      "current": "230.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "11e4c4db-82b8-433a-85c6-29143cfa2d40",
+          "number": "INV-2026-0002",
+          "partyId": "00017382-ebd8-400b-a187-21f1c5dd21e0",
+          "partyName": "Harbour Mobile Cafe",
+          "issueDate": "2026-11-06",
+          "dueDate": "2026-12-06",
+          "balanceDue": "230.00",
+          "daysOverdue": -30,
+          "bucket": "current"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "276.00",
+      "current": "276.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "79e7feb6-a376-4000-a426-204e355afe07",
+          "number": "BILL-0001",
+          "partyId": "32c4fb2b-1ecc-4b20-9ad5-f5473d3aff2a",
+          "partyName": "Mobile Studio Supplier",
+          "issueDate": "2026-11-06",
+          "dueDate": "2026-12-06",
+          "balanceDue": "276.00",
+          "daysOverdue": -30,
+          "bucket": "current"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "1400.00",
+      "tax": "210.00",
+      "total": "1610.00",
+      "paid": "1380.00",
+      "outstanding": "230.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "300.00",
+      "tax": "45.00",
+      "total": "345.00",
+      "paid": "69.00",
+      "outstanding": "276.00"
+    },
+    "taxSummary": {
+      "collected": "210.00",
+      "paid": "75.00",
+      "netPayable": "135.00",
+      "outputGst": "210.00",
+      "inputGst": "75.00",
+      "netGst": "135.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "7a0bd6ed-7646-4a37-9c83-4ba95297a964",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "5714b61b-8591-4a56-872c-54dd5565e995",
+          "accountNumber": "1110",
+          "accountName": "Bank Account - Current",
+          "accountClass": "asset",
+          "debit": "1380.00",
+          "credit": "280.00",
+          "balance": "1100.00"
+        },
+        {
+          "accountId": "8220a047-e5fb-4565-abea-085db2a23405",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "1610.00",
+          "credit": "1380.00",
+          "balance": "230.00"
+        },
+        {
+          "accountId": "d94f7734-c46d-467c-9ff3-ce8cf9217701",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "69.00",
+          "credit": "345.00",
+          "balance": "276.00"
+        },
+        {
+          "accountId": "7a0bd6ed-7646-4a37-9c83-4ba95297a964",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "75.00",
+          "credit": "0.00",
+          "balance": "75.00"
+        },
+        {
+          "accountId": "7ab6e86a-cae5-4dda-ac85-4a6b0bc18d00",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "210.00",
+          "balance": "210.00"
+        },
+        {
+          "accountId": "b6b3b85c-39c6-41f1-9c22-370df4648232",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "1400.00",
+          "balance": "1400.00"
+        },
+        {
+          "accountId": "5d32f6f2-2906-4555-8040-b6bb49f282c5",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "550.00",
+          "credit": "0.00",
+          "balance": "550.00"
+        },
+        {
+          "accountId": "fe0d9f8c-f5fa-4ca4-b481-b7617d89667a",
+          "accountNumber": "BANK-FDA11977",
+          "accountName": "Mobile operating account",
+          "accountClass": "asset",
+          "debit": "0.00",
+          "credit": "69.00",
+          "balance": "-69.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "reportText": "Good to see you\nAroha\nA\nClosing cash\n$1,031.00\n\n\n\nNew invoice\n\nNew quote\n\nRecord payment\n\nAdd expense\n\nAdd customer\nBusiness reports\nPosted ledger\n30 days\n90 days\nYear\nSummary\nRevenue\n$1,400.00\nExpenses\n$550.00\nNet income\n$850.00\n2 source records\nServer-authoritative · Posted ledger\nReceivables\nOutstanding receivables\n$230.00\n1 source record\nServer-authoritative · Posted ledger\nPayables\nOutstanding payables\n$276.00\n1 source record\nServer-authoritative · Posted ledger\nCash\nCash in\n$1,380.00\nCash out\n$349.00\nNet cash flow\n$1,031.00\nClosing cash\n$1,031.00\n2 source records\nServer-authoritative · Posted ledger\nTax\nGST collected\n$210.00\nGST paid\n$75.00\nNet GST payable\n$135.00\nNo source activity in this period.\nServer-authoritative · Posted ledger\nActivity\nActivity count\n5\n5 source records\nOperational activity\nQuotes\nOpen quotes\n0\n$0.00 still open\n0 accepted, not invoiced\n\nTasks\n\nFinish setting up\nAdd your business details before sending an invoice.\nContinue\nDismiss\nNeeds action\nSee all\n\nHarbour Mobile Cafe\nINV-2026-0002 · 6 Nov\n$460.00\nSent\nReports\nFinancial reports\nServer-calculated from posted journals\n\nThis month\nThis year\nAccrual\nCash\nRevenue\n$1,400.00\nExpenses\n$550.00\nNet income\n$850.00\nClosing cash\n$1,031.00\nFinancial position\nAssets\n$1,336.00\nLiabilities\n$486.00\nEquity\n$850.00\nTrial balance\nBalanced\nWhat is owed\nReceivables\n$230.00\nPayables\n$276.00\nGST return (IRD)\nOutput GST (sales)\n$210.00\nInput GST (purchases & expenses)\n$75.00\nNet GST payable to IRD\n$135.00\nGST calculated on the invoice basis\nGenerated 11/6/2026, 9:16:37 AM · NZD · Draft documents excluded\nPrepare GST return\nInvoice basis · NZD. Review these figures with your accountant before filing with IRD.\nGST period start\nGST period end\nPrepare GST figures\n\n\nHome\n\n\nInvoices\n\n\nCustomers\n\n\nMore",
+  "taxDraft": {
+    "id": "a20aec74-6c5f-477a-921f-18fb88a2d36c",
+    "periodStart": "2026-11-01",
+    "periodEnd": "2026-11-06",
+    "returnType": "GST",
+    "totalSales": "1610.00",
+    "totalPurchases": "625.00",
+    "gstOnSales": "210.00",
+    "gstOnPurchases": "75.00",
+    "netGst": "135.00",
+    "status": "draft",
+    "submittedAt": null,
+    "irdReference": null,
+    "returnData": null,
+    "createdAt": "2026-11-06T09:16:38.000Z",
+    "updatedAt": "2026-11-06T09:16:38.000Z"
+  }
+}

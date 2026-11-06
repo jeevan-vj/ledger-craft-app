@@ -1,3 +1,5 @@
+import { InvoiceCreditNotesSection } from '@/components/invoice/InvoiceCreditNotesSection';
+import { invoiceSettlementLabel } from '@/features/invoices/settlementLabel';
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   View,
@@ -32,8 +34,9 @@ import {
   invoicePaymentsQueryKey,
   submitInvoicePayment,
 } from '@/features/payments/paymentQueries';
-import { getStatusLabel, statusInk } from '@/utils/statusUtils';
+import { statusInk } from '@/utils/statusUtils';
 import { AppPressable } from '@/components/ui/AppPressable';
+import { ModernButton } from '@/components/ui/ModernButton';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ProfileCompletenessBanner } from '@/components/invoice/ProfileCompletenessBanner';
 import { radius, space } from '@/theme/tokens';
@@ -72,6 +75,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   const hideProfilePrompt = entry === 'create';
   const { tabBarClearance } = useTabScreenInsets();
   const canWrite = useStore((state) => canWriteInvoices(state.permissions));
+  const paymentOwnerId = useStore((state) => state.user?.id ?? '');
   const queryClient = useQueryClient();
   const invoiceQuery = useQuery({
     queryKey: invoiceDetailQueryKey(invoiceId),
@@ -88,6 +92,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
   const [shareActionsVisible, setShareActionsVisible] = useState(false);
   const [statusPickerVisible, setStatusPickerVisible] = useState(false);
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
+  const [hasPendingInvoicePayment, setHasPendingInvoicePayment] = useState(false);
   const [paymentToReverse, setPaymentToReverse] = useState<Payment | null>(null);
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [bottomBarHeight, setBottomBarHeight] = useState(0);
@@ -211,7 +216,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
     setUpdatingStatus(true);
 
     try {
-      await invoiceService.updateInvoiceStatus(invoiceId, newStatus as any);
+      await invoiceService.updateInvoiceStatus(invoiceId, newStatus as Parameters<typeof invoiceService.updateInvoiceStatus>[1]);
       await refreshInvoice();
       
       Alert.alert('Success', `Invoice status changed to ${newStatus}`);
@@ -331,10 +336,15 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             {invoice.invoiceNumber}
             {' · '}
             <Text style={{ color: ink }}>
-              {getStatusLabel(invoice.status)}
+              {invoiceSettlementLabel(invoice)}
             </Text>
           </Text>
         </View>
+
+        {hasPendingInvoicePayment && canWrite ? <View style={{ gap: space.sm }}>
+          <Text style={type.subhead}>A saved payment still needs confirmation. Resume it unchanged instead of recording another payment.</Text>
+          <ModernButton variant="secondary" onPress={() => setPaymentModalVisible(true)}>Resume pending payment</ModernButton>
+        </View> : null}
 
         {createdDraft ? (
           <CreatedInvoiceCard
@@ -413,7 +423,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             accessibilityLabel="Change invoice status"
           >
             <View style={[styles.statusDot, { backgroundColor: ink }]} />
-            <Text style={styles.statusButtonValue}>{getStatusLabel(invoice.status)}</Text>
+            <Text style={styles.statusButtonValue}>{invoiceSettlementLabel(invoice)}</Text>
             <Feather name="chevron-right" size={18} color={palette.textTertiary} />
           </Pressable>
           {updatingStatus ? (
@@ -573,6 +583,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </View>
         )}
 
+        {!createdDraft ? <InvoiceCreditNotesSection ownerId={paymentOwnerId} invoice={invoice} canWrite={canWrite} onChanged={() => { void refreshInvoice(); }} /> : null}
         {createdDraft || showFinishDraft(invoice.status, canWrite) ? null : (
           <InvoiceDeliverySection
             invoice={invoice}
@@ -639,6 +650,9 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
 
       {/* Payment Capture Modal */}
       <PaymentCaptureModal
+        key={`${paymentOwnerId}:${invoice.id}`}
+        ownerId={paymentOwnerId}
+        onPendingChange={setHasPendingInvoicePayment}
         visible={paymentModalVisible}
         invoice={invoice}
         onSubmit={handlePaymentSubmit}

@@ -1,0 +1,42 @@
+import { describe, expect, it } from 'vitest';
+import { journalEntrySchema } from '@ledgercraft/contracts';
+import { createApp } from '../../app';
+import { withTestDb } from '../../test/harness';
+import { createAuth } from '../auth/auth';
+
+const baseHeaders = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
+describe('manual journal optional retry keys', () => {
+  it('retries a draft and posted journal without duplication, rejects changed payloads, and preserves keyless creates', async () => withTestDb(async ({ db }) => {
+    const app = createApp({ db, auth: createAuth(db) });
+    const signup = await app.request('/api/auth/sign-up/email', { method: 'POST', headers: baseHeaders, body: JSON.stringify({ name: 'Journal accountant', email: 'journal-retries@example.test', password: 'LocalJournal123!' }) });
+    expect(signup.status).toBe(200);
+    const Cookie = signup.headers.getSetCookie().map((row) => row.split(';')[0]).join('; ');
+    const headers = { ...baseHeaders, Cookie };
+    const initialized = await app.request('/api/accounts/initialize', { method: 'POST', headers, body: '{}' });
+    const data = await initialized.json() as { accounts: Array<{ id: string; accountNumber: string }> };
+    const cash = data.accounts.find((row) => row.accountNumber === '1110')!;
+    const cost = data.accounts.find((row) => row.accountNumber === '1120')!;
+    const body = { description: 'Reviewed transfer of cash on hand', entryDate: '2026-04-01', debitAccountId: cash.id, creditAccountId: cost.id, amount: '5000.00' };
+    const create = (key?: string, input = body) => app.request('/api/journal-entries', { method: 'POST', headers: { ...headers, ...(key ? { 'Idempotency-Key': key } : {}) }, body: JSON.stringify(input) });
+    const [a, b] = await Promise.all([create('journal-retry'), create('journal-retry')]);
+    expect(a.status).toBe(201);
+    expect(b.status).toBe(201);
+    const first = journalEntrySchema.parse(await a.json());
+    expect(journalEntrySchema.parse(await b.json()).id).toBe(first.id);
+    const posted = await app.request(`/api/journal-entries/${first.id}`, { method: 'PATCH', headers, body: JSON.stringify({ status: 'posted' }) });
+    expect(posted.status).toBe(200);
+    const replay = journalEntrySchema.parse(await (await create('journal-retry')).json());
+    expect(replay.id).toBe(first.id);
+    expect(replay.status).toBe('posted');
+    const conflict = await create('journal-retry', { ...body, amount: '5001.00' });
+    expect(conflict.status).toBe(409);
+    expect(await conflict.json()).toMatchObject({ error: { code: 'IDEMPOTENCY_CONFLICT' } });
+    const keylessA = journalEntrySchema.parse(await (await create()).json());
+    const keylessB = journalEntrySchema.parse(await (await create()).json());
+    expect(keylessA.id).not.toBe(keylessB.id);
+    const list = await (await app.request('/api/journal-entries', { headers })).json() as { journalEntries: unknown[] };
+    expect(list.journalEntries).toHaveLength(3);
+    const invalid = await create('bad key with spaces');
+    expect(invalid.status).toBe(400);
+  }));
+});

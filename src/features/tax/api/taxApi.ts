@@ -15,7 +15,7 @@ import type { Payment, TaxConfiguration, TaxReturn } from '@/types/payment';
 import { toPeriodExpense, toPeriodInvoice, type PeriodExpense, type PeriodInvoice } from './periodRows';
 
 export function taxApiEnabled(): boolean {
-  return import.meta.env.VITE_TAX_API === 'true';
+  return import.meta.env.VITE_TAX_API !== 'false';
 }
 
 export class TaxApiError extends Error {

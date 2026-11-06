@@ -3,13 +3,14 @@ import { Payment, Receipt, CreatePaymentRequest, EnhancedInvoice } from '@/types
 import { Invoice } from '@/types';
 import { invoiceService } from './supabaseService';
 import { accountingJournalService } from './accountingJournalService';
-import { paymentsApi, paymentsApiEnabled, toCreatePaymentRequest } from '@/features/payments/api/paymentsApi';
+import { paymentsApi, paymentsApiEnabled } from '@/features/payments/api/paymentsApi';
 import { receiptsApi, receiptsApiEnabled } from '@/features/receipts/api/receiptsApi';
 import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
+import { createRecoverableInvoicePayment } from '@/features/accounting-completion/invoicePaymentRecovery';
 import type { ReversePaymentRequest } from '@ledgercraft/contracts';
 
 // Map Supabase payment to Payment type
-const mapSupabasePaymentToPayment = (payment: any): Payment => ({
+const mapSupabasePaymentToPayment = (payment: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['payments']): Payment => ({
   id: payment.id,
   invoiceId: payment.invoice_id,
   userId: payment.user_id,
@@ -24,7 +25,7 @@ const mapSupabasePaymentToPayment = (payment: any): Payment => ({
 });
 
 // Map Supabase receipt to Receipt type
-const mapSupabaseReceiptToReceipt = (receipt: any): Receipt => ({
+const mapSupabaseReceiptToReceipt = (receipt: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['receipts']): Receipt => ({
   id: receipt.id,
   paymentId: receipt.payment_id,
   receiptNumber: receipt.receipt_number,
@@ -36,6 +37,13 @@ const mapSupabaseReceiptToReceipt = (receipt: any): Receipt => ({
   createdAt: receipt.created_at
 });
 
+function legacyPaymentStatus(value: string | undefined): EnhancedInvoice['paymentStatus'] {
+  if (value === 'partial') return 'partially_paid';
+  if (value === 'written_off') return 'cancelled';
+  if (value === 'paid' || value === 'unpaid' || value === 'partially_paid' || value === 'overdue' || value === 'cancelled') return value;
+  return 'unpaid';
+}
+
 export class PaymentService {
   // Create a new payment and automatically update invoice status
   async createPayment(paymentData: CreatePaymentRequest): Promise<Payment> {
@@ -43,11 +51,7 @@ export class PaymentService {
       throw new Error('Payment amount must be greater than zero');
     }
     if (paymentsApiEnabled()) {
-      const payment = await paymentsApi.create(toCreatePaymentRequest(paymentData));
-      if (receiptsApiEnabled() && paymentData.generateReceipt !== false) {
-        await receiptsApi.create({ paymentId: payment.id });
-      }
-      return payment;
+      return createRecoverableInvoicePayment(paymentData);
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('User not authenticated');
@@ -442,6 +446,7 @@ export class PaymentService {
           email: invoice.customers.email || '',
           phone: invoice.customers.phone || '',
           address: invoice.customers.address || '',
+          city: invoice.customers.city ?? null, state: invoice.customers.state ?? null, zip: invoice.customers.zip ?? null, country: invoice.customers.country || 'NZ',
           createdAt: invoice.customers.created_at || new Date().toISOString(),
           updatedAt: invoice.customers.updated_at || new Date().toISOString()
         } : {
@@ -449,7 +454,7 @@ export class PaymentService {
           name: 'Unknown Customer',
           email: '',
           phone: '',
-          address: '',
+          address: '', city: null, state: null, zip: null, country: 'NZ',
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString()
         },
@@ -458,7 +463,7 @@ export class PaymentService {
         dueDate: invoice.due_date,
         date: invoice.issue_date, // Add backward compatibility for date field
         status: invoice.status,
-        paymentStatus: invoice.payment_status,
+        paymentStatus: legacyPaymentStatus(invoice.payment_status),
         subtotal: invoice.subtotal || 0,
         taxAmount: invoice.tax_amount || 0,
         total: total,
@@ -469,13 +474,14 @@ export class PaymentService {
         templateName: invoice.template_name,
         createdAt: invoice.created_at,
         updatedAt: invoice.updated_at,
-        lineItems: (invoice.line_items || []).map((item: any) => ({
+        items: (invoice.line_items || []).map((item) => ({ ...item, invoiceId: item.invoice_id, unit: item.unit ?? 'each', rateUnit: item.rate_unit ?? 'each' })),
+        lineItems: (invoice.line_items || []).map((item) => ({
           id: item.id,
           description: item.description,
           quantity: item.quantity,
-          unitPrice: item.unit_price,
+          unitPrice: item.rate,
           total: item.total,
-          taxAmount: item.tax_amount || 0
+          taxAmount: item.tax || 0
         })),
         // EnhancedInvoice specific fields
         taxInclusive: invoice.tax_inclusive || false,

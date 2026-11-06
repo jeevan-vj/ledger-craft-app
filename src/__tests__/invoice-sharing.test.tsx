@@ -48,7 +48,7 @@ const mockInvoice: Invoice = {
       id: 'item-1',
       description: 'Test Item',
       quantity: 1,
-      unit: 'each',
+      unit: 'each', rateUnit: 'each',
       rate: 100,
       total: 100,
     },

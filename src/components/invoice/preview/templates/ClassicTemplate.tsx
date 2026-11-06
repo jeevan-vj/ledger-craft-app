@@ -166,9 +166,9 @@ const ClassicTemplate = ({
                 <td className="py-2 px-2 text-left">
                   {item.description}
                   {/* Only render details section if it exists as a property in the item */}
-                  {(item as any).details && (
+                  {item.details && (
                     <div className="text-xs text-gray-500 break-words">
-                      {(item as any).details}
+                      {item.details}
                     </div>
                   )}
                 </td>

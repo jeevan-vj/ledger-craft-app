@@ -23,7 +23,7 @@ export const TaxPositionCard: React.FC<TaxPositionCardProps> = ({
   const isZero = amount === 0;
   const absoluteAmount = Math.abs(amount);
 
-  const getStatusVariant = () => {
+  const getStatusVariant = (): React.ComponentProps<typeof Badge>['variant'] => {
     if (isZero) return 'secondary';
     if (isRefund) return 'success';
     if (absoluteAmount > 5000) return 'destructive';
@@ -74,7 +74,7 @@ export const TaxPositionCard: React.FC<TaxPositionCardProps> = ({
 
           {/* Status Badge */}
           <div className="flex items-center justify-between">
-            <Badge variant={getStatusVariant() as any} className="text-xs">
+            <Badge variant={getStatusVariant()} className="text-xs">
               {getStatusText()}
             </Badge>
             <div className="text-xs text-muted-foreground">

@@ -17,7 +17,7 @@ import { readApiFailure } from '@/lib/api/readApiError';
 import type { BankAccount, BankTransaction } from '@/types/bankTransaction';
 
 export function bankApiEnabled(): boolean {
-  return import.meta.env.VITE_BANK_API === 'true';
+  return import.meta.env.VITE_BANK_API !== 'false';
 }
 
 export class BankApiError extends Error {

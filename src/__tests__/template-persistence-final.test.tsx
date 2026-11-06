@@ -8,9 +8,9 @@ describe('Template Persistence - Final Verification', () => {
       let selectedTemplate = 'classic';
       
       // Simulate useEffect with no initialValues (create mode)
-      const initialValues1 = undefined;
+      const initialValues1: { templateName?: string } = undefined;
       if (initialValues1) {
-        selectedTemplate = (initialValues1?.templateName as any) || 'classic';
+        selectedTemplate = (initialValues1?.templateName) || 'classic';
       } else {
         selectedTemplate = 'classic';
       }
@@ -20,7 +20,7 @@ describe('Template Persistence - Final Verification', () => {
       // Simulate useEffect with modern template (edit mode)
       const initialValues2 = { templateName: 'modern' };
       if (initialValues2) {
-        selectedTemplate = (initialValues2?.templateName as any) || 'classic';
+        selectedTemplate = (initialValues2?.templateName) || 'classic';
       } else {
         selectedTemplate = 'classic';
       }
@@ -30,7 +30,7 @@ describe('Template Persistence - Final Verification', () => {
       // Simulate useEffect with corporate template
       const initialValues3 = { templateName: 'corporate' };
       if (initialValues3) {
-        selectedTemplate = (initialValues3?.templateName as any) || 'classic';
+        selectedTemplate = (initialValues3?.templateName) || 'classic';
       } else {
         selectedTemplate = 'classic';
       }
@@ -40,7 +40,7 @@ describe('Template Persistence - Final Verification', () => {
       // Simulate useEffect with undefined template
       const initialValues4 = { templateName: undefined };
       if (initialValues4) {
-        selectedTemplate = (initialValues4?.templateName as any) || 'classic';
+        selectedTemplate = (initialValues4?.templateName) || 'classic';
       } else {
         selectedTemplate = 'classic';
       }
@@ -64,7 +64,7 @@ describe('Template Persistence - Final Verification', () => {
       ];
 
       testCases.forEach(({ invoice, expected }) => {
-        const selectedTemplate = (invoice.templateName as any) || 'classic';
+        const selectedTemplate = (invoice.templateName) || 'classic';
         expect(selectedTemplate).toBe(expected);
         console.log(`✅ Invoice with templateName "${invoice.templateName}" uses template: ${selectedTemplate}`);
       });
@@ -82,7 +82,7 @@ describe('Template Persistence - Final Verification', () => {
 
       testCases.forEach(({ invoice, expected }) => {
         // This simulates the ShareInvoiceModal useState initialization
-        const defaultTemplate = (invoice.templateName as any) || 'classic';
+        const defaultTemplate = (invoice.templateName) || 'classic';
         expect(defaultTemplate).toBe(expected);
         console.log(`✅ Share modal for invoice with templateName "${invoice.templateName}" defaults to: ${defaultTemplate}`);
       });
@@ -147,17 +147,17 @@ describe('Template Persistence - Final Verification', () => {
       expect(savedInvoice.templateName).toBe('modern');
 
       // Step 4: Edit the invoice (should load with modern template)
-      const editModeTemplate = (savedInvoice.templateName as any) || 'classic';
+      const editModeTemplate = (savedInvoice.templateName) || 'classic';
       console.log('📝 Step 4 - Edit mode loads with template:', editModeTemplate);
       expect(editModeTemplate).toBe('modern');
 
       // Step 5: View the invoice (should display with modern template)
-      const viewModeTemplate = (savedInvoice.templateName as any) || 'classic';
+      const viewModeTemplate = (savedInvoice.templateName) || 'classic';
       console.log('👁️ Step 5 - View mode displays with template:', viewModeTemplate);
       expect(viewModeTemplate).toBe('modern');
 
       // Step 6: Share the invoice (should default to modern template)
-      const shareModeTemplate = (savedInvoice.templateName as any) || 'classic';
+      const shareModeTemplate = (savedInvoice.templateName) || 'classic';
       console.log('🔗 Step 6 - Share modal defaults to template:', shareModeTemplate);
       expect(shareModeTemplate).toBe('modern');
 

@@ -83,6 +83,7 @@ export type SettingsStackParamList = {
   SettingsList: undefined;
   BusinessSettings: undefined;
   Reports: undefined;
+  AccountingTools: undefined;
   CompanyTeam: { invite?: string } | undefined;
   RecurringSchedules: undefined;
   AccountDeletion: undefined;

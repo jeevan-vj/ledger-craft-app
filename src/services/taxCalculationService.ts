@@ -2,6 +2,8 @@ import { TaxConfiguration, TaxCalculationRequest, TaxCalculationResult, TaxBreak
 import { supabaseDataService } from './supabaseDataService';
 import { expenseService, invoiceService } from './supabaseService';
 import { readMoney } from '@/features/tax/api/periodRows';
+import { taxApiEnabled } from '@/features/tax/api/taxApi';
+import { loadGstPreparation } from '@/features/tax/gstPreparation';
 
 export class TaxCalculationService {
   /**
@@ -16,7 +18,7 @@ export class TaxCalculationService {
       throw new Error('Tax rate must be between 0 and 1');
     }
 
-    const breakdown: TaxBreakdown['breakdown'] = {
+    const breakdown: TaxCalculationResult['breakdown'] = {
       lineItems: []
     };
 
@@ -230,6 +232,14 @@ export class TaxCalculationService {
     periodStart: string,
     periodEnd: string
   ): Promise<IRDReturnData> {
+    if (taxApiEnabled()) {
+      const figures = await loadGstPreparation(periodStart, periodEnd);
+      return { gstReturn: {
+        salesDetails: { standardRated: figures.totalSales, zeroRated: 0, exempt: 0, totalSales: figures.totalSales, gstOnSales: figures.gstOnSales },
+        purchaseDetails: { standardRated: figures.totalPurchases, capitalGoods: 0, totalPurchases: figures.totalPurchases, gstOnPurchases: figures.gstOnPurchases },
+        adjustments: { badDebts: 0, otherAdjustments: 0 },
+      } };
+    }
     try {
       const taxConfig = await this.getActiveTaxConfiguration(userId);
       if (!taxConfig) {
@@ -280,7 +290,7 @@ export class TaxCalculationService {
 
       // Calculate bad debts from written-off invoices
       const badDebts = invoices
-        .filter(invoice => invoice.paymentStatus === 'written_off')
+        .filter(invoice => String(invoice.paymentStatus) === 'written_off')
         .reduce((sum, invoice) => sum + readMoney(invoice, 'taxAmount', 'tax_amount'), 0);
 
       return {
@@ -442,6 +452,7 @@ export class TaxCalculationService {
     gstOnPurchases: number;
     netGstPosition: number;
   }> {
+    if (taxApiEnabled()) return loadGstPreparation(periodStart, periodEnd);
     try {
       const invoices = await invoiceService.getInvoices();
       const expenses = await expenseService.getExpenses().catch(() => []);

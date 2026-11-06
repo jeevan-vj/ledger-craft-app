@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
+import { csvRow } from '@/lib/csv';
+import type { CSVParseResult } from '@/services/csvTransactionParser';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { 
+import {
   Eye,
-  ArrowLeft, 
+  ArrowLeft,
   Upload,
   AlertCircle,
   CheckCircle,
@@ -23,7 +25,7 @@ import { transactionImportService } from '@/services/transactionImportService';
 import { toast } from 'sonner';
 
 interface ImportPreviewProps {
-  parseResult: any;
+  parseResult: CSVParseResult;
   bankAccount: BankAccount;
   onImportConfirm: (result: TransactionImportResult) => void;
   onBack: () => void;
@@ -36,7 +38,7 @@ export function ImportPreview({
   onBack
 }: ImportPreviewProps) {
   const [selectedTransactions, setSelectedTransactions] = useState<Set<number>>(
-    new Set(parseResult.transactions.map((_: any, index: number) => index))
+    new Set(parseResult.transactions.map((_, index: number) => index))
   );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -55,7 +57,7 @@ export function ImportPreview({
     if (selectedTransactions.size === parseResult.transactions.length) {
       setSelectedTransactions(new Set());
     } else {
-      setSelectedTransactions(new Set(parseResult.transactions.map((_: any, index: number) => index)));
+      setSelectedTransactions(new Set(parseResult.transactions.map((_, index: number) => index)));
     }
   };
 
@@ -71,26 +73,26 @@ export function ImportPreview({
     try {
       // Prepare selected transactions for import
       const transactionsToImport = parseResult.transactions.filter(
-        (_: any, index: number) => selectedTransactions.has(index)
+        (_, index: number) => selectedTransactions.has(index)
       );
 
       const csvData = prepareCsvDataForImport(transactionsToImport);
-      
+
       const config: TransactionImportConfig = {
         bankAccountId: bankAccount.id,
-        columnMapping: parseResult.columnMapping,
-        dateFormat: parseResult.dateFormat || 'DD/MM/YYYY',
+        fileType: 'csv',
+        csvMapping: { date: 'date', description: 'description', amount: 'amount', type: 'type', balance: 'balance', reference: 'reference', merchant: 'merchant' },
+        dateFormat: 'YYYY-MM-DD',
         skipDuplicates: true,
-        categorizeTransactions: true,
       };
 
       const result = await transactionImportService.importTransactions(csvData, config);
-      
+
       if (result.success) {
-        toast.success(`Successfully imported ${result.imported} transactions`);
+        toast.success(`Successfully imported ${result.importedCount} transactions`);
         onImportConfirm(result);
       } else {
-        setError(result.error || 'Import failed');
+        setError(result.errors.join('; ') || 'Import failed');
       }
     } catch (error) {
       console.error('Import failed:', error);
@@ -100,39 +102,10 @@ export function ImportPreview({
     }
   };
 
-  const prepareCsvDataForImport = (transactions: ImportedTransaction[]): string => {
-    // Convert transactions back to CSV format for the import service
-    const headers = Object.keys(parseResult.columnMapping);
-    const rows = transactions.map(transaction => {
-      return headers.map(header => {
-        switch (header) {
-          case 'date':
-            return formatDateForCsv(transaction.date);
-          case 'description':
-            return transaction.description;
-          case 'amount':
-            return transaction.amount.toString();
-          case 'balance':
-            return transaction.balance?.toString() || '';
-          case 'reference':
-            return transaction.reference || '';
-          default:
-            return '';
-        }
-      }).join(',');
-    });
-
-    return [headers.join(','), ...rows].join('\n');
-  };
-
-  const formatDateForCsv = (date: string): string => {
-    // Convert ISO date back to the expected format
-    const d = new Date(date);
-    const day = d.getDate().toString().padStart(2, '0');
-    const month = (d.getMonth() + 1).toString().padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}/${month}/${year}`;
-  };
+  const prepareCsvDataForImport = (transactions: ImportedTransaction[]): string => [
+    csvRow(['date', 'description', 'amount', 'type', 'balance', 'reference', 'merchant']),
+    ...transactions.map((row) => csvRow([row.date, row.description, String(row.amount), row.type, row.balance, row.reference, row.merchant])),
+  ].join('\n');
 
   const formatAmount = (amount: number, currency: string = bankAccount.currency) => {
     return new Intl.NumberFormat('en-NZ', {
@@ -164,7 +137,7 @@ export function ImportPreview({
 
   const calculateSummary = () => {
     const selected = parseResult.transactions.filter(
-      (_: any, index: number) => selectedTransactions.has(index)
+      (_, index: number) => selectedTransactions.has(index)
     );
 
     const totalCredit = selected
@@ -217,7 +190,7 @@ export function ImportPreview({
                 Selected Transactions
               </div>
             </div>
-            
+
             <div className="text-center p-4 bg-green-50 rounded-lg">
               <div className="text-2xl font-bold text-green-600">
                 {formatAmount(summary.totalCredit)}
@@ -226,7 +199,7 @@ export function ImportPreview({
                 Total Credits
               </div>
             </div>
-            
+
             <div className="text-center p-4 bg-red-50 rounded-lg">
               <div className="text-2xl font-bold text-red-600">
                 {formatAmount(summary.totalDebit)}
@@ -235,7 +208,7 @@ export function ImportPreview({
                 Total Debits
               </div>
             </div>
-            
+
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <div className={`text-2xl font-bold ${getAmountColor(summary.netAmount)}`}>
                 {formatAmount(summary.netAmount)}
@@ -281,7 +254,7 @@ export function ImportPreview({
                     checked={selectedTransactions.has(index)}
                     onCheckedChange={() => handleTransactionToggle(index)}
                   />
-                  
+
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start justify-between gap-4">
                       <div className="flex-1 min-w-0">
@@ -296,19 +269,19 @@ export function ImportPreview({
                             </Badge>
                           )}
                         </div>
-                        
+
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Calendar className="w-3 h-3" />
                             {formatDate(transaction.date)}
                           </span>
-                          
+
                           {transaction.merchant && (
                             <span className="truncate">
                               {transaction.merchant}
                             </span>
                           )}
-                          
+
                           {transaction.reference && (
                             <span className="text-xs bg-muted px-2 py-1 rounded">
                               Ref: {transaction.reference}
@@ -316,12 +289,12 @@ export function ImportPreview({
                           )}
                         </div>
                       </div>
-                      
+
                       <div className="text-right">
                         <div className={`text-lg font-semibold ${getAmountColor(transaction.amount)}`}>
                           {formatAmount(transaction.amount)}
                         </div>
-                        
+
                         {transaction.balance !== undefined && (
                           <div className="text-sm text-muted-foreground">
                             Balance: {formatAmount(transaction.balance)}
@@ -332,7 +305,7 @@ export function ImportPreview({
                   </div>
                 </div>
               ))}
-              
+
               {parseResult.transactions.length === 0 && (
                 <div className="text-center py-8 text-muted-foreground">
                   <FileText className="w-12 h-12 mx-auto mb-4 opacity-50" />
@@ -345,11 +318,11 @@ export function ImportPreview({
       </Card>
 
       {/* Warnings and Information */}
-      {parseResult.duplicatesFound > 0 && (
+      {(parseResult.duplicates?.length ?? 0) > 0 && (
         <Alert>
           <AlertTriangle className="h-4 w-4" />
           <AlertDescription>
-            {parseResult.duplicatesFound} potential duplicate transactions were found. 
+            {parseResult.duplicates?.length ?? 0} potential duplicate transactions were found.
             These will be automatically skipped during import to prevent duplicates.
           </AlertDescription>
         </Alert>
@@ -379,9 +352,9 @@ export function ImportPreview({
           <ArrowLeft className="w-4 h-4" />
           Back
         </Button>
-        
-        <Button 
-          onClick={handleImport} 
+
+        <Button
+          onClick={handleImport}
           disabled={selectedTransactions.size === 0 || loading}
           className="flex items-center gap-2"
         >

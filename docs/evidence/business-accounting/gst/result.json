@@ -1,0 +1,67 @@
+{
+  "seed": "API reference fixture; real web preparation/save/reload/PDF",
+  "preparation": {
+    "basis": "invoice",
+    "from": "2026-04-01",
+    "to": "2026-04-30",
+    "baseCurrency": "NZD",
+    "totalSales": "1610.00",
+    "totalPurchases": "625.00",
+    "gstOnSales": "210.00",
+    "gstOnPurchases": "75.00",
+    "netGstPosition": "135.00",
+    "warnings": []
+  },
+  "draft": {
+    "id": "df3b9ad1-8ead-4fbb-8cd5-6b067395f06e",
+    "periodStart": "2026-04-01",
+    "periodEnd": "2026-04-30",
+    "returnType": "GST",
+    "totalSales": "1610.00",
+    "totalPurchases": "625.00",
+    "gstOnSales": "210.00",
+    "gstOnPurchases": "75.00",
+    "netGst": "135.00",
+    "status": "draft",
+    "submittedAt": null,
+    "irdReference": null,
+    "returnData": {
+      "preparation": {
+        "basis": "invoice",
+        "baseCurrency": "NZD",
+        "dueDate": "2026-05-28"
+      },
+      "gstReturn": {
+        "salesDetails": {
+          "standardRated": 1610,
+          "zeroRated": 0,
+          "exempt": 0,
+          "totalSales": 1610,
+          "gstOnSales": 210
+        },
+        "purchaseDetails": {
+          "standardRated": 625,
+          "capitalGoods": 0,
+          "totalPurchases": 625,
+          "gstOnPurchases": 75
+        },
+        "adjustments": {
+          "badDebts": 0,
+          "otherAdjustments": 0
+        }
+      },
+      "reconciliation": {
+        "status": "not_applicable",
+        "unreconciledTransactionCount": 0,
+        "figuresMatch": true,
+        "accounts": [],
+        "issues": []
+      }
+    },
+    "createdAt": "2026-11-06T09:12:04.000Z",
+    "updatedAt": "2026-11-06T09:12:04.000Z"
+  },
+  "pdfBytes": 6888,
+  "errors": [],
+  "submittedToIRD": false
+}

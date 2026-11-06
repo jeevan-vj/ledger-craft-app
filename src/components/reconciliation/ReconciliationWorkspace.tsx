@@ -181,7 +181,7 @@ export function ReconciliationWorkspace({
       await reconciliationService.createMatch(
         session.id,
         selectedBankTx,
-        bookEntry.type as 'invoice' | 'bill' | 'payment' | 'expense',
+        bookEntry.type as 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
         selectedBookEntry
       );
 
@@ -191,7 +191,7 @@ export function ReconciliationWorkspace({
       toast.success('Match created successfully');
     } catch (error) {
       console.error('Error creating match:', error);
-      toast.error('Failed to create match');
+      toast.error(error instanceof Error ? error.message : 'Failed to create match');
     }
   };
 

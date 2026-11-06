@@ -1,0 +1,69 @@
+{
+  "before": {
+    "inputGst": "30.00",
+    "cost": "200.00",
+    "cash": "-230.00"
+  },
+  "proposal": {
+    "key": "expense-gst:1c1e68a9-7b3b-41e2-8efb-ee69c83bd9e0",
+    "type": "expense_gst",
+    "sourceId": "7f825e33-1ff1-40a1-b414-220f68a168c9",
+    "sourceJournalId": "1c1e68a9-7b3b-41e2-8efb-ee69c83bd9e0",
+    "sourceDate": "2026-04-12",
+    "description": "Reduce input GST and include the nonclaimable part in expense cost: Historic partly private receipt",
+    "requiresReceiptConfirmation": true,
+    "actual": {
+      "inputGst": "30.00",
+      "expenseCost": "200.00",
+      "receiptGst": "30.00"
+    },
+    "expected": {
+      "inputGst": "15.00",
+      "expenseCost": "215.00",
+      "cashPaid": "230.00"
+    },
+    "correctionLines": [
+      {
+        "accountId": "c346cf76-8983-4a7e-8281-6c6acfebd2bf",
+        "debit": "15.00",
+        "credit": "0.00"
+      },
+      {
+        "accountId": "1f59e3d5-ca98-4ee7-8010-fe784a15be79",
+        "debit": "0.00",
+        "credit": "15.00"
+      }
+    ],
+    "fingerprint": "97a98fc57d4c1ba22801259094639337001379bb0edee83929e6de2895265abb"
+  },
+  "expected": {
+    "inputGst": "15.00",
+    "cost": "215.00",
+    "cash": "-230.00"
+  },
+  "actual": {
+    "inputGst": "15.00",
+    "cost": "215.00",
+    "cash": "-230.00"
+  },
+  "correction": {
+    "corrections": [
+      {
+        "key": "expense-gst:1c1e68a9-7b3b-41e2-8efb-ee69c83bd9e0",
+        "journalEntryId": "9f43799b-157d-4655-a014-30b7d1899940",
+        "replayed": false
+      }
+    ]
+  },
+  "replay": {
+    "corrections": [
+      {
+        "key": "expense-gst:1c1e68a9-7b3b-41e2-8efb-ee69c83bd9e0",
+        "journalEntryId": "9f43799b-157d-4655-a014-30b7d1899940",
+        "replayed": true
+      }
+    ]
+  },
+  "originalSourceUnchanged": true,
+  "receiptConfirmationRequired": true
+}

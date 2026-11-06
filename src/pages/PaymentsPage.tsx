@@ -1,3 +1,4 @@
+import { InvoicePaymentRecoveryPanel } from '@/components/accounting/InvoicePaymentRecoveryPanel';
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Plus, Wallet, Calendar, Repeat } from 'lucide-react';
@@ -19,6 +20,8 @@ import type { Payment } from '@/types/payment';
 import { PaymentReversalDialog } from '@/components/payment/PaymentReversalDialog';
 
 export default function PaymentsPage() {
+  const [showRecovery, setShowRecovery] = useState(false);
+  const [recoveryInvoiceId, setRecoveryInvoiceId] = useState('');
   const [unpaidInvoices, setUnpaidInvoices] = useState<EnhancedInvoice[]>([]);
   const [showQuickPayment, setShowQuickPayment] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<EnhancedInvoice | null>(null);
@@ -72,6 +75,7 @@ export default function PaymentsPage() {
       setSelectedInvoice(null);
     } catch (error) {
       console.error('Error creating payment:', error);
+      throw error;
     }
   };
 
@@ -209,17 +213,7 @@ export default function PaymentsPage() {
     <div className="space-y-6">
       <PageHeader
         title="Payments"
-        actions={
-          payments.length > 0 ? (
-            <Button
-              onClick={() => setShowQuickPayment(true)}
-              disabled={unpaidInvoices.length === 0}
-            >
-              <Plus className="mr-2 h-4 w-4" />
-              Record Payment
-            </Button>
-          ) : undefined
-        }
+        actions={<div className="flex flex-wrap gap-2"><Button variant="outline" onClick={() => setShowRecovery(true)}>Recover payment</Button>{payments.length > 0 && <Button onClick={() => setShowQuickPayment(true)} disabled={unpaidInvoices.length === 0}><Plus className="mr-2 h-4 w-4" />Record Payment</Button>}</div>}
       />
 
       {payments.length === 0 && (
@@ -278,6 +272,7 @@ export default function PaymentsPage() {
         />
       )}
 
+      <Dialog open={showRecovery} onOpenChange={setShowRecovery}><DialogContent className="max-h-[90vh] overflow-y-auto"><DialogHeader><DialogTitle>Recover an invoice payment</DialogTitle></DialogHeader><p className="text-sm text-muted-foreground">Choose the original invoice, including an invoice now fully paid. Recovery reuses the saved request instead of creating another receipt.</p><label className="space-y-2 text-sm font-medium">Invoice for payment recovery<select className="flex h-11 w-full rounded-xl border border-input bg-background px-3" value={recoveryInvoiceId} onChange={(event) => setRecoveryInvoiceId(event.target.value)}><option value="">Choose an invoice</option>{invoices.map((invoice) => <option key={invoice.id} value={invoice.id}>{invoice.invoiceNumber}</option>)}</select></label>{recoveryInvoiceId && <InvoicePaymentRecoveryPanel key={recoveryInvoiceId} invoiceId={recoveryInvoiceId} recoveryOnly onResolved={async () => { setShowRecovery(false); setRecoveryInvoiceId(''); await Promise.all([refreshPayments(), refreshInvoices()]); await fetchUnpaidInvoices(); }} />}</DialogContent></Dialog>
       {/* Quick Payment Dialog */}
       <Dialog open={showQuickPayment} onOpenChange={setShowQuickPayment}>
         <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -346,6 +341,7 @@ export default function PaymentsPage() {
                     <PaymentForm
                       invoice={selectedInvoice}
                       onSubmit={handleCreatePayment}
+                      onRecovered={async () => { setShowQuickPayment(false); setSelectedInvoice(null); await Promise.all([refreshPayments(), refreshInvoices()]); await fetchUnpaidInvoices(); }}
                       onCancel={() => {
                         setShowQuickPayment(false);
                         setSelectedInvoice(null);

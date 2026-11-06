@@ -6,8 +6,8 @@ import { vi, describe, it, expect } from 'vitest';
 describe('Template Initialization Logic Tests', () => {
   describe('InvoiceForm Template State Initialization', () => {
     it('should initialize with classic template when no initialValues provided', () => {
-      const initialValues = undefined;
-      const selectedTemplate = (initialValues?.templateName as any) || 'classic';
+      const initialValues: { templateName?: string } = undefined;
+      const selectedTemplate = (initialValues?.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });
@@ -16,7 +16,7 @@ describe('Template Initialization Logic Tests', () => {
       const initialValues = {
         templateName: 'modern'
       };
-      const selectedTemplate = (initialValues?.templateName as any) || 'classic';
+      const selectedTemplate = (initialValues?.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('modern');
     });
@@ -25,7 +25,7 @@ describe('Template Initialization Logic Tests', () => {
       const initialValues = {
         templateName: 'corporate'
       };
-      const selectedTemplate = (initialValues?.templateName as any) || 'classic';
+      const selectedTemplate = (initialValues?.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('corporate');
     });
@@ -34,7 +34,7 @@ describe('Template Initialization Logic Tests', () => {
       const initialValues = {
         templateName: null
       };
-      const selectedTemplate = (initialValues?.templateName as any) || 'classic';
+      const selectedTemplate = (initialValues?.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });
@@ -43,7 +43,7 @@ describe('Template Initialization Logic Tests', () => {
       const initialValues = {
         templateName: undefined
       };
-      const selectedTemplate = (initialValues?.templateName as any) || 'classic';
+      const selectedTemplate = (initialValues?.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });
@@ -54,7 +54,7 @@ describe('Template Initialization Logic Tests', () => {
       const invoice = {
         templateName: 'modern'
       };
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('modern');
     });
@@ -63,14 +63,14 @@ describe('Template Initialization Logic Tests', () => {
       const invoice = {
         templateName: 'corporate'
       };
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('corporate');
     });
 
     it('should fallback to classic when templateName is undefined', () => {
-      const invoice = {};
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const invoice: { templateName?: string } = {};
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });
@@ -79,7 +79,7 @@ describe('Template Initialization Logic Tests', () => {
       const invoice = {
         templateName: null
       };
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });
@@ -90,14 +90,14 @@ describe('Template Initialization Logic Tests', () => {
       const invoice = {
         templateName: 'modern'
       };
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('modern');
     });
 
     it('should fallback to classic when no template saved', () => {
-      const invoice = {};
-      const selectedTemplate = (invoice.templateName as any) || 'classic';
+      const invoice: { templateName?: string } = {};
+      const selectedTemplate = (invoice.templateName) || 'classic';
       
       expect(selectedTemplate).toBe('classic');
     });

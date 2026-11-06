@@ -1,4 +1,4 @@
-import { decimal } from '../invoices/money';
+import { decimal, roundMoney } from '../invoices/money';
 import {
   expenseListResponseSchema,
   type CreateExpenseCategoryRequest,
@@ -22,7 +22,12 @@ async function postApprovedExpense(tx: Database, ctx: { organisationId: string; 
   const gstId = await systemAccount(tx, ctx, '2150');
   const cashId = expense.accountId ?? await systemAccount(tx, ctx, '1110');
   const gross = expense.baseAmount;
-  const tax = expense.baseTaxAmount;
+  // Preserve receipt GST on the source; only the eligible portion is an input
+  // credit. Non-claimable GST remains part of the expense cost.
+  const tax = roundMoney(expense.gstTreatment === 'exempt' || expense.gstTreatment === 'zero_rated'
+    ? '0'
+    : decimal(expense.baseTaxAmount).mul(String(expense.gstClaimablePercentage)).div('100')
+      .mul(decimal('100').sub(String(expense.privateUsePercentage))).div('100'));
   const net = decimal(gross).sub(tax);
   const lines = [{ accountId: expenseId, description: expense.description, debit: net.toFixed(), credit: '0' }];
   if (decimal(tax).compare(0) > 0) lines.push({ accountId: gstId, description: `GST - ${expense.description}`, debit: tax, credit: '0' });
@@ -40,8 +45,8 @@ async function assertRefs(
     if (!category) throw new HTTPException(400, { message: 'Expense category not found' });
   }
   if (input.accountId) {
-    const ok = await repo.orgHasAccount(tx, organisationId, input.accountId);
-    if (!ok) throw new HTTPException(400, { message: 'Account not found' });
+    const ok = await repo.orgHasSettlementAccount(tx, organisationId, input.accountId);
+    if (!ok) throw new HTTPException(400, { message: 'Paid-from account must be a bank, cash, credit card or loan account in this company' });
   }
   if (input.customerId) {
     const ok = await repo.orgHasCustomer(tx, organisationId, input.customerId);

@@ -1,14 +1,15 @@
-import { 
-  TaxReturn, 
-  IRDReturnData, 
+import {
+  TaxReturn,
+  IRDReturnData,
   TaxConfiguration,
   EnhancedInvoice,
   Payment,
-  FinancialSummary 
+  FinancialSummary
 } from '@/types/payment';
 import { supabaseDataService } from './supabaseDataService';
 import { taxCalculationService } from './taxCalculationService';
-import { Tables } from '@/integrations/supabase/types';
+import { readString } from '@/features/tax/api/periodRows';
+const expenseCategory = (expense: import('@/features/tax/api/periodRows').PeriodExpense) => readString(expense, 'category_id', 'category') || expense.category?.name || '';
 
 export class IRDReportingService {
   /**
@@ -75,7 +76,7 @@ export class IRDReportingService {
     const purchaseData = periodData.expenses.map(expense => ({
       amount: expense.amount,
       taxInclusive: true, // Assuming expenses are typically tax-inclusive
-      taxable: expense.category !== 'GST_EXEMPT'
+      taxable: expenseCategory(expense) !== 'GST_EXEMPT'
     }));
 
     const purchaseCalculation = await taxCalculationService.calculateGSTReturnPurchases(
@@ -162,14 +163,14 @@ export class IRDReportingService {
   /**
    * Calculate capital goods purchases
    */
-  private calculateCapitalGoods(expenses: any[]): number {
+  private calculateCapitalGoods(expenses: import('@/features/tax/api/periodRows').PeriodExpense[]): number {
     // Capital goods are typically equipment, vehicles, etc.
     // Filter expenses by category
     return expenses
-      .filter(expense => 
-        expense.category === 'EQUIPMENT' || 
-        expense.category === 'VEHICLES' ||
-        expense.category === 'CAPITAL_GOODS'
+      .filter(expense =>
+        expenseCategory(expense) === 'EQUIPMENT' ||
+        expenseCategory(expense) === 'VEHICLES' ||
+        expenseCategory(expense) === 'CAPITAL_GOODS'
       )
       .reduce((sum, expense) => sum + expense.amount, 0);
   }
@@ -183,7 +184,7 @@ export class IRDReportingService {
   } {
     // Bad debts: invoices written off as uncollectable
     const badDebts = periodData.invoices
-      .filter(invoice => invoice.status === 'written_off')
+      .filter(invoice => String(invoice.status) === 'written_off')
       .reduce((sum, invoice) => sum + (invoice.taxBreakdown?.taxAmount || 0), 0);
 
     // Other adjustments would be manual entries
@@ -206,20 +207,20 @@ export class IRDReportingService {
     this.validatePeriod(periodStart, periodEnd);
 
     const periodData = await this.fetchPeriodData(userId, periodStart, periodEnd);
-    
+
     // Calculate income tax data
     const grossIncome = periodData.invoices
       .reduce((sum, invoice) => sum + invoice.total, 0);
 
     const allowableDeductions = periodData.expenses
-      .filter(expense => expense.category !== 'NON_DEDUCTIBLE')
+      .filter(expense => expenseCategory(expense) !== 'NON_DEDUCTIBLE')
       .reduce((sum, expense) => sum + expense.amount, 0);
 
     const taxableIncome = Math.max(0, grossIncome - allowableDeductions);
-    
+
     // Simplified NZ tax calculation (would need more complex brackets)
     const taxDue = this.calculateIncomeTax(taxableIncome);
-    
+
     // Provisional tax (1/3 of last year's tax, minimum thresholds apply)
     const provisionalTax = taxDue * 0.105; // 10.5% (rough estimation)
 
@@ -256,7 +257,7 @@ export class IRDReportingService {
   private calculateIncomeTax(taxableIncome: number): number {
     // NZ 2024 tax brackets (simplified)
     let tax = 0;
-    
+
     if (taxableIncome > 180000) {
       tax += (taxableIncome - 180000) * 0.39;
       taxableIncome = 180000;
@@ -276,7 +277,7 @@ export class IRDReportingService {
     if (taxableIncome > 0) {
       tax += taxableIncome * 0.105;
     }
-    
+
     return Math.round(tax * 100) / 100;
   }
 
@@ -339,15 +340,15 @@ export class IRDReportingService {
         errors.push('GST return data is required');
       } else {
         const gst = taxReturn.returnData.gstReturn;
-        
+
         if (gst.salesDetails.totalSales < 0) {
           errors.push('Total sales cannot be negative');
         }
-        
+
         if (gst.purchaseDetails.totalPurchases < 0) {
           errors.push('Total purchases cannot be negative');
         }
-        
+
         if (gst.salesDetails.gstOnSales < 0) {
           errors.push('GST on sales cannot be negative');
         }
@@ -359,11 +360,11 @@ export class IRDReportingService {
         errors.push('Income tax return data is required');
       } else {
         const income = taxReturn.returnData.incomeTax;
-        
+
         if (income.grossIncome < 0) {
           errors.push('Gross income cannot be negative');
         }
-        
+
         if (income.allowableDeductions < 0) {
           errors.push('Allowable deductions cannot be negative');
         }
@@ -373,7 +374,7 @@ export class IRDReportingService {
     // Validate period
     const start = new Date(taxReturn.periodStart);
     const end = new Date(taxReturn.periodEnd);
-    
+
     if (start >= end) {
       errors.push('Period start must be before period end');
     }
@@ -393,25 +394,25 @@ export class IRDReportingService {
     periodEnd: string
   ): Promise<ComplianceReport> {
     const periodData = await this.fetchPeriodData(userId, periodStart, periodEnd);
-    
+
     // Calculate key metrics
     const totalInvoiced = periodData.invoices
       .reduce((sum, inv) => sum + inv.total, 0);
-    
+
     const totalReceived = periodData.payments
       .filter(p => p.status === 'completed')
       .reduce((sum, p) => sum + p.amount, 0);
-    
+
     const totalExpenses = periodData.expenses
       .reduce((sum, exp) => sum + exp.amount, 0);
-    
+
     const outstandingReceivables = periodData.invoices
       .filter(inv => inv.paymentStatus !== 'paid')
       .reduce((sum, inv) => sum + inv.balanceDue, 0);
 
     // Tax compliance checks
     const taxCompliance = this.checkTaxCompliance(periodData);
-    
+
     return {
       period: { start: periodStart, end: periodEnd },
       summary: {
@@ -440,7 +441,7 @@ export class IRDReportingService {
     const invoicesWithoutGST = periodData.invoices.filter(
       inv => inv.total > 0 && !inv.taxBreakdown
     );
-    
+
     if (invoicesWithoutGST.length > 0) {
       warnings.push(`${invoicesWithoutGST.length} invoices may be missing GST calculations`);
     }
@@ -450,7 +451,7 @@ export class IRDReportingService {
     const daysSinceQuarter = Math.floor(
       (new Date().getTime() - new Date(quarterEnd).getTime()) / (1000 * 60 * 60 * 24)
     );
-    
+
     if (daysSinceQuarter > 28) { // GST due 28th of month following quarter
       issues.push('GST return may be overdue');
     }
@@ -459,7 +460,7 @@ export class IRDReportingService {
     const largeCashPayments = periodData.payments.filter(
       p => p.paymentMethod === 'cash' && p.amount > 10000
     );
-    
+
     if (largeCashPayments.length > 0) {
       warnings.push('Large cash transactions may require additional reporting');
     }
@@ -479,10 +480,10 @@ export class IRDReportingService {
     const date = new Date(dateString);
     const quarter = Math.floor(date.getMonth() / 3);
     const year = date.getFullYear();
-    
+
     const quarterEndMonths = [2, 5, 8, 11]; // March, June, September, December
     const endMonth = quarterEndMonths[quarter];
-    
+
     return new Date(year, endMonth, 31).toISOString();
   }
 
@@ -563,7 +564,7 @@ export class IRDReportingService {
 interface PeriodData {
   invoices: EnhancedInvoice[];
   payments: Payment[];
-  expenses: Tables<'expenses'>[];
+  expenses: import('@/features/tax/api/periodRows').PeriodExpense[];
 }
 
 interface ComplianceReport {

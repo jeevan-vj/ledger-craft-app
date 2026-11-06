@@ -8,78 +8,21 @@
 import { customerService, invoiceService, businessProfileService, itemService, itemCategoryService, accountService, expenseService, expenseCategoryService } from "@/services/supabaseService";
 import { paymentService } from "@/services/paymentService";
 
-// Service interfaces for dependency inversion
-export interface ICustomerService {
-  getCustomers(): Promise<any[]>;
-  createCustomer(customer: any): Promise<any>;
-  updateCustomer(id: string, customer: any): Promise<any>;
-  deleteCustomer(id: string): Promise<void>;
-  getCustomer(id: string): Promise<any>;
-}
-
-export interface IInvoiceService {
-  getInvoices(): Promise<any[]>;
-  createInvoice(invoice: any, lineItems: any[]): Promise<any>;
-  updateInvoice(id: string, invoice: any): Promise<any>;
-  deleteInvoice(id: string): Promise<void>;
-  getInvoice(id: string): Promise<any>;
-  getNextInvoiceNumber(): Promise<string>;
-  updateInvoiceStatus(id: string, status: any): Promise<any>;
-}
-
-export interface IBusinessProfileService {
-  getBusinessProfile(): Promise<any>;
-  saveBusinessProfile(profile: any): Promise<any>;
-  updateBusinessProfile(profile: any): Promise<any>;
-}
-
-export interface IPaymentService {
-  getPayments(): Promise<any[]>;
-  getReceipts(): Promise<any[]>;
-  createPayment(payment: any): Promise<any>;
-  getInvoicesWithBalance(): Promise<any[]>;
-}
-
-export interface IItemService {
-  getItems(): Promise<any[]>;
-  createItem(item: any): Promise<any>;
-  updateItem(id: string, item: any): Promise<any>;
-  deleteItem(id: string): Promise<void>;
-  getItem(id: string): Promise<any>;
-}
-
-export interface IItemCategoryService {
-  getItemCategories(): Promise<any[]>;
-  createItemCategory(category: any): Promise<any>;
-  updateItemCategory(id: string, category: any): Promise<any>;
-  deleteItemCategory(id: string): Promise<void>;
-  getItemCategory(id: string): Promise<any>;
-}
-
-export interface IAccountService {
-  getAccounts(): Promise<any[]>;
-}
-
-export interface IExpenseService {
-  getExpenses(): Promise<any[]>;
-  createExpense(expense: any): Promise<any>;
-  updateExpense(id: string, expense: any): Promise<any>;
-  deleteExpense(id: string): Promise<void>;
-  getExpense(id: string): Promise<any>;
-}
-
-export interface IExpenseCategoryService {
-  getExpenseCategories(): Promise<any[]>;
-  createExpenseCategory(category: any): Promise<any>;
-  updateExpenseCategory(id: string, category: any): Promise<any>;
-  deleteExpenseCategory(id: string): Promise<void>;
-  getExpenseCategory(id: string): Promise<any>;
-}
+// Interfaces follow the typed Hono-backed service contracts.
+export type ICustomerService = typeof customerService;
+export type IInvoiceService = typeof invoiceService;
+export type IBusinessProfileService = typeof businessProfileService;
+export type IPaymentService = typeof paymentService;
+export type IItemService = typeof itemService;
+export type IItemCategoryService = typeof itemCategoryService;
+export type IAccountService = typeof accountService;
+export type IExpenseService = typeof expenseService;
+export type IExpenseCategoryService = typeof expenseCategoryService;
 
 // Service container class
 class ServiceContainer {
   private static instance: ServiceContainer;
-  private services: Map<string, any> = new Map();
+  private services: Map<string, unknown> = new Map();
 
   private constructor() {
     this.registerDefaultServices();

@@ -455,16 +455,16 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                   name="accountId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel className="text-sm font-medium">Account</FormLabel>
+                      <FormLabel className="text-sm font-medium">Paid from account</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
                           <SelectTrigger className="h-11">
-                            <SelectValue placeholder="Select an account" />
+                            <SelectValue placeholder="Select a payment account" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="no-account">No account</SelectItem>
-                          {accounts.map((account) => (
+                          <SelectItem value="no-account">Default cash account</SelectItem>
+                          {accounts.filter((account) => account.isActive !== false && ['bank', 'cash', 'credit_card', 'loan'].includes(account.type)).map((account) => (
                             <SelectItem key={account.id} value={account.id}>
                               {account.name} ({account.type})
                             </SelectItem>

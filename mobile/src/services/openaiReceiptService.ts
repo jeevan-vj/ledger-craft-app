@@ -1,4 +1,4 @@
-import { ReceiptScanResult, ReceiptScanOptions } from '@/types/receipt';
+import { ReceiptScanResult, ReceiptScanOptions, ReceiptItem } from '@/types/receipt';
 import { aiApiEnabled, scanReceiptImage } from '@/features/ai/api/receiptScanApi';
 import { getServerCapabilities } from './capabilitiesService';
 
@@ -246,7 +246,7 @@ IMPORTANT RULES:
     }
   }
 
-  private validateAndSanitizeResult(result: any): ReceiptScanResult {
+  private validateAndSanitizeResult(result: ReceiptScanResult): ReceiptScanResult {
     // Ensure all required fields exist with proper types
     return {
       merchantName: typeof result.merchantName === 'string' ? result.merchantName : null,
@@ -262,7 +262,7 @@ IMPORTANT RULES:
     };
   }
 
-  private validateDate(date: any): string | null {
+  private validateDate(date: unknown): string | null {
     if (typeof date !== 'string') return null;
     
     // Basic date format validation (YYYY-MM-DD)
@@ -276,7 +276,7 @@ IMPORTANT RULES:
     return date;
   }
 
-  private validateNumber(value: any): number | null {
+  private validateNumber(value: unknown): number | null {
     if (typeof value === 'number' && !isNaN(value)) return value;
     if (typeof value === 'string') {
       const parsed = parseFloat(value);
@@ -285,7 +285,7 @@ IMPORTANT RULES:
     return null;
   }
 
-  private validateItem = (item: any): boolean => {
+  private validateItem = (item: ReceiptItem): boolean => {
     return (
       typeof item === 'object' &&
       typeof item.description === 'string' &&
@@ -295,7 +295,7 @@ IMPORTANT RULES:
     );
   };
 
-  private validatePaymentMethod(method: any): 'cash' | 'card' | 'other' | null {
+  private validatePaymentMethod(method: unknown): 'cash' | 'card' | 'other' | null {
     if (typeof method === 'string') {
       const normalized = method.toLowerCase();
       if (['cash', 'card', 'other'].includes(normalized)) {

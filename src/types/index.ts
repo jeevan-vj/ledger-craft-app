@@ -128,6 +128,7 @@ export interface BusinessProfile {
 }
 
 export interface LineItem {
+  details?: string;
   id: string;
   invoiceId?: string;
   description: string;
@@ -181,6 +182,10 @@ export const ADDITIONAL_CHARGE_PRESETS: Record<AdditionalChargeType, { label: st
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 
 export interface Invoice {
+  totalCredited?: number;
+  taxCredited?: number;
+  baseCredited?: number;
+  baseTaxCredited?: number;
   id: string;
   invoiceNumber: string;
   externalId?: string | null;
@@ -262,10 +267,7 @@ export interface SupabaseInvoice {
   created_at: string;
   updated_at: string;
   public_viewed_at: string | null;
-  customers?: {
-    name: string;
-    email: string;
-  };
+  customers?: Pick<SupabaseCustomer, 'name' | 'email'> & Partial<SupabaseCustomer>;
 }
 
 export interface SupabaseLineItem {
@@ -509,8 +511,8 @@ export interface SharedInvoice {
 export interface SupabaseSharedInvoice {
   id: string;
   original_invoice_id: string;
-  invoice_data: any; // JSONB data
-  template_data: any; // JSONB data
+  invoice_data: Invoice; // JSONB data
+  template_data: { templateName: string; businessProfile: BusinessProfile }; // JSONB data
   share_token: string;
   created_at: string;
   expires_at: string | null;
@@ -562,14 +564,28 @@ export interface ConversationEntity {
   value: string;
   confidence: number;
   resolved?: boolean;
-  resolvedValue?: any;
+  resolvedValue?: unknown;
+}
+
+export interface ConversationActionParameters extends Record<string, unknown> {
+  customer?: string; query?: string; name?: string; email?: string; phone?: string; address?: string;
+  amount?: string; description?: string; category?: string; period?: string; type?: string;
+  invoiceId?: string; editUrl?: string; items?: Array<string | { value: string }>;
+}
+export interface ConversationActionData extends Record<string, unknown> {
+  type?: string; id?: string; invoiceId?: string; invoiceNumber?: string; customerName?: string;
+  customerId?: string; name?: string; email?: string; phone?: string; isVip?: boolean;
+  date?: string; dueDate?: string; status?: string; currency?: string; total?: number;
+  amount?: number; description?: string; editUrl?: string; count?: number; customers?: Customer[];
+  invoice?: Invoice; expense?: Expense; period?: string;
+  metrics?: { totalRevenue: number; totalExpenses: number; profit: number; profitMargin: number; outstandingInvoices?: number; invoiceCount?: number; expenseCount?: number };
 }
 
 export interface ConversationAction {
   type: string;
-  parameters: Record<string, any>;
+  parameters: ConversationActionParameters;
   status: 'pending' | 'in_progress' | 'completed' | 'failed';
-  result?: any;
+  result?: unknown;
   error?: string;
 }
 
@@ -580,7 +596,10 @@ export interface ConversationMessage {
   content: string;
   timestamp: Date;
   metadata?: {
-    intent?: ConversationIntent;
+    [key: string]: unknown;
+    data?: ConversationActionData;
+    suggestedActions?: string[];
+    intent?: string;
     entities?: ConversationEntity[];
     actions?: ConversationAction[];
     confidence?: number;
@@ -599,10 +618,10 @@ export interface InvoiceCreationContext {
   completedInvoice?: Invoice;
 }
 
-export interface ConversationContext {
+export interface ConversationContext extends Record<string, unknown> {
   currentTask?: {
     type: ConversationIntent;
-    progress: Record<string, any>;
+    progress: Record<string, unknown>;
     requiredFields: string[];
     completedFields: string[];
   };
@@ -648,7 +667,7 @@ export interface AIResponse {
 
 export interface ActionResult {
   success: boolean;
-  data?: any;
+  data?: ConversationActionData;
   error?: string;
   needsInfo?: string;
   suggestions?: string[];
@@ -659,7 +678,7 @@ export interface SupabaseConversation {
   id: string;
   user_id: string;
   title: string | null;
-  context: any; // JSONB
+  context: ConversationContext; // JSONB
   status: 'active' | 'completed' | 'paused';
   created_at: string;
   updated_at: string;
@@ -670,6 +689,6 @@ export interface SupabaseConversationMessage {
   conversation_id: string;
   role: ConversationRole;
   content: string;
-  metadata: any | null; // JSONB
+  metadata: ConversationMessage['metadata'] | null; // JSONB
   created_at: string;
 }

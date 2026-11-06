@@ -1,3 +1,4 @@
+import { fxRevaluationResponseSchema } from '@ledgercraft/contracts';
 import type {
   CreateExchangeRateRequest,
   CurrencyDefinitionDto,
@@ -12,7 +13,10 @@ import { bankTransfers } from '../../db/schema/bank';
 import { exchangeRates, exchangeRateUsage, organisationCurrencies, organisationLocalizationSettings } from '../../db/schema/currency';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
-import { bills } from '../../db/schema/purchases';
+import { bills, billPayments } from '../../db/schema/purchases';
+import { payments } from '../../db/schema/payments';
+import { idempotencyKeys } from '../../db/schema/idempotency';
+import { creditNoteRefunds } from '../../db/schema/credit-notes';
 
 export const DEFAULT_CURRENCIES: Array<Omit<CurrencyDefinitionDto, 'isBase'>> = [
   { code: 'NZD', name: 'New Zealand dollar', precision: 2, symbol: '$', symbolPosition: 'before', enabled: true },
@@ -81,6 +85,12 @@ export async function listRates(tx: Database, organisationId: string): Promise<E
   const usages = await tx.select({ exchangeRateId: exchangeRateUsage.exchangeRateId, count: sql<number>`count(*)` })
     .from(exchangeRateUsage).where(eq(exchangeRateUsage.organisationId, organisationId)).groupBy(exchangeRateUsage.exchangeRateId);
   const counts = new Map(usages.map((usage) => [usage.exchangeRateId, Number(usage.count)]));
+  // Settlement snapshots also lock their independently reviewed payment-date rates.
+  for (const table of [payments, billPayments, creditNoteRefunds]) {
+    const used = await tx.select({ rateId: table.exchangeRateId }).from(table).where(eq(table.organisationId, organisationId));
+    for (const item of used) if (item.rateId) counts.set(item.rateId, (counts.get(item.rateId) ?? 0) + 1);
+  }
+  for (const rateId of await revaluationRateIds(tx, organisationId)) counts.set(rateId, (counts.get(rateId) ?? 0) + 1);
   return rows.map((row) => ({
     id: row.id, currencyCode: row.currencyCode, baseCurrency: row.baseCurrency, effectiveDate: row.effectiveDate,
     rate: row.rate, usageCount: counts.get(row.id) ?? 0, immutable: true as const,
@@ -129,6 +139,11 @@ export async function deleteUnusedRate(tx: Database, organisationId: string, id:
     eq(exchangeRateUsage.organisationId, organisationId), eq(exchangeRateUsage.exchangeRateId, id),
   ));
   if (Number(usage?.count ?? 0) > 0) return 'used' as const;
+  for (const table of [payments, billPayments, creditNoteRefunds]) {
+    const [settlement] = await tx.select({ id: table.id }).from(table).where(and(eq(table.organisationId, organisationId), eq(table.exchangeRateId, id))).limit(1);
+    if (settlement) return 'used' as const;
+  }
+  if ((await revaluationRateIds(tx, organisationId)).includes(id)) return 'used' as const;
   const deleted = await tx.delete(exchangeRates).where(and(eq(exchangeRates.organisationId, organisationId), eq(exchangeRates.id, id))).returning({ id: exchangeRates.id });
   return deleted.length ? 'deleted' as const : 'missing' as const;
 }
@@ -147,4 +162,14 @@ export async function currencyHasUsage(tx: Database, organisationId: string, cod
     .innerJoin(exchangeRates, and(eq(exchangeRates.organisationId, exchangeRateUsage.organisationId), eq(exchangeRates.id, exchangeRateUsage.exchangeRateId)))
     .where(and(eq(exchangeRateUsage.organisationId, organisationId), eq(exchangeRates.currencyCode, code)));
   return Number(row?.count ?? 0) > 0;
+}
+
+async function revaluationRateIds(tx: Database, organisationId: string) {
+  const rows = await tx.select({ body: idempotencyKeys.responseBody }).from(idempotencyKeys).where(and(
+    eq(idempotencyKeys.organisationId, organisationId), eq(idempotencyKeys.path, '/api/fx-revaluations'), eq(idempotencyKeys.method, 'POST'),
+  ));
+  return rows.flatMap(row => {
+    const parsed = fxRevaluationResponseSchema.safeParse(row.body);
+    return parsed.success ? parsed.data.positions.map(position => position.exchangeRateId) : [];
+  });
 }

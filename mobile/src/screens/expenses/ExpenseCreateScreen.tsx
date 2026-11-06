@@ -1,3 +1,4 @@
+import { expenseTotals } from '@/features/expenses/expenseTotals';
 import React, { useEffect, useState } from 'react';
 import {
   View,
@@ -80,9 +81,10 @@ export default function ExpenseCreateScreen() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   
   // Calculated tax
-  const amountNum = parseFloat(amount) || 0;
-  const taxAmount = taxEnabled ? (amountNum * taxRate) / 100 : 0;
-  const totalAmount = amountNum + taxAmount;
+  const totals = expenseTotals(amount, taxEnabled, taxRate);
+  const amountNum = Number(totals.net);
+  const taxAmount = Number(totals.tax);
+  const totalAmount = Number(totals.gross);
 
   const validate = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -91,7 +93,7 @@ export default function ExpenseCreateScreen() {
       newErrors.description = 'Description is required';
     }
     
-    if (!amount || parseFloat(amount) <= 0) {
+    if (!totals.valid) {
       newErrors.amount = 'Amount must be greater than 0';
     }
     
@@ -114,7 +116,7 @@ export default function ExpenseCreateScreen() {
       
       const expenseData = {
         description: description.trim(),
-        amount: parseFloat(amount),
+        amount: totalAmount,
         expenseDate,
         categoryId: selectedCategory?.id || null,
         accountId: selectedAccount?.id || null,
@@ -131,6 +133,7 @@ export default function ExpenseCreateScreen() {
 
       await expenseService.createExpense(expenseData);
       
+      if (Platform.OS === 'web') { navigation.goBack(); return; }
       Alert.alert('Success', 'Expense created successfully', [
         {
           text: 'OK',
@@ -170,7 +173,7 @@ export default function ExpenseCreateScreen() {
         </View>
       );
     }
-    return <Text style={styles.placeholderText}>Tap to select account</Text>;
+    return <Text style={styles.placeholderText}>Choose payment account</Text>;
   };
 
   const getCustomerDisplay = () => {
@@ -281,7 +284,7 @@ export default function ExpenseCreateScreen() {
           </View>
 
           <View style={styles.fieldContainer}>
-            <Text style={styles.fieldLabel}>Account</Text>
+            <Text style={styles.fieldLabel}>Paid from account</Text>
             <TouchableOpacity
               onPress={() => setShowAccountPicker(true)}
               style={styles.pickerButton}

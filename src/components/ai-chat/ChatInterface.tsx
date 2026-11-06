@@ -184,7 +184,7 @@ export function ChatInterface({
     }
     
     const lastMessage = conversation.messages[conversation.messages.length - 1];
-    const meta = lastMessage.metadata as any;
+    const meta = lastMessage.metadata;
     return Array.isArray(meta?.suggestedActions) ? meta.suggestedActions : [];
   };
 

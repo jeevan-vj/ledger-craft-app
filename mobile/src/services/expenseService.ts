@@ -1,3 +1,4 @@
+import type { SupabaseAccount, SupabaseCustomer, SupabaseExpense, SupabaseExpenseCategory } from '../../shared/types';
 import { expensesApi, expensesApiEnabled } from '@/features/expenses/api/expensesApi';
 import { supabase } from './supabaseClient';
 import type { Expense, ExpenseCategory, Account, Customer } from '@/types/expense';
@@ -16,7 +17,7 @@ interface ExpenseFilters {
 }
 
 // Helper functions to transform snake_case to camelCase and vice versa
-const mapSupabaseExpenseCategoryToExpenseCategory = (category: any): ExpenseCategory => ({
+const mapSupabaseExpenseCategoryToExpenseCategory = (category: SupabaseExpenseCategory): ExpenseCategory => ({
   id: category.id,
   name: category.name,
   description: category.description,
@@ -26,7 +27,7 @@ const mapSupabaseExpenseCategoryToExpenseCategory = (category: any): ExpenseCate
   updatedAt: category.updated_at,
 });
 
-const mapSupabaseAccountToAccount = (account: any): Account => ({
+const mapSupabaseAccountToAccount = (account: SupabaseAccount): Account => ({
   id: account.id,
   name: account.name,
   type: account.type,
@@ -38,7 +39,7 @@ const mapSupabaseAccountToAccount = (account: any): Account => ({
   updatedAt: account.updated_at,
 });
 
-const mapSupabaseCustomerToCustomer = (customer: any): Customer => ({
+const mapSupabaseCustomerToCustomer = (customer: SupabaseCustomer): Customer => ({
   id: customer.id,
   name: customer.name,
   email: customer.email,
@@ -50,7 +51,7 @@ const mapSupabaseCustomerToCustomer = (customer: any): Customer => ({
   country: customer.country,
 });
 
-const mapSupabaseExpenseToExpense = (expense: any): Expense => ({
+const mapSupabaseExpenseToExpense = (expense: SupabaseExpense & { expense_categories?: SupabaseExpenseCategory; accounts?: SupabaseAccount; customers?: SupabaseCustomer }): Expense => ({
   id: expense.id,
   description: expense.description,
   amount: expense.amount,
@@ -353,7 +354,7 @@ export class ExpenseService {
       }
 
       // Transform to snake_case for database
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (expense.description !== undefined) updateData.description = expense.description;
       if (expense.amount !== undefined) updateData.amount = expense.amount;
       if (expense.categoryId !== undefined) updateData.category_id = expense.categoryId || null;

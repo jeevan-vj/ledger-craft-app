@@ -185,7 +185,7 @@ export class TaxDataExample {
       const totalExpenses = expenses.reduce((sum, exp) => sum + exp.amount, 0);
       const grossProfit = totalRevenue - totalExpenses;
       
-      const gstCollected = invoices.reduce((sum, inv) => sum + inv.tax_amount, 0);
+      const gstCollected = invoices.reduce((sum, inv) => sum + inv.taxAmount, 0);
       const gstPaid = expenses.reduce((sum, exp) => sum + exp.tax_amount, 0);
       const netGstPosition = gstCollected - gstPaid;
 
@@ -282,7 +282,7 @@ export class TaxDataExample {
   /**
    * Helper: Validate GST return for common issues
    */
-  private static validateGSTReturn(gstReturn: any): string[] {
+  private static validateGSTReturn(gstReturn: Pick<import('@/types/payment').TaxReturn, 'totalSales' | 'gstOnSales' | 'netGst'>): string[] {
     const warnings: string[] = [];
 
     if (gstReturn.totalSales === 0) {

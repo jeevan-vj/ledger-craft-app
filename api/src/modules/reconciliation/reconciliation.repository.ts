@@ -11,15 +11,16 @@ import {
   type ReconciliationMatchDto,
   type ReconciliationSessionDto,
 } from '@ledgercraft/contracts';
-import { and, desc, eq, gte, lte } from 'drizzle-orm';
+import { and, desc, eq, getTableColumns, gte, lte } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { payments } from '../../db/schema/payments';
-import { bills } from '../../db/schema/purchases';
+import { bills, billPayments } from '../../db/schema/purchases';
 import {
   reconciliationAdjustments,
   reconciliationMatches,
+  reconciliationSupplierPaymentLinks,
   reconciliationSessions,
 } from '../../db/schema/reconciliation';
 import { decimal, roundMoney } from '../invoices/money';
@@ -49,7 +50,7 @@ function toSessionDto(row: typeof reconciliationSessions.$inferSelect): Reconcil
   });
 }
 
-function toMatchDto(row: typeof reconciliationMatches.$inferSelect): ReconciliationMatchDto {
+function toMatchDto(row: typeof reconciliationMatches.$inferSelect & { billPaymentId?: string | null }): ReconciliationMatchDto {
   const stored = Number(row.confidenceScore);
   return reconciliationMatchSchema.parse({
     id: row.id,
@@ -58,6 +59,7 @@ function toMatchDto(row: typeof reconciliationMatches.$inferSelect): Reconciliat
     invoiceId: row.invoiceId ?? null,
     billId: row.billId ?? null,
     paymentId: row.paymentId ?? null,
+    billPaymentId: row.billPaymentId ?? null,
     expenseId: row.expenseId ?? null,
     journalEntryId: row.journalEntryId ?? null,
     matchType: row.matchType,
@@ -190,8 +192,9 @@ export async function listMatches(
   reconciliationId: string,
 ): Promise<ReconciliationMatchDto[]> {
   const rows = await tx
-    .select()
+    .select({ ...getTableColumns(reconciliationMatches), billPaymentId: reconciliationSupplierPaymentLinks.billPaymentId })
     .from(reconciliationMatches)
+    .leftJoin(reconciliationSupplierPaymentLinks, and(eq(reconciliationSupplierPaymentLinks.organisationId, organisationId), eq(reconciliationSupplierPaymentLinks.matchId, reconciliationMatches.id)))
     .where(
       and(
         eq(reconciliationMatches.organisationId, organisationId),
@@ -231,7 +234,8 @@ export async function insertMatch(
     })
     .returning();
   if (!row) throw new Error('Failed to insert reconciliation match');
-  return toMatchDto(row);
+  if (input.bookItemType === 'bill_payment') await tx.insert(reconciliationSupplierPaymentLinks).values({ organisationId: ctx.organisationId, matchId: row.id, billPaymentId: input.bookItemId });
+  return toMatchDto({ ...row, billPaymentId: input.bookItemType === 'bill_payment' ? input.bookItemId : null });
 }
 
 export async function listAdjustments(
@@ -309,7 +313,14 @@ export async function listBookEntries(
     eq(bills.organisationId, organisationId), gte(bills.issueDate, from), lte(bills.issueDate, to),
   ));
 
+  const supplierPayments = await tx.select({ payment: billPayments, number: bills.billNumber }).from(billPayments)
+    .innerJoin(bills, and(eq(bills.organisationId, organisationId), eq(bills.id, billPayments.billId)))
+    .where(and(eq(billPayments.organisationId, organisationId), eq(billPayments.status, 'completed'), gte(billPayments.paymentDate, from), lte(billPayments.paymentDate, to)));
   const entries: BookEntryDto[] = [
+    ...supplierPayments.map(({ payment, number }) => bookEntrySchema.parse({
+      id: payment.id, type: 'bill_payment', date: payment.paymentDate, description: `Supplier payment - ${number}`,
+      amount: roundMoney(payment.baseAmount ?? payment.amount), reference: payment.referenceNumber ?? number,
+    })),
     ...invoiceRows.map((row) =>
       bookEntrySchema.parse({
         id: row.id,
@@ -344,10 +355,16 @@ export async function listBookEntries(
         type: 'payment' as const,
         date: row.paymentDate,
         description: `Payment - ${row.paymentMethod}`,
-        amount: roundMoney(row.amount),
+        amount: roundMoney(row.baseAmount ?? row.amount),
         reference: row.referenceNumber ?? null,
       }),
     ),
   ];
   return entries.sort((a, b) => a.date.localeCompare(b.date));
+}
+
+export async function supplierPaymentAmount(tx: Database, organisationId: string, id: string) {
+  const [row] = await tx.select({ amount: billPayments.amount, baseAmount: billPayments.baseAmount, status: billPayments.status }).from(billPayments)
+    .where(and(eq(billPayments.organisationId, organisationId), eq(billPayments.id, id), eq(billPayments.status, 'completed')));
+  return row ? row.baseAmount ?? row.amount : undefined;
 }

@@ -94,6 +94,8 @@ export interface Invoice {
   additionalChargesTotal?: number;
   total: number;
   totalPaid?: number;
+  totalPaidText?: string;
+  totalCreditedText?: string;
   balanceDue?: number;
   /** Exact balance-due decimal from the API. Payment capture uses this string. */
   balanceDueText?: string;

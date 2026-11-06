@@ -37,6 +37,7 @@ export interface MobileInvoiceDto {
   additionalChargesTotal?: string;
   total: string;
   totalPaid: string;
+  totalCredited?: string;
   balanceDue: string;
   paymentStatus: string;
   taxInclusive: boolean;
@@ -133,6 +134,8 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
       dto.additionalChargesTotal == null ? undefined : Number(dto.additionalChargesTotal),
     total: Number(dto.total),
     totalPaid: Number(dto.totalPaid),
+    totalPaidText: dto.totalPaid,
+    totalCreditedText: dto.totalCredited ?? '0.00',
     balanceDue: Number(dto.balanceDue),
     balanceDueText: dto.balanceDue,
     paymentStatus: dto.paymentStatus,

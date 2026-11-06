@@ -14,6 +14,7 @@ describe('mobile navigation links', () => {
     const screens = moreMenuSections.flatMap((section) => section.rows.map((row) => row.screen));
     expect(screens).toEqual([
       'Reports',
+      'AccountingTools',
       'ItemList',
       'BankAccountList',
       'BankReconciliation',

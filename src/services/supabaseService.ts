@@ -69,7 +69,7 @@ const mapCustomerToSupabaseCustomer = async (customer: Omit<Customer, 'id' | 'cr
   };
 };
 
-const mapSupabaseInvoiceToInvoice = (invoice: SupabaseInvoice | any, items: SupabaseLineItem[] = []): Invoice => ({
+export const mapSupabaseInvoiceToInvoice = (invoice: SupabaseInvoice, items: SupabaseLineItem[] = []): Invoice => ({
   id: invoice.id,
   invoiceNumber: invoice.invoice_number,
   customerId: invoice.customer_id,
@@ -116,7 +116,7 @@ const mapSupabaseInvoiceToInvoice = (invoice: SupabaseInvoice | any, items: Supa
   public_viewed_at: invoice.public_viewed_at || undefined
 });
 
-const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at' | 'public_viewed_at'>> => {
+const mapInvoiceToSupabaseInvoice = async (invoice: Omit<Invoice, 'id' | 'createdAt' | 'updatedAt'>): Promise<Omit<SupabaseInvoice, 'id' | 'created_at' | 'updated_at'>> => {
   const { data: { user } } = await supabase.auth.getUser();
   const userId = user?.id || '';
 
@@ -305,7 +305,7 @@ const mapExpenseCategoryToSupabaseExpenseCategory = async (
   };
 };
 
-const mapSupabaseExpenseToExpense = (
+export const mapSupabaseExpenseToExpense = (
   expense: SupabaseExpense & { 
     expense_categories?: SupabaseExpenseCategory;
     accounts?: SupabaseAccount;
@@ -573,7 +573,7 @@ export const invoiceService = {
       throw invoicesError;
     }
     
-    const invoices = await Promise.all((invoicesData as any[]).map(async (invoice) => {
+    const invoices = await Promise.all((invoicesData).map(async (invoice) => {
       const { data: lineItemsData } = await supabase
         .from('line_items')
         .select('*')
@@ -826,6 +826,7 @@ export const invoiceService = {
       description: data.description,
       quantity: data.quantity,
       unit: 'each',
+      rateUnit: data.rate_unit || 'each',
       rate: data.rate,
       tax: data.tax,
       total: data.total,
@@ -840,7 +841,7 @@ export const invoiceService = {
       console.error('No authenticated user found');
       throw new Error('No authenticated user');
     }
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (lineItem.description !== undefined) updateData.description = lineItem.description;
     if (lineItem.quantity !== undefined) updateData.quantity = lineItem.quantity;
     if (lineItem.unit !== undefined) updateData.unit = lineItem.unit;
@@ -866,6 +867,7 @@ export const invoiceService = {
       description: data.description,
       quantity: data.quantity,
       unit: 'each',
+      rateUnit: data.rate_unit || 'each',
       rate: data.rate,
       tax: data.tax,
       total: data.total,
@@ -940,7 +942,7 @@ export const invoiceService = {
     const year = currentDate.getFullYear();
     const month = String(currentDate.getMonth() + 1).padStart(2, '0');
     const seq = String(nextSeq).padStart(4, '0');
-    let invoiceNumber = format
+    const invoiceNumber = format
       .replace('{YYYY}', year.toString())
       .replace('{MM}', month)
       .replace('{SEQ}', seq);
@@ -1078,7 +1080,7 @@ export const itemService = {
         category = mapSupabaseItemCategoryToItemCategory(item.item_categories);
       }
       
-      return mapSupabaseItemToItem(item, category);
+      return mapSupabaseItemToItem(item);
     }) || [];
   },
 
@@ -1112,7 +1114,7 @@ export const itemService = {
       category = mapSupabaseItemCategoryToItemCategory(data.item_categories);
     }
     
-    return data ? mapSupabaseItemToItem(data, category) : null;
+    return data ? mapSupabaseItemToItem(data) : null;
   },
 
   async createItem(item: Omit<Item, 'id' | 'createdAt' | 'updatedAt' | 'category'>): Promise<Item> {
@@ -1137,7 +1139,7 @@ export const itemService = {
       category = mapSupabaseItemCategoryToItemCategory(data.item_categories);
     }
     
-    return mapSupabaseItemToItem(data, category);
+    return mapSupabaseItemToItem(data);
   },
 
   async updateItem(id: string, item: Partial<Omit<Item, 'id' | 'createdAt' | 'updatedAt' | 'category'>>): Promise<Item> {
@@ -1149,7 +1151,7 @@ export const itemService = {
       console.error('No authenticated user found');
       throw new Error('No authenticated user');
     }
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     
     if (item.name !== undefined) updateData.name = item.name;
     if (item.description !== undefined) updateData.description = item.description;
@@ -1180,7 +1182,7 @@ export const itemService = {
       category = mapSupabaseItemCategoryToItemCategory(data.item_categories);
     }
     
-    return mapSupabaseItemToItem(data, category);
+    return mapSupabaseItemToItem(data);
   },
 
   async deleteItem(id: string): Promise<void> {
@@ -1232,7 +1234,7 @@ export const itemService = {
         category = mapSupabaseItemCategoryToItemCategory(item.item_categories);
       }
       
-      return mapSupabaseItemToItem(item, category);
+      return mapSupabaseItemToItem(item);
     }) || [];
   }
 };
@@ -1726,7 +1728,7 @@ export const expenseService = {
       throw error;
     }
     
-    return (data as any[]).map(mapSupabaseExpenseToExpense) || [];
+    return (data as SupabaseExpense[]).map(mapSupabaseExpenseToExpense) || [];
   },
 
   async getExpense(id: string): Promise<Expense | null> {
@@ -1759,7 +1761,7 @@ export const expenseService = {
       throw error;
     }
     
-    return data ? mapSupabaseExpenseToExpense(data as any) : null;
+    return data ? mapSupabaseExpenseToExpense(data as SupabaseExpense) : null;
   },
 
   async createExpense(expense: Omit<Expense, 'id' | 'createdAt' | 'updatedAt' | 'category' | 'account' | 'customer'>): Promise<Expense> {
@@ -1784,7 +1786,7 @@ export const expenseService = {
       throw error;
     }
     
-    return mapSupabaseExpenseToExpense(data as any);
+    return mapSupabaseExpenseToExpense(data as SupabaseExpense);
   },
 
   async updateExpense(id: string, expense: Partial<Omit<Expense, 'id' | 'createdAt' | 'updatedAt' | 'category' | 'account' | 'customer'>>): Promise<Expense> {
@@ -1830,7 +1832,7 @@ export const expenseService = {
       throw error;
     }
     
-    return mapSupabaseExpenseToExpense(data as any);
+    return mapSupabaseExpenseToExpense(data as SupabaseExpense);
   },
 
   async deleteExpense(id: string): Promise<void> {
@@ -1909,7 +1911,7 @@ export const expenseService = {
 
     const categoryTotals = new Map<string, { amount: number; count: number }>();
     
-    data?.forEach((expense: any) => {
+    data?.forEach((expense: SupabaseExpense & { expense_categories?: SupabaseExpenseCategory }) => {
       const categoryName = expense.expense_categories?.name || 'Uncategorized';
       const existing = categoryTotals.get(categoryName) || { amount: 0, count: 0 };
       categoryTotals.set(categoryName, {
@@ -1956,7 +1958,7 @@ export const expenseService = {
 
     const monthlyTotals = new Array(12).fill(0);
     
-    data?.forEach((expense: any) => {
+    data?.forEach((expense: SupabaseExpense & { expense_categories?: SupabaseExpenseCategory }) => {
       const month = new Date(expense.expense_date).getMonth();
       monthlyTotals[month] += expense.amount;
     });
@@ -2174,7 +2176,7 @@ export const sharedInvoiceService = {
       throw new Error('No authenticated user');
     }
 
-    const updateData: any = {};
+    const updateData: Record<string, unknown> = {};
     if (updates.isActive !== undefined) updateData.is_active = updates.isActive;
     if (updates.expiresAt !== undefined) updateData.expires_at = updates.expiresAt;
 

@@ -39,7 +39,7 @@ vi.mock('@/integrations/supabase/client', () => {
 
 // Get reference to mocked supabase
 import { supabase } from '@/integrations/supabase/client';
-const mockSupabase = supabase as any;
+const mockSupabase = supabase as unknown as ReturnType<typeof import('../../test/utils/testUtils').createMockSupabaseClient>;
 
 describe('ConversationService', () => {
   let conversationService: ConversationService;

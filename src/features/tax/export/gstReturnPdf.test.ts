@@ -34,6 +34,7 @@ describe('GST return PDF export', () => {
       irdReference: 'GST-2026-12345',
       createdAt: '2026-10-03T00:00:00.000Z',
       updatedAt: '2026-10-03T01:00:00.000Z',
+      returnData: { preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: '2026-10-28' } },
     };
 
     await downloadGstReturnPdf(taxReturn);
@@ -42,8 +43,15 @@ describe('GST return PDF export', () => {
     expect(writtenText).toContain('GST-2026-12345');
     expect(writtenText).toContain('$1,150.00');
     expect(writtenText).toContain('$120.00 to pay');
+    expect(writtenText).toContain('Confirmed due date');
+    expect(writtenText).toContain('28 Oct 2026');
     expect(pdf.save).toHaveBeenCalledWith('GST-Return-2026-07-01-to-2026-09-30.pdf', {
       returnPromise: true,
     });
   });
+});
+
+it('labels a payments-basis draft correctly in the exported filing copy', async () => {
+  await downloadGstReturnPdf({ id: 'payments', userId: '', periodStart: '2026-04-01', periodEnd: '2026-04-30', returnType: 'GST', totalSales: 1380, totalPurchases: 349, gstOnSales: 180, gstOnPurchases: 39, netGst: 141, status: 'draft', createdAt: '', updatedAt: '', returnData: { preparation: { basis: 'payments', baseCurrency: 'NZD', dueDate: '2026-05-28' } } });
+  expect(pdf.text.mock.calls.flatMap((call) => call[0]).join(' ')).toContain('Payments basis · NZD');
 });

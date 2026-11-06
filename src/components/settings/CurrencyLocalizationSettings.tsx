@@ -5,6 +5,7 @@ import { currencyApi } from '@/features/currency/api/currencyApi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
+import { FxRevaluationPanel } from '@/components/accounting/FxRevaluationPanel';
 import { Label } from '@/components/ui/label';
 
 export function CurrencyLocalizationSettings() {
@@ -50,6 +51,7 @@ export function CurrencyLocalizationSettings() {
       {data.rates.length === 0 ? <p className="rounded-xl border border-dashed p-6 text-center text-sm text-muted-foreground">No rates yet. Foreign documents fail safely until a dated rate exists.</p> : data.rates.map((item) => <div key={item.id} className="rounded-xl border p-3 text-sm"><div className="flex justify-between gap-3"><strong>{item.currencyCode} → {item.baseCurrency}</strong><span>{item.effectiveDate}</span></div><p className="mt-1 text-muted-foreground">{item.rate} · {item.usageCount ? `used by ${item.usageCount} document(s), locked` : 'unused'}</p></div>)}
       {error && <p role="alert" className="flex gap-2 text-sm text-destructive"><AlertCircle className="h-4 w-4" />{error}</p>}
     </CardContent></Card>
+    <div className="xl:col-span-2"><FxRevaluationPanel settings={data} /></div>
   </div>;
 }
 

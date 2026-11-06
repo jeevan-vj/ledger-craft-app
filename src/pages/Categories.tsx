@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
@@ -10,24 +10,17 @@ import { useToast } from '@/hooks/use-toast';
 import { PageHeader } from '@/components/layout/PageHeader';
 
 const Categories = () => {
-  const { 
-    itemCategories, 
-    isLoadingItemCategories, 
-    createItemCategory, 
-    updateItemCategory, 
-    deleteItemCategory, 
-    fetchItemCategories 
+  const {
+    itemCategories,
+    isLoadingItemCategories,
+    createItemCategory,
+    updateItemCategory,
+    deleteItemCategory
   } = useAppData();
   const { toast } = useToast();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<ItemCategory | null>(null);
   const [isSaving, setIsSaving] = useState(false);
-
-  useEffect(() => {
-    // itemCategories are already fetched by AppProvider on mount
-    // No need to call fetchItemCategories here unless you need to refresh
-    // fetchItemCategories(); 
-  }, []);
 
   const handleOpenDrawer = () => {
     setSelectedCategory(null);
@@ -136,4 +129,4 @@ const Categories = () => {
   );
 };
 
-export default Categories; 
+export default Categories;

@@ -7,6 +7,7 @@ import { StateCreator } from 'zustand';
 import { Customer, Invoice, BusinessProfile, Item, ItemCategory, Account, Expense, ExpenseCategory } from '@/types';
 import { Payment, Receipt, CreatePaymentRequest } from '@/types/payment';
 import { solidDataManager } from '@/services/DataManagerSOLID';
+import { paymentService } from '@/services/paymentService';
 
 export interface AppDataSlice {
   // State
@@ -293,7 +294,7 @@ export const createAppDataSlice: StateCreator<
 
   getPaymentsByInvoice: async (invoiceId) => {
     try {
-      return await solidDataManager.getPaymentsByInvoice(invoiceId);
+      return await paymentService.getPaymentsByInvoice(invoiceId);
     } catch (error) {
       console.error('Error getting payments:', error);
       throw error;

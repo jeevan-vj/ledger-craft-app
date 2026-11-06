@@ -13,19 +13,27 @@ import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as bankRepo from '../bank/bank.repository';
-import { moneyToCents, decimal, roundMoney } from '../invoices/money';
+import { reconciliationSummaryInTx } from './reconciliation-summary';
 import * as expensesRepo from '../expenses/expenses.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import * as paymentsRepo from '../payments/payments.repository';
 import * as purchasesRepo from '../purchases/purchases.repository';
 import * as repo from './reconciliation.repository';
+import { assertSupportedStatementBank } from '../currency/currency.service';
+import { existingPostingRetry, matchExistingPosting } from './existing-posting';
+import { bankLedgerBalance } from './existing-posting.repository';
 
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
   organisationId: string,
-  type: 'invoice' | 'bill' | 'payment' | 'expense',
+  type: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
   id: string,
 ): Promise<string> {
+  if (type === 'bill_payment') {
+    const amount = await repo.supplierPaymentAmount(tx, organisationId, id);
+    if (amount === undefined) throw new HTTPException(400, { message: 'Completed supplier payment not found' });
+    return amount;
+  }
   if (type === 'invoice') {
     const invoice = await invoicesRepo.getInvoice(tx, organisationId, id);
     if (!invoice) throw new HTTPException(400, { message: 'Invoice not found' });
@@ -43,7 +51,7 @@ async function bookAmount(
   }
   const payment = await paymentsRepo.getPayment(tx, organisationId, id);
   if (!payment) throw new HTTPException(400, { message: 'Payment not found' });
-  return payment.amount;
+  return payment.baseAmount ?? payment.amount;
 }
 
 export async function listSessionsForUser(
@@ -76,13 +84,15 @@ export async function createSessionForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const account = await bankRepo.getAccount(tx, ctx.organisationId, input.bankAccountId);
     if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     const previous = await repo.lastCompletedBookBalance(
       tx,
       ctx.organisationId,
       input.bankAccountId,
       input.statementStartDate,
     );
-    return repo.insertSession(tx, ctx, input, previous ?? account.openingBalance);
+    const opening = await bankLedgerBalance(tx, ctx.organisationId, account.id, input.statementStartDate, true);
+    return repo.insertSession(tx, ctx, input, opening.hasEntries ? opening.balance : previous ?? account.openingBalance);
   });
 }
 
@@ -108,9 +118,17 @@ export async function createMatchForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
+    const retry = await existingPostingRetry(tx, ctx.organisationId, input);
+    if (retry) return retry;
+    if (session.status !== 'in_progress') throw new HTTPException(409, { message: 'Completed reconciliation cannot be changed' });
     const bankTx = await bankRepo.getTransaction(tx, ctx.organisationId, input.bankTransactionId);
     if (!bankTx) throw new HTTPException(400, { message: 'Bank transaction not found' });
+    if (bankTx.bankAccountId !== session.bankAccountId) throw new HTTPException(400, { message: 'Bank transaction belongs to another bank account' });
+    const account = await bankRepo.getAccount(tx, ctx.organisationId, bankTx.bankAccountId);
+    if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     const book = await bookAmount(tx, ctx.organisationId, input.bookItemType, input.bookItemId);
+    await matchExistingPosting(tx, ctx, bankTx, input, book);
     const match = await repo.insertMatch(tx, ctx, sessionId, input, {
       bankAmount: bankTx.amount,
       bookAmount: book,
@@ -132,10 +150,19 @@ export async function confirmMatchesForUser(
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
     const saved: ReconciliationMatchDto[] = [];
+    if (session.status !== 'in_progress') throw new HTTPException(409, { message: 'Completed reconciliation cannot be changed' });
     for (const input of matches) {
+      const confirmed = { ...input, status: input.status ?? 'confirmed' };
+      const retry = await existingPostingRetry(tx, ctx.organisationId, confirmed);
+      if (retry) { saved.push(retry); continue; }
       const bankTx = await bankRepo.getTransaction(tx, ctx.organisationId, input.bankTransactionId);
       if (!bankTx) throw new HTTPException(400, { message: 'Bank transaction not found' });
+      if (bankTx.bankAccountId !== session.bankAccountId) throw new HTTPException(400, { message: 'Bank transaction belongs to another bank account' });
+      const account = await bankRepo.getAccount(tx, ctx.organisationId, bankTx.bankAccountId);
+      if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
+      await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
       const book = await bookAmount(tx, ctx.organisationId, input.bookItemType, input.bookItemId);
+      await matchExistingPosting(tx, ctx, bankTx, confirmed, book);
       const match = await repo.insertMatch(tx, ctx, sessionId, { ...input, status: input.status ?? 'confirmed' }, {
         bankAmount: bankTx.amount,
         bookAmount: book,
@@ -180,34 +207,26 @@ export async function completeSessionForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
-    const adjustments = await repo.listAdjustments(tx, ctx.organisationId, sessionId);
-    const deposits = adjustments
-      .filter((row) => row.adjustmentType === 'deposit_in_transit')
-      .reduce((sum, row) => sum.add(row.amount), decimal(0));
-    const checks = adjustments
-      .filter((row) => row.adjustmentType === 'outstanding_check')
-      .reduce((sum, row) => sum.add(row.amount), decimal(0));
-    const other = adjustments
-      .filter((row) => row.adjustmentType !== 'deposit_in_transit' && row.adjustmentType !== 'outstanding_check')
-      .reduce((sum, row) => {
-        if (row.affectsBank) return sum.add(row.amount);
-        if (row.affectsBook) return sum.sub(row.amount);
-        return sum;
-      }, decimal(0));
-    const adjustedBank = decimal(session.statementClosingBalance).add(deposits).sub(checks);
-    const adjustedBook = decimal(session.bookClosingBalance ?? '0').add(other);
-    const difference = roundMoney(adjustedBank.sub(adjustedBook));
-    if (moneyToCents(difference) !== 0n) {
-      throw apiError(400, 'RECONCILIATION_UNBALANCED', 'Reconciliation still has a difference');
-    }
+    if (session.status === 'completed') return session;
+    if (session.status === 'locked') throw new HTTPException(409, { message: 'Reconciliation is locked' });
+    const summary = await reconciliationSummaryInTx(tx, ctx.organisationId, session);
+    if (!summary.isReconciled) throw apiError(400, 'RECONCILIATION_UNBALANCED', 'Reconciliation still has a difference');
     const completed = await repo.completeSession(tx, ctx.organisationId, sessionId, {
-      bookClosingBalance: roundMoney(adjustedBook),
+      bookClosingBalance: summary.adjustedBookBalance,
       difference: '0.00',
     });
     if (!completed) throw new HTTPException(404, { message: 'Reconciliation session not found' });
     await bankRepo.updateAccount(tx, ctx.organisationId, session.bankAccountId, {
-      currentBalance: roundMoney(adjustedBank),
+      currentBalance: summary.adjustedBankBalance,
     });
     return completed;
+  });
+}
+
+export async function summaryForUser(db: Database, userId: string, sessionId: string) {
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const session = await repo.getSession(tx, ctx.organisationId, sessionId);
+    if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
+    return reconciliationSummaryInTx(tx, ctx.organisationId, session);
   });
 }

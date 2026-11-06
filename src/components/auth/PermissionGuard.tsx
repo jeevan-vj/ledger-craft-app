@@ -114,12 +114,12 @@ export const PermissionGuard: React.FC<PermissionGuardProps> = ({
 };
 
 // Higher-order component for route protection
-export const withPermissionGuard = (
-  Component: React.ComponentType<any>,
+export const withPermissionGuard = <Props extends object,>(
+  Component: React.ComponentType<Props>,
   permission: Permission | Permission[],
   options: Partial<PermissionGuardProps> = {}
 ) => {
-  return (props: any) => {
+  return (props: Props) => {
     const guardProps = Array.isArray(permission) 
       ? { permissions: permission, ...options }
       : { permission, ...options };

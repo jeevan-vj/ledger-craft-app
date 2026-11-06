@@ -239,10 +239,10 @@ class SOLIDDataManager implements IDataManager {
   }
 
   // Generic fetch method following DRY principle
-  private async fetchData<T>(
-    key: keyof IDataState,
-    fetchFn: () => Promise<T>,
-    transform?: (data: T) => any
+  private async fetchData<Key extends keyof IDataState>(
+    key: Key,
+    fetchFn: () => Promise<IDataState[Key]>,
+    transform?: (data: IDataState[Key]) => IDataState[Key]
   ): Promise<void> {
     try {
       this.stateManager.updateLoading(key as keyof ILoadingState, true);
@@ -309,7 +309,7 @@ class SOLIDDataManager implements IDataManager {
       const { items, ...invoiceData } = invoice;
       const lineItems = items || [];
       
-      const newInvoice = await serviceContainer.invoiceService.createInvoice(invoiceData, lineItems);
+      const newInvoice = await serviceContainer.invoiceService.createInvoice({ ...invoiceData, items: lineItems }, lineItems);
       const currentData = this.stateManager.getData();
       
       // Ensure invoices array exists, fallback to empty array if undefined
@@ -587,7 +587,7 @@ class SOLIDDataManager implements IDataManager {
 
   async getItemCategory(id: string): Promise<ItemCategory | null> {
     try {
-      return await serviceContainer.itemCategoryService.getItemCategory(id);
+      return (await serviceContainer.itemCategoryService.getItemCategories()).find((category) => category.id === id) ?? null;
     } catch (error) {
       console.error('DataManager: Error getting item category:', error);
       throw error;

@@ -8,9 +8,9 @@ import { businessProfileService } from '../services/supabaseService';
 interface AuthContextType {
   user: AuthUser | null;
   session: AuthSession | null;
-  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: any; data?: any; needsEmailConfirmation?: boolean }>;
-  signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signInWithGoogle: () => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ error: { message: string } | null; data?: unknown; needsEmailConfirmation?: boolean }>;
+  signIn: (email: string, password: string) => Promise<{ error: { message: string } | null }>;
+  signInWithGoogle: () => Promise<{ error: { message: string } | null }>;
   signOut: () => Promise<void>;
   loading: boolean;
   hasCompletedOnboarding: boolean;
@@ -30,7 +30,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [lastCheckedUserId, setLastCheckedUserId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const checkOnboardingStatus = async (userId: string) => {
+  const checkOnboardingStatus: ((userId: string) => Promise<void>) & { isChecking?: boolean } = async (userId: string) => {
     // Don't check again if already checked for this specific user
     if (onboardingChecked && lastCheckedUserId === userId) {
       console.log('AuthContext: Onboarding status already checked for this user, skipping...');
@@ -38,13 +38,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     
     // Prevent multiple simultaneous checks
-    if ((checkOnboardingStatus as any).isChecking) {
+    if (checkOnboardingStatus.isChecking) {
       console.log('AuthContext: Onboarding check already in progress, skipping...');
       return;
     }
     
     try {
-      (checkOnboardingStatus as any).isChecking = true;
+      checkOnboardingStatus.isChecking = true;
       console.log('AuthContext: Starting onboarding check for user:', userId);
       
       // Add timeout to prevent hanging
@@ -77,7 +77,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       
       console.log('AuthContext: Onboarding status check failed, keeping current status');
     } finally {
-      (checkOnboardingStatus as any).isChecking = false;
+      checkOnboardingStatus.isChecking = false;
       console.log('AuthContext: Onboarding check completed');
     }
   };

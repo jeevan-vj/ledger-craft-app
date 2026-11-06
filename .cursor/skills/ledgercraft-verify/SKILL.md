@@ -41,27 +41,24 @@ Any other skip, including "docs only" or "the unit test passed", is a blocker. A
 
 ### 1. Web lint (Node 22)
 
-Job **Web lint**. `pnpm lint` is `eslint .`. The lint step is allowed to exit non-zero. The job fails only when the error count is above **468**. Warnings are printed and are not a failure on `main`. Do not raise 468. Editing `.github/scripts/ci-baseline-gate.mjs` so a higher count still exits 0 is `risk:high`, the same as raising the ceiling.
+Job **Web lint**. `pnpm lint` is `eslint .` and must exit 0. Any ESLint error fails the job directly. Warnings remain visible and are not failures; no rules or warning ceilings changed. There is no allowed error count and no baseline gate.
 
 ```bash
-pnpm lint > /tmp/web-lint.txt 2>&1; echo "lint_exit:$?"
-node .github/scripts/ci-baseline-gate.mjs eslint /tmp/web-lint.txt 468; echo "gate_exit:$?"
+pnpm lint
 ```
 
-Pass: a line `eslint: <n> errors, <m> warnings (baseline 468)` and `gate_exit:0`, with `<n>` ≤ 468. Over the ceiling prints `::error::` and `gate_exit:1`.
+Pass: exit 0 with zero ESLint errors. Paste the warnings count too; a warning is not a claim of an error-free warning report.
 
 ### 2. Web typecheck (Node 22)
 
-Job **Web typecheck**. Do not use `pnpm type-check` as the gate. That script exits non-zero while this ceiling still passes. Count `error TS` lines. The ceiling is **728**. `tsconfig.node.json` is expected to add no errors. Do not raise 728, and do not delete errors to get under it.
+Job **Web typecheck**. Both the Vite app and Node configuration must compile with zero errors. The root `tsconfig.json` has `files: []`, so a bare `tsc --noEmit` is not this check. `pnpm type-check` runs the same two project checks; CI names both explicitly.
 
 ```bash
-: > /tmp/web-tsc.txt
-pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false >> /tmp/web-tsc.txt 2>&1; echo "app_exit:$?"
-pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false >> /tmp/web-tsc.txt 2>&1; echo "node_exit:$?"
-node .github/scripts/ci-baseline-gate.mjs tsc /tmp/web-tsc.txt 728; echo "gate_exit:$?"
+pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false
+pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false
 ```
 
-Pass: `tsc: <n> TypeScript errors (baseline 728)` and `gate_exit:0`, with `<n>` ≤ 728.
+Pass: both commands exit 0 with no TypeScript errors. Any compiler error fails CI and release verification directly; no error budget or baseline helper is used.
 
 ### 3. Web unit tests (Node 22)
 
@@ -99,7 +96,7 @@ Pass: API Vitest, contracts Vitest, and both typechecks exit 0. `node -v` in tha
 Job **Release readiness script**. No `pnpm install`. These are the three steps in `.github/workflows/ci.yml`.
 
 ```bash
-node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
+node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/verify-web-quality-gates.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
 node --test scripts/upload-web-sourcemaps.test.mjs
 node scripts/verify-akaunting-core.mjs --report
 ```
@@ -128,7 +125,7 @@ CI jobs run in parallel. Do not end the run while any of them is pending. `gh pr
 
 If a job fails immediately and the annotation says the job was not started because recent account payments have failed, or a spending limit needs to be increased, paste that annotation and stop. Do not edit a workflow, rerun in a loop, or change tests to get past it.
 
-Draft [PR #63](https://github.com/jeevan-vj/ledger-craft-app/pull/63) proposes `.github/lint-baseline.json` and warning ceilings. Until that is on `main`, the ceilings are 468 and 728 in `.github/workflows/ci.yml`. Do not require a GitHub check named `verify`. The jobs in this skill are the jobs in `.github/workflows/ci.yml`.
+Web lint and both web project typechecks must remain error-free. The old count-baseline helper is historical and is not called by CI or release verification. Do not require a GitHub check named `verify`; the jobs in this skill are the jobs in `.github/workflows/ci.yml`. The release workflow also requires raw web lint and both project typechecks in its Node 24 preflight before deployment can proceed.
 
 `SonarCloud Code Analysis` is not a job in `.github/workflows/ci.yml`. A cancelled Sonar check does not by itself fail this list.
 
@@ -187,8 +184,8 @@ Put this in the pull request, filled with real output:
 
 | Job | Node | Result |
 | --- | --- | --- |
-| Web lint (`pnpm lint` + gate 468) | | |
-| Web typecheck (gate 728) | | |
+| Web lint (`pnpm lint`, zero errors) | | |
+| Web typecheck (app and Node projects, zero errors) | | |
 | Web unit tests (`pnpm test:run`) | | |
 | Web build (`pnpm build`) | | |
 | API & contracts | | |
@@ -219,7 +216,7 @@ Human steps, or none. Release to Cloudflare runs only after CI succeeds on `main
 ## Do not
 
 - Weaken, skip, or delete a test to get a green run
-- Raise 468, 728, or any later baseline file, or edit `.github/scripts/ci-baseline-gate.mjs` so a higher count exits 0
+- Reintroduce an allowed lint/typecheck error count, suppress a required check failure, blanket-ignore rules, or alter the historical baseline helper to accept regressions
 - Wrap the failing call in a broad `try/catch` that hides the error
 - Edit a snapshot, fixture, or golden file so the assertion passes
 - Touch files that the change does not need

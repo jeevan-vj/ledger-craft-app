@@ -107,7 +107,7 @@ interface InvoiceFormProps {
   customers: Customer[];
   businessProfile: BusinessProfile | null;
   isLoadingCustomers: boolean;
-  onSubmit: (values: any, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[], intent?: 'draft' | 'send') => Promise<{ id: string; invoiceNumber?: string } | void>;
+  onSubmit: (values: InvoiceFormValues, lineItems: LineItem[], total: number, subtotal: number, taxAmount: number, additionalCharges: number, discount: number, additionalChargesList?: AdditionalCharge[], intent?: 'draft' | 'send') => Promise<{ id: string; invoiceNumber?: string } | void>;
   onCancel: () => void;
   onAddCustomer?: () => void;
   newlyAddedCustomer?: Customer | null;
@@ -144,7 +144,7 @@ function buildDocumentFormSchema(documentKind: DocumentKind) {
   });
 }
 
-type InvoiceFormValues = z.infer<ReturnType<typeof buildDocumentFormSchema>>;
+export type InvoiceFormValues = z.infer<ReturnType<typeof buildDocumentFormSchema>> & { templateName?: string };
 
 // Add these animation variants at the top of the file after imports
 const tabVariants = {
@@ -333,8 +333,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
         if (savedData.formData) {
           form.reset({
             ...savedData.formData,
-            date: savedData.formData.date ? new Date(savedData.formData.date) : new Date(),
-            dueDate: savedData.formData.dueDate ? new Date(savedData.formData.dueDate) : new Date()
+            date: savedData.formData.date ? new Date(savedData.formData.date instanceof Date ? savedData.formData.date.getTime() : savedData.formData.date) : new Date(),
+            dueDate: savedData.formData.dueDate ? new Date(savedData.formData.dueDate instanceof Date ? savedData.formData.dueDate.getTime() : savedData.formData.dueDate) : new Date()
           });
         }
         
@@ -560,14 +560,14 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
     setTotal(newSubtotal + newTaxAmount + addCharges - disc);
   }, [items, isTaxEnabled, taxRate, isAdditionalChargesEnabled, discountMode, additionalChargesList, additionalChargesFormValue, discountFormValue, discountPercentFormValue, isQuote, pricesIncludeTax, businessProfile?.defaultTaxRate]);
 
-  const updateItem = (idx: number, field: keyof LineItem, value: any) => {
+  const updateItem = <Field extends keyof LineItem,>(idx: number, field: Field, value: LineItem[Field]) => {
     const updated = [...items];
     updated[idx] = { ...updated[idx], [field]: value };
     if (field === "quantity" || field === "rate" || field === "unit" || field === "rateUnit") {
       const quantity = field === "quantity" ? Number(value) : Number(updated[idx].quantity);
-      const unit = field === "unit" ? value : updated[idx].unit;
+      const unit = field === "unit" ? String(value) : updated[idx].unit;
       const rate = field === "rate" ? Number(value) : Number(updated[idx].rate);
-      const rateUnit = field === "rateUnit" ? value : (updated[idx].rateUnit || unit);
+      const rateUnit = field === "rateUnit" ? String(value) : (updated[idx].rateUnit || unit);
       
       // Use the calculation function with unit conversion
       updated[idx].total = calculateLineTotal(quantity, unit, rate, rateUnit);

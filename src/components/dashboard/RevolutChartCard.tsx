@@ -77,13 +77,13 @@ export function RevolutChartCard({
 }
 
 // Custom styled tooltip for charts
-export function RevolutChartTooltip({ active, payload, label }: any) {
+export function RevolutChartTooltip({ active, payload, label }: { active?: boolean; payload?: Array<{ color?: string; name?: React.ReactNode; value?: React.ReactNode }>; label?: React.ReactNode }) {
   if (!active || !payload || !payload.length) return null;
 
   return (
     <div className="bg-white/95 backdrop-blur-sm px-4 py-3 rounded-xl shadow-revolut border border-muted">
       <p className="font-semibold text-sm mb-2">{label}</p>
-      {payload.map((entry: any, index: number) => (
+      {payload.map((entry, index) => (
         <div key={index} className="flex items-center gap-2 text-xs">
           <div
             className="h-2 w-2 rounded-full"

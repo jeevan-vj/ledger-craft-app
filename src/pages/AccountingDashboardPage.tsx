@@ -1,4 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
+import { financialReportQuerySchema } from '@ledgercraft/contracts';
 import { AccountingDashboard } from '@/components/accounting/AccountingDashboard';
 import { useToast } from '@/hooks/use-toast';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -26,21 +29,29 @@ interface ExpenseBreakdownData {
 }
 
 export default function AccountingDashboardPage() {
+  const navigate = useNavigate();
+  const [query] = useSearchParams();
+  const periodFrom = query.get('from'); const periodTo = query.get('to');
+  const requested = financialReportQuerySchema.safeParse({ from: periodFrom, to: periodTo });
+  const period = requested.success ? { startDate: requested.data.from, endDate: requested.data.to } : undefined;
+  const through = period ? new Date(period.endDate + 'T12:00:00Z') : new Date();
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null);
   const [accountBalances, setAccountBalances] = useState<AccountBalanceSummary[]>([]);
   const [revenueExpenseData, setRevenueExpenseData] = useState<RevenueExpenseData[]>([]);
   const [cashFlowData, setCashFlowData] = useState<CashFlowData[]>([]);
   const [expenseBreakdownData, setExpenseBreakdownData] = useState<ExpenseBreakdownData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string>();
   
   const { toast } = useToast();
 
   const fetchAccountingData = async () => {
     setIsLoading(true);
+    setLoadError(undefined);
     try {
-      console.log('Fetching accounting data from Supabase...');
+      console.log('Fetching posted accounting reports...');
       
-      // Fetch all real data from Supabase
+      // Fetch company-scoped posted ledger reports
       const [
         financialData, 
         accountData, 
@@ -48,11 +59,11 @@ export default function AccountingDashboardPage() {
         cashData, 
         expenseData
       ] = await Promise.all([
-        accountingService.getFinancialSummary(),
-        accountingService.getAccountBalances(),
-        accountingService.getRevenueExpenseData(6),
-        accountingService.getCashFlowData(28),
-        accountingService.getExpenseBreakdown()
+        accountingService.getFinancialSummary(period),
+        accountingService.getAccountBalances(period),
+        accountingService.getRevenueExpenseData(6, through),
+        accountingService.getCashFlowData(28, through),
+        accountingService.getExpenseBreakdown(period)
       ]);
 
       setFinancialSummary(financialData);
@@ -64,6 +75,7 @@ export default function AccountingDashboardPage() {
       console.log('All accounting data loaded successfully');
     } catch (error) {
       console.error('Failed to load accounting data:', error);
+      setLoadError(error instanceof Error ? error.message : 'Posted reports could not be loaded.');
       toast({
         title: "Error",
         description: `Failed to load accounting data: ${error instanceof Error ? error.message : 'Unknown error'}`,
@@ -76,28 +88,19 @@ export default function AccountingDashboardPage() {
 
   useEffect(() => {
     fetchAccountingData();
-  }, []);
+  }, [periodFrom, periodTo]);
 
   const handleRefresh = () => {
     fetchAccountingData();
   };
 
-  const handleExportReport = async (type: string) => {
-    try {
-      // Simulate export
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      toast({
-        title: "Success",
-        description: `${type.charAt(0).toUpperCase() + type.slice(1)} report exported successfully`
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to export report",
-        variant: "destructive"
-      });
-    }
+  const handleExportReport = () => {
+    const selected = financialSummary?.period;
+    const query = selected ? '?' + new URLSearchParams({ from: selected.startDate, to: selected.endDate }).toString() : '';
+    navigate('/financial-reports' + query);
   };
+
+  if (!isLoading && loadError) return <div role="alert" className="space-y-3"><p>Posted accounting reports could not be loaded: {loadError}</p><Button onClick={() => void fetchAccountingData()}>Try again</Button></div>;
 
   if (isLoading || !financialSummary) {
     return (

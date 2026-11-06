@@ -6,8 +6,8 @@ import { vi, describe, it, expect } from 'vitest';
 describe('Manual Template Test', () => {
   it('should verify the exact logic used in InvoiceForm', () => {
     // Test 1: Create mode (no initialValues)
-    const createModeInitialValues = undefined;
-    const createModeTemplate = (createModeInitialValues?.templateName as any) || 'classic';
+    const createModeInitialValues: { templateName?: string } = undefined;
+    const createModeTemplate = (createModeInitialValues?.templateName) || 'classic';
     console.log('Create mode template:', createModeTemplate);
     expect(createModeTemplate).toBe('classic');
 
@@ -18,7 +18,7 @@ describe('Manual Template Test', () => {
       templateName: 'modern',
       // ... other fields
     };
-    const editModeTemplate = (editModeInitialValues?.templateName as any) || 'classic';
+    const editModeTemplate = (editModeInitialValues?.templateName) || 'classic';
     console.log('Edit mode template (modern):', editModeTemplate);
     expect(editModeTemplate).toBe('modern');
 
@@ -28,7 +28,7 @@ describe('Manual Template Test', () => {
       invoiceNumber: 'INV-002',
       templateName: 'corporate',
     };
-    const editModeCorporateTemplate = (editModeCorporateValues?.templateName as any) || 'classic';
+    const editModeCorporateTemplate = (editModeCorporateValues?.templateName) || 'classic';
     console.log('Edit mode template (corporate):', editModeCorporateTemplate);
     expect(editModeCorporateTemplate).toBe('corporate');
 
@@ -38,17 +38,17 @@ describe('Manual Template Test', () => {
       invoiceNumber: 'INV-003',
       templateName: undefined,
     };
-    const editModeUndefinedTemplate = (editModeUndefinedValues?.templateName as any) || 'classic';
+    const editModeUndefinedTemplate = (editModeUndefinedValues?.templateName) || 'classic';
     console.log('Edit mode template (undefined):', editModeUndefinedTemplate);
     expect(editModeUndefinedTemplate).toBe('classic');
 
     // Test 5: Check the exact useState + useEffect pattern (like InvoiceForm)
-    const MockComponent = ({ initialValues }: { initialValues?: any }) => {
+    const MockComponent = ({ initialValues }: { initialValues?: { templateName?: string | null } }) => {
       const [selectedTemplate, setSelectedTemplate] = useState('classic');
       
       React.useEffect(() => {
         if (initialValues) {
-          setSelectedTemplate((initialValues?.templateName as any) || 'classic');
+          setSelectedTemplate((initialValues?.templateName) || 'classic');
         } else {
           setSelectedTemplate('classic');
         }
@@ -77,13 +77,13 @@ describe('Manual Template Test', () => {
     // Simulate what happens in InvoiceViewPage
     const invoiceWithModern = { templateName: 'modern' };
     const invoiceWithCorporate = { templateName: 'corporate' };
-    const invoiceWithoutTemplate = {};
+    const invoiceWithoutTemplate: { templateName?: string } = {};
     const invoiceWithNull = { templateName: null };
 
-    const templateModern = (invoiceWithModern.templateName as any) || 'classic';
-    const templateCorporate = (invoiceWithCorporate.templateName as any) || 'classic';
-    const templateDefault = (invoiceWithoutTemplate.templateName as any) || 'classic';
-    const templateNull = (invoiceWithNull.templateName as any) || 'classic';
+    const templateModern = (invoiceWithModern.templateName) || 'classic';
+    const templateCorporate = (invoiceWithCorporate.templateName) || 'classic';
+    const templateDefault = (invoiceWithoutTemplate.templateName) || 'classic';
+    const templateNull = (invoiceWithNull.templateName) || 'classic';
 
     console.log('InvoiceViewPage templates:', {
       modern: templateModern,

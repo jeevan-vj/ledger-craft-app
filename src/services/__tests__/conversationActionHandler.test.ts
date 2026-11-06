@@ -7,7 +7,8 @@ import {
   mockCreateExpenseAction,
   mockCustomer,
   mockVipCustomer,
-  mockInvoice
+  mockInvoice,
+  mockExpense
 } from '../../test/fixtures/conversationFixtures';
 import {
   setupTest,
@@ -37,7 +38,7 @@ vi.mock('../conversationService', () => ({
 
 import { conversationService } from '../conversationService';
 import { customerService, expenseService, invoiceService } from '../supabaseService';
-const mockConversationService = conversationService as any;
+const mockConversationService = vi.mocked(conversationService, true);
 
 describe('ConversationActionHandler', () => {
   let actionHandler: ConversationActionHandler;
@@ -374,8 +375,8 @@ describe('ConversationActionHandler', () => {
 
       expect(result.success).toBe(true);
       expect(result.data.customers).toHaveLength(2); // One from recent, one from DB
-      expect(result.data.customers.map((c: any) => c.name)).toContain('John Smith');
-      expect(result.data.customers.map((c: any) => c.name)).toContain('Ada Smith');
+      expect(result.data.customers.map((c: import('@/types').Customer) => c.name)).toContain('John Smith');
+      expect(result.data.customers.map((c: import('@/types').Customer) => c.name)).toContain('Ada Smith');
     });
   });
 
@@ -553,8 +554,8 @@ describe('ConversationActionHandler', () => {
 
       // Mock invoice and expense data
       const mockInvoicesData = [
-        { ...mockInvoice, status: 'paid', total: 500 },
-        { status: 'sent', total: 300 }
+        { ...mockInvoice, status: 'paid' as const, total: 500 },
+        { status: 'sent' as const, total: 300 }
       ];
       const mockExpensesData = [
         { amount: 150 },
@@ -565,7 +566,7 @@ describe('ConversationActionHandler', () => {
       vi.mocked(invoiceService.getInvoices).mockResolvedValue(
         mockInvoicesData.map((invoice) => ({ ...mockInvoice, ...invoice, date: today })),
       );
-      vi.mocked(expenseService.getExpenses).mockResolvedValue(mockExpensesData as any);
+      vi.mocked(expenseService.getExpenses).mockResolvedValue(mockExpensesData.map((expense) => ({ ...mockExpense, ...expense })));
 
       const result = await actionHandler.executeAction(
         action,
@@ -613,7 +614,7 @@ describe('ConversationActionHandler', () => {
       const format = 'INV-{YYYY}-{###}';
       const sequence = 5;
 
-      const invoiceNumber = (actionHandler as any).generateInvoiceNumber(format, sequence);
+      const invoiceNumber = actionHandler['generateInvoiceNumber'](format, sequence);
 
       expect(invoiceNumber).toMatch(/^INV-\d{4}-005$/);
     });
@@ -625,7 +626,7 @@ describe('ConversationActionHandler', () => {
       ];
 
       tests.forEach(test => {
-        const result = (actionHandler as any).generateInvoiceNumber(test.format, test.sequence);
+        const result = actionHandler['generateInvoiceNumber'](test.format, test.sequence);
         expect(result).toMatch(test.expected);
       });
     });

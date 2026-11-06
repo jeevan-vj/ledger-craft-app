@@ -160,10 +160,10 @@ class DataManager {
   }
 
   // Generic fetch method
-  private async fetchData<T>(
-    key: DataKey,
-    fetchFn: () => Promise<T>,
-    transform?: (data: T) => any
+  private async fetchData<Key extends keyof DataState>(
+    key: Key,
+    fetchFn: () => Promise<DataState[Key]>,
+    transform?: (data: DataState[Key]) => DataState[Key]
   ): Promise<void> {
     try {
       this.loading[key] = true;
@@ -242,7 +242,7 @@ class DataManager {
   // CRUD Operations
   async createInvoice(invoice: Omit<Invoice, "id" | "createdAt" | "updatedAt">): Promise<Invoice> {
     try {
-      const newInvoice = await invoiceService.createInvoice(invoice);
+      const newInvoice = await invoiceService.createInvoice(invoice, invoice.items);
       // Add to local state and sort
       this.data.invoices = [newInvoice, ...this.data.invoices]
         .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
@@ -256,7 +256,7 @@ class DataManager {
 
   async updateInvoice(invoice: Invoice): Promise<Invoice> {
     try {
-      const updatedInvoice = await invoiceService.updateInvoice(invoice);
+      const updatedInvoice = await invoiceService.updateInvoice(invoice.id, invoice);
       // Update in local state
       const index = this.data.invoices.findIndex(i => i.id === invoice.id);
       if (index !== -1) {

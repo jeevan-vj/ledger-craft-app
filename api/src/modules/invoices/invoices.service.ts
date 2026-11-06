@@ -9,6 +9,7 @@ import type {
 import { invoiceListResponseSchema, invoiceSchema } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import { apiError } from '../../http-error';
+import { hasActiveCreditNotes } from '../credit-notes/credit-notes.repository';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as profileRepo from '../business-profile/business-profile.repository';
@@ -163,6 +164,9 @@ export async function updateInvoiceForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const existing = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Invoice not found' });
+    if (await hasActiveCreditNotes(tx, ctx.organisationId, id) && Object.keys(input).some(key => !['notes', 'terms', 'dueDate', 'paymentTermDays', 'expectedUpdatedAt'].includes(key))) {
+      throw apiError(409, 'INVOICE_HAS_CREDIT_NOTES', 'Reverse active credit notes and customer refunds before changing invoice amounts or status');
+    }
     if (input.expectedUpdatedAt && input.expectedUpdatedAt !== existing.updatedAt) {
       throw apiError(409, 'INVOICE_CHANGED', 'This invoice changed. Review it and try again.');
     }
@@ -288,6 +292,7 @@ export async function sendInvoiceForUser(
       invoiceNumber: prepared.invoice.invoiceNumber,
       to: prepared.recipients,
       amountDue: prepared.invoice.balanceDue,
+      currency: prepared.invoice.currency,
       dueDate: prepared.invoice.dueDate,
       businessName: prepared.businessName,
       publicUrl: `${PUBLIC_APP_URL}/shared/invoice/${encodeURIComponent(shared.share.shareToken)}`,
@@ -350,6 +355,7 @@ export async function remindInvoiceForUser(
       subject: input.subject,
       html: input.html,
       amountDue: prepared.invoice.balanceDue,
+      currency: prepared.invoice.currency,
       dueDate: prepared.invoice.dueDate,
       businessName: prepared.businessName,
       publicUrl: `${PUBLIC_APP_URL}/shared/invoice/${encodeURIComponent(shared.share.shareToken)}`,

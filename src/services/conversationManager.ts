@@ -5,6 +5,7 @@
 
 import { ConversationSession, ConversationMessage, ConversationAction } from '../types';
 import { conversationService } from '../services/conversationService';
+import { aiService } from './aiService';
 
 interface ConversationState {
   currentConversation: ConversationSession | null;
@@ -196,9 +197,8 @@ class ConversationManager {
       );
 
       // Process with AI and get response
-      const response = await conversationService.processMessage(
-        this.state.currentConversation.id,
-        message
+      const response = await aiService.processMessage(
+        message, this.state.currentConversation.context, this.state.currentConversation.messages,
       );
 
       // Add AI response
@@ -206,7 +206,7 @@ class ConversationManager {
         this.state.currentConversation.id,
         'assistant',
         response.message,
-        response.metadata
+        { intent: response.intent, entities: response.entities, actions: response.actions, suggestedActions: response.suggestedActions }
       );
 
       // Reload conversation to get updated messages
@@ -232,7 +232,7 @@ class ConversationManager {
     if (!this.state.currentConversation) return;
 
     try {
-      await conversationService.endConversation(this.state.currentConversation.id);
+      await conversationService.updateConversationStatus(this.state.currentConversation.id, 'completed');
       this.state.currentConversation = null;
       await this.loadRecentConversations();
     } catch (error) {

@@ -1,5 +1,14 @@
 import { test, expect } from '@playwright/test';
 
+type FinanceMockWindow = Window & {
+  __FINANCE_TEST_MODE?: boolean;
+  __MOCK_DATA?: {
+    customers: Array<{ id: string; name: string; email: string }>;
+    invoices: Array<{ id: string; amount: number; status: string }>;
+    payments: Array<{ id: string; amount: number; method: string }>;
+  };
+};
+
 /**
  * Finance E2E Test Validation
  * 
@@ -74,8 +83,8 @@ test.describe('Finance E2E Test Environment Validation', () => {
     
     // Set up mock financial data
     await page.addInitScript(() => {
-      window.__FINANCE_TEST_MODE = true;
-      window.__MOCK_DATA = {
+      (window as FinanceMockWindow).__FINANCE_TEST_MODE = true;
+      (window as FinanceMockWindow).__MOCK_DATA = {
         customers: [
           { id: 'test-customer-1', name: 'Test Customer', email: 'test@example.com' }
         ],
@@ -92,11 +101,12 @@ test.describe('Finance E2E Test Environment Validation', () => {
     await page.waitForLoadState('networkidle');
     
     // Verify test data was injected
-    const testMode = await page.evaluate(() => window.__FINANCE_TEST_MODE);
+    const testMode = await page.evaluate(() => (window as FinanceMockWindow).__FINANCE_TEST_MODE);
     expect(testMode).toBe(true);
     
-    const mockData = await page.evaluate(() => window.__MOCK_DATA);
+    const mockData = await page.evaluate(() => (window as FinanceMockWindow).__MOCK_DATA);
     expect(mockData).toBeDefined();
+    if (!mockData) throw new Error('Financial fixture was not injected');
     expect(mockData.customers).toHaveLength(1);
     
     console.log('✓ Finance test data injection working');
@@ -122,7 +132,7 @@ test.describe('Network and API Readiness', () => {
         const res = await fetch('/api/test');
         return await res.json();
       } catch (error) {
-        return { error: error.message };
+        return { error: error instanceof Error ? error.message : String(error) };
       }
     });
     
@@ -172,7 +182,7 @@ test.describe('Performance and Reliability', () => {
   });
 
   test('Application handles JavaScript errors gracefully', async ({ page }) => {
-    let jsErrors = [];
+    const jsErrors: string[] = [];
     
     page.on('pageerror', error => {
       jsErrors.push(error.message);

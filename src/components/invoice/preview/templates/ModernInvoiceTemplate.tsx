@@ -144,8 +144,8 @@ const ModernInvoiceTemplate = ({
                   <tr key={item.id} className="shadow rounded-lg" style={{ backgroundColor: theme.surface }}>
                     <td className="px-4 py-3 font-medium align-top" style={{ color: theme.text }}>
                       {item.description}
-                      {(item as any).details && (
-                        <div className="text-xs mt-1" style={{ color: theme.textLight }}>{(item as any).details}</div>
+                      {item.details && (
+                        <div className="text-xs mt-1" style={{ color: theme.textLight }}>{item.details}</div>
                       )}
                     </td>
                     <td className="px-2 py-3 align-top" style={{ color: theme.text }}>

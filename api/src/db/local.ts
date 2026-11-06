@@ -69,8 +69,8 @@ export function createDb(url: string) {
         statement.run(...bind(params));
         return { rows: [] };
       }
-      if (method === 'get') return { rows: (statement.get(...bind(params)) ?? []) as any[] };
-      return { rows: statement.all(...bind(params)) as any[] };
+      if (method === 'get') return { rows: (statement.get(...bind(params)) ?? []) as unknown[] };
+      return { rows: statement.all(...bind(params)) as unknown[] };
     }),
     transaction: (callback) => locked(async () => {
       const savepoint = `ledgercraft_${++state.savepoint}`;

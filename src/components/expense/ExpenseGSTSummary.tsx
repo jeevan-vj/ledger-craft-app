@@ -118,7 +118,7 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
         id: expense.id,
         description: expense.description,
         amount: expense.amount,
-        category: expense.category_id || expense.categoryId || expense.category || 'general',
+        category: expense.category_id || expense.categoryId || expense.category?.name || 'general',
         subcategory: 'General',
         date: expense.expense_date || expense.expenseDate || expense.date,
         supplier: expense.vendor_name || expense.vendorName,
@@ -151,7 +151,7 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
           label: now.toLocaleDateString('en-NZ', { month: 'long', year: 'numeric' })
         };
       
-      case 'current-quarter':
+      case 'current-quarter': {
         const quarterStart = new Date(currentYear, currentQuarter * 3, 1);
         const quarterEnd = new Date(currentYear, (currentQuarter + 1) * 3, 0);
         return {
@@ -159,8 +159,9 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
           endDate: quarterEnd.toISOString(),
           label: `Q${currentQuarter + 1} ${currentYear}`
         };
+      }
       
-      case 'last-quarter':
+      case 'last-quarter': {
         const lastQuarter = currentQuarter === 0 ? 3 : currentQuarter - 1;
         const lastQuarterYear = currentQuarter === 0 ? currentYear - 1 : currentYear;
         const lastQuarterStart = new Date(lastQuarterYear, lastQuarter * 3, 1);
@@ -170,8 +171,9 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
           endDate: lastQuarterEnd.toISOString(),
           label: `Q${lastQuarter + 1} ${lastQuarterYear}`
         };
+      }
       
-      case 'current-year':
+      case 'current-year': {
         // NZ Financial Year: April 1 - March 31
         const fyStart = currentMonth >= 3 ? 
           new Date(currentYear, 3, 1) : 
@@ -184,8 +186,9 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
           endDate: fyEnd.toISOString(),
           label: `FY ${fyStart.getFullYear()}-${fyEnd.getFullYear()}`
         };
+      }
       
-      case 'last-year':
+      case 'last-year': {
         const lastFyStart = new Date(currentYear - 1, 3, 1);
         const lastFyEnd = new Date(currentYear, 2, 31);
         return {
@@ -193,6 +196,7 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
           endDate: lastFyEnd.toISOString(),
           label: `FY ${lastFyStart.getFullYear()}-${lastFyEnd.getFullYear()}`
         };
+      }
       
       default:
         return {
@@ -264,7 +268,7 @@ export const ExpenseGSTSummary: React.FC<ExpenseGSTSummaryProps> = ({
   const RADIAN = Math.PI / 180;
   const renderCustomizedLabel = ({
     cx, cy, midAngle, innerRadius, outerRadius, percent
-  }: any) => {
+  }: { cx: number; cy: number; midAngle: number; innerRadius: number; outerRadius: number; percent: number }) => {
     const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
     const x = cx + radius * Math.cos(-midAngle * RADIAN);
     const y = cy + radius * Math.sin(-midAngle * RADIAN);

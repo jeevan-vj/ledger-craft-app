@@ -68,6 +68,22 @@ describe('ExpenseFormDrawer', () => {
     expect(screen.getByLabelText(/^amount \*$/i)).toBeInTheDocument();
   });
 
+  it('offers only active settlement accounts for paying an expense', async () => {
+    vi.mocked(useAppData).mockReturnValue({ ...mockContextValue, accounts: [
+      ...mockContextValue.accounts,
+      { ...mockContextValue.accounts[0], id: 'card', name: 'Company card', type: 'credit_card' },
+      { ...mockContextValue.accounts[0], id: 'sales', name: 'Sales Revenue', type: 'custom', classification: 'revenue' },
+      { ...mockContextValue.accounts[0], id: 'cost', name: 'Operating Expenses', type: 'custom', classification: 'expense' },
+      { ...mockContextValue.accounts[0], id: 'closed', name: 'Closed bank', isActive: false },
+    ] } as ReturnType<typeof useAppData>);
+    render(<ExpenseFormDrawer {...defaultProps} />);
+    fireEvent.click(screen.getByRole('button', { name: /payment details/i }));
+    fireEvent.click(screen.getByLabelText('Paid from account'));
+    expect(await screen.findByRole('option', { name: 'Business account (bank)' })).toBeInTheDocument();
+    expect(screen.getByRole('option', { name: 'Company card (credit_card)' })).toBeInTheDocument();
+    expect(screen.queryByRole('option', { name: /Sales Revenue|Operating Expenses|Closed bank/ })).not.toBeInTheDocument();
+  });
+
   it('shows edit title when editing existing expense', () => {
     const initialValues = {
       id: '1',
@@ -115,6 +131,20 @@ describe('ExpenseFormDrawer', () => {
         })
       );
     });
+  });
+
+  it('preserves receipt GST and claim percentages for authoritative posting', async () => {
+    render(<ExpenseFormDrawer {...defaultProps} initialValues={{
+      id: 'partial', description: 'Partly claimable expense', amount: 230,
+      taxAmount: 30, gstTreatment: 'partial', gstClaimablePercentage: 50,
+      privateUsePercentage: 0, expenseDate: '2026-04-10', status: 'approved',
+      isBillable: false, currency: 'NZD', userId: 'user-1',
+      createdAt: '2026-04-10T00:00:00Z', updatedAt: '2026-04-10T00:00:00Z',
+    }} />);
+    fireEvent.click(screen.getByRole('button', { name: /update expense/i }));
+    await waitFor(() => expect(mockOnSubmit).toHaveBeenCalledWith(expect.objectContaining({
+      amount: 230, taxAmount: 30, gstTreatment: 'partial', gstClaimablePercentage: 50,
+    })));
   });
 
   it('populates form fields when initialValues provided', () => {

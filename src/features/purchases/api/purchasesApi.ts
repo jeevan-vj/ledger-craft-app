@@ -19,7 +19,7 @@ import { readApiFailure } from '@/lib/api/readApiError';
 export class PurchasesApiError extends Error {
   readonly requestId?: string;
 
-  constructor(message: string, readonly status: number, requestId?: string) {
+  constructor(message: string, readonly status: number, requestId?: string, readonly code?: string) {
     super(message);
     this.name = 'PurchasesApiError';
     this.requestId = requestId;
@@ -30,7 +30,7 @@ async function requestText(path: string): Promise<string> {
   const response = await fetch(path, { credentials: 'include' });
   if (!response.ok) {
     const failure = await readApiFailure(response);
-    throw new PurchasesApiError(failure.message, failure.status, failure.requestId);
+    throw new PurchasesApiError(failure.message, failure.status, failure.requestId, failure.code);
   }
   return response.text();
 }
@@ -44,7 +44,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   if (response.status === 204) return undefined as T;
   if (!response.ok) {
     const failure = await readApiFailure(response);
-    throw new PurchasesApiError(failure.message, failure.status, failure.requestId);
+    throw new PurchasesApiError(failure.message, failure.status, failure.requestId, failure.code);
   }
   return response.json() as Promise<T>;
 }
@@ -89,8 +89,8 @@ export const purchasesApi = {
   restoreBill(id: string) {
     return request<BillDto>(`/api/bills/${id}/restore`, { method: 'POST' });
   },
-  recordPayment(id: string, input: RecordBillPaymentRequest) {
-    return request<BillPaymentBatchDto>(`/api/bills/${id}/payments`, { method: 'POST', body: JSON.stringify(input) });
+  recordPayment(id: string, input: RecordBillPaymentRequest, key?: string) {
+    return request<BillPaymentBatchDto>(`/api/bills/${id}/payments`, { method: 'POST', ...(key ? { headers: { 'Idempotency-Key': key } } : {}), body: JSON.stringify(input) });
   },
   attachObject(id: string, input: AttachBillObjectRequest) {
     return request<BillAttachmentDto>(`/api/bills/${id}/attachments`, { method: 'POST', body: JSON.stringify(input) });

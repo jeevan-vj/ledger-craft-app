@@ -6,6 +6,7 @@ export type PeriodInvoice = EnhancedInvoice & {
 };
 
 export type PeriodExpense = Expense & {
+  tax_inclusive?: boolean;
   tax_amount: number;
   is_claimable: boolean;
   is_capital_expense: boolean;
@@ -81,19 +82,19 @@ export function summarizeGst(
   gstOnPurchases: number;
   netGstPosition: number;
 } {
-  const totalSales = invoices.reduce((sum, invoice) => sum + readMoney(invoice, 'total'), 0);
-  const gstOnSales = invoices.reduce(
+  const totalSales = invoices.reduce<number>((sum, invoice) => sum + readMoney(invoice, 'total'), 0);
+  const gstOnSales = invoices.reduce<number>(
     (sum, invoice) => sum + readMoney(invoice, 'taxAmount', 'tax_amount'),
     0,
   );
-  const totalPurchases = expenses.reduce((sum, expense) => sum + readMoney(expense, 'amount'), 0);
+  const totalPurchases = expenses.reduce<number>((sum, expense) => sum + readMoney(expense, 'amount'), 0);
   const gstOnPurchases = expenses
     .filter((expense) => {
       if (!expense || typeof expense !== 'object') return false;
       const row = expense as Record<string, unknown>;
       return row.is_claimable !== false && row.isGstClaimable !== false;
     })
-    .reduce((sum, expense) => sum + readMoney(expense, 'taxAmount', 'tax_amount'), 0);
+    .reduce<number>((sum, expense) => sum + readMoney(expense, 'taxAmount', 'tax_amount'), 0);
 
   return {
     totalSales,

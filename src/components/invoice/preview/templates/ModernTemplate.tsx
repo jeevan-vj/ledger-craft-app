@@ -163,9 +163,9 @@ const ModernTemplate = ({
                 <td className="py-2 px-2 text-left" style={{ padding: '8px', textAlign: 'left', color: theme.text }}>
                   {item.description}
                   {/* Only render details section if it exists as a property in the item */}
-                  {(item as any).details && (
+                  {item.details && (
                     <div className="text-xs break-words" style={{ fontSize: '10px', color: theme.textLight }}>
-                      {(item as any).details}
+                      {item.details}
                     </div>
                   )}
                 </td>

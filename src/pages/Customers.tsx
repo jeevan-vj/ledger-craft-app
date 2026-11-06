@@ -245,7 +245,7 @@ const Customers = () => {
 
   // Filter logic
   const filteredAndSortedCustomers = useMemo(() => {
-    let filtered = customers.filter((customer) => {
+    const filtered = customers.filter((customer) => {
       // Search filter
       if (filters.search) {
         const searchTerm = filters.search.toLowerCase();
@@ -291,7 +291,7 @@ const Customers = () => {
 
     // Sort filtered results
     filtered.sort((a, b) => {
-      let aValue: any, bValue: any;
+      let aValue: string | number, bValue: string | number;
       
       switch (filters.sortBy) {
         case 'name':
@@ -307,8 +307,8 @@ const Customers = () => {
           bValue = b.city || '';
           break;
         case 'createdAt':
-          aValue = new Date(a.createdAt || 0);
-          bValue = new Date(b.createdAt || 0);
+          aValue = new Date(a.createdAt || 0).getTime();
+          bValue = new Date(b.createdAt || 0).getTime();
           break;
         default:
           aValue = a.name;
@@ -325,7 +325,7 @@ const Customers = () => {
     return filtered;
   }, [customers, filters]);
 
-  const updateFilter = (key: keyof CustomerFilters, value: any) => {
+  const updateFilter = <Key extends keyof CustomerFilters,>(key: Key, value: CustomerFilters[Key]) => {
     setFilters(prev => ({ ...prev, [key]: value }));
   };
 
@@ -490,7 +490,7 @@ const Customers = () => {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Sort By</label>
                     <div className="flex gap-2">
-                      <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value)}>
+                      <Select value={filters.sortBy} onValueChange={(value) => updateFilter('sortBy', value as CustomerFilters['sortBy'])}>
                         <SelectTrigger className="flex-1">
                           <SelectValue />
                         </SelectTrigger>

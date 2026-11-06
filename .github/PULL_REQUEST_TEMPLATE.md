@@ -39,8 +39,8 @@ Authors fill this from `.cursor/skills/ledgercraft-verify/SKILL.md`. A missing t
 
 | Job | Node | Result |
 | --- | --- | --- |
-| Web lint (`pnpm lint` + gate 468) | | |
-| Web typecheck (gate 728) | | |
+| Web lint (`pnpm lint`, zero errors) | | |
+| Web typecheck (app and Node projects, zero errors) | | |
 | Web unit tests (`pnpm test:run`) | | |
 | Web build (`pnpm build`) | | |
 | API & contracts (Node 24) | | |

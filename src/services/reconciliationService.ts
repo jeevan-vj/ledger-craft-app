@@ -768,7 +768,7 @@ export const reconciliationService = {
   async createMatch(
     sessionId: string,
     bankTransactionId: string,
-    bookItemType: 'invoice' | 'bill' | 'payment' | 'expense',
+    bookItemType: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
     bookItemId: string,
     notes?: string
   ): Promise<ReconciliationMatch> {
@@ -778,6 +778,7 @@ export const reconciliationService = {
         bookItemType,
         bookItemId,
         notes: notes ?? null,
+        status: 'confirmed',
       });
     }
     const { data: { user } } = await supabase.auth.getUser();
@@ -1031,6 +1032,7 @@ export const reconciliationService = {
    * Generate reconciliation summary
    */
   async generateSummary(sessionId: string): Promise<ReconciliationSummary> {
+    if (reconciliationApiEnabled()) return reconciliationApi.getSummary(sessionId);
     const session = await this.getSession(sessionId);
     if (!session) throw new Error('Session not found');
 

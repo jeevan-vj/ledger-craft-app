@@ -1,10 +1,11 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
-import { 
-  ConversationSession, 
-  ConversationMessage, 
+import {
+  ConversationSession,
+  ConversationMessage,
   ConversationContext as ConversationContextType,
   AIResponse,
-  ConversationAction 
+  ConversationAction,
+  ConversationActionData, ConversationIntent
 } from '../types';
 import { aiService } from '../services/aiService';
 import { conversationService } from '../services/conversationService';
@@ -19,21 +20,21 @@ interface ConversationProviderType {
   recentConversations: ConversationSession[];
   isLoading: boolean;
   isProcessing: boolean;
-  
+
   // Chat interface state
   isChatOpen: boolean;
   setChatOpen: (open: boolean) => void;
-  
+
   // Conversation management
   createNewConversation: () => Promise<ConversationSession>;
   loadConversation: (conversationId: string) => Promise<void>;
   getRecentConversations: () => Promise<void>;
-  
+
   // Message handling
   sendMessage: (message: string) => Promise<void>;
   confirmAction: (actionId: string) => Promise<void>;
   rejectAction: (actionId: string) => Promise<void>;
-  
+
   // Conversation lifecycle
   endConversation: () => Promise<void>;
   deleteConversation: (conversationId: string) => Promise<void>;
@@ -65,7 +66,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
   const { toast } = useToast();
   const navigate = useNavigate();
   const conversationsLoadedRef = useRef<string | null>(null);
-  
+
   // Use localStorage to persist conversation loading state across HMR reloads
   const getConversationLoadedKey = (userId: string) => `conversations_loaded_${userId}`;
   const areConversationsLoaded = (userId: string) => {
@@ -84,7 +85,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
 
   const getRecentConversations = async (): Promise<void> => {
     if (!user) return;
-    
+
     try {
       const conversations = await conversationService.getUserConversations(user.id);
       setRecentConversations(conversations);
@@ -96,7 +97,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
   // Load recent conversations on mount
   useEffect(() => {
     const conversationsAlreadyLoaded = user ? areConversationsLoaded(user.id) : false;
-    
+
     if (user && conversationsLoadedRef.current !== user.id && !conversationsAlreadyLoaded) {
       console.log('ConversationContext: Loading conversations for user:', user.id);
       conversationsLoadedRef.current = user.id;
@@ -114,14 +115,14 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
 
   const createNewConversation = async (): Promise<ConversationSession> => {
     if (!user) throw new Error('User not authenticated');
-    
+
     setIsLoading(true);
     try {
       // Build initial context from current user data
       const initialContext = await conversationService.buildContextFromCurrentData(user.id);
-      
+
       const conversation = await conversationService.createConversation(user.id, initialContext);
-      
+
       // Add welcome message
       await conversationService.addMessage(
         conversation.id,
@@ -131,7 +132,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
           intent: 'greeting',
           suggestedActions: [
             'Create an invoice',
-            'Find a customer', 
+            'Find a customer',
             'Add an expense',
             'Show me analytics',
             'Help me get started'
@@ -210,7 +211,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
 
       // Check if this is an invoice creation flow
       let aiResponse;
-      if (currentConversation.context.currentInvoiceCreation || 
+      if (currentConversation.context.currentInvoiceCreation ||
           message.toLowerCase().includes('create') && message.toLowerCase().includes('invoice')) {
         aiResponse = await aiService.processInvoiceCreationFlow(
           message,
@@ -279,7 +280,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
 
     } catch (error) {
       console.error('Error sending message:', error);
-      
+
       // Add error message
       const errorMessage = await conversationService.addMessage(
         currentConversation.id,
@@ -367,19 +368,19 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
       );
 
       let responseMessage: string;
-      let responseData: any = null;
+      let responseData: ConversationActionData = null;
 
       if (result.success) {
         responseMessage = generateSuccessMessage(action.type, result.data);
         responseData = result.data;
-        
+
         // Handle navigation action
         if (action.type === 'navigate_to_invoice' && result.data?.editUrl) {
           setTimeout(() => {
             navigate(result.data.editUrl);
           }, 500);
         }
-        
+
         toast({
           title: 'Success',
           description: `${action.type.replace('_', ' ')} completed successfully`,
@@ -397,7 +398,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
         'assistant',
         responseMessage,
         {
-          intent: action.type as any,
+          intent: action.type as ConversationIntent,
           data: responseData,
           suggestedActions: result.suggestions
         }
@@ -415,7 +416,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
     }
   };
 
-  const generateSuccessMessage = (actionType: string, data: any): string => {
+  const generateSuccessMessage = (actionType: string, data: ConversationActionData): string => {
     switch (actionType) {
       case 'create_invoice':
         return `Great! I've created invoice ${data.invoiceNumber} for ${data.customerName}. Total amount: ${data.currency} ${data.total}`;
@@ -427,9 +428,10 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
         return `I've recorded your expense of ${data.currency} ${data.amount} for "${data.description}".`;
       case 'search_customers':
         return `I found ${data.count} customer(s) matching your search.`;
-      case 'generate_financial_report':
+      case 'generate_financial_report': {
         const metrics = data.metrics;
         return `Here's your financial summary for ${data.period}:\n• Revenue: ${data.currency} ${metrics.totalRevenue}\n• Expenses: ${data.currency} ${metrics.totalExpenses}\n• Profit: ${data.currency} ${metrics.profit} (${metrics.profitMargin}% margin)`;
+      }
       default:
         return 'Action completed successfully!';
     }
@@ -452,12 +454,12 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
     try {
       await conversationService.deleteConversation(conversationId);
       setRecentConversations(prev => prev.filter(c => c.id !== conversationId));
-      
+
       if (currentConversation?.id === conversationId) {
         setCurrentConversation(null);
         setIsChatOpen(false);
       }
-      
+
       toast({
         title: 'Success',
         description: 'Conversation deleted successfully',
@@ -474,7 +476,7 @@ export const ConversationProvider: React.FC<ConversationProviderProps> = ({ chil
 
   const setChatOpen = (open: boolean) => {
     setIsChatOpen(open);
-    
+
     // Create new conversation when opening chat if none exists
     if (open && !currentConversation && user) {
       createNewConversation();

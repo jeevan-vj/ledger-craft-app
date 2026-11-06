@@ -52,11 +52,7 @@ export const NavigationGuard: React.FC<NavigationGuardProps> = ({
 export const useNavigationFilter = () => {
   const { hasPermission, canAccessRoute } = usePermissions();
 
-  const filterNavigationItems = (items: Array<{
-    path: string;
-    permission?: Permission;
-    [key: string]: any;
-  }>) => {
+  const filterNavigationItems = <Item extends { path: string; permission?: Permission },>(items: Item[]) => {
     return items.filter(item => {
       if (item.permission) {
         return hasPermission(item.permission);

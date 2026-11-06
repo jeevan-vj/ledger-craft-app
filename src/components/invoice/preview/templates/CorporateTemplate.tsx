@@ -166,9 +166,9 @@ const CorporateTemplate = ({
                     <td className="py-2 sm:py-4 px-3 sm:px-6 border-t" style={{ borderColor: theme.textLight + '30', color: theme.text }}>
                       {item.description}
                       {/* Only render details if it exists */}
-                      {(item as any).details && (
+                      {item.details && (
                         <div className="text-xs break-words" style={{ color: theme.textLight }}>
-                          {(item as any).details}
+                          {item.details}
                         </div>
                       )}
                     </td>

@@ -12,7 +12,7 @@ import {
 
 vi.mock('@/integrations/supabase/client')
 
-const mockSupabase = vi.mocked(supabase)
+const mockSupabase = vi.mocked(supabase, true)
 
 describe('expenseCategoryService', () => {
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnValue(mockQuery),
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
 
       const result = await expenseCategoryService.getExpenseCategories()
 
@@ -63,7 +63,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnValue(mockQuery),
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
 
       await expect(expenseCategoryService.getExpenseCategories()).rejects.toThrow()
     })
@@ -78,7 +78,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnValue(mockQuery),
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
 
       const result = await expenseCategoryService.getExpenseCategory('cat-1')
 
@@ -96,7 +96,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnValue(mockQuery),
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
 
       const result = await expenseCategoryService.getExpenseCategory('non-existent')
       expect(result).toBeNull()
@@ -110,7 +110,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         select: vi.fn().mockReturnValue(mockQuery),
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
 
       await expect(expenseCategoryService.getExpenseCategory('cat-1')).rejects.toThrow()
     })
@@ -141,7 +141,7 @@ describe('expenseCategoryService', () => {
         single: vi.fn().mockReturnValue({ data: newCategory, error: null }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       const result = await expenseCategoryService.createExpenseCategory(mockCreateExpenseCategoryData)
 
@@ -165,7 +165,7 @@ describe('expenseCategoryService', () => {
         single: vi.fn().mockReturnValue({ data: null, error: mockSupabaseError }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       await expect(expenseCategoryService.createExpenseCategory(mockCreateExpenseCategoryData))
         .rejects.toThrow()
@@ -184,7 +184,7 @@ describe('expenseCategoryService', () => {
         single: vi.fn().mockReturnValue({ data: updatedCategory, error: null }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       const result = await expenseCategoryService.updateExpenseCategory('cat-1', updateData)
 
@@ -207,7 +207,7 @@ describe('expenseCategoryService', () => {
         single: vi.fn().mockReturnValue({ data: mockSupabaseExpenseCategory, error: null }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       await expenseCategoryService.updateExpenseCategory('cat-1', updateData)
 
@@ -225,7 +225,7 @@ describe('expenseCategoryService', () => {
         single: vi.fn().mockReturnValue({ data: null, error: mockSupabaseError }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       await expect(expenseCategoryService.updateExpenseCategory('cat-1', { name: 'Updated' }))
         .rejects.toThrow()
@@ -250,7 +250,7 @@ describe('expenseCategoryService', () => {
       
       mockSupabase.from.mockReturnValue({
         delete: mockDelete,
-      } as any)
+      } as unknown as ReturnType<typeof supabase.from>)
       
       mockDelete.mockReturnValue({
         eq: mockEq1,
@@ -274,7 +274,7 @@ describe('expenseCategoryService', () => {
         eq: vi.fn().mockReturnValue({ error: mockSupabaseError }),
       }
       
-      mockSupabase.from.mockReturnValue(mockQuery as any)
+      mockSupabase.from.mockReturnValue(mockQuery as unknown as ReturnType<typeof supabase.from>)
 
       await expect(expenseCategoryService.deleteExpenseCategory('cat-1')).rejects.toThrow()
     })

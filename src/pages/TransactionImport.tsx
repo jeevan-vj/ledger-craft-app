@@ -34,7 +34,7 @@ interface ImportState {
   step: ImportStep;
   file: File | null;
   bankAccount: BankAccount | null;
-  parseResult: any | null;
+  parseResult: import('@/services/csvTransactionParser').CSVParseResult | null;
   importResult: TransactionImportResult | null;
   loading: boolean;
   error: string | null;
@@ -83,7 +83,7 @@ export default function TransactionImportPage() {
     }));
   };
 
-  const handleConfigurationComplete = (parseResult: any) => {
+  const handleConfigurationComplete = (parseResult: import('@/services/csvTransactionParser').CSVParseResult) => {
     setImportState(prev => ({
       ...prev,
       parseResult,

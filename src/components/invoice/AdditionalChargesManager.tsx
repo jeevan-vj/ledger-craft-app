@@ -384,7 +384,6 @@ export const AdditionalChargesManager: React.FC<AdditionalChargesManagerProps> =
                       <Switch
                         checked={charge.isActive}
                         onCheckedChange={() => handleToggleCharge(charge.id)}
-                        size="sm"
                       />
                       <div className="flex items-center gap-2">
                         <span className="text-lg">{preset?.icon}</span>
@@ -414,8 +413,7 @@ export const AdditionalChargesManager: React.FC<AdditionalChargesManagerProps> =
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
+                            onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             openEditDialog(charge);
@@ -426,8 +424,7 @@ export const AdditionalChargesManager: React.FC<AdditionalChargesManagerProps> =
                         <Button
                           type="button"
                           variant="ghost"
-                          size="sm"
-                          onClick={(e) => {
+                            onClick={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
                             handleDeleteCharge(charge.id);

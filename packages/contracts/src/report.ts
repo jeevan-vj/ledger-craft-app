@@ -69,6 +69,7 @@ export const agingItemSchema = z.object({
 
 const agingSchema = z.object({
   total: money,
+  unallocatedControl: money.optional(),
   current: money,
   days1To30: money,
   days31To60: money,

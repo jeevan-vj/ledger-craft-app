@@ -45,6 +45,10 @@ export async function downloadGstReturnPdf(taxReturn: TaxReturn): Promise<void> 
   pdf.setFontSize(11);
   row('Return period', `${date(taxReturn.periodStart)} – ${date(taxReturn.periodEnd)}`);
   row('Status', taxReturn.status === 'submitted' ? 'Recorded as filed' : 'Draft');
+  if (taxReturn.returnData?.preparation) {
+    row('Preparation basis', `${taxReturn.returnData.preparation.basis === 'payments' ? 'Payments' : 'Invoice'} basis · NZD`);
+    if (taxReturn.returnData.preparation.dueDate) row('Confirmed due date', date(taxReturn.returnData.preparation.dueDate));
+  }
   if (taxReturn.submittedAt) row('Filed date', date(taxReturn.submittedAt));
   if (taxReturn.irdReference) row('IRD confirmation reference', taxReturn.irdReference);
 
