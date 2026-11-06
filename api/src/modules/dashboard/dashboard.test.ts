@@ -95,8 +95,14 @@ describe('dashboard and saved report routes', () => {
         expect(dashboard.reports.filter((report) => report.type !== 'activity').every((report) => report.authority.source === 'posted_ledger')).toBe(true);
         expect(dashboard.reports.find((report) => report.type === 'activity')?.authority.status).toBe('operational');
         expect(dashboard.reports.find((report) => report.type === 'summary')?.metrics.map((item) => item.value)).toEqual(['120.10', '10.01', '110.09']);
-        expect(dashboard.reports.find((report) => report.type === 'receivables')?.metrics[0]?.value).toBe('70.05');
-        expect(dashboard.reports.find((report) => report.type === 'payables')?.metrics[0]?.value).toBe('40.02');
+        // These deliberately inconsistent legacy source rows have no source
+        // journals. Financial headlines must use posted controls, not their
+        // stale operational balances (70.05 and 40.02).
+        expect(dashboard.reports.find((report) => report.type === 'receivables')?.metrics[0]?.value).toBe('15.66');
+        expect(dashboard.reports.find((report) => report.type === 'payables')?.metrics[0]?.value).toBe('5.22');
+        expect(dashboard.reports.find((report) => report.type === 'receivables')?.rows).toEqual(expect.arrayContaining([
+          expect.objectContaining({ label: 'Unallocated control balance', value: '15.66', route: '/accounting' }),
+        ]));
         expect(dashboard.reports.find((report) => report.type === 'cash')?.metrics.map((item) => item.value)).toEqual(['120.10', '10.01', '110.09', '110.09']);
         expect(dashboard.reports.find((report) => report.type === 'tax')?.metrics.map((item) => item.value)).toEqual(['15.66', '5.22', '10.44']);
 

@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
 
+type InstallPromptEvent = Event & { prompt: () => Promise<void>; userChoice: Promise<unknown> };
+
 const isIOS = () => {
   return /iphone|ipad|ipod/.test(window.navigator.userAgent.toLowerCase());
 };
 
 const isInStandaloneMode = () => {
-  // @ts-ignore
-  return 'standalone' in window.navigator && window.navigator.standalone;
+  return 'standalone' in window.navigator && window.navigator.standalone === true;
 };
 
 const DISMISS_KEY = 'a2hs_prompt_dismissed';
 
 const AddToHomeScreenPrompt: React.FC = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<InstallPromptEvent | null>(null);
   const [showInstall, setShowInstall] = useState(false);
   const [showIOS, setShowIOS] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -25,7 +26,7 @@ const AddToHomeScreenPrompt: React.FC = () => {
     // Android/Chrome
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as InstallPromptEvent);
       setShowInstall(true);
     };
     window.addEventListener('beforeinstallprompt', handler as EventListener);

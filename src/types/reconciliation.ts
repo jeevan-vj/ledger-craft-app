@@ -86,6 +86,7 @@ export type MatchType =
 export type MatchStatus = 'pending' | 'confirmed' | 'rejected' | 'adjusted';
 
 export interface ReconciliationMatch {
+  billPaymentId?: string | null;
   id: string;
   reconciliationId: string;
   
@@ -264,7 +265,7 @@ export interface ReconciliationSetup {
 // For displaying matched items
 export interface MatchableItem {
   id: string;
-  type: 'bank_transaction' | 'invoice' | 'bill' | 'payment' | 'expense';
+  type: 'bank_transaction' | 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense';
   date: string;
   description: string;
   amount: number;
@@ -322,7 +323,7 @@ export interface ReconciliationTransaction {
   isReconciled: boolean;
   matchId: string | null;
   matchedTo: {
-    type: 'invoice' | 'bill' | 'payment' | 'expense' | 'journal_entry' | null;
+    type: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense' | 'journal_entry' | null;
     id: string | null;
     description: string | null;
   } | null;

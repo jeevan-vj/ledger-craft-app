@@ -1,4 +1,4 @@
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { startOfMonth, endOfMonth, format, subMonths, startOfWeek, endOfWeek, eachDayOfInterval, eachMonthOfInterval, subDays } from 'date-fns';
 import { bankAccountService } from '@/services/bankAccountService';
 import { bankApiEnabled } from '@/features/bank/api/bankApi';
@@ -255,7 +255,7 @@ export class DashboardDataService {
               .from('bank_accounts')
               .select('balance, account_type');
             if (bankError) throw bankError;
-            return bankAccounts?.reduce((sum, account) => sum + (account.balance || 0), 0) || 0;
+            return bankAccounts?.reduce((sum, account) => sum + (account.current_balance || 0), 0) || 0;
           })();
 
       const unpaidInvoices = ledgerSnapshotEnabled()

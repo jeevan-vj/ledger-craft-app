@@ -118,7 +118,7 @@ describe('bank reconciliation phase 1', () => {
         const post = async (path: string, body: unknown, expected = 201) => {
           const response = await app.request(path, { method: 'POST', headers, body: JSON.stringify(body) });
           expect(response.status, path).toBe(expected);
-          return await response.json() as Record<string, any>;
+          return await response.json() as Record<string, unknown>;
         };
         const bank = await createBankAccount(app, owner, 'Operating');
         const invoice = await createIssuedInvoice(app, owner, '100.00', 'Paid Customer');

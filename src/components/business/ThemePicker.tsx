@@ -56,7 +56,7 @@ const ThemePicker = ({ currentTheme = DEFAULT_BUSINESS_THEME, onThemeChange }: T
         }`}
         style={{ 
           borderColor: isCurrentTheme(theme) ? theme.primary : '#e5e7eb',
-          ringColor: isCurrentTheme(theme) ? theme.primary : undefined
+          boxShadow: isCurrentTheme(theme) ? `0 0 0 2px ${theme.primary}` : undefined
         }}
         onClick={() => handlePresetSelect(name)}
       >

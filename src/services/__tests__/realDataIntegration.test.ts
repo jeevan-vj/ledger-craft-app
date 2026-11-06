@@ -162,7 +162,7 @@ describe('Real Data Integration Tests', () => {
       invoiceId: 'inv-2',
       amount: 2300.00,
       paymentDate: '2024-03-15',
-      paymentMethod: 'bank_transfer',
+      paymentMethod: 'bank_transfer' as const,
       referenceNumber: 'TXN-001',
       status: 'completed' as const,
       createdAt: '2024-03-15T00:00:00Z',
@@ -177,8 +177,16 @@ describe('Real Data Integration Tests', () => {
   beforeAll(() => {
     // Mock all Supabase data service methods
     vi.spyOn(supabaseDataService, 'getTaxConfiguration').mockResolvedValue(mockTaxConfig);
-    vi.spyOn(supabaseDataService, 'getInvoicesByPeriod').mockResolvedValue(mockInvoices as any);
-    vi.spyOn(supabaseDataService, 'getExpensesByPeriod').mockResolvedValue(mockExpenses);
+    vi.spyOn(supabaseDataService, 'getInvoicesByPeriod').mockResolvedValue(mockInvoices.map((row) => ({ ...row,
+      invoiceNumber: row.invoice_number, taxAmount: row.tax_amount, customerId: row.customer_id, userId: row.user_id, dueDate: row.due_date,
+      status: row.paymentStatus === 'paid' ? 'paid' as const : 'sent' as const,
+      totalPaid: row.paymentStatus === 'paid' ? row.total : 0,
+      items: row.lineItems.map((line) => ({ ...line, invoiceId: row.id, rateUnit: line.unit })),
+    })));
+    vi.spyOn(supabaseDataService, 'getExpensesByPeriod').mockResolvedValue(mockExpenses.map((row) => ({ ...row,
+      category: undefined, category_id: row.category, expenseDate: row.date, expense_date: row.date,
+      status: 'approved' as const, isBillable: false, taxAmount: row.tax_amount, gstAmount: row.tax_amount, currency: 'NZD',
+    })));
     vi.spyOn(supabaseDataService, 'getPaymentsByPeriod').mockResolvedValue(mockPayments);
     vi.spyOn(supabaseDataService, 'createTaxReturn').mockImplementation(async (taxReturn) => ({
       id: 'tax-return-1',

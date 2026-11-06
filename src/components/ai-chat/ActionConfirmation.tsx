@@ -62,7 +62,7 @@ export function ActionConfirmation({
       case 'create_invoice':
         if (action.parameters.customer) details.push(`Customer: ${action.parameters.customer}`);
         if (action.parameters.items?.length) {
-          details.push(`Items: ${action.parameters.items.map((item: any) => item.value || item).join(', ')}`);
+          details.push(`Items: ${action.parameters.items.map((item) => typeof item === 'object' && item !== null && 'value' in item ? item.value : item).join(', ')}`);
         }
         if (action.parameters.amount) details.push(`Amount: ${action.parameters.amount}`);
         break;

@@ -139,7 +139,7 @@ async function createReceivedBill(
 }
 
 describe('GST preparation source selection', () => {
-  it('preserves deleted-expense history and excludes the foreign expense and its reversal using retained rate usage', async () => {
+  it('preserves deleted-expense history and the already-converted foreign expense and its dated reversal', async () => {
     await withTestDb(async () => {
       const { db, sql } = createDb(getDatabaseUrl());
       try {
@@ -152,8 +152,8 @@ describe('GST preparation source selection', () => {
         vi.useFakeTimers({ toFake: ['Date'], now: new Date('2026-05-15T00:00:00Z') });
         for (const expense of [local, foreign]) expect((await app.request(`/api/expenses/${expense.id}`, { method: 'DELETE', headers: business.headers })).status).toBe(204);
         const read = (from: string, to: string) => requestJson(app, `/api/tax/gst-preparation?from=${from}&to=${to}`, { headers: business.headers }, 200);
-        expect(await read('2026-04-01', '2026-04-30')).toMatchObject({ totalPurchases: '230.00', gstOnPurchases: '30.00' });
-        expect(await read('2026-05-01', '2026-05-31')).toMatchObject({ totalPurchases: '-230.00', gstOnPurchases: '-30.00' });
+        expect(await read('2026-04-01', '2026-04-30')).toMatchObject({ totalPurchases: '414.00', gstOnPurchases: '54.00' });
+        expect(await read('2026-05-01', '2026-05-31')).toMatchObject({ totalPurchases: '-414.00', gstOnPurchases: '-54.00' });
       } finally { vi.useRealTimers(); await sql.end(); }
     });
   });
@@ -171,7 +171,7 @@ describe('GST preparation source selection', () => {
         await action(`/api/invoices/${invoice.id}/cancel`);
         await action(`/api/bills/${bill.id}/cancel`);
         expect(await preparation('2026-04-01', '2026-04-30')).toMatchObject({ totalSales: '1150.00', totalPurchases: '345.00', gstOnSales: '150.00', gstOnPurchases: '45.00', netGstPosition: '105.00' });
-        expect(await preparation('2026-05-01', '2026-05-31')).toMatchObject({ totalSales: '-1150.00', totalPurchases: '-345.00', gstOnSales: '-150.00', gstOnPurchases: '-45.00', netGstPosition: '-105.00' });
+        expect(await preparation('2026-05-01', '2026-05-31')).toMatchObject({ totalSales: '-1150.00', totalPurchases: '-345.00', gstOnSales: '-150.00', gstOnPurchases: '-45.00', netGstPosition: '-105.00', requiresReview: true });
         vi.setSystemTime(new Date('2026-06-15T00:00:00Z'));
         await action(`/api/invoices/${invoice.id}/restore`);
         await action(`/api/bills/${bill.id}/restore`);
@@ -194,7 +194,7 @@ describe('GST preparation source selection', () => {
     });
   });
 
-  it('excludes drafts, cancelled, unapproved, foreign and out-of-period documents without leaking another company', async () => {
+  it('excludes drafts, cancelled, unapproved and out-of-period documents while including reviewed foreign base snapshots without leaking another company', async () => {
     await withTestDb(async () => {
       const { db, sql } = createDb(getDatabaseUrl());
       try {
@@ -216,8 +216,8 @@ describe('GST preparation source selection', () => {
         await post('/api/exchange-rates', { currencyCode: 'USD', effectiveDate: '2026-04-01', rate: '1.60000' });
         await createPostedInvoice(app, business.headers, business.customerId, { date: '2026-05-04', amount: '100', currency: 'USD', description: 'Foreign sale' });
         const result = await requestJson(app, '/api/tax/gst-preparation?from=2026-05-01&to=2026-05-31', { headers: business.headers }, 200);
-        expect(result).toMatchObject({ basis: 'invoice', totalSales: '115.00', totalPurchases: '115.00', gstOnSales: '15.00', gstOnPurchases: '15.00', netGstPosition: '0.00' });
-        expect(result.warnings.join(' ')).toMatch(/foreign-currency/);
+        expect(result).toMatchObject({ basis: 'invoice', totalSales: '299.00', totalPurchases: '115.00', gstOnSales: '39.00', gstOnPurchases: '15.00', netGstPosition: '24.00' });
+        expect(result.warnings.join(' ')).toMatch(/reversal movements/);
         const other = await setUpOrganisation(app, 'GST separate business');
         const isolated = await requestJson(app, '/api/tax/gst-preparation?from=2026-05-01&to=2026-05-31', { headers: other.headers }, 200);
         expect(isolated).toMatchObject({ totalSales: '0.00', totalPurchases: '0.00', gstOnSales: '0.00', gstOnPurchases: '0.00', netGstPosition: '0.00', warnings: [] });

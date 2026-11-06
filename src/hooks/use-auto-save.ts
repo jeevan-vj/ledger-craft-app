@@ -1,9 +1,11 @@
 import { useEffect, useRef, useCallback } from 'react';
 import { useToast } from './use-toast';
+import type { InvoiceFormValues } from '@/components/invoice/InvoiceForm';
+import type { LineItem } from '@/types';
 
 export interface AutoSaveData {
-  formData: any;
-  items: any[];
+  formData: Omit<InvoiceFormValues, 'date' | 'dueDate'> & { date?: Date | string; dueDate?: Date | string };
+  items: LineItem[];
   timestamp: number;
   invoiceId?: string;
   mode: 'create' | 'edit';

@@ -421,6 +421,7 @@ export {
   reconciliationMatchSchema,
   reconciliationSessionListResponseSchema,
   reconciliationSessionSchema,
+  reconciliationSummarySchema,
   undoBankTransactionReconciliationRequestSchema,
   updateBankMatchingRuleRequestSchema,
   type AcceptBankTransactionSuggestionRequest,
@@ -437,6 +438,7 @@ export {
   type ReconciliationAdjustmentDto,
   type ReconciliationMatchDto,
   type ReconciliationSessionDto,
+  type ReconciliationSummaryDto,
   type CreateBankMatchingRuleRequest,
   type MarkBankTransactionPersonalRequest,
   type UndoBankTransactionReconciliationRequest,
@@ -600,3 +602,8 @@ export {
 export * from './currency';
 export * from './formatting';
 export * from './gst-preparation';
+export * from './accounting-recovery';
+
+export * from './credit-note';
+
+export * from './fx-revaluation';

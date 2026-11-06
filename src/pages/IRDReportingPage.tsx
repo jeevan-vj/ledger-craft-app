@@ -9,7 +9,11 @@ import { TaxReturn } from '@/types/payment';
 import { supabaseDataService } from '@/services/supabaseDataService';
 import { taxCalculationService } from '@/services/taxCalculationService';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { downloadCompanyTaxPdf } from '@/features/accounting-completion/companyTaxPdf';
 import { downloadGstReturnPdf } from '@/features/tax/export/gstReturnPdf';
+import { GstPreparationPanel } from '@/components/accounting/GstPreparationPanel';
+import { CompanyTaxPreparationPanel } from '@/components/accounting/CompanyTaxPreparationPanel';
+import { Button } from '@/components/ui/button';
 import { netGstAfterAdjustments } from '@/features/tax/gstPreparation';
 
 export default function IRDReportingPage() {
@@ -22,14 +26,15 @@ export default function IRDReportingPage() {
   });
   const [nextGSTDueDate, setNextGSTDueDate] = useState('');
   const [showGSTWizard, setShowGSTWizard] = useState(false);
+  const [worksheet, setWorksheet] = useState<'gst' | 'company'>('gst');
   
   const { toast } = useToast();
   const { user } = useAuth();
 
-  const fetchTaxReturns = async () => {
+  const fetchTaxReturns = async (background = false) => {
     if (!user?.id) return;
     
-    setIsLoading(true);
+    if (!background) setIsLoading(true);
     try {
       // Fetch real tax returns from Supabase
       const returns = await supabaseDataService.getTaxReturnsByUser(user.id);
@@ -172,12 +177,7 @@ export default function IRDReportingPage() {
     }
   };
 
-  const handleCreateIncomeReturn = () => {
-    toast({
-      title: 'Income tax calculation is not supported',
-      description: 'Use the profit and loss report and general ledger to prepare records for your accountant. This app does not determine company or personal income-tax liabilities.',
-    });
-  };
+  const handleCreateIncomeReturn = () => { setShowGSTWizard(false); setWorksheet('company'); };
 
   const handleSubmitReturn = async (returnId: string, irdReference: string) => {
     try {
@@ -212,15 +212,18 @@ export default function IRDReportingPage() {
       const taxReturn = taxReturns.find((row) => row.id === returnId);
       if (!taxReturn) throw new Error('Tax return not found');
       if (format !== 'pdf') throw new Error(`Unsupported export format: ${format}`);
-      await downloadGstReturnPdf(taxReturn);
+      if (taxReturn.returnType === 'Income_Tax') {
+        if (!taxReturn.returnData?.companyIncomeTax) throw new Error('This record has no reviewed company tax worksheet to export.');
+        await downloadCompanyTaxPdf(taxReturn.returnData.companyIncomeTax);
+      } else { await downloadGstReturnPdf(taxReturn); }
 
       toast({
-        title: 'GST return downloaded',
+        title: 'Tax worksheet downloaded',
         description: 'Your PDF preparation and filing record is ready.',
       });
     } catch (error) {
       toast({
-        title: 'Could not download GST return',
+        title: 'Could not download tax worksheet',
         description: error instanceof Error ? error.message : 'Please try again.',
         variant: 'destructive',
       });
@@ -292,10 +295,11 @@ export default function IRDReportingPage() {
     <div className="space-y-6">
       <PageHeader
         title="IRD Tax Reporting"
-        description="Prepare GST returns against bank reconciliations, then file with IRD"
+        description="Prepare reviewed GST and company tax worksheets, then file separately in myIR"
         onBack={showGSTWizard ? () => setShowGSTWizard(false) : undefined}
       />
 
+      {!showGSTWizard && <div className="space-y-4"><div className="flex flex-wrap gap-2"><Button variant={worksheet === 'gst' ? 'default' : 'outline'} onClick={() => setWorksheet('gst')}>GST worksheet</Button><Button variant={worksheet === 'company' ? 'default' : 'outline'} onClick={() => setWorksheet('company')}>Company tax worksheet</Button></div>{worksheet === 'gst' ? <GstPreparationPanel onSaved={() => void fetchTaxReturns(true)} /> : <CompanyTaxPreparationPanel onSaved={() => void fetchTaxReturns(true)} />}</div>}
       {showGSTWizard ? (
         <GSTReturnWizard
           onComplete={handleGSTWizardComplete}

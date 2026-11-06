@@ -1,0 +1,989 @@
+{
+  "expected": {
+    "october": {
+      "receivables": "170.00",
+      "payables": "170.00"
+    },
+    "nextDay": {
+      "receivables": "160.00",
+      "payables": "160.00"
+    },
+    "settled": {
+      "receivables": "0.00",
+      "payables": "0.00"
+    }
+  },
+  "actual": {
+    "october": {
+      "meta": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T11:40:33.985Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "0.00",
+            "balance": "170.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "170.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "160.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "160.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "0.00",
+            "credit": "170.00",
+            "balance": "170.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "170.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "0.00",
+            "balance": "10.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "10.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "10.00",
+            "balance": "10.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "10.00"
+          }
+        ],
+        "totalDebits": "340.00",
+        "totalCredits": "340.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "10.00",
+            "balance": "10.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "0.00",
+            "balance": "10.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          }
+        ],
+        "revenue": "170.00",
+        "expenses": "170.00",
+        "netIncome": "0.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "0.00",
+            "balance": "170.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "0.00",
+            "credit": "170.00",
+            "balance": "170.00"
+          }
+        ],
+        "assets": "170.00",
+        "liabilities": "170.00",
+        "equity": "0.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [],
+        "openingCash": "0.00",
+        "inflows": "0.00",
+        "outflows": "0.00",
+        "netCashFlow": "0.00",
+        "closingCash": "0.00"
+      },
+      "receivablesAging": {
+        "total": "170.00",
+        "current": "170.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": [
+          {
+            "id": "3b5e2366-ea5e-4848-9b0d-e763ea452cec",
+            "number": "INV-2026-0001",
+            "partyId": "c61eab6f-7eda-4ccf-a7c3-dc98d0c583ef",
+            "partyName": "US customer",
+            "issueDate": "2026-10-10",
+            "dueDate": "2026-11-10",
+            "balanceDue": "170.00",
+            "daysOverdue": -10,
+            "bucket": "current"
+          }
+        ]
+      },
+      "payablesAging": {
+        "total": "170.00",
+        "current": "170.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": [
+          {
+            "id": "d7cb2473-3d10-435f-926c-4de02b3904f8",
+            "number": "BILL-0001",
+            "partyId": "e147bf50-4978-43c3-9e24-4df64020d412",
+            "partyName": "US vendor",
+            "issueDate": "2026-10-10",
+            "dueDate": "2026-11-10",
+            "balanceDue": "170.00",
+            "daysOverdue": -10,
+            "bucket": "current"
+          }
+        ]
+      },
+      "salesSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "0.00",
+        "outstanding": "170.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "0.00",
+        "outstanding": "170.00"
+      },
+      "taxSummary": {
+        "collected": "0.00",
+        "paid": "0.00",
+        "netPayable": "0.00",
+        "outputGst": "0.00",
+        "inputGst": "0.00",
+        "netGst": "0.00",
+        "position": "nil",
+        "gstAccounts": [],
+        "keyAccounts": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "0.00",
+            "balance": "170.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "0.00",
+            "credit": "170.00",
+            "balance": "170.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "10.00",
+            "balance": "10.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "0.00",
+            "balance": "10.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    },
+    "nextDay": {
+      "meta": {
+        "from": "2026-10-01",
+        "to": "2026-11-01",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T11:40:33.994Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "10.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "160.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "160.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "160.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "10.00",
+            "credit": "170.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "160.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          }
+        ],
+        "totalDebits": "360.00",
+        "totalCredits": "360.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          }
+        ],
+        "revenue": "160.00",
+        "expenses": "160.00",
+        "netIncome": "0.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "10.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "10.00",
+            "credit": "170.00",
+            "balance": "160.00"
+          }
+        ],
+        "assets": "160.00",
+        "liabilities": "160.00",
+        "equity": "0.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [],
+        "openingCash": "0.00",
+        "inflows": "0.00",
+        "outflows": "0.00",
+        "netCashFlow": "0.00",
+        "closingCash": "0.00"
+      },
+      "receivablesAging": {
+        "total": "160.00",
+        "current": "160.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": [
+          {
+            "id": "3b5e2366-ea5e-4848-9b0d-e763ea452cec",
+            "number": "INV-2026-0001",
+            "partyId": "c61eab6f-7eda-4ccf-a7c3-dc98d0c583ef",
+            "partyName": "US customer",
+            "issueDate": "2026-10-10",
+            "dueDate": "2026-11-10",
+            "balanceDue": "160.00",
+            "daysOverdue": -9,
+            "bucket": "current"
+          }
+        ]
+      },
+      "payablesAging": {
+        "total": "160.00",
+        "current": "160.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": [
+          {
+            "id": "d7cb2473-3d10-435f-926c-4de02b3904f8",
+            "number": "BILL-0001",
+            "partyId": "e147bf50-4978-43c3-9e24-4df64020d412",
+            "partyName": "US vendor",
+            "issueDate": "2026-10-10",
+            "dueDate": "2026-11-10",
+            "balanceDue": "160.00",
+            "daysOverdue": -9,
+            "bucket": "current"
+          }
+        ]
+      },
+      "salesSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "0.00",
+        "outstanding": "160.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "0.00",
+        "outstanding": "160.00"
+      },
+      "taxSummary": {
+        "collected": "0.00",
+        "paid": "0.00",
+        "netPayable": "0.00",
+        "outputGst": "0.00",
+        "inputGst": "0.00",
+        "netGst": "0.00",
+        "position": "nil",
+        "gstAccounts": [],
+        "keyAccounts": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "10.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "10.00",
+            "credit": "170.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    },
+    "settled": {
+      "meta": {
+        "from": "2026-10-01",
+        "to": "2026-11-02",
+        "basis": "accrual",
+        "baseCurrency": "NZD",
+        "generatedAt": "2026-11-06T11:40:34.003Z"
+      },
+      "trialBalance": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "160.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "160.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "35e5b89d-f507-447c-94d7-cd87119c3f60",
+            "accountNumber": "BANK-6B4387B2",
+            "accountName": "Operating NZD",
+            "accountClass": "asset",
+            "debit": "165.00",
+            "credit": "165.00",
+            "balance": "0.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "1ee3afab-18cf-45cd-ac58-b73d5edd0eec",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "5.00",
+            "closingCredit": "0.00"
+          },
+          {
+            "accountId": "0a6a0719-8ddd-48c5-91a5-3f58624131ef",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00",
+            "openingDebit": "0.00",
+            "openingCredit": "0.00",
+            "closingDebit": "0.00",
+            "closingCredit": "5.00"
+          }
+        ],
+        "totalDebits": "690.00",
+        "totalCredits": "690.00",
+        "balanced": true
+      },
+      "profitLoss": {
+        "rows": [
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "0a6a0719-8ddd-48c5-91a5-3f58624131ef",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "1ee3afab-18cf-45cd-ac58-b73d5edd0eec",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          }
+        ],
+        "revenue": "165.00",
+        "expenses": "165.00",
+        "netIncome": "0.00"
+      },
+      "balanceSheet": {
+        "rows": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "35e5b89d-f507-447c-94d7-cd87119c3f60",
+            "accountNumber": "BANK-6B4387B2",
+            "accountName": "Operating NZD",
+            "accountClass": "asset",
+            "debit": "165.00",
+            "credit": "165.00",
+            "balance": "0.00"
+          }
+        ],
+        "assets": "0.00",
+        "liabilities": "0.00",
+        "equity": "0.00",
+        "balanced": true
+      },
+      "cashFlow": {
+        "rows": [
+          {
+            "accountId": "35e5b89d-f507-447c-94d7-cd87119c3f60",
+            "accountNumber": "BANK-6B4387B2",
+            "accountName": "Operating NZD",
+            "accountClass": "asset",
+            "debit": "165.00",
+            "credit": "165.00",
+            "balance": "0.00"
+          }
+        ],
+        "openingCash": "0.00",
+        "inflows": "165.00",
+        "outflows": "165.00",
+        "netCashFlow": "0.00",
+        "closingCash": "0.00"
+      },
+      "receivablesAging": {
+        "total": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "payablesAging": {
+        "total": "0.00",
+        "current": "0.00",
+        "days1To30": "0.00",
+        "days31To60": "0.00",
+        "days61To90": "0.00",
+        "over90": "0.00",
+        "items": []
+      },
+      "salesSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "160.00",
+        "outstanding": "0.00"
+      },
+      "purchaseSummary": {
+        "subtotal": "160.00",
+        "tax": "0.00",
+        "total": "160.00",
+        "paid": "160.00",
+        "outstanding": "0.00"
+      },
+      "taxSummary": {
+        "collected": "0.00",
+        "paid": "0.00",
+        "netPayable": "0.00",
+        "outputGst": "0.00",
+        "inputGst": "0.00",
+        "netGst": "0.00",
+        "position": "nil",
+        "gstAccounts": [],
+        "keyAccounts": [
+          {
+            "accountId": "f65d427d-ad73-4436-97ba-656e0c851439",
+            "accountNumber": "1200",
+            "accountName": "Accounts Receivable",
+            "accountClass": "asset",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "74e94709-4e34-47ac-9832-299dcb5930c8",
+            "accountNumber": "2100",
+            "accountName": "Accounts Payable",
+            "accountClass": "liability",
+            "debit": "170.00",
+            "credit": "170.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "152f66cc-7bff-4bac-8c1d-7553fdd9a2a4",
+            "accountNumber": "4000",
+            "accountName": "Sales Revenue",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "160.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "0a6a0719-8ddd-48c5-91a5-3f58624131ef",
+            "accountNumber": "4200",
+            "accountName": "Realized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "5.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "89d8a60d-4c80-4779-a499-ffbe187277cb",
+            "accountNumber": "4201",
+            "accountName": "Unrealized Foreign Exchange Gain",
+            "accountClass": "revenue",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "1ee3afab-18cf-45cd-ac58-b73d5edd0eec",
+            "accountNumber": "5200",
+            "accountName": "Realized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "5.00",
+            "credit": "0.00",
+            "balance": "5.00"
+          },
+          {
+            "accountId": "62830e97-d482-400d-85d4-10080a32d0af",
+            "accountNumber": "5201",
+            "accountName": "Unrealized Foreign Exchange Loss",
+            "accountClass": "expense",
+            "debit": "10.00",
+            "credit": "10.00",
+            "balance": "0.00"
+          },
+          {
+            "accountId": "a695107f-8ab5-4c70-8957-b56682606e8e",
+            "accountNumber": "5300",
+            "accountName": "Subcontracting",
+            "accountClass": "expense",
+            "debit": "160.00",
+            "credit": "0.00",
+            "balance": "160.00"
+          },
+          {
+            "accountId": "35e5b89d-f507-447c-94d7-cd87119c3f60",
+            "accountNumber": "BANK-6B4387B2",
+            "accountName": "Operating NZD",
+            "accountClass": "asset",
+            "debit": "165.00",
+            "credit": "165.00",
+            "balance": "0.00"
+          }
+        ],
+        "basis": "invoice",
+        "foreignCurrencyDocumentsExcluded": 0,
+        "warnings": []
+      },
+      "comparison": null
+    }
+  },
+  "laterReceiptDoesNotChangeOctober": true
+}

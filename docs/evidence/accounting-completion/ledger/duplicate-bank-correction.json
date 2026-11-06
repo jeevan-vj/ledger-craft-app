@@ -1,0 +1,53 @@
+{
+  "before": {
+    "cost": "430.00",
+    "cashCombined": "-460.00",
+    "gst": "30.00"
+  },
+  "proposal": {
+    "key": "bank-duplicate:530d56c5-5205-4136-a515-c35de96521c2",
+    "type": "duplicate_bank_posting",
+    "sourceId": "f7763911-2808-4bce-a00d-acf0630b6a20",
+    "sourceJournalId": "530d56c5-5205-4136-a515-c35de96521c2",
+    "sourceDate": "2026-04-12",
+    "description": "Remove the generic import posting duplicated by confirmed expense 4fbc8b5f-7a81-4776-8fc9-6eed8d88ab7f; retain the original settlement and its GST",
+    "requiresReceiptConfirmation": false,
+    "actual": {
+      "duplicatedCash": "230.00",
+      "duplicatedIncomeOrExpense": "230.00"
+    },
+    "expected": {
+      "duplicatedCash": "0.00",
+      "duplicatedIncomeOrExpense": "0.00",
+      "originalSettlement": "230.00"
+    },
+    "correctionLines": [
+      {
+        "accountId": "bdfa20d7-cc4f-47fa-b51f-07a319118d54",
+        "debit": "230.00",
+        "credit": "0.00"
+      },
+      {
+        "accountId": "7981aaae-f8db-41bf-9c0f-6eb768adb307",
+        "debit": "0.00",
+        "credit": "230.00"
+      }
+    ],
+    "fingerprint": "57c151b2595a145ceb3400ebb1d3630ba64a4e71705ff8dbd55cf376f50db359"
+  },
+  "expected": {
+    "cost": "200.00",
+    "genericCash": "0.00",
+    "statementBank": "-230.00",
+    "gst": "30.00"
+  },
+  "actual": {
+    "cost": "200.00",
+    "genericCash": "0.00",
+    "statementBank": "-230.00",
+    "gst": "30.00"
+  },
+  "undoRestoredCost": "430.00",
+  "rematchCorrectedOnce": true,
+  "originalExpenseUnchanged": true
+}

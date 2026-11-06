@@ -1,4 +1,6 @@
-import { supabase } from './supabase';
+import type { AIInvoiceDraft } from '@/types/aiInvoice';
+import type { Customer, Item, Invoice, AdditionalCharge, ConversationActionData } from '@/types';
+import { supabase } from '@/integrations/supabase/client';
 import { conversationsApi, conversationsApiEnabled } from '@/features/conversations/api/conversationsApi';
 import { customerService, itemService, invoiceService } from './supabaseService';
 import type { ConversationDto } from '@ledgercraft/contracts';
@@ -10,7 +12,7 @@ export interface ConversationMessage {
   conversation_id: string;
   role: ConversationRole;
   content: string;
-  metadata?: any;
+  metadata?: { action?: string; data?: ConversationActionData };
   created_at: string;
 }
 
@@ -18,21 +20,21 @@ export interface Conversation {
   id: string;
   user_id: string;
   title?: string;
-  context: any;
+  context: Record<string, unknown>;
   status: 'active' | 'completed' | 'paused';
   created_at: string;
   updated_at: string;
 }
 
-export interface InvoiceCreationContext {
+export interface InvoiceCreationContext extends Record<string, unknown> {
   step: 'customer_search' | 'customer_disambiguation' | 'item_selection' | 'additional_charges' | 'template_selection' | 'invoice_creation';
   customer_search_term?: string;
-  customer_candidates?: any[];
-  selected_customer?: any;
-  selected_items?: any[];
-  additional_charges?: any[];
+  customer_candidates?: Customer[];
+  selected_customer?: Customer;
+  selected_items?: Array<Item & { sale_price: number; quantity: number; rate: number }>;
+  additional_charges?: AdditionalCharge[];
   selected_template?: string;
-  invoice_data?: any;
+  invoice_data?: Invoice;
 }
 
 class AIConversationService {
@@ -41,7 +43,7 @@ class AIConversationService {
       id: dto.id,
       user_id: '',
       title: dto.title ?? undefined,
-      context: dto.context,
+      context: dto.context && typeof dto.context === 'object' && !Array.isArray(dto.context) ? dto.context as Record<string, unknown> : {},
       status: dto.status,
       created_at: dto.createdAt,
       updated_at: dto.updatedAt,
@@ -59,7 +61,7 @@ class AIConversationService {
     };
   }
 
-  async createConversation(title?: string, context: any = {}): Promise<Conversation> {
+  async createConversation(title?: string, context: Record<string, unknown> = {}): Promise<Conversation> {
     if (conversationsApiEnabled()) {
       return this.toConversation(await conversationsApi.create({ title, context }));
     }
@@ -92,7 +94,7 @@ class AIConversationService {
     return data;
   }
 
-  async updateConversationContext(id: string, context: any): Promise<void> {
+  async updateConversationContext(id: string, context: Record<string, unknown>): Promise<void> {
     if (conversationsApiEnabled()) {
       await conversationsApi.update(id, { context });
       return;
@@ -105,7 +107,7 @@ class AIConversationService {
     if (error) throw error;
   }
 
-  async addMessage(conversationId: string, role: ConversationRole, content: string, metadata?: any): Promise<ConversationMessage> {
+  async addMessage(conversationId: string, role: ConversationRole, content: string, metadata?: ConversationMessage['metadata']): Promise<ConversationMessage> {
     if (conversationsApiEnabled()) {
       const dto = await conversationsApi.addMessage(conversationId, { role, content, metadata });
       const last = dto.messages[dto.messages.length - 1];
@@ -141,14 +143,14 @@ class AIConversationService {
     return data || [];
   }
 
-  async searchCustomers(searchTerm: string): Promise<any[]> {
+  async searchCustomers(searchTerm: string): Promise<Customer[]> {
     const needle = searchTerm.toLowerCase();
     return (await customerService.getCustomers())
       .filter((customer) => customer.name.toLowerCase().includes(needle))
       .slice(0, 10);
   }
 
-  async searchItems(searchTerm?: string): Promise<any[]> {
+  async searchItems(searchTerm?: string): Promise<Array<Item & { sale_price: number }>> {
     const needle = searchTerm?.toLowerCase();
     return (await itemService.getItems())
       .filter((item) => item.enableSaleInfo)
@@ -157,16 +159,16 @@ class AIConversationService {
         item.name.toLowerCase().includes(needle) ||
         (item.description ?? '').toLowerCase().includes(needle),
       )
-      .slice(0, 20);
+      .slice(0, 20).map((item) => ({ ...item, sale_price: item.salePrice ?? 0 }));
   }
 
   async generateInvoiceNumber(): Promise<string> {
     return invoiceService.getNextInvoiceNumber();
   }
 
-  async createInvoice(invoiceData: any): Promise<any> {
+  async createInvoice(invoiceData: AIInvoiceDraft): Promise<Invoice & { invoice_number: string }> {
     const invoiceNumber = await this.generateInvoiceNumber();
-    const lineItems = (invoiceData.line_items ?? []).map((item: any) => ({
+    const lineItems = (invoiceData.line_items ?? []).map((item) => ({
       description: item.description,
       quantity: item.quantity,
       unit: item.unit || 'each',
@@ -175,13 +177,13 @@ class AIConversationService {
       tax: item.tax || 0,
       total: item.total,
     }));
-    return invoiceService.createInvoice(
+    const invoice = await invoiceService.createInvoice(
       {
         invoiceNumber,
         customerId: invoiceData.customer_id,
         date: invoiceData.date || new Date().toISOString().split('T')[0],
         dueDate: invoiceData.due_date,
-        items: lineItems,
+        items: lineItems.map((line) => ({ ...line, id: crypto.randomUUID() })),
         subtotal: invoiceData.subtotal,
         taxAmount: invoiceData.tax_amount || 0,
         discount: invoiceData.discount || 0,
@@ -196,6 +198,7 @@ class AIConversationService {
       },
       lineItems,
     );
+    return { ...invoice, invoice_number: invoice.invoiceNumber };
   }
 
   async processInvoiceCreationRequest(userMessage: string, conversationId?: string): Promise<{
@@ -203,7 +206,7 @@ class AIConversationService {
     conversationId: string;
     context: InvoiceCreationContext;
     action?: 'search_customers' | 'show_customers' | 'suggest_items' | 'create_invoice';
-    data?: any;
+    data?: ConversationActionData;
   }> {
     let conversation: Conversation;
     
@@ -368,7 +371,7 @@ class AIConversationService {
       // Handle item selection by number or name
       const items = await this.searchItems();
       const numberMatch = userMessage.match(/(\d+)/g);
-      let selectedItems = context.selected_items || [];
+      const selectedItems = context.selected_items || [];
 
       if (numberMatch) {
         numberMatch.forEach(num => {

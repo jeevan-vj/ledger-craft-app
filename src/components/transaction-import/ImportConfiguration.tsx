@@ -29,7 +29,7 @@ import { toast } from 'sonner';
 interface ImportConfigurationProps {
   file: File;
   bankAccount: BankAccount;
-  onConfigurationComplete: (parseResult: any) => void;
+  onConfigurationComplete: (parseResult: import('@/services/csvTransactionParser').CSVParseResult) => void;
   onBack: () => void;
 }
 
@@ -52,7 +52,7 @@ export function ImportConfiguration({
   const [dateFormat, setDateFormat] = useState<string>('DD/MM/YYYY');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [previewData, setPreviewData] = useState<any>(null);
+  const [previewData, setPreviewData] = useState<import('@/services/csvTransactionParser').CSVParseResult | null>(null);
 
   useEffect(() => {
     if (file && file.type === 'text/csv') {
@@ -155,7 +155,7 @@ export function ImportConfiguration({
       const result = await parseCSVTransactions(csvData, columnMapping, dateFormat);
       
       if (!result.success) {
-        setError(result.error || 'Failed to parse CSV file');
+        setError(result.errors.join('; ') || 'Failed to parse CSV file');
         return;
       }
 
@@ -438,10 +438,10 @@ export function ImportConfiguration({
             
             <div className="text-center p-4 bg-blue-50 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
-                {previewData.duplicatesFound || 0}
+                {previewData.duplicates?.length ?? 0}
               </div>
               <div className="text-sm text-blue-700">
-                Duplicates Found
+                Duplicate groups
               </div>
             </div>
             

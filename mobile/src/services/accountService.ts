@@ -1,3 +1,4 @@
+import type { SupabaseAccount } from '../../shared/types';
 import { accountsApi, accountsApiEnabled } from '@/features/payments/api/paymentsApi';
 import { supabase } from './supabaseClient';
 import type { Account } from '@/types/expense';
@@ -25,7 +26,7 @@ export class AccountService {
       if (error) throw error;
 
       // Transform snake_case to camelCase
-      return (data || []).map((account: any) => ({
+      return (data || []).map((account: SupabaseAccount) => ({
         id: account.id,
         name: account.name,
         type: account.type,

@@ -109,6 +109,7 @@ export class ConversationActionHandler {
             description: existingItem.name,
             quantity: 1,
             unit: existingItem.unit,
+            rateUnit: existingItem.unit,
             rate: existingItem.salePrice || 0,
             tax: existingItem.taxRate || 0,
             total: existingItem.salePrice || 0
@@ -120,6 +121,7 @@ export class ConversationActionHandler {
             description: itemName,
             quantity: 1,
             unit: 'unit',
+            rateUnit: 'unit',
             rate,
             tax: 0,
             total: rate
@@ -133,6 +135,7 @@ export class ConversationActionHandler {
         description: 'Service',
         quantity: 1,
         unit: 'unit',
+            rateUnit: 'unit',
         rate,
         tax: 0,
         total: rate
@@ -425,10 +428,11 @@ export class ConversationActionHandler {
       case 'year':
         startDate = new Date(now.getFullYear(), 0, 1);
         break;
-      case 'quarter':
+      case 'quarter': {
         const quarter = Math.floor(now.getMonth() / 3);
         startDate = new Date(now.getFullYear(), quarter * 3, 1);
         break;
+      }
       default:
         startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Default to this month
     }
@@ -556,7 +560,7 @@ export class ConversationActionHandler {
       .replace('{#}', sequence.toString());
   }
 
-  private mapSupabaseCustomer(data: any): Customer {
+  private mapSupabaseCustomer(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['customers']): Customer {
     return {
       id: data.id,
       name: data.name,
@@ -575,7 +579,7 @@ export class ConversationActionHandler {
     };
   }
 
-  private mapSupabaseExpense(data: any): Expense {
+  private mapSupabaseExpense(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['expenses']): Expense {
     return {
       id: data.id,
       description: data.description,

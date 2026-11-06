@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useAppData } from '@/hooks/useAppData';
 import { Invoice } from '@/types';
-import { CreatePaymentRequest } from '@/types/payment';
+import type { CreatePaymentRequest, Payment } from '@/types/payment';
+import { paymentService } from '@/services/paymentService';
 
 export const useInvoicePayment = () => {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -9,9 +10,9 @@ export const useInvoicePayment = () => {
   const {
     createPayment,
     updateInvoiceStatus,
-    getPaymentsByInvoice,
-    getReceiptByPayment
   } = useAppData();
+  const getPaymentsByInvoice = (invoiceId: string) => paymentService.getPaymentsByInvoice(invoiceId);
+  const getReceiptByPayment = (paymentId: string) => paymentService.getReceiptByPayment(paymentId);
 
   const processInvoicePayment = async (
     invoice: Invoice,
@@ -55,7 +56,7 @@ export const useInvoicePayment = () => {
     }
   };
 
-  const calculateInvoicePaymentStatus = (invoice: Invoice, payments: any[] = []) => {
+  const calculateInvoicePaymentStatus = (invoice: Invoice, payments: Payment[] = []) => {
     const totalPaid = payments.reduce((sum, payment) => sum + payment.amount, 0);
     const balance = invoice.total - totalPaid;
     

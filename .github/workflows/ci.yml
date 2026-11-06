@@ -35,22 +35,10 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      # TODO: web `eslint .` is not clean (baseline 468 errors, 112 warnings,
-      # recorded 2026-10-17). Mostly @typescript-eslint/no-explicit-any.
-      # The step keeps running so the log is the report. The gate fails the
-      # job only when the error count rises. Do not blanket-ignore rules.
+      # Lint is error-free. Any new error fails this job directly.
+      # Warnings remain visible; rules and the warning policy are unchanged.
       - name: Lint
-        continue-on-error: true
-        run: |
-          set +e
-          pnpm lint > "$RUNNER_TEMP/web-lint.txt" 2>&1
-          status=$?
-          cat "$RUNNER_TEMP/web-lint.txt"
-          exit $status
-
-      - name: Lint baseline
-        if: always()
-        run: node .github/scripts/ci-baseline-gate.mjs eslint "$RUNNER_TEMP/web-lint.txt" 468
+        run: pnpm lint
 
   web-typecheck:
     name: Web typecheck
@@ -68,27 +56,11 @@ jobs:
 
       # Root `tsc --noEmit` checks nothing: tsconfig.json has `"files": []`
       # and no `--build`. Check the Vite app and the Node config instead.
-      # TODO: tsconfig.app.json is not clean (baseline 728 errors, recorded
-      # 2026-10-17). tsconfig.node.json is clean and still runs when the app
-      # project fails. Mostly query-builder calls on the Supabase stub
-      # (TS2554 / TS2349) in src/services.
+      # Either project compiler failure blocks CI directly.
       - name: Typecheck
-        continue-on-error: true
         run: |
-          set +e
-          : > "$RUNNER_TEMP/web-tsc.txt"
-          pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
-          app=$?
-          pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false >> "$RUNNER_TEMP/web-tsc.txt" 2>&1
-          node_status=$?
-          cat "$RUNNER_TEMP/web-tsc.txt"
-          if [ "$app" -ne 0 ] || [ "$node_status" -ne 0 ]; then
-            exit 1
-          fi
-
-      - name: Typecheck baseline
-        if: always()
-        run: node .github/scripts/ci-baseline-gate.mjs tsc "$RUNNER_TEMP/web-tsc.txt" 728
+          pnpm exec tsc --noEmit -p tsconfig.app.json --pretty false
+          pnpm exec tsc --noEmit -p tsconfig.node.json --pretty false
 
   web-test:
     name: Web unit tests
@@ -138,7 +110,7 @@ jobs:
         with:
           node-version: 22
       - name: Release checker tests
-        run: node --test .github/scripts/verify-api-readiness.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
+        run: node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/verify-web-quality-gates.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs
       - name: Web source map upload checker
         run: node --test scripts/upload-web-sourcemaps.test.mjs
       - name: Akaunting core parity report
@@ -182,8 +154,8 @@ jobs:
 
       # Measured 2026-10-21 on main: 0 ESLint errors (warnings remain),
       # 0 tsc errors, and 0 Jest failures. These steps fail the job.
-      # A zero count baseline is the same as the tool exit code, so the
-      # mobile count gate is gone. Web jobs still use ci-baseline-gate.mjs.
+      # Mobile and web checks both fail directly on a nonzero tool exit.
+      # Warnings remain visible; no error-count allowance is used.
       - name: Lint
         run: npm run lint
 

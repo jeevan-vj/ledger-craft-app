@@ -1,5 +1,5 @@
 import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import { useDropzone, type FileRejection } from 'react-dropzone';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -33,14 +33,14 @@ export function FileUploadZone({
 }: FileUploadZoneProps) {
   const [uploadError, setUploadError] = useState<string | null>(null);
 
-  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: any[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], rejectedFiles: FileRejection[]) => {
     setUploadError(null);
 
     if (rejectedFiles.length > 0) {
       const rejection = rejectedFiles[0];
-      if (rejection.errors.some((e: any) => e.code === 'file-too-large')) {
+      if (rejection.errors.some((e) => e.code === 'file-too-large')) {
         setUploadError('File is too large. Maximum size is 10MB.');
-      } else if (rejection.errors.some((e: any) => e.code === 'file-invalid-type')) {
+      } else if (rejection.errors.some((e) => e.code === 'file-invalid-type')) {
         setUploadError('Invalid file type. Please upload a CSV or PDF file.');
       } else {
         setUploadError('File upload failed. Please try again.');

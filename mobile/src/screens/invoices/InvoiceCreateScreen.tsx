@@ -201,7 +201,7 @@ function InvoiceEditor() {
     setTotal(newSubtotal + newTaxAmount);
   }, [lineItems, taxEnabled, taxRate]);
 
-  const updateLineItem = (index: number, field: keyof LineItem, value: any) => {
+  const updateLineItem = (index: number, field: keyof LineItem, value: LineItem[keyof LineItem]) => {
     const updated = [...lineItems];
     updated[index] = { ...updated[index], [field]: value };
 

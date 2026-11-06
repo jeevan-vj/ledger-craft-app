@@ -16,7 +16,9 @@ function getInitialPosition() {
         ) {
           return pos;
         }
-      } catch {}
+      } catch {
+        // Ignore an invalid saved position and use the default below.
+      }
     }
   }
   return { x: 24, y: 24 };

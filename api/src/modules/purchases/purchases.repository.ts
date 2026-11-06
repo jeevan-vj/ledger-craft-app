@@ -19,6 +19,7 @@ import { accounts } from '../../db/schema/accounts';
 import { bankAccounts } from '../../db/schema/bank';
 import { billAttachments, billHistory, billLines, billPayments, bills, vendors } from '../../db/schema/purchases';
 import { decimal, roundMoney } from '../invoices/money';
+import type { SettlementSnapshot } from '../currency/settlement.service';
 
 type OrganisationContext = { organisationId: string; userId: string };
 
@@ -221,6 +222,9 @@ async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<
       bankAccountId: payment.bankAccountId,
       bankAccountName: bankName ?? 'Bank account',
       amount: roundMoney(payment.amount),
+      currency: payment.currency ?? row.currency, baseCurrency: payment.baseCurrency ?? row.baseCurrency,
+      exchangeRate: payment.exchangeRate, exchangeRateId: payment.exchangeRateId,
+      baseAmount: payment.baseAmount, bookBaseAmount: payment.bookBaseAmount, exchangeDifference: payment.exchangeDifference,
       paymentDate: payment.paymentDate,
       referenceNumber: payment.referenceNumber ?? null,
       notes: payment.notes ?? null,
@@ -352,11 +356,13 @@ export async function insertPayment(
   ctx: OrganisationContext,
   bill: BillDto,
   input: { bankAccountId: string; amount: string; paymentDate: string; referenceNumber?: string | null; notes?: string | null },
+  snapshot: SettlementSnapshot,
 ): Promise<BillPaymentDto> {
   const [row] = await tx.insert(billPayments).values({
     organisationId: ctx.organisationId,
     userId: ctx.userId,
     billId: bill.id,
+    ...snapshot,
     bankAccountId: input.bankAccountId,
     amount: roundMoney(input.amount),
     paymentDate: input.paymentDate,
@@ -373,6 +379,9 @@ export async function insertPayment(
     bankAccountId: row.bankAccountId,
     bankAccountName: bank.accountName,
     amount: roundMoney(row.amount),
+    currency: row.currency ?? bill.currency, baseCurrency: row.baseCurrency ?? bill.baseCurrency,
+    exchangeRate: row.exchangeRate, exchangeRateId: row.exchangeRateId,
+    baseAmount: row.baseAmount, bookBaseAmount: row.bookBaseAmount, exchangeDifference: row.exchangeDifference,
     paymentDate: row.paymentDate,
     referenceNumber: row.referenceNumber ?? null,
     notes: row.notes ?? null,

@@ -1,3 +1,6 @@
+import { AuthApiError } from '@/features/auth/api/http';
+import { useStore } from '@/store';
+import { pendingBillPayment } from '@/features/purchases/model/pendingBillPayment';
 import React, { useLayoutEffect, useState } from 'react';
 import { ActivityIndicator, Alert, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -22,12 +25,14 @@ type Navigation = NativeStackNavigationProp<PurchaseStackParamList, 'BillDetail'
 type Route = RouteProp<PurchaseStackParamList, 'BillDetail'>;
 
 export default function BillDetailScreen() {
+  const ownerId = useStore((state) => state.user?.id ?? '');
   const theme = useTheme();
   const { colors: palette } = theme;
   const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
   const { params } = useRoute<Route>();
   const queryClient = useQueryClient();
+  const [attemptRevision, setAttemptRevision] = useState(0);
   const [paymentOpen, setPaymentOpen] = useState(false);
   const bill = useQuery({ queryKey: ['purchases', 'bill', params.billId], queryFn: () => purchasesApi.getBill(params.billId) });
   const banks = useQuery({ queryKey: ['purchases', 'bank-accounts'], queryFn: purchasesApi.listBankAccounts });
@@ -72,9 +77,9 @@ export default function BillDetailScreen() {
     onError: errorHaptic,
   });
   const payment = useMutation({
-    mutationFn: (input: RecordBillPaymentRequest) => purchasesApi.recordPayment(params.billId, input),
-    onSuccess: async () => { await refresh(); successHaptic(); setPaymentOpen(false); },
-    onError: errorHaptic,
+    mutationFn: ({ input, key }: { input: RecordBillPaymentRequest; key: string }) => purchasesApi.recordPayment(params.billId, input, key),
+    onSuccess: async () => { await pendingBillPayment.clear(ownerId, params.billId); setPaymentOpen(false); await refresh(); successHaptic(); },
+    onError: async (caught) => { if (caught instanceof AuthApiError && caught.code === 'IDEMPOTENCY_CONFLICT') await pendingBillPayment.fail(ownerId, params.billId, 0); await pendingBillPayment.fail(ownerId, params.billId, caught instanceof AuthApiError ? caught.status : 0); setAttemptRevision((value) => value + 1); errorHaptic(); },
   });
 
   useLayoutEffect(() => {
@@ -137,12 +142,14 @@ export default function BillDetailScreen() {
       </View>
       <BillPaymentSheet
         bill={item}
+        ownerId={ownerId}
+        attemptRevision={attemptRevision}
         bankAccounts={(banks.data ?? []).filter((bank) => bank.isActive)}
         visible={paymentOpen}
         saving={payment.isPending}
         error={payment.error instanceof Error ? payment.error.message : null}
         onClose={() => { if (!payment.isPending) { setPaymentOpen(false); payment.reset(); } }}
-        onSubmit={(input) => payment.mutate(input)}
+        onSubmit={(input, key) => payment.mutate({ input, key })}
       />
     </ScrollView>
   );

@@ -223,8 +223,8 @@ describe('IRD Compliance Tests - Real World Scenarios', () => {
 
       for (const testCase of testIncomes) {
         // Use reflection to access private method for testing
-        const irdService = irdReportingService as any;
-        const calculatedTax = irdService.calculateIncomeTax(testCase.income);
+        const irdService = irdReportingService;
+        const calculatedTax = irdService['calculateIncomeTax'](testCase.income);
         
         expect(calculatedTax).toBe(testCase.expectedTax);
       }

@@ -51,12 +51,12 @@ function financialReport(fixture: TaxSummaryFixture, reportMeta: FinancialReport
   };
 }
 
-function renderPage(report: FinancialReportResponse) {
+function renderPage(report: FinancialReportResponse, initialEntry = '/') {
   vi.mocked(reportsApi.financial).mockResolvedValue(report);
   vi.mocked(reportsApi.generalLedger).mockResolvedValue({ meta, lines: [] });
   return render(
     <QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}>
-      <MemoryRouter><FinancialReportsPage /></MemoryRouter>
+      <MemoryRouter initialEntries={[initialEntry]}><FinancialReportsPage /></MemoryRouter>
     </QueryClientProvider>,
   );
 }
@@ -143,4 +143,10 @@ describe('Financial reports GST return', () => {
     expect(screen.getByTestId('gst-basis')).toHaveTextContent('GST calculated on the invoice basis (the cash-basis selection applies to the other reports, not GST)');
     expect(screen.getByRole('alert')).toHaveTextContent('1 foreign-currency document(s) excluded from GST');
   });
+});
+
+it('honours the accounting report link period and basis before exporting', async () => {
+  renderPage(financialReport({ collected: '0', paid: '0', netPayable: '0', outputGst: '0', inputGst: '0', netGst: '0', position: 'nil', gstAccounts: [], keyAccounts: [] }), '/financial-reports?from=2026-04-01&to=2026-04-30&basis=cash');
+  await screen.findByRole('tab', { name: 'Tax' });
+  expect(reportsApi.financial).toHaveBeenCalledWith(expect.objectContaining({ from: '2026-04-01', to: '2026-04-30', basis: 'cash' }));
 });

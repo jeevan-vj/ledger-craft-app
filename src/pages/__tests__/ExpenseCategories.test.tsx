@@ -1,3 +1,5 @@
+import type MockTable from '@/components/expense/ExpenseCategoryTable';
+import type MockForm from '@/components/expense/ExpenseCategoryFormDrawer';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -25,9 +27,9 @@ vi.mock('@/hooks/use-toast', () => ({
 
 // Mock the components
 vi.mock('@/components/expense/ExpenseCategoryTable', () => ({
-  default: ({ categories, onEdit, onDelete }: any) => (
+  default: ({ categories, onEdit, onDelete }: React.ComponentProps<typeof MockTable>) => (
     <div data-testid="category-table">
-      {categories.map((category: any) => (
+      {categories.map((category) => (
         <div key={category.id} data-testid={`category-${category.id}`}>
           {category.name}
           <button onClick={() => onEdit(category)}>Edit</button>
@@ -39,7 +41,7 @@ vi.mock('@/components/expense/ExpenseCategoryTable', () => ({
 }));
 
 vi.mock('@/components/expense/ExpenseCategoryFormDrawer', () => ({
-  default: ({ open, onSubmit, initialValues }: any) => (
+  default: ({ open, onSubmit, initialValues }: React.ComponentProps<typeof MockForm>) => (
     <div data-testid="category-form-drawer" style={{ display: open ? 'block' : 'none' }}>
       <button onClick={() => onSubmit({ name: 'Test Category', description: 'Test', color: '#FF6B35' })}>
         Submit

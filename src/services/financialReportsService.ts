@@ -10,7 +10,7 @@ export interface FinancialReport {
     startDate: string;
     endDate: string;
   };
-  data: any;
+  data: unknown;
   generatedAt: string;
 }
 
@@ -661,7 +661,7 @@ export class FinancialReportsService {
   ): Promise<FinancialReport> {
     try {
       const { startDate, endDate } = this.getPeriodDates(period, customStartDate, customEndDate);
-      let data: any;
+      let data: unknown;
       let name: string;
 
       switch (type) {

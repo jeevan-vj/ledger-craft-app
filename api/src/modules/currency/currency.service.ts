@@ -97,3 +97,12 @@ export function convertToBase(value: string, rate: string, precision: number) {
 }
 
 export { repo as currencyRepository };
+
+/** Native foreign-bank statement amounts need a separate reviewed valuation
+ * contract; never post those raw units as the NZD general ledger. */
+export async function assertSupportedStatementBank(tx: Database, organisationId: string, currency: string) {
+  const localization = await repo.getLocalization(tx, organisationId);
+  if (currency !== 'NZD' || localization.baseCurrency !== 'NZD') throw new HTTPException(422, {
+    message: 'Bank statement posting and matching currently require an NZD bank account. Settle foreign invoices or bills through an NZD account with a reviewed rate; native foreign-bank statements require separate valuation.',
+  });
+}

@@ -31,5 +31,12 @@ export async function scanReceiptImage(imageBase64: string, contentType?: string
     const failure = await readApiFailure(response);
     throw new ReceiptScanApiError(failure.message, failure.status, failure.requestId);
   }
-  return (await response.json()) as ReceiptScanResultDto;
+  const result = (await response.json()) as ReceiptScanResultDto;
+  return {
+    merchantName: result.merchantName ?? null, date: result.date ?? null,
+    total: result.total ?? null, tax: result.tax ?? null, subtotal: result.subtotal ?? null,
+    items: (result.items ?? []).map((item) => ({ description: item.description ?? '', quantity: item.quantity ?? 1, price: item.price ?? 0 })),
+    paymentMethod: result.paymentMethod ?? null, suggestedCategory: result.suggestedCategory ?? null,
+    confidence: result.confidence ?? 0, notes: result.notes ?? null, provider: result.provider,
+  };
 }

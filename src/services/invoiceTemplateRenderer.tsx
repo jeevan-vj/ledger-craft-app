@@ -1,7 +1,7 @@
 import React from 'react';
 import { isAllowedLogoUrl } from '@ledgercraft/contracts';
 import { createRoot } from 'react-dom/client';
-import { Invoice, BusinessProfile, DEFAULT_BUSINESS_THEME } from '@/types';
+import { Invoice, BusinessProfile, BusinessTheme, DEFAULT_BUSINESS_THEME } from '@/types';
 import { formatLineQuantity, showPositiveAmount } from '@/utils/invoiceLineDisplay';
 import { invoiceDisplayTaxRate } from '@/utils/invoiceUtils';
 import { invoiceDocumentLabels, resolveDocumentLabels, type DocumentLabels } from '@/components/invoice/preview/documentLabels';
@@ -30,7 +30,7 @@ interface TemplateData {
   taxRate: string;
   tax: number;
   businessLogo?: string;
-  theme?: any;
+  theme?: BusinessTheme;
   labels: DocumentLabels;
 }
 
@@ -315,12 +315,12 @@ export const createTemplateElement = (
   );
 
   // Add cleanup function to the element
-  (tempContainer as any).cleanup = () => {
+  Object.assign(tempContainer, { cleanup: () => {
     root.unmount();
     if (tempContainer.parentNode) {
       tempContainer.parentNode.removeChild(tempContainer);
     }
-  };
+  } });
 
   return tempContainer;
 };

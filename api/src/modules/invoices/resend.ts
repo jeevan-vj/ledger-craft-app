@@ -9,12 +9,12 @@ type ResendOptions = {
 
 type ResendEnv = { RESEND_API_KEY?: string; RESEND_FROM?: string };
 
-function presentMoney(value = '0'): string {
+function presentMoney(value = '0', currency = 'NZD'): string {
   const [wholeRaw, fractionRaw = ''] = value.split('.');
   const negative = wholeRaw.startsWith('-');
   const digits = negative ? wholeRaw.slice(1) : wholeRaw;
   const grouped = digits.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-  return `NZD ${negative ? '-' : ''}${grouped}.${(fractionRaw + '00').slice(0, 2)}`;
+  return `${currency} ${negative ? '-' : ''}${grouped}.${(fractionRaw + '00').slice(0, 2)}`;
 }
 
 function presentDate(value?: string | null): string | null {
@@ -31,7 +31,7 @@ function escapeHtml(value: string): string {
 
 function content(mail: InvoiceMail) {
   const label = mail.kind === 'quote' ? 'Quote' : mail.kind === 'reminder' ? 'Payment reminder for invoice' : 'Invoice';
-  const amount = presentMoney(mail.amountDue);
+  const amount = presentMoney(mail.amountDue, mail.currency);
   const date = presentDate(mail.dueDate);
   const lines = [
     `${label} ${mail.invoiceNumber} from ${mail.businessName ?? 'EasyBizInvoice'}`,
@@ -52,22 +52,33 @@ export function createResendInvoiceMailer(opts: ResendOptions = {}): InvoiceMail
       throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email is not configured');
     }
     const bodyContent = content(mail);
-    const response = await fetchImpl('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json',
-        'Idempotency-Key': `${mail.kind ?? 'invoice'}/${mail.invoiceId}`,
-      },
-      body: JSON.stringify({
-        from,
-        to: mail.to,
-        subject: mail.subject ?? fallbackSubject,
-        text: bodyContent.text,
-        html: bodyContent.html,
-      }),
-    });
+    let response: Response;
+    try {
+      response = await fetchImpl('https://api.resend.com/emails', {
+        method: 'POST',
+        signal: AbortSignal.timeout(10_000),
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          'Idempotency-Key': `${mail.kind ?? 'invoice'}/${mail.invoiceId}`,
+        },
+        body: JSON.stringify({
+          from,
+          to: mail.to,
+          subject: mail.subject ?? fallbackSubject,
+          text: bodyContent.text,
+          html: bodyContent.html,
+        }),
+      });
+    } catch {
+      throw apiError(502, 'email_failed', 'Failed to send email');
+    }
     if (!response.ok) {
+      throw apiError(502, 'email_failed', 'Failed to send email');
+    }
+    const accepted: unknown = await response.json().catch(() => null);
+    if (!accepted || typeof accepted !== 'object' || !('id' in accepted)
+      || typeof accepted.id !== 'string' || !accepted.id.trim()) {
       throw apiError(502, 'email_failed', 'Failed to send email');
     }
   }
@@ -89,7 +100,7 @@ export function createResendInvoiceMailer(opts: ResendOptions = {}): InvoiceMail
 export function createInvoiceMailerFromEnv(env: ResendEnv, options: { fetchImpl?: typeof fetch } = {}): InvoiceMailer {
   const apiKey = env.RESEND_API_KEY?.trim();
   const from = env.RESEND_FROM?.trim();
-  if (!apiKey || !from) return createUnavailableInvoiceMailer();
+  if (!apiKey || apiKey === 'your_resend_api_key' || !from) return createUnavailableInvoiceMailer();
   return createResendInvoiceMailer({ apiKey, from, fetchImpl: options.fetchImpl });
 }
 

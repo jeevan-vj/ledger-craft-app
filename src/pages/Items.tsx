@@ -175,8 +175,8 @@ const Items = () => {
     }
   };
 
-  const handleCreateCategory = async (name: string) => {
-    return await createItemCategory({ name });
+  const handleCreateCategory = async (category: Omit<ItemCategory, 'id' | 'createdAt' | 'updatedAt'>) => {
+    return await createItemCategory(category);
   };
 
   if (isLoadingItems) {

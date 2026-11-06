@@ -56,7 +56,7 @@ describe('Bank Account Service', () => {
         accountName: 'Test Account',
         accountNumber: '12345678',
         bankName: 'Test Bank',
-        accountType: 'invalid' as any,
+        accountType: 'invalid' as import('@/types/bankTransaction').BankAccount['accountType'],
         currency: 'NZD',
         openingBalance: 1000,
         currentBalance: 1000,

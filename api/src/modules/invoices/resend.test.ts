@@ -3,7 +3,7 @@ import { createInvoiceMailerFromEnv, createResendInvoiceMailer } from './resend'
 
 describe('resend invoice mailer', () => {
   it('posts invoice mail to Resend', async () => {
-    const fetchImpl = vi.fn(async () => new Response('{}', { status: 200 }));
+    const fetchImpl = vi.fn(async () => new Response('{"id":"provider-message-id"}', { status: 200 }));
     const mailer = createResendInvoiceMailer({
       apiKey: 're_test',
       from: 'LedgerCraft <noreply@example.com>',
@@ -37,6 +37,7 @@ describe('resend invoice mailer', () => {
 
   it.each([
     [{}, 'unavailable'],
+    [{ RESEND_API_KEY: 'your_resend_api_key', RESEND_FROM: 'LedgerCraft <test@example.com>' }, 'unavailable'],
     [{ RESEND_API_KEY: 're_test' }, 'unavailable'],
     [{ RESEND_FROM: 'EasyBizInvoice <invoices@jnok.co.nz>' }, 'unavailable'],
     [{ RESEND_API_KEY: 're_test', RESEND_FROM: 'EasyBizInvoice <invoices@jnok.co.nz>' }, 'available'],
@@ -48,7 +49,7 @@ describe('resend invoice mailer', () => {
     ['sendReminder', 'reminder', 'Payment reminder for invoice INV-9'],
     ['sendQuote', 'quote', 'Quote QUO-9'],
   ] as const)('sends canonical %s content through the same transport', async (method, keyPrefix, subject) => {
-    const fetchImpl = vi.fn(async () => new Response('{}', { status: 200 }));
+    const fetchImpl = vi.fn(async () => new Response('{"id":"provider-message-id"}', { status: 200 }));
     const mailer = createResendInvoiceMailer({ apiKey: 're_secret', from: 'EasyBizInvoice <invoices@jnok.co.nz>', fetchImpl: fetchImpl as typeof fetch });
     await mailer[method]!({
       invoiceId: 'internal-id', invoiceNumber: keyPrefix === 'quote' ? 'QUO-9' : 'INV-9', to: ['buyer@example.test'],
@@ -72,5 +73,28 @@ describe('resend invoice mailer', () => {
     });
     await expect(mailer.sendInvoice({ invoiceId: 'id', invoiceNumber: 'INV-1', to: ['buyer@example.test'] }))
       .rejects.toMatchObject({ status: 502, message: 'Failed to send email' });
+  });
+
+  it('requires a provider message identifier before treating an email as accepted', async () => {
+    const mailer = createResendInvoiceMailer({ apiKey: 're_secret', from: 'test@example.com',
+      fetchImpl: vi.fn(async () => new Response('{}', { status: 200 })) as typeof fetch });
+    await expect(mailer.sendInvoice({ invoiceId: 'id', invoiceNumber: 'INV-1', to: ['buyer@example.test'] }))
+      .rejects.toMatchObject({ status: 502, message: 'Failed to send email' });
+  });
+
+  it('sanitizes transport failures instead of exposing provider or credential details', async () => {
+    const mailer = createResendInvoiceMailer({ apiKey: 're_secret', from: 'test@example.com',
+      fetchImpl: vi.fn(async () => { throw new Error('https://api.resend.com Bearer re_secret transport failed'); }) as typeof fetch });
+    await expect(mailer.sendInvoice({ invoiceId: 'id', invoiceNumber: 'INV-1', to: ['buyer@example.test'] }))
+      .rejects.toMatchObject({ status: 502, message: 'Failed to send email' });
+  });
+
+  it('uses the invoice currency in buyer-facing amounts and bounds transport time', async () => {
+    const fetchImpl = vi.fn(async () => new Response('{"id":"mail-accepted"}', { status: 200 }));
+    const mailer = createResendInvoiceMailer({ apiKey: 're_secret', from: 'test@example.com', fetchImpl: fetchImpl as typeof fetch });
+    await mailer.sendInvoice({ invoiceId: 'id', invoiceNumber: 'INV-1', to: ['buyer@example.test'], amountDue: '100.00', currency: 'USD' });
+    const [, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
+    expect(JSON.parse(String(init.body)).text).toContain('USD 100.00');
+    expect(init.signal).toBeInstanceOf(AbortSignal);
   });
 });

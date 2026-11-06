@@ -32,7 +32,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: mockPublicUrl } }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.uploadFile(mockFile, mockPath);
 
@@ -51,7 +51,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn(),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.uploadFile(mockFile, mockPath);
 
@@ -70,7 +70,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: mockPublicUrl } }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.uploadReceipt(mockFile);
 
@@ -94,7 +94,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://storage.example.com/receipt.jpg' } }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       await storageService.uploadReceipt(mockFile, expenseId);
 
@@ -113,7 +113,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn().mockReturnValue({ data: { publicUrl: 'https://storage.example.com/receipt.receipt' } }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       await storageService.uploadReceipt(mockFile);
 
@@ -132,7 +132,7 @@ describe('storageService', () => {
         getPublicUrl: vi.fn(),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.uploadReceipt(mockFile);
 
@@ -148,7 +148,7 @@ describe('storageService', () => {
         remove: vi.fn().mockResolvedValue({ error: null }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.deleteReceipt(filePath);
 
@@ -164,7 +164,7 @@ describe('storageService', () => {
         remove: vi.fn().mockResolvedValue({ error: null }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.deleteReceipt(fullUrl);
 
@@ -179,7 +179,7 @@ describe('storageService', () => {
         remove: vi.fn().mockResolvedValue({ error: new Error('Delete failed') }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.deleteReceipt(filePath);
 
@@ -195,7 +195,7 @@ describe('storageService', () => {
         remove: vi.fn().mockResolvedValue({ error: null }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.deleteFile(filePath);
 
@@ -210,7 +210,7 @@ describe('storageService', () => {
         remove: vi.fn().mockResolvedValue({ error: new Error('Delete failed') }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.deleteFile(filePath);
 
@@ -237,7 +237,7 @@ describe('storageService', () => {
         }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.getFileInfo(filePath);
 
@@ -261,7 +261,7 @@ describe('storageService', () => {
         }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.getFileInfo(filePath);
 
@@ -278,7 +278,7 @@ describe('storageService', () => {
         }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.getFileInfo(filePath);
 
@@ -299,7 +299,7 @@ describe('storageService', () => {
         }),
       };
 
-      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as any);
+      vi.mocked(supabase.storage.from).mockReturnValue(mockStorage as unknown as ReturnType<typeof supabase.storage.from>);
 
       const result = await storageService.getFileInfo(filePath);
 

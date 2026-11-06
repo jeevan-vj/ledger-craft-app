@@ -156,7 +156,7 @@ export const transactionImportService = {
         const result = await bankApi.importTransactions({
           bankAccountId: config.bankAccountId,
           fileName: 'import.csv',
-          fileType: config.fileType === 'pdf' ? 'pdf' : 'csv',
+          fileType: 'csv',
           skipDuplicates: config.skipDuplicates,
           transactions: categorizedTransactions.map((importedTx) => ({
             transactionDate: importedTx.date,

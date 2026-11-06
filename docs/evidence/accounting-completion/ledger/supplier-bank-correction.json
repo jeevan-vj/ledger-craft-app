@@ -1,0 +1,50 @@
+{
+  "before": {
+    "genericCash": "-69.00",
+    "selectedBank": "0.00",
+    "ap": "69.00"
+  },
+  "proposal": {
+    "key": "supplier-bank:db6a01ed-34c3-462d-92ee-761cca663ed5",
+    "type": "supplier_bank",
+    "sourceId": "6c205ec0-303d-40db-9ef8-8c6c4460754c",
+    "sourceJournalId": "db6a01ed-34c3-462d-92ee-761cca663ed5",
+    "sourceDate": "2026-04-20",
+    "description": "Move the supplier payment cash credit to its explicitly selected bank: Operating",
+    "requiresReceiptConfirmation": false,
+    "actual": {
+      "bankAccount": "071f3726-b244-41d8-a922-619a71c86f50",
+      "amount": "69.00"
+    },
+    "expected": {
+      "bankAccount": "bank:b07fb0a2-48e6-49f8-b74a-de62c438b826",
+      "bankName": "Operating",
+      "amount": "69.00"
+    },
+    "correctionLines": [
+      {
+        "accountId": "071f3726-b244-41d8-a922-619a71c86f50",
+        "debit": "69.00",
+        "credit": "0.00"
+      },
+      {
+        "accountId": "bank:b07fb0a2-48e6-49f8-b74a-de62c438b826",
+        "debit": "0.00",
+        "credit": "69.00"
+      }
+    ],
+    "fingerprint": "b68a41959249c659efe6bc1a3d15dcca35ed475ce707a0eddabc942be94e25a3"
+  },
+  "expected": {
+    "genericCash": "0.00",
+    "selectedBank": "-69.00",
+    "ap": "69.00"
+  },
+  "actual": {
+    "genericCash": "0.00",
+    "selectedBank": "-69.00",
+    "ap": "69.00"
+  },
+  "previewAccountCountUnchanged": true,
+  "sourceJournalUnchanged": true
+}

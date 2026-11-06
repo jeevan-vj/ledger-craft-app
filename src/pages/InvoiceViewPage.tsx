@@ -12,18 +12,21 @@ import { toast } from 'sonner';
 import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
 import { getServerCapabilities } from '@/services/capabilitiesService';
 import { StripePaymentLinkDialog } from '@/components/invoice/StripePaymentLinkDialog';
+import { InvoiceCreditNotesPanel } from '@/components/accounting/InvoiceCreditNotesPanel';
+import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
 import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
 
 const InvoiceViewPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { invoices, isLoadingInvoices, businessProfile } = useAppData();
+  const { invoices, isLoadingInvoices, businessProfile, refreshInvoices } = useAppData();
   const [attachments, setAttachments] = useState<InvoiceAttachmentDto[]>([]);
   const [history, setHistory] = useState<InvoiceHistoryDto[]>([]);
   const [busy, setBusy] = useState(false);
   const [emailAvailable, setEmailAvailable] = useState(false);
   const [stripeAvailable, setStripeAvailable] = useState(false);
   const [shareOpen, setShareOpen] = useState(false);
+  const [creditsOpen, setCreditsOpen] = useState(false);
   const [cardPaymentOpen, setCardPaymentOpen] = useState(false);
 
   useEffect(() => {
@@ -94,9 +97,10 @@ const InvoiceViewPage = () => {
           {invoice.status === 'cancelled' ? (
             <Button variant="outline" disabled={busy} onClick={() => void run(() => invoicesApi.restore(invoice.id), 'Invoice restored')}><RotateCcw className="mr-2 h-4 w-4" />Restore</Button>
           ) : (
-            <Button variant="outline" disabled={busy || Number(invoice.totalPaid ?? 0) > 0} onClick={() => void run(() => invoicesApi.cancel(invoice.id, 'Cancelled from invoice detail'), 'Invoice cancelled')}><XCircle className="mr-2 h-4 w-4" />Cancel</Button>
+            <Button variant="outline" disabled={busy || Number(invoice.totalPaid ?? 0) > 0 || Number(invoice.totalCredited ?? 0) > 0} onClick={() => void run(() => invoicesApi.cancel(invoice.id, 'Cancelled from invoice detail'), 'Invoice cancelled')}><XCircle className="mr-2 h-4 w-4" />Cancel</Button>
           )}
           <Button variant="outline" disabled={busy || !['draft', 'cancelled'].includes(invoice.status)} onClick={() => void run(async () => { await invoicesApi.archive(invoice.id); navigate('/invoices'); }, 'Invoice archived')}><Archive className="mr-2 h-4 w-4" />Archive</Button>
+          <Button variant="outline" aria-expanded={creditsOpen} onClick={() => setCreditsOpen((open) => !open)}><FileText className="mr-2 h-4 w-4" />Credit notes and refunds</Button>
           <Button variant="outline" onClick={() => window.print()}><Printer className="mr-2 h-4 w-4" />Print</Button>
           {stripeAvailable && invoice.currency?.toUpperCase() === 'NZD' && invoice.status !== 'cancelled' && Number(invoice.balanceDue) > 0 && <Button variant="outline" onClick={() => setCardPaymentOpen(true)}><CreditCard className="mr-2 h-4 w-4" />Card payment</Button>}
           <Button variant="outline" asChild><label className="cursor-pointer"><FileUp className="mr-2 h-4 w-4" />Attach file<input className="sr-only" type="file" accept="application/pdf,image/jpeg,image/png,image/webp" onChange={(event) => void uploadAttachment(event.target.files?.[0])} /></label></Button>
@@ -122,6 +126,8 @@ const InvoiceViewPage = () => {
           </Link>
         </p>
       ) : null}
+      {Number(invoice.totalCredited ?? 0) > 0 && <Card className="mb-6 space-y-2 p-5"><h2 className="font-semibold">{settlementLabel(invoice) ?? 'Partly credited'}</h2><p className="text-sm tabular-nums">Cash received: {invoice.currency} {invoice.totalPaid?.toFixed(2) ?? 'Unavailable'} · Credit notes: {invoice.currency} {invoice.totalCredited?.toFixed(2)} · Balance due: {invoice.currency} {invoice.balanceDue?.toFixed(2) ?? 'Unavailable'}</p></Card>}
+      {creditsOpen && <div className="mb-6"><InvoiceCreditNotesPanel invoiceId={invoice.id} currency={invoice.currency} canIssue={!['draft', 'cancelled'].includes(invoice.status)} onChanged={() => void refreshInvoices()} /></div>}
       <InvoicePreview 
         invoice={invoice} 
         selectedTemplate={(invoice.templateName as InvoiceTemplateId) || "classic"}

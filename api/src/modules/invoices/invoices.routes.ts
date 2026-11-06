@@ -15,11 +15,11 @@ import { requireSession } from '../auth/require-session';
 import { hashIdempotencyPayload, parseIdempotencyKey } from './idempotency';
 import * as invoicesService from './invoices.service';
 import * as lifecycleService from './invoice-lifecycle.service';
-import { createLoggingInvoiceMailer } from './mailer';
+import { createUnavailableInvoiceMailer } from './mailer';
 import * as shareService from './share';
 import { createFilesystemObjectStore } from '../storage/filesystem';
 
-const fallbackMailer = createLoggingInvoiceMailer();
+const fallbackMailer = createUnavailableInvoiceMailer();
 const fallbackObjectStore = createFilesystemObjectStore();
 
 export function invoiceRoutes() {

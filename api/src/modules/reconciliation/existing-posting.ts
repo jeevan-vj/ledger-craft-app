@@ -8,10 +8,10 @@ import { getActiveAction, insertAction } from './reconciliation-actions.reposito
 import { confirmedMatches, postedCashLines } from './existing-posting.repository';
 
 export async function existingPostingRetry(tx: Database, organisationId: string, input: CreateReconciliationMatchRequest) {
-  if (!['payment', 'expense'].includes(input.bookItemType) || input.status !== 'confirmed') return;
+  if (!['payment', 'bill_payment', 'expense'].includes(input.bookItemType) || input.status !== 'confirmed') return;
   const matches = await confirmedMatches(tx, organisationId, input);
   const same = matches.find((row) => row.bankTransactionId === input.bankTransactionId
-    && (input.bookItemType === 'payment' ? row.paymentId : row.expenseId) === input.bookItemId);
+    && (input.bookItemType === 'payment' ? row.paymentId : input.bookItemType === 'bill_payment' ? row.billPaymentId : row.expenseId) === input.bookItemId);
   if (same) return reconciliationMatchSchema.parse({ ...same,
     confidenceScore: Math.round(Number(same.confidenceScore) * 100), matchedAt: same.matchedAt.toISOString(), createdAt: same.createdAt.toISOString(),
   });
@@ -22,7 +22,7 @@ export async function existingPostingRetry(tx: Database, organisationId: string,
  * the statement bank. Source payment/expense and its GST remain immutable. */
 export async function matchExistingPosting(tx: Database, ctx: OrganisationContext, transaction: BankTransactionDto, input: CreateReconciliationMatchRequest, bookAmount: string) {
   if (input.status !== 'confirmed') return;
-  if (input.bookItemType !== 'payment' && input.bookItemType !== 'expense') {
+  if (input.bookItemType !== 'payment' && input.bookItemType !== 'bill_payment' && input.bookItemType !== 'expense') {
     throw new HTTPException(409, { message: 'Use Accept on an unpaid invoice or bill to record its settlement, or match an already recorded payment or approved expense. Confirming an invoice or bill directly would duplicate its accounting.' });
   }
   if (transaction.isReconciled || await getActiveAction(tx, ctx.organisationId, transaction.id)) throw new HTTPException(409, { message: 'Bank transaction is already reconciled' });

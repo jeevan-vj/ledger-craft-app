@@ -32,7 +32,7 @@ const EnhancedBottomSheet: React.FC<EnhancedBottomSheetProps> = ({
   useEffect(() => {
     if (!keyboardAware) return;
 
-    let initialViewportHeight = window.visualViewport?.height || window.innerHeight;
+    const initialViewportHeight = window.visualViewport?.height || window.innerHeight;
 
     const handleViewportChange = () => {
       if (window.visualViewport) {

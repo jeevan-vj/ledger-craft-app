@@ -102,7 +102,9 @@ export function purchaseRoutes() {
     routes.post(`${prefix}/bills/:id/payments`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = recordBillPaymentRequestSchema.parse(await c.req.json());
-      return c.json(await service.recordBillPaymentForUser(db, user.id, c.req.param('id'), input), 201);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: c.req.method, path: c.req.path, requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await service.recordBillPaymentForUser(db, user.id, c.req.param('id'), input, scope), 201);
     });
   }
   return routes;

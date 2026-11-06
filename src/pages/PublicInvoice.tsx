@@ -4,7 +4,10 @@ import InvoicePreview from '@/components/invoice/preview/InvoicePreview';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { publicInvoiceService } from '@/services/supabaseService';
-import { Invoice } from '@/types';
+import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
+import { applyNoReferrerPolicy } from '@/lib/referrerPolicy';
+import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
+import { Invoice, BusinessProfile } from '@/types';
 import { Download, Printer, ArrowLeft } from 'lucide-react';
 import { generateInvoicePdf } from '@/utils/pdfUtils';
 import { useToast } from '@/hooks/use-toast';
@@ -12,7 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 const PublicInvoice = () => {
   const { invoiceId } = useParams<{ invoiceId: string }>();
   const [invoice, setInvoice] = useState<Invoice | null>(null);
-  const [businessProfile, setBusinessProfile] = useState<any>(null);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isGeneratingPdf, setIsGeneratingPdf] = useState(false);
@@ -20,6 +23,7 @@ const PublicInvoice = () => {
   const invoiceRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    applyNoReferrerPolicy();
     const fetchInvoice = async () => {
       setLoading(true);
       setError(null);
@@ -44,13 +48,13 @@ const PublicInvoice = () => {
         setLoading(false);
       }
     };
-    
+
     fetchInvoice();
   }, [invoiceId]);
 
   const handleDownloadPdf = async () => {
     if (!invoice || !invoiceRef.current) return;
-    
+
     setIsGeneratingPdf(true);
     try {
       await generateInvoicePdf(invoice, invoiceRef.current, 'classic');
@@ -108,8 +112,8 @@ const PublicInvoice = () => {
           Back
         </Button>
         <div className="flex gap-2">
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={handleDownloadPdf}
             disabled={isGeneratingPdf}
           >
@@ -123,16 +127,17 @@ const PublicInvoice = () => {
         </div>
       </div>
 
+      {settlementLabel(invoice) && <p aria-label={`Payment status: ${settlementLabel(invoice)}`} className="mb-4 inline-flex rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-foreground">{settlementLabel(invoice)}</p>}
       {/* Invoice preview */}
       <div ref={invoiceRef} className="bg-white rounded-lg shadow-sm border">
-        <InvoicePreview 
-          invoice={invoice} 
-          selectedTemplate={(invoice.templateName as any) || "classic"} 
-          businessProfile={businessProfile} 
+        <InvoicePreview
+          invoice={invoice}
+          selectedTemplate={(invoice.templateName as InvoiceTemplateId) || "classic"}
+          businessProfile={businessProfile}
         />
       </div>
     </div>
   );
 };
 
-export default PublicInvoice; 
+export default PublicInvoice;

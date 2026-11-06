@@ -1,3 +1,4 @@
+import { hasActiveCreditNotes } from '../credit-notes/credit-notes.repository';
 import { organisationToday } from '../accounting/organisation-date';
 import {
   invoiceSchema,
@@ -32,6 +33,7 @@ export async function cancelInvoiceForUser(db: Database, userId: string, id: str
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const invoice = requireInvoice(await repo.getInvoice(tx, ctx.organisationId, id));
     if (invoice.status === 'cancelled') return invoice;
+    if (await hasActiveCreditNotes(tx, ctx.organisationId, id)) throw apiError(409, 'INVOICE_HAS_CREDIT_NOTES', 'Reverse active credit notes and customer refunds before cancelling the invoice');
     if (decimal(invoice.totalPaid).compare(0) > 0) throw apiError(409, 'INVOICE_HAS_PAYMENTS', 'Reverse invoice payments before cancelling');
     await postInvoiceReversalJournal(tx, ctx, {
       invoiceId: invoice.id, invoiceNumber: invoice.invoiceNumber,

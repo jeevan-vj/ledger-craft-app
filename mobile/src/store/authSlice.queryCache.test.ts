@@ -116,3 +116,14 @@ describe('auth session cache isolation', () => {
     expect(store.getState().permissions).toEqual([]);
   });
 });
+
+it('offers initialization retry for a transient account-service outage without pretending the session was revoked',async()=>{
+ const authApi=jest.requireMock('@/features/auth/api/authApi') as {getMe:jest.Mock};
+ authApi.getMe.mockRejectedValueOnce(new Error('Temporary API outage')).mockResolvedValueOnce({user:{id:'retry-owner',email:'retry@example.test',name:'Owner'},permissions:['invoices.read']});
+ (businessProfileApi.get as jest.Mock).mockResolvedValue({id:'company'});
+ const store=createStore<AuthSlice>()(createAuthSlice);
+ await store.getState().initialize();
+ expect(store.getState()).toMatchObject({loading:false,onboardingChecked:false,initializationError:true});
+ await store.getState().initialize();
+ expect(store.getState()).toMatchObject({loading:false,onboardingChecked:true,initializationError:false,user:{id:'retry-owner'},hasCompletedOnboarding:true});
+});

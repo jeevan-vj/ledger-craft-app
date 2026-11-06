@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppData } from '@/hooks/useAppData';
-import InvoiceForm from "@/components/invoice/InvoiceForm";
+import InvoiceForm, { type InvoiceFormValues } from "@/components/invoice/InvoiceForm";
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
-import { Customer } from '@/types';
+import { Customer, type LineItem, type AdditionalCharge } from '@/types';
 import CustomerFormDrawer, { CustomerFormValues } from '@/components/customer/CustomerFormDrawer';
 import { invoiceService } from '@/services/supabaseService';
 import { useForm } from 'react-hook-form';
@@ -34,7 +34,7 @@ const CreateInvoice = () => {
   const [calculatedInvoiceNumber, setCalculatedInvoiceNumber] = useState<string | undefined>(undefined);
   const [isLoadingInvoiceNumber, setIsLoadingInvoiceNumber] = useState(true);
 
-  const form = useForm<any>({
+  const form = useForm<InvoiceFormValues>({
     defaultValues: {
       invoiceNumber: '',
       customerId: '',
@@ -96,14 +96,14 @@ const CreateInvoice = () => {
   }, [businessProfile]);
 
   const handleSubmit = async (
-    values: any,
-    items: any,
+    values: InvoiceFormValues,
+    items: LineItem[],
     total: number,
     subtotal: number,
     taxAmount: number,
     additionalCharges: number,
     discount: number,
-    additionalChargesList?: any[],
+    additionalChargesList?: AdditionalCharge[],
     intent: 'draft' | 'send' = 'draft',
   ) => {
     try {

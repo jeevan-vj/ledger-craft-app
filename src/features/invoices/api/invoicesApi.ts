@@ -83,6 +83,10 @@ function toInvoice(dto: InvoiceDto): Invoice {
   return {
     id: dto.id,
     invoiceNumber: dto.invoiceNumber,
+    totalCredited: dto.totalCredited == null ? undefined : Number(dto.totalCredited),
+    taxCredited: dto.taxCredited == null ? undefined : Number(dto.taxCredited),
+    baseCredited: dto.baseCredited == null ? undefined : Number(dto.baseCredited),
+    baseTaxCredited: dto.baseTaxCredited == null ? undefined : Number(dto.baseTaxCredited),
     externalId: dto.externalId,
     externalNumber: dto.externalNumber,
     externalIssuerName: dto.externalIssuerName,

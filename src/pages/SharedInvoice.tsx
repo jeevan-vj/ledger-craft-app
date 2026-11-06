@@ -1,3 +1,4 @@
+import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -195,8 +196,8 @@ const SharedInvoice: React.FC = () => {
                   From {businessProfile?.name || 'Business'}
                 </p>
                 {invoiceData?.status === 'paid' ? (
-                  <p aria-label="Payment status: Paid" className="mt-2 inline-flex rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-foreground">
-                    Paid
+                  <p aria-label={`Payment status: ${settlementLabel(invoiceData)}`} className="mt-2 inline-flex rounded-full bg-accent px-3 py-1 text-sm font-semibold text-accent-foreground">
+                    {settlementLabel(invoiceData)}
                   </p>
                 ) : null}
               </div>

@@ -32,6 +32,7 @@ import PublicQuoteScreen from '@/screens/quotes/PublicQuoteScreen';
 import ImportCaptureScreen from '@/screens/imports/ImportCaptureScreen';
 import ImportReviewScreen from '@/screens/imports/ImportReviewScreen';
 import ImportOriginalScreen from '@/screens/imports/ImportOriginalScreen';
+import { EmptyState } from '@/components/ui/EmptyState';
 import { RootForgotPasswordScreen, RootResetPasswordScreen } from '@/screens/auth/PasswordRecoveryScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -81,6 +82,7 @@ export default function RootNavigator() {
   const theme = useTheme();
   const navigationRef = useNavigationContainerRef<RootStackParamList>();
   const { user, loading, hasCompletedOnboarding, onboardingChecked } = useAuth();
+  const initializationError = useStore((state) => state.initializationError);
 
   useEffect(() => {
     // Initialize auth state on mount
@@ -93,6 +95,8 @@ export default function RootNavigator() {
   useEffect(() => {
     setSentryUser(user?.id ?? null);
   }, [user?.id]);
+
+  if (initializationError && !loading) return <View style={[styles.loadingContainer, { backgroundColor: theme.colors.background }]}><EmptyState title="Can't check your session" description="Check your connection and retry to resume your account." actionLabel="Retry session check" onAction={() => { void useStore.getState().initialize(); }} /></View>;
 
   // Show animated loading screen while checking auth
   if (loading || !onboardingChecked) {

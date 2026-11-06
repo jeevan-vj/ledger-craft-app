@@ -1,6 +1,13 @@
 import { test, expect, Page } from '@playwright/test';
 import { AuthMocker } from './auth-utils';
 
+type MemoryPerformance = Performance & { memory?: { usedJSHeapSize: number } };
+type EdgeCaseWindow = Window & {
+  gc?: () => void;
+  testConstraintViolation?: boolean;
+  testForeignKeyViolation?: boolean;
+};
+
 /**
  * Edge Cases and Error Handling E2E Tests
  * 
@@ -338,8 +345,8 @@ class EdgeCaseTestHelper {
     // Test with disabled JavaScript features
     await this.page.evaluate(() => {
       // Mock missing browser features
-      delete (window as any).requestAnimationFrame;
-      delete (window as any).localStorage;
+      Reflect.deleteProperty(window, 'requestAnimationFrame');
+      Reflect.deleteProperty(window, 'localStorage');
     });
     
     // Application should still be functional
@@ -387,9 +394,16 @@ class EdgeCaseTestHelper {
     await this.page.evaluate(() => {
       // Mock different timezone
       const originalDateTimeFormat = Intl.DateTimeFormat;
-      (global as any).Intl.DateTimeFormat = function(locale: any, options: any) {
-        return new originalDateTimeFormat(locale, { ...options, timeZone: 'Asia/Tokyo' });
-      };
+      globalThis.Intl.DateTimeFormat = new Proxy(originalDateTimeFormat, {
+        construct(target, args) {
+          const [locale, options] = args as ConstructorParameters<typeof originalDateTimeFormat>;
+          return new target(locale, { ...options, timeZone: 'Asia/Tokyo' });
+        },
+        apply(target, _receiver, args) {
+          const [locale, options] = args as Parameters<typeof originalDateTimeFormat>;
+          return target(locale, { ...options, timeZone: 'Asia/Tokyo' });
+        },
+      });
     });
     
     await this.page.reload();
@@ -651,7 +665,7 @@ test.describe('Edge Cases and Error Handling Tests', () => {
     await edgeCaseHelper.testPerformanceEdgeCases();
     
     // Test memory leaks with repeated operations
-    const initialMemory = await page.evaluate(() => (performance as any).memory?.usedJSHeapSize || 0);
+    const initialMemory = await page.evaluate(() => (performance as MemoryPerformance).memory?.usedJSHeapSize || 0);
     
     // Perform 100 rapid create/cancel operations
     for (let i = 0; i < 100; i++) {
@@ -662,12 +676,10 @@ test.describe('Edge Cases and Error Handling Tests', () => {
       if (i % 20 === 19) {
         // Force garbage collection attempt
         await page.evaluate(() => {
-          if ((window as any).gc) {
-            (window as any).gc();
-          }
+          (window as EdgeCaseWindow).gc?.();
         });
         
-        const currentMemory = await page.evaluate(() => (performance as any).memory?.usedJSHeapSize || 0);
+        const currentMemory = await page.evaluate(() => (performance as MemoryPerformance).memory?.usedJSHeapSize || 0);
         const memoryIncrease = currentMemory - initialMemory;
         
         // Memory increase should not be excessive (less than 50MB)
@@ -689,9 +701,9 @@ test.describe('Edge Cases and Error Handling Tests', () => {
     // Test with missing modern JavaScript features
     await page.evaluate(() => {
       // Mock older browser environment
-      delete (Array.prototype as any).includes;
-      delete (String.prototype as any).startsWith;
-      delete (window as any).fetch;
+      Reflect.deleteProperty(Array.prototype, 'includes');
+      Reflect.deleteProperty(String.prototype, 'startsWith');
+      Reflect.deleteProperty(window, 'fetch');
     });
     
     await page.reload();
@@ -812,7 +824,7 @@ test.describe('Edge Cases and Error Handling Tests', () => {
     
     // Add constraint violation test flag
     await page.evaluate(() => {
-      (window as any).testConstraintViolation = true;
+      (window as EdgeCaseWindow).testConstraintViolation = true;
     });
     
     await page.click('[data-testid="save-invoice-btn"]');
@@ -822,7 +834,7 @@ test.describe('Edge Cases and Error Handling Tests', () => {
     
     // Test foreign key constraint
     await page.evaluate(() => {
-      (window as any).testForeignKeyViolation = true;
+      (window as EdgeCaseWindow).testForeignKeyViolation = true;
     });
     
     await page.fill('[data-testid="invoice-number"]', 'INV-FK-TEST');

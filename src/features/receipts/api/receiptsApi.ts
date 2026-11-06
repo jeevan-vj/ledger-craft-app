@@ -83,7 +83,7 @@ function toReceiptData(data: PaymentReceiptDataDto, receiptNumber: string, creat
     receiptNumber,
     paymentDate: data.paymentDate,
     amountPaid,
-    paymentMethod: data.paymentMethod.replaceAll('_', ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
+    paymentMethod: data.paymentMethod.replace(/_/g, ' ').replace(/\b\w/g, (letter) => letter.toUpperCase()),
     balanceAfterPayment: Number(data.balanceDue),
   };
 }

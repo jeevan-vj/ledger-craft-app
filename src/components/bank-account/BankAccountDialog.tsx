@@ -117,13 +117,14 @@ export function BankAccountDialog({ open, onOpenChange, account, onSaved }: Bank
       setLoading(true);
 
       // Validate the data using our service validation
-      bankAccountService.validateBankAccount(data);
+      const accountData = { accountName: data.accountName, accountNumber: data.accountNumber, bankName: data.bankName, accountType: data.accountType, currency: data.currency, openingBalance: data.openingBalance, currentBalance: data.currentBalance, isActive: data.isActive };
+      bankAccountService.validateBankAccount(accountData);
 
       if (isEditing) {
-        await bankAccountService.updateBankAccount(account.id, data);
+        await bankAccountService.updateBankAccount(account.id, accountData);
         toast.success('Bank account updated successfully');
       } else {
-        await bankAccountService.createBankAccount(data);
+        await bankAccountService.createBankAccount(accountData);
         toast.success('Bank account created successfully');
       }
 

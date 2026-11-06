@@ -53,6 +53,7 @@ export const mockInvoice: Invoice = {
       description: 'Web Design Services',
       quantity: 1,
       unit: 'project',
+      rateUnit: 'project',
       rate: 500,
       tax: 0,
       total: 500
@@ -324,7 +325,7 @@ export const mockSupabaseResponse = {
 };
 
 // Mock fetch response for OpenAI
-export const mockOpenAIFetchResponse = (response: any) => ({
+export const mockOpenAIFetchResponse = (response: unknown) => ({
   ok: true,
   json: async () => ({
     choices: [

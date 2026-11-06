@@ -1,3 +1,8 @@
+import settingsTabIcon from '../../assets/tabs/settings.png';
+import sellTabIcon from '../../assets/tabs/sell.png';
+import customersTabIcon from '../../assets/tabs/customers.png';
+import invoicesTabIcon from '../../assets/tabs/invoices.png';
+import homeTabIcon from '../../assets/tabs/home.png';
 import React from 'react';
 import { Platform, type ImageSourcePropType } from 'react-native';
 import { createNativeBottomTabNavigator } from '@bottom-tabs/react-navigation';
@@ -41,6 +46,7 @@ import BankMatchingRulesScreen from '@/screens/banking/BankMatchingRulesScreen';
 import QuoteListScreen from '@/screens/quotes/QuoteListScreen';
 import QuoteFormScreen from '@/screens/quotes/QuoteFormScreen';
 import QuoteDetailScreen from '@/screens/quotes/QuoteDetailScreen';
+import AccountingToolsScreen from '@/screens/accounting/AccountingToolsScreen';
 import ReportsScreen from '@/screens/reports/ReportsScreen';
 import AccountDeletionScreen from '@/screens/settings/AccountDeletionScreen';
 import AccountSecurityScreen from '@/screens/settings/AccountSecurityScreen';
@@ -87,7 +93,7 @@ function MoreNavigator() {
   return <MoreStack.Navigator screenOptions={list}>
     <MoreStack.Screen name="SettingsList" component={SettingsScreen} options={{ title: 'More', headerShown: false }} />
     <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
-    <MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} />
+    <MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} /><MoreStack.Screen name="AccountingTools" component={AccountingToolsScreen} options={{ title: 'Accounting tools' }} />
     <MoreStack.Screen name="CompanyTeam" component={CompanyTeamScreen} options={{ ...detail, title: 'Company & team' }} />
     <MoreStack.Screen name="RecurringSchedules" component={RecurringSchedulesScreen} options={{ ...detail, title: 'Recurring schedules' }} />
     <MoreStack.Screen name="AccountDeletion" component={AccountDeletionScreen} options={{ ...detail, title: 'Delete account' }} />
@@ -126,10 +132,10 @@ export default function AppNavigator() {
     tabBarInactiveTintColor={theme.colors.textSecondary}
     activeIndicatorColor={theme.colors.accentFill}
   >
-    <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: tabIcon('house.fill', require('../../assets/tabs/home.png')) }} />
-    <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: tabIcon('doc.text.fill', require('../../assets/tabs/invoices.png')) }} />
-    <Tab.Screen name="Customers" component={CustomerNavigator} options={{ title: 'Customers', tabBarIcon: tabIcon('person.2.fill', require('../../assets/tabs/customers.png')) }} />
-    {quickSaleEnabled ? <Tab.Screen name="Sell" component={SellNavigator} options={{ title: 'Sell', tabBarIcon: tabIcon('cart.fill', require('../../assets/tabs/sell.png')) }} /> : null}
-    <Tab.Screen name="More" component={MoreNavigator} options={{ title: 'More', tabBarIcon: tabIcon('ellipsis.circle.fill', require('../../assets/tabs/settings.png')) }} />
+    <Tab.Screen name="Dashboard" component={HomeNavigator} options={{ title: 'Home', tabBarIcon: tabIcon('house.fill', homeTabIcon) }} />
+    <Tab.Screen name="Invoices" component={InvoiceNavigator} options={{ title: 'Invoices', tabBarIcon: tabIcon('doc.text.fill', invoicesTabIcon) }} />
+    <Tab.Screen name="Customers" component={CustomerNavigator} options={{ title: 'Customers', tabBarIcon: tabIcon('person.2.fill', customersTabIcon) }} />
+    {quickSaleEnabled ? <Tab.Screen name="Sell" component={SellNavigator} options={{ title: 'Sell', tabBarIcon: tabIcon('cart.fill', sellTabIcon) }} /> : null}
+    <Tab.Screen name="More" component={MoreNavigator} options={{ title: 'More', tabBarIcon: tabIcon('ellipsis.circle.fill', settingsTabIcon) }} />
   </Tab.Navigator>;
 }

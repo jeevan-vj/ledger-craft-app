@@ -1,4 +1,6 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { financialReportQuerySchema } from '@ledgercraft/contracts';
 import { useQuery } from '@tanstack/react-query';
 import { Download, RefreshCw } from 'lucide-react';
 import type { FinancialReportQuery, FinancialReportResponse } from '@ledgercraft/contracts';
@@ -28,7 +30,11 @@ function AccountTable({ rows, empty = 'No posted movements in this period.' }: {
   return <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Account</TableHead><TableHead>Class</TableHead><TableHead className="text-right">Debit</TableHead><TableHead className="text-right">Credit</TableHead><TableHead className="text-right">Balance</TableHead></TableRow></TableHeader><TableBody>{rows.map((row) => <TableRow key={row.accountId}><TableCell className="font-medium">{row.accountNumber ? `${row.accountNumber} · ` : ''}{row.accountName}</TableCell><TableCell className="capitalize text-muted-foreground">{row.accountClass}</TableCell><TableCell className="text-right tabular-nums">{formatMoney(row.debit)}</TableCell><TableCell className="text-right tabular-nums">{formatMoney(row.credit)}</TableCell><TableCell className="text-right font-medium tabular-nums">{formatMoney(row.balance)}</TableCell></TableRow>)}</TableBody></Table></div>;
 }
 
-function AgingTable({ report, noun }: { report: FinancialReportResponse['receivablesAging']; noun: string }) {
+export function AgingTable({ report, noun }: { report: FinancialReportResponse['receivablesAging']; noun: string }) {
+  if (report.unallocatedControl && report.unallocatedControl !== '0.00') return <div className="space-y-4">
+    <div role="alert" className="rounded-xl border border-warning p-4 text-sm">Unallocated posted balance: {formatMoney(report.unallocatedControl)}. Link opening or manual balances to customer or supplier details before aging.</div>
+    <AgingTable report={{ ...report, unallocatedControl: '0.00' }} noun={`document-linked ${noun}`} />
+  </div>;
   if (!report.items.length) return <div className="rounded-2xl bg-muted/40 px-6 py-12 text-center text-sm text-muted-foreground">No outstanding {noun} at the report date.</div>;
   return <div className="overflow-x-auto"><Table><TableHeader><TableRow><TableHead>Document</TableHead><TableHead>Party</TableHead><TableHead>Due</TableHead><TableHead>Age</TableHead><TableHead className="text-right">Outstanding</TableHead></TableRow></TableHeader><TableBody>{report.items.map((item) => <TableRow key={item.id}><TableCell className="font-medium">{item.number}</TableCell><TableCell>{item.partyName}</TableCell><TableCell>{item.dueDate}</TableCell><TableCell>{item.bucket}</TableCell><TableCell className="text-right tabular-nums">{formatMoney(item.balanceDue)}</TableCell></TableRow>)}</TableBody></Table></div>;
 }
@@ -111,7 +117,9 @@ function downloadCsv(report: FinancialReportResponse) {
 }
 
 export default function FinancialReportsPage() {
-  const [draft, setDraft] = useState({ from: initialFrom, to: initialTo, basis: 'accrual' as 'accrual' | 'cash' });
+  const [search] = useSearchParams();
+  const linked = financialReportQuerySchema.safeParse({ from: search.get('from'), to: search.get('to'), basis: search.get('basis') ?? 'accrual' });
+  const [draft, setDraft] = useState(() => linked.success ? { from: linked.data.from, to: linked.data.to, basis: linked.data.basis } : { from: initialFrom, to: initialTo, basis: 'accrual' as 'accrual' | 'cash' });
   const [query, setQuery] = useState<FinancialReportQuery>({ ...draft, baseCurrency: 'NZD' });
   const report = useQuery({ queryKey: ['reports', 'financial', query], queryFn: () => reportsApi.financial(query) });
   const ledger = useQuery({ queryKey: ['reports', 'general-ledger', query], queryFn: () => reportsApi.generalLedger(query) });

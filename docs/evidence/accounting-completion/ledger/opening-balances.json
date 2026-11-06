@@ -1,0 +1,28 @@
+{
+  "metadataOpening": "5000.00",
+  "beforePosted": "0.00",
+  "expected": {
+    "cash": "5000.00",
+    "capital": "-5000.00",
+    "total": "5000.00"
+  },
+  "actual": {
+    "cash": "5000.00",
+    "capital": "-5000.00",
+    "total": "5000.00"
+  },
+  "first": {
+    "journalEntryId": "313ad10d-6f25-4529-a287-1de1fa963e2b",
+    "date": "2026-04-01",
+    "reference": "Opening verified against prior accounts",
+    "total": "5000.00",
+    "replayed": false
+  },
+  "replay": {
+    "journalEntryId": "313ad10d-6f25-4529-a287-1de1fa963e2b",
+    "date": "2026-04-01",
+    "reference": "Opening verified against prior accounts",
+    "total": "5000.00",
+    "replayed": true
+  }
+}

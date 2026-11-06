@@ -1,3 +1,4 @@
+import type { SupabaseBusinessProfile } from '../../shared/types';
 import { supabase } from './supabaseClient';
 import { toContractTheme } from '@/features/business-profile/theme';
 import { OnboardingData, BusinessTheme } from '@/types/onboarding';
@@ -120,11 +121,11 @@ class BusinessProfileService {
         invoice_number_sequence: 0,
         default_tax_rate: data.defaultTaxRate,
         gst_registration_status: data.gstRegistrationStatus,
-        phone: data.phone,
-        address: data.address,
-        city: data.city,
-        state: data.state,
-        zip: data.zip,
+        phone: data.phone ?? undefined,
+        address: data.address ?? undefined,
+        city: data.city ?? undefined,
+        state: data.state ?? undefined,
+        zip: data.zip ?? undefined,
         logo_url: logoUrl,
       };
 
@@ -242,7 +243,7 @@ class BusinessProfileService {
       }
 
       // Prepare update data (using snake_case for database)
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       
       // Basic info
       if (updates.businessName !== undefined) updateData.name = updates.businessName;
@@ -314,7 +315,7 @@ class BusinessProfileService {
   }
 
   // Transform snake_case database response to camelCase
-  private transformToBusinessProfile(data: any): BusinessProfile {
+  private transformToBusinessProfile(data: SupabaseBusinessProfile): BusinessProfile {
     
     // Reconstruct theme if color data exists
     let theme: BusinessTheme | undefined;
@@ -326,27 +327,27 @@ class BusinessProfileService {
       });
     }
 
-    const profile = {
+    const profile: BusinessProfile = {
       id: data.id,
       userId: data.user_id,
       name: data.name,
       email: data.email,
       country: data.country,
-      invoiceNumberFormat: data.invoice_number_format,
-      invoiceNumberSequence: data.invoice_number_sequence,
-      defaultTaxRate: data.default_tax_rate,
+      invoiceNumberFormat: data.invoice_number_format ?? 'INV-{YYYY}-{####}',
+      invoiceNumberSequence: data.invoice_number_sequence ?? 1,
+      defaultTaxRate: data.default_tax_rate ?? undefined,
       gstRegistrationStatus: data.gst_registration_status ?? 'unknown',
-      address: data.address,
-      city: data.city,
-      state: data.state,
-      zip: data.zip,
-      phone: data.phone,
-      taxId: data.tax_id,
-      website: data.website,
-      defaultTerms: data.default_terms,
-      defaultNotes: data.default_notes,
-      bankInfo: data.bank_info,
-      logoUrl: data.logo_url,
+      address: data.address ?? undefined,
+      city: data.city ?? undefined,
+      state: data.state ?? undefined,
+      zip: data.zip ?? undefined,
+      phone: data.phone ?? undefined,
+      taxId: data.tax_id ?? undefined,
+      website: data.website ?? undefined,
+      defaultTerms: data.default_terms ?? undefined,
+      defaultNotes: data.default_notes ?? undefined,
+      bankInfo: data.bank_info ?? undefined,
+      logoUrl: data.logo_url ?? undefined,
       theme: theme,
       createdAt: data.created_at,
       updatedAt: data.updated_at,

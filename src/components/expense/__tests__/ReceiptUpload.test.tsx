@@ -4,6 +4,8 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import ReceiptUpload from '../ReceiptUpload';
 import { storageService } from '@/services/storageService';
+import { openaiReceiptService } from '@/services/openaiReceiptService';
+import type { ReceiptScanResult } from '@/types/receipt';
 
 // Mock the storage service
 vi.mock('@/services/storageService', () => ({
@@ -22,10 +24,12 @@ vi.mock('@/hooks/use-toast', () => ({
 
 vi.mock('@/services/openaiReceiptService', () => ({
   openaiReceiptService: {
-    isAvailable: () => Promise.resolve(false),
+    isAvailable: vi.fn(async () => false),
     scanReceipt: vi.fn(),
   },
 }));
+
+vi.mock('../ReceiptScanner', () => ({ ReceiptScanner: ({ onScanComplete }: { onScanComplete: (result: ReceiptScanResult, url?: string) => void }) => <button onClick={() => onScanComplete({ merchantName: 'Supplier', date: null, total: 230, tax: 30, subtotal: 200, items: [], paymentMethod: 'card', suggestedCategory: null, confidence: 1, notes: null }, 'https://example.test/scanned-receipt.jpg')}>Finish scan</button> }));
 
 describe('ReceiptUpload', () => {
   const mockOnReceiptChange = vi.fn();
@@ -38,6 +42,7 @@ describe('ReceiptUpload', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(openaiReceiptService.isAvailable).mockResolvedValue(false);
     Object.defineProperty(URL, 'createObjectURL', {
       configurable: true,
       writable: true,
@@ -94,6 +99,17 @@ describe('ReceiptUpload', () => {
       expect(storageService.uploadReceipt).toHaveBeenCalledWith(mockFile);
       expect(mockOnReceiptChange).toHaveBeenCalledWith(mockUploadResult.url, mockFile);
     });
+  });
+
+  it('attaches a completed AI scan without a missing state setter', async () => {
+    vi.mocked(openaiReceiptService.isAvailable).mockResolvedValue(true);
+    const user = userEvent.setup();
+    render(<ReceiptUpload {...defaultProps} />);
+    await user.click(await screen.findByRole('tab', { name: 'AI Scan' }));
+    await user.click(screen.getByRole('button', { name: /Scan Receipt with AI/ }));
+    await user.click(screen.getByRole('button', { name: 'Finish scan' }));
+    expect(mockOnReceiptChange).toHaveBeenCalledWith('https://example.test/scanned-receipt.jpg', null);
+    expect(screen.getByText('Receipt Attached')).toBeInTheDocument();
   });
 
   it('validates file size limits', async () => {

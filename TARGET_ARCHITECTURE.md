@@ -1,27 +1,41 @@
 # LedgerCraft target architecture
 
-**Business accountant workflow (local validation, 2026-11-06):** A shared typed
-GST-preparation route returns company-scoped invoice-basis NZD figures from
-posted GST and immutable historical gross movements, including cancellations
-and reinstatements in their journal periods. Partial/private expense claim
-percentages apply exactly once to preserved raw tax; explicit paid-from accounts
-are restricted to bank/cash/card/loan sources. Legacy confirmed invoice/bill
-matches fail closed; supported settlement matching does not duplicate journals.
-Web and Expo consume that
-route, prepare selected periods, and persist GST drafts without claiming IRD
-submission. Received bills and approved expenses are included; unposted and
-foreign records, including deleted FX sources, are excluded. Negative gross or
-GST components require manual review, distinct from an ordinary net refund.
-The web wizard supports custom registered dates,
-an explicit myIR due date, and guarded reconciliation review. Unsupported
-income-tax estimates are no longer offered as company return calculations.
-Supplier payments use the selected bank ledger, and later balance sheets retain
-unclosed prior profit. Web account management uses Hono and report-derived
-balances. Mobile supports correct gross/GST expense create/edit, approvals,
-vendor creation and GST draft reload; Expo web preserves onboarding contacts.
-See [business accounting evidence](docs/evidence/business-accounting/README.md)
-for the independent worksheet, passing local check results, reconciliation boundaries
-and remaining signed-device work. No production filing or deployment is implied.
+**Business accounting completion (implemented locally, 2026-11-06):**
+Web and Expo prepare invoice- or payments-basis NZD GST from company-scoped
+posted records. The reference books give GST of NZ$135 on invoice basis and NZ$141 on
+payments basis. Reviewed signed adjustments retain actor, reasons and source
+references; the reference output −15/input +3 adjustment gives GST of NZ$117. Valid
+foreign source snapshots contribute base-currency GST; foreign payments use an
+explicitly reviewed carrying method and surface review warnings rather than
+claiming an unreviewed currency policy.
+
+Reviewed opening balances and manual journals post balanced entries once.
+Historical ledger audit proposes evidence-backed additive corrections; ambiguous
+historical receipt tax requires explicit source confirmation, and originals are
+never rewritten. Existing supplier-payment matching preserves the prior
+settlement, supports undo/rematch, and does not duplicate cash or GST. Optional
+idempotency covers manual journals, tax drafts and supplier payments. Migration
+`0026_settlement-snapshots.sql` records reviewed FX settlements and supplier
+payment match identity. Migration `0027_credit-notes.sql` adds real credit notes,
+receivable/customer-credit allocation, refunds and reversals, with live remaining
+payment guards. Reviewed period-end FX revaluation posts an exact journal and a
+next-day reversal. Bank settlement requires a base-currency bank; unsupported
+foreign-currency bank statements fail closed.
+
+A confirmed standard NZ-company worksheet derives taxable income from posted
+profit plus reviewed adjustments/losses/credits. The reference taxable income of NZ$700 at
+a confirmed 28% gives tax of NZ$196 less credits of NZ$50 = NZ$146 payable; it is preparation, not an
+automatic IR4 filing or certification of eligibility. Invoice email status changes
+only after transport acceptance; local HTTP/provider contract checks cover
+unconfigured, rejected and acknowledged sends, but live inbox delivery has no
+configured credentials. Web lint and app/Node project typechecks require zero errors
+in CI/release checks. Current feature evidence and final combined
+check status are in
+[`docs/evidence/accounting-completion/README.md`](docs/evidence/accounting-completion/README.md).
+Historical-as-of reporting and final combined suite totals remain tracked there.
+Expo browser checks and bundle exports do not establish signed iOS/Android QA;
+native devices/emulators are unavailable here. No production corrections, real
+recipient messages, deployment or IRD submission are claimed.
 
 **Account recovery and session security (implemented locally, 2026-11-06):**
 Better Auth owns password reset, verification, verified email changes, password
@@ -1197,6 +1211,18 @@ Critical scenarios:
 8. Source and target row counts, totals, object counts, and sampled hashes reconcile.
 
 ## CI/CD
+
+**Current repository web quality gates (2026-11-06):** CI runs raw `pnpm lint`
+and explicit `tsc --noEmit` checks for `tsconfig.app.json` and `tsconfig.node.json`.
+All three commands require exit 0; web lint and project typechecking have no
+allowed error count or non-blocking fallback. The release verification job
+requires the same checks before deployment. Existing lint warnings remain
+visible and do not fail the job. A built-in Node regression test injects failing
+lint/app/Node tools into the actual workflow commands and verifies that each
+failure blocks its check. Triggers, permissions, tested-commit selection and
+deployment conditions are unchanged.
+
+The target pipeline remains:
 
 Pull requests run:
 

@@ -9,6 +9,7 @@ import type { Database } from '../../db/client';
 import { invoices } from '../../db/schema/invoices';
 import { payments } from '../../db/schema/payments';
 import { decimal, roundMoney } from '../invoices/money';
+import type { SettlementSnapshot } from '../currency/settlement.service';
 
 function toPaymentDto(
   row: typeof payments.$inferSelect,
@@ -20,6 +21,9 @@ function toPaymentDto(
     invoiceNumber,
     paymentMethod: row.paymentMethod,
     amount: roundMoney(row.amount),
+    currency: row.currency ?? undefined, baseCurrency: row.baseCurrency ?? undefined,
+    exchangeRate: row.exchangeRate, exchangeRateId: row.exchangeRateId,
+    baseAmount: row.baseAmount, bookBaseAmount: row.bookBaseAmount, exchangeDifference: row.exchangeDifference,
     paymentDate: row.paymentDate,
     referenceNumber: row.referenceNumber ?? null,
     notes: row.notes ?? null,
@@ -67,12 +71,14 @@ export async function insertPayment(
   tx: Database,
   ctx: { organisationId: string; userId: string },
   input: CreatePaymentRequest,
+  snapshot: SettlementSnapshot,
 ): Promise<PaymentDto> {
   const [row] = await tx
     .insert(payments)
     .values({
       organisationId: ctx.organisationId,
       userId: ctx.userId,
+      ...snapshot,
       invoiceId: input.invoiceId,
       paymentMethod: input.paymentMethod,
       amount: roundMoney(input.amount),

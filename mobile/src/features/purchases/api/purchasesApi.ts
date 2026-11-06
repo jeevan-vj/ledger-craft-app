@@ -79,6 +79,7 @@ export interface BillWriteRequest {
 }
 
 export interface RecordBillPaymentRequest {
+  exchangeRateId?: string;
   bankAccountId?: string;
   amount?: string;
   allocations?: { bankAccountId: string; amount: string }[];
@@ -159,9 +160,10 @@ export const purchasesApi = {
   removeAttachment(id: string, attachmentId: string): Promise<void> {
     return apiRequest(`/api/bills/${id}/attachments/${attachmentId}`, { method: 'DELETE' });
   },
-  recordPayment(id: string, input: RecordBillPaymentRequest): Promise<BillPaymentBatchDto> {
+  recordPayment(id: string, input: RecordBillPaymentRequest, key?: string): Promise<BillPaymentBatchDto> {
     return apiRequest(`/api/bills/${id}/payments`, {
       method: 'POST',
+      ...(key ? { headers: { 'Idempotency-Key': key } } : {}),
       body: JSON.stringify(input),
     });
   },

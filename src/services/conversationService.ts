@@ -163,7 +163,7 @@ export class ConversationService {
     conversationId: string,
     role: ConversationRole,
     content: string,
-    metadata?: any
+    metadata?: ConversationMessage['metadata']
   ): Promise<ConversationMessage> {
     if (conversationsApiEnabled()) {
       const dto = await conversationsApi.addMessage(conversationId, { role, content, metadata });
@@ -436,7 +436,7 @@ export class ConversationService {
     if (!conversation) return;
 
     const currentEntities = conversation.context.recentEntities[entityType];
-    const updatedEntities = [entity, ...currentEntities.filter((e: any) => e.id !== entity.id)].slice(0, 10);
+    const updatedEntities = [entity, ...currentEntities.filter((e) => e.id !== entity.id)].slice(0, 10);
 
     await this.updateConversationContext(conversationId, {
       recentEntities: {
@@ -477,7 +477,7 @@ export class ConversationService {
   }
 
   // Helper methods for mapping Supabase data to frontend types
-  private mapSupabaseCustomer(data: any): Customer {
+  private mapSupabaseCustomer(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['customers']): Customer {
     return {
       id: data.id,
       name: data.name,
@@ -496,7 +496,7 @@ export class ConversationService {
     };
   }
 
-  private mapSupabaseInvoice(data: any): Invoice {
+  private mapSupabaseInvoice(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['invoices']): Invoice {
     return {
       id: data.id,
       invoiceNumber: data.invoice_number,
@@ -529,7 +529,7 @@ export class ConversationService {
     };
   }
 
-  private mapSupabaseExpense(data: any): Expense {
+  private mapSupabaseExpense(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['expenses']): Expense {
     return {
       id: data.id,
       description: data.description,
@@ -552,7 +552,7 @@ export class ConversationService {
     };
   }
 
-  private mapSupabaseItem(data: any): Item {
+  private mapSupabaseItem(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['items']): Item {
     return {
       id: data.id,
       name: data.name,
@@ -571,7 +571,7 @@ export class ConversationService {
     };
   }
 
-  private mapSupabaseBusinessProfile(data: any): BusinessProfile {
+  private mapSupabaseBusinessProfile(data: import('@/integrations/supabase/removedBackendTypes').RemovedBackendRows['business_profiles']): BusinessProfile {
     return {
       id: data.id,
       name: data.name,

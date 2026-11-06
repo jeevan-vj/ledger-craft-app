@@ -1,3 +1,4 @@
+import { impactAsync, ImpactFeedbackStyle } from 'expo-haptics';
 import React, { useEffect, useRef } from 'react';
 import {
   View,
@@ -73,7 +74,6 @@ export default function StatusPicker({
   const handleSelect = (status: string) => {
     // Trigger haptic feedback
     if (Platform.OS === 'ios') {
-      const { impactAsync, ImpactFeedbackStyle } = require('expo-haptics');
       impactAsync(ImpactFeedbackStyle.Light);
     }
 

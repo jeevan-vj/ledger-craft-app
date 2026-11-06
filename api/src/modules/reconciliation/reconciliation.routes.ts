@@ -31,6 +31,11 @@ export function reconciliationRoutes() {
       return c.json(await reconService.getSessionForUser(db, user.id, c.req.param('id')));
     });
 
+    routes.get(`${prefix}/reconciliation-sessions/:id/summary`, async (c) => {
+      const { db, user } = await requireSession(c);
+      return c.json(await reconService.summaryForUser(db, user.id, z.string().uuid().parse(c.req.param('id'))));
+    });
+
     routes.post(`${prefix}/reconciliation-sessions`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createReconciliationSessionRequestSchema.parse(await c.req.json());

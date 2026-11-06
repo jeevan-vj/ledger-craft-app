@@ -33,7 +33,7 @@ import {
   type IdempotencyScope,
 } from '../invoices/idempotency';
 import { assertKeyOwned } from '../storage/keys';
-import { currencyRepository } from '../currency/currency.service';
+import { assertSupportedStatementBank, currencyRepository } from '../currency/currency.service';
 import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
 import { suggestionsForTransactionInTx } from '../reconciliation/suggestions.service';
 
@@ -45,6 +45,7 @@ async function postBankTransaction(
   referenceType = 'bank_transaction',
   referenceId = transaction.id,
 ) {
+  await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
   const bankId = await bankLedgerAccount(tx, ctx, account);
   const otherId = await systemAccount(tx, ctx, transaction.type === 'credit' ? '4900' : '5000');
   await postBalancedEntry(tx, ctx, {
@@ -259,6 +260,7 @@ export async function saveBankTransactionDetailsForUser(
     }
     const account = await repo.getAccount(tx, ctx.organisationId, transaction.bankAccountId);
     if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     for (const attachment of input.attachments) assertKeyOwned(attachment.objectKey, ctx.organisationId);
 
     const splitTotal = input.splits.reduce((sum, split) => sum.add(split.amount), decimal(0));
@@ -319,6 +321,7 @@ export async function duplicateBankTransactionForUser(
     if (existing.source === 'transfer') throw new HTTPException(409, { message: 'Transfer legs cannot be duplicated' });
     const account = await repo.getAccount(tx, ctx.organisationId, existing.bankAccountId);
     if (!account || !account.isActive) throw new HTTPException(409, { message: 'Active bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     const balance = applyAmount(account.currentBalance, existing.type, existing.amount);
     const duplicate = await repo.insertManualTransaction(tx, ctx, {
       bankAccountId: existing.bankAccountId,
@@ -436,6 +439,7 @@ export async function importBankTransactionsForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
     if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     const result = await repo.importTransactions(tx, ctx, input);
     for (const transaction of result.imported) await postBankTransaction(tx, ctx, account, transaction);
     return importBankTransactionsResponseSchema.parse({

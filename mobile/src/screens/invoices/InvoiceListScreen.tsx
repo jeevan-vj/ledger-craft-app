@@ -44,6 +44,7 @@ export default function InvoiceListScreen() {
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<InvoiceListNavigationProp>();
   const canImport = useStore((state) => canImportInvoices(state.permissions));
+  const paymentOwnerId = useStore((state) => state.user?.id ?? '');
   const queryClient = useQueryClient();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
@@ -154,7 +155,7 @@ export default function InvoiceListScreen() {
     setUpdatingStatus((prev) => ({ ...prev, [invoiceId]: true }));
 
     try {
-      await invoiceService.updateInvoiceStatus(invoiceId, newStatus as any);
+      await invoiceService.updateInvoiceStatus(invoiceId, newStatus as Parameters<typeof invoiceService.updateInvoiceStatus>[1]);
       
       // Refresh the list
       await loadInvoices();
@@ -306,6 +307,8 @@ export default function InvoiceListScreen() {
       {/* Payment Capture Modal */}
       {selectedInvoiceForPayment && (
         <PaymentCaptureModal
+          key={`${paymentOwnerId}:${selectedInvoiceForPayment.id}`}
+          ownerId={paymentOwnerId}
           visible={paymentModalVisible}
           invoice={selectedInvoiceForPayment}
           onSubmit={handlePaymentSubmit}

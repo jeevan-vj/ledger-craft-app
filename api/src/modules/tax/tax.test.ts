@@ -142,6 +142,13 @@ describe('tax routes', () => {
         });
         expect(filedTwice.status).toBe(409);
 
+        const [tamperFiled, deleteFiled] = await Promise.all([
+          app.request(`/api/tax-returns/${taxReturn.id}`, { method: 'PATCH', headers: { ...originHeaders, Cookie: ownerA.cookie }, body: JSON.stringify({ status: 'draft', netGst: '0.00' }) }),
+          app.request(`/api/tax-returns/${taxReturn.id}`, { method: 'DELETE', headers: { Cookie: ownerA.cookie } }),
+        ]);
+        expect([tamperFiled.status, deleteFiled.status]).toEqual([409, 409]);
+
+
         const ownership = await app.request('/api/tax-returns', {
           method: 'POST',
           headers: { ...originHeaders, Cookie: ownerA.cookie },

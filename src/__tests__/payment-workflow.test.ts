@@ -71,7 +71,7 @@ describe('Payment Workflow E2E Tests', () => {
           quantity: 10,
           rate: 100.00,
           tax: 0.15, // 15% GST
-          amount: 1000.00
+          total: 1000.00, unit: 'each', rateUnit: 'each'
         }
       ],
       subtotal: 1000.00,
@@ -275,7 +275,7 @@ describe('Payment Workflow E2E Tests', () => {
       const payment = await paymentService.createPayment({
         invoiceId: testInvoice.id,
         amount: testInvoice.total,
-        paymentMethod: 'eftpos',
+        paymentMethod: 'eftpos' as CreatePaymentRequest['paymentMethod'],
         paymentDate: new Date().toISOString().split('T')[0],
         referenceNumber: 'EFTPOS-001'
       });
@@ -328,7 +328,7 @@ describe('Payment Workflow E2E Tests', () => {
         await paymentService.createPayment({
           invoiceId: testInvoice.id,
           amount: payment.amount,
-          paymentMethod: payment.method as any,
+          paymentMethod: payment.method as CreatePaymentRequest['paymentMethod'],
           paymentDate: new Date().toISOString().split('T')[0]
         });
       }
@@ -460,7 +460,7 @@ describe('Payment Workflow E2E Tests', () => {
         const payment = await paymentService.createPayment({
           invoiceId: testInvoice.id,
           amount: 100.00,
-          paymentMethod: method as any,
+          paymentMethod: method as CreatePaymentRequest['paymentMethod'],
           paymentDate: new Date().toISOString().split('T')[0]
         });
 

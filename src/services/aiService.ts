@@ -1,3 +1,5 @@
+import type { AIInvoiceDraft } from '@/types/aiInvoice';
+import type { Customer, Item, Invoice } from '@/types';
 import { 
   ConversationMessage, 
   ConversationIntent, 
@@ -287,7 +289,7 @@ Return your analysis as JSON:
     const missing: string[] = [];
 
     switch (intent) {
-      case 'create_invoice':
+      case 'create_invoice': {
         // Check current invoice creation step
         const invoiceStep = context.currentInvoiceCreation?.step;
         
@@ -307,6 +309,7 @@ Return your analysis as JSON:
           }
         }
         break;
+      }
       
       case 'find_customer':
         if (!entities.find(e => e.type === 'customer')) {
@@ -429,15 +432,17 @@ Return your analysis as JSON:
     actions: ConversationAction[]
   ): string {
     switch (intent) {
-      case 'create_invoice':
+      case 'create_invoice': {
         const customer = entities.find(e => e.type === 'customer')?.value;
         const items = entities.filter(e => e.type === 'product' || e.type === 'service');
         return `I'll create an invoice for ${customer} with ${items.length > 0 ? items.map(i => i.value).join(', ') : 'the specified items'}. Should I proceed?`;
+      }
       
-      case 'add_expense':
+      case 'add_expense': {
         const amount = entities.find(e => e.type === 'amount')?.value;
         const description = entities.find(e => e.type === 'expense')?.value;
         return `I'll record an expense of ${amount} for "${description}". Is this correct?`;
+      }
       
       default:
         return 'Should I proceed with this action?';
@@ -475,7 +480,7 @@ Return your analysis as JSON:
   }
 
   // Invoice creation helper methods
-  async searchCustomersByName(name: string): Promise<any[]> {
+  async searchCustomersByName(name: string): Promise<Customer[]> {
     try {
       const needle = name.toLowerCase();
       return (await customerService.getCustomers())
@@ -487,7 +492,7 @@ Return your analysis as JSON:
     }
   }
 
-  async getAvailableItems(): Promise<any[]> {
+  async getAvailableItems(): Promise<Item[]> {
     try {
       return (await itemService.getItems()).filter((item) => item.enableSaleInfo).slice(0, 20);
     } catch (error) {
@@ -505,10 +510,10 @@ Return your analysis as JSON:
     }
   }
 
-  async createInvoiceFromData(invoiceData: any): Promise<any> {
+  async createInvoiceFromData(invoiceData: AIInvoiceDraft): Promise<Invoice> {
     try {
       const invoiceNumber = await this.generateInvoiceNumber();
-      const lineItems = (invoiceData.line_items ?? []).map((item: any) => ({
+      const lineItems = (invoiceData.line_items ?? []).map((item) => ({
         description: item.description,
         quantity: item.quantity,
         unit: item.unit || 'each',
@@ -523,7 +528,7 @@ Return your analysis as JSON:
           customerId: invoiceData.customer_id,
           date: invoiceData.date || new Date().toISOString().split('T')[0],
           dueDate: invoiceData.due_date,
-          items: lineItems,
+          items: lineItems.map((line) => ({ ...line, id: crypto.randomUUID() })),
           subtotal: invoiceData.subtotal,
           taxAmount: invoiceData.tax_amount || 0,
           discount: invoiceData.discount || 0,
@@ -776,7 +781,7 @@ Return your analysis as JSON:
 
     // Handle item selection by number
     const numberMatches = message.match(/(\d+)/g);
-    let selectedItems = currentCreation.selectedItems || [];
+    const selectedItems = currentCreation.selectedItems || [];
     const availableItems = currentCreation.availableItems || [];
 
     if (numberMatches) {
@@ -844,7 +849,7 @@ Return your analysis as JSON:
     const invoice = await this.createInvoiceFromData(invoiceData);
     
     return {
-      message: `🎉 Invoice created successfully!\n\n**Invoice #${invoice.invoice_number}**\nCustomer: ${currentCreation.selectedCustomer.name}\nTotal: $${total.toFixed(2)}\n\nThe invoice has been saved as a draft. You can edit it anytime.`,
+      message: `🎉 Invoice created successfully!\n\n**Invoice #${invoice.invoiceNumber}**\nCustomer: ${currentCreation.selectedCustomer.name}\nTotal: $${total.toFixed(2)}\n\nThe invoice has been saved as a draft. You can edit it anytime.`,
       intent: 'create_invoice',
       entities: [],
       actions: [{
@@ -852,7 +857,7 @@ Return your analysis as JSON:
         parameters: { 
           invoiceId: invoice.id, 
           editUrl: `/invoices/${invoice.id}/edit`,
-          invoiceNumber: invoice.invoice_number
+          invoiceNumber: invoice.invoiceNumber
         },
         status: 'completed'
       }],

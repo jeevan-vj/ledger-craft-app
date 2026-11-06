@@ -1,5 +1,6 @@
 import {
   billListResponseSchema,
+  billPaymentBatchSchema,
   billSchema,
   createVendorRequestSchema,
   vendorListResponseSchema,
@@ -26,6 +27,7 @@ import {
 } from '../invoices/idempotency';
 import * as repo from './purchases.repository';
 import { currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
+import { assertOpenSettlementPeriod, settlementSnapshot } from '../currency/settlement.service';
 
 async function validateVendorAndAccounts(
   tx: Database,
@@ -205,8 +207,17 @@ export async function recordBillPaymentForUser(
   userId: string,
   id: string,
   input: RecordBillPaymentRequest,
+  idempotency?: IdempotencyScope,
 ) {
-  return withOrganisationTx(db, userId, (tx, ctx) => recordBillPaymentInTx(tx, ctx, id, input));
+  return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) {
+      const existing = await getIdempotencyRecord(tx, ctx, idempotency);
+      if (existing) { assertReplayMatches(existing.requestHash, idempotency.requestHash); return billPaymentBatchSchema.parse(existing.responseBody); }
+    }
+    const result = await recordBillPaymentInTx(tx, ctx, id, input);
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: result });
+    return result;
+  });
 }
 
 export async function recordBillPaymentInTx(
@@ -219,6 +230,7 @@ export async function recordBillPaymentInTx(
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
     if (bill.lifecycleStatus !== 'received') throw new HTTPException(409, { message: 'Only received bills can be paid' });
+    if (input.paymentDate < bill.issueDate) throw new HTTPException(400, { message: 'A bill payment cannot precede its bill issue date; record a supplier advance separately' });
     const allocations = input.allocations ?? [{ bankAccountId: input.bankAccountId!, amount: input.amount! }];
     for (const allocation of allocations) {
       if (!(await repo.hasBankAccount(tx, ctx.organisationId, allocation.bankAccountId))) {
@@ -231,7 +243,12 @@ export async function recordBillPaymentInTx(
     }
     const payments = [];
     for (const allocation of allocations) {
-      const payment = await repo.insertPayment(tx, ctx, bill, { ...input, ...allocation });
+      const snapshot = await settlementSnapshot(tx, ctx.organisationId, {
+        type: 'bill', documentId: bill.id, currency: bill.currency, baseCurrency: bill.baseCurrency,
+        total: bill.total, baseTotal: bill.baseTotal, amount: allocation.amount, date: input.paymentDate,
+        exchangeRateId: input.exchangeRateId, outstanding: bill.balanceDue,
+      });
+      const payment = await repo.insertPayment(tx, ctx, bill, { ...input, ...allocation }, snapshot);
       if (!options?.skipPosting) await postBillPayment(tx, ctx, bill, payment);
       payments.push(payment);
     }
@@ -248,6 +265,8 @@ export async function reverseBillPaymentInTx(
 ) {
   const reversed = await repo.reversePayment(tx, ctx, paymentId, input);
   if (!reversed) throw new HTTPException(409, { message: 'Bill payment is not reversible' });
+  const bill = await repo.getBill(tx, ctx.organisationId, reversed.billId);
+  if (bill && bill.currency !== bill.baseCurrency) await assertOpenSettlementPeriod(tx, ctx.organisationId, 'bill', bill.id, input.reversalDate);
   await repo.recalculateBillPayments(tx, ctx.organisationId, reversed.billId);
   return reversed;
 }

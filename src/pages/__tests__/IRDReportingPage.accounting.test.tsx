@@ -28,10 +28,11 @@ vi.mock('@/components/tax/GSTReturnWizard', () => ({ GSTReturnWizard: ({ onCompl
 
 beforeEach(() => vi.clearAllMocks());
 
-it('does not manufacture a company income-tax liability using personal tax bands and GST-inclusive documents', async () => {
+it('opens an explicit ordinary-company worksheet without calculating personal tax bands', async () => {
   render(<MemoryRouter><IRDReportingPage /></MemoryRouter>);
   fireEvent.click(await screen.findByRole('button', { name: 'Prepare income tax' }));
-  await waitFor(() => expect(toast).toHaveBeenCalledWith(expect.objectContaining({ title: 'Income tax calculation is not supported' })));
+  expect(await screen.findByRole('heading', { name: 'Company income tax worksheet' })).toBeInTheDocument();
+  expect(screen.getByLabelText('I confirm this is an ordinary NZ company eligible for the 28% rate')).not.toBeChecked();
   expect(supabaseDataService.createTaxReturn).not.toHaveBeenCalled();
   expect(supabaseDataService.getInvoicesByPeriod).not.toHaveBeenCalled();
 });

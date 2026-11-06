@@ -50,3 +50,8 @@ describe('GST return PDF export', () => {
     });
   });
 });
+
+it('labels a payments-basis draft correctly in the exported filing copy', async () => {
+  await downloadGstReturnPdf({ id: 'payments', userId: '', periodStart: '2026-04-01', periodEnd: '2026-04-30', returnType: 'GST', totalSales: 1380, totalPurchases: 349, gstOnSales: 180, gstOnPurchases: 39, netGst: 141, status: 'draft', createdAt: '', updatedAt: '', returnData: { preparation: { basis: 'payments', baseCurrency: 'NZD', dueDate: '2026-05-28' } } });
+  expect(pdf.text.mock.calls.flatMap((call) => call[0]).join(' ')).toContain('Payments basis · NZD');
+});

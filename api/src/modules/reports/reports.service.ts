@@ -22,7 +22,7 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     const ledgerTaxRows = query.basis === 'accrual' && !query.accountIds?.length
       ? periodRows
       : await repo.ledgerRows(tx, organisationId, { ...query, basis: 'accrual', accountIds: undefined });
-    const foreignIds = await repo.foreignCurrencyDocumentReferences(tx, organisationId, query.baseCurrency);
+    const foreignIds = await repo.unconvertedForeignCurrencyDocumentReferences(tx, organisationId, query.baseCurrency);
     const excludedDocuments = new Set<string>();
     const taxRows = ledgerTaxRows.filter((row) => {
       if (!row.referenceId || !foreignIds.has(row.referenceId)) return true;
@@ -54,7 +54,7 @@ export async function accountStatementForUser(db: Database, userId: string, acco
     const account = await repo.account(tx, ctx.organisationId, accountId); if (!account) throw new HTTPException(404, { message: 'Account not found' });
     const scoped = { ...query, accountIds: [accountId] };
     const [rows, openingRows] = await Promise.all([repo.ledgerRows(tx, ctx.organisationId, scoped), repo.ledgerRows(tx, ctx.organisationId, scoped, query.from)]);
-    let running = openingRows.reduce((sum, row) => sum.add(row.debit).sub(row.credit), decimal(account.openingBalance)); const openingBalance = roundMoney(running);
+    let running = openingRows.reduce((sum, row) => sum.add(row.debit).sub(row.credit), decimal(0)); const openingBalance = roundMoney(running);
     const movements = rows.map((row) => { running = running.add(row.debit).sub(row.credit); return { journalEntryId: row.journalEntryId, entryNumber: row.entryNumber, date: row.date, description: row.description, referenceType: row.referenceType, referenceId: row.referenceId, accountId: row.accountId, accountNumber: row.accountNumber, accountName: row.accountName, debit: roundMoney(row.debit), credit: roundMoney(row.credit), runningBalance: roundMoney(running) }; });
     return accountStatementResponseSchema.parse({ meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString() }, account: { id: account.id, number: account.accountNumber, name: account.name, currency: account.currency }, openingBalance, movements, closingBalance: roundMoney(running) });
   });

@@ -1,3 +1,4 @@
+import type { SupabaseCustomer, SupabaseInvoice } from '../../shared/types';
 import { customersApi, customersApiEnabled } from '../features/customers/api/customersApi';
 import { invoicesApi, invoicesApiEnabled } from '@/features/invoices/api/invoicesApi';
 import type { Invoice } from '@/types/invoice';
@@ -73,7 +74,7 @@ export class CustomerService {
 
       if (error) throw error;
 
-      return (data || []).map((customer: any) => ({
+      return (data || []).map((customer: SupabaseCustomer) => ({
         id: customer.id,
         name: customer.name,
         email: customer.email,
@@ -203,7 +204,7 @@ export class CustomerService {
         return fromDto(await customersApi.update(id, input));
       }
 
-      const dbCustomerData: any = {};
+      const dbCustomerData: Record<string, unknown> = {};
 
       if (customerData.name !== undefined) dbCustomerData.name = customerData.name;
       if (customerData.email !== undefined) dbCustomerData.email = customerData.email || null;
@@ -265,7 +266,7 @@ export class CustomerService {
 
       if (error) throw error;
 
-      return (data || []).map((inv: any) => ({
+      return (data || []).map((inv: SupabaseInvoice) => ({
         id: inv.id,
         invoiceNumber: inv.invoice_number,
         date: inv.date,

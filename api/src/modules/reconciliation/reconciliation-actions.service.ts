@@ -16,6 +16,7 @@ import { decimal } from '../invoices/money';
 import * as paymentsService from '../payments/payments.service';
 import * as purchasesService from '../purchases/purchases.service';
 import * as actionRepo from './reconciliation-actions.repository';
+import { assertSupportedStatementBank } from '../currency/currency.service';
 import { hasCompletedStatement, rejectTransactionMatches } from './existing-posting.repository';
 
 async function requireTargetAccount(tx: Database, organisationId: string, id: string) {
@@ -59,6 +60,7 @@ export async function acceptSuggestionForUser(
 
     const account = await bankRepo.getAccount(tx, ctx.organisationId, transaction.bankAccountId);
     if (!account) throw new HTTPException(409, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
     const paymentDate = input.paymentDate ?? transaction.transactionDate;
     const paymentItems: Array<{ documentType: 'invoice' | 'bill'; documentId: string; paymentId: string | null; billPaymentId: string | null; amount: string }> = [];
     const targetLines: PostingLine[] = [];
@@ -154,6 +156,9 @@ export async function markPersonalForUser(
     if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
     if (transaction.isReconciled || await actionRepo.getActiveAction(tx, ctx.organisationId, transactionId)) throw new HTTPException(409, { message: 'Bank transaction is already reconciled' });
     if (await detailsRepo.hasAllocations(tx, ctx.organisationId, transactionId)) throw new HTTPException(409, { message: 'Transaction allocations already exist' });
+    const bank = await bankRepo.getAccount(tx, ctx.organisationId, transaction.bankAccountId);
+    if (!bank) throw new HTTPException(409, { message: 'Bank account not found' });
+    await assertSupportedStatementBank(tx, ctx.organisationId, bank.currency);
     const generic = await systemAccount(tx, ctx, transaction.type === 'credit' ? '4900' : '5000');
     const drawings = await systemAccount(tx, ctx, '3100');
     const actionId = crypto.randomUUID();
@@ -192,9 +197,11 @@ export async function undoReconciliationForUser(
         await purchasesService.reverseBillPaymentInTx(tx, ctx, item.billPaymentId, input);
       }
     }
+    const journal = await actionRepo.actionJournalReference(tx, ctx.organisationId, action.journalEntryId);
+    if (!journal?.referenceType || !journal.referenceId || journal.status !== 'posted') throw new HTTPException(409, { message: 'The reconciliation journal is missing or already reversed; review this action before undo' });
     await reversePosting(tx, ctx, {
-      referenceType: action.actionType === 'accept' ? 'bank_reconciliation_accept' : 'bank_reconciliation_personal',
-      referenceId: action.id,
+      referenceType: journal.referenceType,
+      referenceId: journal.referenceId,
       reversalType: 'bank_reconciliation_undo',
       date: input.reversalDate,
       description: `Undo bank reconciliation: ${input.reason}`,

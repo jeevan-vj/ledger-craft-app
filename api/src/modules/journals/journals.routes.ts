@@ -2,6 +2,7 @@ import { createJournalEntryRequestSchema, updateJournalEntryRequestSchema } from
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
+import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 import * as journalsService from './journals.service';
 
 export function journalRoutes() {
@@ -16,7 +17,9 @@ export function journalRoutes() {
     routes.post(`${prefix}/journal-entries`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createJournalEntryRequestSchema.parse(await c.req.json());
-      return c.json(await journalsService.createJournalEntryForUser(db, user.id, input), 201);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const scope = key ? { key, method: 'POST', path: '/api/journal-entries', requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await journalsService.createJournalEntryForUser(db, user.id, input, scope), 201);
     });
 
     routes.get(`${prefix}/journal-entries/:id`, async (c) => {

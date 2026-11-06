@@ -7,6 +7,7 @@ import { reportsApi, type ReportBasis } from '@/features/reports/api/reportsApi'
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { radius, space, useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
+import { CompanyTaxPanel } from '@/components/reports/CompanyTaxPanel';
 import { GstPreparationPanel } from '@/components/reports/GstPreparationPanel';
 
 type Period = 'month' | 'year';
@@ -51,6 +52,7 @@ export default function ReportsScreen() {
       ].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={[theme.type.callout, { color: label === 'Trial balance' ? (data.trialBalance.balanced ? theme.colors.success : theme.colors.danger) : theme.colors.text }]}>{label === 'Trial balance' ? value : money(value)}</Text></View>)}</Card>
       <Text style={[theme.type.headline, styles.sectionTitle]}>What is owed</Text>
       <Card style={styles.list}>{[['Receivables', data.receivablesAging.total], ['Payables', data.payablesAging.total]].map(([label, value], index) => <View key={label} style={[styles.row, index > 0 && { borderTopColor: theme.colors.separator, borderTopWidth: StyleSheet.hairlineWidth }]}><Text style={theme.type.body}>{label}</Text><Text style={[theme.type.callout, styles.tabular]}>{money(value)}</Text></View>)}</Card>
+      {[['receivables', data.receivablesAging.unallocatedControl, 'customer'], ['payables', data.payablesAging.unallocatedControl, 'supplier']].map(([label, amount, contact]) => amount && /[1-9]/.test(amount) ? <Text key={label} accessibilityRole="alert" style={[theme.type.footnote, { color: theme.colors.warning }]}>Unallocated posted {label}: {money(amount)}. Link {contact} details before aging.</Text> : null)}
       <Text style={[theme.type.headline, styles.sectionTitle]}>GST return (IRD)</Text>
       <Card style={styles.list}>
         <View style={styles.row}><Text style={theme.type.body}>Output GST (sales)</Text><Text selectable style={[theme.type.callout, styles.tabular]}>{money(data.taxSummary.outputGst)}</Text></View>
@@ -65,6 +67,7 @@ export default function ReportsScreen() {
       <Text style={[theme.type.caption, styles.footnote]}>Generated {new Date(data.meta.generatedAt).toLocaleString()} · NZD · Draft documents excluded</Text>
     </> : null}
     <GstPreparationPanel />
+    <CompanyTaxPanel />
   </ScrollView>;
 }
 

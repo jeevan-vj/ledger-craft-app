@@ -162,38 +162,7 @@ export interface GstReconciliationSnapshot {
   acknowledgedAt?: string;
 }
 
-export interface IRDReturnData {
-  preparation?: { basis: 'invoice'; baseCurrency: 'NZD'; dueDate: string };
-  // GST Return specific data
-  gstReturn?: {
-    salesDetails: {
-      standardRated: number;
-      zeroRated: number;
-      exempt: number;
-      totalSales: number;
-      gstOnSales: number;
-    };
-    purchaseDetails: {
-      standardRated: number;
-      capitalGoods: number;
-      totalPurchases: number;
-      gstOnPurchases: number;
-    };
-    adjustments?: {
-      badDebts: number;
-      otherAdjustments: number;
-    };
-  };
-  reconciliation?: GstReconciliationSnapshot;
-  // Income Tax Return specific data
-  incomeTax?: {
-    grossIncome: number;
-    allowableDeductions: number;
-    taxableIncome: number;
-    taxDue: number;
-    provisionalTax: number;
-  };
-}
+export type IRDReturnData = NonNullable<import('@ledgercraft/contracts').TaxReturnDto['returnData']>;
 
 // Calculation utilities types
 export interface TaxCalculationResult {
@@ -230,6 +199,15 @@ export interface PaymentProcessingResult {
 
 // Financial reporting types
 export interface FinancialSummary {
+  totalAssets?: number;
+  totalLiabilities?: number;
+  totalEquity?: number;
+  gstCollected?: number;
+  gstPaid?: number;
+  outstandingInvoices?: number;
+  outstandingBills?: number;
+  receivablesAging?: import('@ledgercraft/contracts').FinancialReportResponse['receivablesAging'];
+  payablesAging?: import('@ledgercraft/contracts').FinancialReportResponse['payablesAging'];
   totalRevenue: number;
   totalExpenses: number;
   netIncome: number;
@@ -257,6 +235,7 @@ export interface AccountBalanceSummary {
 
 // API request/response types
 export interface CreatePaymentRequest {
+  exchangeRateId?: string | null;
   invoiceId: string;
   paymentMethod: Payment['paymentMethod'];
   amount: number;
@@ -312,8 +291,8 @@ export interface AuditTrail {
   action: string;
   entityType: string;
   entityId: string;
-  oldData?: Record<string, any>;
-  newData?: Record<string, any>;
+  oldData?: Record<string, unknown>;
+  newData?: Record<string, unknown>;
   timestamp: string;
   ipAddress?: string;
   userAgent?: string;

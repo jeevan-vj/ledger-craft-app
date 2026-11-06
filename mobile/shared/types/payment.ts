@@ -292,8 +292,8 @@ export interface AuditTrail {
   action: string;
   entityType: string;
   entityId: string;
-  oldData?: Record<string, any>;
-  newData?: Record<string, any>;
+  oldData?: Record<string, unknown>;
+  newData?: Record<string, unknown>;
   timestamp: string;
   ipAddress?: string;
   userAgent?: string;

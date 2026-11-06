@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { AIConversationService } from '../aiService';
+import type { ConversationEntity, ConversationAction } from '@/types';
 import {
   mockConversationContext,
   mockUserMessage,
@@ -30,7 +31,7 @@ describe('AIConversationService', () => {
 
   afterEach(() => {
     cleanupTest(testMocks);
-    import.meta.env = originalEnv;
+    Object.assign(import.meta.env, originalEnv);
   });
 
   describe('constructor', () => {
@@ -176,7 +177,7 @@ describe('AIConversationService', () => {
 
   describe('buildAnalysisPrompt', () => {
     it('should include business context in prompt', () => {
-      const prompt = (aiService as any).buildAnalysisPrompt(mockConversationContext);
+      const prompt = aiService['buildAnalysisPrompt'](mockConversationContext);
 
       expect(prompt).toContain('Business: Test Business');
       expect(prompt).toContain('John Smith, Sarah Johnson');
@@ -189,7 +190,7 @@ describe('AIConversationService', () => {
         businessContext: undefined
       };
 
-      const prompt = (aiService as any).buildAnalysisPrompt(contextWithoutBusiness);
+      const prompt = aiService['buildAnalysisPrompt'](contextWithoutBusiness);
 
       expect(prompt).toContain('Recent customers: John Smith, Sarah Johnson');
       expect(prompt).not.toContain('Business:');
@@ -198,11 +199,11 @@ describe('AIConversationService', () => {
 
   describe('identifyMissingInformation', () => {
     it('should identify missing customer for invoice creation', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'service', value: 'web design', confidence: 0.8, resolved: false }
       ];
 
-      const missing = (aiService as any).identifyMissingInformation(
+      const missing = aiService['identifyMissingInformation'](
         'create_invoice',
         entities,
         mockConversationContext
@@ -212,11 +213,11 @@ describe('AIConversationService', () => {
     });
 
     it('should identify missing items for invoice creation', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'customer', value: 'John Smith', confidence: 0.9, resolved: true }
       ];
 
-      const missing = (aiService as any).identifyMissingInformation(
+      const missing = aiService['identifyMissingInformation'](
         'create_invoice',
         entities,
         {
@@ -229,11 +230,11 @@ describe('AIConversationService', () => {
     });
 
     it('should identify missing amount for expense', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'expense', value: 'office supplies', confidence: 0.8, resolved: false }
       ];
 
-      const missing = (aiService as any).identifyMissingInformation(
+      const missing = aiService['identifyMissingInformation'](
         'add_expense',
         entities,
         mockConversationContext
@@ -243,12 +244,12 @@ describe('AIConversationService', () => {
     });
 
     it('should return empty array when all required fields present', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'customer', value: 'John Smith', confidence: 0.9, resolved: true },
         { type: 'service', value: 'web design', confidence: 0.8, resolved: false }
       ];
 
-      const missing = (aiService as any).identifyMissingInformation(
+      const missing = aiService['identifyMissingInformation'](
         'create_invoice',
         entities,
         mockConversationContext
@@ -260,13 +261,13 @@ describe('AIConversationService', () => {
 
   describe('planActions', () => {
     it('should plan create invoice action', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'customer', value: 'John Smith', confidence: 0.9, resolved: true },
         { type: 'service', value: 'web design', confidence: 0.8, resolved: false },
         { type: 'amount', value: '$500', confidence: 0.95, resolved: true }
       ];
 
-      const actions = (aiService as any).planActions(
+      const actions = aiService['planActions'](
         'create_invoice',
         entities,
         mockConversationContext
@@ -279,11 +280,11 @@ describe('AIConversationService', () => {
     });
 
     it('should plan search customers action', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'customer', value: 'Sarah', confidence: 0.9, resolved: false }
       ];
 
-      const actions = (aiService as any).planActions(
+      const actions = aiService['planActions'](
         'find_customer',
         entities,
         mockConversationContext
@@ -295,12 +296,12 @@ describe('AIConversationService', () => {
     });
 
     it('should plan create expense action', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'amount', value: '$150', confidence: 0.95, resolved: true },
         { type: 'expense', value: 'office supplies', confidence: 0.8, resolved: false }
       ];
 
-      const actions = (aiService as any).planActions(
+      const actions = aiService['planActions'](
         'add_expense',
         entities,
         mockConversationContext
@@ -315,16 +316,16 @@ describe('AIConversationService', () => {
 
   describe('shouldConfirmAction', () => {
     it('should require confirmation for sensitive actions', () => {
-      const needsConfirmation = (aiService as any).shouldConfirmAction(
+      const needsConfirmation = aiService['shouldConfirmAction'](
         'send_invoice',
-        [{ type: 'send_invoice', status: 'pending' }]
+        [{ type: 'send_invoice', status: 'pending', parameters: {} }]
       );
 
       expect(needsConfirmation).toBe(true);
     });
 
     it('should require confirmation for create actions', () => {
-      const needsConfirmation = (aiService as any).shouldConfirmAction(
+      const needsConfirmation = aiService['shouldConfirmAction'](
         'add_expense',
         [{ type: 'create_expense', status: 'pending', parameters: { amount: '1500' } }]
       );
@@ -333,9 +334,9 @@ describe('AIConversationService', () => {
     });
 
     it('should not require confirmation for safe actions', () => {
-      const needsConfirmation = (aiService as any).shouldConfirmAction(
+      const needsConfirmation = aiService['shouldConfirmAction'](
         'find_customer',
-        [{ type: 'search_customers', status: 'pending' }]
+        [{ type: 'search_customers', status: 'pending', parameters: {} }]
       );
 
       expect(needsConfirmation).toBe(false);
@@ -344,12 +345,12 @@ describe('AIConversationService', () => {
 
   describe('generateConfirmationMessage', () => {
     it('should generate invoice confirmation message', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'customer', value: 'John Smith', confidence: 0.9, resolved: true },
         { type: 'service', value: 'web design', confidence: 0.8, resolved: false }
       ];
 
-      const actions = [
+      const actions: ConversationAction[] = [
         {
           type: 'create_invoice',
           parameters: { customer: 'John Smith', items: ['web design'] },
@@ -357,7 +358,7 @@ describe('AIConversationService', () => {
         }
       ];
 
-      const message = (aiService as any).generateConfirmationMessage(
+      const message = aiService['generateConfirmationMessage'](
         'create_invoice',
         entities,
         actions
@@ -369,12 +370,12 @@ describe('AIConversationService', () => {
     });
 
     it('should generate expense confirmation message', () => {
-      const entities = [
+      const entities: ConversationEntity[] = [
         { type: 'amount', value: '$150', confidence: 0.95, resolved: true },
         { type: 'expense', value: 'office supplies', confidence: 0.8, resolved: false }
       ];
 
-      const actions = [
+      const actions: ConversationAction[] = [
         {
           type: 'create_expense',
           parameters: { amount: '$150', description: 'office supplies' },
@@ -382,7 +383,7 @@ describe('AIConversationService', () => {
         }
       ];
 
-      const message = (aiService as any).generateConfirmationMessage(
+      const message = aiService['generateConfirmationMessage'](
         'add_expense',
         entities,
         actions
@@ -396,7 +397,7 @@ describe('AIConversationService', () => {
 
   describe('getSuggestedActions', () => {
     it('should return appropriate suggestions for create invoice', () => {
-      const suggestions = (aiService as any).getSuggestedActions(
+      const suggestions = aiService['getSuggestedActions'](
         'create_invoice',
         []
       );
@@ -407,7 +408,7 @@ describe('AIConversationService', () => {
     });
 
     it('should return appropriate suggestions for find customer', () => {
-      const suggestions = (aiService as any).getSuggestedActions(
+      const suggestions = aiService['getSuggestedActions'](
         'find_customer',
         []
       );
@@ -418,7 +419,7 @@ describe('AIConversationService', () => {
     });
 
     it('should return default suggestions for unknown intent', () => {
-      const suggestions = (aiService as any).getSuggestedActions(
+      const suggestions = aiService['getSuggestedActions'](
         'unknown',
         []
       );
@@ -434,7 +435,8 @@ describe('AIConversationService', () => {
     });
 
     it('should return false when API key is missing', () => {
-      const service = Object.assign(new AIConversationService(), { apiKey: '' });
+      const service = new AIConversationService();
+      Reflect.set(service, 'apiKey', '');
       expect(service.isConfigured()).toBe(false);
     });
   });

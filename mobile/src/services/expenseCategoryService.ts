@@ -1,9 +1,10 @@
+import type { SupabaseExpenseCategory } from '../../shared/types';
 import { expensesApi, expensesApiEnabled } from '@/features/expenses/api/expensesApi';
 import { supabase } from './supabaseClient';
 import type { ExpenseCategory } from '@/types/expense';
 
 // Helper function to transform snake_case to camelCase
-const mapSupabaseExpenseCategoryToExpenseCategory = (category: any): ExpenseCategory => ({
+const mapSupabaseExpenseCategoryToExpenseCategory = (category: SupabaseExpenseCategory): ExpenseCategory => ({
   id: category.id,
   name: category.name,
   description: category.description,
@@ -138,7 +139,7 @@ export class ExpenseCategoryService {
       }
 
       // Transform to snake_case for database
-      const updateData: any = {};
+      const updateData: Record<string, unknown> = {};
       if (category.name !== undefined) updateData.name = category.name;
       if (category.description !== undefined) updateData.description = category.description || null;
       if (category.color !== undefined) updateData.color = category.color || null;

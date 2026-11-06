@@ -7,6 +7,7 @@ export type InvoiceMail = {
   subject?: string;
   html?: string;
   amountDue?: string;
+  currency?: string;
   dueDate?: string | null;
   businessName?: string;
   publicUrl?: string;

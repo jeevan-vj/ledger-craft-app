@@ -68,16 +68,16 @@ describe('invoice routes', () => {
           items: [{ description: 'Goods', quantity: '1', rate: '100' }], additionalChargesList: [charge], additionalCharges: '999',
         }) });
         expect(created.status).toBe(201);
-        const invoice = await created.json() as any;
+        const invoice = invoiceSchema.parse(await created.json());
         expect(invoice.additionalChargesList).toEqual([charge]);
         expect(invoice.additionalCharges).toBe('30.00');
         expect(invoice.total).toBe('145.00');
         const read = await app.request(`/api/invoices/${invoice.id}`, { headers });
-        expect((await read.json() as any).additionalChargesList).toEqual([charge]);
+        expect(invoiceSchema.parse(await read.json()).additionalChargesList).toEqual([charge]);
         const patch = async (body: unknown) => {
           const result = await app.request(`/api/invoices/${invoice.id}`, { method: 'PATCH', headers, body: JSON.stringify(body) });
           expect(result.status).toBe(200);
-          return await result.json() as any;
+          return invoiceSchema.parse(await result.json());
         };
         expect((await patch({ notes: 'Keep delivery' })).additionalChargesList).toEqual([charge]);
         const percent = await patch({ additionalChargesList: [{ ...charge, calculationType: 'percentage', amount: '10' }] });

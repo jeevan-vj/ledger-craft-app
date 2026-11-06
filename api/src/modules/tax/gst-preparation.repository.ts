@@ -2,17 +2,17 @@ import { and, eq, gte, inArray, lte } from 'drizzle-orm';
 import type { GstPreparationQuery } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { journalEntries } from '../../db/schema/accounts';
-import { foreignCurrencyDocumentIds } from '../reports/reports.repository';
+import { unconvertedForeignCurrencyDocumentIds } from '../reports/reports.repository';
 import { decimal } from '../invoices/money';
 
-const salesTypes = ['invoice', 'invoice_cancellation', 'invoice_restore'];
+const salesTypes = ['invoice', 'invoice_cancellation', 'invoice_restore', 'credit_note', 'credit_note_reversal'];
 const purchaseTypes = ['bill', 'bill_void', 'bill_restore', 'expense', 'expense_reversal'];
-const reversalTypes = new Set(['invoice_cancellation', 'bill_void', 'expense_reversal']);
+const reversalTypes = new Set(['invoice_cancellation', 'bill_void', 'expense_reversal', 'credit_note']);
 
 /** Gross is the immutable posting's balanced total, signed by movement type.
  * Current document status must not rewrite a historical GST period. */
 export async function grossGstDocuments(tx: Database, organisationId: string, period: GstPreparationQuery) {
-  const foreign = await foreignCurrencyDocumentIds(tx, organisationId, 'NZD');
+  const foreign = await unconvertedForeignCurrencyDocumentIds(tx, organisationId, 'NZD');
   const rows = await tx.select({ referenceType: journalEntries.referenceType, referenceId: journalEntries.referenceId, amount: journalEntries.totalAmount })
     .from(journalEntries).where(and(eq(journalEntries.organisationId, organisationId),
       inArray(journalEntries.status, ['posted', 'reversed']), inArray(journalEntries.referenceType, [...salesTypes, ...purchaseTypes]),

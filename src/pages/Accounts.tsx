@@ -12,6 +12,8 @@ import { toast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { accountsApi } from '@/features/payments/api/paymentsApi';
 import { reportsApi } from '@/features/reports/api/reportsApi';
+import { OpeningBalancesPanel } from '@/components/accounting/OpeningBalancesPanel';
+import { LedgerAuditPanel } from '@/components/accounting/LedgerAuditPanel';
 import { ledgerQueryKeys } from '@/features/app-data/useLedgerQueries';
 
 const ACCOUNT_TYPES: { value: AccountType; label: string }[] = [
@@ -35,6 +37,8 @@ export default function AccountsPage() {
     queryFn: () => reportsApi.financial({ from: date.slice(0, 4) + '-01-01', to: date, basis: 'accrual', baseCurrency: 'NZD' }),
   });
   const posted = new Map(balances.data?.trialBalance.rows.map((row) => [row.accountId, row.balance]) ?? []);
+  const [recoveryOpen, setRecoveryOpen] = useState(false);
+  const [recoveryTab, setRecoveryTab] = useState<'opening' | 'audit'>('opening');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Account | null>(null);
   const [form, setForm] = useState<AccountForm>(() => emptyAccount(businessProfile?.currency ?? 'NZD'));
@@ -75,11 +79,14 @@ export default function AccountsPage() {
       <thead><tr><th>Name</th><th>Type</th><th>Currency</th><th>Opening value</th><th>Posted ledger balance (NZD)</th><th>Status</th><th /></tr></thead>
       <tbody>{accounts.map((account) => <tr key={account.id}>
         <td>{account.name}</td><td>{account.accountClass ?? account.type}</td><td>{account.currency}</td><td>{account.openingBalance}</td>
-        <td>{account.currency !== 'NZD' ? 'NZD reports only' : balances.isError ? 'Unavailable' : balances.isPending ? 'Loading…' : balanceText(posted.get(account.id) ?? '0.00')}</td>
+        <td>{balances.isError ? 'Unavailable' : balances.isPending ? 'Loading…' : balanceText(posted.get(account.id) ?? '0.00')}</td>
         <td>{account.isActive === false ? 'Inactive' : 'Active'}</td>
         <td><Button size="sm" variant="outline" onClick={() => openEdit(account)}>Edit</Button><Button size="sm" variant="outline" disabled={saving} className="ml-2" onClick={() => void toggleActive(account)}>{account.isActive === false ? 'Activate' : 'Deactivate'}</Button></td>
       </tr>)}</tbody>
     </Table>}
+    <div className="space-y-4"><Button variant="outline" aria-expanded={recoveryOpen} onClick={() => setRecoveryOpen((open) => !open)}>Opening balances and historical corrections</Button>
+      {recoveryOpen && <div className="space-y-4"><div className="flex flex-wrap gap-2"><Button variant={recoveryTab === 'opening' ? 'default' : 'outline'} onClick={() => setRecoveryTab('opening')}>Opening balances</Button><Button variant={recoveryTab === 'audit' ? 'default' : 'outline'} onClick={() => setRecoveryTab('audit')}>Historical corrections</Button></div>{recoveryTab === 'opening' ? <OpeningBalancesPanel accounts={accounts} onPosted={() => void refresh()} /> : <LedgerAuditPanel accounts={accounts} onPosted={() => void refresh()} />}</div>}
+    </div>
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}><DialogContent><DialogTitle>{editing ? 'Edit Account' : 'Add Account'}</DialogTitle>
       <form onSubmit={handleSave} className="space-y-4 mt-4">
         <div><label htmlFor="account-name">Name</label><Input id="account-name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required /></div>

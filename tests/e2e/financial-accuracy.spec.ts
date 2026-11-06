@@ -1,6 +1,16 @@
 import { test, expect, Page } from '@playwright/test';
 import { AuthMocker } from './auth-utils';
 
+interface FinancialValidationRequest {
+  items: Array<{ quantity: number; unit_price: number }>;
+  tax_rate: number;
+  expected_total: number;
+}
+interface PaymentBalanceRequest {
+  payments: Array<{ amount: number }>;
+  invoice_total: number;
+}
+
 /**
  * Financial Accuracy Validation E2E Tests
  * 
@@ -84,10 +94,10 @@ class FinancialAccuracyHelper {
 
     // Mock financial validation endpoints
     await this.page.route('**/api/financial/validate**', async route => {
-      const body = await route.request().postDataJSON();
+      const body = route.request().postDataJSON() as FinancialValidationRequest;
       
       // Perform server-side calculation validation
-      const calculatedSubtotal = body.items.reduce((sum: number, item: any) => 
+      const calculatedSubtotal = body.items.reduce((sum, item) =>
         sum + (item.quantity * item.unit_price), 0);
       
       const calculatedTax = calculatedSubtotal * body.tax_rate;
@@ -108,9 +118,9 @@ class FinancialAccuracyHelper {
 
     // Mock payment balance calculations
     await this.page.route('**/api/financial/balance**', async route => {
-      const body = await route.request().postDataJSON();
+      const body = route.request().postDataJSON() as PaymentBalanceRequest;
       
-      const totalPayments = body.payments.reduce((sum: number, payment: any) => 
+      const totalPayments = body.payments.reduce((sum, payment) =>
         sum + payment.amount, 0);
       
       const remainingBalance = body.invoice_total - totalPayments;
@@ -358,7 +368,7 @@ class FinancialAccuracyHelper {
     const invoiceListTotal = await this.page.locator('[data-testid="invoice-total"]').first().textContent();
     const listTotal = parseFloat(invoiceListTotal?.replace(/[^0-9.]/g, '') || '0');
     
-    await this.page.click('[data-testid="invoice-row"]').first();
+    await this.page.locator('[data-testid="invoice-row"]').first().click();
     const invoiceDetailTotal = await this.page.locator('[data-testid="invoice-detail-total"]').textContent();
     const detailTotal = parseFloat(invoiceDetailTotal?.replace(/[^0-9.]/g, '') || '0');
     

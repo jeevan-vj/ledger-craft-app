@@ -12,6 +12,14 @@ const ledgerAuthority = { status: 'authoritative' as const, source: 'posted_ledg
 const operationalAuthority = { status: 'operational' as const, source: 'operational_records' as const, message: 'Recent source-record activity; this count is not a financial statement.' };
 type Range = { from: string; to: string };
 
+function unallocatedRows(aging: FinancialReportResponse['receivablesAging'], date: string) {
+  return decimal(aging.unallocatedControl ?? '0').compare(0) === 0 ? [] : [{
+    id: 'unallocated-control', date, label: 'Unallocated control balance',
+    detail: 'Posted opening or manual balance without customer or supplier details; not assigned an age.',
+    value: aging.unallocatedControl!, route: '/accounting',
+  }];
+}
+
 function comparisonRange(filters: ReportFilters): Range | null {
   if (filters.comparison === 'none') return null;
   if (filters.comparison === 'previous_year') return { from: `${Number(filters.from.slice(0, 4)) - 1}${filters.from.slice(4)}`, to: `${Number(filters.to.slice(0, 4)) - 1}${filters.to.slice(4)}` };
@@ -42,8 +50,8 @@ async function activityForRange(tx: Database, organisationId: string, range: Ran
 function ledgerReport(type: Exclude<DashboardWidgetKind, 'activity'>, filters: ReportFilters, report: FinancialReportResponse, comparison: FinancialReportResponse | null): ReportResultDto {
   const common = { type, filters, authority: ledgerAuthority };
   if (type === 'summary') return reportResultSchema.parse({ ...common, metrics: [metric('summary-revenue', 'Revenue', report.profitLoss.revenue, comparison?.profitLoss.revenue ?? null), metric('summary-expenses', 'Expenses', report.profitLoss.expenses, comparison?.profitLoss.expenses ?? null), metric('summary-net', 'Net income', report.profitLoss.netIncome, comparison?.profitLoss.netIncome ?? null)], rows: report.profitLoss.rows.map((row) => ({ id: row.accountId, date: filters.to, label: row.accountName, detail: row.accountNumber ? `Account ${row.accountNumber}` : 'Ledger account', value: row.balance, route: '/accounting' })) });
-  if (type === 'receivables') return reportResultSchema.parse({ ...common, metrics: [metric('receivables-total', 'Outstanding receivables', report.receivablesAging.total, comparison?.receivablesAging.total ?? null)], rows: report.receivablesAging.items.map((row) => ({ id: row.id, date: row.issueDate, label: row.number, detail: `${row.partyName} · due ${row.dueDate}`, value: row.balanceDue, route: `/invoices/${row.id}` })) });
-  if (type === 'payables') return reportResultSchema.parse({ ...common, metrics: [metric('payables-total', 'Outstanding payables', report.payablesAging.total, comparison?.payablesAging.total ?? null)], rows: report.payablesAging.items.map((row) => ({ id: row.id, date: row.issueDate, label: row.number, detail: `${row.partyName} · due ${row.dueDate}`, value: row.balanceDue, route: '/bills' })) });
+  if (type === 'receivables') return reportResultSchema.parse({ ...common, metrics: [metric('receivables-total', 'Outstanding receivables', report.receivablesAging.total, comparison?.receivablesAging.total ?? null)], rows: [...report.receivablesAging.items.map((row) => ({ id: row.id, date: row.issueDate, label: row.number, detail: `${row.partyName} · due ${row.dueDate}`, value: row.balanceDue, route: `/invoices/${row.id}` })), ...unallocatedRows(report.receivablesAging, filters.to)] });
+  if (type === 'payables') return reportResultSchema.parse({ ...common, metrics: [metric('payables-total', 'Outstanding payables', report.payablesAging.total, comparison?.payablesAging.total ?? null)], rows: [...report.payablesAging.items.map((row) => ({ id: row.id, date: row.issueDate, label: row.number, detail: `${row.partyName} · due ${row.dueDate}`, value: row.balanceDue, route: '/bills' })), ...unallocatedRows(report.payablesAging, filters.to)] });
   if (type === 'cash') return reportResultSchema.parse({ ...common, metrics: [metric('cash-in', 'Cash in', report.cashFlow.inflows, comparison?.cashFlow.inflows ?? null), metric('cash-out', 'Cash out', report.cashFlow.outflows, comparison?.cashFlow.outflows ?? null), metric('cash-net', 'Net cash flow', report.cashFlow.netCashFlow, comparison?.cashFlow.netCashFlow ?? null), metric('cash-closing', 'Closing cash', report.cashFlow.closingCash, comparison?.cashFlow.closingCash ?? null)], rows: report.cashFlow.rows.map((row) => ({ id: row.accountId, date: filters.to, label: row.accountName, detail: row.accountNumber ? `Account ${row.accountNumber}` : 'Cash account', value: row.balance, route: '/accounting' })) });
   return reportResultSchema.parse({ ...common, metrics: [metric('tax-collected', 'GST collected', report.taxSummary.collected, comparison?.taxSummary.collected ?? null), metric('tax-paid', 'GST paid', report.taxSummary.paid, comparison?.taxSummary.paid ?? null), metric('tax-net', 'Net GST payable', report.taxSummary.netPayable, comparison?.taxSummary.netPayable ?? null)], rows: [] });
 }

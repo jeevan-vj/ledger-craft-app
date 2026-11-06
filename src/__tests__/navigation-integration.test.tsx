@@ -6,7 +6,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 // Import components
 import { BreadcrumbNavigation } from '@/components/common/BreadcrumbNavigation';
 import { PermissionGuard, PermissionCheck } from '@/components/auth/PermissionGuard';
-import { usePermissions } from '@/hooks/usePermissions';
+import { usePermissions, type Permission } from '@/hooks/usePermissions';
 import { useBreadcrumbs } from '@/hooks/useBreadcrumbs';
 
 // Mock authentication context
@@ -194,7 +194,7 @@ describe('Navigation Integration Tests', () => {
     it('should show access denied when user lacks permission', () => {
       render(
         <TestWrapper>
-          <PermissionGuard permission="fake:permission">
+          <PermissionGuard permission={'fake:permission' as Permission}>
             <div data-testid="protected-content">Protected Content</div>
           </PermissionGuard>
         </TestWrapper>
@@ -208,7 +208,7 @@ describe('Navigation Integration Tests', () => {
       render(
         <TestWrapper>
           <PermissionGuard 
-            permission="fake:permission"
+            permission={'fake:permission' as Permission}
             fallback={<div data-testid="custom-fallback">Custom Access Denied</div>}
           >
             <div data-testid="protected-content">Protected Content</div>
@@ -237,7 +237,7 @@ describe('Navigation Integration Tests', () => {
     it('should not render children when user lacks permission', () => {
       render(
         <TestWrapper>
-          <PermissionCheck permission="fake:permission">
+          <PermissionCheck permission={'fake:permission' as Permission}>
             <button data-testid="create-payment-btn">Create Payment</button>
           </PermissionCheck>
         </TestWrapper>
@@ -250,7 +250,7 @@ describe('Navigation Integration Tests', () => {
       render(
         <TestWrapper>
           <PermissionCheck 
-            permission="fake:permission"
+            permission={'fake:permission' as Permission}
             fallback={<div data-testid="permission-fallback">No access</div>}
           >
             <button data-testid="create-payment-btn">Create Payment</button>

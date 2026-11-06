@@ -2,6 +2,7 @@ import { drizzle, type SqliteRemoteDatabase } from 'drizzle-orm/sqlite-proxy';
 import { SQLiteAsyncDialect } from 'drizzle-orm/sqlite-core';
 import type { SQL } from 'drizzle-orm';
 import { accountTemplates, accounts, accountContacts, journalEntries, journalEntryLines } from './schema/accounts';
+import { creditNotes, creditNoteLines, creditNoteRefunds } from './schema/credit-notes';
 import { businessProfiles } from './schema/business-profiles';
 import { customers } from './schema/customers';
 import {
@@ -31,7 +32,7 @@ import {
 import { bankReconciliationActionItems, bankReconciliationActions } from './schema/reconciliation-actions';
 import { expenseCategories, expenses } from './schema/expenses';
 import { payments } from './schema/payments';
-import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions } from './schema/reconciliation';
+import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions, reconciliationSupplierPaymentLinks } from './schema/reconciliation';
 import { receipts } from './schema/receipts';
 import { conversationMessages, conversations } from './schema/conversations';
 import { taxConfigurations, taxReturns, taxAdjustments } from './schema/tax';
@@ -46,6 +47,9 @@ import { importBatches, importDocumentEvents, importDocuments } from './schema/i
 import { stripeAccountRoutes, stripeConnectedAccounts, stripeEvents, stripePaymentLinks } from './schema/stripe';
 
 export const schema = {
+  creditNotes,
+  creditNoteLines,
+  creditNoteRefunds,
   rlsProbe,
   users,
   sessions,
@@ -90,6 +94,7 @@ export const schema = {
   transactionImportBatches,
   reconciliationSessions,
   reconciliationMatches,
+  reconciliationSupplierPaymentLinks,
   reconciliationAdjustments,
   taxConfigurations,
   taxReturns,
@@ -119,7 +124,7 @@ export const schema = {
 
 
 export interface SQLiteAdapter {
-  query(sql: string, params: unknown[], method: 'run' | 'all' | 'values' | 'get'): Promise<{ rows: any[] }>;
+  query(sql: string, params: unknown[], method: 'run' | 'all' | 'values' | 'get'): Promise<{ rows: unknown[] }>;
   execute<T>(sql: string, params: unknown[]): Promise<T[]>;
   transaction<T>(callback: () => Promise<T>): Promise<T>;
 }

@@ -25,7 +25,7 @@ vi.mock('@/integrations/supabase/client', () => ({
 
 // Import the mocked supabase
 import { supabase } from '@/integrations/supabase/client';
-const mockSupabaseClient = supabase as any;
+const mockSupabaseClient = supabase as unknown as ReturnType<typeof import('../../test/utils/testUtils').createMockSupabaseClient>;
 
 describe('ConversationService - Simple Test', () => {
   let conversationService: ConversationService;

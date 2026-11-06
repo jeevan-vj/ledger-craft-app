@@ -8,15 +8,16 @@ import { requireSession } from './require-session';
 
 const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'banking' | 'reports' | 'settings' | 'api']> = [
   [/^\/(?:api\/)?customers(?:\/|$)/, 'customers'],
-  [/^\/(?:api\/)?(?:invoices|quotes|payments|receipts|sales)(?:\/|$)/, 'invoices'],
+  [/^\/(?:api\/)?(?:invoices|quotes|credit-notes|payments|receipts|sales)(?:\/|$)/, 'invoices'],
   [/^\/(?:api\/)?(?:vendors|bills|expenses|expense-categories)(?:\/|$)/, 'bills'],
-  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|bank-matching-rules|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
+  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|bank-matching-rules|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries|fx-revaluations)(?:\/|$)/, 'banking'],
   [/^\/(?:api\/)?(?:reports|tax|tax-configurations|tax-returns|tax-adjustments|dashboard|dashboard-layouts|saved-reports)(?:\/|$)/, 'reports'],
   [/^\/(?:api\/)?(?:business-profile|items|item-categories|objects|currency-settings|currencies|exchange-rates|recurring-templates|recurring-runs)(?:\/|$)/, 'settings'],
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],
 ];
 
 const fixedRoutePermissions: Array<[RegExp, OrganisationPermission]> = [
+  [/^\/(?:api\/)?fx-revaluations\/preview$/, 'banking.read'],
   [/^\/(?:api\/)?invoices-import$/, 'invoices.import'],
   [/^\/(?:api\/)?invoices-export\.csv$/, 'invoices.write'],
   [/^\/(?:api\/)?(?:bills|vendors)-export\.csv$/, 'bills.write'],

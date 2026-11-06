@@ -1,3 +1,4 @@
+import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 import { 
@@ -51,7 +52,7 @@ export function InvoicePaymentStatus({
           bgColor: 'bg-green-50',
           borderColor: 'border-green-200',
           badgeVariant: 'default' as const,
-          label: 'Paid in Full'
+          label: settlementLabel(invoice) ?? 'Paid'
         };
       case 'partially_paid':
         return {

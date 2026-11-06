@@ -185,7 +185,7 @@ export default function QuoteFormScreen() {
   const formatCurrency = (amount: number | string) => formatMoney(amount, currency);
   const label = quoteKindLabel(kind);
 
-  const updateLine = (index: number, field: keyof LineItem, value: string | number) => {
+  const updateLine = (index: number, field: keyof LineItem, value: LineItem[keyof LineItem]) => {
     setLineItems((current) => current.map((item, itemIndex) => {
       if (itemIndex !== index) return item;
       const next = { ...item, [field]: value };

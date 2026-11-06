@@ -100,7 +100,13 @@ export class AuthMocker {
         );
       }
 
-      (window as any).__mockAuthData = {
+      const testWindow = window as Window & { __mockAuthData?: {
+        user: typeof mockUser;
+        session: typeof mockSession;
+        hasBusinessProfile: boolean;
+        needsEmailConfirmation: boolean;
+      } };
+      testWindow.__mockAuthData = {
         user: mockUser,
         session: mockSession,
         hasBusinessProfile,

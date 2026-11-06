@@ -154,7 +154,7 @@ export type Database = {
           tax_rate: number | null
           payment_status: string | null
           balance_due: number | null
-          tax_breakdown: any | null
+          tax_breakdown: Json | null
         }
         Insert: {
           created_at?: string
@@ -177,7 +177,7 @@ export type Database = {
           tax_rate?: number | null
           payment_status?: string | null
           balance_due?: number | null
-          tax_breakdown?: any | null
+          tax_breakdown?: Json | null
         }
         Update: {
           created_at?: string
@@ -200,7 +200,7 @@ export type Database = {
           tax_rate?: number | null
           payment_status?: string | null
           balance_due?: number | null
-          tax_breakdown?: any | null
+          tax_breakdown?: Json | null
         }
         Relationships: [
           {
@@ -539,7 +539,7 @@ export type Database = {
           status: 'draft' | 'submitted' | 'approved' | 'rejected'
           ird_reference: string | null
           submitted_at: string | null
-          return_data: any | null
+          return_data: Json | null
           created_at: string
           updated_at: string
         }
@@ -557,7 +557,7 @@ export type Database = {
           status?: 'draft' | 'submitted' | 'approved' | 'rejected'
           ird_reference?: string | null
           submitted_at?: string | null
-          return_data?: any | null
+          return_data?: Json | null
           created_at?: string
           updated_at?: string
         }
@@ -575,7 +575,7 @@ export type Database = {
           status?: 'draft' | 'submitted' | 'approved' | 'rejected'
           ird_reference?: string | null
           submitted_at?: string | null
-          return_data?: any | null
+          return_data?: Json | null
           created_at?: string
           updated_at?: string
         }

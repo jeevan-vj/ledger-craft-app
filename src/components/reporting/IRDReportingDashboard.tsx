@@ -97,13 +97,13 @@ export function IRDReportingDashboard({
   const incomeReturns = taxReturns.filter(r => r.returnType === 'Income_Tax');
 
   // Calculate compliance metrics
-  const overdueReturns = taxReturns.filter(r => 
+  const overdueReturns = taxReturns.filter(r =>
     r.status === 'draft' && new Date(nextGSTDueDate) < new Date()
   );
-  
+
   const completedReturns = taxReturns.filter(r => r.status === 'submitted');
-  const complianceScore = taxReturns.length > 0 
-    ? (completedReturns.length / taxReturns.length) * 100 
+  const complianceScore = taxReturns.length > 0
+    ? (completedReturns.length / taxReturns.length) * 100
     : 100;
 
   const getStatusBadge = (status: string) => {
@@ -146,13 +146,13 @@ export function IRDReportingDashboard({
             New Zealand tax returns and compliance monitoring
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
           <Button variant="outline" onClick={() => window.open('https://www.ird.govt.nz', '_blank')}>
             <ExternalLink className="mr-2 h-4 w-4" />
             IRD Website
           </Button>
-          
+
           <Button onClick={onCreateGSTReturn}>
             <Plus className="mr-2 h-4 w-4" />
             New GST Return
@@ -368,8 +368,8 @@ export function IRDReportingDashboard({
                               <Button variant="ghost" size="sm">
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 aria-label={`Download GST return for ${gstReturn.periodStart} to ${gstReturn.periodEnd}`}
                                 onClick={() => onExportReturn(gstReturn.id, 'pdf')}
@@ -377,8 +377,8 @@ export function IRDReportingDashboard({
                                 <Download className="h-4 w-4" />
                               </Button>
                               {gstReturn.status === 'draft' && (
-                                <Button 
-                                  variant="ghost" 
+                                <Button
+                                  variant="ghost"
                                   size="sm"
                                   aria-label={`Record GST return for ${gstReturn.periodStart} to ${gstReturn.periodEnd} as filed`}
                                   onClick={() => {
@@ -419,7 +419,7 @@ export function IRDReportingDashboard({
                     <TableHeader>
                       <TableRow>
                         <TableHead>Tax Year</TableHead>
-                        <TableHead>Gross Income</TableHead>
+                        <TableHead>Accounting profit</TableHead>
                         <TableHead>Deductions</TableHead>
                         <TableHead>Taxable Income</TableHead>
                         <TableHead>Tax Due</TableHead>
@@ -438,16 +438,16 @@ export function IRDReportingDashboard({
                             </div>
                           </TableCell>
                           <TableCell className="font-medium">
-                            {formatCurrency(incomeReturn.totalSales)}
+                            {incomeReturn.returnData?.companyIncomeTax ? `NZD ${incomeReturn.returnData.companyIncomeTax.accountingProfit}` : formatCurrency(incomeReturn.totalSales)}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {formatCurrency(incomeReturn.totalPurchases)}
+                            {incomeReturn.returnData?.companyIncomeTax ? `NZD ${incomeReturn.returnData.companyIncomeTax.deductions}` : formatCurrency(incomeReturn.totalPurchases)}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {formatCurrency(Math.max(0, incomeReturn.totalSales - incomeReturn.totalPurchases))}
+                            {incomeReturn.returnData?.companyIncomeTax ? `NZD ${incomeReturn.returnData.companyIncomeTax.taxableIncome}` : incomeReturn.returnData?.incomeTax ? formatCurrency(incomeReturn.returnData.incomeTax.taxableIncome) : 'Not prepared'}
                           </TableCell>
                           <TableCell className="font-medium">
-                            {incomeReturn.returnData?.incomeTax?.taxDue 
+                            {incomeReturn.returnData?.companyIncomeTax ? `NZD ${incomeReturn.returnData.companyIncomeTax.incomeTaxPayable}` : incomeReturn.returnData?.incomeTax?.taxDue
                               ? formatCurrency(incomeReturn.returnData.incomeTax.taxDue)
                               : '-'
                             }
@@ -460,8 +460,8 @@ export function IRDReportingDashboard({
                               <Button variant="ghost" size="sm">
                                 <Eye className="h-4 w-4" />
                               </Button>
-                              <Button 
-                                variant="ghost" 
+                              <Button
+                                variant="ghost"
                                 size="sm"
                                 onClick={() => onExportReturn(incomeReturn.id, 'pdf')}
                               >
@@ -551,7 +551,7 @@ function ComplianceMonitoring() {
                 <Badge variant="outline">Period-specific deadlines apply</Badge>
               </div>
             </div>
-            
+
             <div className="flex items-center justify-between p-4 border rounded-lg">
               <div>
                 <p className="font-medium">Income Tax Return</p>

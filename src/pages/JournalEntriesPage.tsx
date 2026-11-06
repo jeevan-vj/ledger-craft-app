@@ -10,10 +10,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
-import { JournalEntry } from '@/types/payment';
+import type { JournalEntryRow as JournalEntry } from '@/features/journals/api/journalsApi';
 import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOfYear, endOfYear, subMonths, subQuarters } from 'date-fns';
 import { useAuth } from "@/context/StableAuthContext";
-import { supabaseDataService } from '@/services/supabaseDataService';
+import { supabaseDataService, type JournalAccountOption } from '@/services/supabaseDataService';
 import { PageHeader } from '@/components/layout/PageHeader';
 
 interface JournalEntryFormData {
@@ -29,7 +29,7 @@ interface JournalEntryFormData {
 export default function JournalEntriesPage() {
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<JournalEntry[]>([]);
-  const [accounts, setAccounts] = useState<any[]>([]);
+  const [accounts, setAccounts] = useState<JournalAccountOption[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
@@ -49,12 +49,13 @@ export default function JournalEntriesPage() {
           startDate: startOfMonth(now).toISOString().split('T')[0],
           endDate: endOfMonth(now).toISOString().split('T')[0]
         };
-      case 'last_month':
+      case 'last_month': {
         const lastMonth = subMonths(now, 1);
         return {
           startDate: startOfMonth(lastMonth).toISOString().split('T')[0],
           endDate: endOfMonth(lastMonth).toISOString().split('T')[0]
         };
+      }
       case 'current_quarter':
         return {
           startDate: startOfQuarter(now).toISOString().split('T')[0],
@@ -630,7 +631,7 @@ function JournalEntryForm({
   onSubmit, 
   onCancel 
 }: {
-  accounts: any[];
+  accounts: JournalAccountOption[];
   onSubmit: (data: JournalEntryFormData) => void;
   onCancel: () => void;
 }) {

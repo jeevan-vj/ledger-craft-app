@@ -41,7 +41,7 @@ class FixedInvoiceTestHelper {
             data: { user: mockUser },
             error: null
           }),
-          onAuthStateChange: (callback: any) => {
+          onAuthStateChange: (callback: (event: 'SIGNED_IN', session: typeof mockSession) => void) => {
             // Call immediately with successful auth
             setTimeout(() => callback('SIGNED_IN', mockSession), 50);
             return {
@@ -80,14 +80,20 @@ class FixedInvoiceTestHelper {
       });
 
       // Override the window global to inject our mock
-      (window as any).__createClientMock = createClientMock;
-      (window as any).__mockUser = mockUser;
-      (window as any).__mockSession = mockSession;
+      const mockWindow = window as Window & {
+        __createClientMock?: typeof createClientMock;
+        __mockUser?: typeof mockUser;
+        __mockSession?: typeof mockSession;
+        import?: (specifier: string) => Promise<unknown>;
+      };
+      mockWindow.__createClientMock = createClientMock;
+      mockWindow.__mockUser = mockUser;
+      mockWindow.__mockSession = mockSession;
 
       // Mock ES6 modules by overriding import functionality
-      const originalImport = (window as any).import;
+      const originalImport = mockWindow.import;
       if (originalImport) {
-        (window as any).import = function(specifier: string) {
+        mockWindow.import = function(this: Window, specifier: string) {
           if (specifier.includes('@supabase/supabase-js')) {
             return Promise.resolve({
               createClient: createClientMock,

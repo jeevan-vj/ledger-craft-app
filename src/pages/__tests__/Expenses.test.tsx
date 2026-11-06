@@ -1,3 +1,5 @@
+import type MockTable from '@/components/expense/ExpenseTable';
+import type MockForm from '@/components/expense/ExpenseFormDrawer';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
@@ -20,9 +22,9 @@ vi.mock('@/hooks/use-toast', () => ({
 
 // Mock the components
 vi.mock('@/components/expense/ExpenseTable', () => ({
-  default: ({ expenses, onEdit, onDelete }: any) => (
+  default: ({ expenses, onEdit, onDelete }: React.ComponentProps<typeof MockTable>) => (
     <div data-testid="expense-table">
-      {expenses.map((expense: any) => (
+      {expenses.map((expense) => (
         <div key={expense.id} data-testid={`expense-${expense.id}`}>
           {expense.description}
           <button onClick={() => onEdit(expense)}>Edit</button>
@@ -34,7 +36,7 @@ vi.mock('@/components/expense/ExpenseTable', () => ({
 }));
 
 vi.mock('@/components/expense/ExpenseFormDrawer', () => ({
-  default: ({ open, onSubmit, initialValues }: any) => (
+  default: ({ open, onSubmit, initialValues }: React.ComponentProps<typeof MockForm>) => (
     <div data-testid="expense-form-drawer" style={{ display: open ? 'block' : 'none' }}>
       <button onClick={() => onSubmit({
         description: 'Test',
@@ -75,7 +77,7 @@ const mockContextValue = {
 describe('Expenses Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useAppData).mockReturnValue(mockContextValue as ReturnType<typeof useAppData>);
+    vi.mocked(useAppData).mockReturnValue(mockContextValue as unknown as ReturnType<typeof useAppData>);
   });
 
   const renderComponent = () => {
@@ -98,7 +100,7 @@ describe('Expenses Page', () => {
       ...mockContextValue,
       expenses: [],
       isLoadingExpenses: true,
-    } as ReturnType<typeof useAppData>);
+    } as unknown as ReturnType<typeof useAppData>);
 
     renderComponent();
     
@@ -120,7 +122,7 @@ describe('Expenses Page', () => {
     vi.mocked(useAppData).mockReturnValue({
       ...mockContextValue,
       expenses: [],
-    } as ReturnType<typeof useAppData>);
+    } as unknown as ReturnType<typeof useAppData>);
 
     renderComponent();
     

@@ -52,3 +52,13 @@ describe('IRD reporting filing flow', () => {
     expect(onSubmitReturn).toHaveBeenCalledWith('return-1', 'GST-2026-12345');
   });
 });
+
+it('shows saved company worksheet amounts instead of inferring income tax from GST fields', async () => {
+  const user = userEvent.setup();
+  const companyIncomeTax = { from: '2026-04-01', to: '2027-03-31', entityType: 'nz_company' as const, baseCurrency: 'NZD' as const, taxRate: '28' as const, accountingProfit: '850.00', addBacks: '100.00', deductions: '50.00', taxAdjustedProfit: '900.00', lossesApplied: '200.00', lossesCarriedForward: '0.00', taxableIncome: '700.00', incomeTax: '196.00', taxCredits: '50.00', incomeTaxPayable: '146.00', excessCredits: '0.00', adjustments: [], lossesBroughtForward: '200.00', preparedAt: '2026-11-06T00:00:00.000Z', preparedBy: 'owner', warnings: [] };
+  render(<IRDReportingDashboard taxReturns={[{ ...draft, returnType: 'Income_Tax', totalSales: 0, totalPurchases: 0, netGst: 0, returnData: { companyIncomeTax } }]} nextGSTDueDate="" complianceStatus={{ isCompliant: true, issues: [], warnings: [] }} onCreateGSTReturn={vi.fn()} onCreateIncomeReturn={vi.fn()} onSubmitReturn={vi.fn()} onExportReturn={vi.fn()} />);
+  await user.click(screen.getByRole('tab', { name: 'Income Tax' }));
+  expect(screen.getByText('NZD 850.00')).toBeInTheDocument();
+  expect(screen.getByText('NZD 700.00')).toBeInTheDocument();
+  expect(screen.getByText('NZD 146.00')).toBeInTheDocument();
+});

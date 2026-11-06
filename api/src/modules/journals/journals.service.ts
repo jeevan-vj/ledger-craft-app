@@ -1,5 +1,6 @@
 import {
   journalEntryListResponseSchema,
+  journalEntrySchema,
   type CreateJournalEntryRequest,
   type JournalEntryDto,
   type JournalEntryListResponse,
@@ -11,6 +12,7 @@ import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { roundMoney } from '../invoices/money';
+import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 import * as repo from './journals.repository';
 
 export async function listJournalEntriesForUser(db: Database, userId: string): Promise<JournalEntryListResponse> {
@@ -32,14 +34,27 @@ export async function createJournalEntryForUser(
   db: Database,
   userId: string,
   input: CreateJournalEntryRequest,
+  idempotency?: IdempotencyScope,
 ): Promise<JournalEntryDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) {
+      const stored = await getIdempotencyRecord(tx, ctx, idempotency);
+      if (stored) {
+        assertReplayMatches(stored.requestHash, idempotency.requestHash);
+        const original = journalEntrySchema.parse(stored.responseBody);
+        const current = await repo.getJournalEntry(tx, ctx.organisationId, original.id);
+        if (!current) throw apiError(409, 'CONFLICT', 'The original journal was deleted; review before creating another entry');
+        return current;
+      }
+    }
     const debit = await repo.getOrgAccount(tx, ctx.organisationId, input.debitAccountId);
     const credit = await repo.getOrgAccount(tx, ctx.organisationId, input.creditAccountId);
     if (!debit || !credit) throw new HTTPException(404, { message: 'Account not found' });
     const amount = input.amount;
     const entryNumber = await nextJournalEntryNumber(tx, ctx.organisationId, input.entryDate);
-    return repo.insertJournalEntry(tx, ctx, { ...input, amount: roundMoney(amount) }, entryNumber);
+    const entry = await repo.insertJournalEntry(tx, ctx, { ...input, amount: roundMoney(amount) }, entryNumber);
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: entry });
+    return entry;
   });
 }
 

@@ -18,7 +18,7 @@ export class TaxCalculationService {
       throw new Error('Tax rate must be between 0 and 1');
     }
 
-    const breakdown: TaxBreakdown['breakdown'] = {
+    const breakdown: TaxCalculationResult['breakdown'] = {
       lineItems: []
     };
 
@@ -290,7 +290,7 @@ export class TaxCalculationService {
 
       // Calculate bad debts from written-off invoices
       const badDebts = invoices
-        .filter(invoice => invoice.paymentStatus === 'written_off')
+        .filter(invoice => String(invoice.paymentStatus) === 'written_off')
         .reduce((sum, invoice) => sum + readMoney(invoice, 'taxAmount', 'tax_amount'), 0);
 
       return {

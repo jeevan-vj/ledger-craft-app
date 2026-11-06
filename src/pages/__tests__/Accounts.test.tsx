@@ -6,9 +6,9 @@ import AccountsPage from '../Accounts';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 import { accountsApi } from '@/features/payments/api/paymentsApi';
 
-const { createAccount, updateAccount } = vi.hoisted(() => ({ createAccount: vi.fn(), updateAccount: vi.fn() }));
+const { createAccount, updateAccount, accountFixture } = vi.hoisted(() => ({ createAccount: vi.fn(), updateAccount: vi.fn(), accountFixture: { name: 'Sales Revenue', type: 'custom', currency: 'NZD', accountClass: 'revenue' } }));
 vi.mock('@/hooks/useAppData', () => ({ useAppData: () => ({
-  accounts: [{ id: 'sales', name: 'Sales Revenue', type: 'custom', accountClass: 'revenue', currency: 'NZD', openingBalance: 0, currentBalance: 0 }],
+  accounts: [{ id: 'sales', ...accountFixture, openingBalance: 0, currentBalance: 0 }],
   businessProfile: { currency: 'NZD' }, isLoadingAccounts: false,
   createAccount, updateAccount, deleteAccount: vi.fn(), refreshAccounts: vi.fn(),
 }) }));
@@ -17,6 +17,7 @@ vi.mock('@/features/payments/api/paymentsApi', () => ({ accountsApi: { create: v
 const mount = () => render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false, gcTime: Infinity } } })}><MemoryRouter><AccountsPage /></MemoryRouter></QueryClientProvider>);
 beforeEach(() => {
   vi.clearAllMocks();
+  Object.assign(accountFixture, { name: 'Sales Revenue', type: 'custom', currency: 'NZD', accountClass: 'revenue' });
   vi.mocked(reportsApi.financial).mockResolvedValue({ trialBalance: { rows: [{ accountId: 'sales', balance: '1400.00' }] } } as never);
 });
 
@@ -48,7 +49,7 @@ it('saves an account through Hono instead of missing facade mutation methods', a
   mount();
   fireEvent.click(screen.getByRole('button', { name: 'Add Account' }));
   fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Owner capital' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   await vi.waitFor(() => expect(accountsApi.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Owner capital', currency: 'NZD' })));
   expect(createAccount).not.toHaveBeenCalled();
   expect(accountsApi.create).toHaveBeenCalledWith(expect.not.objectContaining({ currentBalance: expect.anything() }));
@@ -59,7 +60,7 @@ it('updates account details without overwriting its posted balance', async () =>
   mount();
   fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
   fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Consulting revenue' } });
-  fireEvent.click(screen.getByRole('button', { name: 'Save', exact: true }));
+  fireEvent.click(screen.getByRole('button', { name: 'Save' }));
   await vi.waitFor(() => expect(accountsApi.update).toHaveBeenCalledWith('sales', expect.objectContaining({ name: 'Consulting revenue', accountClass: 'revenue' })));
   expect(accountsApi.update).toHaveBeenCalledWith('sales', expect.not.objectContaining({ currentBalance: expect.anything() }));
 });
@@ -70,4 +71,19 @@ it('deactivates an account without deleting its historical ledger', async () => 
   fireEvent.click(screen.getByRole('button', { name: 'Deactivate' }));
   await vi.waitFor(() => expect(accountsApi.update).toHaveBeenCalledWith('sales', { isActive: false }));
   expect(screen.queryByRole('button', { name: 'Delete' })).not.toBeInTheDocument();
+});
+
+it('exposes guided opening balances and historical ledger audit from Accounts', async () => {
+  mount();
+  expect(screen.getByText('Opening balances and historical corrections')).toBeInTheDocument();
+});
+
+it('shows the authoritative NZD ledger balance even when account metadata is USD', async () => {
+  Object.assign(accountFixture, { name: 'Foreign bank', type: 'bank', currency: 'USD', accountClass: 'asset' });
+  vi.mocked(reportsApi.financial).mockResolvedValue({ trialBalance: { rows: [{ accountId: 'sales', balance: '160.00' }] } } as never);
+  mount();
+  const row = screen.getByText('Foreign bank').closest('tr')!;
+  expect(await within(row).findByText('160.00')).toBeInTheDocument();
+  expect(within(row).getByText('USD')).toBeInTheDocument();
+  expect(within(row).queryByText('NZD reports only')).not.toBeInTheDocument();
 });

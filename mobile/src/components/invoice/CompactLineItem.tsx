@@ -26,7 +26,7 @@ import { useTheme } from '@/theme';
 interface CompactLineItemProps {
   item: LineItem;
   index: number;
-  onUpdate: (index: number, field: keyof LineItem, value: any) => void;
+  onUpdate: (index: number, field: keyof LineItem, value: LineItem[keyof LineItem]) => void;
   onRemove: (index: number) => void;
   onSelectItem: (index: number) => void;
   canRemove: boolean;

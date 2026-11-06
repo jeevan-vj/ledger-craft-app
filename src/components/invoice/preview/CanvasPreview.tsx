@@ -38,8 +38,8 @@ const CanvasPreview = ({ contentRef }: CanvasPreviewProps) => {
                   // Ensure text is rendered with optimal settings
                   el.style.textRendering = 'optimizeLegibility';
                   // Use string indexing for vendor-specific CSS properties
-                  (el.style as any)['-webkit-font-smoothing'] = 'antialiased';
-                  (el.style as any)['-moz-osx-font-smoothing'] = 'grayscale';
+                  el.style.setProperty('-webkit-font-smoothing', 'antialiased');
+                  el.style.setProperty('-moz-osx-font-smoothing', 'grayscale');
                 }
               });
             }

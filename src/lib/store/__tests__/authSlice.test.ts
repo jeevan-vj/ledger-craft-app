@@ -159,7 +159,7 @@ describe('Auth Slice', () => {
 
       // Set some initial state
       act(() => {
-        result.current.setUser({ id: 'user-id' } as any);
+        result.current.setUser({ id: 'user-id' });
         result.current.setOnboardingStatus(true, true);
         result.current.setError('Some error');
       });
@@ -182,14 +182,14 @@ describe('Auth Slice', () => {
       
       vi.mocked(businessProfileService.getBusinessProfile).mockResolvedValue({
         id: 'profile-id',
-        name: 'Test Business',
-      } as any);
+        name: 'Test Business', email: 'owner@example.test', address: null, city: null, state: null, zip: null, country: 'NZ',
+      });
 
       const { result } = renderHook(() => useStore());
 
       // Set user first
       act(() => {
-        result.current.setUser({ id: 'user-id' } as any);
+        result.current.setUser({ id: 'user-id' });
       });
 
       await act(async () => {
@@ -209,7 +209,7 @@ describe('Auth Slice', () => {
 
       // Set user first
       act(() => {
-        result.current.setUser({ id: 'user-id' } as any);
+        result.current.setUser({ id: 'user-id' });
       });
 
       await act(async () => {
@@ -231,7 +231,7 @@ describe('Auth Slice', () => {
 
       // Set user first
       act(() => {
-        result.current.setUser({ id: 'user-id' } as any);
+        result.current.setUser({ id: 'user-id' });
       });
 
       await act(async () => {
@@ -249,7 +249,7 @@ describe('Auth Slice', () => {
 
       const mockSession = {
         user: { id: 'user-id' },
-      } as any;
+      };
 
       await act(async () => {
         await result.current.handleAuthStateChange('SIGNED_IN', mockSession);
@@ -265,7 +265,7 @@ describe('Auth Slice', () => {
 
       // Set some initial state
       act(() => {
-        result.current.setUser({ id: 'user-id' } as any);
+        result.current.setUser({ id: 'user-id' });
         result.current.setOnboardingStatus(true, true);
       });
 
@@ -285,7 +285,7 @@ describe('Auth Slice', () => {
 
       const mockSession = {
         user: { id: 'user-id' },
-      } as any;
+      };
 
       await act(async () => {
         await result.current.handleAuthStateChange('TOKEN_REFRESHED', mockSession);

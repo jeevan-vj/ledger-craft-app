@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Link } from 'react-router-dom';
+import { decimal } from '../../../api/src/modules/invoices/money';
 import { format, subDays, startOfMonth, endOfMonth } from 'date-fns';
 import {
   BarChart,
@@ -82,48 +84,27 @@ export function AccountingDashboard({
   onRefresh,
   onExportReport
 }: AccountingDashboardProps) {
-  const [timePeriod, setTimePeriod] = useState('current_month');
+  const money = (value: string | number | undefined) => value === undefined ? 'Unavailable' : '$' + Number(value).toLocaleString('en-NZ');
+  const older = (aging: FinancialSummary['receivablesAging']) => aging ? decimal(aging.days61To90).add(aging.over90).toFixed() : undefined;
+  const overdue = (aging: FinancialSummary['payablesAging']) => aging ? decimal(aging.days1To30).add(aging.days31To60).add(aging.days61To90).add(aging.over90).toFixed() : undefined;
 
   // Calculate key metrics
-  const profitMargin = financialSummary.totalRevenue > 0 
-    ? (financialSummary.netIncome / financialSummary.totalRevenue) * 100 
+  const profitMargin = financialSummary.totalRevenue > 0
+    ? (financialSummary.netIncome / financialSummary.totalRevenue) * 100
     : 0;
 
   const cashToReceivablesRatio = financialSummary.totalReceivables > 0
     ? financialSummary.cashPosition / financialSummary.totalReceivables
     : 0;
 
-  // Use real data from props, fallback to sample data if empty
-  const revenueData = revenueExpenseData.length > 0 ? revenueExpenseData : [
-    { month: 'Jan', revenue: 45000, expenses: 32000 },
-    { month: 'Feb', revenue: 52000, expenses: 35000 },
-    { month: 'Mar', revenue: 48000, expenses: 33000 },
-    { month: 'Apr', revenue: 61000, expenses: 38000 },
-    { month: 'May', revenue: 55000, expenses: 36000 },
-    { month: 'Jun', revenue: 67000, expenses: 42000 }
-  ];
-
-  const cashFlowChartData = cashFlowData.length > 0 ? cashFlowData : [
-    { day: '1', inflow: 2500, outflow: 1800 },
-    { day: '7', inflow: 3200, outflow: 2100 },
-    { day: '14', inflow: 2800, outflow: 1900 },
-    { day: '21', inflow: 4100, outflow: 2800 },
-    { day: '28', inflow: 3500, outflow: 2300 }
-  ];
-
+  const revenueData = revenueExpenseData;
+  const cashFlowChartData = cashFlowData;
   const accountTypeData = [
-    { name: 'Assets', value: 125000, color: '#10B981' },
-    { name: 'Liabilities', value: 35000, color: '#EF4444' },
-    { name: 'Equity', value: 90000, color: '#3B82F6' }
+    { name: 'Assets', value: financialSummary.totalAssets ?? 0, color: '#10B981' },
+    { name: 'Liabilities', value: financialSummary.totalLiabilities ?? 0, color: '#EF4444' },
+    { name: 'Equity', value: financialSummary.totalEquity ?? 0, color: '#3B82F6' },
   ];
-
-  const expenseBreakdown = expenseBreakdownData.length > 0 ? expenseBreakdownData : [
-    { category: 'Office Expenses', amount: 12500, percentage: 35 },
-    { category: 'Marketing', amount: 8900, percentage: 25 },
-    { category: 'Equipment', amount: 6200, percentage: 17 },
-    { category: 'Professional Services', amount: 4800, percentage: 13 },
-    { category: 'Travel', amount: 3600, percentage: 10 }
-  ];
+  const expenseBreakdown = expenseBreakdownData;
 
   return (
     <div className="space-y-6">
@@ -135,28 +116,15 @@ export function AccountingDashboard({
             Financial overview for {format(new Date(financialSummary.period.startDate), 'MMM dd')} - {format(new Date(financialSummary.period.endDate), 'MMM dd, yyyy')}
           </p>
         </div>
-        
+
         <div className="flex items-center gap-3">
-          <Select value={timePeriod} onValueChange={setTimePeriod}>
-            <SelectTrigger className="w-48">
-              <Filter className="mr-2 h-4 w-4" />
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="current_month">Current Month</SelectItem>
-              <SelectItem value="last_month">Last Month</SelectItem>
-              <SelectItem value="current_quarter">Current Quarter</SelectItem>
-              <SelectItem value="last_quarter">Last Quarter</SelectItem>
-              <SelectItem value="current_year">Current Year</SelectItem>
-              <SelectItem value="custom">Custom Range</SelectItem>
-            </SelectContent>
-          </Select>
-          
+          <Button asChild variant="outline"><Link to="/financial-reports">Choose reporting period</Link></Button>
+
           <Button variant="outline" onClick={onRefresh} disabled={isLoading}>
             <RefreshCw className={`mr-2 h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
-          
+
           <Button onClick={() => onExportReport('dashboard')}>
             <Download className="mr-2 h-4 w-4" />
             Export
@@ -175,10 +143,7 @@ export function AccountingDashboard({
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Total Revenue</p>
                 <p className="text-2xl font-bold">${financialSummary.totalRevenue.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3 text-green-500" />
-                  <span className="text-xs text-green-500">+12.5% vs last period</span>
-                </div>
+
               </div>
             </div>
           </CardContent>
@@ -193,10 +158,7 @@ export function AccountingDashboard({
               <div className="flex-1">
                 <p className="text-sm text-muted-foreground">Total Expenses</p>
                 <p className="text-2xl font-bold">${financialSummary.totalExpenses.toLocaleString()}</p>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3 text-red-500" />
-                  <span className="text-xs text-red-500">+8.2% vs last period</span>
-                </div>
+
               </div>
             </div>
           </CardContent>
@@ -398,31 +360,31 @@ export function AccountingDashboard({
                   {financialSummary.outstandingInvoices} invoices
                 </Badge>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
-                    <span>Current (0-30 days)</span>
+                    <span>Current (not overdue)</span>
                   </div>
-                  <span className="font-medium">$28,500</span>
+                  <span className="font-medium">{money(financialSummary.receivablesAging?.current)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-yellow-500" />
-                    <span>30-60 days</span>
+                    <span>1-30 days overdue</span>
                   </div>
-                  <span className="font-medium">$8,200</span>
+                  <span className="font-medium">{money(financialSummary.receivablesAging?.days1To30)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-red-500" />
-                    <span>60+ days</span>
+                    <span>31+ days overdue</span>
                   </div>
-                  <span className="font-medium">$3,100</span>
+                  <span className="font-medium">{money(financialSummary.receivablesAging ? decimal(financialSummary.receivablesAging.days31To60).add(older(financialSummary.receivablesAging)).toFixed() : undefined)}</span>
                 </div>
               </div>
-              
+
               <Button variant="outline" className="w-full">
                 View Aging Report
               </Button>
@@ -443,34 +405,34 @@ export function AccountingDashboard({
               <div className="flex items-center justify-between">
                 <span className="text-2xl font-bold">${financialSummary.totalPayables.toLocaleString()}</span>
                 <Badge variant="outline">
-                  {Math.round(financialSummary.totalPayables / 1000) || 0} bills
+                  {financialSummary.outstandingBills ?? 'Unavailable'} bills
                 </Badge>
               </div>
-              
+
               <div className="space-y-3">
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-green-500" />
                     <span>Not due yet</span>
                   </div>
-                  <span className="font-medium">${(financialSummary.totalPayables * 0.6).toLocaleString()}</span>
+                  <span className="font-medium">{money(financialSummary.payablesAging?.current)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-yellow-500" />
-                    <span>Due this week</span>
+                    <span>1-30 days overdue</span>
                   </div>
-                  <span className="font-medium">${(financialSummary.totalPayables * 0.3).toLocaleString()}</span>
+                  <span className="font-medium">{money(financialSummary.payablesAging?.days1To30)}</span>
                 </div>
                 <div className="flex items-center justify-between text-sm">
                   <div className="flex items-center gap-2">
                     <AlertCircle className="h-4 w-4 text-red-500" />
-                    <span>Overdue</span>
+                    <span>Total overdue</span>
                   </div>
-                  <span className="font-medium">${(financialSummary.totalPayables * 0.1).toLocaleString()}</span>
+                  <span className="font-medium">{money(overdue(financialSummary.payablesAging))}</span>
                 </div>
               </div>
-              
+
               <Button variant="outline" className="w-full">
                 Schedule Payments
               </Button>
@@ -492,13 +454,13 @@ export function AccountingDashboard({
             <div className="text-center">
               <p className="text-sm text-muted-foreground mb-2">GST Collected</p>
               <p className="text-2xl font-bold text-green-600">
-                ${(financialSummary.gstLiability * 1.5).toLocaleString()}
+                {money(financialSummary.gstCollected)}
               </p>
             </div>
             <div className="text-center">
               <p className="text-sm text-muted-foreground mb-2">GST Paid</p>
               <p className="text-2xl font-bold text-blue-600">
-                ${(financialSummary.gstLiability * 0.5).toLocaleString()}
+                {money(financialSummary.gstPaid)}
               </p>
             </div>
             <div className="text-center">
@@ -508,17 +470,15 @@ export function AccountingDashboard({
               </p>
             </div>
           </div>
-          
+
           <div className="mt-6 p-4 bg-blue-50 rounded-lg">
             <div className="flex items-center gap-2 mb-2">
               <Calendar className="h-4 w-4 text-blue-600" />
               <span className="font-medium text-blue-900">Next GST Return Due</span>
             </div>
             <p className="text-sm text-blue-800">
-              Your next GST return is due on 28 February 2024. 
-              <Button variant="link" className="p-0 h-auto ml-1 text-blue-800">
-                Prepare return now →
-              </Button>
+              Confirm your registered GST period and due date in myIR.
+              <Button asChild variant="link" className="p-0 h-auto ml-1 text-blue-800"><Link to="/ird-reports">Prepare return now →</Link></Button>
             </p>
           </div>
         </CardContent>

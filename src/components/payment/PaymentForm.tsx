@@ -16,6 +16,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { format } from 'date-fns';
+import { InvoicePaymentRecoveryPanel, type InvoiceRecoveryState } from '@/components/accounting/InvoicePaymentRecoveryPanel';
+import { SettlementRatePicker, foreignCurrency } from '@/components/accounting/SettlementRatePicker';
 import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
 import { CreatePaymentRequest, EnhancedInvoice } from '@/types/payment';
 
@@ -37,6 +39,7 @@ interface PaymentFormProps {
   onSubmit: (data: CreatePaymentRequest) => Promise<void>;
   onCancel: () => void;
   isLoading?: boolean;
+  onRecovered?: () => void | Promise<void>;
 }
 
 const paymentMethods = [
@@ -47,10 +50,16 @@ const paymentMethods = [
   { value: 'online', label: 'Online Payment', icon: CreditCard }
 ];
 
-export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: PaymentFormProps) {
+export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoading = false }: PaymentFormProps) {
+  const [recovery, setRecovery] = useState<InvoiceRecoveryState>({ loading: true, blocked: false });
+  const [recoveryVersion, setRecoveryVersion] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const balanceDue = invoice.balanceDue || 0;
   const schema = useMemo(() => paymentSchema(balanceDue), [balanceDue]);
   const [date, setDate] = useState<Date>(new Date());
+  const [exchangeRateId, setExchangeRateId] = useState('');
+  const isForeign = foreignCurrency(invoice.currency);
   
   const form = useForm<PaymentFormData>({
     resolver: zodResolver(schema),
@@ -71,10 +80,12 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
       paymentDate: data.paymentDate.toISOString().split('T')[0],
       referenceNumber: data.referenceNumber,
       notes: data.notes,
-      generateReceipt: data.generateReceipt
+      generateReceipt: data.generateReceipt,
+      ...(isForeign ? { exchangeRateId } : {})
     };
     
-    await onSubmit(paymentRequest);
+    setSubmitting(true); setSubmitError('');
+    try { await onSubmit(paymentRequest); } catch (caught) { setSubmitError(caught instanceof Error ? caught.message : 'Payment result is uncertain. Recover the original request before trying again.'); setRecoveryVersion((value) => value + 1); } finally { setSubmitting(false); }
   };
 
   const watchedAmount = form.watch('amount') || 0;
@@ -82,6 +93,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
   const halfAmount = halfPaymentAmount(balanceDue);
 
   return (
+    <div className="space-y-4"><InvoicePaymentRecoveryPanel invoiceId={invoice.id} onStateChange={setRecovery} refreshVersion={recoveryVersion} onResolved={onRecovered ?? onCancel} />{submitError && <p role="alert" className="text-sm text-destructive">{submitError}</p>}{recovery.pending || recovery.blocked ? <Button type="button" variant="outline" onClick={onCancel}>Close payment form</Button> : <fieldset disabled={recovery.loading || submitting}>
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
       {/* Invoice Summary */}
       <Card>
@@ -131,6 +143,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
         </CardContent>
       </Card>
 
+      {isForeign && <SettlementRatePicker currency={invoice.currency!} date={form.watch('paymentDate').toISOString().slice(0, 10)} value={exchangeRateId} onChange={setExchangeRateId} />}
       {/* Payment Amount */}
       <Card>
         <CardHeader>
@@ -330,7 +343,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
         </Button>
         <Button
           type="submit"
-          disabled={isLoading}
+          disabled={isLoading || (isForeign && !exchangeRateId)}
           className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
         >
           {isLoading ? (
@@ -346,6 +359,6 @@ export function PaymentForm({ invoice, onSubmit, onCancel, isLoading = false }: 
           )}
         </Button>
       </div>
-    </form>
+    </form></fieldset>}</div>
   );
 }

@@ -1,8 +1,8 @@
-import { and, eq, gte, inArray, lt, lte, or } from 'drizzle-orm';
+import { and, eq, getTableColumns, gte, inArray, lt, lte, or } from 'drizzle-orm';
 import type { CreateReconciliationMatchRequest } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
-import { reconciliationMatches, reconciliationSessions } from '../../db/schema/reconciliation';
+import { reconciliationMatches, reconciliationSessions, reconciliationSupplierPaymentLinks } from '../../db/schema/reconciliation';
 import { decimal, roundMoney } from '../invoices/money';
 
 export async function bankLedgerBalance(tx: Database, organisationId: string, bankId: string, date: string, before = false) {
@@ -25,20 +25,21 @@ export async function hasCompletedStatement(tx: Database, organisationId: string
 }
 
 export async function confirmedMatches(tx: Database, organisationId: string, input: CreateReconciliationMatchRequest) {
-  return tx.select().from(reconciliationMatches).where(and(
+  return tx.select({ ...getTableColumns(reconciliationMatches), billPaymentId: reconciliationSupplierPaymentLinks.billPaymentId }).from(reconciliationMatches)
+    .leftJoin(reconciliationSupplierPaymentLinks, and(eq(reconciliationSupplierPaymentLinks.organisationId, organisationId), eq(reconciliationSupplierPaymentLinks.matchId, reconciliationMatches.id))).where(and(
     eq(reconciliationMatches.organisationId, organisationId), eq(reconciliationMatches.status, 'confirmed'),
     or(eq(reconciliationMatches.bankTransactionId, input.bankTransactionId),
-      eq(input.bookItemType === 'payment' ? reconciliationMatches.paymentId : reconciliationMatches.expenseId, input.bookItemId)),
+      eq(input.bookItemType === 'payment' ? reconciliationMatches.paymentId : input.bookItemType === 'bill_payment' ? reconciliationSupplierPaymentLinks.billPaymentId : reconciliationMatches.expenseId, input.bookItemId)),
   ));
 }
 
-export async function postedCashLines(tx: Database, organisationId: string, type: 'payment' | 'expense', id: string) {
+export async function postedCashLines(tx: Database, organisationId: string, type: 'payment' | 'bill_payment' | 'expense', id: string) {
   return tx.select({ accountId: accounts.id, debit: journalEntryLines.debitAmount, credit: journalEntryLines.creditAmount })
     .from(journalEntryLines).innerJoin(journalEntries, and(eq(journalEntries.id, journalEntryLines.journalEntryId), eq(journalEntries.organisationId, organisationId)))
     .innerJoin(accounts, and(eq(accounts.id, journalEntryLines.accountId), eq(accounts.organisationId, organisationId)))
     .where(and(eq(journalEntryLines.organisationId, organisationId), eq(journalEntries.status, 'posted'),
-      eq(journalEntries.referenceType, type === 'payment' ? 'invoice_payment' : 'expense'),
-      eq(journalEntries.referenceId, id), inArray(accounts.type, ['bank', 'cash'])));
+      eq(journalEntries.referenceType, type === 'payment' ? 'invoice_payment' : type === 'bill_payment' ? 'bill_payment' : 'expense'),
+      eq(journalEntries.referenceId, id), inArray(accounts.type, ['bank', 'cash', 'credit_card', 'loan'])));
 }
 
 export async function rejectTransactionMatches(tx: Database, organisationId: string, transactionId: string) {

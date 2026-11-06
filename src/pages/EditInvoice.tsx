@@ -2,8 +2,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useAppData } from "@/hooks/useAppData";
-import InvoiceForm from "@/components/invoice/InvoiceForm";
-import { Invoice, Item, Customer } from "@/types";
+import InvoiceForm, { type InvoiceFormValues } from "@/components/invoice/InvoiceForm";
+import { Invoice, Item, Customer, type LineItem, type AdditionalCharge } from "@/types";
 import { Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { formatDate } from "@/utils/invoiceUtils";
@@ -63,14 +63,14 @@ const EditInvoicePage = () => {
   }, [newlyAddedCustomer, invoice]);
 
   const handleSave = async (
-    values: any,
-    items: any,
+    values: InvoiceFormValues,
+    items: LineItem[],
     total: number,
     subtotal: number,
     taxAmount: number,
     additionalCharges: number,
     discount: number,
-    additionalChargesList?: any[],
+    additionalChargesList?: AdditionalCharge[],
     intent: 'draft' | 'send' = 'draft',
   ) => {
     if (!invoice) return;
@@ -102,8 +102,8 @@ const EditInvoicePage = () => {
       }
       navigate("/invoices");
       return saved;
-    } catch (e: any) {
-      setError(e?.message || "Error updating invoice");
+    } catch (e: unknown) {
+      setError(e instanceof Error ? e.message : "Error updating invoice");
       throw e;
     }
   };

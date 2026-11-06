@@ -25,11 +25,12 @@ export interface Receipt {
   generatedAt: string;
   emailSentAt?: string;
   isEmailed: boolean;
-  receiptData: any;
+  receiptData: unknown;
   createdAt: string;
 }
 
 export interface CreatePaymentRequest {
+  exchangeRateId?: string;
   invoiceId: string;
   paymentMethod: 'bank_transfer' | 'cash' | 'cheque' | 'credit_card' | 'online';
   amount: string;

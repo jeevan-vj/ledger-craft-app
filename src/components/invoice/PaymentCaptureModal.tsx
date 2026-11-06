@@ -17,6 +17,8 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { format } from 'date-fns';
+import { InvoicePaymentRecoveryPanel, type InvoiceRecoveryState } from '@/components/accounting/InvoicePaymentRecoveryPanel';
+import { SettlementRatePicker, foreignCurrency } from '@/components/accounting/SettlementRatePicker';
 import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
 import { Invoice } from '@/types';
 import { CreatePaymentRequest } from '@/types/payment';
@@ -42,6 +44,7 @@ interface PaymentCaptureModalProps {
   invoice: Invoice;
   onPaymentRecord: (data: CreatePaymentRequest) => Promise<void>;
   isLoading?: boolean;
+  onPaymentRecovered?: () => void | Promise<void>;
 }
 
 const paymentMethods = [
@@ -86,12 +89,19 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
   open, 
   onOpenChange, 
   invoice, 
-  onPaymentRecord, 
+  onPaymentRecord,
+  onPaymentRecovered,
   isLoading = false 
 }: PaymentCaptureModalProps) {
+  const [recovery, setRecovery] = useState<InvoiceRecoveryState>({ loading: true, blocked: false });
+  const [recoveryVersion, setRecoveryVersion] = useState(0);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const balance = invoice.balanceDue ?? invoice.total;
   const schema = useMemo(() => paymentCaptureSchema(balance), [balance]);
   const [paymentDate, setPaymentDate] = useState<Date>(new Date());
+  const [exchangeRateId, setExchangeRateId] = useState('');
+  const isForeign = foreignCurrency(invoice.currency);
   const [step, setStep] = useState<'capture' | 'confirm'>('capture');
   const [formData, setFormData] = useState<PaymentCaptureForm | null>(null);
   
@@ -130,14 +140,14 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
       paymentDate: formData.paymentDate.toISOString().split('T')[0],
       referenceNumber: formData.referenceNumber,
       notes: formData.notes,
-      generateReceipt: formData.generateReceipt
+      generateReceipt: formData.generateReceipt,
+      ...(isForeign ? { exchangeRateId } : {})
     };
     
-    await onPaymentRecord(paymentRequest);
-    onOpenChange(false);
-    setStep('capture');
-    setFormData(null);
-    form.reset();
+    setSubmitting(true); setSubmitError('');
+    try { await onPaymentRecord(paymentRequest); onOpenChange(false); setStep('capture'); setFormData(null); form.reset(); }
+    catch (caught) { setSubmitError(caught instanceof Error ? caught.message : 'Payment result is uncertain. Recover the original request.'); setRecoveryVersion((value) => value + 1); }
+    finally { setSubmitting(false); }
   };
 
   const handleBack = () => {
@@ -168,6 +178,9 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
           </DialogDescription>
         </DialogHeader>
 
+        <InvoicePaymentRecoveryPanel invoiceId={invoice.id} onStateChange={setRecovery} refreshVersion={recoveryVersion} onResolved={async () => { onOpenChange(false); await onPaymentRecovered?.(); }} />
+        {submitError && <p role="alert" className="text-sm text-destructive">{submitError}</p>}
+        {recovery.pending || recovery.blocked ? <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>Close payment recovery</Button> : <fieldset disabled={recovery.loading || submitting}>
         {step === 'capture' ? (
           <form onSubmit={form.handleSubmit(handleNext)} className="space-y-6">
             {/* Invoice Summary */}
@@ -213,6 +226,7 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
               </CardContent>
             </Card>
 
+            {isForeign && <SettlementRatePicker currency={invoice.currency!} date={form.watch('paymentDate').toISOString().slice(0, 10)} value={exchangeRateId} onChange={setExchangeRateId} />}
             {/* Payment Amount */}
             <Card>
               <CardHeader>
@@ -439,7 +453,7 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
               </Button>
               <Button
                 type="submit"
-                disabled={isLoading || !form.formState.isValid}
+                disabled={isLoading || !form.formState.isValid || (isForeign && !exchangeRateId)}
                 className="flex-1 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
               >
                 Review Payment →
@@ -562,6 +576,7 @@ export function PaymentCaptureModal({ // NOSONAR -- legacy form orchestration pr
             </div>
           </div>
         )}
+        </fieldset>}
       </DialogContent>
     </Dialog>
   );

@@ -7,22 +7,36 @@ description: Start-here operating instructions for LedgerCraft reconstruction. U
 
 Read this before writing code. Then follow the named skill for the wave you are on.
 
-## You are here (2026-10-18)
+Web quality checks require zero errors: `pnpm lint`, followed by explicit
+`tsc --noEmit` checks for `tsconfig.app.json` and `tsconfig.node.json`, must each
+exit 0. CI and release verification do not use error-count baselines or allowed
+failures. Lint warnings remain visible. Follow `ledgercraft-verify` for the exact
+Node majors, all jobs, and evidence; a bare root TypeScript check is insufficient.
 
-The local business-accountant review (2026-11-06) is recorded in
-`docs/evidence/business-accounting/README.md`. Web and mobile use the shared
-invoice-basis NZD GST-preparation route, include received bills and approved
-expenses, preserve historical cancellation/reinstatement gross movements, and
-save draft returns. Negative gross or GST components require manual review;
-a net refund alone remains valid. Expense claim percentages apply once to raw
-GST, and paid-from accounts are restricted to bank/cash/card/loan sources.
-Unsupported legacy invoice/bill matches fail closed. Web supports custom registered periods and
-myIR due dates; automatic income-tax return calculation remains unsupported.
-Selected-bank supplier postings, cumulative balance-sheet profit, web account
-mutations/live posted balances, and mobile gross/GST expense, approval, vendor
-and onboarding-storage paths are corrected locally. Read the evidence report
-for passing final local checks and reconciliation completion; signed iOS/Android QA and
-real filing are not established by these local screens.
+## You are here (2026-11-06)
+
+The local business-accounting completion (2026-11-06) is tracked in
+`docs/evidence/accounting-completion/README.md`; final combined check status stays
+explicit until the final runs finish. Web and Expo support invoice/payments GST
+(reference NZ$135/NZ$141), reviewed signed adjustments (reference NZ$117), and a confirmed
+NZ-company preparation worksheet (taxable NZ$700 ×28% less credits NZ$50 = payable NZ$146).
+This is draft preparation, not IRD submission or automatic IR4 certification.
+Valid source snapshots provide FX base GST; reviewed foreign-payment carrying
+methods retain warnings. Base-currency bank settlement is required.
+
+Reviewed opening/manual journals and historical audit corrections are balanced,
+additive, company-scoped and idempotent; original journals remain immutable.
+Existing supplier-payment matching supports undo/rematch without double posting.
+`0026_settlement-snapshots.sql` records FX settlement/match identity;
+`0027_credit-notes.sql` supports real credit-note allocation, refunds/reversals,
+customer-credit liabilities and remaining-payment guards. Reviewed period-end
+revaluation posts a next-day reversing journal. Selected-bank supplier posting,
+cumulative profit, historical report checks, posted web accounts and accounting
+figures, mobile operating flows and expense gross/GST handling are part of the
+current verification pass. Invoice email uses transport acknowledgment; local
+HTTP/provider checks do not prove external inbox delivery. Read the completion
+report for exact evidence and pending gates. Signed iOS/Android QA, production
+corrections, real recipient messages, deployment and real filing are not implied.
 
 Invoice payment integrity is implemented locally (2026-10-31) through
 `0022_payment-reversals.sql`. Web and Expo cap instalments at the live invoice

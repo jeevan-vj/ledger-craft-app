@@ -37,8 +37,10 @@ const report: FinancialReport = {
   },
 };
 
+const clients: QueryClient[] = [];
+afterEach(() => { for (const client of clients.splice(0)) client.clear(); });
 function renderScreen() {
-  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  const client = new QueryClient({ defaultOptions: { queries: { retry: false } } }); clients.push(client);
   return render(<QueryClientProvider client={client}><ReportsScreen /></QueryClientProvider>);
 }
 
@@ -85,4 +87,8 @@ describe('mobile GST report', () => {
     expect(await screen.findByText('GST calculated on the invoice basis')).toBeTruthy();
     expect(screen.getByText('1 foreign-currency document(s) excluded from GST')).toBeTruthy();
   });
+});
+it('shows unallocated posted receivables without inventing a customer aging balance',async()=>{
+ jest.mocked(reportsApi.financial).mockResolvedValue({...report,receivablesAging:{...report.receivablesAging,total:'5000.00',unallocatedControl:'5000.00'}} as never);
+ const screen=renderScreen();expect(await screen.findByText('Unallocated posted receivables: $5,000.00. Link customer details before aging.')).toBeTruthy();
 });

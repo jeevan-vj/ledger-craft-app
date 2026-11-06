@@ -134,12 +134,12 @@ describe('payment error mapping', () => {
     expect(failure.message).not.toMatch(/req-1|customer/i);
   });
 
-  it('asks for a new key when the same attempt is sent with a different body', () => {
+  it('keeps an idempotency conflict for review instead of minting a new key', () => {
     const failure = mapPaymentError(
       new AuthApiError('Idempotency-Key was reused with a different request', 409, 'IDEMPOTENCY_CONFLICT'),
       true,
     );
-    expect(failure).toMatchObject({ kind: 'idempotency_conflict', resetKey: true });
+    expect(failure).toMatchObject({ kind: 'idempotency_conflict', resetKey: false });
     expect(failure.message).toMatch(/different|conflict/i);
   });
 

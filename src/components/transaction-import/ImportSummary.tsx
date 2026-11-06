@@ -1,11 +1,12 @@
 import React from 'react';
+import { decimal } from '../../../api/src/modules/invoices/money';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { 
-  CheckCircle, 
-  AlertCircle, 
+import {
+  CheckCircle,
+  AlertCircle,
   RotateCcw,
   Eye,
   TrendingUp,
@@ -36,10 +37,8 @@ export function ImportSummary({
     }).format(amount);
   };
 
-  const getSuccessRate = () => {
-    if (importResult.total === 0) return 0;
-    return Math.round((importResult.imported / importResult.total) * 100);
-  };
+  const total = importResult.importedCount + importResult.duplicatesSkipped + importResult.errors.length;
+  const getSuccessRate = () => total === 0 ? 0 : Math.round(importResult.importedCount / total * 100);
 
   const renderSummaryCards = () => (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -49,7 +48,7 @@ export function ImportSummary({
             <CheckCircle className="h-8 w-8 text-success" aria-hidden="true" />
             <div className="ml-4">
               <p className="text-2xl font-bold text-success tabular-nums">
-                {importResult.imported}
+                {importResult.importedCount}
               </p>
               <p className="text-foreground text-sm font-medium">
                 Successfully Imported
@@ -65,7 +64,7 @@ export function ImportSummary({
             <AlertCircle className="h-8 w-8 text-warning" aria-hidden="true" />
             <div className="ml-4">
               <p className="text-2xl font-bold text-warning tabular-nums">
-                {importResult.skipped}
+                {importResult.duplicatesSkipped}
               </p>
               <p className="text-foreground text-sm font-medium">
                 Skipped (Duplicates)
@@ -81,7 +80,7 @@ export function ImportSummary({
             <AlertCircle className="h-8 w-8 text-destructive" aria-hidden="true" />
             <div className="ml-4">
               <p className="text-2xl font-bold text-destructive tabular-nums">
-                {importResult.errors}
+                {importResult.errors.length}
               </p>
               <p className="text-foreground text-sm font-medium">
                 Failed to Import
@@ -110,9 +109,11 @@ export function ImportSummary({
   );
 
   const renderFinancialSummary = () => {
-    if (!importResult.summary) return null;
-
-    const { totalCredits, totalDebits, netAmount, categoryCounts } = importResult.summary;
+    if (!importResult.transactions.length) return null;
+    const credits = importResult.transactions.filter((row) => row.type === 'credit').reduce((sum, row) => sum.add(String(row.amount)), decimal(0));
+    const debits = importResult.transactions.filter((row) => row.type === 'debit').reduce((sum, row) => sum.add(String(row.amount)), decimal(0));
+    const totalCredits = Number(credits.toFixed()); const totalDebits = Number(debits.toFixed()); const netAmount = Number(credits.sub(debits).toFixed());
+    const categoryCounts = importResult.transactions.reduce<Record<string, number>>((counts, row) => { const key = row.category || 'Uncategorized'; counts[key] = (counts[key] ?? 0) + 1; return counts; }, {});
 
     return (
       <Card>
@@ -139,7 +140,7 @@ export function ImportSummary({
                     {formatAmount(totalCredits)}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between rounded-xl bg-destructive/10 p-3">
                   <div className="flex items-center gap-2">
                     <TrendingDown className="w-4 h-4 text-destructive" aria-hidden="true" />
@@ -149,7 +150,7 @@ export function ImportSummary({
                     {formatAmount(totalDebits)}
                   </span>
                 </div>
-                
+
                 <div className="flex items-center justify-between rounded-xl bg-muted p-3">
                   <div className="flex items-center gap-2">
                     <BarChart3 className="w-4 h-4 text-muted-foreground" aria-hidden="true" />
@@ -200,7 +201,7 @@ export function ImportSummary({
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3">
             <FileText className="w-5 h-5 text-success mt-0.5" aria-hidden="true" />
             <div>
@@ -210,7 +211,7 @@ export function ImportSummary({
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3">
             <BarChart3 className="w-5 h-5 text-primary mt-0.5" aria-hidden="true" />
             <div>
@@ -220,7 +221,7 @@ export function ImportSummary({
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-start gap-3">
             <CreditCard className="w-5 h-5 text-warning mt-0.5" aria-hidden="true" />
             <div>
@@ -246,7 +247,7 @@ export function ImportSummary({
               Import complete
             </h2>
             <p className="text-muted-foreground">
-              {importResult.imported} transactions have been imported into{' '}
+              {importResult.importedCount} transactions have been imported into{' '}
               <strong>{bankAccount.accountName}</strong>
             </p>
           </div>
@@ -260,21 +261,21 @@ export function ImportSummary({
       {renderFinancialSummary()}
 
       {/* Alerts for issues */}
-      {importResult.skipped > 0 && (
+      {importResult.duplicatesSkipped > 0 && (
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {importResult.skipped} duplicate transactions were automatically skipped to prevent 
+            {importResult.duplicatesSkipped} duplicate transactions were automatically skipped to prevent
             double entries in your account.
           </AlertDescription>
         </Alert>
       )}
 
-      {importResult.errors > 0 && (
+      {importResult.errors.length > 0 && (
         <Alert variant="destructive">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            {importResult.errors} transactions failed to import due to validation errors. 
+            {importResult.errors.length} transactions failed to import due to validation errors.
             Please check your CSV file format and try again.
           </AlertDescription>
         </Alert>
@@ -285,7 +286,7 @@ export function ImportSummary({
 
       {/* Action Buttons */}
       <div className="flex flex-col-reverse justify-center gap-3 sm:flex-row">
-        <Button 
+        <Button
           onClick={onViewTransactions}
           size="lg"
           className="flex items-center gap-2"
@@ -293,9 +294,9 @@ export function ImportSummary({
           <Eye className="w-4 h-4" />
           View Transactions
         </Button>
-        
-        <Button 
-          variant="outline" 
+
+        <Button
+          variant="outline"
           onClick={onStartOver}
           size="lg"
           className="flex items-center gap-2"

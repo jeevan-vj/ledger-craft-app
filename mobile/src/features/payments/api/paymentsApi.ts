@@ -84,6 +84,7 @@ export const paymentsApi = {
   },
 
   async create(input: {
+    exchangeRateId?: string;
     invoiceId: string;
     paymentMethod: Payment['paymentMethod'];
     amount: string;

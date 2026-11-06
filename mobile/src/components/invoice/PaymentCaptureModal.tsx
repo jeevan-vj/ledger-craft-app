@@ -1,4 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { createPaymentRequestSchema } from '@ledgercraft/contracts';
+import { pendingMutation, type PendingMutation } from '@/features/accounting/pendingMutation';
 import {
   ActivityIndicator,
   KeyboardAvoidingView,
@@ -13,6 +15,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { onlineManager } from '@tanstack/react-query';
 import { Feather } from '@expo/vector-icons';
+import { SettlementRatePicker } from '@/components/currency/SettlementRatePicker';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { AuthApiError } from '@/features/auth/api/http';
 import {
@@ -22,8 +25,8 @@ import {
   normalizePaymentAmount,
   PaymentExceedsBalanceError,
   paymentAmountError,
+  paymentAttemptInFlight,
   paymentFingerprint,
-  pendingPaymentAttempt,
   remainingAfterPayment,
   type PaymentAttemptFields,
 } from '@/features/payments/paymentModel';
@@ -36,140 +39,158 @@ import { useTheme } from '@/theme';
 
 interface PaymentCaptureModalProps {
   visible: boolean;
+  ownerId: string;
   invoice: Invoice;
   onSubmit: (paymentData: CreatePaymentRequest, idempotencyKey: string) => Promise<void>;
   onClose: () => void;
+  onPendingChange?: (pending: boolean) => void;
 }
 
-export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClose }: PaymentCaptureModalProps) {
+function storedPayment(input: unknown, invoiceId: string): CreatePaymentRequest {
+  const value = createPaymentRequestSchema.parse(input);
+  if (value.invoiceId !== invoiceId) throw new Error('The saved payment belongs to another invoice. Review it before continuing.');
+  return value;
+}
+
+export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmit, onClose, onPendingChange }: PaymentCaptureModalProps) {
   const theme = useTheme();
   const { colors: palette } = theme;
   const styles = createStyles(theme);
   const insets = useSafeAreaInsets();
-  const attempt = useRef(createPaymentAttempt());
   const initialBalance = invoice.balanceDueText?.trim() ?? '';
   const currency = invoice.currency || 'NZD';
-  const pendingOnMount = pendingPaymentAttempt(invoice.id);
-  const [paymentMethod, setPaymentMethod] = useState<CreatePaymentRequest['paymentMethod']>(
-    methodOrDefault(pendingOnMount?.paymentMethod),
-  );
-  const [amount, setAmount] = useState(pendingOnMount?.amount ?? (normalizePaymentAmount(initialBalance) ?? initialBalance));
-  const [paymentDate, setPaymentDate] = useState(pendingOnMount?.paymentDate ?? localIsoDate(new Date()));
-  const [referenceNumber, setReferenceNumber] = useState(pendingOnMount?.referenceNumber ?? '');
-  const [notes, setNotes] = useState(pendingOnMount?.notes ?? '');
+  const invoiceBalanceRef = useRef(initialBalance); invoiceBalanceRef.current = initialBalance;
+  const [paymentMethod, setPaymentMethod] = useState<CreatePaymentRequest['paymentMethod']>('bank_transfer');
+  const [amount, setAmount] = useState(normalizePaymentAmount(initialBalance) ?? initialBalance);
+  const [paymentDate, setPaymentDate] = useState(localIsoDate(new Date()));
+  const [referenceNumber, setReferenceNumber] = useState('');
+  const [notes, setNotes] = useState('');
+  const [exchangeRateId, setExchangeRateId] = useState<string>();
   const [amountError, setAmountError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [shownBalance, setShownBalance] = useState(initialBalance);
+  const [savedPending, setSavedPending] = useState<PendingMutation<CreatePaymentRequest> | null>(null);
+  const pendingRef = useRef<PendingMutation<CreatePaymentRequest> | null>(null);
+  const loaded = useRef<{ scope: string; promise: Promise<PendingMutation<CreatePaymentRequest> | null> } | undefined>(undefined);
+  const loadGeneration = useRef(0);
+  const callbackRef = useRef(onPendingChange); callbackRef.current = onPendingChange;
+  const scope = `${ownerId}:invoice-payment.${invoice.id}`;
+  const currentScope = useRef(scope); currentScope.current = scope;
+  const target = `invoice-payment.${invoice.id}`;
   const wasOpen = useRef(false);
-  const openInvoiceId = useRef<string | null>(null);
-  const appliedBalance = useRef(initialBalance);
-  const fieldsRef = useRef({ paymentMethod, amount, paymentDate, referenceNumber, notes });
-  fieldsRef.current = { paymentMethod, amount, paymentDate, referenceNumber, notes };
+  const openScope = useRef('');
+  const amountRef = useRef(amount); amountRef.current = amount;
   const balanceDue = shownBalance.trim();
 
-  const applyAttempt = (pending: PaymentAttemptFields, nextBalance: string) => {
-    setPaymentMethod(methodOrDefault(pending.paymentMethod));
-    setAmount(pending.amount);
-    setPaymentDate(pending.paymentDate);
-    setReferenceNumber(pending.referenceNumber);
-    setNotes(pending.notes);
-    setAmountError(nextBalance ? paymentAmountError(pending.amount, nextBalance) : null);
-  };
-
   useEffect(() => {
-    if (!visible) {
-      wasOpen.current = false;
-      return;
-    }
-    const nextBalance = invoice.balanceDueText?.trim() ?? '';
-    const opening = !wasOpen.current || openInvoiceId.current !== invoice.id;
-    if (!opening) {
-      if (nextBalance === appliedBalance.current) return;
-      appliedBalance.current = nextBalance;
-      setShownBalance(nextBalance);
-      setAmountError(nextBalance ? paymentAmountError(fieldsRef.current.amount, nextBalance) : null);
-      return;
-    }
-    wasOpen.current = true;
-    openInvoiceId.current = invoice.id;
-    appliedBalance.current = nextBalance;
-    const pending = pendingPaymentAttempt(invoice.id);
-    if (pending) applyAttempt(pending, nextBalance);
-    else {
-      setPaymentMethod('bank_transfer');
+    let active = true;
+    const generation = ++loadGeneration.current;
+    const nextBalance = invoiceBalanceRef.current;
+    if (visible && (!wasOpen.current || openScope.current !== scope)) {
+      setPaymentMethod('bank_transfer'); setExchangeRateId(undefined);
       setAmount(normalizePaymentAmount(nextBalance) ?? nextBalance);
-      setPaymentDate(localIsoDate(new Date()));
-      setReferenceNumber('');
-      setNotes('');
-      setAmountError(null);
+      setPaymentDate(localIsoDate(new Date())); setReferenceNumber(''); setNotes('');
+      setAmountError(null); setFormError(null); setSubmitting(false);
     }
-    setFormError(null);
-    setShownBalance(nextBalance);
-  }, [visible, invoice.id, invoice.balanceDueText]);
+    wasOpen.current = visible; openScope.current = scope;
+    pendingRef.current = null; setSavedPending(null); callbackRef.current?.(false);
+    const promise = ownerId ? pendingMutation.load(ownerId, target, (value) => storedPayment(value, invoice.id)).then(async (stored) => {
+      if (stored && !paymentAttemptInFlight(scope)) {
+        // A process can die after commit but before catch persisted uncertainty.
+        await pendingMutation.fail(ownerId, target, 0);
+        stored = { ...stored, uncertain: true };
+      }
+      if (!active || currentScope.current !== scope || generation !== loadGeneration.current) return stored;
+      pendingRef.current = stored; setSavedPending(stored); callbackRef.current?.(Boolean(stored));
+      if (stored) {
+        setPaymentMethod(stored.input.paymentMethod); setExchangeRateId(stored.input.exchangeRateId);
+        setAmount(stored.input.amount); setPaymentDate(stored.input.paymentDate);
+        setReferenceNumber(stored.input.referenceNumber ?? ''); setNotes(stored.input.notes ?? '');
+        setAmountError(null); setFormError(null);
+      }
+      return stored;
+    }).catch((error: unknown) => {
+      if (active && currentScope.current === scope && generation === loadGeneration.current) setFormError(error instanceof Error ? error.message : 'Saved payment could not be checked. Do not record another payment until reviewed.');
+      throw error;
+    }) : Promise.resolve(null);
+    loaded.current = { scope, promise };
+    void promise.catch(() => undefined);
+    return () => { active = false; };
+  }, [ownerId, invoice.id, visible, scope, target]);
+  useEffect(() => {
+    const value = invoice.balanceDueText?.trim() ?? '';
+    setShownBalance(value);
+    setAmountError(pendingRef.current ? null : value ? paymentAmountError(amountRef.current, value) : null);
+  }, [invoice.balanceDueText]);
 
+  const locked = submitting || Boolean(savedPending);
   const remaining = remainingAfterPayment(balanceDue, amount);
   const selectedMethod = PAYMENT_METHOD_OPTIONS.find((method) => method.value === paymentMethod);
-
-  const submit = async () => {
-    if (!balanceDue) {
-      setFormError('The balance due is unavailable. Refresh the invoice before recording a payment.');
-      return;
+  const submit = async (resumeRequested: boolean) => {
+    if (!ownerId) { setFormError('Wait for the current account before recording a payment.'); return; }
+    if (!onlineManager.isOnline()) { setFormError('You are offline. This attempt will not be sent later automatically. Reconnect before continuing.'); return; }
+    if (!pendingRef.current) {
+      if (!balanceDue) { setFormError('The balance due is unavailable. Refresh the invoice before recording a payment.'); return; }
+      const validation = paymentAmountError(amount, balanceDue);
+      if (validation || !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) {
+        setAmountError(validation);
+        if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) setFormError('Enter the payment date as YYYY-MM-DD.');
+        return;
+      }
+      if (currency !== 'NZD' && !exchangeRateId) { setFormError('Select a reviewed settlement exchange rate before recording a foreign payment.'); return; }
     }
-    const validation = paymentAmountError(amount, balanceDue);
-    if (validation || !/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) {
-      setAmountError(validation);
-      if (!/^\d{4}-\d{2}-\d{2}$/.test(paymentDate.trim())) setFormError('Enter the payment date as YYYY-MM-DD.');
-      return;
-    }
-    const normalizedAmount = normalizePaymentAmount(amount);
-    if (!normalizedAmount) {
-      setAmountError('Enter a positive amount.');
-      return;
-    }
-    const payload: CreatePaymentRequest = {
-      invoiceId: invoice.id,
-      paymentMethod,
-      amount: normalizedAmount,
-      paymentDate: paymentDate.trim(),
-      referenceNumber: referenceNumber.trim() || null,
-      notes: notes.trim() || null,
-    };
-    const attemptFields: PaymentAttemptFields = {
-      invoiceId: payload.invoiceId,
-      amount: payload.amount,
-      paymentMethod: payload.paymentMethod,
-      paymentDate: payload.paymentDate,
-      referenceNumber: payload.referenceNumber ?? '',
-      notes: payload.notes ?? '',
-    };
-    const key = attempt.current.claim(paymentFingerprint(attemptFields), attemptFields.invoiceId, attemptFields);
-    if (!key) {
-      setFormError('A payment for this invoice is already being recorded. Wait until it finishes.');
-      return;
-    }
-    setSubmitting(true);
-    setFormError(null);
+    if (submitting) return;
+    const operationScope = scope;
+    const operationAttempt = createPaymentAttempt();
+    let saved: PendingMutation<CreatePaymentRequest> | null = null;
+    setSubmitting(true); setFormError(null);
     try {
-      await onSubmit(payload, key);
-      attempt.current.succeed();
+      const hydrated = loaded.current?.scope === operationScope ? await loaded.current.promise : await pendingMutation.load(ownerId, target, (value) => storedPayment(value, invoice.id));
+      if (currentScope.current !== operationScope) return;
+      if (hydrated && !resumeRequested) { setFormError('Review the saved payment details, then choose Resume pending payment.'); return; }
+      const payload: CreatePaymentRequest = hydrated?.input ?? {
+        invoiceId: invoice.id, paymentMethod, amount: normalizePaymentAmount(amount)!, paymentDate: paymentDate.trim(),
+        referenceNumber: referenceNumber.trim() || null, notes: notes.trim() || null,
+        ...(exchangeRateId ? { exchangeRateId } : {}),
+      };
+      const fields: PaymentAttemptFields = { ...payload, referenceNumber: payload.referenceNumber ?? '', notes: payload.notes ?? '' };
+      if (!operationAttempt.claim(paymentFingerprint(fields), operationScope, fields)) {
+        setFormError('A payment for this invoice is already being recorded. Wait until it finishes.'); return;
+      }
+      saved = hydrated ?? await pendingMutation.claim(ownerId, target, payload, (value) => storedPayment(value, invoice.id));
+      pendingRef.current = saved; setSavedPending(saved); callbackRef.current?.(true);
+      await onSubmit(saved.input, saved.key);
+      await pendingMutation.clear(ownerId, target);
+      operationAttempt.succeed();
+      if (currentScope.current === operationScope) { loadGeneration.current++; pendingRef.current = null; loaded.current = { scope: operationScope, promise: Promise.resolve(null) }; setSavedPending(null); callbackRef.current?.(false); }
     } catch (error) {
+      let retained: PendingMutation<CreatePaymentRequest> | null = null;
+      try {
+        if (saved) {
+          if (error instanceof AuthApiError && error.code === 'IDEMPOTENCY_CONFLICT') await pendingMutation.fail(ownerId, target, 0);
+          await pendingMutation.fail(ownerId, target, error instanceof AuthApiError ? error.status : 0);
+          retained = await pendingMutation.load(ownerId, target, (value) => storedPayment(value, invoice.id));
+        }
+      } catch {
+        operationAttempt.release();
+        if (currentScope.current === operationScope) {
+          pendingRef.current = saved; setSavedPending(saved); callbackRef.current?.(Boolean(saved));
+          setFormError('The saved payment outcome could not be checked. Do not record another payment; reconnect and review this attempt.');
+        }
+        return;
+      }
+      if (retained) operationAttempt.release(); else operationAttempt.resetKey();
+      if (currentScope.current !== operationScope) return;
+      loadGeneration.current++; pendingRef.current = retained; loaded.current = { scope: operationScope, promise: Promise.resolve(retained) }; setSavedPending(retained); callbackRef.current?.(Boolean(retained));
       const failure = mapPaymentError(error, onlineManager.isOnline());
-      if (failure.resetKey) attempt.current.resetKey();
-      else attempt.current.release();
       if (error instanceof PaymentExceedsBalanceError) {
         const nextBalance = error.invoice.balanceDueText?.trim() ?? '';
-        appliedBalance.current = nextBalance;
-        setShownBalance(nextBalance);
-        setAmountError(nextBalance ? paymentAmountError(amount, nextBalance) : null);
+        setShownBalance(nextBalance); setAmountError(retained ? null : nextBalance ? paymentAmountError(amount, nextBalance) : null);
       }
-      setFormError(failure.message);
-      if (error instanceof AuthApiError) {
-        console.error('Payment was not recorded', { code: error.code, requestId: error.requestId, status: error.status });
-      }
-    } finally {
-      setSubmitting(false);
-    }
+      setFormError(failure.kind === 'offline' && retained ? 'You are offline. The payment outcome is unknown; it will not be sent later automatically. Reconnect, then resume this saved attempt.' : failure.message);
+      if (error instanceof AuthApiError) console.error('Payment outcome needs review', { code: error.code, requestId: error.requestId, status: error.status });
+    } finally { if (currentScope.current === operationScope) setSubmitting(false); }
   };
 
   return (
@@ -196,10 +217,11 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
           <Text style={styles.headerTitle}>Record payment</Text>
           <View style={styles.headerButton} />
         </View>
-        <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
+        <ScrollView contentInsetAdjustmentBehavior="automatic" contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
           <Text style={styles.kicker}>{invoice.invoiceNumber}</Text>
           <Text style={styles.balanceLabel}>Balance due</Text>
           <Text style={styles.balance}>{balanceDue ? formatPaymentAmount(balanceDue, currency) : 'Unavailable'}</Text>
+          {savedPending ? <Text accessibilityRole="alert" style={styles.helper}>A payment attempt is saved. Resume it unchanged to confirm its outcome; do not record it again as a new payment.</Text> : null}
           <Text style={styles.fieldLabel}>Payment method</Text>
           <View style={styles.methods}>
             {PAYMENT_METHOD_OPTIONS.map((method) => {
@@ -209,8 +231,8 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
                   key={method.value}
                   accessibilityRole="button"
                   accessibilityLabel={method.label}
-                  accessibilityState={{ selected, disabled: submitting }}
-                  disabled={submitting}
+                  accessibilityState={{ selected, disabled: locked }}
+                  disabled={locked}
                   onPress={() => setPaymentMethod(method.value)}
                   style={({ pressed }) => [styles.method, selected && styles.methodSelected, pressed && styles.pressed]}
                 >
@@ -229,7 +251,7 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
               setAmountError(null);
             }}
             keyboardType="decimal-pad"
-            editable={!submitting}
+            editable={!locked}
             placeholder="0.00"
             placeholderTextColor={palette.textTertiary}
             style={[styles.input, amountError ? styles.inputError : null]}
@@ -242,18 +264,19 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
           <TextInput
             accessibilityLabel="Payment date"
             value={paymentDate}
-            onChangeText={setPaymentDate}
-            editable={!submitting}
+            onChangeText={(value) => { setPaymentDate(value); setExchangeRateId(undefined); }}
+            editable={!locked}
             placeholder="YYYY-MM-DD"
             placeholderTextColor={palette.textTertiary}
             style={styles.input}
           />
+          <SettlementRatePicker currency={currency} paymentDate={paymentDate} value={exchangeRateId} onChange={setExchangeRateId} disabled={locked} />
           <Text style={styles.fieldLabel}>Reference</Text>
           <TextInput
             accessibilityLabel="Payment reference"
             value={referenceNumber}
             onChangeText={setReferenceNumber}
-            editable={!submitting}
+            editable={!locked}
             placeholder="Optional"
             placeholderTextColor={palette.textTertiary}
             style={styles.input}
@@ -263,7 +286,7 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
             accessibilityLabel="Payment notes"
             value={notes}
             onChangeText={setNotes}
-            editable={!submitting}
+            editable={!locked}
             placeholder="Optional"
             placeholderTextColor={palette.textTertiary}
             multiline
@@ -274,27 +297,22 @@ export default function PaymentCaptureModal({ visible, invoice, onSubmit, onClos
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
           <AppPressable
             accessibilityRole="button"
-            accessibilityLabel="Record payment"
+            accessibilityLabel={savedPending ? "Resume pending payment" : "Record payment"}
             accessibilityState={{ disabled: submitting, busy: submitting }}
             disabled={submitting}
-            onPress={() => { void submit(); }}
+            onPress={() => { void submit(Boolean(savedPending)); }}
             style={({ pressed }) => [styles.submit, submitting && styles.submitDisabled, pressed && !submitting && styles.pressed]}
           >
             {submitting ? (
               <ActivityIndicator color={palette.accentForeground} />
             ) : (
-              <Text style={styles.submitText}>Record payment</Text>
+              <Text style={styles.submitText}>{savedPending ? "Resume pending payment" : "Record payment"}</Text>
             )}
           </AppPressable>
         </View>
       </KeyboardAvoidingView>
     </Modal>
   );
-}
-
-function methodOrDefault(value: string | undefined): CreatePaymentRequest['paymentMethod'] {
-  const known = PAYMENT_METHOD_OPTIONS.some((method) => method.value === value);
-  return known ? value as CreatePaymentRequest['paymentMethod'] : 'bank_transfer';
 }
 
 const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) => StyleSheet.create({

@@ -21,6 +21,7 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
             screens: {
               CompanyTeam: 'settings',
               AccountSecurity: 'settings/security',
+              AccountingTools: 'accounting/tools',
               BankReconciliation: 'banking/reconcile',
               BankReconciliationMatch: 'banking/reconcile/:transactionId',
               BankMatchingRules: 'banking/reconcile/rules',
@@ -44,6 +45,7 @@ export const moreMenuSections = [
         subtitle: 'Profit, cash, balances and aging',
         screen: 'Reports',
       },
+      { label: 'Accounting tools', subtitle: 'Opening balances, journals and ledger audit', screen: 'AccountingTools' },
     ],
   },
   {
@@ -134,6 +136,7 @@ type CustomerDestination =
   | { name: 'CustomerDetail'; params: { customerId: string } };
 
 type MoreDestination =
+  | { name: 'AccountingTools' }
   | { name: 'BusinessSettings' }
   | { name: 'CompanyTeam'; params?: { invite?: string } }
   | { name: 'RecurringSchedules' }

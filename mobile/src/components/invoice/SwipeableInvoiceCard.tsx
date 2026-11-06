@@ -1,3 +1,4 @@
+import { invoiceSettlementLabel } from '@/features/invoices/settlementLabel';
 import React, { useRef, useCallback } from 'react';
 import { Pressable, View, Text, StyleSheet, Platform, type AccessibilityActionEvent } from 'react-native';
 import Animated, {
@@ -10,7 +11,7 @@ import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { Feather } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import type { Invoice } from '@/types/invoice';
-import { STATUS_OPTIONS, getStatusIcon, getStatusLabel, statusActionColors, statusInk } from '@/utils/statusUtils';
+import { STATUS_OPTIONS, getStatusIcon, statusActionColors, statusInk } from '@/utils/statusUtils';
 import { hairline, radius } from '@/theme/tokens';
 import { IconWell } from '@/components/ui/IconWell';
 import { useTheme } from '@/theme';
@@ -144,7 +145,7 @@ export default function SwipeableInvoiceCard({
         <Animated.View
           accessible
           accessibilityRole="button"
-          accessibilityLabel={`${invoice.customer?.name || 'No customer'}, invoice ${invoice.invoiceNumber}, ${formatCurrency(invoice.total || 0, invoice.currency || 'NZD')}, ${getStatusLabel(invoice.status)}`}
+          accessibilityLabel={`${invoice.customer?.name || 'No customer'}, invoice ${invoice.invoiceNumber}, ${formatCurrency(invoice.total || 0, invoice.currency || 'NZD')}, ${invoiceSettlementLabel(invoice)}`}
           accessibilityHint="Opens invoice details"
           accessibilityState={{ disabled }}
           accessibilityActions={[
@@ -179,7 +180,7 @@ export default function SwipeableInvoiceCard({
               {formatCurrency(invoice.total || 0, invoice.currency || 'NZD')}
             </Text>
             <Text style={[styles.status, { color: statusColor }]}>
-              {getStatusLabel(invoice.status)}
+              {invoiceSettlementLabel(invoice)}
             </Text>
           </View>
         </Animated.View>

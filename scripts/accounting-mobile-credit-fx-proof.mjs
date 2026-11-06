@@ -1,0 +1,163 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { chromium } from '@playwright/test';
+
+const origin = process.env.BUSINESS_MOBILE_URL ?? 'http://127.0.0.1:8081';
+const apiOrigin = process.env.BUSINESS_API_URL ?? 'http://127.0.0.1:3001';
+const output = process.env.BUSINESS_MOBILE_OUTPUT ?? '/tmp/ledgercraft-accounting-mobile-credit-fx';
+for (const value of [origin, apiOrigin]) assert.ok(['127.0.0.1', 'localhost'].includes(new URL(value).hostname));
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
+const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
+const page = await context.newPage();
+page.setDefaultTimeout(20000);
+const errors = [];
+page.on('pageerror', error => errors.push(error.message));
+const email = `mobile-business-${Date.now()}@example.test`;
+const results = { email, platform: 'Expo web Chromium 390x844', errors };
+const shot = name => page.screenshot({ path: `${output}/${name}.png`, animations: 'disabled' });
+async function api(route) {
+  const response = await context.request.get(`${apiOrigin}${route}`, { headers: { Origin: origin } });
+  assert.equal(response.status(), 200, await response.text());
+  return response.json();
+}
+try {
+  await page.goto(origin, { waitUntil: 'networkidle', timeout: 120000 });
+  await page.getByRole('button', { name: 'Create an account', exact: true }).click();
+  await page.getByPlaceholder('Your full name').fill('Aroha Mobile Accountant');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.getByPlaceholder('+64 21 000 0000').fill('+64210000001');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.getByPlaceholder('you@business.co.nz').fill(email);
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.getByPlaceholder('At least 8 characters').fill(`Local-${crypto.randomUUID()}`);
+  await page.getByRole('checkbox').click();
+  await shot('01-signup');
+  await page.getByRole('button', { name: 'Create account', exact: true }).click();
+  await page.getByPlaceholder('Kauri Studio Ltd').fill('Kauri Mobile Studio Ltd');
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.getByRole('button', { name: 'Continue', exact: true }).click();
+  await page.getByRole('radio', { name: /Yes, calculate GST/ }).click();
+  await shot('02-gst-setup');
+  await page.getByRole('button', { name: 'Finish setup', exact: true }).click();
+  await page.getByText('Create your first invoice', { exact: true }).waitFor();
+  results.profile = await api('/api/business-profile');
+  assert.equal(results.profile.phone, '+64210000001');
+  await shot('03-home');
+  let failSessionOnce = true;
+  await page.route('**/api/me', async route => { if (failSessionOnce) { failSessionOnce = false; await route.abort('failed'); } else await route.continue(); });
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.getByRole('button', { name: 'Retry session check', exact: true }).waitFor();
+  await shot('00-transient-session-error-retry');
+  await page.unroute('**/api/me');
+  await page.getByRole('button', { name: 'Retry session check', exact: true }).click();
+  await page.getByText('Create your first invoice', { exact: true }).waitFor();
+  results.sessionRecoveredWithoutSigningInAgain = true;
+  // Company/signup are real UI. Supporting documents/rates below are real API fixtures;
+  // credit/refund/reversal, foreign settlements and revaluation actions are real mobile UI.
+  const day = new Date().toISOString().slice(0, 10);
+  const yesterday = new Date(Date.now() - 86400000).toISOString().slice(0, 10);
+  const from = `${day.slice(0, 4)}-01-01`;
+  const reportPath = `/api/reports/financial?from=${from}&to=${day}&basis=accrual&baseCurrency=NZD`;
+  const click = name => page.getByRole('button', { name, exact: true }).click();
+  const fill = (label, value) => page.getByLabel(label, { exact: true }).fill(value);
+  const toggle = label => page.getByLabel(label, { exact: true }).click();
+  async function post(route, data) { const r = await context.request.post(`${apiOrigin}${route}`, { headers: { Origin: origin, 'Idempotency-Key': crypto.randomUUID() }, data }); assert.ok(r.ok(), `${route} ${r.status()}: ${await r.text()}`); return r.json(); }
+  async function actionResponse(route, action) { const pending = page.waitForResponse(r => new URL(r.url()).pathname === route && r.request().method() === 'POST'); await action(); const r = await pending; assert.ok(r.ok(), `${route} ${r.status()}: ${await r.text()}`); return r.json(); }
+  async function focused(name, text) { await page.getByText(text, { exact: true }).first().evaluate(element => element.scrollIntoView({ block: 'center' })); await shot(name); }
+  const customer = await post('/api/customers', { name: 'Mobile Credit Customer', email: 'credit@example.test' });
+  const bank = await post('/api/bank-accounts', { accountName: 'Credit operations account', accountNumber: '00-0000-0000000-00', bankName: 'Local test bank', accountType: 'checking', currency: 'NZD', openingBalance: '0.00', currentBalance: '0.00', isActive: true });
+  const vendor = await post('/api/vendors', { name: 'Mobile FX supplier' });
+  let cost = (await api('/api/accounts')).accounts.find(account => account.accountNumber === '5000');
+  if (!cost) cost = await post('/api/accounts', { name: 'Operating Expenses', type: 'expense', accountClass: 'expense', accountNumber: '5000', currency: 'NZD' });
+  const makeInvoice = async (currency, amount, tax, date = day) => { const draft = await post('/api/invoices', { customerId: customer.id, date, dueDate: day, currency, status: 'sent', taxInclusive: false, taxRate: tax, items: [{ description: 'Reviewed services', quantity: '1', rate: amount }] }); const issued = await context.request.patch(`${apiOrigin}/api/invoices/${draft.id}`, { headers: { Origin: origin }, data: { status: 'sent' } }); assert.equal(issued.status(), 200, await issued.text()); return issued.json(); };
+  const invoice = await makeInvoice('NZD', '1000', '15');
+  async function issueCredit(source, amount, reason) {
+    await page.goto(`${origin}/invoices/${source.id}`, { waitUntil: 'networkidle' }); await click('Show credit notes');
+    await fill('Credit note net amount', amount); await fill('Credit note GST rate', '15'); await fill('Credit note description', 'Reviewed service credit'); await fill('Credit note reason', reason); await toggle('Confirm credit note review');
+    if (!results.creditLostResponseVerified) {
+      let dropped = false; let original;
+      await page.route('**/api/credit-notes', async route => { if (route.request().method() !== 'POST' || dropped) { await route.continue(); return; } dropped = true; original = { body: route.request().postData(), key: route.request().headers()['idempotency-key'] }; const committed = await route.fetch(); assert.equal(committed.status(), 201, await committed.text()); await route.abort('failed'); });
+      const failed = page.waitForEvent('requestfailed', request => new URL(request.url()).pathname === '/api/credit-notes' && request.method() === 'POST');
+      await click('Issue credit note'); await failed; await page.reload({ waitUntil: 'networkidle' }); await page.unroute('**/api/credit-notes'); await click('Show credit notes');
+      const replay = page.waitForRequest(request => new URL(request.url()).pathname === '/api/credit-notes' && request.method() === 'POST');
+      const result = await actionResponse('/api/credit-notes', () => click('Resume saved credit operation')); const request = await replay;
+      assert.equal(request.postData(), original.body); assert.equal(request.headers()['idempotency-key'], original.key); assert.equal((await api(`/api/credit-notes?invoiceId=${source.id}`)).creditNotes.length, 1); results.creditLostResponseVerified = true;
+      return result;
+    }
+    return actionResponse('/api/credit-notes', () => click('Issue credit note'));
+  }
+  let credit = await issueCredit(invoice, '200.00', 'Reviewed customer credit on unpaid invoice');
+  assert.deepEqual([credit.total, credit.taxAmount, credit.receivableAmount, credit.customerCreditAmount], ['230.00', '30.00', '230.00', '0.00']);
+  results.unpaidCredit = { credit, invoice: await api(`/api/invoices/${invoice.id}`), report: await api(reportPath) };
+  assert.deepEqual([results.unpaidCredit.invoice.balanceDue, results.unpaidCredit.invoice.totalPaid, results.unpaidCredit.report.profitLoss.netIncome, results.unpaidCredit.report.taxSummary.netGst], ['920.00', '0.00', '800.00', '120.00']);
+  await focused('01-unpaid-credit-230-ar920', `Credit total: $230.00 · GST: $30.00`);
+  async function reviewedAction(reason, route, button) { await fill('Credit note reason', reason); await toggle('Confirm credit note review'); return actionResponse(route, () => click(button)); }
+  await reviewedAction('Reverse unpaid credit to exercise paid credit case', `/api/credit-notes/${credit.id}/reverse`, `Reverse ${credit.creditNoteNumber}`);
+  await post('/api/payments', { invoiceId: invoice.id, amount: '1150.00', paymentMethod: 'bank_transfer', paymentDate: day });
+  credit = await issueCredit(invoice, '200.00', 'Reviewed paid invoice service credit');
+  assert.deepEqual([credit.receivableAmount, credit.customerCreditAmount, credit.refundAvailable], ['0.00', '230.00', '230.00']);
+  results.paidCredit = { credit, invoice: await api(`/api/invoices/${invoice.id}`) };
+  assert.equal(results.paidCredit.invoice.totalPaid, '1150.00');
+  await page.getByText('Settled', { exact: true }).first().waitFor();
+  await focused('02-paid-credit-customer-liability230', 'Available to refund: $230.00');
+  await click(`Refund ${credit.creditNoteNumber}`); await click(bank.accountName); await toggle('Confirm credit note review');
+  const refundRoute = `/api/credit-notes/${credit.id}/refunds`; let droppedRefund = false; let firstRefund;
+  await page.route(`**${refundRoute}`, async route => { if (droppedRefund) { await route.continue(); return; } droppedRefund = true; firstRefund = { body: route.request().postData(), key: route.request().headers()['idempotency-key'] }; const committed = await route.fetch(); assert.equal(committed.status(), 201, await committed.text()); await route.abort('failed'); });
+  const refundFailed = page.waitForEvent('requestfailed', request => new URL(request.url()).pathname === refundRoute && request.method() === 'POST'); await click('Record credit refund'); await refundFailed;
+  await page.reload({ waitUntil: 'networkidle' }); await page.unroute(`**${refundRoute}`); await click('Show credit notes');
+  const refundReplay = page.waitForRequest(request => new URL(request.url()).pathname === refundRoute && request.method() === 'POST'); credit = await actionResponse(refundRoute, () => click('Resume saved credit operation')); const replayedRefund = await refundReplay;
+  assert.equal(replayedRefund.postData(), firstRefund.body); assert.equal(replayedRefund.headers()['idempotency-key'], firstRefund.key); assert.equal(credit.refunds.length, 1); results.refundLostResponseVerified = true;
+  results.refund = { credit, report: await api(reportPath) };
+  assert.deepEqual([credit.refundedAmount, credit.refundAvailable, results.refund.report.cashFlow.closingCash, results.refund.report.profitLoss.netIncome, results.refund.report.taxSummary.netGst], ['230.00', '0.00', '920.00', '800.00', '120.00']);
+  await focused('03-refund230-cash920', `Refund $230.00 · completed`);
+  const refund = credit.refunds.find(row => row.status === 'completed'); assert.ok(refund);
+  credit = await reviewedAction('Reverse test bank refund with retained audit trail', `/api/credit-notes/${credit.id}/refunds/${refund.id}/reverse`, `Reverse refund ${credit.refunds.findIndex(row => row.id === refund.id) + 1}`);
+  assert.equal((await api(reportPath)).cashFlow.closingCash, '1150.00');
+  credit = await reviewedAction('Reverse customer credit after refund reversal', `/api/credit-notes/${credit.id}/reverse`, `Reverse ${credit.creditNoteNumber}`);
+  results.reversedCredit = { credit, invoice: await api(`/api/invoices/${invoice.id}`), report: await api(reportPath) };
+  assert.deepEqual([results.reversedCredit.invoice.totalPaid, results.reversedCredit.invoice.totalCredited, results.reversedCredit.report.cashFlow.closingCash, results.reversedCredit.report.profitLoss.netIncome, results.reversedCredit.report.taxSummary.netGst], ['1150.00', '0.00', '1150.00', '1000.00', '150.00']);
+  await focused('04-credit-and-refund-reversed', `${credit.creditNoteNumber} · reversed`);
+  const fullyCredited = await makeInvoice('NZD', '1000', '15');
+  const fullCredit = await issueCredit(fullyCredited, '1000.00', 'Reviewed full credit without receiving cash');
+  results.fullyCredited = { credit: fullCredit, invoice: await api(`/api/invoices/${fullyCredited.id}`) };
+  assert.deepEqual([results.fullyCredited.invoice.balanceDue, results.fullyCredited.invoice.totalPaid, results.fullyCredited.invoice.totalCredited], ['0.00', '0.00', '1150.00']);
+  await focused('05-full-credit-status-not-cash-paid', 'Credited');
+  await post('/api/exchange-rates', { currencyCode: 'USD', effectiveDate: yesterday, rate: '1.60' });
+  const settings = await post('/api/exchange-rates', { currencyCode: 'USD', effectiveDate: day, rate: '1.65' });
+  const rate = settings.rates.find(row => row.currencyCode === 'USD' && row.effectiveDate === day); assert.ok(rate);
+  const foreignInvoice = await makeInvoice('USD', '100', '0', yesterday);
+  await page.goto(`${origin}/invoices/${foreignInvoice.id}`, { waitUntil: 'networkidle' }); await click('Record payment');
+  await click(`1 USD = ${rate.rate} NZD · ${day}`);
+  const foreignPayment = await actionResponse('/api/payments', () => page.getByLabel('Record payment', { exact: true }).click());
+  assert.deepEqual([foreignPayment.amount, foreignPayment.baseAmount, foreignPayment.bookBaseAmount, foreignPayment.exchangeDifference], ['100.00', '165.00', '160.00', '5.00']);
+  results.foreignReceipt = { payment: foreignPayment, report: await api(reportPath) };
+  assert.deepEqual([results.foreignReceipt.report.cashFlow.closingCash, results.foreignReceipt.report.profitLoss.netIncome], ['1315.00', '1165.00']);
+  await shot('06-usd100-receipt-base165-gain5');
+  const foreignBill = await post('/api/bills', { vendorId: vendor.id, issueDate: yesterday, dueDate: day, currency: 'USD', taxInclusive: false, lines: [{ description: 'Foreign supplier services', quantity: '1', unitPrice: '100', taxRate: '0', accountId: cost.id }] });
+  await post(`/api/bills/${foreignBill.id}/receive`, {});
+  await page.goto(origin, { waitUntil: 'networkidle' }); await page.getByText('More', { exact: true }).last().click(); await page.getByText('Purchases', { exact: true }).last().click();
+  await page.getByLabel(new RegExp(`${vendor.name}, ${foreignBill.billNumber},`)).click(); await click('Record payment'); await page.getByText('Choose account', { exact: true }).click(); await page.getByText(bank.accountName, { exact: true }).click(); await click(`1 USD = ${rate.rate} NZD · ${day}`);
+  const foreignBillPayments = await actionResponse(`/api/bills/${foreignBill.id}/payments`, () => page.getByRole('button', { name: 'Record payment', exact: true }).last().click());
+  assert.equal(foreignBillPayments.payments.length, 1); const foreignBillPayment = foreignBillPayments.payments[0];
+  assert.deepEqual([foreignBillPayment.amount, foreignBillPayment.baseAmount, foreignBillPayment.bookBaseAmount, foreignBillPayment.exchangeDifference], ['100.00', '165.00', '160.00', '5.00']);
+  results.foreignSupplier = { payment: foreignBillPayment, report: await api(reportPath) };
+  assert.deepEqual([results.foreignSupplier.report.cashFlow.closingCash, results.foreignSupplier.report.profitLoss.netIncome, results.foreignSupplier.report.payablesAging.total], ['1150.00', '1000.00', '0.00']);
+  await shot('07-usd100-supplier-base165-loss5');
+  await makeInvoice('USD', '100', '0', yesterday);
+  const outstandingBill = await post('/api/bills', { vendorId: vendor.id, issueDate: yesterday, dueDate: day, currency: 'USD', taxInclusive: false, lines: [{ description: 'Outstanding foreign supplier services', quantity: '1', unitPrice: '100', taxRate: '0', accountId: cost.id }] }); await post(`/api/bills/${outstandingBill.id}/receive`, {});
+  await page.goto(origin, { waitUntil: 'networkidle' }); await page.getByText('More', { exact: true }).last().click(); await page.getByText('Accounting tools', { exact: true }).last().click(); await click('Review period-end FX');
+  await fill('FX valuation reason', 'Reviewed period-end outstanding USD balances'); await click(`USD · ${rate.rate} NZD · ${day}`); await click('Preview FX revaluation');
+  await page.getByText('Unrealized gain: $5.00', { exact: true }).waitFor(); await page.getByText('Unrealized loss: $5.00', { exact: true }).waitFor(); await focused('08-fx-preview-gain5-loss5', 'Unrealized gain: $5.00');
+  await toggle('Confirm FX revaluation review'); results.revaluation = await actionResponse('/api/fx-revaluations', () => click('Post reviewed FX revaluation'));
+  assert.equal(results.revaluation.unrealizedGain, '5.00'); assert.equal(results.revaluation.unrealizedLoss, '5.00');
+  results.reportAfterRevaluation = await api(reportPath);
+  assert.deepEqual([results.reportAfterRevaluation.cashFlow.closingCash, results.reportAfterRevaluation.profitLoss.netIncome, results.reportAfterRevaluation.receivablesAging.total, results.reportAfterRevaluation.payablesAging.total, results.reportAfterRevaluation.taxSummary.netGst], ['1150.00', '1000.00', '165.00', '165.00', '150.00']);
+  assert.equal(results.reportAfterRevaluation.trialBalance.balanced, true);
+  const nextDay = results.revaluation.reversalDate; results.reportAfterScheduledReversal = await api(`/api/reports/financial?from=${from}&to=${nextDay}&basis=accrual&baseCurrency=NZD`);
+  assert.deepEqual([results.reportAfterScheduledReversal.receivablesAging.total, results.reportAfterScheduledReversal.payablesAging.total], ['160.00', '160.00']);
+  await focused('09-fx-posted-and-scheduled-reversal', `Revaluation posted: ${results.revaluation.journalEntryIds.length} journal, ${results.revaluation.reversalJournalEntryIds.length} reversal`);
+  await page.setViewportSize({ width: 320, height: 740 }); await shot('10-fx-revaluation-compact');
+  assert.deepEqual(errors, []); console.log('PASS: mobile credit issue/refund/reversals/credited labels; USD100 base160→cash165 realized gain/loss5; revaluation5/5 and next-day160 reversal');
+} catch (error) { results.failure = String(error); await shot('failure'); console.error((await page.locator('body').innerText()).slice(-7000)); throw error; }
+finally { await writeFile(`${output}/results.json`, JSON.stringify(results, null, 2)); await browser.close(); }

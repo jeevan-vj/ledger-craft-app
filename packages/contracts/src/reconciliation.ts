@@ -2,6 +2,12 @@ import { z } from 'zod';
 import { positiveAmountAtMostTwoDecimals } from './positive-amount';
 
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
+const statementMoney = z.string().regex(/^-?\d+(?:\.\d{1,2})?$/);
+const canonicalMoney = z.string().regex(/^-?\d+\.\d{2}$/);
+const statementDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => {
+  const parsed = new Date(`${value}T00:00:00Z`);
+  return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
+}, 'Choose a valid calendar date');
 const sessionStatus = z.enum(['in_progress', 'completed', 'locked']);
 const matchType = z.enum([
   'auto_exact',
@@ -23,7 +29,7 @@ const adjustmentType = z.enum([
   'nsf_check',
   'other',
 ]);
-export const bookItemType = z.enum(['invoice', 'bill', 'payment', 'expense']);
+export const bookItemType = z.enum(['invoice', 'bill', 'payment', 'bill_payment', 'expense']);
 export const bankSuggestionTypeSchema = z.enum(['invoice', 'bill', 'expense', 'matching_rule']);
 export const matchingRuleDirectionSchema = z.enum(['debit', 'credit', 'any']);
 
@@ -53,13 +59,13 @@ export const reconciliationSessionSchema = z.object({
 export const createReconciliationSessionRequestSchema = z
   .object({
     bankAccountId: z.string().uuid(),
-    statementStartDate: z.string().min(1),
-    statementEndDate: z.string().min(1),
-    statementOpeningBalance: money,
-    statementClosingBalance: money,
+    statementStartDate: statementDate,
+    statementEndDate: statementDate,
+    statementOpeningBalance: statementMoney,
+    statementClosingBalance: statementMoney,
     notes: z.string().nullable().optional(),
   })
-  .strict();
+  .strict().refine(value => value.statementStartDate <= value.statementEndDate, { message: 'Statement start must not follow its end', path: ['statementStartDate'] });
 
 export const reconciliationMatchSchema = z.object({
   id: z.string().uuid(),
@@ -68,6 +74,7 @@ export const reconciliationMatchSchema = z.object({
   invoiceId: z.string().uuid().nullable(),
   billId: z.string().uuid().nullable().default(null),
   paymentId: z.string().uuid().nullable(),
+  billPaymentId: z.string().uuid().nullable().optional(),
   expenseId: z.string().uuid().nullable(),
   journalEntryId: z.string().uuid().nullable(),
   matchType,
@@ -113,6 +120,20 @@ export const reconciliationAdjustmentSchema = z.object({
   createdAt: z.string().min(1),
   updatedAt: z.string().min(1),
 });
+
+/** Posted-ledger preview and completion use this exact server calculation. */
+export const reconciliationSummarySchema = z.object({
+  session: reconciliationSessionSchema,
+  bankAccountName: z.string(), bankName: z.string(),
+  bankBalance: canonicalMoney, adjustedBankBalance: canonicalMoney,
+  bookBalance: canonicalMoney, adjustedBookBalance: canonicalMoney,
+  outstandingDeposits: z.array(reconciliationAdjustmentSchema),
+  outstandingChecks: z.array(reconciliationAdjustmentSchema),
+  otherAdjustments: z.array(reconciliationAdjustmentSchema),
+  totalOutstandingDeposits: canonicalMoney, totalOutstandingChecks: canonicalMoney,
+  totalOtherAdjustments: canonicalMoney, finalDifference: canonicalMoney,
+  isReconciled: z.boolean(),
+}).strict();
 
 export const createReconciliationAdjustmentRequestSchema = z
   .object({
@@ -262,3 +283,5 @@ export type BankReconciliationActionDto = z.infer<typeof bankReconciliationActio
 export type BankMatchingRuleDto = z.infer<typeof bankMatchingRuleSchema>;
 export type CreateBankMatchingRuleRequest = z.infer<typeof createBankMatchingRuleRequestSchema>;
 export type UpdateBankMatchingRuleRequest = z.infer<typeof updateBankMatchingRuleRequestSchema>;
+
+export type ReconciliationSummaryDto = z.infer<typeof reconciliationSummarySchema>;

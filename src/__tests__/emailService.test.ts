@@ -1,3 +1,4 @@
+import { describe, it, expect } from 'vitest';
 import { emailService } from '../services/emailService';
 
 describe('EmailService', () => {

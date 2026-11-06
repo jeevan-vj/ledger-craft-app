@@ -241,5 +241,5 @@ export const paymentDiagnostics = {
 
 // Make it available globally for easy debugging
 if (typeof window !== 'undefined') {
-  (window as any).paymentDiagnostics = paymentDiagnostics;
+  Object.assign(window, { paymentDiagnostics });
 }
