@@ -64,6 +64,8 @@ const Bills = lazy(() => import("@/pages/Bills"));
 const BillForm = lazy(() => import("@/pages/BillForm"));
 const Recurring = lazy(() => import("@/pages/Recurring"));
 const AuthCallback = lazy(() => import("@/pages/AuthCallback"));
+const ForgotPassword = lazy(() => import("@/pages/PasswordRecovery").then((module) => ({ default: module.ForgotPassword })));
+const ResetPassword = lazy(() => import("@/pages/PasswordRecovery").then((module) => ({ default: module.ResetPassword })));
 const PaymentDetailPage = lazy(() => import("@/pages/PaymentDetailPage"));
 const PayRedirectPage = lazy(() => import("@/pages/PayRedirectPage"));
 // Loading component
@@ -110,6 +112,8 @@ const appRoutes: RouteObject[] = [
         path: "/signup",
         element: <SuspenseWrapper><ModernSignup /></SuspenseWrapper>,
       },
+      { path: "/forgot-password", element: <SuspenseWrapper><ForgotPassword /></SuspenseWrapper> },
+      { path: "/reset-password", element: <SuspenseWrapper><ResetPassword /></SuspenseWrapper> },
       {
         path: "/login-classic",
         element: <SuspenseWrapper><Login /></SuspenseWrapper>,

@@ -1,5 +1,18 @@
 # AGENTS.md
 
+**Account recovery and session security (implemented locally, 2026-11-06):**
+Better Auth provides neutral password-reset requests, expiring single-use reset
+and verification tokens, verified email changes, password changes, and explicit
+session inspection/revocation on web and Expo. Migration
+`0024_auth-rate-limits.sql` stores IP-scoped limits for signup, login,
+verification, reset request, and reset submission in the Identity database,
+independent of organisations. Password reset revokes all cookie and bearer
+sessions; password change replaces the current session and revokes the rest.
+Only canonical web and `easybizinvoice://` recovery redirects are trusted.
+Resend secrets stay server-side, and auth request bodies/tokens/cookies/headers
+are scrubbed from Sentry and logs. Production mail, deployed browser, and
+installed-device proof remain pending; see `docs/account-security.md`.
+
 **Business settings logo (implemented locally, 2026-11-03):** Expo Business Settings
 reads the picked photo with `expo-image-manipulator` and `expo-file-system`.
 `logo_url` is only a `data:image/png|jpeg|webp;base64` value or an `https://` URL.

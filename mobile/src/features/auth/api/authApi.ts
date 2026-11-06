@@ -21,6 +21,12 @@ const meResponseSchema = z.object({
 
 export type MeResponse = z.infer<typeof meResponseSchema>;
 
+const accountSessionSchema = z.object({
+  token: z.string().min(1), createdAt: z.coerce.date(), updatedAt: z.coerce.date(), expiresAt: z.coerce.date(),
+  ipAddress: z.string().nullable().optional(), userAgent: z.string().nullable().optional(), current: z.boolean(),
+});
+export type AccountSession = z.infer<typeof accountSessionSchema>;
+
 export function authErrorMessage(error: unknown): string {
   if (error && typeof error === 'object' && 'message' in error) {
     const message = String((error as { message: unknown }).message);
@@ -40,12 +46,55 @@ export function authErrorMessage(error: unknown): string {
 export async function getMe(): Promise<MeResponse | null> {
   const response = await apiFetch('/api/me', { method: 'GET' });
   if (response.status === 401) {
+    // A server-revoked/expired SecureStore cookie must not trap startup in an
+    // unauthorized retry loop. Keep offline credentials, but clear confirmed-invalid ones.
+    await clearSessionCookies();
     return null;
   }
   if (!response.ok) {
     await rejectFailedResponse(response);
   }
   return meResponseSchema.parse(await response.json());
+}
+
+export async function requestPasswordReset(email: string): Promise<void> {
+  await apiRequest('/api/auth/request-password-reset', {
+    method: 'POST',
+    body: JSON.stringify({ email, redirectTo: 'easybizinvoice://reset-password' }),
+  });
+}
+
+export async function resetPassword(token: string, newPassword: string): Promise<void> {
+  await apiRequest('/api/auth/reset-password', {
+    method: 'POST',
+    body: JSON.stringify({ token, newPassword }),
+  });
+  await clearSessionCookies();
+}
+
+export async function listAccountSessions(): Promise<AccountSession[]> {
+  return z.array(accountSessionSchema).parse(await apiRequest('/api/me/sessions'));
+}
+
+export async function revokeAccountSession(token: string): Promise<void> {
+  await apiRequest('/api/me/sessions/revoke', { method: 'POST', body: JSON.stringify({ token }) });
+}
+
+export async function revokeOtherSessions(): Promise<void> {
+  await apiRequest('/api/me/sessions/revoke-others', { method: 'POST', body: '{}' });
+}
+
+export async function revokeAllSessions(): Promise<void> {
+  await apiRequest('/api/me/sessions/revoke-all', { method: 'POST', body: '{}' });
+  await clearSessionCookies();
+}
+
+export async function changePassword(currentPassword: string, newPassword: string): Promise<void> {
+  await apiRequest('/api/auth/change-password', { method: 'POST', body: JSON.stringify({ currentPassword, newPassword, revokeOtherSessions: true }) });
+}
+
+export async function changeEmail(newEmail: string): Promise<void> {
+  await apiRequest('/api/auth/change-email', { method: 'POST', body: JSON.stringify({ newEmail, callbackURL: 'easybizinvoice://settings/security' }) });
 }
 
 export async function signUpEmail(input: {

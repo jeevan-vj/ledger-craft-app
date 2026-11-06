@@ -5,6 +5,7 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['https://easybiz.iamjeevan.com', 'easybizinvoice://'],
   config: {
     screens: {
+      ResetPassword: 'reset-password',
       PublicInvoice: 'shared/invoice/:shareToken',
       PublicQuote: 'shared/quote/:shareToken',
       ImportCapture: 'imports/new/:entry',
@@ -19,6 +20,7 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
           More: {
             screens: {
               CompanyTeam: 'settings',
+              AccountSecurity: 'settings/security',
             },
           },
         },
@@ -80,6 +82,11 @@ export const moreMenuSections = [
         screen: 'RecurringSchedules',
       },
       {
+        label: 'Account security',
+        subtitle: 'Password, email and signed-in devices',
+        screen: 'AccountSecurity',
+      },
+      {
         label: 'Delete account',
         subtitle: 'Export first, then permanently delete',
         screen: 'AccountDeletion',
@@ -123,6 +130,7 @@ type MoreDestination =
   | { name: 'CompanyTeam'; params?: { invite?: string } }
   | { name: 'RecurringSchedules' }
   | { name: 'AccountDeletion' }
+  | { name: 'AccountSecurity' }
   | { name: 'ItemList' }
   | { name: 'BankAccountList' }
   | { name: 'ExpenseList' }

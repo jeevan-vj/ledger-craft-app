@@ -50,7 +50,7 @@ describe('permissionForRequest', () => {
       /^\/$/,
       /^\/(?:api\/)?(?:healthz|readyz)$/,
       /^\/api\/auth\//,
-      /^\/(?:api\/)?me$/,
+      /^\/(?:api\/)?me(?:\/|$)/,
       /^\/(?:api\/)?public\//,
       /^\/api\/stripe\/webhooks\/(?:platform|connect)$/,
       /^\/api\/stripe\/mock\//,

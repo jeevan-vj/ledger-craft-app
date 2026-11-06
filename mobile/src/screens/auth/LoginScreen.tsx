@@ -127,6 +127,10 @@ export default function LoginScreen() {
           </ModernButton>
         </View>
 
+        <Pressable onPress={() => navigation.navigate('ForgotPassword')} accessibilityRole="button" accessibilityLabel="Forgot password" style={styles.footerLink}>
+          <Text style={[styles.footer, styles.footerAction]}>Forgot password?</Text>
+        </Pressable>
+
         <Pressable
           onPress={() => navigation.navigate('Signup')}
           accessibilityRole="button"

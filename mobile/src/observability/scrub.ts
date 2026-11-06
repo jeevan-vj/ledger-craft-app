@@ -18,6 +18,9 @@ const SENSITIVE_KEYS = new Set([
   'idtoken',
   'authtoken',
   'sessiontoken',
+  'token',
+  'verificationtoken',
+  'resettoken',
   'requestbody',
   'responsebody',
   'ipaddress',
@@ -50,13 +53,14 @@ function isSensitiveKey(key: string): boolean {
 }
 
 function isShareQueryKey(key: string): boolean {
-  return normalizeKey(key) === 'sharetoken';
+  return ['sharetoken', 'token', 'verificationtoken', 'resettoken'].includes(normalizeKey(key));
 }
 
 export function redactSecrets(value: string): string {
   return value
     .replace(/(\/(?:shared\/(?:invoice|quote)|pay|api\/public\/(?:invoices|quotes|pay))\/)([^/?#\s"'<>]+)/gi, `$1${REDACTED}`)
-    .replace(/([?&](?:shareToken|share_token)=)([^&#\s"'<>]+)/gi, `$1${REDACTED}`)
+    .replace(/(\/api\/auth\/reset-password\/)([^/?#\s"'<>]+)/gi, `$1${REDACTED}`)
+    .replace(/([?&](?:token|verificationToken|resetToken|shareToken|share_token)=)([^&#\s"'<>]+)/gi, `$1${REDACTED}`)
     .replace(/\bBearer\s+[A-Za-z0-9\-._~+/]+=*/gi, 'Bearer [redacted]');
 }
 

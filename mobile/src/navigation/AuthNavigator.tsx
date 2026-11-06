@@ -16,6 +16,7 @@ import LoginScreen from '@/screens/auth/LoginScreen';
 import SignupScreen from '@/screens/auth/SignupScreen';
 import OnboardingScreen from '@/screens/auth/OnboardingScreen';
 import IntroScreen from '@/screens/auth/IntroScreen';
+import { ForgotPasswordScreen, ResetPasswordScreen } from '@/screens/auth/PasswordRecoveryScreen';
 
 // Animation configurations
 import {
@@ -74,6 +75,8 @@ export default function AuthNavigator() {
           gestureEnabled: true,
         }}
       />
+      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} options={{ ...authScreenOptions, animation: 'slide_from_right' }} />
+      <Stack.Screen name="ResetPassword" component={ResetPasswordScreen} options={{ ...authScreenOptions, animation: 'slide_from_right' }} />
       <Stack.Screen
         name="Onboarding"
         component={OnboardingScreen}

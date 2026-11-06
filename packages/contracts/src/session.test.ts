@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { deleteAccountRequestSchema, deleteAccountResponseSchema, meResponseSchema } from './session';
+import { accountSessionListSchema, deleteAccountRequestSchema, deleteAccountResponseSchema, meResponseSchema } from './session';
 
 describe('meResponseSchema', () => {
   it('requires password re-authentication and the exact typed confirmation', () => {
@@ -55,5 +55,11 @@ describe('meResponseSchema', () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it('marks exactly which session is current and coerces transport dates', () => {
+    const parsed = accountSessionListSchema.parse([{ token: 'opaque-session-token', createdAt: '2026-11-06T00:00:00.000Z', updatedAt: '2026-11-06T00:00:00.000Z', expiresAt: '2026-11-13T00:00:00.000Z', current: true }]);
+    expect(parsed[0]?.current).toBe(true);
+    expect(parsed[0]?.createdAt).toBeInstanceOf(Date);
   });
 });

@@ -1,6 +1,10 @@
 import { isConsoleErrorDump, redactSecrets, scrubBreadcrumb, scrubSentryEvent } from './scrub';
 
 describe('sentry scrubber', () => {
+  it('redacts reset and verification tokens', () => {
+    expect(redactSecrets('https://easybiz.iamjeevan.com/api/auth/reset-password/reset-secret')).toBe('https://easybiz.iamjeevan.com/api/auth/reset-password/[redacted]');
+    expect(redactSecrets('easybizinvoice://reset-password?token=reset-secret')).toBe('easybizinvoice://reset-password?token=[redacted]');
+  });
   it('redacts invoice share tokens in public links and API paths', () => {
     const web = redactSecrets('https://easybiz.iamjeevan.com/shared/invoice/org_secret-token');
     const api = redactSecrets(

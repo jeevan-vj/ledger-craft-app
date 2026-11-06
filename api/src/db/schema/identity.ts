@@ -60,6 +60,13 @@ export const verifications = sqliteTable('verifications', {
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 });
 
+export const authRateLimits = sqliteTable('auth_rate_limits', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  key: text('key').notNull().unique(),
+  count: integer('count').notNull(),
+  lastRequest: integer('last_request').notNull(),
+});
+
 export const organisations = sqliteTable('organisations', {
   id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
   name: text('name').notNull(),
