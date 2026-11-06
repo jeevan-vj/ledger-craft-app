@@ -16,6 +16,7 @@ describe('mobile navigation links', () => {
       'Reports',
       'ItemList',
       'BankAccountList',
+      'BankReconciliation',
       'BusinessSettings',
       'CompanyTeam',
       'RecurringSchedules',
@@ -25,6 +26,12 @@ describe('mobile navigation links', () => {
       'PurchaseList',
     ]);
     expect(screens).not.toContain('CustomerList');
+  });
+
+  it('links the reconciliation feed, match screen, and rules on web', () => {
+    expect(getStateFromPath('banking/reconcile', mobileLinking.config)).toBeTruthy();
+    expect(JSON.stringify(getStateFromPath('banking/reconcile/tx-1', mobileLinking.config))).toContain('BankReconciliationMatch');
+    expect(JSON.stringify(getStateFromPath('banking/reconcile/rules', mobileLinking.config))).toContain('BankMatchingRules');
   });
 
   it('opens an invoice with the list underneath so Back is not a dead end', () => {
