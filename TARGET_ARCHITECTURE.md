@@ -34,6 +34,11 @@ one invoice payment, receipt provenance, and Stripe-clearing journal even when
 Stripe retries the event. Web Settings exposes account readiness and invoice
 detail exposes a link/QR flow with the exact platform fee. Test-mode defaults are
 4% plus NZD 0.30 and remain environment configuration, not a live pricing policy.
+Health exposes only a provider-neutral available/unavailable Stripe capability.
+Web and Expo hide Stripe setup and payment-link actions when unavailable; Expo
+owners/admins can continue onboarding and eligible NZD invoices can create,
+copy, or share a hosted payment link. Incomplete real-mode configuration is
+unavailable and does not prevent API startup.
 The local-only `STRIPE_MOCK_MODE=true` simulator requires a localhost
 `APP_URL`, is rejected in production, and drives the same webhook settlement
 path without Stripe credentials. Browser proof covers onboarding readiness,

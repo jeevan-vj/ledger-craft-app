@@ -5,18 +5,18 @@ describe('health contracts', () => {
   it('accepts healthz ok', () => {
     expect(healthzResponseSchema.parse({
       status: 'ok',
-      capabilities: { email: 'available', ai: 'unavailable' },
+      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available' },
     })).toEqual({
       status: 'ok',
-      capabilities: { email: 'available', ai: 'unavailable' },
+      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available' },
     });
   });
 
   it('never carries provider names in healthz capabilities', () => {
     expect(healthzResponseSchema.parse({
       status: 'ok',
-      capabilities: { email: 'unavailable', ai: 'available', aiProvider: 'workers-ai' },
-    }).capabilities).toEqual({ email: 'unavailable', ai: 'available' });
+      capabilities: { email: 'unavailable', ai: 'available', stripe: 'unavailable', aiProvider: 'workers-ai', stripeProvider: 'stripe' },
+    }).capabilities).toEqual({ email: 'unavailable', ai: 'available', stripe: 'unavailable' });
   });
 
   it('accepts readyz ok and not_ready', () => {

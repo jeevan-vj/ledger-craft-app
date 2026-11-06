@@ -21,6 +21,7 @@ import { StripePaymentsPanel } from '@/components/settings/StripePaymentsPanel';
 import { AccountDeletionPanel } from '@/components/settings/AccountDeletionPanel';
 import { AccountSecurityPanel } from '@/components/settings/AccountSecurityPanel';
 import { logoChoiceError, logoDataUrlError } from '@/features/business-profile/logoChoice';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 const profileFormSchema = z.object({
   name: z.string().min(1, { message: "Business name is required" }),
@@ -57,6 +58,7 @@ const Settings = () => {
   const [activeTab, setActiveTab] = useState(() => new URLSearchParams(window.location.search).get('tab') || 'profile');
   const [previewLogoUrl, setPreviewLogoUrl] = useState<string | undefined>(businessProfile?.logoUrl || undefined);
   const [currentTheme, setCurrentTheme] = useState<BusinessTheme>(businessProfile?.theme || DEFAULT_BUSINESS_THEME);
+  const [stripeAvailable, setStripeAvailable] = useState(false);
 
   const form = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -91,6 +93,14 @@ const Settings = () => {
     if (refreshBusinessProfile) {
       refreshBusinessProfile();
     }
+  }, []);
+
+  useEffect(() => {
+    void getServerCapabilities().then((capabilities) => {
+      const available = capabilities.stripe === 'available';
+      setStripeAvailable(available);
+      if (!available) setActiveTab((current) => current === 'payments' ? 'profile' : current);
+    });
   }, []);
 
   React.useEffect(() => {
@@ -245,7 +255,7 @@ const Settings = () => {
             <TabsTrigger value="appearance">Appearance</TabsTrigger>
             <TabsTrigger value="team">Company & team</TabsTrigger>
             <TabsTrigger value="currency">Currency & locale</TabsTrigger>
-            <TabsTrigger value="payments">Card payments</TabsTrigger>
+            {stripeAvailable ? <TabsTrigger value="payments">Card payments</TabsTrigger> : null}
             <TabsTrigger value="account">Account</TabsTrigger>
           </TabsList>
         </div>
@@ -676,7 +686,7 @@ const Settings = () => {
         </Form>
         <TabsContent value="team" className="mt-4"><CompanyTeamPanel /></TabsContent>
         <TabsContent value="currency" className="mt-4"><CurrencyLocalizationSettings /></TabsContent>
-        <TabsContent value="payments" className="mt-4"><StripePaymentsPanel /></TabsContent>
+        {stripeAvailable ? <TabsContent value="payments" className="mt-4"><StripePaymentsPanel /></TabsContent> : null}
         <TabsContent value="account" className="mt-4 space-y-4"><AccountSecurityPanel /><AccountDeletionPanel /></TabsContent>
       </Tabs>
     </div>

@@ -10,7 +10,7 @@ jest.mock('@/services/invoiceService', () => ({
   invoiceService: { sendInvoice: jest.fn(), remindInvoice: jest.fn() },
 }));
 jest.mock('@/services/capabilitiesService', () => ({
-  getServerCapabilities: jest.fn(async () => ({ email: 'available', ai: 'unavailable' })),
+  getServerCapabilities: jest.fn(async () => ({ email: 'available', ai: 'unavailable', stripe: 'unavailable' })),
 }));
 
 const serverMessage = 'Email delivery is unavailable. Download or share the invoice instead.';

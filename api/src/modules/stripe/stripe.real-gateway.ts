@@ -28,6 +28,28 @@ function secretKeyMode(secretKey: string): 'test' | 'live' | undefined {
   return undefined;
 }
 
+function stripeAvailability(env: Record<string, string | undefined>): { capability: 'available' | 'unavailable'; error?: string } {
+  if (env.STRIPE_PAYMENTS_ENABLED !== 'true') return { capability: 'unavailable' };
+  try {
+    platformFees(env);
+    if (env.STRIPE_MOCK_MODE === 'true') {
+      if (env.NODE_ENV === 'production') return { capability: 'unavailable', error: 'Stripe mock mode is not available in production' };
+      requireLocalMockUrl((env.APP_URL ?? 'http://localhost:8080').replace(/\/$/, ''));
+      return { capability: 'available' };
+    }
+    const secretKey = env.STRIPE_SECRET_KEY?.trim();
+    const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
+    const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
+    return { capability: secretKey && webhookSecret && connectWebhookSecret && secretKeyMode(secretKey) ? 'available' : 'unavailable' };
+  } catch (error) {
+    return { capability: 'unavailable', error: error instanceof Error ? error.message : 'Stripe configuration is invalid' };
+  }
+}
+
+export function stripePaymentsCapability(env: Record<string, string | undefined>): 'available' | 'unavailable' {
+  return stripeAvailability(env).capability;
+}
+
 function remoteAccount(account: Stripe.V2.Core.Account): StripeRemoteAccount {
   const cardPayments = account.configuration?.merchant?.capabilities?.card_payments;
   const payouts = account.configuration?.recipient?.capabilities?.stripe_balance?.payouts;
@@ -132,12 +154,14 @@ export function createStripeGateway(secretKey: string): StripeGateway {
 }
 
 export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): { gateway: StripeGateway; config: StripeConfig } | undefined {
-  if (env.STRIPE_PAYMENTS_ENABLED !== 'true') return undefined;
+  const availability = stripeAvailability(env);
+  if (availability.capability !== 'available') {
+    if (env.STRIPE_MOCK_MODE === 'true' && availability.error) throw new Error(availability.error);
+    return undefined;
+  }
   const appUrl = (env.APP_URL ?? 'http://localhost:8080').replace(/\/$/, '');
   const mock = env.STRIPE_MOCK_MODE === 'true';
-  if (mock && env.NODE_ENV === 'production') throw new Error('Stripe mock mode is not available in production');
   if (mock) {
-    requireLocalMockUrl(appUrl);
     const { basisPoints, fixedCents } = platformFees(env);
     return {
       gateway: createMockStripeGateway(appUrl),
@@ -151,7 +175,7 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
   const secretKey = env.STRIPE_SECRET_KEY?.trim();
   const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
   const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
-  if (!secretKey || !webhookSecret || !connectWebhookSecret) throw new Error('Stripe payments are enabled but Stripe secrets are incomplete');
+  if (!secretKey || !webhookSecret || !connectWebhookSecret) return undefined;
   const mode = secretKeyMode(secretKey);
   if (!mode) throw new Error('Stripe secret key must be a test or live secret key');
   const { basisPoints, fixedCents } = platformFees(env);

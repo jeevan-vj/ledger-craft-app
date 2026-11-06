@@ -8,7 +8,7 @@ export function getServerCapabilities(): Promise<HealthzResponse['capabilities']
       if (!response.ok) throw new Error('Capability probe failed');
       return healthzResponseSchema.parse(await response.json()).capabilities;
     })
-    .catch(() => ({ email: 'unavailable' as const, ai: 'unavailable' as const }));
+    .catch(() => ({ email: 'unavailable' as const, ai: 'unavailable' as const, stripe: 'unavailable' as const }));
   return cached;
 }
 

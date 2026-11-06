@@ -54,6 +54,7 @@ import { useStore } from '@/store';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import * as ImagePicker from 'expo-image-picker';
 import { objectsApi } from '@/features/storage/api/objectsApi';
+import { StripePaymentLinkSection } from '@/components/invoice/StripePaymentLinkSection';
 
 type InvoiceDetailNavigationProp = CompositeNavigationProp<
   NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceDetail'>,
@@ -362,6 +363,13 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
 
         {createdDraft ? null : (
           <>
+        <StripePaymentLinkSection
+          invoiceId={invoice.id}
+          currency={invoice.currency || 'NZD'}
+          status={invoice.status}
+          balanceDue={invoice.balanceDueText ?? String(invoiceAmountDue(invoice))}
+          canCreate={canWrite}
+        />
         {invoice.sourceImportDocumentId ? <View style={styles.card}>
           <Text style={styles.sectionTitle}>Source document</Text>
           <View style={styles.detailRow}><Text style={styles.detailLabel}>External issuer</Text><Text style={styles.detailValue}>{invoice.externalIssuerName ?? '—'}</Text></View>

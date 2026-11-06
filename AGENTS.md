@@ -42,7 +42,11 @@ charges and `application_fee_amount`; the fee is configured by
 webhooks create one invoice payment, receipt, and Stripe Clearing posting.
 Settings shows charges/payouts readiness, while invoice detail creates a link
 and QR code with the exact fee. Secrets are server-only. Focused tests and the
-web build pass. `STRIPE_MOCK_MODE=true` provides a deterministic local-only
+web build pass. Health reports a provider-neutral Stripe capability, and web
+and Expo hide setup/payment-link actions unless that capability is available.
+Expo owners/admins can continue onboarding and eligible NZD invoices can create,
+copy, or share a hosted payment link. Incomplete real-mode configuration fails
+closed without preventing API startup. `STRIPE_MOCK_MODE=true` provides a deterministic local-only
 onboarding and Checkout simulator that exercises the same webhook settlement
 path without Stripe credentials; browser proof covers readiness, the exact fee,
 payment, receipt, and balanced journal. It is rejected in production and for a

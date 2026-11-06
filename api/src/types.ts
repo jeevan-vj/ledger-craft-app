@@ -10,7 +10,11 @@ import type { WorkersAiBinding } from './modules/ai/workers-ai';
 import type { StripeConfig, StripeGateway } from './modules/stripe/stripe.gateway';
 import type { AccountPreDeleteHook } from './modules/auth/account-deletion.service';
 
-export type AppCapabilities = { email: 'available' | 'unavailable'; ai: 'available' | 'unavailable' };
+export type AppCapabilities = {
+  email: 'available' | 'unavailable';
+  ai: 'available' | 'unavailable';
+  stripe: 'available' | 'unavailable';
+};
 
 export type AppEnv = {
   Variables: {
