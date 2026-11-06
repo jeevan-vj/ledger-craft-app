@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   bankTransactionDetailsRequestSchema,
+  bankTransactionListQuerySchema,
   createBankAccountRequestSchema,
   createBankTransactionRequestSchema,
   createBankTransferRequestSchema,
@@ -92,5 +93,17 @@ describe('bank contracts', () => {
       attachments: [],
     }).success).toBe(false);
     expect(duplicateBankTransactionRequestSchema.parse({ transactionDate: '2026-10-23' })).toEqual({ transactionDate: '2026-10-23' });
+  });
+
+  it('validates transaction feed filters and pagination', () => {
+    expect(bankTransactionListQuerySchema.parse({
+      status: 'suggested',
+      direction: 'credit',
+      from: '2026-11-01',
+      to: '2026-11-30',
+      search: 'acme',
+      page: '2',
+      pageSize: '25',
+    })).toMatchObject({ status: 'suggested', direction: 'credit', page: 2, pageSize: 25 });
   });
 });

@@ -12,7 +12,7 @@ import {
   type UpdateBankAccountRequest,
   type UpdateBankTransactionRequest,
 } from '@ledgercraft/contracts';
-import { and, desc, eq, gte, lte } from 'drizzle-orm';
+import { and, desc, eq, gte, like, lte, or } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { bankAccounts, bankTransactions, bankTransfers, transactionImportBatches } from '../../db/schema/bank';
 import { roundMoney } from '../invoices/money';
@@ -177,7 +177,7 @@ export async function setAccountBalance(
 export async function listTransactions(
   tx: Database,
   organisationId: string,
-  filters: { bankAccountId?: string; from?: string; to?: string },
+  filters: { bankAccountId?: string; from?: string; to?: string; isReconciled?: boolean; direction?: 'debit' | 'credit'; search?: string },
 ): Promise<BankTransactionDto[]> {
   const rows = await tx
     .select()
@@ -188,6 +188,14 @@ export async function listTransactions(
         filters.bankAccountId ? eq(bankTransactions.bankAccountId, filters.bankAccountId) : undefined,
         filters.from ? gte(bankTransactions.transactionDate, filters.from) : undefined,
         filters.to ? lte(bankTransactions.transactionDate, filters.to) : undefined,
+        filters.isReconciled === undefined ? undefined : eq(bankTransactions.isReconciled, filters.isReconciled),
+        filters.direction ? eq(bankTransactions.type, filters.direction) : undefined,
+        filters.search ? or(
+          like(bankTransactions.description, `%${filters.search}%`),
+          like(bankTransactions.reference, `%${filters.search}%`),
+          like(bankTransactions.counterparty, `%${filters.search}%`),
+          like(bankTransactions.merchant, `%${filters.search}%`),
+        ) : undefined,
       ),
     )
     .orderBy(desc(bankTransactions.transactionDate), desc(bankTransactions.createdAt));

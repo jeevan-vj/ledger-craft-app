@@ -14,6 +14,7 @@ const SYSTEM_ACCOUNTS: Record<string, { name: string; type: string; accountClass
   '2100': { name: 'Accounts Payable', type: 'liability', accountClass: 'liability', normalBalance: 'credit' },
   '2150': { name: 'GST Paid on Purchases', type: 'asset', accountClass: 'asset', normalBalance: 'debit' },
   '2200': { name: 'GST Collected on Sales', type: 'liability', accountClass: 'liability', normalBalance: 'credit' },
+  '3100': { name: 'Owner Drawings', type: 'equity', accountClass: 'equity', normalBalance: 'credit' },
   '4900': { name: 'Other Income', type: 'revenue', accountClass: 'revenue', normalBalance: 'credit' },
   '5000': { name: 'Operating Expenses', type: 'expense', accountClass: 'expense', normalBalance: 'debit' },
   '5100': { name: 'Merchant and Platform Fees', type: 'expense', accountClass: 'expense', normalBalance: 'debit' },

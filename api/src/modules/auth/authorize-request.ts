@@ -10,7 +10,7 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
   [/^\/(?:api\/)?customers(?:\/|$)/, 'customers'],
   [/^\/(?:api\/)?(?:invoices|quotes|payments|receipts|sales)(?:\/|$)/, 'invoices'],
   [/^\/(?:api\/)?(?:vendors|bills|expenses|expense-categories)(?:\/|$)/, 'bills'],
-  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
+  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|bank-matching-rules|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries)(?:\/|$)/, 'banking'],
   [/^\/(?:api\/)?(?:reports|tax-configurations|tax-returns|tax-adjustments|dashboard|dashboard-layouts|saved-reports)(?:\/|$)/, 'reports'],
   [/^\/(?:api\/)?(?:business-profile|items|item-categories|objects|currency-settings|currencies|exchange-rates|recurring-templates|recurring-runs)(?:\/|$)/, 'settings'],
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],

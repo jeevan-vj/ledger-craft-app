@@ -113,7 +113,24 @@ export const importBankTransactionsRequestSchema = z
 
 export const bankTransactionListResponseSchema = z.object({
   transactions: z.array(bankTransactionSchema),
+  pagination: z.object({
+    page: z.number().int().positive(),
+    pageSize: z.number().int().positive(),
+    total: z.number().int().nonnegative(),
+    totalPages: z.number().int().nonnegative(),
+  }).optional(),
 });
+
+export const bankTransactionListQuerySchema = z.object({
+  bankAccountId: z.string().uuid().optional(),
+  from: dateOnly.optional(),
+  to: dateOnly.optional(),
+  status: z.enum(['all', 'unreconciled', 'suggested', 'reconciled']).default('all'),
+  direction: z.enum(['any', 'debit', 'credit']).default('any'),
+  search: z.string().trim().min(1).max(255).optional(),
+  page: z.coerce.number().int().positive().default(1),
+  pageSize: z.coerce.number().int().positive().max(100).default(50),
+}).strict();
 
 export const importBankTransactionsResponseSchema = z.object({
   importedCount: z.number().int().nonnegative(),
@@ -213,6 +230,7 @@ export type BankTransactionDetailsRequest = z.infer<typeof bankTransactionDetail
 export type DuplicateBankTransactionRequest = z.infer<typeof duplicateBankTransactionRequestSchema>;
 export type ImportBankTransactionsRequest = z.infer<typeof importBankTransactionsRequestSchema>;
 export type BankTransactionListResponse = z.infer<typeof bankTransactionListResponseSchema>;
+export type BankTransactionListQuery = z.infer<typeof bankTransactionListQuerySchema>;
 export type ImportBankTransactionsResponse = z.infer<typeof importBankTransactionsResponseSchema>;
 export type CreateBankTransactionRequest = z.infer<typeof createBankTransactionRequestSchema>;
 export type UpdateBankTransactionRequest = z.infer<typeof updateBankTransactionRequestSchema>;

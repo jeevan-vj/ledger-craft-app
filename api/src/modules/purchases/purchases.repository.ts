@@ -224,6 +224,10 @@ async function toBillDto(tx: Database, row: typeof bills.$inferSelect): Promise<
       paymentDate: payment.paymentDate,
       referenceNumber: payment.referenceNumber ?? null,
       notes: payment.notes ?? null,
+      status: payment.status,
+      reversalReason: payment.reversalReason ?? null,
+      reversalDate: payment.reversalDate ?? null,
+      reversedAt: payment.reversedAt?.toISOString() ?? null,
       createdAt: payment.createdAt.toISOString(),
     })),
     attachments: attachments.map((attachment) => billAttachmentSchema.parse({
@@ -382,6 +386,40 @@ export async function applyPayment(tx: Database, organisationId: string, bill: B
   const paymentStatus = decimal(balanceDue).compare(0) === 0 ? 'paid' : 'partial';
   await tx.update(bills).set({ totalPaid, balanceDue, paymentStatus, updatedAt: new Date() })
     .where(and(eq(bills.organisationId, organisationId), eq(bills.id, bill.id)));
+}
+
+export async function reversePayment(
+  tx: Database,
+  ctx: OrganisationContext,
+  id: string,
+  input: { reason: string; reversalDate: string },
+) {
+  const [row] = await tx.update(billPayments).set({
+    status: 'reversed',
+    reversalReason: input.reason,
+    reversalDate: input.reversalDate,
+    reversedAt: new Date(),
+    reversedByUserId: ctx.userId,
+  }).where(and(
+    eq(billPayments.organisationId, ctx.organisationId), eq(billPayments.id, id), eq(billPayments.status, 'completed'),
+  )).returning();
+  return row;
+}
+
+export async function recalculateBillPayments(tx: Database, organisationId: string, billId: string) {
+  const [bill] = await tx.select().from(bills).where(and(eq(bills.organisationId, organisationId), eq(bills.id, billId)));
+  if (!bill) throw new Error('Bill not found while recalculating payments');
+  const rows = await tx.select({ amount: billPayments.amount }).from(billPayments).where(and(
+    eq(billPayments.organisationId, organisationId), eq(billPayments.billId, billId), eq(billPayments.status, 'completed'),
+  ));
+  const totalPaid = rows.reduce((sum, row) => sum.add(row.amount), decimal(0));
+  const balanceDue = decimal(bill.total).sub(totalPaid);
+  await tx.update(bills).set({
+    totalPaid: totalPaid.toFixed(),
+    balanceDue: balanceDue.toFixed(),
+    paymentStatus: totalPaid.compare(0) === 0 ? 'unpaid' : balanceDue.compare(0) === 0 ? 'paid' : 'partial',
+    updatedAt: new Date(),
+  }).where(and(eq(bills.organisationId, organisationId), eq(bills.id, billId)));
 }
 
 export async function hasBankAccount(tx: Database, organisationId: string, id: string) {
