@@ -13,7 +13,7 @@ import { downloadInvoicePDF, shareInvoicePDF } from '@/utils/pdfUtils';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { ModernButton } from '@/components/ui/ModernButton';
-import { space } from '@/theme/tokens';
+import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
 type PublicInvoiceRoute = RouteProp<RootStackParamList, 'PublicInvoice'>;
@@ -122,6 +122,7 @@ export default function PublicInvoiceScreen() {
         <View style={styles.headerCopy}>
           <Text style={styles.title}>Invoice {snapshot.invoice.invoiceNumber}</Text>
           <Text style={styles.subtitle}>From {snapshot.businessProfile.name}</Text>
+          {snapshot.invoice.status === 'paid' ? <Text accessibilityLabel="Payment status: Paid" style={styles.paid}>Paid</Text> : null}
         </View>
       </View>
       <WebView
@@ -168,6 +169,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
   headerCopy: { minWidth: 0 },
   title: { ...type.headline },
   subtitle: { ...type.footnote, marginTop: 2 },
+  paid: { ...type.callout, color: palette.success, backgroundColor: palette.successFill, alignSelf: 'flex-start', marginTop: space.sm, paddingHorizontal: space.md, paddingVertical: space.xs, borderRadius: radius.pill },
   preview: { flex: 1, backgroundColor: palette.surface },
   actions: { gap: space.sm, paddingHorizontal: space.screen, paddingTop: space.md, backgroundColor: palette.surfaceRaised, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: palette.separator },
 });

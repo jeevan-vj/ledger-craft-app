@@ -1,18 +1,18 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, TextInput, useWindowDimensions, View } from 'react-native';
 import { onlineManager, useQuery } from '@tanstack/react-query';
 import { AppPressable } from '@/components/ui/AppPressable';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { SelectionRow, SelectionSheet } from '@/components/ui/SelectionSheet';
+import { SaleTileGrid } from '@/components/sales/SaleTileGrid';
 import { CartDrawer } from '@/components/sales/CartDrawer';
 import { ChargeSheet } from '@/components/sales/ChargeSheet';
 import { CustomAmountSheet, QuantitySheet } from '@/components/sales/SaleLineSheets';
 import { customersApi, type MobileCustomerDto } from '@/features/customers/api/customersApi';
-import { itemsApi, type CatalogItem } from '@/features/items/api/itemsApi';
+import { itemsApi } from '@/features/items/api/itemsApi';
 import { OFFLINE_SALE_MESSAGE } from '@/features/sales/saleAttempt';
 import {
   cartTotal,
-  displayQuantity,
   groupSaleTiles,
   lineKey,
   quantityForItem,
@@ -45,12 +45,6 @@ import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { formatMoney } from '@/utils/money';
 
-function tileLabel(item: CatalogItem, quantity: string | null): string {
-  const price = typeof item.salePrice === 'string' ? formatMoney(item.salePrice) : '';
-  const base = `${item.name}, ${price} including GST`;
-  return quantity ? `${base}, ${displayQuantity(quantity)} in cart` : base;
-}
-
 export default function SellScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
@@ -61,7 +55,6 @@ export default function SellScreen() {
   const [customerSearch, setCustomerSearch] = useState('');
   const [online, setOnline] = useState(onlineManager.isOnline());
   const [barHeight, setBarHeight] = useState(0);
-  const suppressTilePress = useRef(false);
   const itemsQuery = useQuery({ queryKey: ['items', 'sell'], queryFn: () => itemsApi.list() });
   const customersQuery = useQuery({
     queryKey: ['customers', 'sell'],
@@ -136,43 +129,16 @@ export default function SellScreen() {
         {!itemsQuery.isLoading && !itemsQuery.isError && sections.length === 0 ? (
           <EmptyState title="No items with a sale price" description="Add a sale price to an item to sell it here." />
         ) : null}
-        {sections.map((section) => (
-          <View key={section.id} style={styles.section}>
-            <View style={styles.sectionHeader} accessibilityLabel={`Category ${section.name}`}>
-              <View style={[styles.swatch, { backgroundColor: section.color ?? theme.colors.accent }]} />
-              <Text style={styles.sectionTitle}>{section.name}</Text>
-            </View>
-            <View style={styles.grid}>
-              {section.items.map((item) => {
-                const quantity = quantityForItem(ui.draft, item.id);
-                return (
-                  <AppPressable
-                    key={item.id}
-                    accessibilityRole="button"
-                    accessibilityLabel={tileLabel(item, quantity)}
-                    onPress={() => {
-                      if (suppressTilePress.current) {
-                        suppressTilePress.current = false;
-                        return;
-                      }
-                      addCatalogItemToDraft(item);
-                    }}
-                    onLongPress={() => {
-                      suppressTilePress.current = true;
-                      if (!quantityForItem(ui.draft, item.id)) addCatalogItemToDraft(item);
-                      setQuantityKey(item.id);
-                    }}
-                    style={({ pressed }) => [styles.tile, { width: tileWidth }, pressed && styles.pressed]}
-                  >
-                    <Text style={styles.tileName}>{item.name}</Text>
-                    <Text style={styles.tilePrice}>{typeof item.salePrice === 'string' ? formatMoney(item.salePrice) : ''}</Text>
-                    {quantity ? <Text style={styles.badge}>{displayQuantity(quantity)}</Text> : null}
-                  </AppPressable>
-                );
-              })}
-            </View>
-          </View>
-        ))}
+        <SaleTileGrid
+          sections={sections}
+          tileWidth={tileWidth}
+          quantityForItem={(id) => quantityForItem(ui.draft, id)}
+          onAdd={addCatalogItemToDraft}
+          onQuantity={(item) => {
+            if (!quantityForItem(ui.draft, item.id)) addCatalogItemToDraft(item);
+            setQuantityKey(item.id);
+          }}
+        />
       </ScrollView>
       <View
         onLayout={(event) => setBarHeight(event.nativeEvent.layout.height)}
@@ -289,34 +255,6 @@ const createStyles = ({ colors, type }: ReturnType<typeof useTheme>) => StyleShe
     backgroundColor: colors.fill,
   },
   customText: { ...type.callout },
-  section: { marginTop: space.lg, paddingHorizontal: space.screen },
-  sectionHeader: { flexDirection: 'row', alignItems: 'center', gap: space.sm, marginBottom: space.sm },
-  swatch: { width: 12, height: 12, borderRadius: 6 },
-  sectionTitle: { ...type.section },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
-  tile: {
-    minHeight: 96,
-    borderRadius: radius.md,
-    backgroundColor: colors.surface,
-    padding: space.md,
-    justifyContent: 'space-between',
-  },
-  tileName: { ...type.headline },
-  tilePrice: { ...type.callout, color: colors.textSecondary },
-  badge: {
-    position: 'absolute',
-    top: space.sm,
-    right: space.sm,
-    minWidth: 28,
-    minHeight: 28,
-    borderRadius: radius.pill,
-    backgroundColor: colors.accent,
-    color: colors.accentForeground,
-    textAlign: 'center',
-    lineHeight: 28,
-    fontWeight: '700',
-    overflow: 'hidden',
-  },
   bar: {
     position: 'absolute',
     left: 0,

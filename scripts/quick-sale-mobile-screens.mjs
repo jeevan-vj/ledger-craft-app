@@ -1,0 +1,158 @@
+import assert from 'node:assert/strict';
+import { mkdir, writeFile } from 'node:fs/promises';
+import path from 'node:path';
+import { chromium } from '@playwright/test';
+
+// Run against local Hono + Expo web. It creates isolated test data, never a real payment.
+const mobileUrl = process.env.QUICK_SALE_MOBILE_URL ?? 'http://127.0.0.1:8081';
+const apiUrl = process.env.QUICK_SALE_API_URL ?? 'http://127.0.0.1:3001';
+const output = process.env.QUICK_SALE_OUTPUT_DIR ?? '/tmp/ledgercraft-quick-sale';
+for (const url of [mobileUrl, apiUrl]) {
+  assert.ok(['localhost', '127.0.0.1'].includes(new URL(url).hostname), 'Use local development services only');
+}
+await mkdir(output, { recursive: true });
+const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH ?? '/usr/bin/chromium', args: ['--no-sandbox'] });
+const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
+const page = await context.newPage();
+const errors = [];
+page.on('pageerror', (error) => errors.push(error.message));
+async function api(route, { method = 'GET', body, expected = 200 } = {}) {
+  const result = await context.request.fetch(`${apiUrl}${route}`, { method, headers: { Origin: mobileUrl }, data: body });
+  assert.equal(result.status(), expected, `${method} ${route}: ${await result.text()}`);
+  return result.json();
+}
+async function shot(name) { await page.screenshot({ path: path.join(output, name), animations: 'disabled' }); }
+try {
+  await api('/api/auth/sign-up/email', { method: 'POST', body: { name: 'Market seller', email: `market-${Date.now()}@example.test`, password: `Local-${crypto.randomUUID()}` } });
+  await api('/api/business-profile', { method: 'PUT', body: { name: 'Market bakery', email: 'market@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered' } });
+  await api('/api/items', { method: 'POST', expected: 201, body: { name: 'Pie', type: 'product', unit: 'ea', salePrice: '4.50', isActive: true } });
+  await api('/api/items', { method: 'POST', expected: 201, body: { name: 'Roll', type: 'product', unit: 'ea', salePrice: '9.00', isActive: true } });
+  await page.goto(mobileUrl, { waitUntil: 'networkidle', timeout: 120_000 });
+  await page.getByRole('tab', { name: 'More' }).click();
+  await page.getByRole('switch', { name: 'Quick sale' }).check();
+  await page.getByRole('tab', { name: 'Sell' }).click();
+  await page.getByRole('button', { name: 'Pie, $4.50 including GST', exact: true }).waitFor();
+  assert.equal(await page.getByRole('button', { name: 'Pie, $4.50 including GST', exact: true }).evaluate((el) => getComputedStyle(el).backgroundColor), 'rgb(30, 33, 29)', 'Sell tiles must retain their background under NativeWind');
+  await shot('01-sell.png');
+  await page.getByRole('button', { name: 'Arrange tiles', exact: true }).click();
+  await page.getByRole('button', { name: 'Add Pie to favourites' }).click();
+  await page.getByLabel('Category Favourites', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Done arranging' }).click();
+  await page.getByRole('button', { name: 'Pie, $4.50 including GST', exact: true }).click();
+  await page.getByRole('button', { name: 'Roll, $9.00 including GST', exact: true }).click();
+  await page.getByRole('button', { name: 'Cart, $13.50', exact: true }).waitFor();
+  await page.reload({ waitUntil: 'networkidle' });
+  await page.getByRole('tab', { name: 'Sell' }).click();
+  await page.getByRole('button', { name: 'Cart, $13.50', exact: true }).waitFor();
+  await page.getByLabel('Category Favourites', { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Charge', exact: true }).click();
+  await page.getByRole('button', { name: '$20', exact: true }).click();
+  await page.getByText('Change $6.50', { exact: true }).waitFor();
+  await shot('02-charge.png');
+  const responsePromise = page.waitForResponse((response) => response.request().method() === 'POST' && new URL(response.url()).pathname === '/api/sales');
+  await page.getByRole('button', { name: 'Confirm sale', exact: true }).click();
+  const response = await responsePromise;
+  assert.equal(response.status(), 201);
+  const sale = await response.json();
+  assert.equal(sale.invoice.total, '13.50');
+  assert.equal(sale.invoice.taxAmount, '1.76');
+  assert.equal(sale.invoice.status, 'paid');
+  assert.equal(sale.invoice.balanceDue, '0.00');
+  await page.getByText(sale.invoice.invoiceNumber, { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Show receipt QR' }).click();
+  const qr = page.getByRole('img', { name: 'Receipt QR code' });
+  await qr.waitFor();
+  await qr.screenshot({ path: path.join(output, 'receipt-qr.png') });
+  await shot('03-receipt.png');
+  const receipts = await api(`/api/receipts?invoiceId=${sale.invoice.id}`);
+  assert.equal(receipts.receipts.length, 1);
+  assert.equal(receipts.receipts[0].receiptData.customerEmail, null);
+  const shares = await api(`/api/invoices/${sale.invoice.id}/shares`);
+  const share = shares.shares[0];
+  assert.ok(share?.shareToken);
+  const buyer = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  const snapshotResponse = await buyer.request.get(`${apiUrl}/api/public/invoices/${share.shareToken}`);
+  const snapshot = await snapshotResponse.json();
+  assert.equal(snapshotResponse.status(), 200);
+  assert.equal(snapshot.invoice.status, 'paid');
+  assert.equal(snapshot.invoice.totalPaid, '13.50');
+  const buyerPage = await buyer.newPage();
+  await buyerPage.goto(`http://127.0.0.1:8080/shared/invoice/${share.shareToken}`, { waitUntil: 'networkidle' });
+  await buyerPage.getByText(/paid/i).first().waitFor();
+  await buyerPage.screenshot({ path: path.join(output, '04-buyer-paid-invoice.png') });
+  await buyerPage.setViewportSize({ width: 1440, height: 900 });
+  await buyerPage.screenshot({ path: path.join(output, '04-buyer-paid-invoice-1440.png') });
+  await buyer.close();
+  await page.getByRole('button', { name: 'Done', exact: true }).click();
+  await page.getByRole('button', { name: 'Cart, $0.00', exact: true }).waitFor();
+  await page.getByRole('button', { name: 'Day summary' }).click();
+  await page.getByText('Gross total', { exact: true }).waitFor();
+  const summary = await api(`/api/sales/summary?date=${sale.invoice.date}`);
+  assert.equal(summary.count, 1);
+  assert.equal(summary.grossTotal, '13.50');
+  assert.equal(summary.gstTotal, '1.76');
+  await page.getByRole('button', { name: `Open sale ${sale.invoice.invoiceNumber}` }).waitFor();
+  await shot('05-day-summary.png');
+  await page.getByLabel('Sales date', { exact: true }).fill('2020-01-01');
+  await page.getByRole('button', { name: 'Show sales' }).click();
+  await page.getByText('No sales on this day', { exact: true }).waitFor();
+  await shot('06-empty-past-day.png');
+  await page.getByRole('button', { name: "Today's sales" }).click();
+  await page.getByRole('button', { name: `Open sale ${sale.invoice.invoiceNumber}` }).click();
+  await page.getByRole('button', { name: 'Share invoice', exact: true }).waitFor();
+  await shot('07-sale-invoice.png');
+  await page.locator('a[aria-label="Go back"][href$="/InvoiceList"]').click();
+  await page.getByRole('tab', { name: 'Sales', exact: true }).click();
+  await page.getByText(sale.invoice.invoiceNumber, { exact: true }).first().waitFor();
+  await shot('07-sales-filter.png');
+  await page.getByRole('tab', { name: 'Regular invoices', exact: true }).click();
+  await page.getByText('No invoices match', { exact: true }).waitFor();
+  // A completed server write with a lost response must be retried with the same key.
+  await page.goto(mobileUrl, { waitUntil: 'networkidle' });
+  await page.getByRole('tab', { name: 'Sell' }).click();
+  await page.getByRole('button', { name: 'Pie, $4.50 including GST', exact: true }).click();
+  await context.setOffline(true);
+  await page.getByText("You're offline. Sales can't be saved until you're back online.", { exact: true }).waitFor();
+  assert.ok(await page.getByRole('button', { name: 'Charge', exact: true }).isDisabled());
+  await shot('08-offline-cart.png');
+  await context.setOffline(false);
+  await page.getByRole('button', { name: 'Charge', exact: true }).click();
+  await page.getByRole('button', { name: 'Card/EFTPOS', exact: true }).click();
+  let lostSale;
+  let attemptKey;
+  await page.route('**/api/sales', async (route) => {
+    if (route.request().method() !== 'POST') return route.continue();
+    const key = route.request().headers()['idempotency-key'];
+    assert.ok(key);
+    if (!lostSale) {
+      attemptKey = key;
+      const committed = await route.fetch();
+      assert.equal(committed.status(), 201);
+      lostSale = await committed.json();
+      return route.abort('failed');
+    }
+    assert.equal(key, attemptKey, 'Retry must reuse the original charge key');
+    await route.continue();
+  });
+  await page.getByRole('button', { name: 'Confirm sale', exact: true }).click();
+  await page.getByText("You're offline. Sales can't be saved until you're back online.", { exact: true }).waitFor();
+  const retryResponse = page.waitForResponse((candidate) => candidate.request().method() === 'POST' && new URL(candidate.url()).pathname === '/api/sales');
+  await page.getByRole('button', { name: 'Confirm sale', exact: true }).click();
+  const replay = await retryResponse;
+  assert.equal(replay.status(), 201);
+  assert.equal((await replay.json()).invoice.id, lostSale.invoice.id);
+  await page.getByText(lostSale.invoice.invoiceNumber, { exact: true }).waitFor();
+  await page.getByRole('button', { name: 'No receipt', exact: true }).click();
+  const afterRetry = await api(`/api/sales/summary?date=${sale.invoice.date}`);
+  assert.equal(afterRetry.count, 2, 'Lost response and retry create only one additional sale');
+  assert.equal(afterRetry.grossTotal, '18.00');
+  assert.equal(afterRetry.gstTotal, '2.35');
+  assert.deepEqual(afterRetry.paymentMethods, [{ paymentMethod: 'cash', total: '13.50' }, { paymentMethod: 'credit_card', total: '4.50' }]);
+  assert.deepEqual(errors, [], 'No uncaught browser errors');
+  await writeFile(path.join(output, 'result.json'), JSON.stringify({ platform: 'Expo web in Chromium', viewport: '390x844', invoiceNumber: sale.invoice.invoiceNumber, total: sale.invoice.total, gst: sale.invoice.taxAmount, summary, afterRetry, offlineGuard: true, retryVerified: true, shareToken: share.shareToken, browserErrors: errors }, null, 2));
+  console.log('PASS: persisted cart/favourite → cash charge → receipt QR → anonymous paid invoice → day summary → empty past day → invoice detail → offline guard → card response lost → idempotent retry');
+} catch (error) {
+  await shot('failure.png');
+  console.error((await page.locator('body').innerText()).slice(0, 5000));
+  throw error;
+} finally { await browser.close(); }

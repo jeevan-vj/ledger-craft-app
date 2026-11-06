@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useLayoutEffect } from 'react';
+import React, { useState, useCallback, useLayoutEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -12,13 +12,14 @@ import {
   Pressable,
 } from 'react-native';
 import { useFocusEffect, useNavigation, type NavigationProp } from '@react-navigation/native';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, type RootStackParamList } from '@/navigation/types';
 import { HeaderActionButton, HeaderActions } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
 import { invoiceService } from '@/services/invoiceService';
+import { customersApi } from '@/features/customers/api/customersApi';
 import { submitInvoicePayment } from '@/features/payments/paymentQueries';
 import type { Invoice } from '@/types/invoice';
 import type { CreatePaymentRequest } from '@/types/payment';
@@ -38,18 +39,37 @@ type InvoiceListNavigationProp = NativeStackNavigationProp<InvoiceStackParamList
 
 export default function InvoiceListScreen() {
   const theme = useTheme();
-  const { colors: palette, type } = theme;
+  const { colors: palette } = theme;
   const styles = createStyles(theme);
   const { bottomPadding } = useTabScreenInsets();
   const navigation = useNavigation<InvoiceListNavigationProp>();
   const canImport = useStore((state) => canImportInvoices(state.permissions));
   const queryClient = useQueryClient();
   const [invoices, setInvoices] = useState<Invoice[]>([]);
-  const [filteredInvoices, setFilteredInvoices] = useState<Invoice[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [filter, setFilter] = useState<'all' | 'draft' | 'sent' | 'paid' | 'overdue'>('all');
+  const [documentFilter, setDocumentFilter] = useState<'all' | 'sales' | 'invoices'>('all');
+  const customersQuery = useQuery({
+    queryKey: ['customers', 'invoice-sale-filter'],
+    queryFn: () => customersApi.list(),
+    enabled: documentFilter !== 'all',
+  });
+  const filterUnavailable = documentFilter !== 'all' && (customersQuery.isPending || customersQuery.isError);
+  const walkInIds = useMemo(() => new Set(
+    (customersQuery.data ?? []).filter((customer) => customer.tags?.includes('walk-in')).map((customer) => customer.id),
+  ), [customersQuery.data]);
+  const filteredInvoices = useMemo(() => {
+    if (filterUnavailable) return [];
+    const search = searchQuery.trim().toLowerCase();
+    return invoices.filter((invoice) => {
+      if (filter !== 'all' && invoice.status !== filter) return false;
+      if (documentFilter !== 'all' && walkInIds.has(invoice.customerId) !== (documentFilter === 'sales')) return false;
+      return !search || [invoice.invoiceNumber, invoice.customer?.name, invoice.customer?.email]
+        .some((value) => value?.toLowerCase().includes(search));
+    });
+  }, [documentFilter, filter, filterUnavailable, invoices, searchQuery, walkInIds]);
   const [updatingStatus, setUpdatingStatus] = useState<Record<string, boolean>>({});
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [selectedInvoiceForPayment, setSelectedInvoiceForPayment] = useState<Invoice | null>(null);
@@ -57,7 +77,7 @@ export default function InvoiceListScreen() {
   const clearFilters = () => {
     setSearchQuery('');
     setFilter('all');
-    applyFilters(invoices, '', 'all');
+    setDocumentFilter('all');
   };
 
   const loadInvoices = async () => {
@@ -65,7 +85,6 @@ export default function InvoiceListScreen() {
       const data = await invoiceService.fetchInvoices();
       setInvoices(data);
       setLoadError(null);
-      applyFilters(data, searchQuery, filter);
     } catch (error) {
       console.error('Error loading invoices:', error);
       setLoadError('Could not load invoices. Pull to retry.');
@@ -84,39 +103,11 @@ export default function InvoiceListScreen() {
   const onRefresh = () => {
     setRefreshing(true);
     loadInvoices();
+    if (documentFilter !== 'all') void customersQuery.refetch();
   };
 
-  const applyFilters = (data: Invoice[], search: string, statusFilter: typeof filter) => {
-    let filtered = data;
-
-    // Apply status filter
-    if (statusFilter !== 'all') {
-      filtered = filtered.filter((inv) => inv.status === statusFilter);
-    }
-
-    // Apply search filter
-    if (search) {
-      const lowerSearch = search.toLowerCase();
-      filtered = filtered.filter(
-        (inv) =>
-          inv.invoiceNumber.toLowerCase().includes(lowerSearch) ||
-          inv.customer?.name.toLowerCase().includes(lowerSearch) ||
-          inv.customer?.email.toLowerCase().includes(lowerSearch)
-      );
-    }
-
-    setFilteredInvoices(filtered);
-  };
-
-  const handleSearch = (text: string) => {
-    setSearchQuery(text);
-    applyFilters(invoices, text, filter);
-  };
-
-  const handleFilterChange = (newFilter: typeof filter) => {
-    setFilter(newFilter);
-    applyFilters(invoices, searchQuery, newFilter);
-  };
+  const handleSearch = (text: string) => setSearchQuery(text);
+  const handleFilterChange = (newFilter: typeof filter) => setFilter(newFilter);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -181,7 +172,6 @@ export default function InvoiceListScreen() {
     await submitInvoicePayment(queryClient, paymentData, idempotencyKey, (fresh) => {
       setSelectedInvoiceForPayment(fresh);
       setInvoices((current) => current.map((item) => (item.id === fresh.id ? fresh : item)));
-      setFilteredInvoices((current) => current.map((item) => (item.id === fresh.id ? fresh : item)));
     });
     await loadInvoices();
     setPaymentModalVisible(false);
@@ -259,7 +249,16 @@ export default function InvoiceListScreen() {
           <Text style={styles.errorBannerText}>{loadError} Tap to retry.</Text>
         </Pressable>
       ) : null}
+      {invoices.length > 0 ? (
+        <FilterPills
+          options={['all', 'sales', 'invoices'] as const}
+          value={documentFilter}
+          onChange={setDocumentFilter}
+          labels={{ all: 'All documents', sales: 'Sales', invoices: 'Regular invoices' }}
+        />
+      ) : null}
       {renderFilterButtons()}
+      {documentFilter !== 'all' ? <Text style={styles.filterNote}>Sales are invoices for customers tagged walk-in.</Text> : null}
       <FlatList
         data={filteredInvoices}
         keyExtractor={(item) => item.id}
@@ -270,7 +269,16 @@ export default function InvoiceListScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={palette.accent} colors={[palette.accent]} />
         }
         ListEmptyComponent={
-          loadError ? (
+          filterUnavailable ? (
+            customersQuery.isError ? (
+              <EmptyState
+                title="Couldn't load sale filters"
+                description="Check your connection and try again, or choose All documents."
+                actionLabel="Try again"
+                onAction={() => { void customersQuery.refetch(); }}
+              />
+            ) : <ActivityIndicator color={palette.accent} accessibilityLabel="Loading sale filters" />
+          ) : loadError ? (
             <EmptyState
               title="Couldn't load invoices"
               description={loadError}
@@ -316,6 +324,7 @@ const createStyles = ({ colors: palette, type }: ReturnType<typeof useTheme>) =>
     flex: 1,
     backgroundColor: palette.background,
   },
+  filterNote: { ...type.footnote, color: palette.textSecondary, marginHorizontal: space.screen, marginBottom: space.sm },
   centerContainer: {
     flex: 1,
     justifyContent: 'center',

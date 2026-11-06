@@ -71,7 +71,37 @@ up to the gross total. GST is the sum of those invoices' `taxAmount`. Top items 
 grouped by line description because line items do not store an item id. Amounts are
 exact decimal strings. The route requires `invoices.read`. No migration.
 
-The Expo Sell tab is on only when the device Quick sale switch is on. That switch is off by default and stored on the device. Tiles are active catalog items that have a sale price. The charged cart total is the once-rounded sum from `roundMoney`; each line amount is display-only. Cash change uses the same helper. Charge keeps one persisted idempotency key per cart fingerprint until that sale succeeds or returns 409, and Confirm stays locked until the empty cart is saved. An offline charge is refused and nothing is queued. A saved sale clears the cart and shows the invoice number. The receipt QR, share action, and receipt sheet are not on this screen.
+**Mobile quick-sale completion (implemented locally, 2026-11-06):** The Expo
+Sell tab is hidden until the device Quick sale switch is enabled; it defaults
+off. Active priced catalogue tiles support device favourites and ordering through
+Arrange tiles. The charged cart total is the once-rounded sum from `roundMoney`;
+line amounts are display-only, and cash change uses the same helper. Charge keeps
+one persisted idempotency key per cart fingerprint until success or 409, and
+Confirm stays locked until the empty cart is saved. Offline charging is refused
+and nothing is queued. A saved sale opens the receipt screen with Show receipt
+QR, native Share receipt, Done, and No receipt. QR or Share lazily creates or
+reuses the invoice share link; receipt-link failure leaves the sale saved.
+`qrcode-generator` is pure JavaScript and adds no native QR module. Public web
+and Expo invoice screens identify a paid snapshot as Paid.
+
+Sell → Day summary defaults to today in the business timezone, accepts a chosen
+calendar date, and shows server count, gross, GST, payment-method totals, both
+item rankings, and sales that open invoice detail. Money stays in server decimal
+strings. Invoice-list Sales / Regular invoices filters use the customer
+`walk-in` tag; a quick sale attached to a named customer remains in the day
+summary but is classified as a regular invoice by that tag-based filter.
+
+Native device preferences, carts, and pending keys use SecureStore; Expo web
+uses localStorage for the switch, cart, pending key, and tile preferences. Expo
+web Babel transforms `import.meta`; NativeWind uses class dark mode and disables
+Tailwind preflight so its button reset does not override React Native Web
+backgrounds. The reproducible local walkthrough is
+[`scripts/quick-sale-mobile-screens.mjs`](scripts/quick-sale-mobile-screens.mjs).
+Local API/contracts/web/mobile suites pass; final browser evidence is recorded
+by that walkthrough. Signed iOS/Android receipt scanning, native sharing, back
+navigation, and offline/background QA remain pending. No deployment or
+publication is recorded by these local changes. Cash ledger routing, email,
+printers, and offline sales remain outside this slice.
 
 **Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
 Cloudflare Workers AI converts retained PDFs to bounded Markdown with metadata

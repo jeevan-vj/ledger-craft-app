@@ -1,4 +1,5 @@
 import * as SecureStore from 'expo-secure-store';
+import { Platform } from 'react-native';
 import type { SalePaymentMethod } from '@ledgercraft/contracts';
 import { emptySaleDraft, type SaleDraft, type SaleLine } from './saleCart';
 
@@ -7,6 +8,18 @@ const DRAFT_KEY = 'ledgercraft.quickSale.draft';
 const ATTEMPT_KEY = 'ledgercraft.quickSale.attempt';
 
 const METHODS = new Set<SalePaymentMethod>(['cash', 'credit_card', 'bank_transfer']);
+
+async function read(key: string): Promise<string | null> {
+  return Platform.OS === 'web' ? globalThis.localStorage.getItem(key) : SecureStore.getItemAsync(key);
+}
+async function write(key: string, value: string): Promise<void> {
+  if (Platform.OS === 'web') globalThis.localStorage.setItem(key, value);
+  else await SecureStore.setItemAsync(key, value);
+}
+async function remove(key: string): Promise<void> {
+  if (Platform.OS === 'web') globalThis.localStorage.removeItem(key);
+  else await SecureStore.deleteItemAsync(key);
+}
 
 export interface StoredSaleAttempt {
   fingerprint: string;
@@ -27,16 +40,16 @@ function isLine(value: unknown): value is SaleLine {
 }
 
 export async function loadQuickSaleEnabled(): Promise<boolean> {
-  return (await SecureStore.getItemAsync(ENABLED_KEY)) === '1';
+  return (await read(ENABLED_KEY)) === '1';
 }
 
 export async function saveQuickSaleEnabled(enabled: boolean): Promise<void> {
-  if (enabled) await SecureStore.setItemAsync(ENABLED_KEY, '1');
-  else await SecureStore.deleteItemAsync(ENABLED_KEY);
+  if (enabled) await write(ENABLED_KEY, '1');
+  else await remove(ENABLED_KEY);
 }
 
 export async function loadSaleDraft(): Promise<SaleDraft> {
-  const value = await SecureStore.getItemAsync(DRAFT_KEY);
+  const value = await read(DRAFT_KEY);
   if (!value) return emptySaleDraft();
   try {
     const parsed = JSON.parse(value) as Partial<SaleDraft>;
@@ -52,11 +65,11 @@ export async function loadSaleDraft(): Promise<SaleDraft> {
 }
 
 export async function saveSaleDraft(draft: SaleDraft): Promise<void> {
-  await SecureStore.setItemAsync(DRAFT_KEY, JSON.stringify(draft));
+  await write(DRAFT_KEY, JSON.stringify(draft));
 }
 
 export async function loadSaleAttempt(): Promise<StoredSaleAttempt | null> {
-  const value = await SecureStore.getItemAsync(ATTEMPT_KEY);
+  const value = await read(ATTEMPT_KEY);
   if (!value) return null;
   try {
     const parsed = JSON.parse(value) as Partial<StoredSaleAttempt>;
@@ -84,9 +97,9 @@ export async function loadSaleAttempt(): Promise<StoredSaleAttempt | null> {
 
 export async function saveSaleAttempt(attempt: StoredSaleAttempt): Promise<void> {
   const keys = { ...attempt.keys, [attempt.fingerprint]: attempt.key };
-  await SecureStore.setItemAsync(ATTEMPT_KEY, JSON.stringify({ ...attempt, keys }));
+  await write(ATTEMPT_KEY, JSON.stringify({ ...attempt, keys }));
 }
 
 export async function clearSaleAttempt(): Promise<void> {
-  await SecureStore.deleteItemAsync(ATTEMPT_KEY);
+  await remove(ATTEMPT_KEY);
 }

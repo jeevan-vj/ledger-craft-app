@@ -52,7 +52,43 @@ the existing invoice, payment, and receipt use cases in one organisation
 transaction. The walk-in customer is tag `walk-in` and is scoped to the
 organisation. The invoice is GST-inclusive and dated today in the business
 timezone. The payment is the invoice total and uses `createPaymentInTx` unchanged.
-`Idempotency-Key` is required. The cart allows at most 100 lines, and each quantity and price is positive decimal text with at most 2 decimal places. `GET /api/sales/summary?date=YYYY-MM-DD` reads that organisation's sales for one stored calendar date: walk-in-tagged customers or invoices named by a `POST /api/sales` idempotency row, with completed payments equal to the invoice total. GST is the sum of invoice `taxAmount`. Amounts are exact decimal strings. No migration. The Expo Sell tab follows the same sale API. It is hidden until the device Quick sale switch is on, that switch defaults off, The charged total is one `roundMoney` of the raw line sum, line amounts are display-only, and cash change uses the same helper. Receipt QR and the receipt sheet are not on this screen.
+`Idempotency-Key` is required. The cart allows at most 100 lines, and each
+quantity and price is positive decimal text with at most 2 decimal places.
+`GET /api/sales/summary?date=YYYY-MM-DD` reads that organisation's sales for one
+stored calendar date: walk-in-tagged customers or invoices named by a
+`POST /api/sales` idempotency row, with completed payments equal to the invoice
+total. GST is the sum of invoice `taxAmount`. Amounts are exact decimal strings.
+No migration.
+
+**Mobile quick-sale completion (implemented locally, 2026-11-06):** The Expo Sell
+tab follows the sale API and is hidden behind the device Quick sale switch,
+which defaults off. Catalogue tiles have device favourites and ordering. The
+charged total is one `roundMoney` of the raw line sum, line amounts are
+display-only, and cash change uses the same helper. Persisted cart fingerprints
+retain their idempotency keys on retries. Offline sales are refused, never
+queued. A successful sale clears the cart and opens a receipt screen with a QR
+code, native Share, Done, and No receipt. Only asking for QR or Share creates or
+reuses an invoice share link. QR rendering uses pure-JavaScript
+`qrcode-generator`, without a native QR module. Both public invoice clients show
+a Paid indicator for a paid snapshot.
+
+The Day summary screen defaults to the current business-timezone day, supports
+a chosen date, and reads count, gross, GST, payment methods, both item rankings,
+and invoice-detail links from the summary API. Invoice-list Sales / Regular
+invoices filtering is based on the customer `walk-in` tag. Named-customer quick
+sales still appear in the summary, but fall under Regular invoices in that
+filter.
+
+Native storage uses SecureStore; Expo web uses localStorage for the quick-sale
+switch, cart, pending idempotency keys, and tile preferences. The Expo web Babel
+preset transforms `import.meta`; NativeWind class dark mode and disabled
+Tailwind preflight preserve React Native Web control backgrounds. Local
+API/contracts/web/mobile suites pass. The reproducible local walkthrough is
+[`scripts/quick-sale-mobile-screens.mjs`](scripts/quick-sale-mobile-screens.mjs);
+its browser output is separate from signed-device evidence. Signed iOS/Android
+receipt scanning, native sharing, back navigation, and offline/background QA
+remain pending. These changes do not record deployment or publication, alter
+cash ledger routing, enable email or printers, or add offline sale queues.
 
 **Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
 The Workers AI path converts PDFs through the binding's native `toMarkdown`
