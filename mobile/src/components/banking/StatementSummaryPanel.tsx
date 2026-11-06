@@ -32,6 +32,7 @@ export function StatementSummaryPanel({ bankAccountId }: { bankAccountId: string
     try {
       const current = await settlementMatchingApi.summary(summary.session.id);
       if (fields.some((field) => current[field] !== summary[field]) || current.isReconciled !== summary.isReconciled) { setSummary(current); setReviewed(false); setError('Statement balances changed. Review the refreshed summary before completing.'); return; }
+      if (JSON.stringify(current.warnings ?? []) !== JSON.stringify(summary.warnings ?? [])) { setSummary(current); setReviewed(false); setError('Statement balances or review warnings changed. Review the refreshed summary before completing.'); return; }
       if (!current.isReconciled) { setSummary(current); setReviewed(false); setError('This statement still has a difference.'); return; }
       const completed = await settlementMatchingApi.complete(current.session.id);
       setSummary({ ...current, session: completed }); setSessions((rows) => rows?.map((session) => session.id === completed.id ? completed : session)); setReviewed(false);
@@ -48,6 +49,7 @@ export function StatementSummaryPanel({ bankAccountId }: { bankAccountId: string
     {error && selectedId ? <ModernButton variant="secondary" disabled={busy} onPress={() => void select(selectedId)}>Retry statement summary</ModernButton> : null}
     {summary ? <>
       <Text style={theme.type.headline}>{summary.bankAccountName} · {summary.bankName}</Text>
+      {(summary.warnings ?? []).map((warning, index) => <Text key={`${index}-${warning}`} accessibilityRole="alert" style={[theme.type.body, { color: theme.colors.warning }]}>{warning}</Text>)}
       <Text style={theme.type.body}>Statement closing balance: {formatMoney(summary.bankBalance)}</Text>
       <Text style={theme.type.body}>Adjusted statement balance: {formatMoney(summary.adjustedBankBalance)}</Text>
       <Text style={theme.type.body}>Posted book balance: {formatMoney(summary.bookBalance)}</Text>

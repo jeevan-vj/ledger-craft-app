@@ -1,5 +1,14 @@
 # AGENTS.md
 
+**Accountant follow-up (implemented locally, 2026-11-06):** Completed bank
+statements protect their cash cutoff and linked bank/chart financial identity.
+Statement declarations affect only the bank side; unposted book corrections
+require real transactions/journals and historical invalid declarations emit
+web/Expo review warnings. Journal DTOs expose all lines and exact totals; web
+journal CSV exports actual spreadsheet-safe rows. This is not a company-wide
+fiscal-period lock. Independent expected/actual results and review are in
+[`docs/evidence/accountant-followup/README.md`](docs/evidence/accountant-followup/README.md).
+
 **Business accounting completion (implemented locally, 2026-11-06):**
 Web and Expo prepare invoice- or payments-basis NZD GST from company-scoped
 posted records. The reference books give GST of NZ$135 on invoice basis and NZ$141 on

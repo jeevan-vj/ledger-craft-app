@@ -57,6 +57,7 @@ import { BankTransaction } from '@/types/bankTransaction';
 
 import { AdjustmentDialog } from './AdjustmentDialog';
 import { ReconciliationReport } from './ReconciliationReport';
+import { ReconciliationWarnings } from './ReconciliationWarnings';
 
 interface ReconciliationWorkspaceProps {
   session: ReconciliationSession;
@@ -264,6 +265,7 @@ export function ReconciliationWorkspace({
       {/* Header */}
       <div className="bg-white border-b sticky top-0 z-10">
         <div className="container mx-auto px-6 py-4">
+        <ReconciliationWarnings warnings={summary?.warnings} />
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <Button variant="ghost" size="icon" onClick={onClose}>

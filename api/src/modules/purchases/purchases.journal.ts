@@ -7,7 +7,7 @@ import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { decimal, roundMoney } from '../invoices/money';
 import { exchangeDifferenceLine } from '../currency/settlement.service';
-import { bankLedgerAccount } from '../accounting/posting';
+import { assertOpenBankPostingDate, bankLedgerAccount } from '../accounting/posting';
 import { getAccount as getBankAccount } from '../bank/bank.repository';
 
 type OrganisationContext = { organisationId: string; userId: string };
@@ -50,6 +50,7 @@ async function post(
     eq(journalEntries.referenceId, input.referenceId),
   ));
   if (existing) return;
+  await assertOpenBankPostingDate(tx, ctx.organisationId, input.date, input.lines.map(line => line.accountId));
   const debit = input.lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
   const credit = input.lines.reduce((sum, line) => sum.add(line.credit), decimal(0));
   if (debit.compare(credit) !== 0) throw new HTTPException(500, { message: 'Journal entry is not balanced' });

@@ -39,9 +39,11 @@ describe('authoritative bank statement summary before completion', () => {
     try {
       const bank = await f.request('/api/bank-accounts', 'POST', { accountName: 'Cents', accountNumber: crypto.randomUUID(), bankName: 'Test Bank', accountType: 'checking', currency: 'NZD', openingBalance: '0.10' }, 201);
       const session = await f.request('/api/reconciliation-sessions', 'POST', { bankAccountId: bank.id, statementStartDate: '2026-10-01', statementEndDate: '2026-10-31', statementOpeningBalance: '0.10', statementClosingBalance: '0.14' }, 201);
-      for (const [adjustmentType, amount, affectsBank, affectsBook] of [['deposit_in_transit', '0.01', true, false], ['outstanding_check', '0.02', true, false], ['book_error', '-0.03', false, true]] as const) await f.request(`/api/reconciliation-sessions/${session.id}/adjustments`, 'POST', { adjustmentType, amount, affectsBank, affectsBook, description: 'Reviewed statement adjustment' }, 201);
-      expect(await f.request(`/api/reconciliation-sessions/${session.id}/summary`, 'GET')).toMatchObject({ bankBalance: '0.14', bookBalance: '0.10', totalOutstandingDeposits: '0.01', totalOutstandingChecks: '0.02', totalOtherAdjustments: '0.03', adjustedBankBalance: '0.13', adjustedBookBalance: '0.13', finalDifference: '0.00', isReconciled: true });
-      expect(await f.request(`/api/reconciliation-sessions/${session.id}/complete`, 'POST', {})).toMatchObject({ bookClosingBalance: '0.13', difference: '0.00' });
+      // These are bank-side facts only: .14 + .01 - .02 - .03 = .10.
+      // The old unposted book_error incorrectly manufactured a .13 book balance.
+      for (const [adjustmentType, amount, affectsBank, affectsBook] of [['deposit_in_transit', '0.01', true, false], ['outstanding_check', '0.02', true, false], ['bank_error', '-0.03', true, false]] as const) await f.request(`/api/reconciliation-sessions/${session.id}/adjustments`, 'POST', { adjustmentType, amount, affectsBank, affectsBook, description: 'Reviewed statement adjustment' }, 201);
+      expect(await f.request(`/api/reconciliation-sessions/${session.id}/summary`, 'GET')).toMatchObject({ bankBalance: '0.14', bookBalance: '0.10', totalOutstandingDeposits: '0.01', totalOutstandingChecks: '0.02', totalOtherAdjustments: '-0.03', adjustedBankBalance: '0.10', adjustedBookBalance: '0.10', finalDifference: '0.00', isReconciled: true });
+      expect(await f.request(`/api/reconciliation-sessions/${session.id}/complete`, 'POST', {})).toMatchObject({ bookClosingBalance: '0.10', difference: '0.00' });
     } finally { await f.sql.end({ timeout: 5 }); }
   }));
 

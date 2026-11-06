@@ -22,3 +22,16 @@ it('requires review again when live statement balances change before completion'
  jest.mocked(settlementMatchingApi.summary).mockResolvedValue({...summary,bankBalance:'-70.00',adjustedBankBalance:'-70.00',finalDifference:'-1.00',isReconciled:false} as never);fireEvent(screen.getByLabelText('Confirm bank statement review'),'valueChange',true);fireEvent.press(screen.getByText('Complete reviewed statement'));
  expect(await screen.findByText('Statement balances changed. Review the refreshed summary before completing.')).toBeTruthy();expect(settlementMatchingApi.complete).not.toHaveBeenCalled();expect(screen.getByText('Final statement difference: -$1.00')).toBeTruthy();
 });
+it('shows the server review warning and keeps an unposted bank fee out of a ready statement',async()=>{
+ const warning='Legacy book adjustment was not posted. Record the actual bank fee in the ledger before completing.';
+ jest.mocked(settlementMatchingApi.summary).mockResolvedValue({...summary,bookBalance:'0.00',adjustedBookBalance:'0.00',finalDifference:'-69.00',isReconciled:false,warnings:[warning]} as never);
+ const screen=render(<StatementSummaryPanel bankAccountId="bank"/>);fireEvent.press(screen.getByText('Review bank statement'));fireEvent.press(await screen.findByText('Statement 2026-11-01 to 2026-11-06 · In progress'));
+ expect(await screen.findByText(warning)).toBeTruthy();expect(screen.getByText('Posted book balance: $0.00')).toBeTruthy();expect(screen.getByText('Final statement difference: -$69.00')).toBeTruthy();
+ fireEvent.press(screen.getByText('Complete reviewed statement'));expect(settlementMatchingApi.complete).not.toHaveBeenCalled();
+});
+it('requires a fresh review when server warnings change even if the balances are unchanged',async()=>{
+ const screen=render(<StatementSummaryPanel bankAccountId="bank"/>);fireEvent.press(screen.getByText('Review bank statement'));fireEvent.press(await screen.findByText('Statement 2026-11-01 to 2026-11-06 · In progress'));await screen.findByText('Final statement difference: $0.00');
+ const warning='A legacy unposted adjustment has been excluded from the ledger balance.';
+ jest.mocked(settlementMatchingApi.summary).mockResolvedValue({...summary,warnings:[warning]} as never);fireEvent(screen.getByLabelText('Confirm bank statement review'),'valueChange',true);fireEvent.press(screen.getByText('Complete reviewed statement'));
+ expect(await screen.findByText('Statement balances or review warnings changed. Review the refreshed summary before completing.')).toBeTruthy();expect(screen.getByText(warning)).toBeTruthy();expect(settlementMatchingApi.complete).not.toHaveBeenCalled();
+});

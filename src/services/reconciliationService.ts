@@ -950,7 +950,7 @@ export const reconciliationService = {
     adjustment: {
       adjustmentType: AdjustmentType;
       description: string;
-      amount: number;
+      amount: number | string;
       affectsBank: boolean;
       affectsBook: boolean;
       referenceNumber?: string;

@@ -160,7 +160,7 @@ export const reconciliationApi = {
       outstandingDeposits: dto.outstandingDeposits.map(toAdjustment), outstandingChecks: dto.outstandingChecks.map(toAdjustment),
       otherAdjustments: dto.otherAdjustments.map(toAdjustment), totalOutstandingDeposits: Number(dto.totalOutstandingDeposits),
       totalOutstandingChecks: Number(dto.totalOutstandingChecks), totalOtherAdjustments: Number(dto.totalOtherAdjustments),
-      finalDifference: Number(dto.finalDifference), isReconciled: dto.isReconciled,
+      finalDifference: Number(dto.finalDifference), isReconciled: dto.isReconciled, warnings: dto.warnings ?? [],
     };
   },
   async listSessions(bankAccountId?: string): Promise<ReconciliationSession[]> {

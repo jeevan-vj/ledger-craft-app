@@ -12,7 +12,8 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { accounts, accountTemplates } from '../../db/schema/accounts';
 import { withOrganisationTx } from '../auth/bind-organisation';
-import { roundMoney } from '../invoices/money';
+import { decimal, roundMoney } from '../invoices/money';
+import { postingTouchesClosedBank } from '../accounting/bank-close.repository';
 
 const DEFAULT_CHART = [
   { number: '1110', name: 'Bank Account - Current', type: 'bank', accountClass: 'asset', normalBalance: 'debit' },
@@ -87,6 +88,17 @@ export async function updateAccountForUser(
   input: UpdateAccountRequest,
 ): Promise<AccountDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const [current] = await tx.select().from(accounts).where(and(eq(accounts.organisationId, ctx.organisationId), eq(accounts.id, id)));
+    if (!current) throw new HTTPException(404, { message: 'Account not found' });
+    const identityChanged = (input.accountNumber !== undefined && input.accountNumber !== current.accountNumber)
+      || (input.type !== undefined && input.type !== current.type)
+      || (input.currency !== undefined && input.currency !== current.currency)
+      || (input.accountClass !== undefined && input.accountClass !== current.accountClass)
+      || (input.openingBalance !== undefined && decimal(input.openingBalance).compare(current.openingBalance) !== 0)
+      || (input.currentBalance !== undefined && decimal(input.currentBalance).compare(current.currentBalance) !== 0);
+    if (identityChanged && await postingTouchesClosedBank(tx, ctx.organisationId, '0000-00-00', [id])) {
+      throw new HTTPException(409, { message: 'The financial identity of a bank ledger with completed statements cannot be changed' });
+    }
     const patch: Partial<typeof accounts.$inferInsert> = { updatedAt: new Date() };
     if (input.name !== undefined) patch.name = input.name;
     if (input.type !== undefined) patch.type = input.type;

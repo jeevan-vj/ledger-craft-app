@@ -1,0 +1,59 @@
+{
+  "expected": {
+    "debitTotal": "2300.00",
+    "creditTotal": "2300.00",
+    "accounts": [
+      "Receivables2300 debit",
+      "Revenue2000 credit",
+      "OutputGST300 credit"
+    ]
+  },
+  "actual": {
+    "id": "165d5f90-5b62-4820-b5eb-2d84bfc1b7eb",
+    "entryNumber": "JE-2026-001",
+    "entryDate": "2026-10-15",
+    "description": "Invoice INV-2026-0002",
+    "referenceNumber": null,
+    "debitAccountId": "6cce987d-fee4-44bc-8475-f91a72d58452",
+    "debitAccountName": "Accounts Receivable",
+    "debitAmount": "2300.00",
+    "creditAccountId": "832e92ae-1758-479d-adfd-9fee278953dd",
+    "creditAccountName": "Sales Revenue",
+    "creditAmount": "2000.00",
+    "lines": [
+      {
+        "id": "c4e77cef-df3b-48f9-89a0-58ba964827c0",
+        "accountId": "6cce987d-fee4-44bc-8475-f91a72d58452",
+        "accountName": "Accounts Receivable",
+        "debitAmount": "2300.00",
+        "creditAmount": "0.00",
+        "description": "Invoice INV-2026-0002",
+        "lineOrder": 1
+      },
+      {
+        "id": "f846a69c-d56f-4ff0-aaeb-e1968fea3754",
+        "accountId": "832e92ae-1758-479d-adfd-9fee278953dd",
+        "accountName": "Sales Revenue",
+        "debitAmount": "0.00",
+        "creditAmount": "2000.00",
+        "description": "Sales revenue - Invoice INV-2026-0002",
+        "lineOrder": 2
+      },
+      {
+        "id": "de7b96a0-b63f-427c-8e50-b1f59a7dca19",
+        "accountId": "3177856e-6c0b-41cd-a55d-bc15b9534481",
+        "accountName": "GST Collected on Sales",
+        "debitAmount": "0.00",
+        "creditAmount": "300.00",
+        "description": "GST on Invoice INV-2026-0002",
+        "lineOrder": 3
+      }
+    ],
+    "debitTotal": "2300.00",
+    "creditTotal": "2300.00",
+    "status": "posted",
+    "notes": "Invoice INV-2026-0002",
+    "createdAt": "2026-11-06T19:59:39.000Z",
+    "updatedAt": "2026-11-06T19:59:39.000Z"
+  }
+}

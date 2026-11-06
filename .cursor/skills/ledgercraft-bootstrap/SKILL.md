@@ -5,6 +5,13 @@ description: Start-here operating instructions for LedgerCraft reconstruction. U
 
 # LedgerCraft bootstrap
 
+The current accountant follow-up protects completed bank-statement cutoffs and
+bank/chart financial identity. Reconciliation declarations cannot substitute for
+posted books; historical invalid declarations surface web/Expo warnings. Journal
+responses include complete lines/totals and web exports actual CSV. These are
+bank cutoffs, not a company-wide accounting-period lock. Verification and review
+are recorded in `docs/evidence/accountant-followup/README.md`.
+
 Read this before writing code. Then follow the named skill for the wave you are on.
 
 Web quality checks require zero errors: `pnpm lint`, followed by explicit

@@ -18,24 +18,26 @@ export async function reconciliationSummaryInTx(tx: Database, organisationId: st
   if (!account) throw new HTTPException(404, { message: 'Bank account not found' });
   await assertSupportedStatementBank(tx, organisationId, account.currency);
   const closing = await bankLedgerBalance(tx, organisationId, account.id, session.statementEndDate);
-  const adjustments = await repo.listAdjustments(tx, organisationId, session.id);
-  // Preserve completion's adjustment semantics: pending/applied adjustments are
-  // declared statement facts. This endpoint does not post or change their state.
-  const outstandingDeposits = adjustments.filter(row => row.adjustmentType === 'deposit_in_transit');
-  const outstandingChecks = adjustments.filter(row => row.adjustmentType === 'outstanding_check');
-  const otherAdjustments = adjustments.filter(row => row.adjustmentType !== 'deposit_in_transit' && row.adjustmentType !== 'outstanding_check');
+  const adjustments = (await repo.listAdjustments(tx, organisationId, session.id)).filter(row => row.status !== 'reversed');
+  // These declarations reconcile the bank statement; they never post books.
+  const supported = adjustments.filter(row => row.affectsBank && !row.affectsBook
+    && ['deposit_in_transit', 'outstanding_check', 'bank_error'].includes(row.adjustmentType)
+    && /^-?\d+(?:\.\d{1,2})?$/.test(row.amount) && decimal(row.amount).compare(0) !== 0
+    && (row.adjustmentType === 'bank_error' || decimal(row.amount).compare(0) > 0));
+  const outstandingDeposits = supported.filter(row => row.adjustmentType === 'deposit_in_transit');
+  const outstandingChecks = supported.filter(row => row.adjustmentType === 'outstanding_check');
+  const otherAdjustments = supported.filter(row => row.adjustmentType === 'bank_error');
   const deposits = outstandingDeposits.reduce((sum, row) => sum.add(row.amount), decimal(0));
   const checks = outstandingChecks.reduce((sum, row) => sum.add(row.amount), decimal(0));
-  const other = otherAdjustments.reduce((sum, row) => {
-    if (row.affectsBank) return sum.add(row.amount);
-    if (row.affectsBook) return sum.sub(row.amount);
-    return sum;
-  }, decimal(0));
+  const other = supported.filter(row => row.adjustmentType === 'bank_error')
+    .reduce((sum, row) => sum.add(row.amount), decimal(0));
+  const warnings = supported.length !== adjustments.length
+    ? ['Unposted book adjustments and invalid statement declarations are excluded. Record the actual bank transaction or posted journal before completing this statement; historical declarations remain available for review.'] : [];
   // Metadata opening is only a fallback without ledger history; never add it
   // again to opening capital which has already been posted to this bank.
   const bookBalance = closing.hasEntries ? closing.balance : account.openingBalance;
-  const adjustedBankBalance = roundMoney(decimal(session.statementClosingBalance).add(deposits).sub(checks));
-  const adjustedBookBalance = roundMoney(decimal(bookBalance).add(other));
+  const adjustedBankBalance = roundMoney(decimal(session.statementClosingBalance).add(deposits).sub(checks).add(other));
+  const adjustedBookBalance = roundMoney(bookBalance);
   const finalDifference = roundMoney(decimal(adjustedBankBalance).sub(adjustedBookBalance));
   return reconciliationSummarySchema.parse({
     session, bankAccountName: account.accountName, bankName: account.bankName,
@@ -43,6 +45,6 @@ export async function reconciliationSummaryInTx(tx: Database, organisationId: st
     bookBalance: roundMoney(bookBalance), adjustedBookBalance,
     outstandingDeposits, outstandingChecks, otherAdjustments,
     totalOutstandingDeposits: roundMoney(deposits), totalOutstandingChecks: roundMoney(checks), totalOtherAdjustments: roundMoney(other),
-    finalDifference, isReconciled: moneyToCents(finalDifference) === 0n,
+    finalDifference, isReconciled: moneyToCents(finalDifference) === 0n, warnings,
   });
 }
