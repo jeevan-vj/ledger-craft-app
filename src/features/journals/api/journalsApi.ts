@@ -37,6 +37,9 @@ export type JournalEntryRow = {
   creditAccountId: string;
   creditAccountName: string;
   creditAmount: number;
+  lines?: JournalEntryDto['lines'];
+  debitTotal?: string;
+  creditTotal?: string;
   status: JournalEntryDto['status'];
   notes: string | null;
   createdAt: string;
@@ -58,6 +61,9 @@ function toRow(dto: JournalEntryDto): JournalEntryRow {
     creditAccountId: dto.creditAccountId,
     creditAccountName: dto.creditAccountName,
     creditAmount: Number(dto.creditAmount),
+    lines: dto.lines,
+    debitTotal: dto.debitTotal,
+    creditTotal: dto.creditTotal,
     status: dto.status,
     notes: dto.notes,
     createdAt: dto.createdAt,

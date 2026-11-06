@@ -15,24 +15,25 @@ async function mapEntry(tx: Database, entry: typeof journalEntries.$inferSelect)
     .orderBy(journalEntryLines.lineOrder);
   const debitLine = lines.find((line) => decimal(line.debitAmount).compare(0) > 0) ?? lines[0];
   const creditLine = lines.find((line) => decimal(line.creditAmount).compare(0) > 0) ?? lines[1] ?? lines[0];
-  const [debitAccount] = debitLine
-    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(and(eq(accounts.id, debitLine.accountId), eq(accounts.organisationId, entry.organisationId)))
-    : [];
-  const [creditAccount] = creditLine
-    ? await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(and(eq(accounts.id, creditLine.accountId), eq(accounts.organisationId, entry.organisationId)))
-    : [];
+  const companyAccounts = await tx.select({ id: accounts.id, name: accounts.name }).from(accounts).where(eq(accounts.organisationId, entry.organisationId));
+  const names = new Map(companyAccounts.map(account => [account.id, account.name]));
+  const debitTotal = roundMoney(lines.reduce((sum, line) => sum.add(line.debitAmount), decimal(0)));
+  const creditTotal = roundMoney(lines.reduce((sum, line) => sum.add(line.creditAmount), decimal(0)));
   return journalEntrySchema.parse({
     id: entry.id,
     entryNumber: entry.entryNumber,
     entryDate: entry.entryDate,
     description: entry.description,
     referenceNumber: entry.referenceType === 'manual' ? (entry.referenceId ?? null) : null,
-    debitAccountId: debitLine?.accountId ?? debitAccount?.id,
-    debitAccountName: debitAccount?.name ?? 'Unknown Account',
+    debitAccountId: debitLine?.accountId,
+    debitAccountName: names.get(debitLine?.accountId ?? '') ?? 'Unknown Account',
     debitAmount: roundMoney(debitLine?.debitAmount ?? 0),
-    creditAccountId: creditLine?.accountId ?? creditAccount?.id ?? debitLine?.accountId,
-    creditAccountName: creditAccount?.name ?? 'Unknown Account',
+    creditAccountId: creditLine?.accountId ?? debitLine?.accountId,
+    creditAccountName: names.get(creditLine?.accountId ?? '') ?? 'Unknown Account',
     creditAmount: roundMoney(creditLine?.creditAmount ?? 0),
+    lines: lines.map(line => ({ id: line.id, accountId: line.accountId, accountName: names.get(line.accountId) ?? 'Unknown Account', debitAmount: roundMoney(line.debitAmount), creditAmount: roundMoney(line.creditAmount), description: line.description, lineOrder: line.lineOrder })),
+    debitTotal,
+    creditTotal,
     status: entry.status,
     notes: debitLine?.description ?? creditLine?.description ?? null,
     createdAt: entry.createdAt.toISOString(),

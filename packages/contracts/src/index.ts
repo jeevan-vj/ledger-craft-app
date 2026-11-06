@@ -535,9 +535,11 @@ export {
   createJournalEntryRequestSchema,
   journalEntryListResponseSchema,
   journalEntrySchema,
+  journalEntryLineSchema,
   updateJournalEntryRequestSchema,
   type CreateJournalEntryRequest,
   type JournalEntryDto,
+  type JournalEntryLineDto,
   type JournalEntryListResponse,
   type UpdateJournalEntryRequest,
 } from './journal';

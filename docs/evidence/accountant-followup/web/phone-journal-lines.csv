@@ -1,0 +1,4 @@
+Entry,Date,Description,Reference,Account,Debit,Credit,Status
+JE-2026-001,2026-11-06,Expense - BILL-0001,,Contracting cost,1000.00,0.00,posted
+JE-2026-001,2026-11-06,GST - BILL-0001,,GST Paid on Purchases,150.00,0.00,posted
+JE-2026-001,2026-11-06,Accounts payable - BILL-0001,,Accounts Payable,0.00,1150.00,posted

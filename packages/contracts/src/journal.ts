@@ -3,6 +3,16 @@ import { z } from 'zod';
 const money = z.string().regex(/^\d+(\.\d+)?$/);
 const journalStatus = z.enum(['draft', 'posted', 'reversed']);
 
+export const journalEntryLineSchema = z.object({
+  id: z.string().uuid(),
+  accountId: z.string().uuid(),
+  accountName: z.string().min(1),
+  debitAmount: money,
+  creditAmount: money,
+  description: z.string().nullable(),
+  lineOrder: z.number().int(),
+});
+
 export const journalEntrySchema = z.object({
   id: z.string().uuid(),
   entryNumber: z.string().min(1),
@@ -15,6 +25,11 @@ export const journalEntrySchema = z.object({
   creditAccountId: z.string().uuid(),
   creditAccountName: z.string().min(1),
   creditAmount: money,
+  // Optional so older clients/fixtures keep their two-account presentation.
+  // Current API responses include every line and separate journal totals.
+  lines: z.array(journalEntryLineSchema).optional(),
+  debitTotal: money.optional(),
+  creditTotal: money.optional(),
   status: journalStatus,
   notes: z.string().nullable(),
   createdAt: z.string().min(1),
@@ -54,6 +69,7 @@ export const updateJournalEntryRequestSchema = z
   .strict();
 
 export type JournalEntryDto = z.infer<typeof journalEntrySchema>;
+export type JournalEntryLineDto = z.infer<typeof journalEntryLineSchema>;
 export type JournalEntryListResponse = z.infer<typeof journalEntryListResponseSchema>;
 export type CreateJournalEntryRequest = z.infer<typeof createJournalEntryRequestSchema>;
 export type UpdateJournalEntryRequest = z.infer<typeof updateJournalEntryRequestSchema>;

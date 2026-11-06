@@ -1,5 +1,13 @@
 # LedgerCraft target architecture
 
+**Accountant follow-up (implemented locally, 2026-11-06):** Completed bank
+statement cutoffs protect posted cash, bank metadata and linked chart identity.
+Only supported bank-side declarations affect reconciliation; books remain the
+posted ledger. Legacy unsupported declarations surface review warnings. Journal
+DTOs include all lines and exact debit/credit totals, and web journal exports
+write real CSV rows. This does not add an organisation-wide fiscal-period lock.
+Expected/actual evidence and review: `docs/evidence/accountant-followup/README.md`.
+
 **Business accounting completion (implemented locally, 2026-11-06):**
 Web and Expo prepare invoice- or payments-basis NZD GST from company-scoped
 posted records. The reference books give GST of NZ$135 on invoice basis and NZ$141 on

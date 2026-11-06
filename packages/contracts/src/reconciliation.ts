@@ -133,6 +133,7 @@ export const reconciliationSummarySchema = z.object({
   totalOutstandingDeposits: canonicalMoney, totalOutstandingChecks: canonicalMoney,
   totalOtherAdjustments: canonicalMoney, finalDifference: canonicalMoney,
   isReconciled: z.boolean(),
+  warnings: z.array(z.string()).optional(),
 }).strict();
 
 export const createReconciliationAdjustmentRequestSchema = z

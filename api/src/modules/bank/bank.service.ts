@@ -20,6 +20,7 @@ import {
   type UpdateBankTransactionRequest,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
+import { closedBankStatements } from '../accounting/bank-close.repository';
 import type { Database } from '../../db/client';
 import { csvCell } from '../../lib/csv';
 import { withOrganisationTx } from '../auth/bind-organisation';
@@ -100,6 +101,14 @@ export async function updateBankAccountForUser(
   input: UpdateBankAccountRequest,
 ): Promise<BankAccountDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    const current = await repo.getAccount(tx, ctx.organisationId, id);
+    if (!current) throw new HTTPException(404, { message: 'Bank account not found' });
+    const financialChange = (input.currency !== undefined && input.currency !== current.currency)
+      || (input.openingBalance !== undefined && decimal(input.openingBalance).compare(current.openingBalance) !== 0)
+      || (input.currentBalance !== undefined && decimal(input.currentBalance).compare(current.currentBalance) !== 0);
+    if (financialChange && (await closedBankStatements(tx, ctx.organisationId)).some(row => row.bankAccountId === id)) {
+      throw new HTTPException(409, { message: 'Completed bank statement balances and currency cannot be changed' });
+    }
     const account = await repo.updateAccount(tx, ctx.organisationId, id, input);
     if (!account) throw new HTTPException(404, { message: 'Bank account not found' });
     return account;
@@ -108,6 +117,9 @@ export async function updateBankAccountForUser(
 
 export async function deleteBankAccountForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if ((await closedBankStatements(tx, ctx.organisationId)).some(row => row.bankAccountId === id)) {
+      throw new HTTPException(409, { message: 'A bank account with completed statements cannot be deleted; deactivate it instead' });
+    }
     const deleted = await repo.deleteAccount(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Bank account not found' });
   });

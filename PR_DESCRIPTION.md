@@ -1,31 +1,38 @@
-## Business accounting flow and reviewed corrections
+# Protect completed bank statements and show complete journal postings
 
-Complete the supported business flow across web and Expo: company setup, invoices and receipts, approved expenses and supplier payments, ledger-backed reports, GST preparation and an explicitly confirmed NZ-company tax worksheet. Existing supplier-payment matching preserves the original payment. Reviewed opening balances and historical corrections add balanced journals without rewriting source records.
+Reconciliation declarations could make an unposted bank fee look like a book entry, and completed statements could still be changed through adjustments, backdated cash/manual journals, bank metadata or linked chart-account edits. Only valid bank-side timing differences and signed bank errors now adjust statements. Books remain the posted ledger, unsupported historical declarations surface review warnings, and completed bank cash cutoffs reject later changes. Names can still be corrected. No migration or original journal is rewritten.
 
-Add posted credit notes, customer credit/refund accounting, reviewed foreign-document settlements to NZD banks, period-end AR/AP revaluation with next-day reversals, and historical ledger-based ageing. Lost-response recovery retains operation identities across invoice/bill payments, credits and refunds. Reports now preserve negative debit/credit sides, avoid doubled opening capital and disclose unallocated control-account balances instead of inventing customer documents. Invoice email changes require provider acceptance and preserve drafts when delivery cannot be acknowledged.
+Journal responses previously exposed only the first debit and credit, hiding GST on three-line journals. The API now includes every line and exact totals; web journal views and real spreadsheet-safe CSV downloads retain all postings. Legacy fields remain compatible.
 
-Remove existing raw web lint/TypeScript errors and make those checks mandatory in CI/release without error budgets. Deployment triggers and production resources are unchanged.
+## Expected versus actual
 
-## Verification
+A separate synthetic company posts capital10,000; sales2,000+GST300 and a zero-rated sale500; receipt1,150; supplier bill1,000+GST150 with575 paid; expense200+GST30; and credit200+GST30. Both independent working paper and real Hono/SQLite report profit1,100, cash10,345, receivables1,420, payables575, invoice GST90 and payments GST45. November settlements and reversals preserve October reports and original journal lines. All13 journals balance individually.
 
-- API:97 suites/453 tests passed, no skips. Contracts:34 suites/139 tests passed; strict API/contracts TypeScript clean.
-- Web:142 suites/786 tests passed; raw lint0 errors/119 warnings; app and Node TypeScript clean. Latest production build0.0.8 hash59b37a1ff3e4 passed after the browser-discovered manual-match status fix; repeated web tests/lint/types pass.
-- Mobile:115 suites/549 tests passed, strict TypeScript clean; lint0 errors/74 warnings (root mobile check0 errors/15 warnings); iOS/Android/web exports passed.
-- Final Expo browser groups exited0 with no browser errors. Evidence includes27 primary screenshots and14 credit/FX screenshots. Web lost-response recovery passed5 cases with13 screenshots; web credit browser passed, with5 screenshots/results copied. Web FX browser passed desktop AR/phone AP160→170→160→settlement165 with gain/loss5 and zero errors; six screenshots/results are copied. Main web browser passed against59b37a1ff3e4 with13 screenshots,2 PDFs, no browser errors and confirmed statement completion without changing cash6,031/profit850/GST135. Mobile primary proof includes the final authoritative statement panel; credit/FX and recovery proofs predate unrelated later changes. No common browser build hash is claimed. All293 local web source files match the final build sourcemaps exactly.
-- Exact CI readiness group:23 tests passed; separate web sourcemap check passed. Worker/Pages Wrangler dry runs exited0; nothing deployed.
+Desktop and phone browser checks show statement0.14 minus a signed bank correction0.04 equals posted books0.10, difference0, then actual UI completion0.10. A historical unposted fee instead leaves books0/statement−10/difference−10; Expo displays the warning, sends no completion request and the API rejects completion400. Journal browser/CSV checks retain expense1,000 + GST150 against payable1,150.
 
-See [expected versus actual accounting evidence](docs/evidence/accounting-completion/README.md). Counts represent separate executions and must not be added together.
+## Verification evidence
 
-Browser verification exposed and fixed manual-match status omission and a
-reconciliation completion deadlock. Matching now explicitly confirms the action;
-an authoritative posted-ledger summary provides the closing balance before
-completion. Final full API, contracts, web and mobile gates pass after these
-changes. No production resources were changed.
+| Job / command | Node | Result |
+| --- | --- | --- |
+| `pnpm lint` |22.23.4 |Exit0;0 errors/119 warnings |
+| `pnpm type-check` (app + Node) |22.23.4 |Exit0;0 errors |
+| `pnpm test:run` |22.23.4 |Exit0;146 suites/793 tests passed |
+| `pnpm build` |22.23.4 |Exit0; postbuild verifies0.0.8/build62ec9ab8d0fe |
+| `pnpm test:api` |24.22.1 |Exit0;101 suites/467 tests passed, no skips |
+| `pnpm test:contracts` |24.22.1 |Exit0;35 suites/141 tests passed |
+| `pnpm type-check:api` |24.22.1 |Exit0; API/contracts types clean |
+| Exact CI readiness group + web sourcemap checker |22.23.4 |Exit0;23+1 tests passed |
+| `verify-akaunting-core.mjs --report` |22.23.4 |Exit0; report generation does not establish full parity |
+| Mobile lint / TypeScript / Jest |20.20.2 |Exit0;0 errors/74 warnings;115 suites/551 tests passed |
+| Mobile `expo export --platform ios` |20.20.2 |Exit0; existing Jest teardown warning noted; no forceExit flag |
+| Worker `wrangler deploy --dry-run` |24.22.1 |Exit0; nothing deployed |
 
-## Boundaries and review risks
+[Each fix, raw expected/actual books and screenshots](docs/evidence/accountant-followup/README.md). [Independent local review](docs/evidence/accountant-followup/REVIEW.md). Screenshots are actual Chromium desktop1440×900 and phone390×844, including Expo web; they are not native-device captures.
 
-Native iOS/Android devices were unavailable; Expo browser and bundle exports do not establish native keyboard/device behavior. Live inbox delivery is unverified because provider credentials/network access are unavailable; local HTTP/provider acceptance has14 passing tests. No production ledger audit/corrections, deployment, IRD filing or current-law certification occurred.
+## Risk and rollback
 
-Foreign source documents support NZD bank settlement and AR/AP revaluation; native foreign-bank writes return422. Unverified historical FX requires review. Credit notes support standard/zero-rated/proportional allocation; non-proportional mixed-tax allocation needs a manual workflow. Company income tax is a reviewed worksheet, not full IR4 or loss/credit eligibility certification. Manual control journals without document attribution remain explicitly unallocated. The Akaunting catalogue report is not full parity:6/25 available,17 partial,2 missing.
+Risk: **high** (accounting, cash posting, contracts); CODEOWNERS includes `api/src/modules/purchases/purchases.journal.ts`. Human review is required; no auto-merge eligibility or approval is claimed. Labels have not been applied because GitHub API access is forbidden. Revert this follow-up commit to roll back; no migrations changed.
 
-This is a local PR description prepared on `codex/business-accounting-e2e`. Git fetch succeeded and origin/main remains base599b622. GitHub GraphQL and REST API access both return Forbidden, so PR creation is blocked despite working Git transport; no PR creation is claimed.
+These are bank-statement cutoffs, not an organisation-wide fiscal/GST period-lock calendar or legal tax certification. Zero-rating eligibility is a synthetic-case assumption. Native iOS/Android, real inbox delivery, IRD acceptance and production-data audit remain unverified. No deployment, production correction or filing occurred.
+
+Base: origin/main7ebbab0 (PR158 already merged). Follow-up branch: codex/accountant-close-followup. Remote PR/CI status cannot be verified here: GitHub GraphQL API access returns Forbidden. All results above are actual local checks, not claims of remote CI completion.

@@ -15,6 +15,9 @@ import { format, startOfMonth, endOfMonth, startOfQuarter, endOfQuarter, startOf
 import { useAuth } from "@/context/StableAuthContext";
 import { supabaseDataService, type JournalAccountOption } from '@/services/supabaseDataService';
 import { PageHeader } from '@/components/layout/PageHeader';
+import { JournalPostingLines } from '@/components/journals/JournalPostingLines';
+import { journalDebitTotal, journalEntriesCsv, journalPostingLines } from '@/features/journals/journalPresentation';
+import { decimal, moneyToCents, roundMoney } from '../../api/src/modules/invoices/money';
 
 interface JournalEntryFormData {
   description: string;
@@ -137,7 +140,8 @@ export default function JournalEntriesPage() {
         entry.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.referenceNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
         entry.debitAccountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        entry.creditAccountName.toLowerCase().includes(searchTerm.toLowerCase())
+        entry.creditAccountName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        entry.lines?.some(line => line.accountName.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -223,8 +227,10 @@ export default function JournalEntriesPage() {
 
   const handleExportEntries = async () => {
     try {
-      // Simulate export
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const blob = new Blob([journalEntriesCsv(filteredEntries)], { type: 'text/csv;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url; link.download = 'journal-entries.csv'; link.click(); URL.revokeObjectURL(url);
       toast({
         title: "Success",
         description: "Journal entries exported successfully"
@@ -283,7 +289,7 @@ export default function JournalEntriesPage() {
   const totalEntries = filteredEntries.length;
   const draftEntries = filteredEntries.filter(e => e.status === 'draft').length;
   const postedEntries = filteredEntries.filter(e => e.status === 'posted').length;
-  const totalAmount = filteredEntries.reduce((sum, e) => sum + e.debitAmount, 0);
+  const totalAmount = roundMoney(filteredEntries.reduce((sum, entry) => sum.add(journalDebitTotal(entry)), decimal(0)));
 
   return (
     <div className="space-y-6">
@@ -372,8 +378,8 @@ export default function JournalEntriesPage() {
                 <Download className="h-5 w-5 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Amount</p>
-                <p className="text-2xl font-bold">${totalAmount.toLocaleString()}</p>
+                <p className="text-sm text-muted-foreground">Journal debit total</p>
+                <p className="text-2xl font-bold">${totalAmount}</p>
               </div>
             </div>
           </CardContent>
@@ -462,26 +468,20 @@ export default function JournalEntriesPage() {
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{entry.debitAccountName}</p>
-                        <p className="text-sm text-muted-foreground">
-                          ${entry.debitAmount.toFixed(2)}
-                        </p>
+                        {journalPostingLines(entry).filter(line => moneyToCents(line.debitAmount) > 0n).map(line => <div key={line.id}><p className="font-medium">{line.accountName}</p><p className="text-sm text-muted-foreground">${line.debitAmount}</p></div>)}
                       </div>
                     </TableCell>
                     <TableCell>
                       <div>
-                        <p className="font-medium">{entry.creditAccountName}</p>
-                        <p className="text-sm text-muted-foreground">
-                          ${entry.creditAmount.toFixed(2)}
-                        </p>
+                        {journalPostingLines(entry).filter(line => moneyToCents(line.creditAmount) > 0n).map(line => <div key={line.id}><p className="font-medium">{line.accountName}</p><p className="text-sm text-muted-foreground">${line.creditAmount}</p></div>)}
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
-                      ${entry.debitAmount.toFixed(2)}
+                      ${journalDebitTotal(entry)}
                     </TableCell>
                     <TableCell>
                       <Badge variant={entry.status === 'posted' ? "default" : "secondary"}>
-                        {entry.status === 'posted' ? 'Posted' : 'Draft'}
+                        {entry.status === 'posted' ? 'Posted' : entry.status === 'reversed' ? 'Reversed' : 'Draft'}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right">
@@ -489,6 +489,7 @@ export default function JournalEntriesPage() {
                         <Button
                           variant="ghost"
                           size="sm"
+                          aria-label={`View journal ${entry.entryNumber}`}
                           onClick={() => {
                             setSelectedEntry(entry);
                             setShowViewDialog(true);
@@ -569,16 +570,7 @@ export default function JournalEntriesPage() {
               
               <div className="border rounded-lg p-4">
                 <h4 className="font-medium mb-3">Journal Entry</h4>
-                <div className="space-y-2">
-                  <div className="flex justify-between">
-                    <span>Debit: {selectedEntry.debitAccountName}</span>
-                    <span className="font-medium">${selectedEntry.debitAmount.toFixed(2)}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>Credit: {selectedEntry.creditAccountName}</span>
-                    <span className="font-medium">${selectedEntry.creditAmount.toFixed(2)}</span>
-                  </div>
-                </div>
+                <JournalPostingLines entry={selectedEntry} />
               </div>
               
               {selectedEntry.notes && (

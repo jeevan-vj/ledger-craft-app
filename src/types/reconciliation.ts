@@ -308,6 +308,7 @@ export interface ReconciliationSummary {
   // Final difference
   finalDifference: number;
   isReconciled: boolean;
+  warnings?: string[];
 }
 
 // For the transactions list in reconciliation

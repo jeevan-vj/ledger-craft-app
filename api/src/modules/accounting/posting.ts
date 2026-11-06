@@ -3,9 +3,21 @@ import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { accounts, journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { decimal, roundMoney } from '../invoices/money';
+import { apiError } from '../../http-error';
+import { postingTouchesClosedBank } from './bank-close.repository';
 
 export type PostingContext = { organisationId: string; userId: string };
 export type PostingLine = { accountId: string; description: string; debit: string; credit: string };
+
+export async function assertOpenBankPostingDate(tx: Database, organisationId: string, date: string, accountIds: string[]) {
+  const parsed = new Date(`${date}T00:00:00Z`);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
+    throw apiError(422, 'INVALID_POSTING_DATE', 'Choose a valid posting date in YYYY-MM-DD format.');
+  }
+  if (await postingTouchesClosedBank(tx, organisationId, date, accountIds)) {
+    throw apiError(409, 'BANK_STATEMENT_CLOSED', 'This posting would change a completed bank statement. Use a date after the completed statement cutoff.');
+  }
+}
 
 const SYSTEM_ACCOUNTS: Record<string, { name: string; type: string; accountClass: string; normalBalance: string }> = {
   '1110': { name: 'Bank Account - Current', type: 'bank', accountClass: 'asset', normalBalance: 'debit' },
@@ -40,6 +52,7 @@ export async function bankLedgerAccount(tx: Database, ctx: PostingContext, bankA
 export async function postBalancedEntry(tx: Database, ctx: PostingContext, input: { date: string; description: string; referenceType: string; referenceId: string; lines: PostingLine[] }) {
   const [existing] = await tx.select({ id: journalEntries.id }).from(journalEntries).where(and(eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.referenceType, input.referenceType), eq(journalEntries.referenceId, input.referenceId), eq(journalEntries.status, 'posted')));
   if (existing) return existing.id;
+  await assertOpenBankPostingDate(tx, ctx.organisationId, input.date, input.lines.map(line => line.accountId));
   const debit = input.lines.reduce((sum, line) => sum.add(line.debit), decimal(0));
   const credit = input.lines.reduce((sum, line) => sum.add(line.credit), decimal(0));
   if (debit.compare(credit) !== 0 || debit.compare(0) <= 0) throw new HTTPException(500, { message: 'Journal entry is not balanced' });

@@ -22,6 +22,7 @@ import * as repo from './reconciliation.repository';
 import { assertSupportedStatementBank } from '../currency/currency.service';
 import { existingPostingRetry, matchExistingPosting } from './existing-posting';
 import { bankLedgerBalance } from './existing-posting.repository';
+import { decimal } from '../invoices/money';
 
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
@@ -183,6 +184,13 @@ export async function createAdjustmentForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
+    if (session.status !== 'in_progress') throw apiError(409, 'BANK_STATEMENT_CLOSED', 'Completed or locked statements cannot be changed');
+    if (!['deposit_in_transit', 'outstanding_check', 'bank_error'].includes(input.adjustmentType) || input.affectsBook || !input.affectsBank) {
+      throw apiError(422, 'BOOK_POSTING_REQUIRED', 'Record bank fees, interest and book corrections as actual bank transactions or posted journals first. This form records bank-side timing differences and bank errors only.');
+    }
+    if (!/^-?\d+(?:\.\d{1,2})?$/.test(input.amount) || decimal(input.amount).compare(0) === 0 || (input.adjustmentType !== 'bank_error' && decimal(input.amount).compare(0) < 0)) {
+      throw apiError(422, 'INVALID_ADJUSTMENT_AMOUNT', 'Use a non-zero amount with at most two decimal places; timing items must be positive.');
+    }
     return repo.insertAdjustment(tx, ctx, sessionId, input);
   });
 }

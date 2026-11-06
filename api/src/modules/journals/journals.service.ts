@@ -14,6 +14,7 @@ import { nextJournalEntryNumber } from '../accounting/entry-number';
 import { roundMoney } from '../invoices/money';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 import * as repo from './journals.repository';
+import { assertOpenBankPostingDate } from '../accounting/posting';
 
 export async function listJournalEntriesForUser(db: Database, userId: string): Promise<JournalEntryListResponse> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
@@ -72,6 +73,9 @@ export async function updateJournalEntryForUser(
     }
     if (current.status !== 'draft' && input.status !== current.status) {
       throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
+    }
+    if (current.status === 'draft' && input.status === 'posted') {
+      await assertOpenBankPostingDate(tx, ctx.organisationId, current.entryDate, [current.debitAccountId, current.creditAccountId]);
     }
     const updated = await repo.updateJournalEntry(tx, ctx.organisationId, id, input);
     if (!updated) throw new HTTPException(404, { message: 'Journal entry not found' });

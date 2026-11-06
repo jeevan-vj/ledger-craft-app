@@ -26,12 +26,14 @@ import {
 
 import { ReconciliationSummary } from '@/types/reconciliation';
 import { csvRow } from '@/lib/csv';
+import { ReconciliationWarnings } from './ReconciliationWarnings';
 
 interface ReconciliationReportProps {
   summary: ReconciliationSummary;
 }
 
 export function ReconciliationReport({ summary }: ReconciliationReportProps) {
+  const bankCorrections = summary.otherAdjustments.filter(adjustment => adjustment.adjustmentType === 'bank_error' && adjustment.affectsBank && !adjustment.affectsBook && adjustment.status !== 'reversed');
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-NZ', {
       style: 'currency',
@@ -77,17 +79,17 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
       });
     }
 
+    if (bankCorrections.length) {
+      lines.push('Bank Statement Corrections');
+      bankCorrections.forEach(item => lines.push(csvRow([item.description, item.amount])));
+    }
     lines.push(csvRow(['Adjusted Bank Balance', summary.adjustedBankBalance]));
     lines.push('');
     lines.push('BOOK SIDE');
     lines.push(csvRow(['Book Balance', summary.bookBalance]));
     
-    if (summary.otherAdjustments.length > 0) {
-      lines.push('Adjustments');
-      summary.otherAdjustments.forEach(a => {
-        lines.push(csvRow([`  ${a.description}`, a.affectsBook ? a.amount : -a.amount]));
-      });
-    }
+    lines.push('Book balances include posted journals only');
+    for (const warning of summary.warnings ?? []) lines.push(csvRow(['Review warning', warning]));
 
     lines.push(csvRow(['Adjusted Book Balance', summary.adjustedBookBalance]));
     lines.push('');
@@ -106,6 +108,7 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
 
   return (
     <div className="space-y-6">
+      <ReconciliationWarnings warnings={summary.warnings} />
       {/* Header Card */}
       <Card>
         <CardHeader>
@@ -143,7 +146,7 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
       </Card>
 
       {/* Main Report */}
-      <div className="grid grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {/* Bank Side */}
         <Card>
           <CardHeader className="bg-blue-50 border-b">
@@ -200,6 +203,8 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
 
             <Separator />
 
+            {bankCorrections.length > 0 && <div className="space-y-2"><p className="text-sm font-medium">Bank Statement Corrections</p>{bankCorrections.map(item => <div key={item.id} className="flex justify-between gap-4 text-sm"><span>{item.description}</span><span>{formatCurrency(item.amount)}</span></div>)}</div>}
+
             {/* Adjusted Bank Balance */}
             <div className="flex justify-between items-center pt-2">
               <span className="text-lg font-bold">Adjusted Bank Balance</span>
@@ -224,33 +229,7 @@ export function ReconciliationReport({ summary }: ReconciliationReportProps) {
 
             <Separator />
 
-            {/* Other Adjustments */}
-            {summary.otherAdjustments.length > 0 ? (
-              <div className="space-y-2">
-                <p className="text-sm font-medium">Adjustments Required</p>
-                {summary.otherAdjustments.map(adj => (
-                  <div key={adj.id} className="flex justify-between items-center text-sm pl-4">
-                    <span className="text-muted-foreground">
-                      {adj.description}
-                      <Badge variant="outline" className="ml-2 text-xs capitalize">
-                        {adj.adjustmentType.replace('_', ' ')}
-                      </Badge>
-                    </span>
-                    <span className={adj.affectsBook ? 'text-green-600' : 'text-red-600'}>
-                      {adj.affectsBook ? '+' : '-'}{formatCurrency(adj.amount)}
-                    </span>
-                  </div>
-                ))}
-                <div className="flex justify-between items-center pl-4 font-medium">
-                  <span>Total Adjustments</span>
-                  <span>{formatCurrency(summary.totalOtherAdjustments)}</span>
-                </div>
-              </div>
-            ) : (
-              <div className="py-4 text-center text-sm text-muted-foreground">
-                No book adjustments required
-              </div>
-            )}
+            <p className="py-4 text-sm text-muted-foreground">Book balances include posted journals only. Record missing transactions in the books before reconciliation.</p>
 
             <Separator />
 
