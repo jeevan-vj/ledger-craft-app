@@ -1,0 +1,1271 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_90db6e52-0d18-4527-8629-7d70b989cbe3","route":"/api/auth/*","method":"POST","status":200,"durationMs":119}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_adb3618f-65ff-47ee-ad6e-9d7c848902d3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d3089d04-2c98-49e8-a430-5a7c35e5cf44","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a29e9eff-73b8-479a-865a-18b127ddd25b","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a514a31a-42df-4b3b-bf9c-fbd843fa3fdc","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c5efe7e9-3847-43fd-936e-1bcdf3c59877","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_30d6de51-4b22-41ba-9dcd-bfcaa352ac50","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_797da422-7ea4-43f8-8676-36f25f404e82","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_40ef5c44-0ed5-4e21-a281-0a2413ee87ed","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_cc9d88dc-6a09-487c-81e9-caa5533f5e56","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0e1e1e06-d2ae-45ed-99c2-20a75c203988","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_275dd360-cc86-4b6e-ad44-f1a92f865ed5","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_47d16b44-84c8-46bc-b0a7-19ddc2c1c4ce","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bf89f4f9-ceaf-483b-9d2a-295b946b979a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":23}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_2eccef98-aece-47e2-8f91-c202f5060e7c","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c8210032-449a-49bb-aa18-bfa4cb1b5ff0","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c0fba23e-6272-4400-a557-3926e586145d","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c79a6471-09b0-4238-9473-efc33980d526","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_19e46376-e072-48df-aa49-b8703c13aeaf","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_ad046548-ebf1-402a-a644-176682306062","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_173a9eda-94a0-4127-8453-afde2a6fa01c","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c4e4f419-946d-4563-b4db-b48c1d4cbbd0","route":"/api/credit-notes","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4890d1b3-4b97-4dac-9cde-2239d6f23be4","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7ab19b98-0e5d-49a5-8724-226b1d7def88","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_80b4afb2-0b92-41db-babc-89d45f751e05","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bdd9a668-00ab-4d90-8ce9-5b4e68bf12f9","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c702e927-e3fa-45b7-9340-e759f3eaa221","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bee689ba-ac3d-46da-ad31-4eb2b00bffc3","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_960fc2d8-9da1-4ce6-b29b-be01a318ad0a","route":"/api/book-entries","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a7b22621-0cb8-429a-85f3-9e977978af65","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8e69ce66-2327-4707-b739-8ca7526ee9bc","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7588c018-2291-4b80-b554-1b41f945f6ec","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_1e6d4e1b-68dc-411e-8b42-c8243aa75017","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5b2c151c-ae18-4985-a263-634105adedaa","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0d534860-f090-4f3d-bc7e-95413cd5e858","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_01d776a8-75de-4c79-8c22-a2a8aadcb5ad","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8df28b3c-5017-4f28-9deb-d027c0b713f2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_49fb4e33-d459-414b-8162-75380c0da134","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_284251b7-dcd2-4d7b-a701-0b437718866c","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0cfd2062-2d86-4630-9e51-c83ee413c0eb","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8d7dcdf8-6a39-42ec-ac3c-485055275d78","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_41020c0d-2689-450b-a64d-304d7c441fd1","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e9f1fe4a-549d-4845-91d9-29aabb253221","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b4e9a3f1-3932-4a39-ad26-f1922c170f49","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_685e92fa-03b0-47ff-8a0d-4514efe6bee8","route":"/api/tax-returns","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5375de22-d0af-41cf-bb48-735552a6d450","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_295d341a-afec-4988-9f2a-c2b1a6cc1621","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d4c8f987-7e42-4d16-9a83-a0d176c069c4","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c12653b2-7beb-4a1b-a2d8-9c0df1a11bf9","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_6da506a1-ae16-419b-ad0f-d8849120d4c1","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_46d3c66a-2890-452e-b5e2-e5b99cdc45f2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_1a63499c-1090-405e-8feb-594ab463e6ff","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_f936a9d1-390f-4d40-8002-5aeccc606adb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_14f93537-fc9b-4ded-9562-4e4044e276bc","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_01c16ad8-3129-44ed-877d-97abb6d6fdbf","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e9d313a4-3362-47e8-b3b9-58cfbe557bc7","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0a8e653c-046f-4d6b-a5bb-8c8a2a32e81c","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_d32b454e-1088-44d5-b54d-27f01f343ad6","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_66d637bf-cd6c-46e6-9c45-b4f0869e742e","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_29d7edfb-1e71-49a1-a4b6-594780634abf","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_fa81f91b-3643-467f-b448-bc1d20163c4b","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_525f969d-10cd-4670-b873-ffb3f9e3b585","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_2ccfa7e8-e5c0-4cc9-9862-67c2ab57cbb5","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9c8abe0c-7664-4101-84c6-a982e712bdd2","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_bc596adc-81c1-43f0-ab52-d721e957f8f2","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c4602e16-ba17-4261-9dd9-d665739db93c","route":"/api/payments","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_d80bcf74-a113-4a5c-a210-8eea4ed5b376","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_a37469c4-6282-461e-8af1-2303c70750b5","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_164744b8-9271-4b96-8b7c-6dc78c3ac897","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_6d6091b9-717e-4475-91fb-fe8ceb89c9e8","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_d0e64ba7-2d0e-41f7-9641-1c6b3044d45d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_03b0ab1c-0ae1-4db4-88e2-6056f693eb8c","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_3fb7642f-80af-48d3-8b30-6cd6f3ab11dc","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_2cce4f28-ddbe-40a6-80c8-f7eec2c71bd2","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_1bd5ce43-729a-4471-9b4f-04e345087e3a","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_81b87784-9baf-4330-bc6c-e57f6e1939db","route":"/api/book-entries","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_447e9391-f665-4938-a026-e35b582e481a","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_32bc1239-be49-4ac0-b488-c38667989398","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_f2dd89fb-8bad-4467-ba7d-6230adc25632","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_8df234b9-5721-49f7-9e56-13f06360e099","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_396c9c45-854b-4058-8264-ddf1549dbec6","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0298aa81-5c57-4782-bbc7-fe15558d64a1","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_2b5d508b-bd8b-438b-a633-a10248278d2c","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e905e4bc-ee97-42aa-936c-03c70d1650dd","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_a35e123b-b955-4580-9cc2-0739856bf403","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_4864500d-f1e8-4151-9663-024bc4191173","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_08e9bbf7-c6f2-4fde-9696-5d3bc119cadf","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_abc109ef-6b75-4f58-8584-b08718c7de6e","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_77607b2c-973b-4f0b-a32c-4197ea72e313","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":7}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_b505866e-b286-4353-bc76-11d33b32ef95","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c45a7f0c-347b-4342-b176-998cbe389e51","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_03837906-6d66-4041-bd33-b932275a1aa8","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":404,"durationMs":3}
+
+ ✓ src/modules/reports/full-month-close.e2e.test.ts (2 tests) 2636ms
+   ✓ full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft  1424ms
+   ✓ full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund  1210ms
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_a8b3a2fd-1d21-454b-b6be-e8a06f06e67a","route":"/api/auth/*","method":"POST","status":200,"durationMs":119}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_aea7c8f2-34d5-4e31-804a-df8e1c650664","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_3b4e24b9-c295-4e0b-9259-f5f1602f8947","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_65e2ffba-c395-4b48-b6fb-4eda3e094f7a","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_83d9d1ca-2adc-4d83-adb2-bc95fa1a0597","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_ecb8477e-298f-4a38-b08a-f21ac797ae24","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":19}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_e2892be3-a15d-4818-8f4d-540423c7bf70","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_cddcb429-0241-420f-9149-912379f4ead6","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_b061058b-35ed-4bb3-9cb6-0d9e388bf70b","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_b48d0b16-33bb-49fe-be79-429e0a784a28","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_fb79def8-2f13-49ca-8f8c-e53d4101d8a9","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_533c8f12-255b-4314-8fde-9d595c913b6b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_3a4ef7ab-6609-427e-bfd4-a45746a3a6eb","route":"/api/bank-transactions/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_94bec5b7-90d5-4549-83d5-d9336a791329","route":"/api/bank-transactions/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_4d4f2ea7-98b0-48f6-b856-1d75f4ed1306","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_a42f7c0f-3438-4cc0-99b2-cb4d3de1f09d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_4ff682fe-1607-444f-8043-581ff45f6544","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_ca5ab28c-0d64-42d2-b4e5-e80ab51748b6","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_ac7e1c47-d787-4e40-bb13-3df4f94675af","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_294ff76c-2f0f-4bbd-bb5c-4241e75a50b4","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_6598588f-d127-4876-bfd9-bb6e78ad7ae0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_8dc92fb4-5e93-4206-9fbd-4f1d5079ca57","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_f3981d17-4bde-4397-b38d-9ea611e4cf10","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_2f092e22-023f-4b6b-b620-8380406b609d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_09265dd9-f18d-4fd6-8be7-d7969ec352f5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_97019c86-0b75-4240-904a-af2676f5ba9b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_66e571ef-5758-4413-a0b9-b07db8c20901","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_61cf6806-83f2-4db8-b1a2-d2bf0a6be156","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_573a05c9-b721-4744-b65f-1be7f90de7ca","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_aa4ef8de-a73a-475f-869b-be8ae6b67789","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_0f66c1f7-d7a0-4ad5-a626-21831d882d32","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_53a0ab16-be5c-4102-a1cf-b317d57a5db4","route":"/api/auth/*","method":"POST","status":200,"durationMs":99}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_c6836503-132a-4d8b-b5a9-36daaa9528a8","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_0eb9af2a-9d34-4993-b253-e9eb653d567b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_a5cb10e5-bd68-4d5c-8847-7e49b7da379a","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_93c1c1d0-cedb-4c3c-a7e3-505b86957005","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_29797e55-ea35-45bd-9f6c-48c0eef4e47d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_f08b4f89-65f9-442a-b3a8-a2d437553840","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_6c88badb-2782-4e75-8ca4-013becda5494","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_0f35c9b8-84f9-40f5-93df-9c7d8dda3ec3","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_6d3dbad3-0867-4678-874f-3af9fb65daa4","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_ac0b880b-adf2-412d-9093-28ff1f98a13e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":13}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_eb2b732a-77bd-4d65-9cb2-4a0a30cb8f8c","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_3e34d5c1-06d0-4499-adf2-6786aba777f3","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_8c92378a-7d82-422b-8961-1d38ff70cf48","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_20fefe30-511a-488c-93db-3fafde6bbb34","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_7348fd8e-be68-44f1-a16c-f2c2b0603efa","route":"/api/bank-transactions/:id/accept","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_5647eab8-eab5-4b75-b3ae-e6382edba296","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_9b968b87-b077-449e-a2f6-42969468ed11","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_efbfaf37-fd29-4a8c-aa98-9600cc52e41b","route":"/api/auth/*","method":"POST","status":200,"durationMs":135}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_1cb605fe-8f26-40e3-b28f-75a44c7dbcab","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_63bd7b6a-3a5d-42d7-8a8a-14489d74a071","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_93d2b291-e91d-44a8-a73f-25571f0c4818","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_4668ae6c-5d07-4d09-a20a-647f8bb2e184","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_e446ee6c-6ec7-4493-b4f9-fcdaab51b661","route":"/api/bills","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_91c4d8fe-bce7-48b3-b816-20604bdab067","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_54530e9a-12f4-412b-bfd4-b706e018b19d","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_89f82bf7-ad94-4ad1-a591-9710671aed37","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_b80d91fc-2fd1-443e-a19d-d85a6e34266f","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_e58e73fe-ced0-4de9-a47b-c493ef80e4eb","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_940a3b74-fe19-4d90-b737-2b7f51891c40","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_1e4ece7c-3e79-4334-bf04-3e63fadb3bad","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_bf28a2f7-a78a-4a54-83c8-eee25cb1f5f4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_0bbc509e-7ff5-46fb-baea-6529312a8642","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_e2dc0472-bc01-4c73-a55b-f2fce7d9cbc5","route":"/api/bank-transactions/:id/personal","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_70a79918-69d5-47b0-9b5f-da5624220504","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_7e4d2a69-bf74-4588-81a1-5bf7ec10c6ef","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_c3f005c6-2e75-4b36-8e6b-8635fa8b559c","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_19787736-2d22-45f5-897f-5563299aa824","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_5d9ca343-5edc-4149-b517-0c4c988d4bd1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d519d514-8972-4ceb-8bd6-efb1ef30f408","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_1153ba0a-d22b-45c4-8104-df02bc67e273","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_138c1115-d030-4b9b-ae9d-35221ed50858","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_f6a7458d-a4d8-4557-8f8b-55719d20fb9e","route":"/api/accounts","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_ee6f8fd6-6d0f-4c84-a4fc-775ff66a63a5","route":"/api/bank-matching-rules","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_3f790f5b-4c30-4013-93f0-906718ed0e82","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_1e678474-9a15-4a68-9ebe-a74d5d2f5c11","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d7388ba7-6726-4a81-88c5-57270961b3e0","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d4d24404-6465-43d0-a968-b62e461c106e","route":"/api/bank-transactions/suggestions/batch","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_7c1506a3-c1bc-4b20-b50b-40a302ceafb2","route":"/api/bank-transactions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_eaf2b11d-87a9-4bc7-ba9f-5dd2765489e2","route":"/api/bank-matching-rules/:id","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d5e1129e-c672-4791-8fc6-ddfe483ed1eb","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_6c7fe093-72bd-46c4-9de9-09c80e618777","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_7c2c66cf-5bc5-4f70-b690-ddc6b9ff07f8","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_6945c82f-5fa4-4345-9a7d-b5aa20a67a39","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_6ca5af65-42f3-46a8-a4e6-f774b6e555ef","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_3f4d7b00-3f52-4e8a-bc1e-0496b9b8868e","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_0c9d1cf6-48b2-4b70-8fca-f2acb3d2c491","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_c63da4c0-29df-4eb7-84ef-5694c2d0e781","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_60814a1b-701f-4b23-8177-e092e0fd13b0","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_b9b9767f-2b72-4757-b6db-42a2832b0ce0","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_6ae3f529-cbf4-4733-a6a9-afadc7e0fa73","route":"/api/bank-matching-rules","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_090d87bd-2651-43c0-a069-6117d2e6f15d","route":"/api/bank-matching-rules/:id","method":"DELETE","status":404,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d7db8a8a-dc52-4c2d-a807-0d4208910222","route":"/api/bank-matching-rules/:id","method":"DELETE","status":204,"durationMs":3}
+
+ ✓ src/modules/reconciliation/bank-reconciliation-phase1.test.ts (4 tests) 3968ms
+   ✓ bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry  965ms
+   ✓ bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects  831ms
+   ✓ bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows  1039ms
+   ✓ bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting  1131ms
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_a8f38edd-9f03-40d5-8f01-521deed111ba","route":"/api/auth/*","method":"POST","status":200,"durationMs":131}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0e2251d5-2b13-42a1-8c63-0e5b79077be3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_384de7b4-a71e-44f0-9676-4232de15986b","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2a94db01-f0fe-4482-9a4e-3371d4eadaae","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_6ab73a5f-0f70-4c0a-b7ff-e8f00ab519d7","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_176749fd-7d96-43b4-9d44-114e0280543c","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e7d5b5d9-fcb3-4833-abf6-01cd4de7cec9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_dc8165e0-e06d-433b-893f-29780689e093","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_ea5af2c8-4287-461e-98ea-f629a109ffc5","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_865c95e1-027c-4f7b-9e37-33af96303e05","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2041e250-4598-4185-b9fc-332f7eb22585","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_591dfce0-407a-435c-98fc-dc2cc3e7d66d","route":"/api/bank-transactions/import","method":"POST","status":422,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_642b8403-ef83-4d3e-803c-db12a120fa59","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_69909db2-510f-4b80-b677-dbf41fa165d0","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_c87d4867-6aea-4edc-9944-bbaa859baf5d","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_3f951751-125c-44e8-904d-001f4205bb40","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0deebb99-9722-452d-a052-143042ba23aa","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_28096ded-2da5-435f-9fc2-6c4fde468824","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_7193941a-0c73-49f1-a6e3-0396b6bffd73","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_022367a7-5e73-42d8-afb9-58e59565c308","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e0938013-745c-40f6-9bc2-354cceb4b5a9","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_1b307ddd-d65b-42e2-a06a-c168babab76b","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_28740128-2358-4a6b-b3fb-e2398f38c113","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e4f86784-156c-4df4-90f6-0687f65cbcc6","route":"/api/bank-transactions","method":"POST","status":422,"durationMs":18}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_59f6e092-fde3-4b98-a6e7-84a1d0e98e66","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_201ad468-22ef-467d-9df8-422a7e5acbc1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_a13c0fab-4bbc-44fc-9da3-6b03bd5f3eb5","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_fe99014b-6b9c-4e78-8709-f69802785ade","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e96d73b5-a8c8-4031-9834-cdf6a39b0d6e","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_c4e8ec58-4acd-4b40-a249-d42027ea4379","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_574548a5-76f6-458b-ab61-5fa9fff0fad3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_531d8d26-fbbf-455e-9054-a9cd931bbe26","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0e0de12f-bb17-4639-bafb-dba0a0d3ea66","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_6d31320d-fcec-44b6-a50d-67315217f58c","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_5d07d23a-c43c-4943-b369-33433dc92ea1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_b429a84e-a436-4eba-aa2a-758f2546d2a0","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":21}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_134d4105-eb7c-42ce-a275-1b2d0b88ba58","route":"/api/bank-transactions/:id/accept","method":"POST","status":422,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e56221b9-0943-4da0-96eb-7b21ac54937f","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_8bf15aec-6bfd-4c30-8cc2-92e7b9c8150e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_27f22569-33aa-420c-9e77-ee1289666b0a","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_85ec3df1-003c-4fb8-afa0-428167fd739c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_f73ea0a0-5934-4ecb-9e14-1d15cc48c5bc","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_ce79794d-3bb8-4741-83f3-a891e9db556d","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_96a366e9-3fae-43f9-a381-51a19304323d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e4316813-86ef-4023-aec7-4f0134aefb2a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_6408463a-6f80-4c8d-89b3-7255285f0cd3","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_5d460660-4624-4ab1-a4b4-5127bb70e590","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_3e18f23c-7724-47d2-a8b9-3d9fe625fb9d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_15be182c-4f12-4353-916f-0e42d6ad952b","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_17ecabe7-c3b6-4cc2-ab82-86035172e50d","route":"/api/bank-transactions/:id/accept","method":"POST","status":422,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_001c6458-1101-401c-8089-86763aca6b12","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_ff6a8e1c-ef97-4eaf-b64b-0dd9c665d08b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_add79dd0-3188-4449-8e5d-c6b85b636ea4","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_f092eedd-60f3-47c2-afb1-99ceeb132ab0","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_5af48596-87db-4e16-b8e5-51e3796668a4","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_3f66880e-7279-46af-9397-18900b728f6a","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0efa535c-fbac-465a-8786-4d1164409671","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_f8208bc8-e7d8-484c-a3ed-a9075474fd65","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2ab57fbb-8706-4d32-be57-fdf7f9abc20a","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_7000471b-cb84-4a9a-8f40-f59043219f09","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2956cc66-eb6e-4046-87ca-ace95a89529a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2fd1e0d2-8f92-46ac-bba7-920acbb0a608","route":"/api/bank-transactions/:id/personal","method":"POST","status":422,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_3873355f-a40d-4f18-b847-d1fc87ad330b","route":"/api/auth/*","method":"POST","status":200,"durationMs":85}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e2ceb121-cb65-4602-a0b9-1080e87c473f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_c3c011b9-0e58-4b09-bf40-c7e2d5ef3baf","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_7273d580-1717-4aac-a469-884125e47faf","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0e24e578-9489-4486-91b3-0c7958b11b89","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_ced82bc1-b962-4692-93c1-9ccf4b29221f","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_fad40cf0-585a-47c3-8c36-130255bbaeb4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_36f22879-6790-4922-aadd-378e6b14f02f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0b1fb0f4-95ba-4ff0-bd60-d216336f1aa7","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_f8d58b7f-97ad-4f61-b35e-1989787a170d","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_46768117-3ed6-4cd5-a30a-dad492c042cd","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_3467dc80-3d13-4f24-90ee-5199f8fbd09d","route":"/api/bank-transactions/:id/duplicate","method":"POST","status":422,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_c90f9ea2-e183-4691-bbda-a6c4607c6a67","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_42a01278-3f0e-4618-9958-8699b8be3888","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_56b59ec2-5a0e-458e-bca3-9c2340f5bec7","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_0c407305-1bc9-4dfb-8444-47ab1096dc2b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_e9e4a7ef-d42a-481c-ad8c-357fe9745167","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_aa51bb67-ef25-4d31-9d99-14fc28e4fc05","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_11857d61-e640-4221-9d90-0af0470b5c30","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_2a3413dc-7aac-4199-88dc-e5ddc6009724","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_b55c221d-a265-4675-8d2d-726b839c7bad","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_8ee92ec7-51ec-4730-8be3-40f699b429e5","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_7976ae10-0184-450d-95a4-8da428a7dd3a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_66579671-894f-41cf-842d-8b2e20813cec","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/foreign-bank-guard.test.ts > unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD
+{"msg":"http_request","requestId":"req_19b2b1e2-2b4b-4df5-b2d8-24e2be58b836","route":"/api/bank-transactions/:id/details","method":"PUT","status":422,"durationMs":4}
+
+ ✓ src/modules/reconciliation/foreign-bank-guard.test.ts (7 tests) 6251ms
+   ✓ unsupported native foreign bank statement writes > rejects import rather than booking native USD as NZD  1025ms
+   ✓ unsupported native foreign bank statement writes > rejects manual rather than booking native USD as NZD  997ms
+   ✓ unsupported native foreign bank statement writes > rejects accept_invoice rather than booking native USD as NZD  908ms
+   ✓ unsupported native foreign bank statement writes > rejects accept_bill rather than booking native USD as NZD  849ms
+   ✓ unsupported native foreign bank statement writes > rejects personal rather than booking native USD as NZD  749ms
+   ✓ unsupported native foreign bank statement writes > rejects duplicate rather than booking native USD as NZD  921ms
+   ✓ unsupported native foreign bank statement writes > rejects details rather than booking native USD as NZD  799ms
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_63031b12-a361-43aa-9d60-f3e59c1d86a2","route":"/api/auth/*","method":"POST","status":200,"durationMs":121}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_47337655-5fa5-4051-b1ab-b809a1a0fff5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_7a5c06f9-0d3b-447e-98c4-9eaaf07007de","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_691d2b0c-7317-455a-8f00-b6305748d515","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_4b93023c-2286-4a7a-b94d-e4427a52d7bd","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_ea24d9f6-0add-4710-983f-58b225be06e5","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_2da445c5-5711-43b1-b2a4-63487d592d95","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_6849f646-1bbc-4bc9-b50d-b659a6e4c14f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_193decf8-06c0-4b92-aea2-67e56aa5b61f","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_3436100f-3c73-42dd-a38d-f8f18c367b0b","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_4536f97b-c7c3-4594-b86f-c3c01d5b60d6","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_6a0a7d51-9e87-48f9-95c3-fccf05afef1b","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_04aa7dff-509c-45ba-b788-ad8aa267bc64","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_95ec4338-2ab4-4b1a-bcd8-54e5af04c753","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_70dafcc7-0e34-431e-aac8-b0cd9fb61054","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_c1ed07a4-6fc8-45a2-b73a-91bb06fd9559","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_a51df077-dd9a-419d-9f46-660d2921da4c","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_b84912da-7b42-4c49-8014-609a972eaeaf","route":"/api/reconciliation-sessions/:id","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_d6060c1d-b4c6-44d7-a245-0a9e451ccd1d","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_737da517-132b-489a-adeb-fdc86cdcf568","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_f8184742-5520-4cee-be66-26b8d9892f25","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_9f75398f-ef47-492b-8909-3c003e8c2b43","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_a5cd5cb5-e9d9-42ee-8e12-9b2a582510af","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":404,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance
+{"msg":"http_request","requestId":"req_701b5cde-27ec-4104-abd9-4e436fcccdaf","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":401,"durationMs":0}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_f2ca97c1-7833-41b8-8539-324471845b70","route":"/api/auth/*","method":"POST","status":200,"durationMs":93}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_0442e5d2-8094-4f19-bb4d-94b6afaa0044","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_63b2b392-3240-4f07-af28-5e25f72ff152","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_8ab61e25-bbb3-4764-8303-bd96e505d1a1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_4371624e-c400-40d0-8368-278d8c737e39","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_70efabfe-b2de-4a3c-9d8e-c9972db5ca85","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_cf81d6ff-5a75-4e05-89a3-615b806c5ea7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_42eccd62-844a-4b53-8096-c231c0d9e330","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_7fb183db-1757-4578-8d5b-c08d12f72c25","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_e89c9428-6662-436f-a4bb-3e7ef9d8502e","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_a596c759-1b3f-4c16-8407-5c58420f521e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_4dd4ce54-cbdf-44a1-8617-4b17a24cf6fe","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_3c9e4056-193a-4a4f-9d72-c10aaa56030d","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_bb577e9e-4722-4629-b7b8-0264de08e8f6","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_cddd4a7a-22bd-4567-ac18-edc3380aa11f","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_3bf3b228-0394-4118-aee2-b9ff239a9206","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion
+{"msg":"http_request","requestId":"req_c5d73f4c-61c2-4beb-9616-8c7cdf6baaa5","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_6f01d129-b80c-4056-9e0e-eed330643d93","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_d2d23b04-edfc-4ca1-8f64-97201cfaf111","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_96e98f02-5644-46ef-a346-b8fc2e5d04a8","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_bcbbf84d-cbf9-427e-999a-cc01255ce479","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_c34364f4-45ca-45f8-8060-dc4c1ae1f39c","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_e612c144-25f4-4acf-97c8-2996f819b70c","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_5c9558dc-8fb7-4139-a492-e0da6dd12dd0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_2634d749-4cef-4620-9ad4-46703ef91784","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_ef375c8d-d35d-4ee1-9bb9-0bb5aaf697ba","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_02de38d3-2d2a-4f7d-b468-4c885b90bd17","route":"/api/bills","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_a1b076c4-712e-4281-8ced-f445c742fa43","route":"/api/reconciliation-sessions","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_5c869036-ab15-4e32-8214-27fcbbfdd537","route":"/api/reconciliation-sessions","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/reconciliation/reconciliation-summary.test.ts > authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision
+{"msg":"http_request","requestId":"req_c00f6c80-827d-4ff7-ba87-19e5beb3994e","route":"/api/reconciliation-sessions","method":"POST","status":400,"durationMs":3}
+
+ ✓ src/modules/reconciliation/reconciliation-summary.test.ts (3 tests) 3021ms
+   ✓ authoritative bank statement summary before completion > shows the real posted minus69 before completion and agrees with the completed closing balance  1158ms
+   ✓ authoritative bank statement summary before completion > uses the same exact decimal adjustments as completion  1015ms
+   ✓ authoritative bank statement summary before completion > rejects invalid or reversed periods and statement balances beyond cent precision  847ms
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_1208b1ea-4e7c-4a6b-b176-097ab4658bd2","route":"/api/auth/*","method":"POST","status":200,"durationMs":140}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_9033bd90-d675-41af-b557-1c7d2fc43521","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_3fe8fe67-5c86-4c0f-ba6d-835acf501ae3","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_df3bfc2c-0d8d-4ee7-a82f-1f61a30ed9c2","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_f9f567fe-327b-4062-8e8e-201601147f7c","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_3d56faee-00c7-462c-8e41-2bc21af3dea4","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_743f864f-ea3c-4308-9cec-9f256fe49e28","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_40a28ab4-ea2d-4074-b64e-dcbc22f618aa","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_e895a22b-e689-4e55-a25c-35e02bd37819","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_34a5a83a-135d-4111-bd15-978be35a061a","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_d6faf1c6-204e-4e7b-a983-3205e320147a","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_c854ea23-f5e6-4753-8d1a-3805172404b0","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > applies signed bank errors to the statement side only
+{"msg":"http_request","requestId":"req_7fdc51ac-f9ab-4eaf-ad78-be82e12dd61b","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_a35664da-228a-4f45-8493-ff8d2439fd10","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_5f72a155-067d-461e-94a6-156941c09760","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_c562be3e-a5fd-46be-9004-83f2948f360e","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_3fb56d1e-2603-45c9-a0f2-53c3aa0fe548","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_4da08f49-94b3-4120-965e-5539c5bf0173","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_6f615b2f-28a4-4ef2-9ebc-babb14704c1a","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_ae223226-7155-4c05-b485-f37fbd568289","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_0f6626cf-4e3a-4ab6-aab6-1921dcc71150","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_5d41362c-90bd-4c47-a829-4bf6563d0351","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_7faa4d50-4ec4-4213-a191-2ac1d9b94c86","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_b5d4bf40-1bbc-40c8-8ce9-9d030c9ff327","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/statement-adjustments.test.ts > statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee
+{"msg":"http_request","requestId":"req_7020f5fc-6040-44f1-a18b-083df5079f0b","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":5}
+
+ ✓ src/modules/reconciliation/statement-adjustments.test.ts (2 tests) 1743ms
+   ✓ statement adjustments never manufacture book entries > applies signed bank errors to the statement side only  872ms
+   ✓ statement adjustments never manufacture book entries > excludes historical unposted book fees and reversed timing items, disclosing the fee  870ms
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_c2644f96-d874-47b7-a301-eade5568a825","route":"/api/auth/*","method":"POST","status":200,"durationMs":131}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_7ef2175c-6ea5-448f-b8f9-74447c738e1f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_c042b824-1dc9-40da-ac41-2c4720b02b0b","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_2808e11c-91e0-4591-b648-c8884e7c5cd2","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_2effb551-a2eb-4ec5-af2a-36405911cdb8","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_89cb0f2d-b271-49a9-9972-8e102db88842","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_cc303958-eaac-4180-947d-82ccfb1f288f","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_30d1a5dc-70ce-440c-b95a-1d94b6ea1be6","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_452cc304-cbbe-4547-bd03-b4dd744e6eb4","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_7b5d2de5-a0be-4825-a46b-7d863ad4b0ad","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_c39655b9-62d5-48b8-bacd-cea35bed99e7","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_19218433-4007-4f15-bcc9-efdd9813db9a","route":"/api/reports/financial","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_b72c83b2-31a2-448b-ac0c-1353f2c7df47","route":"/api/bills/:id","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_4b377dc2-59c3-43db-926e-c549cbda189a","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_faa8cfc1-239e-4d25-a809-3cffba8ec79e","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_1b10d7aa-bd01-47fd-ab99-68b8cdb6bec9","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_81138a1f-23fa-4d13-98e9-04f80a0d72e6","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_009ad2cd-24ab-498b-8bea-484e7acfea17","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":404,"durationMs":3}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_e0a0770f-2527-44c6-bbf6-a79f02120adb","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_cd11944e-2d58-452b-b10c-dab41a98373f","route":"/api/bills/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_7434e62f-30ab-4904-ba9e-c944fdf9b669","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/supplier-payment-match.test.ts > matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction
+{"msg":"http_request","requestId":"req_2b1eb1d4-4260-4fc7-8d69-eaf869225fd5","route":"/api/book-entries","method":"GET","status":200,"durationMs":6}
+
+ ✓ src/modules/reconciliation/supplier-payment-match.test.ts (1 test) 1355ms
+   ✓ matching an already recorded supplier instalment > matches the actual69 payment without changing AP276/profit/GST, retries, rejects reuse, and undoes only its correction  1354ms
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_62aea896-faaf-43b1-bf29-3099317abf9d","route":"/api/auth/*","method":"POST","status":200,"durationMs":158}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_1d5ea503-0a4d-42e7-8466-bf0015dbdeb3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":26}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_2fa3bc8f-5e17-4267-9f4b-01451c7b0a92","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_32013d09-e233-4e40-b844-55bbd7cf7f0a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_c7857358-2c61-4295-bd37-eb00fc6e70fa","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_8df61d08-7469-48d4-a7bb-d54b3ad1d4f1","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_2e4da253-b8b2-48d6-b188-9bf5bae1ee3c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_b87d2c5f-43b9-4a05-8dad-948e3c115166","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_cebc4ad6-6b4c-425a-837f-05d55e02454d","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_6d5d7754-db69-49db-a385-214830caddd9","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_5170ea82-f228-4d7a-b7e5-169e1bed16d0","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_a08fc67d-e463-4857-830e-e6f0133a14a0","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_4b1344c9-1ff1-4edc-9bc6-21ae037c411c","route":"/api/reconciliation-sessions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_989b5bcb-4f62-4040-a585-89ef4fbce328","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_515a17db-a581-4810-b0d4-5c091788048b","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_32208377-898a-4d6f-8c17-3bfb72f024a7","route":"/api/reconciliation-sessions/:id/adjustments","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_3f9859c7-64e2-42a3-ab1e-b3c65237198d","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_0f36c3c7-eb8a-4dcc-b788-5e7a02d175e0","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_63e9b5d5-8949-40dd-8831-6c2aa98c3643","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_e7850c54-0302-43d1-8644-851f3eda6fa8","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_9832edfd-1192-4497-bc5e-91cc235d4299","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":3}
+
+ ✓ src/modules/reconciliation/statement-idempotency.test.ts (1 test) 1231ms
+   ✓ retains once-only statement setup and bank-side adjustments across lost-response retries  1230ms
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > unauthenticated GET /api/reconciliation-sessions returns 401
+{"msg":"http_request","requestId":"req_4c72575f-8177-4ec8-bb00-f85ecd489509","route":"/api/reconciliation-sessions","method":"GET","status":401,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_9d6213f1-bca4-4394-a6bd-383286f9576b","route":"/api/auth/*","method":"POST","status":200,"durationMs":175}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_5feec71b-ea77-4491-b557-a08b8989bd17","route":"/api/auth/*","method":"POST","status":200,"durationMs":176}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_367c8188-2838-4023-955f-f14b5a10a201","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_36e00098-301d-4044-8892-2f0a2756696d","route":"/api/expenses","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_61a366af-2d73-40a5-8741-3ab36c72000e","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_e746be58-d0cf-440b-b2a9-69601cc47970","route":"/api/reconciliation-sessions","method":"POST","status":400,"durationMs":25}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_1e225953-a8d2-459a-8520-3e1e8737c067","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_1693d0d3-7738-4da7-8023-aa3e39ddfe80","route":"/api/reconciliation-sessions/:id","method":"GET","status":404,"durationMs":25}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_df15251d-bc46-4011-908b-c4610d8da026","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_a0bfaa72-d054-4b73-9f49-55f34a3fb728","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_7d1a17cc-c103-43cd-9086-e84de8fba07b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_e7bbf20e-913a-4ff8-a684-58ed6f9cf84e","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_7ae46616-8b04-4bde-979a-3b27cd85feb5","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_aeba7585-742e-451c-8adb-0d6eef129bb5","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_e82d0e3c-98b0-4b86-9643-74ca7aabb36c","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":400,"durationMs":7}
+
+ ✓ src/modules/reconciliation/reconciliation.test.ts (2 tests) 1865ms
+   ✓ reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete  1839ms
+ ✓ src/modules/reconciliation/suggestion-scoring.test.ts (2 tests) 6ms
+
+ Test Files  9 passed (9)
+      Tests  24 passed (24)
+   Start at  04:22:49
+   Duration  35.74s (transform 1.51s, setup 138ms, collect 11.36s, tests 22.08s, environment 2ms, prepare 630ms)

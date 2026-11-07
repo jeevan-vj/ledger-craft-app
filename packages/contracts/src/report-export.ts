@@ -12,9 +12,15 @@ export function financialReportRows(report: FinancialReportResponse, section: Re
   return [headers,...total.rows.map(row=>[`${row.accountNumber??''} ${row.accountName}`.trim(),...(periods?.map(p=>p[key].rows.find(r=>r.accountId===row.accountId)?.balance??'0.00')??[]),row.balance]),...metrics.map(metric=>[labels[metric],...(periods?.map(p=>value(p[key],metric))??[]),value(total,metric)])];
  }
  if(section==='receivables'||section==='payables'){const aging=report[section==='receivables'?'receivablesAging':'payablesAging'];return [['Document','Party','Due date','Age','Outstanding'],...aging.items.map(r=>[r.number,r.partyName,r.dueDate,r.bucket,r.balanceDue]),['Total','','','',aging.total],['Unallocated control','','','',aging.unallocatedControl??'0.00']];}
- const statement=report[section==='balance-sheet'?'balanceSheet':'trialBalance'];
+ if(section==='trial-balance') return [
+  ['Account','Class','Opening debit','Opening credit','Period debit','Period credit','Closing debit','Closing credit'],
+  ...report.trialBalance.rows.map(row=>[`${row.accountNumber??''} ${row.accountName}`.trim(),row.accountClass,row.openingDebit,row.openingCredit,row.debit,row.credit,row.closingDebit,row.closingCredit]),
+  ['Period totals','','','',report.trialBalance.totalDebits,report.trialBalance.totalCredits,'',''],
+  ...(report.trialBalance.closingDebits!==undefined&&report.trialBalance.closingCredits!==undefined?[['Closing totals','','','','','',report.trialBalance.closingDebits,report.trialBalance.closingCredits]]:[]),
+ ];
+ const statement=report.balanceSheet;
  const rows=[['Account','Class','Debit','Credit','Balance'],...statement.rows.map(row=>[`${row.accountNumber??''} ${row.accountName}`.trim(),row.accountClass,row.debit,row.credit,row.balance])];
- return section==='balance-sheet'?[...rows,['Assets','','','',report.balanceSheet.assets],['Liabilities','','','',report.balanceSheet.liabilities],['Equity (includes retained income)','','','',report.balanceSheet.equity]]:[...rows,['Total debits','','',report.trialBalance.totalDebits,''],['Total credits','','',report.trialBalance.totalCredits,'']];
+ return [...rows,['Assets','','','',report.balanceSheet.assets],['Liabilities','','','',report.balanceSheet.liabilities],['Equity (includes retained income)','','','',report.balanceSheet.equity]];
 }
 export function reportCsvCell(value:string){const safe=/^[\s]*[=+@\t\r]/.test(value)||/^\s*-(?!\d+(?:\.\d+)?\s*$)/.test(value)?`'${value}`:value;return `"${safe.replace(/"/g,'""')}"`;}
 export function financialReportCsv(report: FinancialReportResponse,section: ReportSection){return [[reportSectionLabels[section]],['Period',report.meta.from,report.meta.to],['Basis',report.meta.basis],...(report.meta.cashRecognition?[['Cash recognition','Settled posted-source components; original journals unchanged']]:[]),...(report.meta.warnings?.map(warning=>['Review warning',warning])??[]),[],...financialReportRows(report,section)].map(row=>row.map(reportCsvCell).join(',')).join('\n');}

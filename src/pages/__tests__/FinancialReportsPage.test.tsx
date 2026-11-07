@@ -160,3 +160,16 @@ it('offers NZ presets, server columns and PDF export without computing browser t
  expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({columns:'month'}));
  expect(screen.getByRole('button',{name:'Download PDF'})).toBeInTheDocument();
 });
+
+it('shows trial-balance closing sides and server closing totals distinctly from period movement',async()=>{
+ const user=userEvent.setup();const report=financialReport({collected:'0.00',paid:'0.00',netPayable:'0.00',outputGst:'0.00',inputGst:'0.00',netGst:'0.00',position:'nil',gstAccounts:[],keyAccounts:[]});
+ report.trialBalance={rows:[{...account('1110','Bank','asset','11380.00'),openingDebit:'10000.00',openingCredit:'0.00',debit:'5520.00',credit:'4140.00',closingDebit:'11380.00',closingCredit:'0.00'}],totalDebits:'14605.00',totalCredits:'14605.00',closingDebits:'13680.00',closingCredits:'13680.00',balanced:true};
+ renderPage(report);await user.click(await screen.findByRole('tab',{name:'Trial balance'}));
+ expect(screen.getByRole('columnheader',{name:'Closing debit'})).toBeInTheDocument();expect(screen.getByText('Closing debits')).toBeInTheDocument();expect(screen.getAllByText('$13,680.00')).toHaveLength(2);
+});
+
+it('shows net account cash movement rather than journal turnover as cash flow',async()=>{
+ const user=userEvent.setup();const report=financialReport({collected:'0.00',paid:'0.00',netPayable:'0.00',outputGst:'0.00',inputGst:'0.00',netGst:'0.00',position:'nil',gstAccounts:[],keyAccounts:[]});
+ report.cashFlow={openingCash:'10000.00',inflows:'2300.00',outflows:'920.00',netCashFlow:'1380.00',closingCash:'11380.00',rows:[{...account('1110','Bank','asset','1380.00'),debit:'5520.00',credit:'4140.00'}]};renderPage(report);await user.click(await screen.findByRole('tab',{name:'Cash flow'}));
+ const panel=screen.getByRole('tabpanel');expect(within(panel).getByRole('columnheader',{name:'Net cash movement'})).toBeInTheDocument();expect(within(panel).queryByText('$5,520.00')).not.toBeInTheDocument();expect(within(panel).getByText('$1,380.00')).toBeInTheDocument();
+});

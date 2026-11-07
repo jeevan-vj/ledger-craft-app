@@ -29,17 +29,17 @@ export async function confirmedMatches(tx: Database, organisationId: string, inp
     .leftJoin(reconciliationSupplierPaymentLinks, and(eq(reconciliationSupplierPaymentLinks.organisationId, organisationId), eq(reconciliationSupplierPaymentLinks.matchId, reconciliationMatches.id))).where(and(
     eq(reconciliationMatches.organisationId, organisationId), eq(reconciliationMatches.status, 'confirmed'),
     or(eq(reconciliationMatches.bankTransactionId, input.bankTransactionId),
-      eq(input.bookItemType === 'payment' ? reconciliationMatches.paymentId : input.bookItemType === 'bill_payment' ? reconciliationSupplierPaymentLinks.billPaymentId : reconciliationMatches.expenseId, input.bookItemId)),
+      eq(input.bookItemType === 'credit_refund' ? reconciliationMatches.journalEntryId : input.bookItemType === 'payment' ? reconciliationMatches.paymentId : input.bookItemType === 'bill_payment' ? reconciliationSupplierPaymentLinks.billPaymentId : reconciliationMatches.expenseId, input.bookItemId)),
   ));
 }
 
-export async function postedCashLines(tx: Database, organisationId: string, type: 'payment' | 'bill_payment' | 'expense', id: string) {
+export async function postedCashLines(tx: Database, organisationId: string, type: 'payment' | 'bill_payment' | 'expense' | 'credit_refund', id: string) {
   return tx.select({ accountId: accounts.id, debit: journalEntryLines.debitAmount, credit: journalEntryLines.creditAmount })
     .from(journalEntryLines).innerJoin(journalEntries, and(eq(journalEntries.id, journalEntryLines.journalEntryId), eq(journalEntries.organisationId, organisationId)))
     .innerJoin(accounts, and(eq(accounts.id, journalEntryLines.accountId), eq(accounts.organisationId, organisationId)))
     .where(and(eq(journalEntryLines.organisationId, organisationId), eq(journalEntries.status, 'posted'),
-      eq(journalEntries.referenceType, type === 'payment' ? 'invoice_payment' : type === 'bill_payment' ? 'bill_payment' : 'expense'),
-      eq(journalEntries.referenceId, id), inArray(accounts.type, ['bank', 'cash', 'credit_card', 'loan'])));
+      eq(journalEntries.referenceType, type === 'credit_refund' ? 'credit_note_refund' : type === 'payment' ? 'invoice_payment' : type === 'bill_payment' ? 'bill_payment' : 'expense'),
+      eq(type === 'credit_refund' ? journalEntries.id : journalEntries.referenceId, id), inArray(accounts.type, ['bank', 'cash', 'credit_card', 'loan'])));
 }
 
 export async function rejectTransactionMatches(tx: Database, organisationId: string, transactionId: string) {

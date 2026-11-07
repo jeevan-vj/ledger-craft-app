@@ -1,0 +1,3 @@
+http://127.0.0.1:3001/api/healthz 200 {"status": "ok", "capabilities": {"email": "unavailable", "ai": "unavailable", "stripe": "unavailable"}}
+http://127.0.0.1:8080/api/healthz 200 {"status": "ok", "capabilities": {"email": "unavailable", "ai": "unavailable", "stripe": "unavailable"}}
+http://127.0.0.1:8080/api/me 401 {"error": {"code": "UNAUTHORIZED", "message": "Unauthorized", "requestId": "req_2ac650ab-b367-4f9b-aabd-5e3bf74f76bd"}}

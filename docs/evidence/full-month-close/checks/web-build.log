@@ -1,0 +1,206 @@
+$ node scripts/generate-version.js
+✅ Version file generated:
+   Version: 0.0.8
+   Hash: 81b470f5c5b3
+   Build Time: 2026-11-07T04:41:30.213Z
+   Environment: production
+$ vite build
+The CJS build of Vite's Node API is deprecated. See https://vite.dev/guide/troubleshooting.html#vite-cjs-node-api-deprecated for more details.
+vite v5.4.10 building for production...
+transforming...
+Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+✓ 4774 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/manifest.webmanifest                            0.55 kB
+dist/index.html                                      9.52 kB │ gzip:   1.25 kB
+dist/assets/invoiceTemplateRenderer-BlJ9jU0m.css     0.67 kB │ gzip:   0.30 kB
+dist/assets/index-DKDauy4u.css                     128.45 kB │ gzip:  21.64 kB
+dist/assets/subMonths-Dq2QKTxV.js                    0.09 kB │ gzip:   0.11 kB │ map:     1.23 kB
+dist/assets/TaxOverviewPage-BjjyqUDb.js              0.13 kB │ gzip:   0.13 kB │ map:     0.52 kB
+dist/assets/skeleton-YXSSKJzj.js                     0.17 kB │ gzip:   0.16 kB │ map:     0.60 kB
+dist/assets/subDays-Cj8ahJer.js                      0.19 kB │ gzip:   0.16 kB │ map:     2.62 kB
+dist/assets/ContentPanel-Zqj_JNUy.js                 0.21 kB │ gzip:   0.19 kB │ map:     0.82 kB
+dist/assets/csv-a16R1qhg.js                          0.24 kB │ gzip:   0.20 kB │ map:     1.05 kB
+dist/assets/types-B22vuC2v.js                        0.25 kB │ gzip:   0.18 kB │ map:     2.30 kB
+dist/assets/chevron-left-DGuv4qvH.js                 0.30 kB │ gzip:   0.25 kB │ map:     0.84 kB
+dist/assets/loader-circle-X6lWOCZO.js                0.31 kB │ gzip:   0.26 kB │ map:     0.86 kB
+dist/assets/plus-DYcDFl3N.js                         0.32 kB │ gzip:   0.25 kB │ map:     0.88 kB
+dist/assets/capabilitiesService-Ci6AsNvu.js          0.32 kB │ gzip:   0.25 kB │ map:     1.22 kB
+dist/assets/filter-avdknU8m.js                       0.33 kB │ gzip:   0.26 kB │ map:     0.84 kB
+dist/assets/arrow-right-DSTncvbd.js                  0.33 kB │ gzip:   0.26 kB │ map:     0.93 kB
+dist/assets/arrow-up-right-uwVhMPtv.js               0.33 kB │ gzip:   0.26 kB │ map:     0.94 kB
+dist/assets/circle-check-BZ_0wXrT.js                 0.34 kB │ gzip:   0.27 kB │ map:     0.97 kB
+dist/assets/clock-CiEAikJq.js                        0.35 kB │ gzip:   0.27 kB │ map:     0.94 kB
+dist/assets/actions-DV8enVKJ.js                      0.35 kB │ gzip:   0.16 kB │ map:     1.48 kB
+dist/assets/circle-check-big-B5RniFAi.js             0.36 kB │ gzip:   0.28 kB │ map:     0.99 kB
+dist/assets/referrerPolicy-BLjxOSte.js               0.37 kB │ gzip:   0.23 kB │ map:     1.26 kB
+dist/assets/rotate-ccw-D1ikflYk.js                   0.37 kB │ gzip:   0.29 kB │ map:     0.96 kB
+dist/assets/circle-x-4JOi5_Ru.js                     0.37 kB │ gzip:   0.28 kB │ map:     1.04 kB
+dist/assets/trending-up-CpJvxgK5.js                  0.37 kB │ gzip:   0.28 kB │ map:     0.97 kB
+dist/assets/settlementLabel-Bc_Pc23h.js              0.37 kB │ gzip:   0.26 kB │ map:     1.43 kB
+dist/assets/lock-D1bfT5Kr.js                         0.38 kB │ gzip:   0.29 kB │ map:     1.00 kB
+dist/assets/mail-Jfo_wzvP.js                         0.38 kB │ gzip:   0.30 kB │ map:     1.00 kB
+dist/assets/ellipsis-BXHsepsa.js                     0.39 kB │ gzip:   0.26 kB │ map:     1.11 kB
+dist/assets/QuoteStatusBadge-8Xrdif8d.js             0.39 kB │ gzip:   0.26 kB │ map:     1.25 kB
+dist/assets/copy-R9zrZykS.js                         0.40 kB │ gzip:   0.31 kB │ map:     1.03 kB
+dist/assets/trash-8swL5Ky5.js                        0.41 kB │ gzip:   0.30 kB │ map:     1.04 kB
+dist/assets/banknote-Ce0KIK38.js                     0.41 kB │ gzip:   0.31 kB │ map:     1.14 kB
+dist/assets/circle-alert-BIF6ynGu.js                 0.42 kB │ gzip:   0.29 kB │ map:     1.19 kB
+dist/assets/external-link-Dp8eJ0ci.js                0.42 kB │ gzip:   0.30 kB │ map:     1.09 kB
+dist/assets/eye-DXnwHHaN.js                          0.42 kB │ gzip:   0.30 kB │ map:     1.03 kB
+dist/assets/archive-va0NlY5M.js                      0.42 kB │ gzip:   0.31 kB │ map:     1.12 kB
+dist/assets/calendar-DqVi9w4n.js                     0.43 kB │ gzip:   0.30 kB │ map:     1.19 kB
+dist/assets/download-BXErvsur.js                     0.43 kB │ gzip:   0.32 kB │ map:     1.12 kB
+dist/assets/pencil-CCRXITdY.js                       0.45 kB │ gzip:   0.32 kB │ map:     1.05 kB
+dist/assets/file-up-cF4QzqED.js                      0.47 kB │ gzip:   0.31 kB │ map:     1.17 kB
+dist/assets/file-down-j5pZ9-_V.js                    0.47 kB │ gzip:   0.31 kB │ map:     1.18 kB
+dist/assets/textarea-CrXOxLNN.js                     0.48 kB │ gzip:   0.32 kB │ map:     1.16 kB
+dist/assets/useCustomerDirectory-BOj0Ck7v.js         0.48 kB │ gzip:   0.31 kB │ map:     2.52 kB
+dist/assets/startOfMonth-BdbawdEB.js                 0.49 kB │ gzip:   0.28 kB │ map:     6.04 kB
+dist/assets/shield-check-BtxtAUE_.js                 0.49 kB │ gzip:   0.35 kB │ map:     1.12 kB
+dist/assets/printer-DHse6beD.js                      0.49 kB │ gzip:   0.33 kB │ map:     1.22 kB
+dist/assets/square-pen-BXEa5xBs.js                   0.49 kB │ gzip:   0.34 kB │ map:     1.11 kB
+dist/assets/refresh-cw-BozSVqk1.js                   0.49 kB │ gzip:   0.33 kB │ map:     1.21 kB
+dist/assets/save-66OvgaCq.js                         0.50 kB │ gzip:   0.33 kB │ map:     1.15 kB
+dist/assets/useQuotes-BQ4E9eV_.js                    0.50 kB │ gzip:   0.31 kB │ map:     1.65 kB
+dist/assets/share-2-DHBse0EP.js                      0.52 kB │ gzip:   0.33 kB │ map:     1.43 kB
+dist/assets/label-B5AdIJnB.js                        0.56 kB │ gzip:   0.38 kB │ map:     2.55 kB
+dist/assets/NotFound-DPfTL2RV.js                     0.62 kB │ gzip:   0.38 kB │ map:     1.36 kB
+dist/assets/separator-DkpweUWi.js                    0.67 kB │ gzip:   0.40 kB │ map:     3.34 kB
+dist/assets/sparkles-CN1Qmfa1.js                     0.68 kB │ gzip:   0.40 kB │ map:     1.48 kB
+dist/assets/DrawerFormLayout-DdhYkFKD.js             0.68 kB │ gzip:   0.40 kB │ map:     2.51 kB
+dist/assets/input-CAqQR1KB.js                        0.69 kB │ gzip:   0.40 kB │ map:     1.33 kB
+dist/assets/building-B4SgJcK_.js                     0.71 kB │ gzip:   0.37 kB │ map:     1.91 kB
+dist/assets/preview-DGjEp5nu.js                      0.73 kB │ gzip:   0.35 kB │ map:     2.04 kB
+dist/assets/currencyApi-ugfkepH6.js                  0.73 kB │ gzip:   0.41 kB │ map:     2.36 kB
+dist/assets/link-2-bAQ2NnhI.js                       0.78 kB │ gzip:   0.40 kB │ map:     2.10 kB
+dist/assets/SharedStatementPage-TApIDfay.js          0.84 kB │ gzip:   0.52 kB │ map:     1.97 kB
+dist/assets/paymentTerms-DqShBAwN.js                 0.94 kB │ gzip:   0.55 kB │ map:     3.20 kB
+dist/assets/reportsApi-D1c8FE1d.js                   0.95 kB │ gzip:   0.53 kB │ map:     3.37 kB
+dist/assets/PageHeader-CFY7gYiy.js                   0.96 kB │ gzip:   0.54 kB │ map:     2.62 kB
+dist/assets/api-YL76KRra.js                          1.01 kB │ gzip:   0.58 kB │ map:     4.21 kB
+dist/assets/receiptPdf-CTMlACpG.js                   1.02 kB │ gzip:   0.58 kB │ map:     2.92 kB
+dist/assets/gstSettingsApi-ta0gUt2C.js               1.03 kB │ gzip:   0.54 kB │ map:     3.30 kB
+dist/assets/index-ClmJWmjL.js                        1.12 kB │ gzip:   0.70 kB │ map:     4.91 kB
+dist/assets/AuthCallback-DEmuU-t7.js                 1.14 kB │ gzip:   0.67 kB │ map:     3.00 kB
+dist/assets/PreparationFields-DmaHPIKD.js            1.27 kB │ gzip:   0.69 kB │ map:     3.21 kB
+dist/assets/statementApi-dEPM7r9R.js                 1.30 kB │ gzip:   0.61 kB │ map:     4.27 kB
+dist/assets/stripeApi-D2Ld65LB.js                    1.49 kB │ gzip:   0.60 kB │ map:     4.44 kB
+dist/assets/table-B03-0UoW.js                        1.49 kB │ gzip:   0.52 kB │ map:     4.61 kB
+dist/assets/bankAccountService-33Ij16r9.js           1.58 kB │ gzip:   0.64 kB │ map:    10.36 kB
+dist/assets/PayRedirectPage-GzhNfRRB.js              1.63 kB │ gzip:   0.75 kB │ map:     3.21 kB
+dist/assets/SettlementRatePicker-DLtMS3jN.js         1.64 kB │ gzip:   0.89 kB │ map:     4.29 kB
+dist/assets/useLedgerQueries-Bu338OTa.js             1.68 kB │ gzip:   0.61 kB │ map:     6.64 kB
+dist/assets/objectsApi-CJqurfQ1.js                   1.68 kB │ gzip:   0.93 kB │ map:     5.36 kB
+dist/assets/itemCatalog-0lwCtX15.js                  1.70 kB │ gzip:   0.93 kB │ map:     5.70 kB
+dist/assets/ProfileCompletenessBanner-Bel-dCfq.js    1.72 kB │ gzip:   0.86 kB │ map:     5.56 kB
+dist/assets/form-LQpxn_m3.js                         1.73 kB │ gzip:   0.75 kB │ map:     6.87 kB
+dist/assets/money-BxORQGgP.js                        1.89 kB │ gzip:   0.83 kB │ map:     6.37 kB
+dist/assets/progress-DIToO4ov.js                     1.90 kB │ gzip:   0.95 kB │ map:     7.77 kB
+dist/assets/collapsible-BHq3aDbr.js                  2.15 kB │ gzip:   0.96 kB │ map:    10.08 kB
+dist/assets/dialog-BUqi6G3Z.js                       2.15 kB │ gzip:   0.85 kB │ map:     5.85 kB
+dist/assets/invoiceUtils-DBK77Ewd.js                 2.38 kB │ gzip:   0.95 kB │ map:    13.07 kB
+dist/assets/switch-DX6IbXtW.js                       2.38 kB │ gzip:   1.21 kB │ map:     9.47 kB
+dist/assets/purchasesApi-D_OI4Tjb.js                 2.39 kB │ gzip:   0.86 kB │ map:     7.30 kB
+dist/assets/Login-HL-rtnic.js                        2.44 kB │ gzip:   1.04 kB │ map:     6.55 kB
+dist/assets/theme-toggle-DXj1NRpG.js                 2.51 kB │ gzip:   0.92 kB │ map:     7.37 kB
+dist/assets/EmailConfirmation-ICLkzwTQ.js            2.58 kB │ gzip:   0.97 kB │ map:     5.63 kB
+dist/assets/pdfUtils-Cl9TJU6f.js                     2.77 kB │ gzip:   1.49 kB │ map:     9.22 kB
+dist/assets/checkbox-a4WFykhG.js                     2.79 kB │ gzip:   1.39 kB │ map:    11.81 kB
+dist/assets/useMutation-CEStia3h.js                  2.91 kB │ gzip:   1.23 kB │ map:     8.54 kB
+dist/assets/Signup-C2Vr23ta.js                       2.94 kB │ gzip:   1.12 kB │ map:     7.96 kB
+dist/assets/EmptyState-D4w1kjbP.js                   2.98 kB │ gzip:   1.06 kB │ map:     8.34 kB
+dist/assets/ModernLogin-dgluvQgU.js                  3.00 kB │ gzip:   1.44 kB │ map:     8.14 kB
+dist/assets/PasswordRecovery-ChtXZd_j.js             3.02 kB │ gzip:   1.22 kB │ map:     7.03 kB
+dist/assets/LegalPage-DH5G7vaB.js                    3.07 kB │ gzip:   1.28 kB │ map:     4.52 kB
+dist/assets/tabs-CBZ-7g54.js                         3.19 kB │ gzip:   1.35 kB │ map:    13.62 kB
+dist/assets/StatementDocument-BVviD6-J.js            3.28 kB │ gzip:   1.24 kB │ map:     7.05 kB
+dist/assets/PublicInvoice-3prBZFLn.js                3.33 kB │ gzip:   1.37 kB │ map:     8.28 kB
+dist/assets/ModernInput-CD-MH6fi.js                  3.56 kB │ gzip:   1.49 kB │ map:    10.16 kB
+dist/assets/ModernSignup-kG_jrSap.js                 3.82 kB │ gzip:   1.68 kB │ map:     9.32 kB
+dist/assets/BreadcrumbNavigation-6gN3e0go.js         3.84 kB │ gzip:   1.19 kB │ map:    15.02 kB
+dist/assets/radio-group-DowPA-Zp.js                  3.88 kB │ gzip:   1.77 kB │ map:    18.43 kB
+dist/assets/halfPaymentAmount-2-AO58dh.js            4.05 kB │ gzip:   1.61 kB │ map:    11.00 kB
+dist/assets/EditInvoice-BUTsHhMH.js                  4.16 kB │ gzip:   2.00 kB │ map:     9.73 kB
+dist/assets/CreateQuote-BvG-dChi.js                  4.36 kB │ gzip:   2.10 kB │ map:    10.17 kB
+dist/assets/bankApi-j5cv1zjT.js                      4.40 kB │ gzip:   1.42 kB │ map:    13.64 kB
+dist/assets/CreateInvoice-CzthEsqj.js                4.65 kB │ gzip:   2.10 kB │ map:    11.30 kB
+dist/assets/alert-dialog-CLirIuyI.js                 4.71 kB │ gzip:   1.73 kB │ map:    18.69 kB
+dist/assets/ReminderSettingsPage-D02zGE6C.js         4.79 kB │ gzip:   1.93 kB │ map:    10.25 kB
+dist/assets/useAppData-B0urm4gj.js                   4.90 kB │ gzip:   1.23 kB │ map:    20.50 kB
+dist/assets/EditQuote-CIwSWBqb.js                    5.12 kB │ gzip:   2.38 kB │ map:    11.52 kB
+dist/assets/popover-ikTwJR48.js                      5.25 kB │ gzip:   1.92 kB │ map:    21.60 kB
+dist/assets/quotesApi-AyaqmpXO.js                    5.60 kB │ gzip:   1.92 kB │ map:    18.06 kB
+dist/assets/CustomerStatementPage-BB2bDwzp.js        5.64 kB │ gzip:   2.26 kB │ map:    13.36 kB
+dist/assets/workbox-window.prod.es5-B9K5rw8f.js      5.72 kB │ gzip:   2.35 kB │ map:    13.66 kB
+dist/assets/ModernButton-BH7Qj6-O.js                 5.97 kB │ gzip:   2.06 kB │ map:    13.93 kB
+dist/assets/CustomerFormDrawer-C8i7WJKJ.js           6.83 kB │ gzip:   2.14 kB │ map:    21.72 kB
+dist/assets/SharedInvoice-CNOtyo-2.js                6.97 kB │ gzip:   2.57 kB │ map:    17.89 kB
+dist/assets/Categories-B13Q5sXV.js                   7.04 kB │ gzip:   2.32 kB │ map:    24.39 kB
+dist/assets/InvoicePreview-C7WgBC9z.js               7.06 kB │ gzip:   2.33 kB │ map:    22.84 kB
+dist/assets/ReceiptsPage-BKwwMt7F.js                 7.12 kB │ gzip:   2.45 kB │ map:    18.96 kB
+dist/assets/SharedQuote-DWZZTu0D.js                  7.34 kB │ gzip:   2.65 kB │ map:    19.56 kB
+dist/assets/ShareInvoiceModal--Qp3S35c.js            7.43 kB │ gzip:   3.07 kB │ map:    20.25 kB
+dist/assets/BillForm-XFjb39qw.js                     7.90 kB │ gzip:   2.70 kB │ map:    18.70 kB
+dist/assets/Onboarding-CCteLYta.js                   8.28 kB │ gzip:   3.01 kB │ map:    21.14 kB
+dist/assets/Quotes-D6CJd_ho.js                       8.33 kB │ gzip:   3.11 kB │ map:    25.98 kB
+dist/assets/QuoteViewPage-DD-9JPdO.js                8.79 kB │ gzip:   3.16 kB │ map:    24.49 kB
+dist/assets/ExpenseCategories-BTNUb5VU.js            9.66 kB │ gzip:   2.90 kB │ map:    30.93 kB
+dist/assets/Vendors-BZ1lu4tN.js                     10.20 kB │ gzip:   3.32 kB │ map:    23.49 kB
+dist/assets/useQuery-DDwmofo_.js                    10.35 kB │ gzip:   3.66 kB │ map:    40.66 kB
+dist/assets/PaymentDetailPage-DGFi2gms.js           11.60 kB │ gzip:   2.89 kB │ map:    30.89 kB
+dist/assets/scroll-area-LdBXPNU1.js                 12.98 kB │ gzip:   4.10 kB │ map:    54.03 kB
+dist/assets/ItemDrawer-BlB87Eur.js                  13.52 kB │ gzip:   3.77 kB │ map:    40.89 kB
+dist/assets/Items-AI3ocnDq.js                       13.80 kB │ gzip:   4.22 kB │ map:    40.58 kB
+dist/assets/Recurring-CMb6GA3z.js                   14.01 kB │ gzip:   4.21 kB │ map:    32.73 kB
+dist/assets/Customers-DLB3ie3S.js                   14.60 kB │ gzip:   4.54 kB │ map:    46.10 kB
+dist/assets/Accounts-CulHJwll.js                    15.01 kB │ gzip:   4.78 kB │ map:    37.77 kB
+dist/assets/Dashboard-M4kOGzgc.js                   16.12 kB │ gzip:   5.21 kB │ map:    39.16 kB
+dist/assets/Bills-DAnjcLWy.js                       16.63 kB │ gzip:   5.42 kB │ map:    40.50 kB
+dist/assets/format-BEMO4FpZ.js                      20.71 kB │ gzip:   5.85 kB │ map:   134.35 kB
+dist/assets/select-B8EEd7nV.js                      21.36 kB │ gzip:   7.51 kB │ map:    91.37 kB
+dist/assets/purify.es-CF4_YkFU.js                   21.86 kB │ gzip:   8.62 kB │ map:    89.83 kB
+dist/assets/InvoiceImportPage-DLot5AlJ.js           22.26 kB │ gzip:   7.26 kB │ map:    52.08 kB
+dist/assets/ReceiptViewPage-MgGz9t1l.js             22.33 kB │ gzip:   4.61 kB │ map:    54.95 kB
+dist/assets/FinancialReportsPage-CuHKCkP2.js        24.10 kB │ gzip:   6.86 kB │ map:    55.83 kB
+dist/assets/PaymentsPage-DLGxrTb-.js                26.28 kB │ gzip:   7.73 kB │ map:    77.66 kB
+dist/assets/zod-DkPV2QPv.js                         26.76 kB │ gzip:  10.03 kB │ map:   157.22 kB
+dist/assets/JournalEntriesPage-Bjj9DY42.js          27.18 kB │ gzip:   7.03 kB │ map:   109.99 kB
+dist/assets/TaxConfigurationPage-DoFG0MjI.js        28.81 kB │ gzip:  10.18 kB │ map:   149.48 kB
+dist/assets/IRDReportingPage-F53oc6JU.js            32.20 kB │ gzip:   9.29 kB │ map:    77.41 kB
+dist/assets/calendar-kouWMlVX.js                    34.38 kB │ gzip:  10.89 kB │ map:   179.37 kB
+dist/assets/BankAccounts-Cr_Z_GIa.js                34.80 kB │ gzip:   9.88 kB │ map:    89.55 kB
+dist/assets/InvoiceViewPage-BO2CABaY.js             43.45 kB │ gzip:  14.83 kB │ map:   141.06 kB
+dist/assets/RepeatSchedulePanel-OW1_2Sjc.js         50.36 kB │ gzip:  16.23 kB │ map:   228.80 kB
+dist/assets/Invoices-BTvh1bnw.js                    50.67 kB │ gzip:  12.70 kB │ map:   130.18 kB
+dist/assets/invoiceTemplateRenderer-DC8tCJFq.js     59.65 kB │ gzip:   8.43 kB │ map:   150.45 kB
+dist/assets/Settings-DcJ3JmUh.js                    61.72 kB │ gzip:  16.16 kB │ map:   162.55 kB
+dist/assets/Expenses-B-a2stmD.js                    69.56 kB │ gzip:  18.07 kB │ map:   200.56 kB
+dist/assets/ReconciliationPage-ChLg7SI9.js          88.48 kB │ gzip:  21.26 kB │ map:   273.93 kB
+dist/assets/TransactionImport-DUZHEtOd.js          105.98 kB │ gzip:  27.87 kB │ map:   310.26 kB
+dist/assets/index.es-KoNxHE8D.js                   150.02 kB │ gzip:  51.27 kB │ map:   637.87 kB
+dist/assets/InvoiceForm-BDkZh38w.js                181.33 kB │ gzip:  56.90 kB │ map:   871.23 kB
+dist/assets/html2canvas.esm-CBrSDip1.js            201.42 kB │ gzip:  48.03 kB │ map:   601.33 kB
+dist/assets/jspdf.es.min-H-_VtVwP.js               357.70 kB │ gzip: 118.00 kB │ map:   952.59 kB
+dist/assets/AccountingDashboardPage-kiYAnAX2.js    428.27 kB │ gzip: 114.09 kB │ map: 1,853.62 kB
+dist/assets/index-2G37lpu_.js                      751.72 kB │ gzip: 215.26 kB │ map: 2,771.84 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 17.18s
+
+PWA v1.0.0
+mode      generateSW
+precache  175 entries (3436.21 KiB)
+files generated
+  dist/sw.js.map
+  dist/sw.js
+  dist/workbox-f7c90ba0.js.map
+  dist/workbox-f7c90ba0.js
+$ node scripts/verify-build-version.mjs
+Verified app version 0.0.8, build 81b470f5c5b3

@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { radius } from '@/theme/tokens';
 import { dateForPreset, localIsoDate, parseLocalDate } from './datePickerModel';
 import { useTheme } from '@/theme';
+import { ModernInput } from './ModernInput';
 
 interface SmartDatePickerProps {
   label: string;
@@ -49,6 +50,8 @@ export function SmartDatePicker({
   const styles = createStyles(theme);
   const [showModal, setShowModal] = useState(false);
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customDate, setCustomDate] = useState(value);
+  const [dateError, setDateError] = useState('');
   const [tempDate, setTempDate] = useState(parseLocalDate(value));
 
   useEffect(() => {
@@ -77,7 +80,9 @@ export function SmartDatePicker({
 
   const handleCustomDate = () => {
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === 'web') {
+      setCustomDate(value); setDateError(''); setShowDatePicker(true);
+    } else if (Platform.OS === 'ios') {
       // iOS shows inline picker
       setShowDatePicker(true);
     } else {
@@ -122,6 +127,7 @@ export function SmartDatePicker({
         onPress={() => {
           Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
           setTempDate(parseLocalDate(value));
+          setShowDatePicker(false); setDateError('');
           setShowModal(true);
         }}
         activeOpacity={0.7}
@@ -194,6 +200,17 @@ export function SmartDatePicker({
                 <Feather name="chevron-right" size={18} color={palette.textTertiary} />
               </TouchableOpacity>
             </ScrollView>
+
+            {showDatePicker && Platform.OS === 'web' ? <View style={styles.iosPickerContainer}>
+              <ModernInput label="Custom date (YYYY-MM-DD)" value={customDate} onChangeText={(next) => { setCustomDate(next); setDateError(''); }} />
+              {dateError ? <Text accessibilityRole="alert" style={{ color: palette.danger }}>{dateError}</Text> : null}
+              <TouchableOpacity style={styles.iosConfirmButton} accessibilityRole="button" accessibilityLabel="Confirm selected date" onPress={() => {
+                const parsed = parseLocalDate(customDate);
+                if (!/^\d{4}-\d{2}-\d{2}$/.test(customDate) || Number.isNaN(parsed.getTime()) || localIsoDate(parsed) !== customDate) { setDateError('Enter a valid calendar date as YYYY-MM-DD.'); return; }
+                if (minimumDate && customDate < localIsoDate(minimumDate)) { setDateError(`Choose a date on or after ${localIsoDate(minimumDate)}.`); return; }
+                onChangeDate(customDate); setShowDatePicker(false); setShowModal(false);
+              }}><Text style={styles.iosConfirmText}>Confirm</Text></TouchableOpacity>
+            </View> : null}
 
             {/* iOS inline date picker */}
             {showDatePicker && Platform.OS === 'ios' && (

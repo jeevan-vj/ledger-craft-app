@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (8 tests) 599ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  04:41:27
+   Duration  2.00s (transform 302ms, setup 91ms, collect 693ms, tests 599ms, environment 353ms, prepare 94ms)

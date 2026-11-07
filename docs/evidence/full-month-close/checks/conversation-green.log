@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/conversations/api/conversationsApi.default.test.ts (1 test) 2ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  04:35:09
+   Duration  730ms (transform 66ms, setup 73ms, collect 59ms, tests 2ms, environment 309ms, prepare 58ms)

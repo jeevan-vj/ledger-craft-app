@@ -77,7 +77,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoadin
       invoiceId: invoice.id,
       paymentMethod: data.paymentMethod,
       amount: data.amount,
-      paymentDate: data.paymentDate.toISOString().split('T')[0],
+      paymentDate: format(data.paymentDate, 'yyyy-MM-dd'),
       referenceNumber: data.referenceNumber,
       notes: data.notes,
       generateReceipt: data.generateReceipt,
@@ -143,7 +143,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoadin
         </CardContent>
       </Card>
 
-      {isForeign && <SettlementRatePicker currency={invoice.currency!} date={form.watch('paymentDate').toISOString().slice(0, 10)} value={exchangeRateId} onChange={setExchangeRateId} />}
+      {isForeign && <SettlementRatePicker currency={invoice.currency!} date={format(form.watch('paymentDate'), 'yyyy-MM-dd')} value={exchangeRateId} onChange={setExchangeRateId} />}
       {/* Payment Amount */}
       <Card>
         <CardHeader>

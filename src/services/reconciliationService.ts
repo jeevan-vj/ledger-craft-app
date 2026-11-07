@@ -768,7 +768,7 @@ export const reconciliationService = {
   async createMatch(
     sessionId: string,
     bankTransactionId: string,
-    bookItemType: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
+    bookItemType: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense' | 'credit_refund',
     bookItemId: string,
     notes?: string
   ): Promise<ReconciliationMatch> {

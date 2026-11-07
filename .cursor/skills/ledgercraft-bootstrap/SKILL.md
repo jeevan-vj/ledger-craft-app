@@ -5,6 +5,22 @@ description: Start-here operating instructions for LedgerCraft reconstruction. U
 
 # LedgerCraft bootstrap
 
+**Full month-close acceptance (verified locally, 2026-11-07):** Independent
+Decimal working papers reconcile an October NZ services case through real web and
+Expo business operations: closing TB13,680 each side, assets12,480 = liabilities980
++ equity11,500, accrual profit1,500, cash11,380, AR920/AP575, invoice GST225
+(payments180/hybrid300). Five imported bank lines match existing receipts,
+supplier payment, paid expense and customer refund without duplicating income or
+GST. Cash-flow summaries net technical import/match legs; original journals stay
+visible. Trial-balance views/exports distinguish period turnover from closing sides.
+Auckland web receipt dates preserve their selected day. Expo fixes cover custom
+dates, expense tax toggles, refund selection/receipt identity, web task storage,
+statement-import rendering and landscape trial-balance PDFs. Mobile chart-account
+creation still uses an explicit setup-only API step; economic transactions use UI.
+Full screenshots, independent/as-of reconciliation, actual PDF/CSV downloads and
+verification records: `docs/evidence/full-month-close/README.md`. This is local
+acceptance, not installed-device QA, fiscal-period locking or IRD submission.
+
 **Remaining issue #115 flows (implemented locally, 2026-11-07):** Web and
 Expo provide customer statements, secure retained snapshots, PDF/share delivery,
 automatic reminder settings and opt-outs. Reporting adds server month/quarter

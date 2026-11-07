@@ -8,7 +8,7 @@ import type {
 import { readApiFailure } from '@/lib/api/readApiError';
 
 export function conversationsApiEnabled(): boolean {
-  return import.meta.env.VITE_CONVERSATIONS_API === 'true';
+  return import.meta.env.VITE_CONVERSATIONS_API !== 'false';
 }
 
 export class ConversationsApiError extends Error {
