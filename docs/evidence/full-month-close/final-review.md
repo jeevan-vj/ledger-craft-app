@@ -1,8 +1,12 @@
-# Final independent working-tree review
+# Final independent review — immutable implementation and evidence
 
-Verdict: **CHANGES REQUESTED — evidence gates pending**, with no blocking source-correctness finding in the reviewed production patch.
+Verdict: **PASS for local source correctness and recorded acceptance.**
 
-Reviewed base: `77c560b`; uncommitted working tree on `codex/full-month-close-acceptance`. This is an independent source/evidence review, not a posted GitHub approval, head-commit approval or merge recommendation. No labels, commits or remote writes were made by the reviewer.
+Blockers: **none** in the reviewed implementation and local evidence. Should-fixes: **none**. Native-device checks, real provider/IRD operations and remote GitHub checks remain outside this local acceptance and are explicitly disclosed; they are not represented as completed.
+
+Reviewed: `77c560b3a192ea6630331095c8c37204328a8b99..5353e0a81f4db8b09ae52f720b49d2d7972997e7`. This replaces the earlier provisional working-tree review after its evidence gates were completed. The reviewer did not author the production changes, commit, push, approve, label or merge. This document's later report-only commit does not change the reviewed implementation; any further source delta requires review.
+
+Auto-merge: **not eligible**. Risk: **high**, including the CODEOWNERS expense tax path and large scope. Human review is required. GitHub API access returned Forbidden; PR head, CI status, remote threads and remote publication cannot be confirmed. This is a local verdict, not a recommendation that remote merge gates have passed.
 
 ## Acceptance and correctness
 
@@ -14,34 +18,46 @@ The requested close is explicitly opening balances → invoices → receipts →
 - `reports.engine.ts` nets only cash legs connected to imported statement/reconciliation actions. Persistent transaction/action/journal identities cover undo and rematch; dates stay attached to rows, monthly columns reuse the map, and original GL/TB lines remain intact. Unmatched imports remain present. Source receipts and customer refunds retain their gross economic amounts. The map is organisation-scoped in the repository.
 - Closing TB totals are calculated with the existing Decimal helper, added optionally to the contract for old response compatibility and shown independently from period turnover on web/mobile. Export columns explicitly separate opening, period and closing debit/credit sides. No frontend recomputation of money was introduced.
 - Refund matching requires a completed refund with a posted journal, organisation scope, exact amount, outgoing direction and matching bank. Existing match protection includes the refund journal identity. Undo reverses reconciliation accounting while leaving the original refund intact. Tenant isolation, wrong bank/direction, reuse, retry and undo/rematch have behavioral API coverage.
-- Mobile expense GST: enabling tax after loading a pending expense with zero rate restores the existing NZ15% default only when the saved rate is zero. Existing positive rates are retained. No new arithmetic/totals helper is introduced. The agent supplied failing-before/passing-after component evidence and is rerunning a fresh business UI scenario after discovering this defect.
+- Mobile expense GST: enabling tax after loading a pending expense with zero rate restores the existing NZ15% default only when the saved rate is zero. Existing positive rates are retained. No new arithmetic/totals helper is introduced. The red/green component evidence is retained and the complete fresh-company UI walkthrough now passes.
 
-## Blockers before final review-passed or merge recommendation
 
-1. Complete the final `ledgercraft-verify` command table with command, required Node version, exit code, summary and logs for all required jobs, or the exact permitted exception plus green matching CI. Targeted tests alone do not meet that repository gate. The complete table was not present when this review was written.
-2. Finish the fresh-company mobile walkthrough and retain its final report/reconciliation screenshots and assertions. At review time the old company's failed expense run was diagnostic evidence; it must not be represented as a successful month close. Mobile README correctly marks progress rather than complete acceptance.
-3. Include the required **Mobile screenshots / device checks** section and **Device checks pending** list. Current actual platform is Expo web Chromium390×844; installed iOS/Android execution is pending and must remain explicitly pending.
-4. Verify final review against a concrete committed PR head after the production patch and evidence freeze. This uncommitted review cannot establish the repository's head-commit gate.
+## Final delta review
 
-These are review/verification completion gates, not a request to hide or waive missing native evidence.
+The Hono conversation API becomes the default while retaining explicit `VITE_CONVERSATIONS_API=false` opt-out. Requests use the existing same-origin authenticated API path; no second session or client credential is introduced. Regression coverage asserts default/true/false and existing conversation behavior.
 
-## Export assumptions and remaining risks
+The web cash-flow account table now presents net movement rather than raw journal debit/credit turnover, consistent with the corrected economic cash-flow totals. It does not change ledger accounting. Eight mobile fixes are covered by retained red/green records: web date entry, closing TB labels, refund selection, equal-receipt source date/reference identity, expense GST activation, browser task storage, landscape TB PDF, and empty-string import rendering. Browser storage is confined to a non-sensitive task-dismissal preference; native SecureStore remains in use. The import conditional removes a raw empty text child without changing import data. Native and browser PDF paths retain their platform implementations with a landscape layout for TB; no new totals path or dependency is introduced.
 
-`financialReportRows` now returns eight TB columns. All inspected consumers use dynamic headers/cell indexes: web jsPDF, mobile web jsPDF, mobile native HTML and CSV. No hard-coded five-column debit/credit interpretation was found. Financial data remains exact decimal text. The wider table can become cramped in portrait PDF; inspect an actual downloaded TB PDF before claiming readable export layout. A PDF signature alone proves file creation, not legibility. CSV column semantics are directly asserted by the contracts test.
+The bootstrap/AGENTS/architecture additions accurately label this local acceptance and its setup/device/filing limitations. `.gitattributes` marks retained PDFs and compressed logs as binary and does not alter runtime behavior.
 
-`trialBalance.balanced` still denotes period debit/credit equality for compatibility; the new closing totals are distinct. Account-filtered reports may intentionally be unbalanced. Do not reinterpret period turnover14,605 as the closing TB13,680.
+## Independent final evidence checks
 
-This synthetic scenario uses NZD, standard15%, full input claim and invoice-basis monthly registration. It does not certify an actual taxpayer's GST eligibility, real IRD acceptance, provider integrations, payroll, inventory valuation or native-device behavior. No unrelated feature expansion, schema migration, new authentication, new invoice totals helper or float money accumulation was introduced.
+The reviewer independently parsed both `web/results.json` and `mobile/actual-reports.json` with Python Decimal and compared them to the pre-observation frozen `expected.json`. For both companies, P&L, gross balance-sheet controls, closing TB debit/credit sums and new totals, gross/net cash flow, every aging bucket/unallocated control, and invoice GST agree exactly. The mobile raw general ledger was separately summed from September30 through October31 by all nine frozen account roles; all match. The completed statements have five matches and zero difference; mobile bank lines are all reconciled and source dates agree with match proof.
 
-## Security, invariants and risk
+| Control | Web and Expo web observed | Independently expected |
+| --- | ---: | ---: |
+| Closing TB debit and credit, each | 13,680.00 | 13,680.00 |
+| Accrual profit | 1,500.00 | 1,500.00 |
+| Assets / liabilities / equity | 12,480 / 980 / 11,500 | 12,480 / 980 / 11,500 |
+| Cash opening / inflows / outflows / closing | 10,000 / 2,300 / 920 / 11,380 | 10,000 / 2,300 / 920 / 11,380 |
+| Receivables / payables, all current | 920 / 575 | 920 / 575 |
+| Invoice GST output / input / payable | 405 / 180 / 225 | 405 / 180 / 225 |
+| Statement matches / difference | 5 / 0 | 5 / 0 |
 
-Organisation scoping comes from existing authenticated contexts; refund lookup and cash-flow actions queries explicitly scope organisation. No new public token route, secret, Supabase path or second auth session was added. Money stays decimal text/Decimal; no SQL SUM/REAL money or applied-migration edit was found. Retry/reuse checks are preserved. Native-platform claims remain constrained to actual execution.
+The full verification table now records required Node versions, commands, exit0, summaries and linked logs. Retained output confirms web167 files/870 tests, API135/600, contracts44/162 and mobile146/658: **2,290 tests** across those four suites. Lint errors are zero with disclosed120 web and74 mobile warnings. Typechecks, builds, readiness/Worker checks and iOS bundle export are recorded as successful. The reviewer inspected the records rather than claiming to have independently rerun every full suite.
 
-Risk: **high** under `docs/PIPELINE.md` because the expense tax behavior/CODEOWNERS path is touched. Human review is required; auto-merge is not eligible. This patch also exceeds the small-change auto-merge limits.
+Source identity checks independently recomputed all359 web source hashes and all mobile metadata source hashes against the committed files. The uncompressed API log SHA matches its archived integrity record. All13 mobile export-file hashes independently match verification.json. All retained mobile phase records have zero page and unknown console errors; web phase records likewise contain no unexpected errors. Expected initial unauthenticated/onboarding diagnostics remain visible.
 
-## Evidence integrity
+Both web and mobile TB PDFs were independently rasterized and visually inspected. All eight columns, period totals14,605 and closing totals13,680 are present without clipping. Web portrait wraps headers; mobile landscape fits the wider table. Inspected CSV/PDF consumers dynamically handle the eight columns; no hard-coded five-column debit/credit assumption was found. Export checks retain actual downloads and extracted amounts rather than only PDF signatures. Native print/share code is tested and builds, but native share-sheet execution is still pending.
 
-API README explicitly identifies authenticated Hono/SQLite acceptance and chart creation as API setup. Mobile script/README identify the three chart-account creates as a setup-only API exception because mobile lacks chart creation. Financial documents and settlement operations are UI-driven; read-only API requests independently inspect responses. Web proof drives setup and source operations through browser UI. Scripts do not stub report responses. Screenshots labelled failure are diagnostic. No actual IRD submission or native device claim is made.
+## Scope and evidence honesty
+
+API acceptance is labelled authenticated Hono/SQLite. Both browser drivers operate real application screens against local services; report responses are not stubbed. Web runs the actual built artifact. Expo web runs Chromium390×844; it is not described as an installed iOS/Android app. The mobile chart-of-accounts creation gap is explicitly recorded as a setup-only API exception for three accounts; opening and operational financial transactions use UI. Read-only API checks verify the resulting records. The refreshed company replaces the earlier diagnostic failed expense run. The later GST screenshot capture after dependency reinstall is labelled read-only.
+
+The required Mobile screenshots/device-check section now lists installed iOS/Android checks pending. An iOS bundle export is correctly described as a build check. The GST record is a retained draft with no IRD submission or acceptance claim. The month-close scenario is NZD, standard15%, full input claim and synthetic; it is not statutory assurance or a company-wide fiscal-period lock. Shared report `trialBalance.balanced` retains its existing period-equality semantics, while closing totals are separate. Period turnover14,605 must not be interpreted as closing TB13,680.
+
+## Security and invariants
+
+Existing authenticated organisation scoping is retained for refund and action lookup. No new public token route, secret, hosted Supabase access or authentication session is introduced. Monetary accumulation uses the existing Decimal helper and decimal text; no SQL SUM/REAL, JS-float accumulation, duplicate invoice totals helper or applied-migration edit was found. Retry/reuse and source immutability remain covered by behavior assertions. No warning ceiling or failing assertion was deleted to achieve green checks.
 
 ## Reviewed production source files
 
@@ -55,15 +71,19 @@ API README explicitly identifies authenticated Hono/SQLite acceptance and chart 
 - `mobile/src/components/banking/ExistingSettlementPanel.tsx`
 - `mobile/src/components/reports/FinancialReportWorkspace.tsx`
 - `mobile/src/components/ui/SmartDatePicker.tsx`
+- `mobile/src/features/reports/model/financialReportHtml.ts`
+- `mobile/src/features/reports/model/financialReportShare.ts`
+- `mobile/src/features/reports/model/financialReportShare.web.ts`
+- `mobile/src/screens/banking/BankStatementImportScreen.tsx`
 - `mobile/src/screens/expenses/ExpenseEditScreen.tsx`
+- `mobile/src/screens/main/homeTaskStorage.ts`
 - `packages/contracts/src/reconciliation.ts`
 - `packages/contracts/src/report-export.ts`
 - `packages/contracts/src/report.ts`
 - `src/components/payment/PaymentForm.tsx`
 - `src/components/reconciliation/ReconciliationWorkspace.tsx`
+- `src/features/conversations/api/conversationsApi.ts`
 - `src/features/reconciliation/api/reconciliationApi.ts`
 - `src/pages/FinancialReportsPage.tsx`
 - `src/services/reconciliationService.ts`
 - `src/types/reconciliation.ts`
-
-Reviewed production patch SHA256: `4f2cca72e1591a8a8d6b45f388f51e41d237cc4681469e46333ad3bb2442a080`. Subsequent edits require a delta review.
