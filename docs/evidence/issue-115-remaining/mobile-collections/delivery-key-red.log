@@ -1,0 +1,38 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false --runInBand src/features/customer-statements/CollectionsWorkspace.test.tsx -t retains one delivery key
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/customer-statements/CollectionsWorkspace.test.tsx
+  ✕ retains one delivery key on a failed send retry and accepts only a confirmed success (355 ms)
+  ○ skipped loads the canonical statement and shares the exact received PDF data
+  ○ skipped shows empty and retryable errors and hides write actions for readers
+  ○ skipped shows unavailable-email settings and saves only an explicit owner review
+  ○ skipped shows empty invoice history and lets an accountant opt out using the shared API
+  ○ skipped shows a loading indicator while customers are unresolved and a readable empty worksheet
+  ○ skipped keeps reminder settings readable without exposing owner mutation actions
+
+  ● retains one delivery key on a failed send retry and accepts only a confirmed success
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: "7ec4bf68-2bbb-4fb4-864f-717bd0365621"
+    Received: "9e58aada-2b34-4b15-8f25-3078a8dd6734"
+
+      19 | it('shows empty invoice history and lets an accountant opt out using the shared API',async()=>{jest.mocked(collectionsApi.setOptOut).mockResolvedValue({optOut:true});const s=show(<InvoiceReminderPanel invoiceId="invoice"/>);await s.findByText('No automatic reminder steps recorded.');fireEvent(s.getByLabelText('Exclude this invoice from automatic reminders'),'valueChange',true);await waitFor(()=>expect(collectionsApi.setOptOut).toHaveBeenCalledWith('invoice','invoice',true));});
+      20 |
+    > 21 | it('retains one delivery key on a failed send retry and accepts only a confirmed success',async()=>{jest.mocked(collectionsApi.reminders).mockResolvedValue({...settings,emailAvailable:true,warnings:[]}as never);jest.mocked(collectionsApi.send).mockRejectedValueOnce(new Error('Delivery outcome needs review.')).mockResolvedValueOnce({sent:true}as never);const s=show(<CustomerStatementWorkspace initialCustomerId="buyer"/>);await s.findByText('Harbour Buyer');fireEvent.press(s.getByText('Prepare customer statement'));await s.findByText('Closing balance: NZD 600.00');fireEvent.press(s.getByText('Send statement email'));await s.findByText('Delivery outcome needs review.');fireEvent(s.getByLabelText('Choose customers for bulk statements'),'valueChange',true);fireEvent(s.getByLabelText('Send statement to Harbour Buyer'),'valueChange',true);fireEvent.press(s.getByText('Send statement email'));await s.findByText('Statement email accepted.');const calls=jest.mocked(collectionsApi.send).mock.calls;expect(calls).toHaveLength(2);expect(calls[0]?.[2]).toBe(calls[1]?.[2]);});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
+      22 | it('shows a loading indicator while customers are unresolved and a readable empty worksheet',async()=>{jest.mocked(collectionsApi.customers).mockReturnValue(new Promise(()=>{}));const s=show(<CustomerStatementWorkspace/>);expect(s.getByLabelText('Loading statement customers')).toBeTruthy();s.unmount();jest.mocked(collectionsApi.customers).mockResolvedValue([{id:'buyer',name:'Harbour Buyer',email:'buyer@example.test'}]as never);jest.mocked(collectionsApi.statement).mockResolvedValue({...statement,lines:[],openingBalance:'0.00',closingBalance:'0.00'}as never);const empty=show(<CustomerStatementWorkspace initialCustomerId="buyer"/>);await empty.findByText('Harbour Buyer');fireEvent.press(empty.getByText('Prepare customer statement'));await empty.findByText('No statement movements in this period.');});
+      23 | it('keeps reminder settings readable without exposing owner mutation actions',async()=>{mockPermissions.splice(0,mockPermissions.length,'settings.read');const s=show(<PaymentRemindersWorkspace/>);await s.findByText('Read-only settings. An owner or administrator must change automatic reminder schedules.');expect(s.queryByText('Save automatic reminder settings')).toBeNull();});
+      24 |
+
+      at Object.toBe (src/features/customer-statements/CollectionsWorkspace.test.tsx:21:1054)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 6 skipped, 7 total
+Snapshots:   0 total
+Time:        1.947 s, estimated 2 s
+Ran all test suites matching src/features/customer-statements/CollectionsWorkspace.test.tsx with tests matching "retains one delivery key".

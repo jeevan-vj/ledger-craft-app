@@ -8,6 +8,7 @@ import { Hono } from 'hono';
 import { z } from 'zod';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
+import { parseIdempotencyKey, hashIdempotencyPayload } from '../invoices/idempotency';
 import * as reconService from './reconciliation.service';
 
 export function reconciliationRoutes() {
@@ -39,7 +40,8 @@ export function reconciliationRoutes() {
     routes.post(`${prefix}/reconciliation-sessions`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createReconciliationSessionRequestSchema.parse(await c.req.json());
-      return c.json(await reconService.createSessionForUser(db, user.id, input), 201);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      return c.json(await reconService.createSessionForUser(db, user.id, input, key ? { key, method: 'POST', path: '/api/reconciliation-sessions', requestHash: hashIdempotencyPayload(input) } : undefined), 201);
     });
 
     routes.post(`${prefix}/reconciliation-sessions/:id/complete`, async (c) => {
@@ -67,7 +69,8 @@ export function reconciliationRoutes() {
     routes.post(`${prefix}/reconciliation-sessions/:id/adjustments`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createReconciliationAdjustmentRequestSchema.parse(await c.req.json());
-      return c.json(await reconService.createAdjustmentForUser(db, user.id, c.req.param('id'), input), 201);
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      return c.json(await reconService.createAdjustmentForUser(db, user.id, c.req.param('id'), input, key ? { key, method: 'POST', path: `/api/reconciliation-sessions/${c.req.param('id')}/adjustments`, requestHash: hashIdempotencyPayload(input) } : undefined), 201);
     });
 
     routes.get(`${prefix}/book-entries`, async (c) => {

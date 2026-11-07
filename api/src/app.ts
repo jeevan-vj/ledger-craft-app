@@ -5,6 +5,9 @@ import { requestLogging } from './middleware/logging';
 import { requestContext } from './middleware/request-context';
 import { sessionRoutes } from './modules/auth/session.routes';
 import { businessProfileRoutes } from './modules/business-profile/business-profile.routes';
+import { statementRoutes, publicStatementRoutes } from './modules/customer-statements/customer-statements.routes';
+import { reminderRoutes } from './modules/payment-reminders/payment-reminders.routes';
+import { bankFeedRoutes } from './modules/bank-feeds/bank-feeds.routes';
 import { customerRoutes } from './modules/customers/customers.routes';
 import { expenseRoutes } from './modules/expenses/expenses.routes';
 import { healthRoutes } from './modules/health/health.routes';
@@ -14,6 +17,7 @@ import { itemRoutes } from './modules/items/items.routes';
 import { paymentRoutes } from './modules/payments/payments.routes';
 import { saleRoutes } from './modules/sales/sales.routes';
 import { accountRoutes } from './modules/accounts/accounts.routes';
+import { bankWorkspaceRoutes } from './modules/bank/bank-workspace.routes';
 import { bankRoutes } from './modules/bank/bank.routes';
 import { reconciliationRoutes } from './modules/reconciliation/reconciliation.routes';
 import { taxRoutes } from './modules/tax/tax.routes';
@@ -56,6 +60,7 @@ function setExtendedDependencies(c: Context<AppEnv>, deps: AppDependencies) {
   if (deps.accountPreDeleteHooks) c.set('accountPreDeleteHooks', deps.accountPreDeleteHooks);
   if (deps.purgeOrganisation) c.set('purgeOrganisation', deps.purgeOrganisation);
   if (deps.removeOrganisationMembership) c.set('removeOrganisationMembership', deps.removeOrganisationMembership);
+  if (deps.recurringExecutionAuthorizer) c.set('recurringExecutionAuthorizer', deps.recurringExecutionAuthorizer);
   if (deps.scheduleRecurringAlarm) c.set('scheduleRecurringAlarm', deps.scheduleRecurringAlarm);
 }
 
@@ -94,12 +99,16 @@ export function createApp(deps: AppDependencies = {}) {
   });
 
   app.route('/', stripePublicRoutes());
+  if (deps.db) app.route('/', publicStatementRoutes(async () => deps.db!));
 
   app.use('*', authorizeProtectedRequest);
 
   app.route('/', healthRoutes());
   app.route('/', sessionRoutes());
   app.route('/', organisationRoutes());
+  app.route('/', statementRoutes({ mailer: deps.invoiceMailer, appUrl: deps.appUrl }));
+  app.route('/', reminderRoutes({ mailer: deps.invoiceMailer }));
+  app.route('/', bankFeedRoutes(deps.bankFeedConfig));
   app.route('/', customerRoutes());
   app.route('/', businessProfileRoutes());
   app.route('/', itemRoutes());
@@ -110,6 +119,7 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', paymentRoutes());
   app.route('/', saleRoutes());
   app.route('/', accountRoutes());
+  app.route('/', bankWorkspaceRoutes());
   app.route('/', bankRoutes());
   app.route('/', reconciliationRoutes());
   app.route('/', taxRoutes());

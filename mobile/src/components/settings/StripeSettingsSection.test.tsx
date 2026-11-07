@@ -19,6 +19,12 @@ describe('StripeSettingsSection', () => {
     expect(stripeApi.account).not.toHaveBeenCalled();
   });
 
+  it('shows pending approval without claiming a ready connected account is payment enabled',async()=>{
+    jest.mocked(getServerCapabilities).mockResolvedValue({email:'available',ai:'unavailable',stripe:'available'});
+    jest.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:false});
+    const view=render(<StripeSettingsSection canManage/>);expect(await view.findByText('Card payments await beta approval')).toBeTruthy();expect(view.queryByText('Ready to accept card payments')).toBeNull();
+  });
+
   it('starts mobile onboarding when available', async () => {
     jest.mocked(getServerCapabilities).mockResolvedValue({ email: 'available', ai: 'unavailable', stripe: 'available' });
     jest.mocked(stripeApi.account).mockResolvedValue({ status: 'not_connected', chargesEnabled: false, payoutsEnabled: false, detailsSubmitted: false, requirementsDue: [], disabledReason: null });

@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/reports/reportPdf.test.ts (2 tests) 66ms
+ ✓ src/features/reports/api/reportsApi.test.ts (1 test) 31ms
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (6 tests) 1267ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances  536ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  00:24:30
+   Duration  5.22s (transform 1.43s, setup 698ms, collect 4.70s, tests 1.36s, environment 2.84s, prepare 536ms)

@@ -1,0 +1,28 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_dd7d203f-87d1-4aa9-9d97-e144eb8d2fd0","route":"/api/auth/*","method":"POST","status":200,"durationMs":163}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_e93ff9de-d222-4db2-926c-c5157f14767d","route":"/api/expenses","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_826f97af-ba3d-48a6-86b5-e2a3f9da228e","route":"/api/expenses","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_b43e5f4c-c585-43c8-ab78-f466d7db69c9","route":"/api/expenses","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_14d9f596-36de-44d6-9caa-c0e4e877f8fe","route":"/api/expenses","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_45a991d6-1b40-465a-945a-8de93e59d62e","route":"/api/expenses","method":"POST","status":409,"durationMs":5}
+
+ ✓ src/modules/expenses/receipt-hash.test.ts (1 test) 1298ms
+   ✓ receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block  1297ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:09:03
+   Duration  5.41s (transform 1.91s, setup 32ms, collect 3.81s, tests 1.30s, environment 0ms, prepare 102ms)

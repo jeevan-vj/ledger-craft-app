@@ -1,0 +1,80 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_d3821a9b-6c3f-4d79-b12e-d535d1dabac6","route":"/api/auth/*","method":"POST","status":200,"durationMs":137}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_9f563810-97ed-4b2c-97eb-5b10a20ac92b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_2de579d1-610f-4375-a571-ce709914ce78","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_b8678762-45f4-4176-a411-264170705761","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_4a2b472b-c34a-4d26-8734-45ba6a0e72b1","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_bb278094-bdf8-478f-82a0-c97ccb8c1022","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_cff9f4e6-4c87-4973-8fb6-9c73d625c31c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_7631be7d-c375-4aa5-b346-89b59e32daf4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_67039846-9845-4832-9bfb-81899d51b97a","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_dd3b4943-77e0-4c82-bb09-f7829fa19dbd","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_0076b7be-c8c4-4f63-b748-aac353cc2932","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_4ab66af6-5d8d-4bcd-b422-532baa092d42","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":16}
+
+ ❯ src/modules/reconciliation/statement-idempotency.test.ts (1 test | 1 failed) 1311ms
+   × retains once-only statement setup and bank-side adjustments across lost-response retries 1310ms
+     → expected { …(20) } to deeply equal { …(20) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+AssertionError: expected { …(20) } to deeply equal { …(20) }
+
+- Expected
++ Received
+
+@@ -3,11 +3,11 @@
+    "bankAccountId": "776ea76f-fdb9-4e6e-aa8d-224a5084bf3b",
+    "bookClosingBalance": null,
+    "bookOpeningBalance": "0.00",
+    "createdAt": "2026-11-07T00:26:39.000Z",
+    "difference": "0.00",
+-   "id": "1f0d147b-50a2-4d93-9894-095e366aed76",
++   "id": "a97a70f6-a9a6-4c89-b980-1084f4f88d18",
+    "matchedCount": 0,
+    "notes": null,
+    "reconciledAt": null,
+    "statementClosingBalance": "-0.04",
+    "statementEndDate": "2026-10-31",
+
+ ❯ src/modules/reconciliation/statement-idempotency.test.ts:9:173
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:26:34
+   Duration  4.99s (transform 1.69s, setup 27ms, collect 3.36s, tests 1.31s, environment 0ms, prepare 115ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/reconciliation/statement-idempotency.test.ts

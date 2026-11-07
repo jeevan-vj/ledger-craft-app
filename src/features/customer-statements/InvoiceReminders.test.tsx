@@ -1,0 +1,13 @@
+import { beforeEach, expect, it, vi } from 'vitest';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { InvoiceReminders } from './InvoiceReminders';
+import { statementApi } from './statementApi';
+const auth=vi.hoisted(()=>({permissions:['banking.write']}));
+vi.mock('@/context/StableAuthContext',()=>({useAuth:()=>({me:auth})}));
+vi.mock('./statementApi',()=>({statementApi:{optOut:vi.fn(),saveOptOut:vi.fn(),logs:vi.fn()}}));
+const mount=()=>render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity}}})}><InvoiceReminders invoiceId="invoice-1"/></QueryClientProvider>);
+beforeEach(()=>{vi.clearAllMocks();auth.permissions=['banking.write'];vi.mocked(statementApi.optOut).mockResolvedValue({optOut:false});vi.mocked(statementApi.saveOptOut).mockResolvedValue({optOut:true});vi.mocked(statementApi.logs).mockResolvedValue({logs:[]});});
+it('keeps empty reminder history explicit and saves the invoice-specific opt-out',async()=>{mount();const checkbox=await screen.findByRole('checkbox');expect(await screen.findByText('No automatic reminders have been processed.')).toBeInTheDocument();fireEvent.click(checkbox);await waitFor(()=>expect(statementApi.saveOptOut).toHaveBeenCalledWith('invoices','invoice-1',true));});
+it('allows read-only history but prevents preference changes',async()=>{auth.permissions=['invoices.read'];vi.mocked(statementApi.logs).mockResolvedValue({logs:[{id:'log',invoiceId:'invoice-1',stepId:'week-overdue',scheduledDate:'2026-10-07',status:'skipped',reason:'email_unavailable',sentAt:null,createdAt:'2026-10-07T01:00:00Z'}]});mount();expect(await screen.findByRole('checkbox')).toBeDisabled();expect(await screen.findByText(/week-overdue.*email_unavailable/)).toBeInTheDocument();});
+it('shows load failures and an explicit retry',async()=>{vi.mocked(statementApi.logs).mockRejectedValue(new Error('Connection unavailable'));mount();expect(await screen.findByRole('alert')).toHaveTextContent('Reminder details could not load.');expect(screen.getByRole('button',{name:'Retry reminders'})).toBeInTheDocument();});

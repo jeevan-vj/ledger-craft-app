@@ -51,6 +51,7 @@ function toExpenseDto(
     customerName: names.customerName,
     vendorName: row.vendorName ?? null,
     receiptUrl: row.receiptUrl ?? null,
+    receiptHash: row.receiptHash ?? null,
     paymentMethod: row.paymentMethod ?? null,
     notes: row.notes ?? null,
     gstTreatment: row.gstTreatment,
@@ -211,6 +212,7 @@ export async function insertExpense(
       customerId: input.customerId ?? null,
       vendorName: input.vendorName ?? null,
       receiptUrl: input.receiptUrl ?? null,
+      receiptHash: input.receiptHash ?? null,
       paymentMethod: input.paymentMethod ?? null,
       notes: input.notes ?? null,
       gstTreatment: input.gstTreatment ?? 'standard',
@@ -247,7 +249,8 @@ export async function updateExpense(
   if (input.accountId !== undefined) patch.accountId = input.accountId;
   if (input.customerId !== undefined) patch.customerId = input.customerId;
   if (input.vendorName !== undefined) patch.vendorName = input.vendorName;
-  if (input.receiptUrl !== undefined) patch.receiptUrl = input.receiptUrl;
+  if (input.receiptUrl !== undefined) { patch.receiptUrl = input.receiptUrl; if (input.receiptUrl !== existing.receiptUrl && input.receiptHash === undefined) patch.receiptHash = null; }
+  if (input.receiptHash !== undefined) patch.receiptHash = input.receiptHash;
   if (input.paymentMethod !== undefined) patch.paymentMethod = input.paymentMethod;
   if (input.notes !== undefined) patch.notes = input.notes;
   if (input.gstTreatment !== undefined) patch.gstTreatment = input.gstTreatment;

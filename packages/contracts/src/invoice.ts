@@ -164,6 +164,7 @@ export const invoiceSchema = z.object({
   paymentStatus: z.string(),
   taxInclusive: z.boolean(),
   status: invoiceStatusSchema,
+  effectiveStatus: invoiceStatusSchema.optional(),
   notes: z.string().nullable(),
   terms: z.string().nullable(),
   currency: z.string(),

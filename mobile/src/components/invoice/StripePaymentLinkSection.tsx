@@ -19,7 +19,7 @@ export function StripePaymentLinkSection({ invoiceId, currency, status, balanceD
 
   useEffect(() => {
     if (!eligible) return;
-    void getServerCapabilities().then((capabilities) => setAvailable(capabilities.stripe === 'available'));
+    void getServerCapabilities().then(async capabilities => { if (capabilities.stripe !== 'available') { setAvailable(false); return; } const account = await stripeApi.account(); setAvailable(account.paymentsApproved !== false); }).catch(()=>setAvailable(false));
   }, [eligible]);
 
   const createLink = async () => {

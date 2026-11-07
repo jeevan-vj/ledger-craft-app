@@ -1,0 +1,39 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (7 tests | 1 failed) 12051ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  870ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  920ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  1520ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  2740ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  2256ms
+   ✓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row  1959ms
+   × Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts 1782ms
+     → expected +0 to be 1 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:72:27
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  00:09:29
+   Duration  13.58s (transform 517ms, setup 24ms, collect 1.21s, tests 12.05s, environment 0ms, prepare 96ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts

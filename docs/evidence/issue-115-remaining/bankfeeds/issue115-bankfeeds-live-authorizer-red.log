@@ -1,0 +1,48 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (11 tests | 1 failed | 10 skipped) 1814ms
+   ↓ Personal App bank feeds > does not report placeholders or an unscoped global token as a configured connection
+   ↓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens
+   ↓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount
+   ↓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records
+   ↓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records
+   ↓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company
+   ↓ Personal App bank feeds > scheduled sync imports actual configured-company transactions after the owner selects another company
+   ↓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row
+   ↓ Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts
+   ↓ Personal App bank feeds > trusted pre-delete revokes its configured token after membership removal and purges only that company metadata
+   × Personal App bank feeds > does not use a provider credential or mutate books when the trusted live daily authorizer denies access 1812ms
+     → expected +0 to be 1 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > does not use a provider credential or mutate books when the trusted live daily authorizer denies access
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:105:18
+    103|   await seed(db);const provider=gateway();let reads=0,checks=0;provide…
+    104|   await runDueBankFeeds(db,config,now,async identity=>{checks++;expect…
+    105|   expect(checks).toBe(1);expect(reads).toBe(0);expect(await db.select(…
+       |                  ^
+    106|  }));
+    107|
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 skipped (11)
+   Start at  00:25:21
+   Duration  4.23s (transform 859ms, setup 43ms, collect 1.99s, tests 1.81s, environment 0ms, prepare 101ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts -t 'trusted live daily authorizer'

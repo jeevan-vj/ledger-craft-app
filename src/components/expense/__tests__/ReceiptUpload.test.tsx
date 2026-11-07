@@ -29,7 +29,7 @@ vi.mock('@/services/openaiReceiptService', () => ({
   },
 }));
 
-vi.mock('../ReceiptScanner', () => ({ ReceiptScanner: ({ onScanComplete }: { onScanComplete: (result: ReceiptScanResult, url?: string) => void }) => <button onClick={() => onScanComplete({ merchantName: 'Supplier', date: null, total: 230, tax: 30, subtotal: 200, items: [], paymentMethod: 'card', suggestedCategory: null, confidence: 1, notes: null }, 'https://example.test/scanned-receipt.jpg')}>Finish scan</button> }));
+vi.mock('../ReceiptScanner', () => ({ ReceiptScanner: ({ onScanComplete }: { onScanComplete: (result: ReceiptScanResult, url?: string) => void }) => <button onClick={() => onScanComplete({ merchantName: 'Supplier', date: null, total: '230.00', tax: '30.00', subtotal: '200.00', items: [], paymentMethod: 'card', suggestedCategory: null, confidence: 1, notes: null }, 'https://example.test/scanned-receipt.jpg')}>Finish scan</button> }));
 
 describe('ReceiptUpload', () => {
   const mockOnReceiptChange = vi.fn();

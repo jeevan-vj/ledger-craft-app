@@ -426,6 +426,7 @@ export interface Expense {
   account?: Account;
   vendorName?: string | null;
   receiptUrl?: string | null;
+  receiptHash?: string | null;
   expenseDate: string;
   status: ExpenseStatus;
   isBillable: boolean;

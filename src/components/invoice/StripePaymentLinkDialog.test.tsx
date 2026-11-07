@@ -4,11 +4,13 @@ import { StripePaymentLinkDialog } from './StripePaymentLinkDialog';
 import { stripeApi } from '@/features/stripe/api/stripeApi';
 
 vi.mock('@/features/stripe/api/stripeApi', () => ({
-  stripeApi: { listPaymentLinks: vi.fn(), createPaymentLink: vi.fn(), paymentLink: vi.fn(), cancelPaymentLink: vi.fn() },
+  stripeApi: { account: vi.fn(), listPaymentLinks: vi.fn(), createPaymentLink: vi.fn(), paymentLink: vi.fn(), cancelPaymentLink: vi.fn() },
 }));
 
 describe('StripePaymentLinkDialog', () => {
-  beforeEach(() => { vi.clearAllMocks(); vi.mocked(stripeApi.listPaymentLinks).mockResolvedValue({ items: [] }); });
+  beforeEach(() => { vi.clearAllMocks(); vi.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:true}); vi.mocked(stripeApi.listPaymentLinks).mockResolvedValue({ items: [] }); });
+
+  it('blocks link creation while the company awaits beta approval',async()=>{vi.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:false});render(<StripePaymentLinkDialog open onOpenChange={vi.fn()} invoice={{id:'invoice1',invoiceNumber:'INV1',balanceDue:115,currency:'NZD'}}/>);expect(await screen.findByText('Card payments await beta approval')).toBeInTheDocument();expect(screen.getByRole('button',{name:/create payment link/i})).toBeDisabled();});
 
   it('shows the exact platform fee and a scannable hosted-payment link', async () => {
     vi.mocked(stripeApi.createPaymentLink).mockResolvedValue({

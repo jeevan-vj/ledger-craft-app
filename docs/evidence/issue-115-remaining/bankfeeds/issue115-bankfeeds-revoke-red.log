@@ -1,0 +1,43 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/akahu.gateway.test.ts (5 tests | 1 failed) 189ms
+   ✓ Akahu HTTP boundary > keeps credentials server side, follows bounded cursor pagination and uses string monetary lexemes 70ms
+   ✓ Akahu HTTP boundary > treats a provider 401 as revoked and never leaks the response or secret 6ms
+   ✓ Akahu HTTP boundary > refuses unexpected cursor origins and looping pagination 1ms
+   ✓ Akahu HTTP boundary > does not expose malformed provider payloads in validation errors 24ms
+   × Akahu HTTP boundary > requires provider acknowledgement of revocation and uses the token DELETE endpoint 62ms
+     → promise resolved "undefined" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/akahu.gateway.test.ts > Akahu HTTP boundary > requires provider acknowledgement of revocation and uses the token DELETE endpoint
+AssertionError: promise resolved "undefined" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+undefined
+
+ ❯ src/modules/bank-feeds/akahu.gateway.test.ts:33:34
+     31|     let request:Request|undefined;
+     32|     const gateway=new AkahuGateway('app','token',async input=>{request…
+     33|     await expect(gateway.revoke()).rejects.toThrow('not acknowledged');
+       |                                  ^
+     34|     expect(request!.method).toBe('DELETE');expect(new URL(request!.url…
+     35|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  00:13:16
+   Duration  1.41s (transform 260ms, setup 105ms, collect 164ms, tests 189ms, environment 0ms, prepare 380ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/akahu.gateway.test.ts

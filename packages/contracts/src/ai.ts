@@ -2,16 +2,16 @@ import { z } from 'zod';
 
 export const receiptScanItemSchema = z.object({
   description: z.string(),
-  quantity: z.number(),
-  price: z.number(),
+  quantity: z.string().regex(/^\d+(\.\d+)?$/),
+  price: z.string().regex(/^\d+(\.\d+)?$/),
 });
 
 export const receiptScanResultSchema = z.object({
   merchantName: z.string().nullable(),
   date: z.string().nullable(),
-  total: z.number().nullable(),
-  tax: z.number().nullable(),
-  subtotal: z.number().nullable(),
+  total: z.string().regex(/^\d+(\.\d{1,2})?$/).nullable(),
+  tax: z.string().regex(/^\d+(\.\d{1,2})?$/).nullable(),
+  subtotal: z.string().regex(/^\d+(\.\d{1,2})?$/).nullable(),
   items: z.array(receiptScanItemSchema),
   paymentMethod: z.enum(['cash', 'card', 'other']).nullable(),
   suggestedCategory: z.string().nullable(),
@@ -22,7 +22,8 @@ export const receiptScanResultSchema = z.object({
 
 export const scanReceiptRequestSchema = z
   .object({
-    imageBase64: z.string().min(1),
+    imageBase64: z.string().min(1).max(1_400_000),
+    exactAmounts: z.boolean().optional(),
     contentType: z.string().min(1).optional(),
   })
   .strict();

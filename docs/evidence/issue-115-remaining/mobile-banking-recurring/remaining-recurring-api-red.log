@@ -1,0 +1,53 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_4d6220dd-99ad-44e5-bf48-03db07c65396","route":"/api/auth/*","method":"POST","status":200,"durationMs":201}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_84bade94-640c-46d8-a971-f06ad9a5c341","route":"/api/auth/*","method":"POST","status":200,"durationMs":142}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_90fba360-2cd3-4f36-80f8-9a2de131d7e2","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":85}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_a7faac08-d09a-4b4a-aaa4-701252c54017","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":97}
+
+ ❯ src/modules/recurring/recurring.idempotency.test.ts (1 test | 1 failed) 2959ms
+   × replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate 2958ms
+     → expected { …(12) } to deeply equal { …(12) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+AssertionError: expected { …(12) } to deeply equal { …(12) }
+
+- Expected
++ Received
+
+@@ -1,8 +1,8 @@
+  {
+    "createdAt": "2026-11-07T00:11:28.000Z",
+-   "id": "a9be967a-9ced-45e1-b7ff-6ba5b68f04c6",
++   "id": "bdca5285-3281-42fd-ac7d-6a2b96b3c933",
+    "kind": "expense",
+    "lastRunAt": null,
+    "name": "Monthly rent",
+    "nextRunAt": "2027-01-30T20:00:00.000Z",
+    "occurrencesCreated": 0,
+
+ ❯ src/modules/recurring/recurring.idempotency.test.ts:17:155
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:11:20
+   Duration  8.51s (transform 2.48s, setup 36ms, collect 5.20s, tests 2.96s, environment 0ms, prepare 72ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/recurring/recurring.idempotency.test.ts

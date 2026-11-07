@@ -1,0 +1,78 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_7da473c3-6992-4ef3-9e54-ef2d5b63f5bc","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_265af423-53db-4323-ba1e-93e7479a388f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":18}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_c42f6cd2-aaa8-40e3-8961-9d3d6e7dd058","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_70debe87-e6e7-4ebd-adf5-d1d3b6bb8c20","route":"/api/invoices","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_498a80ce-672f-4d6a-9a46-e2af0b1f1180","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":29}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_49b3ea6d-e986-41d8-8713-a07f8da903b5","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_5d4c03f9-6c69-4403-bbda-476515302d81","route":"/api/auth/*","method":"POST","status":200,"durationMs":105}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_3d2560f8-04b3-4a35-8ed1-16267ffcbde9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":19}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_ed26cce7-dc87-4078-a2af-67b14b22f08c","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_407f33c7-18b1-41ac-93b0-7d25ac4626e9","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_9602de41-a186-40c0-96ad-ad8fdd23c593","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_48294c33-f7ed-4f06-912c-917f04e67d15","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts (10 tests | 1 failed | 9 skipped) 1315ms
+   ↓ customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+   ↓ customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+   ↓ customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+   ↓ customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+   ↓ customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+   ↓ customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+   ↓ customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+   ↓ customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+   ↓ customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+   × customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation 1314ms
+     → expected 1791576060000 to be null
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+AssertionError: expected 1791576060000 to be null
+
+- Expected:
+null
+
++ Received:
+1791576060000
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts:200:134
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  00:28:48
+   Duration  5.05s (transform 1.76s, setup 25ms, collect 3.45s, tests 1.32s, environment 0ms, prepare 104ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/customer-statements/customer-statements.test.ts -t 'requires the live Identity'

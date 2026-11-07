@@ -1,0 +1,22 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/banking/api/bankingApi.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/banking/api/bankingApi.test.ts
+  ✓ refuses offline bank mutations before any fetch, without queueing a later posting (2 ms)
+  bankingApi
+    ✓ creates an account without converting exact decimal strings (6 ms)
+    ✓ lists transactions for one account with an encoded query (2 ms)
+    ✓ deletes an account through the authenticated API client (1 ms)
+    ✓ posts exact transfers with an idempotency key (1 ms)
+    ✓ imports parsed statement rows without converting exact money (1 ms)
+    ✓ constructs reconciliation feed filters without changing exact values (1 ms)
+    ✓ accepts a multi-document match with exact decimal strings (1 ms)
+    ✓ undoes reconciliation through the audited server endpoint (1 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       9 passed, 9 total
+Snapshots:   0 total
+Time:        1.084 s
+Ran all test suites matching src/features/banking/api/bankingApi.test.ts.

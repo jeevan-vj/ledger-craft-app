@@ -4,9 +4,11 @@ import { Check, CircleAlert, CreditCard, Loader2, RefreshCw } from 'lucide-react
 import { stripeApi } from '@/features/stripe/api/stripeApi';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { StripeOperationsPanel } from './StripeOperationsPanel';
 import { toast } from 'sonner';
 
 function statusCopy(account: StripeAccountStatus) {
+  if (account.status === 'active' && account.paymentsApproved === false) return { title: 'Card payments await beta approval', detail: 'Stripe setup is complete. Contact the platform owner to approve card payments for this company before creating a payment link.' };
   if (account.status === 'active') return { title: 'Ready to accept card payments', detail: 'Customers can pay NZD invoices securely through Stripe Checkout.' };
   if (account.status === 'not_connected') return { title: 'Accept card payments', detail: 'Connect a Stripe test account to take invoice payments. LedgerCraft keeps the configured platform margin.' };
   if (account.status === 'onboarding') return { title: 'Finish Stripe setup', detail: 'Stripe still needs business or bank details before payments and payouts can be enabled.' };
@@ -15,6 +17,7 @@ function statusCopy(account: StripeAccountStatus) {
 
 export function StripePaymentsPanel() {
   const [account, setAccount] = useState<StripeAccountStatus | null>(null);
+  const [review, setReview] = useState(false);
   const [busy, setBusy] = useState(false);
   const load = async () => {
     try {
@@ -49,6 +52,8 @@ export function StripePaymentsPanel() {
       </div>
       {account.requirementsDue.length > 0 && <p className="text-sm text-muted-foreground">{account.requirementsDue.length} Stripe requirement{account.requirementsDue.length === 1 ? '' : 's'} still due.</p>}
       <div className="flex flex-wrap gap-3">{account.status !== 'active' && <Button type="button" disabled={busy} onClick={() => void onboard()}>{busy && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{account.status === 'not_connected' ? 'Set up Stripe payments' : 'Continue Stripe setup'}</Button>}{account.status !== 'not_connected' && <Button type="button" variant="outline" disabled={busy} onClick={() => void refresh()}><RefreshCw className="mr-2 h-4 w-4" />Refresh status</Button>}</div>
+      {account.status !== 'not_connected' && <Button variant="outline" onClick={()=>setReview(value=>!value)}>Review Stripe balances and payments</Button>}
+      {review && <StripeOperationsPanel />}
       <p className="text-xs text-muted-foreground">Stripe securely collects verification and payout details. LedgerCraft never stores your Stripe password or bank credentials.</p>
     </CardContent>
   </Card>;

@@ -1,0 +1,77 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_1a4fe35c-c763-41d1-98c9-7a421cd5f66a","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_961abbc9-837b-4783-a88c-a7d7ea5bec31","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_fb1fc6c8-ad6b-4ea5-bb45-d659c80c0e97","route":"/api/me","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_ee648743-16dc-4530-b338-c9602b6a9130","route":"/api/objects","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_a7384075-050e-4101-b985-1444a55b08c5","route":"/api/objects","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_47a2ceb3-0ef9-47eb-97d1-f1ff4fd4c4ef","route":"/api/objects/receipts","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_1e3350a7-b346-43d5-a32c-421b9593418a","route":"/api/objects","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_3b5ef440-c788-421f-89c8-1b5bbec7c021","route":"/api/objects","method":"POST","status":401,"durationMs":1}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_197115e7-fd99-4024-8711-493dea2fc60c","route":"/api/auth/*","method":"POST","status":200,"durationMs":111}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_df509274-fc2e-4411-9386-8b240afde8f6","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_edac3cce-ccf8-4063-934c-cfd8d37c218b","route":"/api/objects","method":"POST","status":400,"durationMs":5}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_c15bd732-facb-49ed-b905-816d031657de","route":"/api/objects","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_6669e994-f2ef-4e82-b63f-2e47ff00b6f2","route":"/api/objects","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_20738391-2b51-478f-b677-e164368dd525","route":"/api/objects","method":"GET","status":404,"durationMs":4}
+
+ ❯ src/modules/storage/objects.test.ts (3 tests | 1 failed) 2461ms
+   × object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes 1268ms
+     → expected 404 to be 201 // Object.is equality
+   ✓ object routes > unauthenticated GET/POST /api/objects return 401 10ms
+   ✓ object routes > stores bytes, returns them, and hides them from other orgs  1181ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+AssertionError: expected 404 to be 201 // Object.is equality
+
+- Expected
++ Received
+
+- 201
++ 404
+
+ ❯ src/modules/storage/objects.test.ts:47:132
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:22:10
+   Duration  6.74s (transform 1.85s, setup 34ms, collect 3.85s, tests 2.46s, environment 0ms, prepare 135ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/storage/objects.test.ts

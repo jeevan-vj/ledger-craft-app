@@ -1,0 +1,13 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/expenses/prepareReceiptPhoto.web.test.ts src/components/expense/ReceiptScanner.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/components/expense/ReceiptScanner.test.tsx
+PASS src/features/expenses/prepareReceiptPhoto.web.test.ts
+
+Test Suites: 2 passed, 2 total
+Tests:       4 passed, 4 total
+Snapshots:   0 total
+Time:        2.293 s
+Ran all test suites matching src/features/expenses/prepareReceiptPhoto.web.test.ts|src/components/expense/ReceiptScanner.test.tsx.

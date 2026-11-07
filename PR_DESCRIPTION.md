@@ -1,44 +1,46 @@
-# Complete the selected GST settings, audited returns and invoice-compliance scope
+# Add collections, cash reporting, receipt capture and mobile business workflows
 
-GST settings were not persisted, the tax dashboard used a browser quarterly calendar, and return creation could retain caller-supplied totals. NZ invoice documents also omitted registration-effective GST identity and buyer-information checks. Web and Expo now use saved registration choices, server periods and exact canonical calculations for invoice, payments and hybrid bases. Draft revisions retain originals; filed records are immutable, with read-only original-settings recalculation and exact PDF exports. Filing records require explicit confirmation of a separate myIR submission; the app does not submit to IRD.
+Businesses could not prepare customer statements or automate reminders, cash P&L omitted settled invoice revenue, and mobile banking/recurring/reporting workflows lacked key controls. Web and Expo now expose retained statements/PDFs, reminder preferences/history, server period-column reports, reviewed receipt capture, full recurring templates and mapped CSV/reconciliation/FX workflows. Bank imports update displayed balances once, and background jobs remain bound to the owning company with current Identity permission checks.
 
-This is the user-selected scope of epic #115: Refs #84, #85, #111, #24. It does not complete or close the entire epic. It also fixes inclusive invoice preview/save parity and the Worker health endpoint's false-positive email capability for placeholder credentials.
+Refs #115, #110, #112, #25, #113, #21, #22, #28, #108, #87. The earlier GST implementation is the parent commit. #114 stays parked by explicit user instruction. This does **not** close the entire epic: Akahu Full App, several Stripe money paths, live providers and native acceptance remain open.
 
-## Accounting and browser evidence
+The change also adds an internal gated Akahu Personal App adapter and Stripe provider-retrieved verification/refund operations, beta approval, persistent rate limits and read-only daily discovery. No real provider transaction, email, deployment, filing or store release occurred.
 
-Independent synthetic books match expected invoice/payments/hybrid net GST30/15/90; separate canonical snapshot books match75/36/111. Actual web UI checks135 invoice,141 payments and171 hybrid; a late receipt changes current hybrid to186 and original-payments recalculation to156 while the filed141 stays unchanged. Expo UI/PDF checks45/120/105. These are separate labelled companies, not alternate results for one dataset.
+## Accounting evidence
 
-Tests cover registration ancestry through expense/invoice/bill reversals and credit refunds, eligible versus operational purchase gross, unknown zero-tax classification, unsupported tax rates, fingerprint staleness, client tampering, immutable revisions, future/overlapping filing, tenant isolation and permissions. The invoice boundary check preserves inclusive1,000 = net869.57 + GST130.43;1,000.01 and USD700 at reviewed NZD1,120 require buyer identification. All six web templates and mobile generators have registration-aware coverage.
+- Web statement:230 +1,150 −575 −115 =690; later receipt115 changes current books to575 while the shared snapshot/PDF retain690. Expo statement1,000 −400 =600.
+- Consultancy accrual profit1,500 −300 =1,200; cash profit700 −300 =400. Assets6,425 = liabilities225 + equity6,200; cash5,460; receivables920. Monthly columns agree to standalone periods.
+- Recurring month-end Jan31→Feb28→Mar31 generates four unique documents; invoice115.02/GST15. CSV imports one new12.10 and skips one duplicate; reviewed16NZD→10USD leaves source902.13 and destination10.00.
+- Stripe simulator:100 payment −4.30 platform fee =95.70 clearing. A refund request waits for verified webhook confirmation; confirmed refund restores invoice100 and clearing0.
 
-[Expected/actual working papers, epic status, screenshots, PDFs and raw logs](docs/evidence/issue-115/README.md). [Independent local code review](docs/evidence/issue-115/REVIEW.md). Browser screenshots use real local Hono/SQLite, desktop1440×900 and phone390×844; Expo web is not installed-device acceptance.
+[Working papers, remaining work, screenshots, PDFs and raw logs](docs/evidence/issue-115-remaining/README.md). Actual desktop1440×900, phone390×844 and Expo browser flows passed against local Hono/SQLite. Most web captures useb6264eb0537c; the report-table-only responsive correction is verified ona00595275d99. No static mock is represented as real persistence or installed-device evidence.
 
-## Local verification
+## Verification
 
-pnpm11.19.0. All results are actual local checks; remote CI remains to be checked after PR creation.
+pnpm11.19.0; all checks below exited0 locally. Remote CI is separate.
 
 | Command | Node | Actual result |
 | --- | --- | --- |
-| `pnpm lint` |22.23.4 |Exit0;0 errors /117 warnings |
-| `pnpm type-check` |22.23.4 |Exit0; app and Node projects clean |
-| `pnpm test:run` |22.23.4 |154 files /840 tests passed |
-| `pnpm build` |22.23.4 |Exit0; postbuild0.0.8 /864ff69fb4d9 |
-| `pnpm test:api` |24.22.1 |107 files /508 tests passed |
-| `pnpm test:contracts` |24.22.1 |38 files /149 tests passed |
-| `pnpm type-check:api` |24.22.1 |Exit0; API and contracts clean |
-| Exact CI readiness group / web sourcemap checker |22.23.4 |Exit0;23+3 tests passed |
-| `verify-akaunting-core.mjs --report` |22.23.4 |Exit0; open core parity still reported |
-| Mobile lint / types / Jest |20.20.2 |Exit0;0 errors /74 warnings;123 suites /588 tests passed |
-| Mobile `expo export --platform ios` |20.20.2 |Exit0; Hermes bundle exported |
-| SQLite migration verification |22.23.4 |Exit0; schema/decimal/tenant constraints pass |
-| Actual local Worker health HTTP test |22.23.4 |Exit0;4 passing entries |
-| Pages compile / Worker TypeScript / Worker dry-run |22.23.4 |Exit0; nothing deployed |
+| `pnpm test:api` |24.22.1 |133 files /596 tests passed |
+| `pnpm test:contracts` |24.22.1 |44 files /161 tests passed |
+| `pnpm type-check:api` |24.22.1 |API/contracts clean |
+| `pnpm test:run` |22.23.4 |165 files /866 tests passed |
+| `pnpm type-check` |22.23.4 |App/Node projects clean |
+| `pnpm lint` |22.23.4 |0 errors /120 warnings |
+| `pnpm build` |22.23.4 |Verified0.0.8 /a00595275d99;314 app source-map entries match |
+| Mobile Jest /types /lint |20.20.2 |143 suites /647 tests passed;0 errors /74 warnings |
+| Mobile iOS export |20.20.2 |Hermes bundle exported; no installed-device run |
+| CI readiness /web sourcemap checker |22.23.4 |23+3 tests passed; parity report exits0 with gaps still reported |
+| SQLite verification |22.23.4 |Schema/decimal/tenant constraints pass |
+| Pages /Worker types /Worker dry-run |22.23.4 |Compiled; nothing deployed |
+| Actual local Worker readiness +Identity/Ledger RPC |22.23.4 |5 passing entries |
 
-The four full product suites total2,085 passing tests. Jest retains an existing worker-teardown warning; no `forceExit`, skipped failing case, quality-gate suppression or CI modification was introduced. All299 web application source-map entries match final source. Invoice browser evidence records build6489cf661d77; the subsequent CSS-only GST button wrapping fix is represented by final GST build864ff69fb4d9. Initial red/diagnostic runs and fixture corrections are disclosed in the evidence rather than counted as passes.
+The four complete product suites total2,270 passing tests. Existing Jest worker teardown, lint and build warnings remain visible. No quality gate was suppressed, no forceExit flag was introduced, and original fixture assertions were retained. Earlier diagnostic failures and authentic red/green regressions are disclosed in the evidence.
 
-## Risk, rollout and limits
+## Review, rollout and risk
 
-**Risk: high.** Migration/schema, tax/financial calculations, invoice issuance, shared DTOs, permissions and Worker paths require human/CODEOWNERS review. Independent local production review passed; its reviewer authored four reproducer tests at the builder's request, disclosed in the report. No external approval or auto-merge eligibility is claimed.
+**Risk: high.** Shared DTOs, migration/schema, money/reporting, auth permissions, background jobs and Worker paths need human/CODEOWNERS review. [Independent initial review and builder resolutions](docs/evidence/issue-115-remaining/REVIEW.md) disclose reviewer-authored reproducer tests. All confirmed findings are fixed and tested, including cross-company scheduling, actual fee-event shape, accepted-email cancellation/edit races and stale imported bank balances. Final independent re-review remains pending after the review session was interrupted; no author approval or auto-merge eligibility is claimed.
 
-Migration0028 adds four nullable profile columns; historical SQL and source financial records stay unchanged. Existing unknown registration choices need explicit review. Confirm real IRD basis/frequency/calendar and classification before preparing a return. Unsupported mapping blocks filing rather than inventing myIR boxes. Current-law/accountant acceptance, native iOS/Android print/share and background behavior, live providers and deployment remain unverified. Calendar source limitations and mapping provenance are recorded in the evidence.
+Migrations0029–0034 are additive/generated; applied historical SQL is unchanged. Receipt APIs retain legacy numeric scan responses unless modern clients opt into exactAmounts. A reviewed rollback must retain schema, financial history, feed-source compatibility and required provider revocation/webhook handlers; a blind code revert can reject new feed rows. Disable new provider operations before rollback rather than deleting history.
 
-Rollback requires a reviewed application revert while retaining additive migration0028 and financial audit history. No destructive down migration, real filing, production correction or provider message is included.
+Remaining work is explicit: Akahu multi-user OAuth/accreditation/native lock; Stripe payout/dispute/processing-fee/excess-capture accounting, replaced-link lifecycle and QR polling acceptance; production provider configuration/live acceptance; installed iOS/Android file/camera/print/share, keyboard and background QA. The Stripe evidence includes concrete journal proposals for the unresolved financial policies. #114 remains parked. No issue is automatically closed by this local wave.

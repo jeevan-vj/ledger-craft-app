@@ -1,0 +1,31 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/expenses/receiptDuplicate.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/expenses/receiptDuplicate.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './receiptDuplicate' from 'src/features/expenses/receiptDuplicate.test.ts'
+
+    However, Jest was able to find:
+        './receiptDuplicate.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { receiptDuplicate } from './receiptDuplicate';
+        | ^
+      2 | describe('receipt duplicate review',()=>{
+      3 |  it('warns for a saved file digest or same vendor, date and exact gross amount',()=>{
+      4 |   expect(receiptDuplicate({receiptHash:'a',vendorName:'Supplier',expenseDate:'2026-10-01',amount:'115.00'},[{receiptHash:'a'}])).toBe(true);
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/expenses/receiptDuplicate.test.ts:1:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.697 s
+Ran all test suites matching src/features/expenses/receiptDuplicate.test.ts.

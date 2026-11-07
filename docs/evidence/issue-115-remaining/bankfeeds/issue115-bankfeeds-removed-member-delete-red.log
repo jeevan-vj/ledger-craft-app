@@ -1,0 +1,35 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (10 tests | 1 failed | 9 skipped) 2686ms
+   ↓ Personal App bank feeds > does not report placeholders or an unscoped global token as a configured connection
+   ↓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens
+   ↓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount
+   ↓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records
+   ↓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records
+   ↓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company
+   ↓ Personal App bank feeds > scheduled sync imports actual configured-company transactions after the owner selects another company
+   ↓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row
+   ↓ Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts
+   × Personal App bank feeds > trusted pre-delete revokes its configured token after membership removal and purges only that company metadata 2685ms
+     → The configured Personal App owner no longer has access to this company.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > trusted pre-delete revokes its configured token after membership removal and purges only that company metadata
+Error: The configured Personal App owner no longer has access to this company.
+ ❯ src/modules/bank-feeds/bank-feeds.service.ts:20:160
+
+ ❯ src/db/local.ts:79:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  00:25:05
+   Duration  9.14s (transform 2.15s, setup 71ms, collect 5.23s, tests 2.69s, environment 0ms, prepare 415ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts -t 'trusted pre-delete'

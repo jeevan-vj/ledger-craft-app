@@ -85,6 +85,7 @@ function toExpense(dto: ExpenseDto): Expense {
       : undefined,
     vendorName: dto.vendorName,
     receiptUrl: dto.receiptUrl,
+    receiptHash: dto.receiptHash,
     paymentMethod: dto.paymentMethod as PaymentMethod | null,
     notes: dto.notes,
     gstTreatment: dto.gstTreatment,
@@ -112,6 +113,7 @@ export function toCreateExpenseRequest(
     customerId: expense.customerId ?? null,
     vendorName: expense.vendorName ?? null,
     receiptUrl: expense.receiptUrl ?? null,
+    receiptHash: expense.receiptHash ?? null,
     paymentMethod: expense.paymentMethod ?? null,
     notes: expense.notes ?? null,
     gstTreatment: expense.gstTreatment ?? 'standard',
@@ -137,6 +139,7 @@ export function toUpdateExpenseRequest(
   if (expense.customerId !== undefined) input.customerId = expense.customerId ?? null;
   if (expense.vendorName !== undefined) input.vendorName = expense.vendorName ?? null;
   if (expense.receiptUrl !== undefined) input.receiptUrl = expense.receiptUrl ?? null;
+  if (expense.receiptHash !== undefined) input.receiptHash = expense.receiptHash ?? null;
   if (expense.paymentMethod !== undefined) input.paymentMethod = expense.paymentMethod ?? null;
   if (expense.notes !== undefined) input.notes = expense.notes ?? null;
   if (expense.gstTreatment !== undefined) input.gstTreatment = expense.gstTreatment;
@@ -194,8 +197,8 @@ export const expensesApi = {
     }
   },
 
-  async create(input: CreateExpenseRequest): Promise<Expense> {
-    return toExpense(await request<ExpenseDto>('/api/expenses', { method: 'POST', body: JSON.stringify(input) }));
+  async create(input: CreateExpenseRequest, idempotencyKey?: string): Promise<Expense> {
+    return toExpense(await request<ExpenseDto>('/api/expenses', { method: 'POST', body: JSON.stringify(input), ...(idempotencyKey ? {headers:{'Idempotency-Key':idempotencyKey}} : {}) }));
   },
 
   async update(id: string, input: UpdateExpenseRequest): Promise<Expense> {

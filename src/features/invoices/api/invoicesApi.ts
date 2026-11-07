@@ -133,7 +133,7 @@ function toInvoice(dto: InvoiceDto): Invoice {
     balanceDue: Number(dto.balanceDue),
     paymentStatus: dto.paymentStatus as Invoice['paymentStatus'],
     taxInclusive: dto.taxInclusive,
-    status: dto.status,
+    status: dto.effectiveStatus ?? dto.status,
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,

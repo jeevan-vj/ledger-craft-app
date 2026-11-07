@@ -15,9 +15,9 @@ export default function BankMatchingRulesScreen() {
   const rules = useQuery({ queryKey: ['banking', 'matching-rules'], queryFn: bankingApi.listMatchingRules });
   const accounts = useQuery({ queryKey: ['banking', 'ledger-accounts'], queryFn: bankingApi.listLedgerAccounts });
   const refresh = () => queryClient.invalidateQueries({ queryKey: ['banking', 'matching-rules'] });
-  const save = useMutation({ mutationFn: () => editingId ? bankingApi.updateMatchingRule(editingId, draft) : bankingApi.createMatchingRule(draft), onSuccess: async () => { await refresh(); setEditingId(null); setDraft(emptyRule()); } });
-  const toggle = useMutation({ mutationFn: ({ rule, enabled }: { rule: BankMatchingRuleDto; enabled: boolean }) => bankingApi.updateMatchingRule(rule.id, { enabled }), onSuccess: refresh });
-  const remove = useMutation({ mutationFn: bankingApi.removeMatchingRule, onSuccess: refresh });
+  const save = useMutation({ networkMode: 'always', mutationFn: () => editingId ? bankingApi.updateMatchingRule(editingId, draft) : bankingApi.createMatchingRule(draft), onSuccess: async () => { await refresh(); setEditingId(null); setDraft(emptyRule()); } });
+  const toggle = useMutation({ networkMode: 'always', mutationFn: ({ rule, enabled }: { rule: BankMatchingRuleDto; enabled: boolean }) => bankingApi.updateMatchingRule(rule.id, { enabled }), onSuccess: refresh });
+  const remove = useMutation({ networkMode: 'always', mutationFn: bankingApi.removeMatchingRule, onSuccess: refresh });
   const edit = (rule: BankMatchingRuleDto) => { setEditingId(rule.id); setDraft({ descriptionContains: rule.descriptionContains, amountMin: rule.amountMin, amountMax: rule.amountMax, direction: rule.direction, targetAccountId: rule.targetAccountId, contactId: rule.contactId, enabled: rule.enabled }); };
   const error = save.error ?? toggle.error ?? remove.error;
 

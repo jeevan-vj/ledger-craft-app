@@ -1,0 +1,43 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/ai/receipt-pdf.test.ts (2 tests | 2 failed) 21ms
+   × PDF receipt extraction > sends bounded extracted PDF text, never a PDF image_url, and returns exact decimal strings 17ms
+     → expected '{"model":"gpt-4o-mini","max_tokens":1…' to contain 'Harbour Supplies total 115.00 GST 15.…'
+   × PDF receipt extraction > converts compressed/scanned PDFs with the existing Workers AI document path and removes boundary injection 3ms
+     → expected "spy" to be called once, but got 0 times
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/ai/receipt-pdf.test.ts > PDF receipt extraction > sends bounded extracted PDF text, never a PDF image_url, and returns exact decimal strings
+AssertionError: expected '{"model":"gpt-4o-mini","max_tokens":1…' to contain 'Harbour Supplies total 115.00 GST 15.…'
+
+Expected: "Harbour Supplies total 115.00 GST 15.00"
+Received: "{"model":"gpt-4o-mini","max_tokens":1000,"response_format":{"type":"json_object"},"messages":[{"role":"user","content":[{"type":"text","text":"You are a receipt data extraction expert. Analyze this receipt image and extract the following information in JSON format:\n\n{\n  \"merchantName\": \"Business name from receipt (string or null)\",\n  \"date\": \"Transaction date in YYYY-MM-DD format (string or null)\",\n  \"total\": \"Total amount as number (number or null)\",\n  \"tax\": \"Tax amount as number (number or null)\",\n  \"subtotal\": \"Subtotal before tax (number or null)\",\n  \"items\": [\n    {\n      \"description\": \"Item name/description (string)\",\n      \"quantity\": \"Number of items (number, default 1)\",\n      \"price\": \"Item price as number (number)\"\n    }\n  ],\n  \"paymentMethod\": \"cash, card, or other (string or null)\",\n  \"suggestedCategory\": \"One of: Food & Beverage, Transportation, Office Supplies, Travel, Entertainment, Health & Medical, Shopping, Utilities, Other (string or null)\",\n  \"confidence\": \"0-100 score of extraction confidence (number)\",\n  \"notes\": \"Any additional relevant information (string or null)\"\n}\n\nExtract only information clearly visible in the receipt. Use null for missing information. Return valid JSON only."},{"type":"image_url","image_url":{"url":"data:application/pdf;base64,JVBERi0xLjQKMSAwIG9iaiA8PCAvVHlwZSAvUGFnZSA+PiBlbmRvYmoKc3RyZWFtCkJUIChIYXJib3VyIFN1cHBsaWVzIHRvdGFsIDExNS4wMCBHU1QgMTUuMDApIFRqIEVUCmVuZHN0cmVhbQolJUVPRg==","detail":"high"}}]}]}"
+
+ ❯ src/modules/ai/receipt-pdf.test.ts:10:21
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/ai/receipt-pdf.test.ts > PDF receipt extraction > converts compressed/scanned PDFs with the existing Workers AI document path and removes boundary injection
+AssertionError: expected "spy" to be called once, but got 0 times
+ ❯ src/modules/ai/receipt-pdf.test.ts:17:27
+     15|     const ai = { toMarkdown: vi.fn(async () => ({ format: 'markdown' a…
+     16|     const result = await createOpenAiReceiptScanner({ env: { AI: ai } …
+     17|     expect(ai.toMarkdown).toHaveBeenCalledOnce(); expect(JSON.stringif…
+       |                           ^
+     18|     expect(result).toMatchObject({ total: '115.00', provider: 'workers…
+     19|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  23:59:25
+   Duration  760ms (transform 277ms, setup 34ms, collect 389ms, tests 21ms, environment 0ms, prepare 134ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/ai/receipt-pdf.test.ts

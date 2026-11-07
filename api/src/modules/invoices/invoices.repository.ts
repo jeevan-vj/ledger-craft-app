@@ -11,6 +11,7 @@ import type { Database } from '../../db/client';
 import { customers } from '../../db/schema/customers';
 import { invoiceAttachments, invoiceHistory, invoices, lineItems } from '../../db/schema/invoices';
 import { quotes } from '../../db/schema/quotes';
+import { organisationToday } from '../accounting/organisation-date';
 import { decimal, roundMoney } from './money';
 import type { ComputedInvoiceTotals } from './totals';
 
@@ -38,6 +39,7 @@ function toDto(
   customerEmail: string | null,
   sourceQuote?: { id: string; quoteNumber: string },
   customerDetails?: InvoiceDto['customerDetails'] | null,
+  asOf?: string,
 ): InvoiceDto {
   return invoiceSchema.parse({
     id: row.id,
@@ -70,6 +72,7 @@ function toDto(
     paymentStatus: row.paymentStatus,
     taxInclusive: row.taxInclusive,
     status: row.lifecycleStatus === 'cancelled' ? 'cancelled' : row.status,
+    effectiveStatus: row.lifecycleStatus === 'cancelled' ? 'cancelled' : ['sent', 'overdue'].includes(row.status) && asOf ? (row.dueDate < asOf && decimal(row.balanceDue).compare(0) > 0 ? 'overdue' : 'sent') : row.status,
     notes: row.notes ?? null,
     terms: row.terms ?? null,
     currency: row.currency,
@@ -119,10 +122,11 @@ export async function listInvoices(tx: Database, organisationId: string): Promis
     .orderBy(desc(invoices.date), desc(invoices.createdAt));
   const sources = await sourceQuotesByInvoice(tx, organisationId);
 
+  const asOf = await organisationToday(tx, organisationId);
   const result: InvoiceDto[] = [];
   for (const row of rows) {
     const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
-    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, sources.get(row.invoice.id), row.customerDetails));
+    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, sources.get(row.invoice.id), row.customerDetails, asOf));
   }
   return result;
 }
@@ -141,7 +145,7 @@ export async function getInvoice(
   if (!row) return undefined;
   const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
   const source = await sourceQuoteForInvoice(tx, organisationId, row.invoice.id);
-  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, source, row.customerDetails);
+  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, source, row.customerDetails, await organisationToday(tx, organisationId));
 }
 
 async function sourceQuoteForInvoice(

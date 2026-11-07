@@ -8,6 +8,11 @@ import Expenses from '../Expenses';
 import { useAppData } from '@/hooks/useAppData';
 import { mockExpense } from '@/test/fixtures/expenseFixtures';
 
+// This legacy CRUD suite isolates the inbox; its real component and permission
+// boundary are covered in ReceiptInbox.test.tsx and Expenses.receipts.test.tsx.
+vi.mock('@/context/StableAuthContext', () => ({useAuth:()=>({me:{user:{id:'owner'},organisation:{id:'company'},permissions:['bills.write','settings.write','ai.use']}})}));
+vi.mock('@/components/expense/ReceiptInbox', () => ({ReceiptInbox:()=>null}));
+
 // Mock the context
 vi.mock('@/hooks/useAppData', () => ({
   useAppData: vi.fn(),

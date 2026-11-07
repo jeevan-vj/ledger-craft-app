@@ -6,6 +6,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useQuery } from '@tanstack/react-query';
 import { EmptyState, FilterPills, ListRow } from '@/components/ui';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
+import { BankFeedsPanel } from '@/features/bank-feeds/BankFeedsPanel';
 import { bankingApi } from '@/features/banking/api/bankingApi';
 import type { MoreStackParamList } from '@/navigation/types';
 import { useTheme } from '@/theme';
@@ -21,6 +22,7 @@ export default function BankAccountListScreen() {
   const navigation = useNavigation<Navigation>();
   const [filter, setFilter] = useState<Filter>('active');
   const query = useQuery({ queryKey: ['banking', 'accounts'], queryFn: bankingApi.listAccounts });
+  const defaults = useQuery({ queryKey: ['banking', 'default-account'], queryFn: bankingApi.getDefaultAccount });
   const { isFetched, refetch } = query;
   useFocusEffect(useCallback(() => { if (isFetched) void refetch(); }, [isFetched, refetch]));
   useLayoutEffect(() => navigation.setOptions({
@@ -36,11 +38,11 @@ export default function BankAccountListScreen() {
     data={accounts}
     keyExtractor={(account) => account.id}
     refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={query.refetch} tintColor={theme.colors.accent} />}
-    ListHeaderComponent={<View><FilterPills options={['active', 'all', 'inactive'] as const} value={filter} onChange={setFilter} />{query.error && query.data?.length ? <Text style={[theme.type.footnote, styles.error, { color: theme.colors.danger }]}>Bank accounts could not be refreshed.</Text> : null}</View>}
+    ListHeaderComponent={<View><BankFeedsPanel /><FilterPills options={['active', 'all', 'inactive'] as const} value={filter} onChange={setFilter} />{query.error && query.data?.length ? <Text style={[theme.type.footnote, styles.error, { color: theme.colors.danger }]}>Bank accounts could not be refreshed.</Text> : null}</View>}
     renderItem={({ item, index }) => <View style={{ borderBottomWidth: index === accounts.length - 1 ? 0 : StyleSheet.hairlineWidth, borderBottomColor: theme.colors.separator }}>
       <ListRow
         label={item.accountName}
-        subtitle={`${item.bankName} · ${item.accountNumber}${item.isActive ? '' : ' · Inactive'}`}
+        subtitle={`${item.bankName} · ${item.accountNumber}${item.isActive ? '' : ' · Inactive'}${defaults.data?.bankAccountId === item.id ? ' · Default payment account' : ''}`}
         value={formatMoney(item.currentBalance, item.currency)}
         icon={<Feather name="briefcase" size={18} color={theme.colors.accentText} />}
         onPress={() => navigation.navigate('BankAccountDetail', { bankAccountId: item.id })}

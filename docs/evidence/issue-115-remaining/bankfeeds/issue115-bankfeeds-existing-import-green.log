@@ -1,0 +1,15 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/modules/bank-feeds/bank-feeds.service.test.ts (6 tests) 5955ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  1311ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  1087ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  938ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  976ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  762ms
+   ✓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row  877ms
+
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Start at  00:09:12
+   Duration  8.41s (transform 867ms, setup 46ms, collect 1.97s, tests 5.96s, environment 0ms, prepare 122ms)

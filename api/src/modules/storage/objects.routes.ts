@@ -16,6 +16,18 @@ export function objectRoutes() {
   const routes = new Hono<AppEnv>();
 
   for (const prefix of ['', '/api'] as const) {
+    routes.post(`${prefix}/objects/receipts`, async c => {
+      const {db,user}=await requireSession(c);
+      const input=uploadObjectRequestSchema.parse(await c.req.json());
+      if(input.kind!=='receipt')throw apiError(400,'VALIDATION_ERROR','This endpoint only accepts expense receipts.');
+      return c.json(await objectsService.uploadObjectForUser(db,user.id,requireObjectStore(c),input),201);
+    });
+    routes.delete(`${prefix}/objects/receipts`, async c => {
+      const {db,user}=await requireSession(c);const key=c.req.query('key');
+      if(!key)throw apiError(400,'VALIDATION_ERROR','Missing receipt key');
+      await objectsService.deleteObjectForUser(db,user.id,requireObjectStore(c),key,true);
+      return c.body(null,204);
+    });
     routes.post(`${prefix}/objects`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = uploadObjectRequestSchema.parse(await c.req.json());

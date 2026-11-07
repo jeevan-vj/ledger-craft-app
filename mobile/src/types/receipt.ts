@@ -1,20 +1,22 @@
 export interface ReceiptScanResult {
   merchantName: string | null;
+  receiptHash?: string;
   date: string | null;
-  total: number | null;
-  tax: number | null;
-  subtotal: number | null;
+  total: string | null;
+  tax: string | null;
+  subtotal: string | null;
   items: ReceiptItem[];
   paymentMethod: 'cash' | 'card' | 'other' | null;
   suggestedCategory: string | null;
   confidence: number;
   notes: string | null;
+  provider?: 'openai' | 'xai' | 'workers-ai';
 }
 
 export interface ReceiptItem {
   description: string;
-  quantity: number;
-  price: number;
+  quantity: string;
+  price: string;
 }
 
 export interface ReceiptScanOptions {

@@ -1,0 +1,58 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_2030a74e-9d70-48dc-bc7a-4a925a554da2","route":"/api/objects","method":"GET","status":401,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_023b4220-ef22-436b-af63-0bbcc4f72dea","route":"/api/objects","method":"POST","status":401,"durationMs":1}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_ed635164-8094-46b5-847b-aaf9dfe2d5d2","route":"/api/auth/*","method":"POST","status":200,"durationMs":123}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_53f130f6-4b54-4577-9659-2c9fd3e08bfb","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_2bffc01a-7381-4183-8535-0f09a2192da5","route":"/api/objects","method":"POST","status":400,"durationMs":7}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_dbf4c567-33ff-4d8f-98b9-d90558d6f30e","route":"/api/objects","method":"POST","status":201,"durationMs":5}
+
+ ❯ src/modules/storage/objects.test.ts (2 tests | 1 failed) 976ms
+   ✓ object routes > unauthenticated GET/POST /api/objects return 401 28ms
+   × object routes > stores bytes, returns them, and hides them from other orgs 947ms
+     → expected undefined to be 'c414cd0e204de974f73753c7e28d7638e7b36…' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+AssertionError: expected undefined to be 'c414cd0e204de974f73753c7e28d7638e7b36…' // Object.is equality
+
+- Expected:
+"c414cd0e204de974f73753c7e28d7638e7b3691bb8b1a2bab6b25bb7fed7ce77"
+
++ Received:
+undefined
+
+ ❯ src/modules/storage/objects.test.ts:90:50
+     88|         expect(uploaded.status).toBe(201);
+     89|         const dto = objectSchema.parse(await uploaded.json());
+     90|         expect((dto as {sha256?:string}).sha256).toBe(createHash('sha2…
+       |                                                  ^
+     91|         expect(dto.kind).toBe('receipt');
+     92|         expect(dto.contentType).toBe('image/png');
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+ ❯ src/modules/storage/objects.test.ts:56:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  00:09:22
+   Duration  4.73s (transform 1.70s, setup 88ms, collect 3.31s, tests 976ms, environment 0ms, prepare 103ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/storage/objects.test.ts

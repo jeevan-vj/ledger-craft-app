@@ -39,6 +39,7 @@ export default function BankReconciliationScreen() {
     },
   });
   const accept = useMutation({
+    networkMode: 'always',
     mutationFn: ({ transaction, suggestion }: { transaction: BankTransactionDto; suggestion: BankTransactionSuggestion }) => {
       const payload = directPayload(transaction, suggestion);
       if (!payload) throw new Error('Open this transaction to review the suggested match.');

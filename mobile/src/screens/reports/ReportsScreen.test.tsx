@@ -1,5 +1,5 @@
 import React from 'react';
-import { render } from '@testing-library/react-native';
+import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReportsScreen from './ReportsScreen';
 import { reportsApi, type FinancialReport } from '@/features/reports/api/reportsApi';
@@ -7,12 +7,14 @@ import { reportsApi, type FinancialReport } from '@/features/reports/api/reports
 jest.mock('@/components/reports/GstWorkspacePanel', () => ({ GstWorkspacePanel: () => null }));
 
 jest.mock('@/features/reports/api/reportsApi', () => ({
-  reportsApi: { financial: jest.fn() },
+  reportsApi: { financial: jest.fn(),generalLedger:jest.fn().mockResolvedValue({lines:[]}),options:jest.fn().mockResolvedValue({organisationName:'Golden business',today:'2026-10-27',timezone:'Pacific/Auckland',financialYearStartMonth:4,financialYearStartDay:1,gstPeriod:null,accounts:[],customers:[],vendors:[]}) },
 }));
 
 jest.mock('@/hooks/useTabScreenInsets', () => ({
   useTabScreenInsets: () => ({ bottomPadding: 100 }),
 }));
+
+jest.mock('@/features/reports/model/financialReportShare',()=>({shareFinancialReport:jest.fn().mockResolvedValue(undefined)}));
 
 const accountRow = {
   accountId: '11111111-1111-4111-8111-111111111111',
@@ -32,7 +34,9 @@ const report: FinancialReport = {
   cashFlow: { rows: [], openingCash: '0.00', inflows: '230.00', outflows: '115.00', netCashFlow: '115.00', closingCash: '115.00' },
   receivablesAging: { total: '0.00', current: '0.00', days1To30: '0.00', days31To60: '0.00', days61To90: '0.00', over90: '0.00', items: [] },
   payablesAging: { total: '0.00', current: '0.00', days1To30: '0.00', days31To60: '0.00', days61To90: '0.00', over90: '0.00', items: [] },
+  salesSummary:{subtotal:'0.00',tax:'0.00',total:'0.00',paid:'0.00',outstanding:'0.00'},purchaseSummary:{subtotal:'0.00',tax:'0.00',total:'0.00',paid:'0.00',outstanding:'0.00'},comparison:null,
   taxSummary: {
+    basis:'invoice',foreignCurrencyDocumentsExcluded:0,warnings:[],
     collected: '30.00', paid: '45.00', netPayable: '-15.00',
     outputGst: '30.00', inputGst: '45.00', netGst: '-15.00', position: 'refundable',
     gstAccounts: [], keyAccounts: [],
@@ -93,4 +97,31 @@ describe('mobile GST report', () => {
 it('shows unallocated posted receivables without inventing a customer aging balance',async()=>{
  jest.mocked(reportsApi.financial).mockResolvedValue({...report,receivablesAging:{...report.receivablesAging,total:'5000.00',unallocatedControl:'5000.00'}} as never);
  const screen=renderScreen();expect(await screen.findByText('Unallocated posted receivables: $5,000.00. Link customer details before aging.')).toBeTruthy();
+});
+it('offers full report controls, exact account drill-down and native exports',async()=>{
+ const screen=renderScreen();
+ expect(await screen.findByText('Run financial report')).toBeTruthy();
+ expect(screen.getByLabelText('Report start')).toBeTruthy();
+ expect(screen.getByLabelText('Comparison start')).toBeTruthy();
+ expect(screen.getByText('Monthly columns')).toBeTruthy();
+ expect(await screen.findByText('Share PDF')).toBeTruthy();
+ expect(screen.getByText('Share CSV')).toBeTruthy();
+});
+
+it('passes explicit month columns and comparison dates through to the server',async()=>{
+ const screen=renderScreen();await screen.findByText('Share PDF');
+ fireEvent.changeText(screen.getByLabelText('Report start'),'2026-04-01');fireEvent.changeText(screen.getByLabelText('Report end'),'2026-04-30');
+ fireEvent.changeText(screen.getByLabelText('Comparison start'),'2025-04-01');fireEvent.changeText(screen.getByLabelText('Comparison end'),'2025-04-30');
+ fireEvent.press(screen.getByText('Monthly columns'));fireEvent.press(screen.getByText('Run financial report'));
+ await waitFor(()=>expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({from:'2026-04-01',to:'2026-04-30',columns:'month',comparisonFrom:'2025-04-01',comparisonTo:'2025-04-30'})));
+});
+
+it('drills closing account balances through carried posted history, with no amount recomputation',async()=>{
+ const screen=renderScreen();await screen.findByText('Share PDF');fireEvent.press(screen.getByText('Trial balance'));
+ fireEvent.press(screen.getByLabelText('View Accounts Receivable journal lines'));
+ await waitFor(()=>expect(reportsApi.generalLedger).toHaveBeenCalledWith(expect.objectContaining({from:'0001-01-01',accountIds:[accountRow.accountId],columns:undefined})));
+ expect(await screen.findByText('No posted journal lines in this period.')).toBeTruthy();
+});
+it('shows permission failure distinctly and never presents a stale successful report as current',async()=>{
+ (reportsApi.financial as jest.Mock).mockRejectedValue(Object.assign(new Error('Report permission denied'),{status:403}));const screen=renderScreen();expect(await screen.findByText('Report access required')).toBeTruthy();expect(screen.queryByText('Share PDF')).toBeNull();
 });

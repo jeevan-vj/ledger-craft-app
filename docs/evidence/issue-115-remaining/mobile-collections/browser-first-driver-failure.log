@@ -1,0 +1,134 @@
+Good to see you
+Collections
+C
+Closing cash
+$400.00
+
+
+
+New invoice
+
+New quote
+
+Record payment
+
+Add expense
+
+Add customer
+Business reports
+Posted ledger
+30 days
+90 days
+Year
+Summary
+Revenue
+$1,000.00
+Expenses
+$0.00
+Net income
+$1,000.00
+1 source record
+Server-authoritative · Posted ledger
+Receivables
+Outstanding receivables
+$600.00
+1 source record
+Server-authoritative · Posted ledger
+Payables
+Outstanding payables
+$0.00
+No source activity in this period.
+Server-authoritative · Posted ledger
+Cash
+Cash in
+$400.00
+Cash out
+$0.00
+Net cash flow
+$400.00
+Closing cash
+$400.00
+1 source record
+Server-authoritative · Posted ledger
+Tax
+GST collected
+$0.00
+GST paid
+$0.00
+Net GST payable
+$0.00
+No source activity in this period.
+Server-authoritative · Posted ledger
+Activity
+Activity count
+1
+1 source record
+Operational activity
+Quotes
+Open quotes
+0
+$0.00 still open
+0 accepted, not invoiced
+
+Tasks
+
+1 overdue invoice
+Follow up and keep cash flow moving.
+Review
+Dismiss
+Needs action
+See all
+
+Harbour Mobile Buyer
+INV-2026-0001 · 20 Sept
+$1,000.00
+Overdue
+Invoices
+Import
+New
+Invoices
+Quotes
+All documents
+Sales
+Regular invoices
+All
+Draft
+Sent
+Paid
+Overdue
+
+Draft
+
+Sent
+
+Paid
+
+Harbour Mobile Buyer
+INV-2026-0001 · 10 Oct 2026
+$1,000.00
+Overdue
+
+
+Home
+
+
+Invoices
+
+
+Customers
+
+
+More
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for getByText('INV-2026-0001', { exact: true }).first()[22m
+
+    at /workspace/ledger-craft-app/scripts/issue115-mobile-collections-proof.mjs:21:194 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.22.1

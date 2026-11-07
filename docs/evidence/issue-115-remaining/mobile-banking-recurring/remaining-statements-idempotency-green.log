@@ -1,0 +1,123 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_230cb44c-12be-47f8-98c3-2c7e630f5f04","route":"/api/auth/*","method":"POST","status":200,"durationMs":133}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_013d3814-5ef4-4212-81db-5ebbe5e65521","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_34258e53-e51c-4232-a69c-60eb132c2a7a","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_ba6100e6-bbd4-4639-8e8b-6d3e553c7402","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_dfb61cd8-306a-45ed-b770-97306132452c","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_b7363eff-a0c9-4c46-8f84-db1651720a61","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_95d38bc1-00c3-49b8-8fcc-e2bfccfa1e9f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_d717314f-0488-47e2-bbc6-2b6676395f2f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_756b518c-abb3-4233-b891-af62802f111a","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_602c39aa-6113-4360-96dd-b01489f12b95","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_ed9c5aec-f84c-4663-946b-c70576f969fc","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_697386f5-0350-4813-bafc-a6a9b95c4119","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_2918b227-1e77-4037-86ed-8f9c580c4e1a","route":"/api/reconciliation-sessions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_07c7bb54-eb05-4622-a98a-b40c5ca66f44","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_253ac063-fce6-4e7a-afb9-961a04e5fbad","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_74b8014c-3aa0-4702-8bae-eedcaf7b3c73","route":"/api/reconciliation-sessions/:id/adjustments","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_76a4b88e-bdc9-4e38-bf81-542f711d9e12","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_6a84d814-fc27-4277-bafd-104472e92aa4","route":"/api/reconciliation-sessions/:id/summary","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_12950f88-b360-48f4-99e3-cc3d4ddfdb83","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_aea61f73-c10e-45f1-b18d-5d269154bf8c","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/reconciliation/statement-idempotency.test.ts > retains once-only statement setup and bank-side adjustments across lost-response retries
+{"msg":"http_request","requestId":"req_ebfa3cc3-1cf3-46a4-99d3-e6db9a483516","route":"/api/reconciliation-sessions/:id/adjustments","method":"POST","status":201,"durationMs":10}
+
+ ✓ src/modules/reconciliation/statement-idempotency.test.ts (1 test) 1073ms
+   ✓ retains once-only statement setup and bank-side adjustments across lost-response retries  1072ms
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > unauthenticated GET /api/reconciliation-sessions returns 401
+{"msg":"http_request","requestId":"req_7281a3ab-731d-4e84-9192-0d805124236a","route":"/api/reconciliation-sessions","method":"GET","status":401,"durationMs":5}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_784174a5-4804-4b28-94f4-ab550a75ee04","route":"/api/auth/*","method":"POST","status":200,"durationMs":177}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_eaa312d8-9994-4798-9b2e-d3800ae6a06e","route":"/api/auth/*","method":"POST","status":200,"durationMs":120}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_32320ed4-569f-46f8-9b3d-ab358d16002c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_b7dec681-2cbe-4c4c-b61f-e025c2f9b577","route":"/api/expenses","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_f5bd9078-de48-48ee-bd96-2b0561a35786","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_2e8c21ff-bbc4-45fa-9555-569b520bde54","route":"/api/reconciliation-sessions","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_59c6d35a-0547-49db-8722-d8ad7732d6c5","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_fc974346-7e33-46b9-baa1-663f4c7bb515","route":"/api/reconciliation-sessions/:id","method":"GET","status":404,"durationMs":4}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_59ee3859-a991-44da-b15d-f6336db8f80f","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_4d952989-73cd-4a6d-ab30-514e8d75ab1a","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_710b634c-2002-4e3c-a406-0401ccd464e1","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_05181a19-4bf4-4fa0-9069-c711de67651f","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_1afa2b16-ffaf-4380-8be8-53d5b276900f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_fa0d68fa-8557-46d3-8938-b642e2917297","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/reconciliation.test.ts > reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete
+{"msg":"http_request","requestId":"req_f11997f7-2170-4cbc-b048-f3a3f386edb4","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":400,"durationMs":19}
+
+ ✓ src/modules/reconciliation/reconciliation.test.ts (2 tests) 1620ms
+   ✓ reconciliation routes > isolates sessions, rejects foreign book items, and blocks unbalanced complete  1596ms
+
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+   Start at  00:27:31
+   Duration  8.48s (transform 2.01s, setup 50ms, collect 5.15s, tests 2.69s, environment 0ms, prepare 194ms)

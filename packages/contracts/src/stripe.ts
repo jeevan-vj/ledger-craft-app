@@ -13,6 +13,7 @@ export const stripeAccountStateSchema = z.enum([
 
 export const stripeAccountStatusSchema = z.object({
   status: stripeAccountStateSchema,
+  paymentsApproved: z.boolean().optional(),
   chargesEnabled: z.boolean(),
   payoutsEnabled: z.boolean(),
   detailsSubmitted: z.boolean(),
@@ -62,3 +63,16 @@ export type StripeOnboardingLinkRequest = z.infer<typeof stripeOnboardingLinkReq
 export type StripeOnboardingLink = z.infer<typeof stripeOnboardingLinkSchema>;
 export type CreateStripePaymentLinkRequest = z.infer<typeof createStripePaymentLinkRequestSchema>;
 export type StripePaymentLink = z.infer<typeof stripePaymentLinkSchema>;
+
+const signedMoney = z.string().regex(/^-?\d+\.\d{2}$/);
+export const stripeBalanceSchema = z.object({ currency: z.literal('NZD'), available: signedMoney, pending: signedMoney, ledgerClearing: signedMoney, difference: signedMoney, checkedAt: z.string().datetime(), warnings: z.array(z.string()) }).strict();
+export const stripeVerificationSchema = z.object({ id: z.string().uuid(), result: z.enum(['match', 'mismatch']), differences: z.array(z.string()), checkedAt: z.string().datetime() }).strict();
+export const stripeFullRefundRequestSchema = z.object({ reason: z.string().trim().min(8).max(500) }).strict();
+export const stripeRefundRequestResultSchema = z.object({ id: z.string(), status: z.string(), awaitingWebhook: z.literal(true) }).strict();
+export const stripeOperationSchema = z.object({ id: z.string().uuid(), kind: z.string(), result: z.string(), paymentId: z.string().uuid().nullable(), stripeObjectId: z.string(), differences: z.array(z.string()), details: z.record(z.string()), createdAt: z.string().datetime() }).strict();
+export const stripeOperationsSchema = z.object({ items: z.array(stripeOperationSchema) }).strict();
+export type StripeBalance = z.infer<typeof stripeBalanceSchema>;
+export type StripeVerification = z.infer<typeof stripeVerificationSchema>;
+export type StripeOperations = z.infer<typeof stripeOperationsSchema>;
+export const stripeSettlementsSchema = z.object({ items: z.array(z.object({ id: z.string().uuid(), amount: exactMoney, status: z.string(), invoiceId: z.string().uuid(), paymentDate: z.string(), platformFee: exactMoney }).strict()) }).strict();
+export type StripeSettlements = z.infer<typeof stripeSettlementsSchema>;

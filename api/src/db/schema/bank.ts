@@ -74,7 +74,7 @@ export const bankTransactions = sqliteTable('bank_transactions', {
   updatedAt: timestamptz('updated_at').default(sql`(unixepoch() * 1000)`).notNull(),
 }, (table) => [
   check('bank_transactions_type_check', sql`type IN ('debit', 'credit')`),
-  check('bank_transactions_source_check', sql`source IN ('import', 'manual', 'transfer')`),
+  check('bank_transactions_source_check', sql`source IN ('import', 'manual', 'transfer', 'feed')`),
   check('bank_transactions_payment_method_check', sql`payment_method IS NULL OR payment_method IN ('bank_transfer', 'cash', 'card', 'cheque', 'other')`),
   uniqueIndex('bank_transactions_org_id_uidx').on(table.organisationId, table.id),
   index('bank_transactions_org_idx').on(table.organisationId),

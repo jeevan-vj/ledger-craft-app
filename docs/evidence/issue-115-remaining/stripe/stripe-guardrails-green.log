@@ -1,0 +1,85 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_ca0cca13-d1b5-4fff-b8fb-f0c283287ea8","route":"/api/auth/*","method":"POST","status":200,"durationMs":129}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_9b5d79a4-0056-441d-aa25-7d2854aaeb54","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_8fac3a46-a1b6-4382-8252-d3e8e7f7d0b0","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_5e765948-8667-494d-b8bc-45ff25892089","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_67757c64-bc39-4da2-8a70-6dc4ed5f3bf6","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_730b8df8-99a7-4308-ae6f-d7565094ab5d","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_75fe0ca4-193d-496a-9144-43f97443d566","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_daaf41e5-dfad-47dc-be8c-ce75d487deea","route":"/api/invoices/:id/payment-links","method":"POST","status":403,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_ec3c8748-3fa9-4573-887b-37dc91b0e108","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_5085c033-e5b9-4e58-b190-644ab7f6fa63","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_d1d3c051-c689-44f8-b29b-bf728deed0d7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_21075043-4165-4f56-92ec-242ae396fc93","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_65c85a22-13ba-4c9c-97cf-f43b4d709434","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_9864cc55-94ee-41b7-a5c2-134bf7652318","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_d4247c7c-ba12-43a7-81db-4519b0ffda8b","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_fe462db5-e167-48e5-a543-22e95ffb2551","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_58fcd4a1-e4d8-43be-9843-4d169caeab0c","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_4d9b657c-8794-4b47-a13a-3bea4efa2716","route":"/api/auth/*","method":"POST","status":200,"durationMs":113}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_cdd3ceb4-22de-41a6-ab40-12fbe7c8f2fe","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_65672268-3a9c-4798-ace2-262e08496d5e","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_7ea275ff-33f2-4d89-913d-9b8cac165ed9","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_1c33785d-8dd6-4776-936c-094d82a5681f","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_ec59fc48-06a4-4a52-a83c-2193aa2fa449","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_e6de1b18-de80-48f7-9c46-ec2d35dee0fa","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+ ✓ src/modules/stripe/stripe.guardrails.test.ts (4 tests) 3821ms
+   ✓ Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation  993ms
+   ✓ Stripe beta approval, rate limits and periodic verification > persists limit counts, isolates scopes and resets only after the window  754ms
+   ✓ Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run  982ms
+   ✓ Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry  1089ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Start at  00:26:13
+   Duration  7.93s (transform 1.88s, setup 37ms, collect 3.72s, tests 3.82s, environment 0ms, prepare 136ms)

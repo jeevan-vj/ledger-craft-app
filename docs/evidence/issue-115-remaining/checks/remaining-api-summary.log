@@ -1,0 +1,15 @@
+ ✓ src/cloudflare/operational-alarm.test.ts (2 tests) 3ms
+ ✓ src/modules/invoice-imports/draft-validation.test.ts (3 tests) 4ms
+ ✓ src/modules/invoices/money.test.ts (4 tests) 4ms
+ ✓ src/modules/auth/remaining-access.test.ts (2 tests) 4ms
+ ✓ src/modules/reconciliation/suggestion-scoring.test.ts (2 tests) 4ms
+ ✓ src/lib/csv.test.ts (9 tests) 3ms
+ ✓ src/modules/stripe/stripe.fees.test.ts (3 tests) 3ms
+ ✓ src/modules/auth/permissions.test.ts (11 tests) 6ms
+ ✓ src/modules/invoices/mailer.test.ts (1 test) 3ms
+ ✓ src/cloudflare/public-routes.test.ts (2 tests) 3ms
+
+ Test Files  133 passed (133)
+      Tests  596 passed (596)
+   Start at  03:06:03
+   Duration  415.67s (transform 2.52s, setup 1.13s, collect 101.35s, tests 288.98s, environment 19ms, prepare 7.14s)

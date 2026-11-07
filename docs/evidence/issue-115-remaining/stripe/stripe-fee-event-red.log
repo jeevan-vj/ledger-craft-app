@@ -1,0 +1,115 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_92df55ba-6740-4af5-a2d2-546a5162450f","route":"/api/auth/*","method":"POST","status":200,"durationMs":266}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_50edd302-cfe4-4fa5-b750-3ef4a832d4d0","route":"/api/business-profile","method":"PUT","status":200,"durationMs":32}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_aa3de748-6124-4396-9669-e646ab6a41b7","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_7a48d4e4-8980-4b38-a8c0-b07fb3db18fb","route":"/api/invoices","method":"POST","status":201,"durationMs":62}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_90fba2b6-631c-4165-9b82-30a2b682edd9","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_3bb6252d-d774-44b5-a9aa-9345da5186da","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_52d88a22-d203-4430-ab92-58976a42caa9","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":18}
+
+ ❯ src/modules/stripe/stripe.operations.test.ts (8 tests | 1 failed | 7 skipped) 2073ms
+   ↓ Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+   ↓ Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+   ↓ Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+   ↓ Stripe finance operations > expires an open link after a manual payment changes its balance
+   ↓ Stripe finance operations > requires owner/admin on every operational route and isolates another company
+   ↓ Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+   × Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once 2071ms
+     → Authoritative Stripe payment retrieval is unavailable
+   ↓ Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+ ❯ src/modules/stripe/stripe.real-gateway.test.ts (12 tests | 1 failed | 11 skipped) 16ms
+   ↓ real Stripe gateway > creates a Stripe-responsible Accounts v2 connected account
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (0)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (1)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (2)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (3)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (4)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (5)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (6)
+   ↓ real Stripe gateway > reports Stripe capability without exposing configuration (7)
+   ↓ real Stripe gateway > fails closed without crashing when enabled real-mode configuration is incomplete
+   ↓ retains a configured webhook receiver when the new-payment kill switch is off
+   × does not enable a disabled local mock through real webhook credentials 12ms
+     → expected { Object (gateway, config) } to be undefined
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+Error: Authoritative Stripe payment retrieval is unavailable
+ ❯ Module.processVerifiedWebhook src/modules/stripe/stripe.webhooks.ts:72:48
+     70|   if (['payment_intent.succeeded', 'charge.refunded', 'refund.updated'…
+     71|     const id = event.type === 'payment_intent.succeeded' ? str(object.…
+     72|     if (!id || !gateway.retrievePayment) throw new HTTPException(503, …
+       |                                                ^
+     73|     const remote = await gateway.retrievePayment(id);
+     74|     if (event.type === 'payment_intent.succeeded') await recordPayment…
+ ❯ src/modules/stripe/stripe.operations.test.ts:134:13
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/stripe/stripe.real-gateway.test.ts > does not enable a disabled local mock through real webhook credentials
+AssertionError: expected { Object (gateway, config) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "config": {
+    "appUrl": "http://localhost:8080",
+    "connectWebhookSecret": "whsec_mock",
+    "enabled": true,
+    "mock": true,
+    "mode": "test",
+    "platformFeeBasisPoints": 400,
+    "platformFeeFixedCents": 30,
+    "webhookSecret": "whsec_mock",
+  },
+  "gateway": {
+    "completeAccount": [Function completeAccount],
+    "completeCheckout": [Function completeCheckout],
+    "constructWebhookEvent": [Function constructWebhookEvent],
+    "createAccountLink": [Function createAccountLink],
+    "createCheckoutSession": [Function createCheckoutSession],
+    "createConnectedAccount": [Function createConnectedAccount],
+    "createFullRefund": [Function createFullRefund],
+    "expireCheckoutSession": [Function expireCheckoutSession],
+    "getCheckout": [Function getCheckout],
+    "mock": true,
+    "retrieveBalance": [Function retrieveBalance],
+    "retrieveCheckoutPayment": [Function retrieveCheckoutPayment],
+    "retrieveConnectedAccount": [Function retrieveConnectedAccount],
+    "retrievePayment": [Function retrievePayment],
+  },
+}
+
+ ❯ src/modules/stripe/stripe.real-gateway.test.ts:99:236
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  2 failed | 18 skipped (20)
+   Start at  00:17:38
+   Duration  8.85s (transform 2.65s, setup 70ms, collect 5.75s, tests 2.09s, environment 0ms, prepare 267ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.operations.test.ts src/modules/stripe/stripe.real-gateway.test.ts '--maxWorkers=1' -t 'genuine application fee|disabled local mock'

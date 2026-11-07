@@ -1,0 +1,16 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/expenses/ExpenseCreateScreen.test.tsx src/screens/expenses/ExpenseEditScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/expenses/ExpenseCreateScreen.test.tsx
+PASS src/screens/expenses/ExpenseEditScreen.test.tsx
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        3.342 s, estimated 5 s
+Ran all test suites matching src/screens/expenses/ExpenseCreateScreen.test.tsx|src/screens/expenses/ExpenseEditScreen.test.tsx.
+Jest did not exit one second after the test run has completed.
+
+'This usually means that there are asynchronous operations that weren't stopped in your tests. Consider running Jest with `--detectOpenHandles` to troubleshoot this issue.

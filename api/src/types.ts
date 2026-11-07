@@ -1,3 +1,5 @@
+import type { RecurringExecutionAuthorizer } from './modules/recurring/recurring.generate';
+import type { BankFeedConfig } from './modules/bank-feeds/bank-feeds.service';
 import type { Database } from './db/client';
 import type { Auth } from './modules/auth/auth';
 import type { ChatCompleter } from './modules/ai/chat';
@@ -28,6 +30,7 @@ export type AppEnv = {
     fileStorage?: FileStorage;
     receiptScanner?: ReceiptScanner;
     chatCompleter?: ChatCompleter;
+    recurringExecutionAuthorizer?: RecurringExecutionAuthorizer;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
     invoiceImportExtractor?: InvoiceImportExtractionProvider;
     workersAi?: WorkersAiBinding;
@@ -41,6 +44,8 @@ export type AppEnv = {
 };
 
 export type AppDependencies = {
+  appUrl?: string;
+  bankFeedConfig?: BankFeedConfig;
   actorUserId?: string;
   checkDatabase?: () => Promise<boolean>;
   auth?: Auth;
@@ -50,6 +55,7 @@ export type AppDependencies = {
   fileStorage?: FileStorage;
   receiptScanner?: ReceiptScanner;
   chatCompleter?: ChatCompleter;
+  recurringExecutionAuthorizer?: RecurringExecutionAuthorizer;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
   invoiceImportExtractor?: InvoiceImportExtractionProvider;
   workersAi?: WorkersAiBinding;

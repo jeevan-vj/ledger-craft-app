@@ -1,0 +1,192 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/banking/BankAccountDetailScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/banking/BankAccountDetailScreen.test.tsx
+  ✕ shows authoritative movements, default-account identity and paginated transactions (1026 ms)
+
+  ● shows authoritative movements, default-account identity and paginated transactions
+
+    Unable to find an element with text: Default payment account
+
+    [36m<RCTScrollView>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Feather />[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0m$100.05[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0mACTIVE[0m
+            [0m · [0m
+            [0mBUSINESS[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mAccount[0m
+          [36m</Text>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mBank[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View />[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mAccount number[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View />[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mCurrency[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+                [36m<Text>[39m
+                  [0mNZD[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View />[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mOpening balance[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+                [36m<Text>[39m
+                  [0m$100.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mAdd transaction[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"1"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mTransfer[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View[39m
+          [33maccessibilityRole[39m=[32m"button"[39m
+          [33maccessibilityState[39m=[32m{
+            {
+              "busy": false,
+              "disabled": false,
+            }
+          }[39m
+          [33maccessible[39m=[32m{true}[39m
+          [33mnativeID[39m=[32m"2"[39m
+        [36m>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Feather />[39m
+            [36m</View>[39m
+            [36m<Text>[39m
+              [0mImport statement[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mTransactions[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mTransactions couldn’t be loaded[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0m_bankingApi.bankingApi.listTransactions is not a function[0m
+          [36m</Text>[39m
+          [36m<View[39m
+            [33maccessibilityLabel[39m=[32m"Try again"[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Text>[39m
+              [0mTry again[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View[39m
+          [33maccessibilityLabel[39m=[32m"Delete bank account"[39m
+          [33maccessibilityRole[39m=[32m"button"[39m
+          [33maccessibilityState[39m=[32m{
+            {
+              "busy": false,
+              "disabled": false,
+            }
+          }[39m
+          [33maccessible[39m=[32m{true}[39m
+        [36m>[39m
+          [36m<Text>[39m
+            [0mDelete bank account[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</RCTScrollView>[39m
+
+      11 |   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } }); clients.push(client);
+      12 |   render(<QueryClientProvider client={client}><BankAccountDetailScreen /></QueryClientProvider>);
+    > 13 |   await waitFor(() => expect(screen.getByText('Default payment account')).toBeTruthy());
+         |                ^
+      14 |   expect(screen.getByText('Net movement')).toBeTruthy(); expect(screen.getByText('$0.05')).toBeTruthy();
+      15 |   expect(screen.getByText('Page 1 of 2')).toBeTruthy(); expect(screen.getByText('Next')).toBeTruthy();
+      16 | });
+
+      at Object.<anonymous> (src/screens/banking/BankAccountDetailScreen.test.tsx:13:16)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        2.577 s
+Ran all test suites matching src/screens/banking/BankAccountDetailScreen.test.tsx.

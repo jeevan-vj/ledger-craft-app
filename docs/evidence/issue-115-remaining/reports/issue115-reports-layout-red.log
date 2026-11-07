@@ -1,0 +1,98 @@
+{"phoneReportBounds":{"viewportRight":350,"firstValueRight":528.71875,"scrollWidth":310,"clientWidth":310}}
+EasyBizInvoice
+R
+Financial reports
+
+Auditable statements calculated by the server from posted journal entries.
+
+Refresh
+Export CSV
+Download PDF
+Date preset
+Custom dates
+This month
+Last month
+This quarter
+Last quarter
+This financial year
+Last financial year
+Financial year to date
+This GST period
+Columns
+Total only
+Monthly
+Quarterly
+From
+To
+Basis
+Accrual
+Run report
+
+Revenue
+
+$1,500.00
+
+Expenses
+
+$300.00
+
+Net income
+
+$1,200.00
+
+Closing cash
+
+$5,460.00
+
+Profit & loss
+Balance sheet
+Trial balance
+General ledger
+Cash flow
+Receivables
+Payables
+Tax
+Profit & loss
+
+Revenue
+
+$1,500.00
+
+Expenses
+
+$300.00
+
+Net income
+
+$1,200.00
+
+Account Apr 2026 (2026-04-01 to 2026-04-30)     May 2026 (2026-05-01 to 2026-05-31)     Jun 2026 (2026-06-01 to 2026-06-30)     Jul 2026 (2026-07-01 to 2026-07-31)     Aug 2026 (2026-08-01 to 2026-08-31)     Sept 2026 (2026-09-01 to 2026-09-30)    Oct 2026 (2026-10-01 to 2026-10-31)     Nov 2026 (2026-11-01 to 2026-11-30)     Dec 2026 (2026-12-01 to 2026-12-31)     Jan 2027 (2027-01-01 to 2027-01-31)     Feb 2027 (2027-02-01 to 2027-02-28)     Mar 2027 (2027-03-01 to 2027-03-31)     Total
+4000 Sales Revenue      1000.00 500.00  0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    1500.00
+5000 Operating Expenses 200.00  100.00  0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    300.00
+Revenue 1000.00 500.00  0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    1500.00
+Expenses        200.00  100.00  0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    300.00
+Net income      800.00  400.00  0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    0.00    1200.00
+
+Generated 11/7/2026, 1:37:51 PM · accrual basis · NZD. Draft documents are excluded.
+
+Update available
+
+Refresh EasyBizInvoice to use the latest improvements and fixes.
+
+Update now
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: A complete numeric column must fit beside the sticky account on a phone
+    at run (file:///workspace/ledger-craft-app/scripts/issue115-report-proof.mjs:29:662)
+    at async file:///workspace/ledger-craft-app/scripts/issue115-report-proof.mjs:50:21 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.22.1

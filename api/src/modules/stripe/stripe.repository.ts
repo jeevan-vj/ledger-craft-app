@@ -115,3 +115,10 @@ export async function claimEvent(db: Database, event: { id: string; organisation
 export async function completeEvent(db: Database, id: string, outcome: 'processed' | 'ignored' | 'failed', error?: string) {
   await db.update(stripeEvents).set({ outcome, error: error ?? null, processedAt: new Date() }).where(eq(stripeEvents.eventId, id));
 }
+
+export function openPaymentLinks(db: Database, organisationId: string) {
+  return db.select().from(stripePaymentLinks).where(and(eq(stripePaymentLinks.organisationId, organisationId), eq(stripePaymentLinks.status, 'open')));
+}
+export async function eventOutcome(db: Database, eventId: string) {
+  const [row] = await db.select({ outcome: stripeEvents.outcome }).from(stripeEvents).where(eq(stripeEvents.eventId, eventId)); return row?.outcome;
+}

@@ -1,0 +1,48 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/recurring/model/recurringForm.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/recurring/model/recurringForm.test.ts
+  ✓ creates and edits multiple invoice/bill lines without losing line-specific exact taxes (2 ms)
+  ✕ retains the correct original discount and tax identity after deleting an earlier additional line (5 ms)
+  mobile recurring document editor
+    ✓ builds a real invoice template with exact lines and the full schedule (19 ms)
+    ✓ builds supplier bills and never enables delivery without configured email (38 ms)
+    ✓ round trips an existing template without losing custom schedule or extra document lines (1 ms)
+
+  ● retains the correct original discount and tax identity after deleting an earlier additional line
+
+    expect(received).toMatchObject(expected)
+
+    - Expected  - 2
+    + Received  + 2
+
+      Object {
+        "description": "Keep me",
+    -   "discountValue": "2.00",
+    +   "discountValue": "1.00",
+        "rate": "20.00",
+        "taxes": Array [
+          Object {
+    -       "id": "retained-tax",
+    +       "id": "removed-tax",
+            "rate": "15",
+          },
+        ],
+      }
+
+      40 |   draft.additionalLines = draft.additionalLines!.slice(1);
+      41 |   const updated = recurringPayloadFromDraft(draft, false);
+    > 42 |   expect(updated.payload.kind === 'invoice' && updated.payload.input.items[1]).toMatchObject({ description: 'Keep me', rate: '20.00', discountValue: '2.00', taxes: [{ id: 'retained-tax', rate: '15' }] });
+         |                                                                                ^
+      43 | });
+      44 |
+
+      at Object.toMatchObject (src/features/recurring/model/recurringForm.test.ts:42:80)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 4 passed, 5 total
+Snapshots:   0 total
+Time:        1.003 s
+Ran all test suites matching src/features/recurring/model/recurringForm.test.ts.

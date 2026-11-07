@@ -1,0 +1,33 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/pages/__tests__/Expenses.receipts.test.tsx (1 test | 1 failed) 46ms
+   × receipt capture permission integration > uses the actual bills permission domain for expense capture 45ms
+     → expect(element).toBeEnabled()
+
+Received element is not enabled:
+  <input
+  aria-label="Capture allowed by organisation role"
+  disabled=""
+/>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/Expenses.receipts.test.tsx > receipt capture permission integration > uses the actual bills permission domain for expense capture
+Error: expect(element).toBeEnabled()
+
+Received element is not enabled:
+  <input
+  aria-label="Capture allowed by organisation role"
+  disabled=""
+/>
+ ❯ src/pages/__tests__/Expenses.receipts.test.tsx:11:245
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:21:41
+   Duration  1.06s (transform 100ms, setup 73ms, collect 305ms, tests 46ms, environment 320ms, prepare 138ms)

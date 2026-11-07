@@ -1,0 +1,532 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_d74b5bcb-c0e5-40bc-978b-a11ef28f4f21","route":"/api/auth/*","method":"POST","status":200,"durationMs":123}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_3934caf4-f342-4025-9ed1-f85e6f4995b1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_1eaf372e-cfde-404d-9425-19775504cbfe","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_e25a64a0-c2f7-4040-b35a-4273683648b9","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_801ec5a0-0812-4c82-8ec4-af7e59db686f","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_0fd92bce-92d1-4154-aaee-d46e49325883","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_2cb9c1cf-fade-426c-ab2f-ebdf21a1baee","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_002b7f36-346c-46d4-b148-584bb4577c66","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_99d719d6-6c8e-498a-bfe7-b77606253311","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_89606663-5d40-4496-b7dc-f99d23b6ef9e","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_e7803fde-912c-4932-8933-d9113db2d898","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_bee9fff0-38c4-4156-95b9-95a6c32c0b34","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_7e04d830-277e-487e-b52e-47bcae9ee916","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_77eee5e7-f7f1-4082-81c6-a84f8dd0caa9","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_859974e5-ca52-48e9-9d45-4a65be3d0a0f","route":"/api/auth/*","method":"POST","status":200,"durationMs":85}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_111e5b6f-2d6c-4c86-98c0-5773f96c6170","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_3894b882-c724-4b92-97a3-87e7d568357b","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_ff12e41e-b65c-4488-a57a-4fa72ffb1bce","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_ca486d29-fa62-4be0-91a8-5567703fb42d","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_d6272856-b45d-4ac1-aa59-5cff71c1dc1f","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_2386f31a-e120-4e92-8c76-83e971ee1d9a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_e37f52ff-5d3f-4573-a284-9c32adc89c50","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_191b7e86-b944-4f28-be7f-aafeaee7c3cd","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_b03c6389-491e-46e3-817b-4768847169c5","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_8aafbc6a-231c-40f5-ba99-3c54b6544ce6","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_341a8d8b-d7c6-4653-b387-022ab008675a","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":3}
+
+ ✓ src/modules/bank/bank-import-balances.test.ts (2 tests) 1634ms
+   ✓ updates displayed bank balance from newly imported exact movements once, excluding duplicate replays  908ms
+   ✓ does not discard an opposite-direction movement sharing date, description and amount  725ms
+ ✓ src/modules/bank-feeds/bank-feeds.service.test.ts (11 tests) 8675ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  653ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  828ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  1408ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  942ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  1125ms
+   ✓ Personal App bank feeds > scheduled sync imports actual configured-company transactions after the owner selects another company  685ms
+   ✓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row  998ms
+   ✓ Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts  756ms
+   ✓ Personal App bank feeds > trusted pre-delete revokes its configured token after membership removal and purges only that company metadata  651ms
+   ✓ Personal App bank feeds > does not use a provider credential or mutate books when the trusted live daily authorizer denies access  625ms
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_2a49fe73-79c8-442c-aa6f-d423bee2d5bd","route":"/api/auth/*","method":"POST","status":200,"durationMs":120}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_351dfc86-8ec4-440f-855f-24645fc3a33b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_2420c247-865d-4836-9fcb-da2d72161f1f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_2ec91c62-ef02-442f-b01e-e2080a84863a","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_19d12e9d-41c8-47d6-9301-af53896c0aa7","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_a182b5e0-3e7e-46a6-9e03-38e59dc48617","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_7279d697-9e96-4e58-bc63-b88daa88bb87","route":"/api/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_36919028-20d6-412c-a347-71b62623ae8c","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_cf81f10c-755a-4375-9ae0-1f851444b5b5","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_59871517-b9bc-4547-b4dc-7d71ae047c96","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_911950ef-e785-4624-baed-f095c06bf407","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_aba7b9f5-da06-4f72-82a8-564756df8e6e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_a04a5c48-d00f-4298-8803-619aabe0b178","route":"/api/bank-transactions/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_31e7ee5b-8db0-43d4-994f-81f646041600","route":"/api/bank-transactions/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_1da6ae0f-ab0d-45f2-9a69-9bcf5bfdeb58","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_472db31a-a4ac-41b5-948b-a12525d3388b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_ac22c3f4-b4c8-4ef2-9741-8a307470512d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_13e49c00-d6d5-4c08-a9d5-d82e9a060589","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_453212e9-60d5-4d64-928f-9175b831f9d6","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_28278921-7f9f-46b8-b1ce-605c668e0f31","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_c5abe905-cb1f-406e-91a3-b93759445145","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_0ec6b53e-c47f-4f70-a2b7-c4a0f6954210","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_841cbc2c-2a51-4941-bfd5-450876f5298f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_1522a1b3-00c5-4205-b44d-b0983e9bd3ec","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_b6a9ddc3-8ba6-4cdf-97ee-7aea9d1a3da8","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_7f1241a7-f3b6-418a-8c69-2063bd901a7d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_28e3ec24-525d-47f7-876e-9e44903d7b81","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_150804b3-a726-42b2-8fe8-ab8b276187c4","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_da707aa7-ef50-422a-a36b-a9a1ab8fb519","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_e5c119e0-3f7b-4c7e-9866-6ab111d32d84","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry
+{"msg":"http_request","requestId":"req_908080df-d40c-4a2a-aa66-11dca28fd822","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_a9549b4e-a521-48fe-b9f3-7ed8aeb726f9","route":"/api/auth/*","method":"POST","status":200,"durationMs":91}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_7d55639e-8e3b-4850-a0a8-1519503e872e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_ecd34bc5-e988-4669-a2d9-b95db7d1100f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_340ca511-e87d-4e89-815d-04064375b5b3","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_344bcd46-e9df-48da-bb8d-da425144b944","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_51ace092-0828-4bac-98be-5ab98762a716","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_7f6ecb3a-ce3f-40a3-a7a1-d86e7bd55d58","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_ddd47452-4f20-4127-a1ed-f7fb2dd1929b","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_7ca3703e-cd78-4b54-b690-baccd43f4074","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_3930cddd-06cc-48be-ae22-59880d73e392","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_5c145cd8-db33-46d5-a22c-224de7ae0cec","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_77c96ef1-07c4-4643-a30d-11e80dd178bf","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_a7eb174a-a2c7-42a7-99bb-afe3e9ef62ba","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_b6ea606d-9448-47f2-aae9-ca3588dddfa9","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_c4879c2d-f167-405e-b551-cab6606e8723","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_4187f112-827c-4565-92e4-a6a0cc399057","route":"/api/bank-transactions/:id/accept","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_ce5e492a-57cd-4238-b2d4-500628328bef","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects
+{"msg":"http_request","requestId":"req_8f650214-4c77-454d-9418-0abfdceca8c1","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_a14c1fa2-c90e-474a-ab99-272e1b7501cf","route":"/api/auth/*","method":"POST","status":200,"durationMs":85}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_64ec9e3f-89fd-47e4-a9ee-460e8deb0638","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_561de15f-ca05-4388-832c-d6a3cc69bf4e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_13eed1a9-ef02-46b9-81ca-f8bc8b23f713","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_737e6482-3a5a-407f-8274-544f84791d8c","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_8d49ca15-e85b-4d30-bbf3-f1c44f874cbc","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_52a9de1d-1039-4884-a9b9-b440eeb085df","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_4583a6fd-1d7a-4c8e-9194-bf6053257ba7","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_41ff3cd7-ee90-47f3-a04f-11981c4f23f3","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_1b000be6-c1e6-4c70-9ced-6b80dbacc7cf","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_7fa2060b-9298-4eef-8ec3-e52266786556","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_6a2f4f67-8220-4989-abc4-682a8f9b6995","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_b1974e6a-8c9a-4928-b6be-13be3183f81e","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_6c00682f-be8e-4131-aa47-6b3a80ca3d0c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_063e9d79-fee2-4b54-a243-fc202a3e1ead","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_1c4a1634-5407-4400-a685-f231705bb6e4","route":"/api/bank-transactions/:id/personal","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_9a8c6620-15f2-4d52-a39f-dba3d8d9b9d7","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows
+{"msg":"http_request","requestId":"req_42fc7481-888e-40b2-b95d-8f4347990244","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_caff2e17-46a4-4f96-b650-194e7a54baa1","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_c8d6a468-aa19-4cac-9918-0d581b975a4f","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_9a325b91-db37-485b-a86b-e39c146bf75c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_7d060ac6-9b62-4895-9153-118d4828b9e7","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_fa001a33-4be9-4f7c-85f3-b02a507d68e8","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_0dc1308e-eb08-4654-a927-319fb7d5476c","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_4aa0fae7-09ea-458b-a99c-d956d94eab17","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_eecf9e79-2cf3-4629-a5d5-98b455184765","route":"/api/bank-matching-rules","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_7c74f669-9926-4ec2-a11b-24e9ae29320d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_18aa5a1f-fef9-4f08-a0d5-03f32a5a7b66","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_4619c050-7564-4b4b-a1c3-9c6718668a48","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_3c9bdf2b-f192-4e7c-9518-1a9df4a616d5","route":"/api/bank-transactions/suggestions/batch","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_cd9cce2a-bfaa-4134-b41a-bdde8b40f85e","route":"/api/bank-transactions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_eca7b152-b810-4c36-85db-ca3a1d99dc4e","route":"/api/bank-matching-rules/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_d31cbe8d-64b5-4374-9dcc-d00d98ec46bb","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_5d39f332-2583-42a3-abee-7ef6049dc8e5","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_66e8b7bf-cbdf-42af-82e5-d7d9549d4a21","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_cf4b5205-a71a-4bcc-b004-b4c0000595ff","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_b8ae7d86-4342-4e7c-91c2-4de9968c32dd","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_05c17358-2497-425a-852e-5a38b5440f18","route":"/api/bills","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_f4bf9a16-bbb3-43b4-be9c-2512d83b1ddd","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_2fa72ff9-ed08-44bc-989b-e7b51f37b5f6","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_2bbbb661-b376-43ee-a5e6-e181287eaf31","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_152f94c8-b36d-4343-9c7b-cb3931a3c8ef","route":"/api/bank-transactions/:id/suggestions","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_0cd311f1-c9e1-41c2-9e39-f57bd6a312ce","route":"/api/bank-matching-rules","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_2b629c1f-ceb9-427b-88e9-a251eb3617c3","route":"/api/bank-matching-rules/:id","method":"DELETE","status":404,"durationMs":2}
+
+stdout | src/modules/reconciliation/bank-reconciliation-phase1.test.ts > bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting
+{"msg":"http_request","requestId":"req_3e46fad3-cb34-4971-b4c7-b275431dfbf1","route":"/api/bank-matching-rules/:id","method":"DELETE","status":204,"durationMs":3}
+
+ ✓ src/modules/reconciliation/bank-reconciliation-phase1.test.ts (4 tests) 3882ms
+   ✓ bank reconciliation phase 1 > matches an already posted payment and expense without duplicating cash or profit, and can undo and retry  1021ms
+   ✓ bank reconciliation phase 1 > ranks suggestions, accepts multiple invoices in one journal, rejects excess, and undoes all effects  856ms
+   ✓ bank reconciliation phase 1 > books an exact decimal bank fee with a bill payment and supports personal and existing transfer flows  1074ms
+   ✓ bank reconciliation phase 1 > isolates invoices, bills and matching rules, and rules suggest without auto-posting  928ms
+stdout | src/modules/bank/bank.test.ts > bank routes > unauthenticated GET /api/bank-accounts returns 401
+{"msg":"http_request","requestId":"req_5a0fc2ff-7fcf-4320-a789-98f67ea312b3","route":"/api/bank-accounts","method":"GET","status":401,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_931051b9-5fdb-4a69-af78-c6969549d398","route":"/api/auth/*","method":"POST","status":200,"durationMs":119}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_161bb51a-5a6e-4900-8bdd-94108dfe1982","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_084ccb97-345f-4538-a7c2-03f35dfcefc5","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_84992631-12cd-447e-8dc7-7341428947f3","route":"/api/bank-accounts","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_8ec5bf91-fc1c-439f-a036-4a87a23a29a0","route":"/api/bank-accounts/:id","method":"GET","status":404,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_de0d3bf3-25a6-40b8-ad82-88a1b11db296","route":"/api/bank-accounts","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_9b9f9cd6-3b76-4f9c-95e0-baf22383a3e4","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_2b10c283-f601-401d-87b6-9c54f91aae25","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_5fdcdeb4-a18b-41f1-9104-e96b542d2de0","route":"/api/bank-transactions","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > creates bank accounts and skips duplicate imports for the session organisation
+{"msg":"http_request","requestId":"req_fedeb878-2f2f-468c-a991-477191ae678e","route":"/api/bank-transactions/import","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_7cb8b436-4e83-47cd-af6d-14821b6fe36f","route":"/api/auth/*","method":"POST","status":200,"durationMs":83}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_6e860e87-79de-4cf8-96b9-59263d37cc18","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_95bd9ccc-8971-48bc-93a9-5d18a1261df1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_670cddc1-56f6-4b45-ba06-59c2ba4b07be","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_402a73dc-905b-4516-b48e-bc04fa740754","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_794bde5c-e994-415e-b99e-66c66c72a836","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_e4203b00-d4d1-4c51-abec-74ca023b8a57","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_b0e52bea-bfc0-42c5-a282-9ddad90f9b95","route":"/api/bank-transactions/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_a0b3c893-7a9a-41fd-b049-3cb499bc432c","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_accac36e-092e-45e4-88e1-c50d9e8b95e1","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_d75295ee-3350-44f1-9985-57cbb6eaf09c","route":"/api/bank-transfers","method":"POST","status":400,"durationMs":2}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_4f18eb3f-2d68-4ece-b1bc-d3fc8fba31c2","route":"/api/bank-transfers","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_5269e5f6-3c68-488b-93b0-9f86076a5a8c","route":"/api/bank-transfers","method":"POST","status":400,"durationMs":2}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_1534789b-8b00-4f46-b73a-286f28c32041","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_2a1ac63a-6f38-4cc0-a5ab-723822935648","route":"/api/bank-transfers","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_46eb77aa-7ed2-41b8-93fa-42c99f9816e6","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_ac551f9d-5a70-4a54-9a29-221879d3388f","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_7fefac17-1d79-46f2-9bb4-734f7b28054e","route":"/api/bank-transactions/:id","method":"DELETE","status":409,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_18ffeed5-8f58-40b2-8bbe-63cd0b280630","route":"/api/bank-transactions/:id","method":"DELETE","status":204,"durationMs":6}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances
+{"msg":"http_request","requestId":"req_b8c5d5a1-d43a-469f-97a2-6a015bf947b0","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_ed5c8d6f-fa2a-4fe6-a142-16b0875589ab","route":"/api/auth/*","method":"POST","status":200,"durationMs":93}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_b8abd0b0-7b9d-4c08-b25a-f67fbfb1274c","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_18c2b17e-9189-4629-9386-e4fb5fa67499","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_47d88d06-90f4-4ffe-b101-ea718b4ee50e","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_a45ef0ef-a718-4336-92cc-b0df3cf25a17","route":"/api/invoices","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_51810cba-913f-48a3-9bee-3f520b1ee35e","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_43217d63-c8e7-4f25-90e4-40bc67211b1d","route":"/api/bank-transactions/:id/details","method":"PUT","status":400,"durationMs":5}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_107155d8-34ed-45da-b77c-d52fc607580a","route":"/api/bank-transactions/:id/details","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_4e9f628b-5416-4132-ae57-bef7bc6d412a","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_01e36fc8-3435-4f7a-a0bd-43114b40ffd6","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_60c84518-2f47-42f0-a1ba-2831bdc159db","route":"/api/bank-transactions/:id/details","method":"PUT","status":400,"durationMs":5}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_9419c1e7-4a33-4cef-8bd8-cbfeabdfc464","route":"/api/bank-transactions/:id/duplicate","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_1fc7a354-d3fd-4536-b743-c1b91a320abc","route":"/api/bank-transactions/export.csv","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_c79a1cdf-8dfd-4e1e-9507-cb00334f8299","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_ae3b1143-a747-4e58-91a2-f2cf437d631f","route":"/api/bank-transactions/export.csv","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/bank/bank.test.ts > bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage
+{"msg":"http_request","requestId":"req_7606d3b9-82fa-41c2-9177-0d4c16d5c349","route":"/api/bank-transactions/:id","method":"GET","status":404,"durationMs":2}
+
+ ✓ src/modules/bank/bank.test.ts (4 tests) 2707ms
+   ✓ bank routes > creates bank accounts and skips duplicate imports for the session organisation  936ms
+   ✓ bank routes > manages manual transactions and posts retry-safe atomic transfers with exact balances  864ms
+   ✓ bank routes > allocates exact splits, connects invoice balances, duplicates and exports without tenant leakage  888ms
+
+ Test Files  4 passed (4)
+      Tests  21 passed (21)
+   Start at  03:04:58
+   Duration  23.32s (transform 1.47s, setup 51ms, collect 5.57s, tests 16.90s, environment 0ms, prepare 234ms)

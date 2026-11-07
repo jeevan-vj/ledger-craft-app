@@ -1,0 +1,1 @@
+PASS Stripe local simulator: desktop/phone settlement100, fee4.30, clearing95.70, verify match, explicit refund, webhook-only reversal, invoice restored100, clearing0; no page errors

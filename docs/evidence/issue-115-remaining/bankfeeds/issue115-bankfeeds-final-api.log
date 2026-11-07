@@ -1,0 +1,38 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/modules/bank-feeds/bank-feeds.service.test.ts (8 tests) 7848ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  1612ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  1334ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  1097ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  1304ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  984ms
+   ✓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row  727ms
+   ✓ Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts  780ms
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_8d62800b-bbc6-41cb-a672-cb23b0236fb7","route":"/api/bank-feeds/akahu","method":"GET","status":401,"durationMs":22}
+
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_c477d580-fffc-476b-919f-32c6a4867c9a","route":"/api/auth/*","method":"POST","status":200,"durationMs":111}
+
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_73bc8252-0939-4062-a56e-cac8f01870ef","route":"/api/bank-feeds/akahu/sync","method":"POST","status":200,"durationMs":48}
+
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_258279fe-bbfd-4d8d-8c03-24c435804885","route":"/api/bank-feeds/akahu/connect","method":"GET","status":503,"durationMs":3}
+
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_ce6a7add-fb20-4e98-9aec-b60ed78d390e","route":"/api/bank-feeds/akahu","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/bank-feeds/bank-feeds.http.test.ts > authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials
+{"msg":"http_request","requestId":"req_30b35af7-aa3a-4da3-a298-801aceb154d0","route":"/api/bank-feeds/akahu/sync","method":"POST","status":403,"durationMs":2}
+
+ ✓ src/modules/bank-feeds/bank-feeds.http.test.ts (1 test) 1092ms
+   ✓ authenticated bank feed HTTP boundary > scopes actual requests, schedules daily after sync, blocks read-only writes and never serialises credentials  1091ms
+ ✓ src/modules/bank-feeds/bank-feeds.migration.test.ts (1 test) 186ms
+ ✓ src/modules/bank-feeds/akahu.gateway.test.ts (5 tests) 15ms
+
+ Test Files  4 passed (4)
+      Tests  15 passed (15)
+   Start at  00:13:33
+   Duration  20.03s (transform 3.05s, setup 123ms, collect 8.79s, tests 9.14s, environment 1ms, prepare 685ms)

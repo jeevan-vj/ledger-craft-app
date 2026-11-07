@@ -1,5 +1,5 @@
 import type { FinancialReportQuery, FinancialReportResponse } from '@ledgercraft/contracts';
-import { financialReportResponseSchema } from '@ledgercraft/contracts';
+import { financialReportResponseSchema, reportColumnPeriods } from '@ledgercraft/contracts';
 import { decimal, roundMoney } from '../invoices/money';
 import type { LedgerRow } from './reports.repository';
 
@@ -42,7 +42,7 @@ function accountRows(rows: LedgerRow[]) {
   })).sort((a, b) => (a.accountNumber ?? '').localeCompare(b.accountNumber ?? '') || a.accountName.localeCompare(b.accountName));
 }
 
-function aging(rows: DocumentRow[], asOf: string, control?: ReturnType<typeof decimal>) {
+export function buildAging(rows: DocumentRow[], asOf: string, control?: ReturnType<typeof decimal>) {
   const result = { total: zero(), current: zero(), days1To30: zero(), days31To60: zero(), days61To90: zero(), over90: zero(), items: [] as Array<Record<string, unknown>> };
   const end = Date.parse(`${asOf}T00:00:00Z`);
   for (const row of rows) {
@@ -61,7 +61,7 @@ function summary(rows: DocumentRow[]) {
   return { subtotal: money(totals.subtotal), tax: money(totals.tax), total: money(totals.total), paid: money(totals.paid), outstanding: money(totals.outstanding) };
 }
 
-export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; foreignCurrencyGstDocuments?: number; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
+export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; foreignCurrencyGstDocuments?: number; cashWarnings?:string[]; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
   const { query, periodRows, openingRows } = input;
   const period = aggregate(periodRows); const opening = aggregate(openingRows);
   const rows = accountRows(periodRows);
@@ -106,14 +106,24 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
     || (input.taxRows ?? periodRows).some((source) => source.accountId === row.accountId && ['bank', 'cash'].includes(source.accountType)));
   const control = (code: string) => trialRows.filter(row => row.accountNumber === code).reduce((sum, row) => code === '1200'
     ? sum.add(row.closingDebit).sub(row.closingCredit) : sum.add(row.closingCredit).sub(row.closingDebit), zero());
+  const columnMode = query.columns && query.columns !== 'none' ? query.columns : undefined;
+  // Reuse the same ledger engine over the already fetched source rows. No extra
+  // SQL per column and no client or alternate formula for account totals.
+  const columns = columnMode ? { mode: columnMode, periods: reportColumnPeriods(query.from, query.to, columnMode).map(period => {
+    const report = buildFinancialReport({ query: { ...query, from: period.from, to: period.to, columns: undefined, comparisonFrom: undefined, comparisonTo: undefined },
+      periodRows: periodRows.filter(row => row.date >= period.from && row.date <= period.to),
+      openingRows: [...openingRows, ...periodRows.filter(row => row.date < period.from)], receivables: [], payables: [] });
+    return { ...period, profitLoss: report.profitLoss, cashFlow: report.cashFlow };
+  }) } : undefined;
   return financialReportResponseSchema.parse({
-    meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString() },
+    ...(columns ? { columns } : {}),
+    meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString(), ...(input.cashWarnings?.length?{warnings:input.cashWarnings}:{}), ...(query.basis==='cash'?{cashRecognition:'settled-source-components-v1'}:{}) },
     trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), balanced: totalDebits.compare(totalCredits) === 0 },
     profitLoss: { rows: rows.filter((row) => row.accountClass === 'revenue' || row.accountClass === 'expense'), revenue: money(revenue), expenses: money(expenses), netIncome: money(netIncome) },
     balanceSheet: { rows: accountRows([...openingRows, ...periodRows]).filter((row) => ['asset', 'liability', 'equity'].includes(row.accountClass)), assets: money(assets), liabilities: money(liabilities), equity: money(equity), balanced: assets.compare(liabilities.add(equity)) === 0 },
     cashFlow: { rows: accountRows(cashRows), openingCash: money(openingCash), inflows: money(inflows), outflows: money(outflows), netCashFlow: money(inflows.sub(outflows)), closingCash: money(openingCash.add(inflows).sub(outflows)) },
-    receivablesAging: aging(input.receivables, query.to, query.basis === 'accrual' && !query.customerIds?.length && !query.accountIds?.length ? control('1200') : undefined),
-    payablesAging: aging(input.payables, query.to, query.basis === 'accrual' && !query.vendorIds?.length && !query.accountIds?.length ? control('2100') : undefined), salesSummary: sales, purchaseSummary: purchases,
+    receivablesAging: buildAging(input.receivables, query.to, query.basis === 'accrual' && !query.customerIds?.length && !query.accountIds?.length ? control('1200') : undefined),
+    payablesAging: buildAging(input.payables, query.to, query.basis === 'accrual' && !query.vendorIds?.length && !query.accountIds?.length ? control('2100') : undefined), salesSummary: sales, purchaseSummary: purchases,
     taxSummary: {
       collected: money(outputGst), paid: money(inputGst), netPayable: money(netGst),
       outputGst: money(outputGst), inputGst: money(inputGst), netGst: money(netGst), position,

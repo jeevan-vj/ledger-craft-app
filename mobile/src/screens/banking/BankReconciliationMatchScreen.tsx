@@ -28,9 +28,9 @@ export default function BankReconciliationMatchScreen() {
   const bankAmount = transaction.data?.amount ?? '0';
   const amountState = useMemo(() => calculateAmountLeft(bankAmount, allocations, splits, bankFee), [allocations, bankAmount, bankFee, splits]);
   const refresh = async () => { await Promise.all([queryClient.invalidateQueries({ queryKey: ['banking', 'reconciliation'] }), queryClient.invalidateQueries({ queryKey: ['banking', 'transaction', transactionId] }), queryClient.invalidateQueries({ queryKey: ['banking', 'suggestions', transactionId] })]); };
-  const accept = useMutation({ mutationFn: (input: AcceptReconciliationRequest) => bankingApi.acceptSuggestion(transactionId, input), onSuccess: async () => { await refresh(); navigation.goBack(); } });
-  const personal = useMutation({ mutationFn: () => bankingApi.markPersonal(transactionId), onSuccess: async () => { await refresh(); navigation.goBack(); } });
-  const undo = useMutation({ mutationFn: () => bankingApi.undoReconciliation(transactionId, { reason: 'Reopened from mobile bank reconciliation', reversalDate: new Date().toISOString().slice(0, 10) }), onSuccess: refresh });
+  const accept = useMutation({ networkMode: 'always', mutationFn: (input: AcceptReconciliationRequest) => bankingApi.acceptSuggestion(transactionId, input), onSuccess: async () => { await refresh(); navigation.goBack(); } });
+  const personal = useMutation({ networkMode: 'always', mutationFn: () => bankingApi.markPersonal(transactionId), onSuccess: async () => { await refresh(); navigation.goBack(); } });
+  const undo = useMutation({ networkMode: 'always', mutationFn: () => bankingApi.undoReconciliation(transactionId, { reason: 'Reopened from mobile bank reconciliation', reversalDate: new Date().toISOString().slice(0, 10) }), onSuccess: refresh });
   const addDocument = (documentId: string) => {
     const document = documents.data?.find((item) => item.id === documentId); if (!document || allocations.some((item) => item.documentId === documentId)) return;
     setAllocations((rows) => [...rows, { documentType: document.documentType, documentId, amount: suggestedAllocationAmount(bankAmount, document.balanceDue, amountState.allocated) }]);

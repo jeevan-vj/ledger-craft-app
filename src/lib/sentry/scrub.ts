@@ -1,7 +1,7 @@
 import type { Breadcrumb, ErrorEvent, EventHint } from '@sentry/react';
 import { requestIdOf } from '@/lib/sentry/requestId';
 
-const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay|api\/auth\/reset-password)\/[^/?#\s"'<>\\]+/gi;
+const SHARE_PATH = /\/(?:shared\/invoice|shared\/quote|shared\/statement|api\/public\/customer-statements|pay|api\/public\/quotes|api\/public\/invoices|api\/public\/pay|api\/auth\/reset-password)\/[^/?#\s"'<>\\]+/gi;
 const TOKEN_QUERY = /([?&](?:token|verificationToken|resetToken|shareToken|share_token)=)[^&#\s"'<>]+/gi;
 const SENSITIVE_KEYS = new Set([
   'authorization', 'proxyauthorization', 'cookie', 'cookies', 'setcookie', 'xapikey', 'xauthtoken',
@@ -21,6 +21,8 @@ function isSensitiveKey(key: string): boolean {
 export function redactShareTokens(value: string): string {
   return value.replace(SHARE_PATH, (match) => {
     const path = match.toLowerCase();
+    if (path.includes('/api/public/customer-statements/')) return '/api/public/customer-statements/[redacted]';
+    if (path.includes('/shared/statement/')) return '/shared/statement/[redacted]';
     if (path.includes('/api/public/quotes/')) return '/api/public/quotes/[redacted]';
     if (path.includes('/api/public/invoices/')) return '/api/public/invoices/[redacted]';
     if (path.includes('/api/public/pay/')) return '/api/public/pay/[redacted]';

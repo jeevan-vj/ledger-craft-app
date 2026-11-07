@@ -1,0 +1,16 @@
+
+/workspace/ledger-craft-app/mobile/src/screens/expenses/ExpenseCreateScreen.tsx
+  48:28  warning  'type' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  62:20  warning  'setCurrency' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  66:19  warning  'setTaxRate' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/screens/expenses/ExpenseEditScreen.tsx
+  22:15  warning  'Expense' is defined but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/services/expenseService.ts
+  4:66  warning  '/workspace/ledger-craft-app/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+  5:30  warning  'PaymentMethod' is defined but never used                                          @typescript-eslint/no-unused-vars
+  5:51  warning  '/workspace/ledger-craft-app/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+
+✖ 7 problems (0 errors, 7 warnings)
+  0 errors and 1 warning potentially fixable with the `--fix` option.

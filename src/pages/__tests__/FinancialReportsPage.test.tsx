@@ -8,7 +8,7 @@ import FinancialReportsPage from '../FinancialReportsPage';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 
 vi.mock('@/features/reports/api/reportsApi', () => ({
-  reportsApi: { financial: vi.fn(), generalLedger: vi.fn() },
+  reportsApi: { financial: vi.fn(), generalLedger: vi.fn(), options: vi.fn().mockResolvedValue({organisationName:'Test business',today:'2026-10-27',timezone:'Pacific/Auckland',financialYearStartMonth:4,financialYearStartDay:1,gstPeriod:null}) },
 }));
 
 const meta = {
@@ -149,4 +149,14 @@ it('honours the accounting report link period and basis before exporting', async
   renderPage(financialReport({ collected: '0', paid: '0', netPayable: '0', outputGst: '0', inputGst: '0', netGst: '0', position: 'nil', gstAccounts: [], keyAccounts: [] }), '/financial-reports?from=2026-04-01&to=2026-04-30&basis=cash');
   await screen.findByRole('tab', { name: 'Tax' });
   expect(reportsApi.financial).toHaveBeenCalledWith(expect.objectContaining({ from: '2026-04-01', to: '2026-04-30', basis: 'cash' }));
+});
+
+it('offers NZ presets, server columns and PDF export without computing browser totals',async()=>{
+ const user=userEvent.setup();
+ renderPage(financialReport({collected:'0',paid:'0',netPayable:'0',outputGst:'0',inputGst:'0',netGst:'0',position:'nil',gstAccounts:[],keyAccounts:[]}));
+ expect(await screen.findByLabelText('Report date preset')).toBeInTheDocument();
+ await user.selectOptions(screen.getByLabelText('Report columns'),'month');
+ await user.click(screen.getByRole('button',{name:'Run report'}));
+ expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({columns:'month'}));
+ expect(screen.getByRole('button',{name:'Download PDF'})).toBeInTheDocument();
 });

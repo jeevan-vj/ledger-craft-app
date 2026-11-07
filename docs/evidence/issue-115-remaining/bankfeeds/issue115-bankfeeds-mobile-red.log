@@ -1,0 +1,26 @@
+
+> mobile@1.0.0 test
+> jest --runInBand src/features/bank-feeds/BankFeedsPanel.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/bank-feeds/BankFeedsPanel.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module './bankFeedsApi' from 'src/features/bank-feeds/BankFeedsPanel.test.tsx'
+
+      4 | import { BankFeedsPanel } from './BankFeedsPanel';
+      5 | import { bankFeedsApi } from './bankFeedsApi';
+    > 6 | jest.mock('./bankFeedsApi',()=>({bankFeedsApi:{summary:jest.fn()}}));
+        |      ^
+      7 | it('shows unavailable bank feed state without OAuth or native access claims',async()=>{
+      8 |  jest.mocked(bankFeedsApi.summary).mockResolvedValue({mode:'unavailable',fullAppAvailable:false,status:'not_connected',lastAttemptAt:null,lastSyncedAt:null,nextSyncAt:null,accounts:[],warnings:['Personal App credentials required.']});
+      9 |  const s=render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><BankFeedsPanel /></QueryClientProvider>);
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.mock (src/features/bank-feeds/BankFeedsPanel.test.tsx:6:6)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.629 s
+Ran all test suites matching src/features/bank-feeds/BankFeedsPanel.test.tsx.

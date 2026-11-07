@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --runInBand src/features/bank-feeds/BankFeedsPanel.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/bank-feeds/BankFeedsPanel.test.tsx
+  ✓ shows unavailable bank feed state without OAuth or native access claims (72 ms)
+  ✓ shows an actionable retry after a failed request and then the inactive account (107 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.838 s, estimated 2 s
+Ran all test suites matching src/features/bank-feeds/BankFeedsPanel.test.tsx.

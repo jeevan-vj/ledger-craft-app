@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useAuth } from '@/context/StableAuthContext';
+import { ReceiptInbox } from '@/components/expense/ReceiptInbox';
 import { useAppData } from '@/hooks/useAppData';
 import { Button } from '@/components/ui/button';
 import { Plus, Receipt } from 'lucide-react';
@@ -13,12 +15,15 @@ import { useToast } from '@/hooks/use-toast';
 import { ExpenseFormValues } from '@/components/expense/ExpenseFormDrawer';
 
 const Expenses = () => {
+  const { me } = useAuth();
   const { 
-    expenses, 
+    expenses,
+    expenseCategories,
     isLoadingExpenses, 
     createExpense, 
     updateExpense, 
-    deleteExpense 
+    deleteExpense,
+    refreshExpenses
   } = useAppData();
   const { toast } = useToast();
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -142,6 +147,8 @@ const Expenses = () => {
           ) : undefined
         }
       />
+
+      {me && <ReceiptInbox key={me.organisation.id} companyKey={`${me.user.id}:${me.organisation.id}`} canWrite={me.permissions.includes('bills.write')} existing={expenses} categories={expenseCategories} onSaved={refreshExpenses} />}
 
       {expenses.length === 0 ? (
         <EmptyState

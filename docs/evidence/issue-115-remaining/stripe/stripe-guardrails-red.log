@@ -1,0 +1,101 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_46ae021b-4d47-4935-a60f-faffaa5cddcd","route":"/api/auth/*","method":"POST","status":200,"durationMs":129}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_97527a8e-e375-4f2e-aa0d-e41bc8f8350f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_f8042a34-5f7a-4b97-848a-121ca5957ed4","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_f70874bc-12e8-4ea5-ace0-d1191c18f156","route":"/api/invoices","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_f63806fb-5292-4944-aebf-b85cadfda0f3","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_5040e417-32c8-453e-97bb-97822c8b03cd","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_153210c2-380a-4001-9790-6dded9fba3ed","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_7c022762-f1bd-45fa-a774-8b32f8803450","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+ ❯ src/modules/stripe/stripe.guardrails.test.ts (4 tests | 4 failed) 3765ms
+   × Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation 962ms
+     → expected 201 to be 403 // Object.is equality
+   × Stripe beta approval, rate limits and periodic verification > persists limit counts, isolates scopes and resets only after the window 790ms
+     → Cannot find module './stripe.rate-limits' imported from '/workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts'
+   × Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run 773ms
+     → Cannot find module './stripe.verification' imported from '/workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts'
+   × Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry 1239ms
+     → Cannot find module './stripe.verification' imported from '/workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+AssertionError: expected 201 to be 403 // Object.is equality
+
+- Expected
++ Received
+
+- 403
++ 201
+
+ ❯ src/modules/stripe/stripe.guardrails.test.ts:10:129
+      8|   const f=await stripeFixture();try{
+      9|    f.config.mock=false;f.config.approvedOrganisationIds=[];
+     10|    const denied=await f.call(`/api/invoices/${f.invoice.id}/payment-li…
+       |                                                                                                                                 ^
+     11|    f.config.approvedOrganisationIds=[String(f.row.organisation_id)];
+     12|    expect((await f.call(`/api/invoices/${f.invoice.id}/payment-links`,…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/4]⎯
+
+ FAIL  src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > persists limit counts, isolates scopes and resets only after the window
+Error: Cannot find module './stripe.rate-limits' imported from '/workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts'
+ ❯ src/modules/stripe/stripe.guardrails.test.ts:16:38
+     14|  }));
+     15|  it('persists limit counts, isolates scopes and resets only after the …
+     16|   const { consumeStripeRateLimit } = await import('./stripe.rate-limit…
+       |                                      ^
+     17|   const now=new Date('2026-11-07T01:00:00Z');
+     18|   await consumeStripeRateLimit(db,'fixture','org-one',2,60_000,now);
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+Caused by: Error: Failed to load url ./stripe.rate-limits (resolved id: ./stripe.rate-limits) in /workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts. Does the file exist?
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51920:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/4]⎯
+
+ FAIL  src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+ FAIL  src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+Error: Cannot find module './stripe.verification' imported from '/workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts'
+ ❯ src/modules/stripe/stripe.guardrails.test.ts:25:65
+     23|  }));
+     24|  it('discovers a missing provider payment and records mismatches witho…
+     25|   const { runStripeVerification, nextStripeVerificationTime } = await …
+       |                                                                 ^
+     26|   const f=await stripeFixture();try{
+     27|    const event=f.gateway.completeCheckout(String(f.row.stripe_checkout…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+Caused by: Error: Failed to load url ./stripe.verification (resolved id: ./stripe.verification) in /workspace/ledger-craft-app/api/src/modules/stripe/stripe.guardrails.test.ts. Does the file exist?
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51920:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/4]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  4 failed (4)
+   Start at  00:24:24
+   Duration  6.98s (transform 1.32s, setup 24ms, collect 2.83s, tests 3.77s, environment 0ms, prepare 82ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.guardrails.test.ts '--maxWorkers=1'

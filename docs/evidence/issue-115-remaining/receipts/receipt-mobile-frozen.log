@@ -1,0 +1,17 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/expense/ReceiptAttachment.test.tsx src/components/expense/ReceiptScanner.test.tsx src/screens/expenses/ExpenseCreateScreen.test.tsx src/screens/expenses/ExpenseEditScreen.test.tsx src/features/expenses/receiptDuplicate.test.ts src/features/expenses/prepareReceiptPhoto.web.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/expenses/ExpenseCreateScreen.test.tsx (5.246 s)
+PASS src/screens/expenses/ExpenseEditScreen.test.tsx
+PASS src/components/expense/ReceiptScanner.test.tsx
+PASS src/components/expense/ReceiptAttachment.test.tsx
+PASS src/features/expenses/receiptDuplicate.test.ts
+PASS src/features/expenses/prepareReceiptPhoto.web.test.ts
+
+Test Suites: 6 passed, 6 total
+Tests:       10 passed, 10 total
+Snapshots:   0 total
+Time:        14.103 s
+Ran all test suites matching src/components/expense/ReceiptAttachment.test.tsx|src/components/expense/ReceiptScanner.test.tsx|src/screens/expenses/ExpenseCreateScreen.test.tsx|src/screens/expenses/ExpenseEditScreen.test.tsx|src/features/expenses/receiptDuplicate.test.ts|src/features/expenses/prepareReceiptPhoto.web.test.ts.

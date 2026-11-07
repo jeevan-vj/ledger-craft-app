@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ✓ src/customer-statements.test.ts (2 tests) 93ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:13:37
+   Duration  1.59s (transform 315ms, setup 0ms, collect 471ms, tests 93ms, environment 0ms, prepare 375ms)

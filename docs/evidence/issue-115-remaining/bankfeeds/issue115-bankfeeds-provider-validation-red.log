@@ -1,0 +1,55 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/akahu.gateway.test.ts (4 tests | 1 failed) 19ms
+   ✓ Akahu HTTP boundary > keeps credentials server side, follows bounded cursor pagination and uses string monetary lexemes 8ms
+   ✓ Akahu HTTP boundary > treats a provider 401 as revoked and never leaks the response or secret 1ms
+   ✓ Akahu HTTP boundary > refuses unexpected cursor origins and looping pagination 2ms
+   × Akahu HTTP boundary > does not expose malformed provider payloads in validation errors 7ms
+     → expected [Function] to throw error including 'invalid response' but got '[\n  {\n    "received": "secret",\n  …'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/akahu.gateway.test.ts > Akahu HTTP boundary > does not expose malformed provider payloads in validation errors
+AssertionError: expected [Function] to throw error including 'invalid response' but got '[\n  {\n    "received": "secret",\n  …'
+
+- Expected
++ Received
+
+- invalid response
++ [
++   {
++     "received": "secret",
++     "code": "invalid_enum_value",
++     "options": [
++       "ACTIVE",
++       "INACTIVE"
++     ],
++     "path": [
++       "items",
++       0,
++       "status"
++     ],
++     "message": "Invalid enum value. Expected 'ACTIVE' | 'INACTIVE', received 'secret'"
++   }
++ ]
+
+ ❯ src/modules/bank-feeds/akahu.gateway.test.ts:26:5
+     24|   it('does not expose malformed provider payloads in validation errors…
+     25|     const gateway=new AkahuGateway('app','secret',async()=>new Respons…
+     26|     await expect(gateway.accounts()).rejects.toThrow('invalid response…
+       |     ^
+     27|     try {await gateway.accounts();}catch(error){expect(String(error)).…
+     28|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:06:52
+   Duration  309ms (transform 42ms, setup 24ms, collect 28ms, tests 19ms, environment 0ms, prepare 97ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/akahu.gateway.test.ts

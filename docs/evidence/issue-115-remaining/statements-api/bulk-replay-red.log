@@ -1,0 +1,96 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_cae133af-3acf-48cb-a10d-c3b231968df0","route":"/api/auth/*","method":"POST","status":200,"durationMs":504}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_146d0e18-f57b-400f-b103-f5842ca02476","route":"/api/business-profile","method":"PUT","status":200,"durationMs":74}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_c7c77b23-798e-4b4f-8b50-14d04a40ee88","route":"/api/customers","method":"POST","status":201,"durationMs":65}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_cd8212b5-66fd-486d-bd19-378f09ca825c","route":"/api/invoices","method":"POST","status":201,"durationMs":125}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_db36fe8b-0964-49e9-b51f-7610da0e77cc","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":87}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_0e049b01-abbf-42bc-91fc-879df958305d","route":"/api/me","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_525d3bca-84c4-4d33-9e03-60eb99be7ece","route":"/api/customers/:id/statement","method":"GET","status":200,"durationMs":36}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_e3dd5db0-5554-4797-992e-f4e26c66ff05","route":"/api/customers/:id/statement","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_b6c63ee9-687b-42fd-a21c-8fdb0564a8c0","route":"/api/customers/:id/statement/share","method":"POST","status":201,"durationMs":69}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_af06b37c-bfdd-407f-b679-3d30f2040cbc","route":"/api/public/customer-statements/:token","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_ed0779cd-3a70-496e-b96b-3b9c6bca63b5","route":"/api/customers","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_f627ab9d-381a-45be-956c-51b19043f786","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":127}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_bfc4801c-748b-4894-b7ac-9c0cf43c31eb","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":53}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_4274d4ee-afd7-4d1d-a2bd-b06cb36b4f76","route":"/api/invoices","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_37559447-b6da-43d9-af2f-bc4ad6b8426e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":124}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_57557eb8-223a-4b54-943a-0a6c6f6bc781","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":49}
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts (9 tests | 1 failed | 8 skipped) 4207ms
+   ↓ customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+   ↓ customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+   ↓ customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+   ↓ customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+   ↓ customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+   ↓ customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+   ↓ customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+   ↓ customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+   × customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts 4206ms
+     → expected { sent: 2, failed: +0, …(2) } to match object { sent: 1, skipped: 1, failed: +0 }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+AssertionError: expected { sent: 2, failed: +0, …(2) } to match object { sent: 1, skipped: 1, failed: +0 }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "failed": 0,
+-   "sent": 1,
+-   "skipped": 1,
++   "sent": 2,
++   "skipped": 0,
+  }
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts:189:158
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  00:14:52
+   Duration  13.71s (transform 4.14s, setup 51ms, collect 8.86s, tests 4.21s, environment 0ms, prepare 140ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/customer-statements/customer-statements.test.ts -t 'serves authorised HTTP'

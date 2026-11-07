@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/settings/StripeOperationsPanel.test.tsx (3 tests) 183ms
+ ✓ src/components/settings/StripePaymentsPanel.test.tsx (3 tests) 168ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  00:16:30
+   Duration  1.57s (transform 184ms, setup 222ms, collect 640ms, tests 352ms, environment 914ms, prepare 558ms)

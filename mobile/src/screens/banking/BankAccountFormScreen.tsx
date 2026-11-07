@@ -30,6 +30,7 @@ export default function BankAccountFormScreen() {
   useEffect(() => { if (accountQuery.data) { const loaded = bankAccountDraftFromRecord(accountQuery.data); setInitial(loaded); setForm(loaded); } }, [accountQuery.data]);
   const errors = validateBankAccountDraft(form); const isDirty = hasBankAccountFormChanged(form, initial);
   const saveMutation = useMutation({
+    networkMode: 'always',
     mutationFn: () => bankAccountId ? bankingApi.updateAccount(bankAccountId, bankAccountPayloadFromDraft(form)) : bankingApi.createAccount(bankAccountPayloadFromDraft(form)),
     onSuccess: async (saved) => { setInitial(form); setSavedId(saved.id); await queryClient.invalidateQueries({ queryKey: ['banking'] }); successHaptic(); },
     onError: errorHaptic,

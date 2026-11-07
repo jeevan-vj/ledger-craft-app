@@ -1,0 +1,167 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/settings/RecurringSchedulesScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/settings/RecurringSchedulesScreen.test.tsx
+  recurring schedules workspace
+    ✕ shows an empty workspace and offers invoice/bill forms with honest unavailable delivery (82 ms)
+    ✕ shows server errors and retry controls without claiming an empty result (1010 ms)
+
+  ● recurring schedules workspace › shows an empty workspace and offers invoice/bill forms with honest unavailable delivery
+
+    Unable to find an element with text: New schedule
+
+    [36m<RCTScrollView>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0mCreate and monitor retry-safe recurring invoices, bills, income and expenses.[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mQuick expense schedule[0m
+          [36m</Text>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Schedule name"[39m
+            [33mvalue[39m=[32m"Monthly operating expense"[39m
+          [36m/>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Description"[39m
+            [33mvalue[39m=[32m"Software subscription"[39m
+          [36m/>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Amount"[39m
+            [33mvalue[39m=[32m"99.00"[39m
+          [36m/>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"0"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCreate monthly schedule[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mSchedules[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Feather />[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mNo recurring schedules[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0mCreate one above or use the web app for invoice, bill and income templates.[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mRecent runs[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+    [36m</RCTScrollView>[39m
+
+      13 |   it('shows an empty workspace and offers invoice/bill forms with honest unavailable delivery', async () => {
+      14 |     wrap(); await waitFor(() => expect(screen.getByText('No recurring schedules')).toBeTruthy());
+    > 15 |     fireEvent.press(screen.getByText('New schedule'));
+         |                            ^
+      16 |     expect(screen.getByText('Invoice')).toBeTruthy(); expect(screen.getByText('Supplier bill')).toBeTruthy();
+      17 |     expect(screen.getByText(/Email delivery is unavailable/)).toBeTruthy();
+      18 |   });
+
+      at Object.getByText (src/screens/settings/RecurringSchedulesScreen.test.tsx:15:28)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● recurring schedules workspace › shows server errors and retry controls without claiming an empty result
+
+    Unable to find an element with text: Schedules could not be loaded
+
+    [36m<RCTScrollView>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0mCreate and monitor retry-safe recurring invoices, bills, income and expenses.[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mQuick expense schedule[0m
+          [36m</Text>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Schedule name"[39m
+            [33mvalue[39m=[32m"Monthly operating expense"[39m
+          [36m/>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Description"[39m
+            [33mvalue[39m=[32m"Software subscription"[39m
+          [36m/>[39m
+          [36m<TextInput[39m
+            [33maccessibilityLabel[39m=[32m"Amount"[39m
+            [33mvalue[39m=[32m"99.00"[39m
+          [36m/>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"1"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCreate monthly schedule[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mSchedules[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Feather />[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mNo recurring schedules[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0mCreate one above or use the web app for invoice, bill and income templates.[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mRecent runs[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+    [36m</RCTScrollView>[39m
+
+      19 |   it('shows server errors and retry controls without claiming an empty result', async () => {
+      20 |     (recurringService.list as jest.Mock).mockRejectedValue(new Error('Offline; retry safely.'));
+    > 21 |     wrap(); await waitFor(() => expect(screen.getByText('Schedules could not be loaded')).toBeTruthy());
+         |                          ^
+      22 |     expect(screen.getByText('Try again')).toBeTruthy();
+      23 |   });
+      24 | });
+
+      at Object.<anonymous> (src/screens/settings/RecurringSchedulesScreen.test.tsx:21:26)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        2.927 s
+Ran all test suites matching src/screens/settings/RecurringSchedulesScreen.test.tsx.

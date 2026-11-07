@@ -1,3 +1,4 @@
+import { CustomerReminderPreference } from '@/features/customer-statements/PaymentRemindersWorkspace';
 import React, { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { ActivityIndicator, Alert, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Feather } from '@expo/vector-icons';
@@ -81,6 +82,8 @@ export default function CustomerDetailScreen() {
       <View style={styles.stat}><Text style={theme.type.caption}>PAID</Text><Text style={theme.type.headline}>{formatMoney(summary.paid, summary.currency)}</Text></View>
       <View style={styles.stat}><Text style={theme.type.caption}>INVOICES</Text><Text style={theme.type.headline}>{summary.invoiceCount}</Text></View>
     </View>
+    <GroupedSection title="Statements and reminders"><ListRow label="Customer statement" subtitle="Open items, activity and secure sharing" onPress={() => navigation.navigate('CustomerStatements', { customerId: customer.id })} /></GroupedSection>
+    <CustomerReminderPreference customerId={customer.id} />
     <GroupedSection title="Contact">
       <ListRow label="Email" value={customer.email || undefined} placeholder="Not provided" icon={<Feather name="mail" size={18} color={theme.colors.accentText} />} showChevron={Boolean(customer.email)} onPress={customer.email ? () => Linking.openURL(`mailto:${customer.email}`) : undefined} />
       <ListRow label="Phone" value={customer.phone || undefined} placeholder="Not provided" icon={<Feather name="phone" size={18} color={theme.colors.accentText} />} showChevron={Boolean(customer.phone)} onPress={customer.phone ? () => Linking.openURL(`tel:${customer.phone}`) : undefined} />

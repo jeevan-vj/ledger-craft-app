@@ -1,0 +1,31 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/features/bank-feeds/BankFeedsPanel.test.tsx [ src/features/bank-feeds/BankFeedsPanel.test.tsx ]
+Error: Failed to resolve import "./BankFeedsPanel" from "src/features/bank-feeds/BankFeedsPanel.test.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /workspace/ledger-craft-app/src/features/bank-feeds/BankFeedsPanel.test.tsx:4:0
+  9  |  const __vi_import_1__ = await import("@testing-library/react");
+  10 |  const __vi_import_2__ = await import("@tanstack/react-query");
+  11 |  const __vi_import_3__ = await import("./BankFeedsPanel");
+     |                                       ^
+  12 |  const __vi_import_4__ = await import("./bankFeedsApi");
+  13 |
+ ❯ TransformPluginContext._formatError node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49255:41
+ ❯ TransformPluginContext.error node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49250:16
+ ❯ normalizeUrl node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64041:23
+ ❯ node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64173:39
+ ❯ TransformPluginContext.transform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64100:7
+ ❯ PluginContainer.transform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49096:18
+ ❯ loadAndTransform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51929:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:04:57
+   Duration  907ms (transform 44ms, setup 126ms, collect 0ms, tests 0ms, environment 404ms, prepare 156ms)

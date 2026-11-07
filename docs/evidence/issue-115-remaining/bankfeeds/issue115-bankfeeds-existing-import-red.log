@@ -1,0 +1,43 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (6 tests | 1 failed) 5068ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  882ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  820ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  827ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  806ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  890ms
+   × Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row 839ms
+     → expected 2 to be 1 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row
+AssertionError: expected 2 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:64:27
+     62|   await importBankTransactionsForUser(db,userId,{bankAccountId:account…
+     63|   const result=await syncFeedsForUser(db,userId,{organisationId,userId…
+     64|   expect(result.imported).toBe(1);expect(result.duplicates).toBe(1);ex…
+       |                           ^
+     65|  }));
+     66|
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  00:08:40
+   Duration  6.74s (transform 634ms, setup 40ms, collect 1.38s, tests 5.07s, environment 0ms, prepare 79ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts

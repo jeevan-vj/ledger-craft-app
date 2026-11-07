@@ -1,0 +1,47 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/banking/api/bankingApi.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/banking/api/bankingApi.test.ts
+  ✕ refuses offline bank mutations before any fetch, without queueing a later posting (10 ms)
+  bankingApi
+    ✓ creates an account without converting exact decimal strings (6 ms)
+    ✓ lists transactions for one account with an encoded query (1 ms)
+    ✓ deletes an account through the authenticated API client (1 ms)
+    ✓ posts exact transfers with an idempotency key
+    ✓ imports parsed statement rows without converting exact money (1 ms)
+    ✓ constructs reconciliation feed filters without changing exact values (1 ms)
+    ✓ accepts a multi-document match with exact decimal strings
+    ✓ undoes reconciliation through the audited server endpoint
+
+  ● refuses offline bank mutations before any fetch, without queueing a later posting
+
+    expect(received).rejects.toThrow(expected)
+
+    Expected pattern: /offline.*try again/i
+    Received message: "Cannot read properties of undefined (reading 'headers')"
+
+          106 |   }
+          107 |
+        > 108 |   if (Platform.OS !== 'web') await rememberSetCookie(response.headers);
+              |                                                               ^
+          109 |   const authToken = response.headers?.get?.('set-auth-token');
+          110 |   if (authToken && Platform.OS !== 'web') {
+          111 |     await rememberSessionToken(authToken);
+
+      at headers (src/features/auth/api/http.ts:108:63)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at Object.toThrow (node_modules/expect/build/index.js:2155:20)
+      at Object.toThrow (src/features/banking/api/bankingApi.test.ts:113:181)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 8 passed, 9 total
+Snapshots:   0 total
+Time:        1.013 s, estimated 2 s
+Ran all test suites matching src/features/banking/api/bankingApi.test.ts.

@@ -1,0 +1,445 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/components/expense/__tests__/ReceiptInbox.test.tsx (2 tests | 1 failed) 259ms
+   × receipt inbox review > prefills a matching existing category from the scanned suggestion without creating categories 122ms
+     → Unable to find a label with the text of: Category for receipt.png
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card shadow-surface p-6 sm:p-8"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33maria-label[39m=[32m"Receipts inbox"[39m
+        [33mclass[39m=[32m"space-y-5"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"text-xl font-semibold"[39m
+          [36m>[39m
+            [0mReceipts inbox[0m
+          [36m</h2>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-sm text-muted-foreground"[39m
+          [36m>[39m
+            [0mDrop photos or PDFs, then review each expense before saving. Amounts are in NZD. Drafts stay in this browser for this company. Save a draft expense to retain it across devices.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-xl border border-dashed border-border p-5"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"block space-y-3 text-sm font-medium"[39m
+          [36m>[39m
+            [0mAdd receipt photos or PDFs[0m
+            [36m<input[39m
+              [33maccept[39m=[32m"image/jpeg,image/png,image/webp,application/pdf"[39m
+              [33maria-label[39m=[32m"Receipt files"[39m
+              [33mclass[39m=[32m"block max-w-full text-sm"[39m
+              [33mmultiple[39m=[32m""[39m
+              [33mtype[39m=[32m"file"[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-xs text-muted-foreground"[39m
+          [36m>[39m
+            [0mJPEG, PNG, WebP or PDF · up to 1 MiB per file · up to 20 at once[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<ul[39m
+          [33mclass[39m=[32m"space-y-6"[39m
+        [36m>[39m
+          [36m<li[39m
+            [33mclass[39m=[32m"space-y-4 border-t border-border pt-5"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-wrap items-start justify-between gap-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"min-w-0"[39m
+              [36m>[39m
+                [36m<h3[39m
+                  [33mclass[39m=[32m"break-words font-medium"[39m
+                [36m>[39m
+                  [0mreceipt.png[0m
+                [36m</h3>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+                [36m>[39m
+                  [0mNeeds review[0m
+                [36m</p>[39m
+              [36m</div>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"text-sm font-medium text-primary underline"[39m
+                [33mhref[39m=[32m"/api/objects/file?key=receipt"[39m
+                [33mrel[39m=[32m"noreferrer"[39m
+                [33mtarget[39m=[32m"_blank"[39m
+              [36m>[39m
+                [0mOpen receipt[0m
+              [36m</a>[39m
+            [36m</div>[39m
+            [36m<img[39m
+              [33malt[39m=[32m"Receipt receipt.png"[39m
+              [33mclass[39m=[32m"h-24 max-w-full rounded-lg object-contain"[39m
+              [33msrc[39m=[32m"/api/objects/file?key=receipt"[39m
+            [36m/>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid gap-4 sm:grid-cols-2"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mDescription[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Description for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"Supplier"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mVendor[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Vendor for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"Supplier"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mDate[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Date for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"date"[39m
+                  [33mvalue[39m=[32m"2026-10-01"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mTotal[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Total for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33minputmode[39m=[32m"decimal"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"115.00"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mGST[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"GST for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33minputmode[39m=[32m"decimal"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"15.00"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mGST treatment[0m
+                [36m<select[39m
+                  [33maria-label[39m=[32m"GST treatment for receipt.png"[39m
+                  [33mclass[39m=[32m"h-11 w-full rounded-xl border border-input bg-background px-3"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m>[39m
+                    [0mSelect treatment[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"standard"[39m
+                  [36m>[39m
+                    [0mStandard claimable GST[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"zero_rated"[39m
+                  [36m>[39m
+                    [0mZero-rated[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"exempt"[39m
+                  [36m>[39m
+                    [0mExempt[0m
+                  [36m</option>[39m
+                [36m</select>[39m
+              [36m</label>[39m
+            [36m</div>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+            [36m>[39m
+              [0mScanned suggestion · [0m
+              [0m90[0m
+              [0m% confidence[0m
+              [0m. Confirm the source receipt and business use. For partial/private-use claims, save pending and edit the full expense before approval.[0m
+            [36m</p>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-start gap-3 text-sm"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"I reviewed receipt.png and its GST treatment"[39m
+                [33mclass[39m=[32m"mt-1"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0mI reviewed the receipt, amounts and GST treatment. Save as pending for approval.[0m
+            [36m</label>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"[39m
+              [33mdisabled[39m=[32m""[39m
+            [36m>[39m
+              [0mSave expense from receipt.png[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-muted text-foreground h-10 px-5 py-2"[39m
+            [36m>[39m
+              [0mDelete receipt draft[0m
+            [36m</button>[39m
+          [36m</li>[39m
+        [36m</ul>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ receipt inbox review > uploads without scanning unavailable AI, requires review and explicit save, and preserves exact edited GST 135ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/expense/__tests__/ReceiptInbox.test.tsx > receipt inbox review > prefills a matching existing category from the scanned suggestion without creating categories
+TestingLibraryElementError: Unable to find a label with the text of: Category for receipt.png
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card shadow-surface p-6 sm:p-8"[39m
+    [36m>[39m
+      [36m<section[39m
+        [33maria-label[39m=[32m"Receipts inbox"[39m
+        [33mclass[39m=[32m"space-y-5"[39m
+      [36m>[39m
+        [36m<div>[39m
+          [36m<h2[39m
+            [33mclass[39m=[32m"text-xl font-semibold"[39m
+          [36m>[39m
+            [0mReceipts inbox[0m
+          [36m</h2>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-sm text-muted-foreground"[39m
+          [36m>[39m
+            [0mDrop photos or PDFs, then review each expense before saving. Amounts are in NZD. Drafts stay in this browser for this company. Save a draft expense to retain it across devices.[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"rounded-xl border border-dashed border-border p-5"[39m
+        [36m>[39m
+          [36m<label[39m
+            [33mclass[39m=[32m"block space-y-3 text-sm font-medium"[39m
+          [36m>[39m
+            [0mAdd receipt photos or PDFs[0m
+            [36m<input[39m
+              [33maccept[39m=[32m"image/jpeg,image/png,image/webp,application/pdf"[39m
+              [33maria-label[39m=[32m"Receipt files"[39m
+              [33mclass[39m=[32m"block max-w-full text-sm"[39m
+              [33mmultiple[39m=[32m""[39m
+              [33mtype[39m=[32m"file"[39m
+            [36m/>[39m
+          [36m</label>[39m
+          [36m<p[39m
+            [33mclass[39m=[32m"mt-2 text-xs text-muted-foreground"[39m
+          [36m>[39m
+            [0mJPEG, PNG, WebP or PDF · up to 1 MiB per file · up to 20 at once[0m
+          [36m</p>[39m
+        [36m</div>[39m
+        [36m<ul[39m
+          [33mclass[39m=[32m"space-y-6"[39m
+        [36m>[39m
+          [36m<li[39m
+            [33mclass[39m=[32m"space-y-4 border-t border-border pt-5"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex flex-wrap items-start justify-between gap-3"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"min-w-0"[39m
+              [36m>[39m
+                [36m<h3[39m
+                  [33mclass[39m=[32m"break-words font-medium"[39m
+                [36m>[39m
+                  [0mreceipt.png[0m
+                [36m</h3>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+                [36m>[39m
+                  [0mNeeds review[0m
+                [36m</p>[39m
+              [36m</div>[39m
+              [36m<a[39m
+                [33mclass[39m=[32m"text-sm font-medium text-primary underline"[39m
+                [33mhref[39m=[32m"/api/objects/file?key=receipt"[39m
+                [33mrel[39m=[32m"noreferrer"[39m
+                [33mtarget[39m=[32m"_blank"[39m
+              [36m>[39m
+                [0mOpen receipt[0m
+              [36m</a>[39m
+            [36m</div>[39m
+            [36m<img[39m
+              [33malt[39m=[32m"Receipt receipt.png"[39m
+              [33mclass[39m=[32m"h-24 max-w-full rounded-lg object-contain"[39m
+              [33msrc[39m=[32m"/api/objects/file?key=receipt"[39m
+            [36m/>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"grid gap-4 sm:grid-cols-2"[39m
+            [36m>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mDescription[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Description for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"Supplier"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mVendor[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Vendor for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"Supplier"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mDate[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Date for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33mtype[39m=[32m"date"[39m
+                  [33mvalue[39m=[32m"2026-10-01"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mTotal[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"Total for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33minputmode[39m=[32m"decimal"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"115.00"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mGST[0m
+                [36m<input[39m
+                  [33maria-label[39m=[32m"GST for receipt.png"[39m
+                  [33mclass[39m=[32m"flex h-11 w-full rounded-xl border border-transparent bg-muted/80 px-3.5 py-2 text-base ring-offset-background transition-[background-color,border-color,box-shadow] file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-primary/35 focus-visible:bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm"[39m
+                  [33minputmode[39m=[32m"decimal"[39m
+                  [33mtype[39m=[32m"text"[39m
+                  [33mvalue[39m=[32m"15.00"[39m
+                [36m/>[39m
+              [36m</label>[39m
+              [36m<label[39m
+                [33mclass[39m=[32m"space-y-2 text-sm"[39m
+              [36m>[39m
+                [0mGST treatment[0m
+                [36m<select[39m
+                  [33maria-label[39m=[32m"GST treatment for receipt.png"[39m
+                  [33mclass[39m=[32m"h-11 w-full rounded-xl border border-input bg-background px-3"[39m
+                [36m>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m""[39m
+                  [36m>[39m
+                    [0mSelect treatment[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"standard"[39m
+                  [36m>[39m
+                    [0mStandard claimable GST[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"zero_rated"[39m
+                  [36m>[39m
+                    [0mZero-rated[0m
+                  [36m</option>[39m
+                  [36m<option[39m
+                    [33mvalue[39m=[32m"exempt"[39m
+                  [36m>[39m
+                    [0mExempt[0m
+                  [36m</option>[39m
+                [36m</select>[39m
+              [36m</label>[39m
+            [36m</div>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+            [36m>[39m
+              [0mScanned suggestion · [0m
+              [0m90[0m
+              [0m% confidence[0m
+              [0m. Confirm the source receipt and business use. For partial/private-use claims, save pending and edit the full expense before approval.[0m
+            [36m</p>[39m
+            [36m<label[39m
+              [33mclass[39m=[32m"flex items-start gap-3 text-sm"[39m
+            [36m>[39m
+              [36m<input[39m
+                [33maria-label[39m=[32m"I reviewed receipt.png and its GST treatment"[39m
+                [33mclass[39m=[32m"mt-1"[39m
+                [33mtype[39m=[32m"checkbox"[39m
+              [36m/>[39m
+              [0mI reviewed the receipt, amounts and GST treatment. Save as pending for approval.[0m
+            [36m</label>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"[39m
+              [33mdisabled[39m=[32m""[39m
+            [36m>[39m
+              [0mSave expense from receipt.png[0m
+            [36m</button>[39m
+            [36m<button[39m
+              [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:bg-muted text-foreground h-10 px-5 py-2"[39m
+            [36m>[39m
+              [0mDelete receipt draft[0m
+            [36m</button>[39m
+          [36m</li>[39m
+        [36m</ul>[39m
+      [36m</section>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ getAllByLabelText node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/queries/label-text.js:111:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ getByLabelText node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/components/expense/__tests__/ReceiptInbox.test.tsx:17:57
+     15|   await waitFor(()=>expect(screen.getByLabelText('Receipt files')).toB…
+     16|   fireEvent.change(screen.getByLabelText('Receipt files'),{target:{fil…
+     17|   await screen.findByText('Needs review');expect(screen.getByLabelText…
+       |                                                         ^
+     18|  });
+     19|  it('uploads without scanning unavailable AI, requires review and expl…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  00:29:20
+   Duration  1.75s (transform 355ms, setup 97ms, collect 576ms, tests 259ms, environment 361ms, prepare 198ms)

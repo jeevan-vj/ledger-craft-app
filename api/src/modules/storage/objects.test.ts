@@ -1,3 +1,6 @@
+import { eq } from 'drizzle-orm';
+import { organisationMemberships } from '../../db/schema/identity';
+import { createHash } from 'node:crypto';
 import { errorEnvelopeSchema, objectSchema } from '@ledgercraft/contracts';
 import { describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
@@ -32,6 +35,27 @@ async function signUp(app: ReturnType<typeof createApp>, name: string) {
 }
 
 describe('object routes', () => {
+ it('allows receipt-only upload/deletion to an accountant without widening generic object writes', async()=>withTestDb(async()=>{
+  const {db,sql}=createDb(getDatabaseUrl());
+  try{
+   const app=createApp({auth:createAuth(db),db,objectStore:createMemoryObjectStore(),checkDatabase:async()=>true});const owner=await signUp(app,'Receipt accountant');const other=await signUp(app,'Other company');const headers={...originHeaders,Cookie:owner.cookie};
+   const profile=await app.request('/api/me',{headers});const me=await profile.json() as {user:{id:string}};
+   const logoResponse=await app.request('/api/objects',{method:'POST',headers,body:JSON.stringify({kind:'logo',filename:'logo.png',contentType:'image/png',contentBase64:PNG_B64})});const logo=await logoResponse.json() as {key:string};
+   await db.update(organisationMemberships).set({role:'accountant'}).where(eq(organisationMemberships.userId,me.user.id));
+   const body={kind:'receipt',filename:'receipt.png',contentType:'image/png',contentBase64:PNG_B64};
+   const generic=await app.request('/api/objects',{method:'POST',headers,body:JSON.stringify(body)});expect(generic.status).toBe(403);
+   const upload=await app.request('/api/objects/receipts',{method:'POST',headers,body:JSON.stringify(body)});expect(upload.status).toBe(201);const receipt=await upload.json() as {key:string;url:string};
+   expect((await app.request(receipt.url,{headers})).status).toBe(200);expect((await app.request(receipt.url,{headers:{Cookie:other.cookie}})).status).toBe(404);
+   expect((await app.request('/api/objects/receipts',{method:'POST',headers,body:JSON.stringify({...body,kind:'logo'})})).status).toBe(400);
+   expect((await app.request(`/api/objects/receipts?key=${encodeURIComponent(logo.key)}`,{method:'DELETE',headers})).status).toBe(404);
+   const saved=await app.request('/api/expenses',{method:'POST',headers,body:JSON.stringify({description:'Retained receipt',amount:'115.00',taxAmount:'15.00',expenseDate:'2026-10-01',receiptUrl:receipt.url})});expect(saved.status).toBe(201);const expense=await saved.json() as {id:string};
+   expect.soft((await app.request(`/api/objects/receipts?key=${encodeURIComponent(receipt.key)}`,{method:'DELETE',headers})).status).toBe(409);
+   await app.request(`/api/expenses/${expense.id}`,{method:'DELETE',headers});
+   expect((await app.request(`/api/objects/receipts?key=${encodeURIComponent(receipt.key)}`,{method:'DELETE',headers})).status).toBe(204);
+   await db.update(organisationMemberships).set({role:'read_only'}).where(eq(organisationMemberships.userId,me.user.id));
+   expect((await app.request('/api/objects/receipts',{method:'POST',headers,body:JSON.stringify(body)})).status).toBe(403);
+  }finally{await sql.end();}
+ }));
   it('unauthenticated GET/POST /api/objects return 401', async () => {
     const get = await createApp().request('/api/objects?key=x');
     expect(get.status).toBe(401);
@@ -86,6 +110,7 @@ describe('object routes', () => {
         });
         expect(uploaded.status).toBe(201);
         const dto = objectSchema.parse(await uploaded.json());
+        expect((dto as {sha256?:string}).sha256).toBe(createHash('sha256').update(Buffer.from(PNG_B64,'base64')).digest('hex'));
         expect(dto.kind).toBe('receipt');
         expect(dto.contentType).toBe('image/png');
         expect(dto.size).toBeGreaterThan(0);

@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/bank-feeds/BankFeedsPanel.test.tsx (3 tests) 129ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:11:00
+   Duration  1.24s (transform 103ms, setup 89ms, collect 208ms, tests 129ms, environment 359ms, prepare 256ms)

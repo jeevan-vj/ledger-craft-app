@@ -65,7 +65,7 @@ export async function fileToBase64(file: File): Promise<string> {
 
 export const objectsApi = {
   async upload(input: UploadObjectRequest): Promise<ObjectDto> {
-    return request<ObjectDto>('/api/objects', { method: 'POST', body: JSON.stringify(input) });
+    return request<ObjectDto>(input.kind === 'receipt' ? '/api/objects/receipts' : '/api/objects', { method: 'POST', body: JSON.stringify(input) });
   },
 
   async uploadFile(file: File, kind: ObjectKind): Promise<{ url: string; path: string } | null> {
@@ -86,7 +86,8 @@ export const objectsApi = {
   async delete(urlOrPath: string): Promise<boolean> {
     try {
       const key = objectKeyFromUrl(urlOrPath);
-      await request<void>(`/api/objects?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+      const endpoint = key.split('/')[1] === 'receipts' ? '/api/objects/receipts' : '/api/objects';
+      await request<void>(`${endpoint}?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
       return true;
     } catch (error) {
       console.error('Error deleting file:', error);

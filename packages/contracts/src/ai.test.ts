@@ -4,7 +4,7 @@ import { chatCompletionRequestSchema, receiptScanResultSchema, scanReceiptReques
 describe('ai contracts', () => {
   it('accepts a Workers AI receipt result provider', () => {
     expect(receiptScanResultSchema.parse({
-      merchantName: 'Kiwi Supplies Ltd', date: null, total: 11.5, tax: 1.5, subtotal: 10,
+      merchantName: 'Kiwi Supplies Ltd', date: null, total: '11.50', tax: '1.50', subtotal: '10.00',
       items: [], paymentMethod: 'card', suggestedCategory: 'Office Supplies', confidence: 60,
       notes: null, provider: 'workers-ai',
     }).provider).toBe('workers-ai');

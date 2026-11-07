@@ -1,0 +1,97 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+stderr | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stdout | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Scan completed with: {
+  scanResult: {
+    merchantName: 'Supplier',
+    date: null,
+    total: 230,
+    tax: 30,
+    subtotal: 200,
+    items: [],
+    paymentMethod: 'card',
+    suggestedCategory: null,
+    confidence: 1,
+    notes: null
+  },
+  receiptUrl: 'https://example.test/scanned-receipt.jpg'
+}
+Setting receipt URL: https://example.test/scanned-receipt.jpg
+
+ ❯ src/components/expense/__tests__/ReceiptUpload.test.tsx (14 tests | 1 failed) 954ms
+   ✓ ReceiptUpload > renders upload interface by default 87ms
+   ✓ ReceiptUpload > hides scan and explains the manual fallback when the server has no AI capability 32ms
+   ✓ ReceiptUpload > shows initial receipt when provided 24ms
+   ✓ ReceiptUpload > handles file upload successfully 91ms
+   × ReceiptUpload > attaches a completed AI scan without a missing state setter 155ms
+     → expected "spy" to be called with arguments: [ …(2) ]
+
+Number of calls: 0
+
+   ✓ ReceiptUpload > validates file size limits  400ms
+   ✓ ReceiptUpload > validates file types 11ms
+   ✓ ReceiptUpload > switches between upload and manual URL tabs 50ms
+   ✓ ReceiptUpload > handles manual URL input 27ms
+   ✓ ReceiptUpload > removes receipt when delete button clicked 21ms
+   ✓ ReceiptUpload > opens receipt for viewing when view button clicked 13ms
+   ✓ ReceiptUpload > disables interface when disabled prop is true 15ms
+   ✓ ReceiptUpload > shows camera capture input for mobile devices 6ms
+   ✓ ReceiptUpload > handles drag and drop file upload 12ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+AssertionError: expected "spy" to be called with arguments: [ …(2) ]
+
+Number of calls: 0
+
+ ❯ src/components/expense/__tests__/ReceiptUpload.test.tsx:111:33
+    109|     await user.click(screen.getByRole('button', { name: /Scan Receipt …
+    110|     await user.click(screen.getByRole('button', { name: 'Finish scan' …
+    111|     expect(mockOnReceiptChange).toHaveBeenCalledWith('https://example.…
+       |                                 ^
+    112|     expect(screen.getByText('Receipt Attached')).toBeInTheDocument();
+    113|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+⎯⎯⎯⎯⎯⎯ Unhandled Errors ⎯⎯⎯⎯⎯⎯
+
+Vitest caught 1 unhandled error during the test run.
+This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.
+
+⎯⎯⎯⎯⎯ Uncaught Exception ⎯⎯⎯⎯⎯
+ReferenceError: setReceiptUrl is not defined
+ ❯ onScanComplete src/components/expense/ReceiptUpload.tsx:218:7
+    216|     if (receiptUrl) {
+    217|       console.log('Setting receipt URL:', receiptUrl);
+    218|       setReceiptUrl(receiptUrl);
+       |       ^
+    219|       onReceiptChange(receiptUrl, null);
+    220|     } else {
+ ❯ onClick src/components/expense/__tests__/ReceiptUpload.test.tsx:32:173
+ ❯ HTMLUnknownElement.callCallback node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4164:14
+ ❯ HTMLUnknownElement.callTheUserObjectsOperation node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/generated/EventListener.js:26:30
+ ❯ innerInvokeEventListeners node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:350:25
+ ❯ invokeEventListeners node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:286:3
+ ❯ HTMLUnknownElementImpl._dispatch node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:233:9
+ ❯ HTMLUnknownElementImpl.dispatchEvent node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/events/EventTarget-impl.js:104:17
+ ❯ HTMLUnknownElement.dispatchEvent node_modules/.pnpm/jsdom@26.1.0_supports-color@10.2.2/node_modules/jsdom/lib/jsdom/living/generated/EventTarget.js:241:34
+ ❯ Object.invokeGuardedCallbackDev node_modules/.pnpm/react-dom@18.3.1_react@18.3.1/node_modules/react-dom/cjs/react-dom.development.js:4213:16
+
+This error originated in "src/components/expense/__tests__/ReceiptUpload.test.tsx" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+The latest test that might've caused the error is "attaches a completed AI scan without a missing state setter". It might mean one of the following:
+- The error was thrown, while Vitest was running this test.
+- If the error occurred after the test had been completed, this was the last documented test before it was thrown.
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 13 passed (14)
+     Errors  1 error
+   Start at  11:09:08
+   Duration  2.32s (transform 189ms, setup 111ms, collect 466ms, tests 954ms, environment 408ms, prepare 146ms)

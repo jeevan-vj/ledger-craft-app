@@ -46,6 +46,7 @@ async function seedInvoice(app: ReturnType<typeof createApp>, cookie: string) {
 }
 
 function testGateway(events: Map<string, StripeWebhookEvent>): StripeGateway {
+  const checkouts = new Map<string, import('./stripe.gateway').CreateCheckoutSessionInput>();
   return {
     async createConnectedAccount() {
       return { id: 'acct_test_easybiz', chargesEnabled: false, payoutsEnabled: false, detailsSubmitted: false, requirementsDue: ['business_profile.url'], disabledReason: null };
@@ -57,11 +58,16 @@ function testGateway(events: Map<string, StripeWebhookEvent>): StripeGateway {
       return { url: 'https://connect.stripe.com/setup/s/test_link', expiresAt: Math.floor(Date.now() / 1000) + 3_600 };
     },
     async createCheckoutSession(input) {
+      checkouts.set(`cs_test_${input.paymentLinkId}`, input);
       return {
         id: `cs_test_${input.paymentLinkId}`,
         url: `https://checkout.stripe.com/c/pay/${input.paymentLinkId}`,
         expiresAt: Math.floor(Date.now() / 1000) + 86_400,
       };
+    },
+    async retrieveCheckoutPayment(id) {
+      const input = checkouts.get(id)!;
+      return { id: 'pi_test_paid_1', sessionId: id, status: 'succeeded', currency: 'nzd', amountCents: input.amountCents, refundedCents: 0, platformFeeCents: input.platformFeeCents, applicationFeeRefundedCents: 0, destinationAccountId: input.connectedAccountId, organisationId: input.organisationId, paymentLinkId: input.paymentLinkId };
     },
     async expireCheckoutSession() {},
     async constructWebhookEvent(payload, signature) {
@@ -80,9 +86,10 @@ describe('Stripe Connect payment links', () => {
       const { db, sql } = createDb(getDatabaseUrl());
       try {
         const events = new Map<string, StripeWebhookEvent>();
+        const approvedOrganisationIds: string[] = [];
         const app = createApp({
           auth: createAuth(db), db, stripeGateway: testGateway(events),
-          stripeConfig: { enabled: true, mode: 'test', appUrl: 'http://localhost:8080', platformFeeBasisPoints: 400, platformFeeFixedCents: 30, webhookSecret: 'whsec_test', connectWebhookSecret: 'whsec_connect_test' },
+          stripeConfig: { enabled: true, mode: 'test', approvedOrganisationIds, appUrl: 'http://localhost:8080', platformFeeBasisPoints: 400, platformFeeFixedCents: 30, webhookSecret: 'whsec_test', connectWebhookSecret: 'whsec_connect_test' },
         });
         const cookie = await signUp(app);
         const invoice = await seedInvoice(app, cookie);
@@ -108,6 +115,7 @@ describe('Stripe Connect payment links', () => {
         });
         expect(stripeAccountStatusSchema.parse(await refreshed.json()).status).toBe('active');
 
+        approvedOrganisationIds.push(String((await sql.unsafe('SELECT organisation_id FROM stripe_connected_accounts'))[0].organisation_id));
         const linkResponse = await app.request(`/api/invoices/${invoice.id}/payment-links`, {
           method: 'POST', headers: { ...originHeaders, Cookie: cookie, 'Idempotency-Key': 'stripe-link-1' }, body: JSON.stringify({ amount: '115.00' }),
         });

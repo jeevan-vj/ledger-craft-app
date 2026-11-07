@@ -1,0 +1,13 @@
+import {shareFinancialReport} from './financialReportShare';
+import {financialReportHtml} from './financialReportHtml';
+import type {FinancialReportResponse} from '@ledgercraft/contracts';
+import * as Print from 'expo-print';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system/legacy';
+jest.mock('expo-print',()=>({printToFileAsync:jest.fn().mockResolvedValue({uri:'file:///report.pdf'})}));
+jest.mock('expo-sharing',()=>({isAvailableAsync:jest.fn().mockResolvedValue(true),shareAsync:jest.fn().mockResolvedValue(undefined)}));
+jest.mock('expo-file-system/legacy',()=>({cacheDirectory:'file:///cache/',EncodingType:{UTF8:'utf8'},writeAsStringAsync:jest.fn().mockResolvedValue(undefined)}));
+const report={meta:{from:'2026-04-01',to:'2026-04-30',basis:'cash',baseCurrency:'NZD',generatedAt:'2026-11-07'},profitLoss:{rows:[],revenue:'9007199254740993.01',expenses:'15.00',netIncome:'-15.00'}} as unknown as FinancialReportResponse;
+it('prints reviewed canonical strings with escaped business identity and shares a real generated file',async()=>{expect(financialReportHtml(report,'profit-loss','<Company>')).toContain('&lt;Company&gt;');await shareFinancialReport(report,'profit-loss','Golden business','pdf');expect(Print.printToFileAsync).toHaveBeenCalledWith(expect.objectContaining({html:expect.stringContaining('9007199254740993.01')}));expect(Sharing.shareAsync).toHaveBeenCalledWith('file:///report.pdf',expect.objectContaining({mimeType:'application/pdf'}));});
+it('writes exact CSV text to native temporary storage before sharing',async()=>{await shareFinancialReport(report,'profit-loss','Golden','csv');expect(FileSystem.writeAsStringAsync).toHaveBeenCalledWith(expect.stringContaining('.csv'),expect.stringContaining('"Net income","-15.00"'),{encoding:'utf8'});});
+it('reports unavailable native sharing without claiming an export happened',async()=>{jest.mocked(Sharing.isAvailableAsync).mockResolvedValueOnce(false);await expect(shareFinancialReport(report,'profit-loss','Golden','pdf')).rejects.toThrow('not available');});

@@ -1,3 +1,5 @@
+// Invoice reminder integration is exercised by its dedicated component and browser tests.
+vi.mock('@/features/customer-statements/InvoiceReminders', () => ({ InvoiceReminders: () => null }));
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';

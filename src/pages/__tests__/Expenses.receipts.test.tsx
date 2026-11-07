@@ -1,0 +1,11 @@
+import { MemoryRouter } from 'react-router-dom';
+import { render, screen } from '@testing-library/react';
+import { describe, expect, it, vi } from 'vitest';
+import Expenses from '../Expenses';
+vi.mock('@/context/StableAuthContext',()=>({useAuth:()=>({me:{user:{id:'user'},organisation:{id:'company'},permissions:['bills.write','settings.write','ai.use']}})}));
+vi.mock('@/hooks/useAppData',()=>({useAppData:()=>({expenses:[],isLoadingExpenses:false,createExpense:vi.fn(),updateExpense:vi.fn(),deleteExpense:vi.fn(),refreshExpenses:vi.fn()})}));
+vi.mock('@/components/expense/ExpenseFormDrawer',()=>({default:()=>null}));
+vi.mock('@/components/expense/ExpenseTable',()=>({default:()=>null}));
+vi.mock('@/components/expense/ReceiptInbox',()=>({ReceiptInbox:({canWrite}:{canWrite:boolean})=><input aria-label="Capture allowed by organisation role" disabled={!canWrite}/>}));
+vi.mock('@/hooks/use-toast',()=>({useToast:()=>({toast:vi.fn()})}));
+describe('receipt capture permission integration',()=>{it('uses the actual bills permission domain for expense capture',()=>{render(<MemoryRouter><Expenses/></MemoryRouter>);expect(screen.getByLabelText('Capture allowed by organisation role')).toBeEnabled()})});

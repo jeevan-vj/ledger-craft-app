@@ -10,7 +10,7 @@ const resourceDomains: Array<[RegExp, 'customers' | 'invoices' | 'bills' | 'bank
   [/^\/(?:api\/)?customers(?:\/|$)/, 'customers'],
   [/^\/(?:api\/)?(?:invoices|quotes|credit-notes|payments|receipts|sales)(?:\/|$)/, 'invoices'],
   [/^\/(?:api\/)?(?:vendors|bills|expenses|expense-categories)(?:\/|$)/, 'bills'],
-  [/^\/(?:api\/)?(?:bank-accounts|bank-transactions|bank-transfers|bank-matching-rules|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries|fx-revaluations)(?:\/|$)/, 'banking'],
+  [/^\/(?:api\/)?(?:bank-default-account|bank-accounts|bank-transactions|bank-transfers|bank-matching-rules|transaction-imports|reconciliation-sessions|book-entries|accounts|journal-entries|fx-revaluations)(?:\/|$)/, 'banking'],
   [/^\/(?:api\/)?(?:reports|tax|tax-configurations|tax-returns|tax-adjustments|dashboard|dashboard-layouts|saved-reports)(?:\/|$)/, 'reports'],
   [/^\/(?:api\/)?(?:business-profile|items|item-categories|objects|currency-settings|currencies|exchange-rates|recurring-templates|recurring-runs)(?:\/|$)/, 'settings'],
   [/^\/(?:api\/)?(?:ai|conversations)(?:\/|$)/, 'api'],
@@ -32,6 +32,13 @@ function isReadMethod(method: string): boolean {
 }
 
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
+  if (['POST', 'DELETE'].includes(method) && /^\/(?:api\/)?objects\/receipts$/.test(path)) return 'bills.write';
+  if (!isReadMethod(method) && /^\/(?:api\/)?customers\/[^/]+\/statement(?:\/|$)/.test(path)) return 'banking.write';
+  if (/^\/(?:api\/)?customer-statements(?:\/|$)/.test(path)) return isReadMethod(method) ? 'customers.read' : 'banking.write';
+  if (/^\/(?:api\/)?payment-reminders\/settings$/.test(path)) return isReadMethod(method) ? 'settings.read' : 'settings.write';
+  if (/^\/(?:api\/)?payment-reminders(?:\/|$)/.test(path)) return isReadMethod(method) ? 'invoices.read' : 'banking.write';
+  if (/^\/(?:api\/)?bank-feeds(?:\/|$)/.test(path)) return isReadMethod(method) ? 'banking.read' : 'banking.write';
+  if (/^\/(?:api\/)?payments\/(?:stripe\/(?:balance|operations|settlements)|[^/]+\/stripe\/(?:verify|refund))$/.test(path)) return 'payments.manage';
   if (/^\/(?:api\/)?tax\/gst-settings(?:\/|$)/.test(path)) return isReadMethod(method) ? 'settings.read' : 'settings.write';
   if (!isReadMethod(method) && /^\/(?:api\/)?(?:tax-returns|tax-adjustments)(?:\/|$)/.test(path)) return 'banking.write';
   if (!isReadMethod(method) && /^\/(?:api\/)?tax-configurations(?:\/|$)/.test(path)) return 'settings.write';

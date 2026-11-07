@@ -16,6 +16,7 @@ export interface TransactionDraft {
 
 export interface TransferDraft {
   destinationAccountId: string;
+  exchangeRateId?: string;
   transactionDate: string;
   amount: string;
   description: string;
@@ -43,16 +44,17 @@ export function validateTransactionDraft(draft: TransactionDraft): Partial<Recor
   const errors: Partial<Record<keyof TransactionDraft, string>> = {};
   if (!dateOnly.test(draft.transactionDate)) errors.transactionDate = 'Use YYYY-MM-DD.';
   if (!draft.description.trim()) errors.description = 'Description is required.';
-  if (!positiveDecimal.test(draft.amount) || Number(draft.amount) <= 0) errors.amount = 'Enter an amount greater than zero.';
+  if (!positiveDecimal.test(draft.amount) || !/[1-9]/.test(draft.amount)) errors.amount = 'Enter an amount greater than zero.';
   return errors;
 }
 
-export function validateTransferDraft(draft: TransferDraft, sourceAccountId: string): Partial<Record<keyof TransferDraft, string>> {
+export function validateTransferDraft(draft: TransferDraft, sourceAccountId: string, crossCurrency = false): Partial<Record<keyof TransferDraft, string>> {
   const errors: Partial<Record<keyof TransferDraft, string>> = {};
+  if (crossCurrency && !draft.exchangeRateId) errors.exchangeRateId = 'Select an explicitly reviewed exchange rate.';
   if (!draft.destinationAccountId) errors.destinationAccountId = 'Choose a destination account.';
   if (draft.destinationAccountId === sourceAccountId) errors.destinationAccountId = 'Choose a different account.';
   if (!dateOnly.test(draft.transactionDate)) errors.transactionDate = 'Use YYYY-MM-DD.';
-  if (!positiveDecimal.test(draft.amount) || Number(draft.amount) <= 0) errors.amount = 'Enter an amount greater than zero.';
+  if (!positiveDecimal.test(draft.amount) || !/[1-9]/.test(draft.amount)) errors.amount = 'Enter an amount greater than zero.';
   if (!draft.description.trim()) errors.description = 'Description is required.';
   return errors;
 }
@@ -71,5 +73,6 @@ export function transferPayload(draft: TransferDraft, sourceAccountId: string): 
   return {
     sourceAccountId, destinationAccountId: draft.destinationAccountId, transactionDate: draft.transactionDate,
     amount: draft.amount.trim(), description: draft.description.trim(), reference: optional(draft.reference),
+    ...(draft.exchangeRateId ? { exchangeRateId: draft.exchangeRateId } : {}),
   };
 }

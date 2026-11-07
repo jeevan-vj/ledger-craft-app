@@ -1,5 +1,5 @@
 import type { FinancialReportQuery, FinancialReportResponse, GeneralLedgerResponse } from '@ledgercraft/contracts';
-import { financialReportResponseSchema, generalLedgerResponseSchema } from '@ledgercraft/contracts';
+import { reportOptionsSchema, financialReportResponseSchema, generalLedgerResponseSchema } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
 
 export class ReportsApiError extends Error {
@@ -8,6 +8,7 @@ export class ReportsApiError extends Error {
 
 function params(query: FinancialReportQuery) {
   const result = new URLSearchParams({ from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency });
+  if (query.columns) result.set('columns', query.columns);
   if (query.comparisonFrom) result.set('comparisonFrom', query.comparisonFrom);
   if (query.comparisonTo) result.set('comparisonTo', query.comparisonTo);
   for (const key of ['accountIds', 'categoryIds', 'customerIds', 'vendorIds'] as const) for (const value of query[key] ?? []) result.append(key, value);
@@ -21,6 +22,7 @@ async function request<T>(path: string, parse: (value: unknown) => T): Promise<T
 }
 
 export const reportsApi = {
+  options: () => request('/api/reports/options', value => reportOptionsSchema.parse(value)),
   financial(query: FinancialReportQuery): Promise<FinancialReportResponse> { return request(`/api/reports/financial?${params(query)}`, (value) => financialReportResponseSchema.parse(value)); },
   generalLedger(query: FinancialReportQuery): Promise<GeneralLedgerResponse> { return request(`/api/reports/general-ledger?${params(query)}`, (value) => generalLedgerResponseSchema.parse(value)); },
 };

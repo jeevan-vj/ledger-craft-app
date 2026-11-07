@@ -1,0 +1,424 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_9be0f2c2-86b3-4e5a-bed9-d3e5a717d096","route":"/api/auth/*","method":"POST","status":200,"durationMs":161}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_0fc45ef4-1b8f-4e90-9c32-2806c8f94f2e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_08aa38f8-3c66-4195-94e9-70b6e899dcbc","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_68f5d917-6779-4b93-b672-988e97059d33","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_447edd67-977a-454d-870b-b2d51db929dd","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_a04f8b41-0dd2-4ce3-b2ff-911f2840facb","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_bd20e81f-2c23-4185-a0b4-651e0e35b770","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_f3634cc3-4cd8-4786-a53c-3c9167af2ad0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_6030de06-45c7-4644-a8bf-7305574524a2","route":"/api/invoices","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_e800a5ef-2a18-41ab-b01e-637ddfb0a29f","route":"/api/bills","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_cd6adc07-a9cb-4391-98b9-221074329910","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_edf8f2b5-c4c8-4794-9a29-6e3a8aaeba9c","route":"/api/payments","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_b8938c92-2c97-44f0-8dcc-9f995db907a5","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_639209be-b660-4859-9868-38711931dbac","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_8eda0619-943d-404e-84e6-aaa6c5dedbdc","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_8ad9f879-feeb-44a2-9ef7-cfcd5ed65142","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_dc777625-b94b-4980-9795-60c0219cff99","route":"/api/accounts","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_3a5dd81e-ea8f-43ae-9362-915451e48170","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_d62b40bd-73e2-4808-a1f4-c66910f573a2","route":"/api/journal-entries","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_ef878d38-9562-4c36-833e-57d249ca9ef7","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_93ac9bb1-1840-4e48-97c3-e5ac6d20d084","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_5de950d9-5a63-41ae-b8ec-51fdfaca1df1","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_c4fd65b3-68c0-4e7f-b62c-d22a2281499c","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_5c393e23-f1ce-4ca2-8a0e-955e95f09823","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_57042b0c-607a-4f0e-892a-132eebf575f5","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_01261f88-8c4c-41a2-9327-b1dff3a776c0","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_0a35b092-920d-4b55-9f32-d96845db014c","route":"/api/credit-notes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_9895bf7e-60de-4384-b9bb-cf0f0edbc635","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_894d53b4-774d-40bb-ba2e-8d778292d271","route":"/api/reports/financial","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_e35b8740-2aee-4759-b9d5-cc778f129f15","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_f38c12c0-ebc1-410e-a00c-9141b1bb04a3","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_bdefb0fe-7353-4499-8737-a49beba2f254","route":"/api/auth/*","method":"POST","status":200,"durationMs":133}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_657d264f-e5ff-4c0f-801a-86792a90a4f6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_41e4362b-cb22-4829-8295-c2f5d16819dc","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_622c5819-f6c4-41f6-a06a-c35b140e7cab","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_6259db0a-c1a7-4ac0-9bdf-c92c8eb9deb3","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_433fe1e3-be4d-4331-9f7a-699e2edc2fac","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_4bc2a0ec-a77a-402e-b1f5-c3d3025607e0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_4263b295-eb54-4614-8a24-d344baf4cb93","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_cf2f2418-fd06-48d7-8a1c-6a1ebe5edfc4","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_c0db8037-4d3a-40ff-8fc4-4c8b500408a5","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_fbd10abc-5d76-4e5d-a86b-23c6c713c07b","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_225fc227-46a1-4258-839a-caf144b60e7e","route":"/api/payments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_8e86ee27-cad5-4be8-b4ad-67a4bff8be07","route":"/api/credit-notes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_a7e9d4c4-084f-48c9-a0dd-2de3914b70ac","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_1f02c199-bf5b-4d16-9f87-3550b3e2c71e","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_59785518-9d17-4e13-832b-d5f3aad3a6be","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_fdb18914-e898-4b79-97c2-f0051a996521","route":"/api/credit-notes/:id/refunds/:refundId/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_07ebaf2f-b69a-413a-9118-54c93ab10b35","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_5ca1598b-9971-476c-bb6b-03c00da558ae","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_a2d656fd-64c1-41d0-ad35-6b665317599e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_4e1e68a3-2a84-452b-912a-d5d0aa9712ee","route":"/api/auth/*","method":"POST","status":200,"durationMs":100}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_fc19a13a-2817-48f2-a14c-27df28d5a231","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_573ce4bf-1bc1-43cf-8830-01da5d9ab5b3","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_20701897-3018-4d3d-aada-9e097151f29d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_09cf2bc6-a159-41b9-ba66-7391c5384af2","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_0e688dee-c4eb-4b0b-a73e-62496fa98ba8","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_81229f20-d7d1-4ab1-ba6e-804f49d44c67","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_a255562e-a3ca-42b7-9fdf-393536f8312d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_42e6c531-1f1b-4cc3-91c7-78de934229f3","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_eaea410e-f8cc-40e2-a7bc-86ae9e741f93","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_fb28861b-918f-410c-af52-2c0264fa490d","route":"/api/payments","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_69fd15a2-3e98-4334-ab6c-409858f6b9fc","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_b26ddc00-6d80-48ac-a21e-3734bcda0adb","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_bca41829-2ccc-49ef-a01e-579f9690053f","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_01ac88f7-a737-4c82-9a46-044215e24eb0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_7a174df6-2010-476e-8608-adb9c8d961a3","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_f886dd22-70af-4725-9ad2-5cc0dfd2502e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_7f7d0546-d289-4a7a-8965-6400beb01460","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_8caaa564-5f71-40b9-9df8-b1e31cf0501a","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_dc92dcc7-4ee3-42f2-b577-882377942ee3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_ccc6cdbf-c176-45c6-8be1-d08639491a59","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_c16c86ba-9be7-494b-bc1a-24d375196b4e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_3fee1ef7-22a6-42f6-b977-bae08a767188","route":"/api/vendors","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_c59d71e3-967e-4bc0-925f-027ad1f73683","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_723e0b89-95f9-41f2-ad93-c17369811ae4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_a2cbe55b-80a8-47b9-80d7-57294825693e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_b90d6a4b-d1b6-44f6-b686-f112d15949eb","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_a128a92c-f2e5-44ef-8adf-b9b73e9a0938","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_6858afab-c9a4-49b8-8571-6c0b48a2af2c","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_d3fff07f-3475-46a4-b5f8-900d025d19ad","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_3f435793-660a-41c6-8d5f-a2f22940a3fb","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":16}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_d47024dd-aab9-4b04-b56f-9a2410b94336","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_b1838881-92f3-47b8-88e6-3aa2ee0e8aba","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_b1610307-d0d8-426b-bf3b-294c1902c73e","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_27794b8b-50a4-493b-8a77-cd22187fce0b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_1baa51b9-0299-4967-8d17-3e1ce0efdfc7","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":18}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_b10934cc-16d9-4860-b4c8-6e9917d59aca","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_7a0ca53b-8a47-41f5-bb50-7ee69ba56748","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_856cba6c-17fc-4170-8014-0065fa866ed9","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_dc3b301d-24a2-438c-8efe-e0b86b7d1989","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_887a1224-7f58-4161-8411-c0b0a8b47a0d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_e12e2fe5-38aa-46c2-8a12-4c5df3544ae8","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_1e57ea99-a5fa-4340-85e2-a5591f092400","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_7b1e720d-c89a-4fff-8301-10fa2fd8fc67","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_58eb72a4-4353-4cdd-910b-4f2a75be2027","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_93813a45-6190-4b30-8720-437c8fd4ec95","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_d91faa6e-defe-479e-abc4-bd8d9d93ede0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_99e3b72b-7229-47a8-9189-75167d3d2fd9","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_6dcd3801-02ff-4e79-bf38-0f36a0766e89","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_e0832baf-a933-4274-83e3-87c18c36cd8a","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_8fd9f2fc-d01e-4a73-a018-b276a19836cd","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_12315660-e86a-4f9d-8b7d-e58e0ee17962","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_82c1e32b-d840-4a87-83aa-4d31b354fbec","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_fc9ad88d-36b3-4e13-b81c-76464e49e146","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_946ae683-0a45-4ec4-83c9-c9092612b629","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_48f7181c-e749-436a-9940-75809e086e39","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_2f8e7570-61f7-41e1-80c3-a56dc5fc30cb","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_6f0c6c2c-8ef6-410e-86fd-60ce2cc08c51","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_77173d16-ca7e-49c0-879a-81e2f20a8b89","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_77dd90e9-3d92-4bee-b2c0-3ab3a5c2260b","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_2cb571a9-8cf3-4d38-8b32-e5d07e241f36","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_f022d7e1-f5ba-4ef0-a53f-eac4a4168ef3","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_2b3e9e9c-de3f-4b31-8117-22413eb956f9","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_da59f728-4c1c-4bde-9877-374b68e5934f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_8b2c457f-24d0-4d77-8203-3bae7fbb4e4a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_13ef9a09-b028-42e3-8d74-c2ca1d84e14b","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_f421dcf8-b276-4f7a-a191-d8fbc8989a5c","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_7965e727-548e-467f-9a04-d0733353167b","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_f3ff8abd-5057-4367-9aad-0f0d539fa063","route":"/api/accounts","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_3eb97c89-3723-48d7-bd23-6bf4da9b93fd","route":"/api/journal-entries","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_85842bc7-1831-4ef2-a64d-262e049abdfb","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_46f22282-8d3b-48a6-ae6a-7fb2990cfb0c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+ ✓ src/modules/reports/cash-recognition-history.test.ts (6 tests) 6903ms
+   ✓ cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash  1564ms
+   ✓ cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period  1173ms
+   ✓ cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports  1078ms
+   ✓ cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal  1032ms
+   ✓ cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition  942ms
+   ✓ cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income  1110ms
+stdout | src/modules/reports/report-columns.test.ts > posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget
+{"case":"10000-lines-12-columns","durationMs":401.81656299999986}
+
+ ✓ src/modules/reports/report-columns.test.ts (2 tests) 2616ms
+   ✓ posted-ledger report columns > matches each single month and full totals on accrual and cash basis, with quarter and clipped windows  868ms
+   ✓ posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget  1747ms
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_9f13366d-ed2b-4a6d-8c2a-2e7cd903a5e8","route":"/api/auth/*","method":"POST","status":200,"durationMs":130}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_468cab38-b121-4ae8-a0c4-68bf29b9d12b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_a9cb6454-f636-4537-9fde-e95f74f075d0","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_e92db9c8-f3d9-406c-b58a-1b7efb098158","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_894b5b2e-5df8-4bc6-9ab9-d3b22f613ba8","route":"/api/payments","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_c7c7d537-d8d9-400b-80fe-56206b87eaea","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_316adbea-3bdd-41e8-856b-04d7bceb9b1a","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_49932a28-df99-49f9-9def-acc2cfde22cc","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_4904d246-7cef-4211-a803-eb7fdd84675f","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_bea9c89c-35d1-45f4-96ef-54cdc88195ea","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":4}
+
+ ✓ src/modules/reports/cash-report-receipts.test.ts (1 test) 920ms
+   ✓ recognises the GST-exclusive paid portion of a credit invoice in cash P&L  919ms
+ ✓ src/modules/reports/report-options.test.ts (1 test) 757ms
+   ✓ supplies server business-calendar choices without requiring settings-write/read permission  756ms
+
+ Test Files  4 passed (4)
+      Tests  10 passed (10)
+   Start at  00:26:09
+   Duration  18.01s (transform 1.82s, setup 50ms, collect 5.93s, tests 11.20s, environment 1ms, prepare 254ms)

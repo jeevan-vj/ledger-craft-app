@@ -1,0 +1,68 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (8 tests | 2 failed) 5654ms
+   × Personal App bank feeds > does not report placeholders or an unscoped global token as a configured connection 10ms
+     → expected { …(3) } to be undefined
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  828ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  858ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  847ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  957ms
+   ✓ Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company  806ms
+   ✓ Personal App bank feeds > links an unambiguous existing bank account and skips a previously imported CSV statement row  705ms
+   × Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts 638ms
+     → expected +0 to be 1 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > does not report placeholders or an unscoped global token as a configured connection
+AssertionError: expected { …(3) } to be undefined
+
+- Expected:
+undefined
+
++ Received:
+{
+  "gateway": AkahuGateway {
+    "appId": "app_your_app_id",
+    "fetcher": [Function fetch],
+    "userToken": "token_your_token",
+  },
+  "organisationId": "11111111-1111-1111-1111-111111111111",
+  "userId": "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa",
+}
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:19:161
+     17| describe('Personal App bank feeds',()=>{
+     18|  it('does not report placeholders or an unscoped global token as a con…
+     19|   expect(bankFeedConfigFromEnv({AKAHU_APP_ID:'app_your_app_id',AKAHU_U…
+       |                                                                                                                                                                 ^
+     20|   expect(bankFeedConfigFromEnv({AKAHU_APP_ID:'app_1234567890abcdef',AK…
+     21|  });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > matches a legacy CSV row only once when distinct provider IDs share identical financial facts
+AssertionError: expected +0 to be 1 // Object.is equality
+
+- Expected
++ Received
+
+- 1
++ 0
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:76:27
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 6 passed (8)
+   Start at  00:09:56
+   Duration  7.55s (transform 720ms, setup 36ms, collect 1.50s, tests 5.65s, environment 0ms, prepare 111ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts

@@ -1,0 +1,479 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watch=false src/screens/reports/ReportsScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/reports/ReportsScreen.test.tsx
+  ✓ shows unallocated posted receivables without inventing a customer aging balance (68 ms)
+  ✕ offers full report controls, exact account drill-down and native exports (1021 ms)
+  mobile GST report
+    ✓ shows output, input, and a positive refundable amount using the server position (107 ms)
+    ✓ shows the payable GST position label (70 ms)
+    ✓ shows the nil GST position label (68 ms)
+    ✓ labels GST as invoice basis and shows foreign-currency warnings (69 ms)
+
+  ● offers full report controls, exact account drill-down and native exports
+
+    Unable to find an element with text: Run financial report
+
+    [36m<RCTScrollView>[39m
+      [36m<RCTRefreshControl />[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mFinancial reports[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0mServer-calculated from posted journals[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<Feather />[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "selected": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mThis month[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "selected": true,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mThis year[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "selected": true,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mAccrual[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "selected": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+            [36m>[39m
+              [36m<Text>[39m
+                [0mCash[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mRevenue[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$200.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mExpenses[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$100.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mNet income[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$100.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mClosing cash[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$115.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mFinancial position[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAssets[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$0.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mLiabilities[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$0.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mEquity[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$0.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mTrial balance[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0mBalanced[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mWhat is owed[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReceivables[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$5,000.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mPayables[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$0.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text[39m
+          [33maccessibilityRole[39m=[32m"alert"[39m
+        [36m>[39m
+          [0mUnallocated posted [0m
+          [0mreceivables[0m
+          [0m: [0m
+          [0m$5,000.00[0m
+          [0m. Link [0m
+          [0mcustomer[0m
+          [0m details before aging.[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mGST return (IRD)[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mOutput GST (sales)[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$30.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mInput GST (purchases & expenses)[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$45.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mNet GST refundable from IRD[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0m$15.00[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<Text[39m
+          [33mtestID[39m=[32m"gst-basis"[39m
+        [36m>[39m
+          [0mGST calculated on the invoice basis[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mGenerated [0m
+          [0m10/25/2026, 12:00:00 AM[0m
+          [0m · NZD · Draft documents excluded[0m
+        [36m</Text>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mCompany income-tax preparation[0m
+          [36m</Text>[39m
+          [36m<Text>[39m
+            [0mNZ company worksheet using posted profit and your reviewed tax adjustments. Confirm the applicable rate and loss eligibility with your accountant. This does not complete or submit an IR4.[0m
+          [36m</Text>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"25"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mLoad saved company tax drafts[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax period start[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax period start"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m"2026-01-01"[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax period end[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax period end"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m"2026-11-07"[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mThis is a NZ company eligible for the 28% rate[0m
+          [36m</Text>[39m
+          [36m<RCTSwitch[39m
+            [33maccessibilityLabel[39m=[32m"Confirm NZ company and 28% tax rate"[39m
+            [33maccessibilityRole[39m=[32m"switch"[39m
+            [33mvalue[39m=[32m{false}[39m
+          [36m/>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mTax losses brought forward[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Tax losses brought forward"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m"0.00"[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax credits[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax credits"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m"0.00"[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mTax adjustments[0m
+          [36m</Text>[39m
+          [36m<View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"26"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mAdd back[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"27"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mDeduction[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax adjustment amount[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax adjustment amount"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m"0.00"[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax adjustment reason[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax adjustment reason"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m""[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCompany tax source reference[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Company tax source reference"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "disabled": false,
+                  }
+                }[39m
+                [33meditable[39m=[32m{true}[39m
+                [33mvalue[39m=[32m""[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"28"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mAdd company tax adjustment[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": true,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"29"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPrepare company income tax[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</RCTScrollView>[39m
+
+       97 | it('offers full report controls, exact account drill-down and native exports',async()=>{
+       98 |  const screen=renderScreen();
+    >  99 |  expect(await screen.findByText('Run financial report')).toBeTruthy();
+          |                      ^
+      100 |  expect(screen.getByLabelText('Report start')).toBeTruthy();
+      101 |  expect(screen.getByLabelText('Comparison start')).toBeTruthy();
+      102 |  expect(screen.getByText('Monthly columns')).toBeTruthy();
+
+      at Object.findByText (src/screens/reports/ReportsScreen.test.tsx:99:22)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 5 passed, 6 total
+Snapshots:   0 total
+Time:        3.055 s
+Ran all test suites matching src/screens/reports/ReportsScreen.test.tsx.

@@ -12,6 +12,8 @@ import { useNavigate } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { bankApi } from '@/features/bank/api/bankApi';
 import { BankingActivity, BankTransactionDialog, BankTransferDialog } from '@/components/bank-account/BankingActions';
+import { useAuth } from '@/context/StableAuthContext';
+import { BankFeedsPanel } from '@/features/bank-feeds/BankFeedsPanel';
 import { BankTransactionDetails } from '@/components/bank-account/BankTransactionDetails';
 
 const ACCOUNT_TYPE_CONFIG = {
@@ -23,6 +25,7 @@ const ACCOUNT_TYPE_CONFIG = {
 
 export default function BankAccountsPage() {
   const navigate = useNavigate();
+  const { me } = useAuth();
   const [accounts, setAccounts] = useState<BankAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -110,6 +113,7 @@ export default function BankAccountsPage() {
 
   return (
     <div className="space-y-6">
+      <BankFeedsPanel canManage={me?.permissions.includes('banking.write') === true} />
       <PageHeader
         title="Bank Accounts"
         description="Manage your bank accounts for transaction imports and reconciliation"

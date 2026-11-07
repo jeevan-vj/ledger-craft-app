@@ -68,3 +68,32 @@ export const stripeEvents = sqliteTable('stripe_events', {
   createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
   processedAt: timestamptz('processed_at'),
 }, (table) => [index('stripe_events_org_idx').on(table.organisationId)]);
+
+/** Immutable provider checks and operational notices. No card or contact payloads. */
+export const stripeVerifications = sqliteTable('stripe_verifications', {
+  id: text('id').$defaultFn(() => crypto.randomUUID()).primaryKey(),
+  organisationId: text('organisation_id').notNull().references(() => organisations.id),
+  userId: text('user_id').references(() => users.id),
+  paymentId: text('payment_id'),
+  stripeObjectId: text('stripe_object_id').notNull(),
+  kind: text('kind').notNull(),
+  result: text('result').notNull(),
+  differences: text('differences', { mode: 'json' }).$type<string[]>().notNull().default([]),
+  details: text('details', { mode: 'json' }).$type<Record<string, string>>().notNull().default({}),
+  createdAt: timestamptz('created_at').default(sql`(unixepoch() * 1000)`).notNull(),
+}, (table) => [
+  index('stripe_verifications_org_idx').on(table.organisationId),
+  foreignKey({ columns: [table.organisationId, table.paymentId], foreignColumns: [payments.organisationId, payments.id] }).onDelete('restrict'),
+]);
+
+export const stripeRateLimits = sqliteTable('stripe_rate_limits', {
+  key: text('key').primaryKey(),
+  windowStartedAt: timestamptz('window_started_at').notNull(),
+  count: integer('count').notNull(),
+}, table => [check('stripe_rate_limits_count_check', sql`count >= 0`)]);
+export const stripeVerificationState = sqliteTable('stripe_verification_state', {
+  organisationId: text('organisation_id').primaryKey().references(() => organisations.id),
+  nextVerificationAt: timestamptz('next_verification_at').notNull(),
+  lastAttemptAt: timestamptz('last_attempt_at'),
+  lastVerifiedAt: timestamptz('last_verified_at'),
+});

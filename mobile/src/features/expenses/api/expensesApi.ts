@@ -9,6 +9,7 @@ interface ExpenseDto {
   id: string;
   description: string;
   amount: string;
+  receiptHash?: string | null;
   taxAmount: string;
   currency: string;
   expenseDate: string;
@@ -42,6 +43,9 @@ export function toExpense(dto: ExpenseDto): Expense {
     id: dto.id,
     description: dto.description,
     amount: Number(dto.amount),
+    amountText: dto.amount,
+    taxAmountText: dto.taxAmount,
+    receiptHash: dto.receiptHash,
     taxAmount: Number(dto.taxAmount),
     currency: dto.currency,
     expenseDate: dto.expenseDate,

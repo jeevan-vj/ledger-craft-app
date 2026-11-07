@@ -1,0 +1,27 @@
+Reading config file '/tmp/receipt-drizzle/config.ts'
+1 tables
+expenses 1 columns 0 indexes 0 fks
+
+[✓] Your SQL migration file ➜ /tmp/receipt-drizzle/out/0000_safe_power_pack.sql 🚀
+Reading config file '/tmp/receipt-drizzle/config.ts'
+Error: ENOENT: no such file or directory, open './/tmp/receipt-drizzle/out/meta/0000_snapshot.json'
+    at Object.openSync (node:fs:621:18)
+    at readFileSync (node:fs:487:35)
+    at snapshots.reduce.malformed (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:8159:62)
+    at Array.reduce (<anonymous>)
+    at validateWithReport (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:8157:32)
+    at prepareMigrationFolder (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:8199:22)
+    at prepareAndMigrateSqlite (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:32491:40)
+    at Object.handler (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:91992:13)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async run (/workspace/ledger-craft-app/node_modules/.pnpm/drizzle-kit@0.31.10/node_modules/drizzle-kit/bin.cjs:91472:7) {
+  errno: -2,
+  code: 'ENOENT',
+  syscall: 'open',
+  path: './/tmp/receipt-drizzle/out/meta/0000_snapshot.json'
+}
+Reading config file '/tmp/receipt-drizzle/config.ts'
+1 tables
+expenses 2 columns 0 indexes 0 fks
+
+[✓] Your SQL migration file ➜ out/0001_third_stephen_strange.sql 🚀

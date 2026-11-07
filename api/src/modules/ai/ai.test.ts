@@ -61,10 +61,10 @@ describe('ai routes', () => {
             return {
               merchantName: 'North Harbour Cafe',
               date: '2026-09-08',
-              total: 12.5,
-              tax: 1.63,
-              subtotal: 10.87,
-              items: [{ description: 'Flat white', quantity: 1, price: 5 }],
+              total: '12.50',
+              tax: '1.63',
+              subtotal: '10.87',
+              items: [{ description: 'Flat white', quantity: '1', price: '5.00' }],
               paymentMethod: 'card',
               suggestedCategory: 'Food & Beverage',
               confidence: 91,
@@ -76,12 +76,14 @@ describe('ai routes', () => {
         const scanned = await app.request('/api/ai/receipt-scan', {
           method: 'POST',
           headers: { ...originHeaders, Cookie: owner.cookie },
-          body: JSON.stringify({ imageBase64: 'abc', contentType: 'image/png' }),
+          body: JSON.stringify({ imageBase64: 'abc', contentType: 'image/png', exactAmounts: true }),
         });
         expect(scanned.status).toBe(200);
         const result = receiptScanResultSchema.parse(await scanned.json());
         expect(result.merchantName).toBe('North Harbour Cafe');
-        expect(result.total).toBe(12.5);
+        expect(result.total).toBe('12.50');
+        const legacy = await app.request('/api/ai/receipt-scan', {method:'POST',headers:{...originHeaders,Cookie:owner.cookie},body:JSON.stringify({imageBase64:'abc',contentType:'image/png'})});
+        expect(await legacy.json()).toMatchObject({total:12.5,tax:1.63,subtotal:10.87,items:[{description:'Flat white',quantity:1,price:5}]});
       } finally {
         await sql.end();
       }

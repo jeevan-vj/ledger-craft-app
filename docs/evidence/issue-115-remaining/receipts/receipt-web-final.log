@@ -1,0 +1,41 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+stderr | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stdout | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Scan completed with: {
+  scanResult: {
+    merchantName: 'Supplier',
+    date: null,
+    total: '230.00',
+    tax: '30.00',
+    subtotal: '200.00',
+    items: [],
+    paymentMethod: 'card',
+    suggestedCategory: null,
+    confidence: 1,
+    notes: null
+  },
+  receiptUrl: 'https://example.test/scanned-receipt.jpg'
+}
+Setting receipt URL: https://example.test/scanned-receipt.jpg
+
+ ✓ src/components/expense/__tests__/ReceiptInbox.test.tsx (1 test) 703ms
+   ✓ receipt inbox review > uploads without scanning unavailable AI, requires review and explicit save, and preserves exact edited GST  702ms
+ ✓ src/components/expense/__tests__/ReceiptUpload.test.tsx (14 tests) 2766ms
+   ✓ ReceiptUpload > attaches a completed AI scan without a missing state setter  319ms
+   ✓ ReceiptUpload > validates file size limits  1485ms
+ ✓ src/features/expenses/receiptInbox.test.ts (3 tests) 7ms
+ ✓ src/components/expense/__tests__/ExpenseFormDrawer.test.tsx (10 tests) 4808ms
+   ✓ ExpenseFormDrawer > renders the form when open  1404ms
+   ✓ ExpenseFormDrawer > offers only active settlement accounts for paying an expense  1219ms
+   ✓ ExpenseFormDrawer > shows edit title when editing existing expense  362ms
+   ✓ ExpenseFormDrawer > submits form with correct data  435ms
+   ✓ ExpenseFormDrawer > preserves receipt GST and claim percentages for authoritative posting  306ms
+
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Start at  00:14:59
+   Duration  9.47s (transform 1.96s, setup 862ms, collect 5.21s, tests 8.28s, environment 4.37s, prepare 906ms)

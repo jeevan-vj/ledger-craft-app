@@ -1,3 +1,4 @@
+import { defaultBankAccount } from '../bank/bank-workspace.repository';
 import {
   paymentListResponseSchema,
   paymentSchema,
@@ -116,8 +117,9 @@ export async function createPaymentInTx(
   });
   if (!options?.skipPosting) {
     const receivableId = await systemAccount(tx, ctx, '1200');
-    const bankAccounts = await bankRepo.listAccounts(tx, ctx.organisationId);
-    const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts[0];
+    const bankAccounts = (await bankRepo.listAccounts(tx, ctx.organisationId)).filter(account => account.isActive);
+    const defaultAccountId = await defaultBankAccount(tx, ctx.organisationId);
+    const selectedBank = bankAccounts.find((account) => account.accountName === input.paymentMethod || account.accountNumber === input.referenceNumber) ?? bankAccounts.find(account => account.id === defaultAccountId) ?? bankAccounts[0];
     if (selectedBank && selectedBank.currency !== snapshot.baseCurrency) throw new HTTPException(422, { message: 'Select a bank account in the company base currency for this settlement' });
     let cashId: string;
     if (options?.clearingAccountNumber) cashId = await systemAccount(tx, ctx, options.clearingAccountNumber);

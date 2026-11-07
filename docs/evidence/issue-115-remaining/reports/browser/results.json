@@ -1,0 +1,3838 @@
+{
+  "platform": "Actual Chromium desktop1440x900 / webphone390x844 / Expo-web390x844, real local Hono/SQLite, synthetic books",
+  "expected": {
+    "revenue": "1500.00",
+    "expenses": "300.00",
+    "netIncome": "1200.00",
+    "aprilNet": "800.00",
+    "mayNet": "400.00",
+    "assets": "6425.00",
+    "liabilities": "225.00",
+    "equity": "6200.00",
+    "cash": "5460.00",
+    "receivables": "920.00",
+    "cashRevenue": "700.00",
+    "cashExpenses": "300.00",
+    "cashNet": "400.00"
+  },
+  "cases": [
+    {
+      "name": "desktop",
+      "build": {
+        "version": "0.0.8",
+        "buildTime": 1794012012640,
+        "hash": "a00595275d99",
+        "environment": "development",
+        "timestamp": "2026-11-07T00:40:12.641Z"
+      },
+      "signUpRetries": 0,
+      "report": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "accrual",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:12.203Z"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "117406b4-9a0d-4886-a35e-104f4aa466ad",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "116da5e5-f9f6-4f5c-bcf7-cfc6a7ce53ed",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "920.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "1500.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "225.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "7875.00",
+          "totalCredits": "7875.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "1500.00",
+          "expenses": "300.00",
+          "netIncome": "1200.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "116da5e5-f9f6-4f5c-bcf7-cfc6a7ce53ed",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "117406b4-9a0d-4886-a35e-104f4aa466ad",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "6425.00",
+          "liabilities": "225.00",
+          "equity": "6200.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "b4345584-2704-492e-930d-1bec8b1a9dc5",
+              "number": "INV-2026-0001",
+              "partyId": "004a5f99-148c-4df4-aa5b-b1c9dae21126",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "68867cc3-f9da-4180-8cea-903f6d259907",
+              "number": "INV-2026-0002",
+              "partyId": "004a5f99-148c-4df4-aa5b-b1c9dae21126",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "116da5e5-f9f6-4f5c-bcf7-cfc6a7ce53ed",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "1000.00",
+                    "balance": "1000.00"
+                  },
+                  {
+                    "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "1000.00",
+                "expenses": "200.00",
+                "netIncome": "800.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "100.00",
+                "netIncome": "400.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "cashReport": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "cash",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:12.229Z",
+          "cashRecognition": "settled-source-components-v1"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "117406b4-9a0d-4886-a35e-104f4aa466ad",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "105.00"
+            },
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "700.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "6150.00",
+          "totalCredits": "6150.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "700.00",
+          "expenses": "300.00",
+          "netIncome": "400.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00"
+            },
+            {
+              "accountId": "117406b4-9a0d-4886-a35e-104f4aa466ad",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "5505.00",
+          "liabilities": "105.00",
+          "equity": "5400.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "b4345584-2704-492e-930d-1bec8b1a9dc5",
+              "number": "INV-2026-0001",
+              "partyId": "004a5f99-148c-4df4-aa5b-b1c9dae21126",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "68867cc3-f9da-4180-8cea-903f6d259907",
+              "number": "INV-2026-0002",
+              "partyId": "004a5f99-148c-4df4-aa5b-b1c9dae21126",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "116da5e5-f9f6-4f5c-bcf7-cfc6a7ce53ed",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "39655aa3-c389-4fa7-9ac3-ae81f2a13029",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "d1e533da-aced-45bf-a027-c9daf6a96c1d",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "200.00",
+                "netIncome": "300.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "5bf65a46-a7c0-4837-8da8-046c28116499",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "200.00",
+                    "balance": "200.00"
+                  },
+                  {
+                    "accountId": "c0af09cb-7778-4680-b214-20db6d5ff17c",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "200.00",
+                "expenses": "100.00",
+                "netIncome": "100.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "e32c635c-4106-4b5f-af07-eeb1a25e62be",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "pdf": "desktop-profit-loss.pdf",
+      "csv": "desktop-profit-loss.csv",
+      "cashPdf": "desktop-cash-profit-loss.pdf",
+      "cashCsv": "desktop-cash-profit-loss.csv"
+    },
+    {
+      "name": "web-phone",
+      "build": {
+        "version": "0.0.8",
+        "buildTime": 1794012012640,
+        "hash": "a00595275d99",
+        "environment": "development",
+        "timestamp": "2026-11-07T00:40:12.641Z"
+      },
+      "signUpRetries": 0,
+      "report": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "accrual",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:16.163Z"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "0e965c6c-2d07-4e63-a160-9781a36ab743",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "2f7f9d80-06e9-4272-9063-e835da1b06c2",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "920.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "1500.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "225.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "7875.00",
+          "totalCredits": "7875.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "1500.00",
+          "expenses": "300.00",
+          "netIncome": "1200.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "2f7f9d80-06e9-4272-9063-e835da1b06c2",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "0e965c6c-2d07-4e63-a160-9781a36ab743",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "6425.00",
+          "liabilities": "225.00",
+          "equity": "6200.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "851cde5d-ed6f-41f9-b500-96766f4372d5",
+              "number": "INV-2026-0001",
+              "partyId": "ae4160a5-c11e-460c-b4b3-703774230003",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "e2e26891-1190-4207-83ac-ecc8dd96dc76",
+              "number": "INV-2026-0002",
+              "partyId": "ae4160a5-c11e-460c-b4b3-703774230003",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "2f7f9d80-06e9-4272-9063-e835da1b06c2",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "1000.00",
+                    "balance": "1000.00"
+                  },
+                  {
+                    "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "1000.00",
+                "expenses": "200.00",
+                "netIncome": "800.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "100.00",
+                "netIncome": "400.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "cashReport": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "cash",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:16.187Z",
+          "cashRecognition": "settled-source-components-v1"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "0e965c6c-2d07-4e63-a160-9781a36ab743",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "105.00"
+            },
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "700.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "6150.00",
+          "totalCredits": "6150.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "700.00",
+          "expenses": "300.00",
+          "netIncome": "400.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00"
+            },
+            {
+              "accountId": "0e965c6c-2d07-4e63-a160-9781a36ab743",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "5505.00",
+          "liabilities": "105.00",
+          "equity": "5400.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "851cde5d-ed6f-41f9-b500-96766f4372d5",
+              "number": "INV-2026-0001",
+              "partyId": "ae4160a5-c11e-460c-b4b3-703774230003",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "e2e26891-1190-4207-83ac-ecc8dd96dc76",
+              "number": "INV-2026-0002",
+              "partyId": "ae4160a5-c11e-460c-b4b3-703774230003",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "2f7f9d80-06e9-4272-9063-e835da1b06c2",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "ee24e3c4-ca01-4822-8d14-789909603e2a",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "88693bbc-1717-4da8-b395-fee5c941b3b5",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "200.00",
+                "netIncome": "300.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "3c473e7a-60cf-45a4-abc9-96cbbaf7d681",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "200.00",
+                    "balance": "200.00"
+                  },
+                  {
+                    "accountId": "62a03219-bc70-42dd-a0a9-2cd24ac98e71",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "200.00",
+                "expenses": "100.00",
+                "netIncome": "100.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "6f0971bf-767b-43f9-b304-790c34c9f6e9",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "pdf": "web-phone-profit-loss.pdf",
+      "csv": "web-phone-profit-loss.csv",
+      "cashPdf": "web-phone-cash-profit-loss.pdf",
+      "cashCsv": "web-phone-cash-profit-loss.csv"
+    },
+    {
+      "name": "expo-phone",
+      "build": null,
+      "signUpRetries": 0,
+      "report": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "accrual",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:19.709Z"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "e57e651d-c65b-4eb3-aa63-ed9d15e84b99",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "815f7656-4087-467e-b52c-eac20347e907",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "920.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "1500.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "225.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "7875.00",
+          "totalCredits": "7875.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "1500.00",
+          "expenses": "300.00",
+          "netIncome": "1200.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "815f7656-4087-467e-b52c-eac20347e907",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "e57e651d-c65b-4eb3-aa63-ed9d15e84b99",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "6425.00",
+          "liabilities": "225.00",
+          "equity": "6200.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "2de8af86-a49d-4904-9ffd-ea32985d749f",
+              "number": "INV-2026-0001",
+              "partyId": "b06adf95-cad4-4927-8445-310f2ff20de7",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "c7d8405b-61fe-420b-a3b2-f8e36e066cb3",
+              "number": "INV-2026-0002",
+              "partyId": "b06adf95-cad4-4927-8445-310f2ff20de7",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "815f7656-4087-467e-b52c-eac20347e907",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "1000.00",
+                    "balance": "1000.00"
+                  },
+                  {
+                    "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "1000.00",
+                "expenses": "200.00",
+                "netIncome": "800.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "100.00",
+                "netIncome": "400.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "cashReport": {
+        "meta": {
+          "from": "2026-04-01",
+          "to": "2027-03-31",
+          "basis": "cash",
+          "baseCurrency": "NZD",
+          "generatedAt": "2026-11-07T00:42:19.730Z",
+          "cashRecognition": "settled-source-components-v1"
+        },
+        "trialBalance": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "5460.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "e57e651d-c65b-4eb3-aa63-ed9d15e84b99",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "5000.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "105.00"
+            },
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "0.00",
+              "closingCredit": "700.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "300.00",
+              "closingCredit": "0.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00",
+              "openingDebit": "0.00",
+              "openingCredit": "0.00",
+              "closingDebit": "45.00",
+              "closingCredit": "0.00"
+            }
+          ],
+          "totalDebits": "6150.00",
+          "totalCredits": "6150.00",
+          "balanced": true
+        },
+        "profitLoss": {
+          "rows": [
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "700.00",
+              "balance": "700.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "revenue": "700.00",
+          "expenses": "300.00",
+          "netIncome": "400.00"
+        },
+        "balanceSheet": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "105.00",
+              "balance": "105.00"
+            },
+            {
+              "accountId": "e57e651d-c65b-4eb3-aa63-ed9d15e84b99",
+              "accountNumber": "3000",
+              "accountName": "Owner capital",
+              "accountClass": "equity",
+              "debit": "0.00",
+              "credit": "5000.00",
+              "balance": "5000.00"
+            }
+          ],
+          "assets": "5505.00",
+          "liabilities": "105.00",
+          "equity": "5400.00",
+          "balanced": true
+        },
+        "cashFlow": {
+          "rows": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            }
+          ],
+          "openingCash": "0.00",
+          "inflows": "5805.00",
+          "outflows": "345.00",
+          "netCashFlow": "5460.00",
+          "closingCash": "5460.00"
+        },
+        "receivablesAging": {
+          "total": "920.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "920.00",
+          "items": [
+            {
+              "id": "2de8af86-a49d-4904-9ffd-ea32985d749f",
+              "number": "INV-2026-0001",
+              "partyId": "b06adf95-cad4-4927-8445-310f2ff20de7",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-04-03",
+              "dueDate": "2026-04-28",
+              "balanceDue": "575.00",
+              "daysOverdue": 337,
+              "bucket": "90+"
+            },
+            {
+              "id": "c7d8405b-61fe-420b-a3b2-f8e36e066cb3",
+              "number": "INV-2026-0002",
+              "partyId": "b06adf95-cad4-4927-8445-310f2ff20de7",
+              "partyName": "Harbour customer",
+              "issueDate": "2026-05-03",
+              "dueDate": "2026-05-28",
+              "balanceDue": "345.00",
+              "daysOverdue": 307,
+              "bucket": "90+"
+            }
+          ]
+        },
+        "payablesAging": {
+          "total": "0.00",
+          "unallocatedControl": "0.00",
+          "current": "0.00",
+          "days1To30": "0.00",
+          "days31To60": "0.00",
+          "days61To90": "0.00",
+          "over90": "0.00",
+          "items": []
+        },
+        "salesSummary": {
+          "subtotal": "1500.00",
+          "tax": "225.00",
+          "total": "1725.00",
+          "paid": "805.00",
+          "outstanding": "920.00"
+        },
+        "purchaseSummary": {
+          "subtotal": "0.00",
+          "tax": "0.00",
+          "total": "0.00",
+          "paid": "0.00",
+          "outstanding": "0.00"
+        },
+        "taxSummary": {
+          "collected": "225.00",
+          "paid": "45.00",
+          "netPayable": "180.00",
+          "outputGst": "225.00",
+          "inputGst": "45.00",
+          "netGst": "180.00",
+          "position": "payable",
+          "gstAccounts": [
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            }
+          ],
+          "keyAccounts": [
+            {
+              "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+              "accountNumber": "1110",
+              "accountName": "Bank Account - Current",
+              "accountClass": "asset",
+              "debit": "5805.00",
+              "credit": "345.00",
+              "balance": "5460.00"
+            },
+            {
+              "accountId": "815f7656-4087-467e-b52c-eac20347e907",
+              "accountNumber": "1200",
+              "accountName": "Accounts Receivable",
+              "accountClass": "asset",
+              "debit": "1725.00",
+              "credit": "805.00",
+              "balance": "920.00"
+            },
+            {
+              "accountId": "53cb5ebc-572b-4cca-a9d2-9baf5c46439f",
+              "accountNumber": "2150",
+              "accountName": "GST Paid on Purchases",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "balance": "45.00"
+            },
+            {
+              "accountId": "14b0c179-681e-4782-9714-f3036ac39377",
+              "accountNumber": "2200",
+              "accountName": "GST Collected on Sales",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "225.00",
+              "balance": "225.00"
+            },
+            {
+              "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+              "accountNumber": "4000",
+              "accountName": "Sales Revenue",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1500.00",
+              "balance": "1500.00"
+            },
+            {
+              "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+              "accountNumber": "5000",
+              "accountName": "Operating Expenses",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "balance": "300.00"
+            }
+          ],
+          "basis": "invoice",
+          "foreignCurrencyDocumentsExcluded": 0,
+          "warnings": []
+        },
+        "comparison": null,
+        "columns": {
+          "mode": "month",
+          "periods": [
+            {
+              "from": "2026-04-01",
+              "to": "2026-04-30",
+              "label": "Apr 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "500.00",
+                    "balance": "500.00"
+                  },
+                  {
+                    "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "200.00",
+                    "credit": "0.00",
+                    "balance": "200.00"
+                  }
+                ],
+                "revenue": "500.00",
+                "expenses": "200.00",
+                "netIncome": "300.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "5575.00",
+                    "credit": "230.00",
+                    "balance": "5345.00"
+                  }
+                ],
+                "openingCash": "0.00",
+                "inflows": "5575.00",
+                "outflows": "230.00",
+                "netCashFlow": "5345.00",
+                "closingCash": "5345.00"
+              }
+            },
+            {
+              "from": "2026-05-01",
+              "to": "2026-05-31",
+              "label": "May 2026",
+              "profitLoss": {
+                "rows": [
+                  {
+                    "accountId": "9cc42dc4-66ba-4883-9204-4b1730c6628e",
+                    "accountNumber": "4000",
+                    "accountName": "Sales Revenue",
+                    "accountClass": "revenue",
+                    "debit": "0.00",
+                    "credit": "200.00",
+                    "balance": "200.00"
+                  },
+                  {
+                    "accountId": "094b40fe-590d-4825-9ef6-a1f248031277",
+                    "accountNumber": "5000",
+                    "accountName": "Operating Expenses",
+                    "accountClass": "expense",
+                    "debit": "100.00",
+                    "credit": "0.00",
+                    "balance": "100.00"
+                  }
+                ],
+                "revenue": "200.00",
+                "expenses": "100.00",
+                "netIncome": "100.00"
+              },
+              "cashFlow": {
+                "rows": [
+                  {
+                    "accountId": "001debfd-5f19-47f5-8760-0da24fbfcab0",
+                    "accountNumber": "1110",
+                    "accountName": "Bank Account - Current",
+                    "accountClass": "asset",
+                    "debit": "230.00",
+                    "credit": "115.00",
+                    "balance": "115.00"
+                  }
+                ],
+                "openingCash": "5345.00",
+                "inflows": "230.00",
+                "outflows": "115.00",
+                "netCashFlow": "115.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-06-01",
+              "to": "2026-06-30",
+              "label": "Jun 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-07-01",
+              "to": "2026-07-31",
+              "label": "Jul 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-08-01",
+              "to": "2026-08-31",
+              "label": "Aug 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-09-01",
+              "to": "2026-09-30",
+              "label": "Sept 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-10-01",
+              "to": "2026-10-31",
+              "label": "Oct 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-11-01",
+              "to": "2026-11-30",
+              "label": "Nov 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2026-12-01",
+              "to": "2026-12-31",
+              "label": "Dec 2026",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-01-01",
+              "to": "2027-01-31",
+              "label": "Jan 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-02-01",
+              "to": "2027-02-28",
+              "label": "Feb 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            },
+            {
+              "from": "2027-03-01",
+              "to": "2027-03-31",
+              "label": "Mar 2027",
+              "profitLoss": {
+                "rows": [],
+                "revenue": "0.00",
+                "expenses": "0.00",
+                "netIncome": "0.00"
+              },
+              "cashFlow": {
+                "rows": [],
+                "openingCash": "5460.00",
+                "inflows": "0.00",
+                "outflows": "0.00",
+                "netCashFlow": "0.00",
+                "closingCash": "5460.00"
+              }
+            }
+          ]
+        }
+      },
+      "pdf": "expo-phone-profit-loss.pdf",
+      "csv": "expo-phone-profit-loss.csv",
+      "cashPdf": "expo-phone-cash-profit-loss.pdf",
+      "cashCsv": "expo-phone-cash-profit-loss.csv"
+    }
+  ],
+  "errors": [],
+  "webBuildHash": "a00595275d99"
+}

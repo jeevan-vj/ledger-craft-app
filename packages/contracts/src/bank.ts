@@ -7,7 +7,7 @@ const positiveMoney = money.refine((value) => !value.startsWith('-') && !/^0+(?:
 const dateOnly = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
 const accountType = z.enum(['checking', 'savings', 'credit_card', 'business']);
 const transactionType = z.enum(['debit', 'credit']);
-const transactionSource = z.enum(['import', 'manual', 'transfer']);
+const transactionSource = z.enum(['import', 'manual', 'transfer', 'feed']);
 const paymentMethod = z.enum(['bank_transfer', 'cash', 'card', 'cheque', 'other']);
 
 export const bankTransactionSplitSchema = z.object({

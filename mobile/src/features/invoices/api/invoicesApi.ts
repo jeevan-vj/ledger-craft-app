@@ -43,6 +43,7 @@ export interface MobileInvoiceDto {
   paymentStatus: string;
   taxInclusive: boolean;
   status: InvoiceStatus;
+  effectiveStatus?: InvoiceStatus;
   notes: string | null;
   terms: string | null;
   currency: string;
@@ -143,7 +144,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     balanceDueText: dto.balanceDue,
     paymentStatus: dto.paymentStatus,
     taxInclusive: dto.taxInclusive,
-    status: dto.status,
+    status: dto.effectiveStatus ?? dto.status,
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,

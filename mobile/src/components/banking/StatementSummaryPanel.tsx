@@ -8,7 +8,7 @@ import { formatMoney } from '@/utils/money';
 
 const fields = ['bankBalance', 'adjustedBankBalance', 'bookBalance', 'adjustedBookBalance', 'finalDifference'] as const;
 const statusLabel = (status: ReconciliationSessionDto['status']) => status === 'completed' ? 'Completed' : status === 'locked' ? 'Locked' : 'In progress';
-export function StatementSummaryPanel({ bankAccountId }: { bankAccountId: string }) {
+export function StatementSummaryPanel({ bankAccountId, canWrite = true }: { bankAccountId: string; canWrite?: boolean }) {
   const theme = useTheme(); const activeBank = useRef(bankAccountId); activeBank.current = bankAccountId;
   const [sessions, setSessions] = useState<ReconciliationSessionDto[]>(); const [selectedId, setSelectedId] = useState('');
   const [summary, setSummary] = useState<ReconciliationSummaryDto>(); const [reviewed, setReviewed] = useState(false);
@@ -27,7 +27,7 @@ export function StatementSummaryPanel({ bankAccountId }: { bankAccountId: string
     finally { setBusy(false); }
   }
   async function complete() {
-    if (!summary || !reviewed || !summary.isReconciled || summary.session.status !== 'in_progress' || busy) return;
+    if (!canWrite || !summary || !reviewed || !summary.isReconciled || summary.session.status !== 'in_progress' || busy) return;
     setBusy(true); setError('');
     try {
       const current = await settlementMatchingApi.summary(summary.session.id);
@@ -56,7 +56,7 @@ export function StatementSummaryPanel({ bankAccountId }: { bankAccountId: string
       <Text style={theme.type.body}>Adjusted book balance: {formatMoney(summary.adjustedBookBalance)}</Text>
       <Text style={theme.type.headline}>Final statement difference: {formatMoney(summary.finalDifference)}</Text>
       <Text style={theme.type.caption}>Deposits in transit: {formatMoney(summary.totalOutstandingDeposits)} · Outstanding checks: {formatMoney(summary.totalOutstandingChecks)} · Other adjustments: {formatMoney(summary.totalOtherAdjustments)}</Text>
-      {summary.session.status === 'completed' ? <Text style={theme.type.headline}>Statement completed</Text> : summary.session.status === 'locked' ? <Text style={theme.type.body}>Statement locked</Text> : <>
+      {summary.session.status === 'completed' ? <Text style={theme.type.headline}>Statement completed</Text> : summary.session.status === 'locked' ? <Text style={theme.type.body}>Statement locked</Text> : !canWrite ? <Text style={theme.type.body}>Read-only statement review</Text> : <>
         {!summary.isReconciled ? <Text style={{ color: theme.colors.warning }}>Resolve the statement difference before completing.</Text> : null}
         <Text style={theme.type.body}>I have reviewed this bank statement, ledger balance and adjustments</Text>
         <Switch accessibilityLabel="Confirm bank statement review" value={reviewed} disabled={busy || !summary.isReconciled} onValueChange={setReviewed} />

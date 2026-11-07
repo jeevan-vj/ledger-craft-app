@@ -1,0 +1,65 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_8d387a3d-9d1b-4479-b837-b5a78186eff1","route":"/api/auth/*","method":"POST","status":200,"durationMs":524}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_7879a246-51dd-44f1-91b4-dea18c8b8f8b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":70}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_039f51c0-7c9d-4dc3-bded-0b0474529bf7","route":"/api/customers","method":"POST","status":201,"durationMs":57}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_b485d5fb-b8aa-4930-819f-878c512bea3b","route":"/api/invoices","method":"POST","status":201,"durationMs":107}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_2c2a49eb-540a-45dd-b9be-c6e1338ad949","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":103}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_cf40fbc5-70bd-4f63-b8a2-20e3a6398122","route":"/api/me","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_f431064d-e09d-4b15-a7d3-64b9c7b7f240","route":"/api/payments","method":"POST","status":201,"durationMs":91}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_da7b8026-4e5b-47dd-87af-67face4e82e5","route":"/api/credit-notes","method":"POST","status":201,"durationMs":76}
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts (9 tests | 1 failed | 8 skipped) 3719ms
+   ↓ customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+   ↓ customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+   ↓ customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+   ↓ customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+   × customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods 3718ms
+     → expected true to be false // Object.is equality
+   ↓ customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+   ↓ customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+   ↓ customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+   ↓ customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts:63:231
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 8 skipped (9)
+   Start at  00:12:09
+   Duration  19.91s (transform 6.70s, setup 96ms, collect 14.88s, tests 3.72s, environment 0ms, prepare 561ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/customer-statements/customer-statements.test.ts -t 'shows receivable credits'

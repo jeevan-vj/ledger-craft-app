@@ -1,0 +1,40 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ❯ src/report-columns.test.ts (4 tests | 1 failed) 27ms
+   ✓ report columns and NZ date-only presets > accepts optional month/quarter columns without changing omitted queries 4ms
+   ✓ report columns and NZ date-only presets > clips month and quarter buckets to the requested range 15ms
+   ✓ report columns and NZ date-only presets > resolves financial years, custom balance months and Auckland midnight independent of device zone 2ms
+   × rejects a column range over 120 periods before expensive report generation 6ms
+     → expected true to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/report-columns.test.ts > rejects a column range over 120 periods before expensive report generation
+AssertionError: expected true to be false // Object.is equality
+
+- Expected
++ Received
+
+- false
++ true
+
+ ❯ src/report-columns.test.ts:29:108
+     27| });
+     28| it('rejects a column range over 120 periods before expensive report ge…
+     29|  expect(financialReportQuerySchema.safeParse({from:'2000-01-01',to:'20…
+       |                                                                                                            ^
+     30| });
+     31|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:01:37
+   Duration  401ms (transform 55ms, setup 0ms, collect 71ms, tests 27ms, environment 0ms, prepare 106ms)
+
+undefined
+/workspace/ledger-craft-app/packages/contracts:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/report-columns.test.ts

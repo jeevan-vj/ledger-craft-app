@@ -17,6 +17,7 @@ export const objectSchema = z.object({
   contentType: z.string().min(1),
   size: z.number().int().nonnegative(),
   kind: objectKindSchema,
+  sha256: z.string().regex(/^[a-f0-9]{64}$/).optional(),
 });
 
 export type ObjectKind = z.infer<typeof objectKindSchema>;

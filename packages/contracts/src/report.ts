@@ -1,6 +1,7 @@
 import { z } from 'zod';
+import { reportColumnPeriods } from './report-dates';
 
-const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/);
+const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => { const stamp=Date.parse(`${value}T00:00:00Z`); return Number.isFinite(stamp)&&new Date(stamp).toISOString().slice(0,10)===value; }, 'Enter a valid calendar date');
 const money = z.string().regex(/^-?\d+(\.\d+)?$/);
 const idList = z.array(z.string().uuid()).max(100).optional();
 
@@ -10,6 +11,7 @@ export const financialReportQuerySchema = z.object({
   to: date,
   basis: reportBasisSchema.default('accrual'),
   baseCurrency: z.literal('NZD').default('NZD'),
+  columns: z.enum(['none', 'month', 'quarter']).optional(),
   comparisonFrom: date.optional(),
   comparisonTo: date.optional(),
   accountIds: idList,
@@ -17,6 +19,10 @@ export const financialReportQuerySchema = z.object({
   customerIds: idList,
   vendorIds: idList,
 }).strict().superRefine((value, ctx) => {
+  if (value.columns && value.columns !== 'none' && value.from <= value.to) {
+    try { reportColumnPeriods(value.from, value.to, value.columns); }
+    catch (error) { ctx.addIssue({ code: 'custom', message: error instanceof Error ? error.message : 'Invalid column range', path: ['columns'] }); }
+  }
   if (value.from > value.to) ctx.addIssue({ code: 'custom', message: 'From date must not be after to date', path: ['from'] });
   if ((value.comparisonFrom == null) !== (value.comparisonTo == null)) {
     ctx.addIssue({ code: 'custom', message: 'Comparison requires both dates', path: ['comparisonFrom'] });
@@ -32,6 +38,8 @@ export const reportMetaSchema = z.object({
   basis: reportBasisSchema,
   baseCurrency: z.literal('NZD'),
   generatedAt: z.string().min(1),
+  warnings: z.array(z.string()).optional(),
+  cashRecognition: z.literal('settled-source-components-v1').optional(),
 });
 
 export const reportAccountRowSchema = z.object({
@@ -95,6 +103,12 @@ export const reportComparisonSchema = z.object({
   netCashFlow: money,
 });
 
+export const reportPeriodColumnSchema = z.object({
+  from: date, to: date, label: z.string(),
+  profitLoss: statementSchema.extend({ revenue: money, expenses: money, netIncome: money }),
+  cashFlow: statementSchema.extend({ openingCash: money, inflows: money, outflows: money, netCashFlow: money, closingCash: money }),
+});
+
 export const financialReportResponseSchema = z.object({
   meta: reportMetaSchema,
   trialBalance: z.object({ rows: z.array(trialBalanceRowSchema), totalDebits: money, totalCredits: money, balanced: z.boolean() }),
@@ -122,9 +136,12 @@ export const financialReportResponseSchema = z.object({
     warnings: z.array(z.string()).default([]),
   }),
   comparison: reportComparisonSchema.nullable(),
+  columns: z.object({ mode: z.enum(['month', 'quarter']), periods: z.array(reportPeriodColumnSchema).max(120) }).optional(),
 });
 
 export const generalLedgerLineSchema = z.object({
+  sourceJournalEntryId:z.string().uuid().optional(),
+  sourceEntryNumber:z.string().optional(),
   journalEntryId: z.string().uuid(),
   entryNumber: z.string().min(1),
   date,
@@ -153,3 +170,7 @@ export type FinancialReportQuery = z.infer<typeof financialReportQuerySchema>;
 export type FinancialReportResponse = z.infer<typeof financialReportResponseSchema>;
 export type GeneralLedgerResponse = z.infer<typeof generalLedgerResponseSchema>;
 export type AccountStatementResponse = z.infer<typeof accountStatementResponseSchema>;
+
+const reportChoiceSchema = z.object({id:z.string().uuid(),name:z.string()});
+export const reportOptionsSchema = z.object({ accounts:z.array(reportChoiceSchema).default([]),customers:z.array(reportChoiceSchema).default([]),vendors:z.array(reportChoiceSchema).default([]),organisationName: z.string(), today: date, timezone: z.string(), financialYearStartMonth: z.number().int().min(1).max(12), financialYearStartDay: z.number().int().min(1).max(31), gstPeriod: z.object({ periodStart: date, periodEnd: date }).nullable() });
+export type ReportOptions = z.infer<typeof reportOptionsSchema>;

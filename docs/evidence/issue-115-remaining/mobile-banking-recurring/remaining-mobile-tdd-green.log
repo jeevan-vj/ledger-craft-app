@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/recurring/model/recurringForm.test.ts src/features/banking/model/statementMapping.test.ts src/features/banking/model/bankingForms.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/banking/model/bankingForms.test.ts
+PASS src/features/banking/model/statementMapping.test.ts
+PASS src/features/recurring/model/recurringForm.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        1.432 s
+Ran all test suites matching src/features/recurring/model/recurringForm.test.ts|src/features/banking/model/statementMapping.test.ts|src/features/banking/model/bankingForms.test.ts.

@@ -1,0 +1,116 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_43dff002-90fc-4269-81de-2ff153b9010c","route":"/api/auth/*","method":"POST","status":200,"durationMs":118}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_2a49ba78-f6eb-4eb7-b24c-1857b8d0ba71","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_24c274e4-b235-494e-87eb-2d80706754b3","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_292fd176-d0b3-465e-bb11-8bebc9bbb740","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_23fe925d-432a-4229-a0cb-da2106c723f2","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_61cf252a-aa9c-4d91-9496-8658e43a1346","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_e310aa62-55da-4637-8989-8173f508eb1c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_f5741350-5279-454d-87f4-090a75987928","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_2c9b6d42-010b-4baa-ab5c-c4f477f2d0ec","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_e88738fe-6dcf-4729-a8fe-a1450ada253a","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_1a979bad-f834-43f5-88f4-e6357cfaecd1","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+{"msg":"http_request","requestId":"req_3effae36-923e-43ac-bc3c-e8de853ae6dd","route":"/api/bank-accounts/:id","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_2446f03f-c016-4345-91ec-08269b947a31","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_050cc3db-3f82-46f1-9011-94b235ee46f1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_8b3eb264-8828-4b3a-aa5e-dcf9c44068af","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_40fcc609-ed91-4e81-b8b1-2b20ad28ada1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_1ca722b6-2321-4800-afe4-1351df9799e8","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_330ec619-eaef-4464-8e57-ba7ed2c11c7e","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_d6fce5ad-43e9-43b0-88fc-5cd5f7132204","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_c688e55a-2ce3-4fd6-9d3b-0cbc9048dc77","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_58b316e9-40f6-4670-9fa5-9e6a4e374e28","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_64c99e88-ce1f-4ba7-9ebe-743f9cdc7bdb","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+{"msg":"http_request","requestId":"req_dbeb22bd-38de-4c4f-b8c1-74a9a57754cb","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":8}
+
+ ❯ src/modules/bank/bank-import-balances.test.ts (2 tests | 2 failed) 1652ms
+   × updates displayed bank balance from newly imported exact movements once, excluding duplicate replays 883ms
+     → expected '0.00' to be '12.00' // Object.is equality
+   × does not discard an opposite-direction movement sharing date, description and amount 768ms
+     → expected 1 to be 2 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank/bank-import-balances.test.ts > updates displayed bank balance from newly imported exact movements once, excluding duplicate replays
+AssertionError: expected '0.00' to be '12.00' // Object.is equality
+
+Expected: "12.00"
+Received: "0.00"
+
+ ❯ src/modules/bank/bank-import-balances.test.ts:9:100
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/bank/bank-import-balances.test.ts > does not discard an opposite-direction movement sharing date, description and amount
+AssertionError: expected 1 to be 2 // Object.is equality
+
+- Expected
++ Received
+
+- 2
++ 1
+
+ ❯ src/modules/bank/bank-import-balances.test.ts:17:146
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  03:04:21
+   Duration  4.58s (transform 1.30s, setup 31ms, collect 2.56s, tests 1.65s, environment 0ms, prepare 165ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank/bank-import-balances.test.ts
