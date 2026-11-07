@@ -181,6 +181,34 @@ describe('InvoiceForm Template Saving', () => {
     localStorage.clear();
   });
 
+  it('blocks saving a registered NZ tax invoice over1000 until the buyer has an identifier', async () => {
+    const onSubmit = vi.fn();
+    render(<InvoiceFormWrapper><InvoiceForm {...defaultProps}
+      customers={[{ ...mockCustomers[0], email: '', address: null, phone: null }]}
+      businessProfile={{ ...mockBusinessProfile, country: 'NZ', currency: 'NZD', gstRegistrationStatus: 'registered', taxId: '49098576' }}
+      initialValues={{ ...readyInvoice, currency: 'NZD', items: [{ ...readyLineItem, rate: 1000.01, total: 1000.01 }], subtotal: 1000.01, total: 1000.01 }}
+      onSubmit={onSubmit} /></InvoiceFormWrapper>);
+    clickSaveDraft();
+    await waitFor(() => expect(screen.getByRole('alert')).toHaveTextContent(/buyer.*identifier/i));
+    expect(screen.getByRole('button', { name: 'Edit buyer details in Customers' })).toBeInTheDocument();
+    expect(onSubmit).not.toHaveBeenCalled();
+  });
+  it('uses the canonical GST-inclusive1000 boundary instead of adding GST twice in the preview', async () => {
+    const onSubmit = vi.fn();
+    render(<InvoiceFormWrapper><InvoiceForm {...defaultProps}
+      customers={[{ ...mockCustomers[0], email: '', address: null, phone: null }]}
+      businessProfile={{ ...mockBusinessProfile, country: 'NZ', currency: 'NZD', gstRegistrationStatus: 'registered', taxId: '49098576', defaultTaxRate: 15 }}
+      initialTaxRate={15} initialTaxInclusive={true}
+      initialValues={{ ...readyInvoice, currency: 'NZD', taxInclusive: true, items: [{ ...readyLineItem, rate: 1000, total: 1000 }], subtotal: 869.57, taxAmount: 130.43, total: 1000 }}
+      onSubmit={onSubmit} /></InvoiceFormWrapper>);
+    clickSaveDraft();
+    await waitFor(() => expect(onSubmit).toHaveBeenCalledTimes(1));
+    expect(onSubmit.mock.calls[0][2]).toBe(1000);
+    expect(onSubmit.mock.calls[0][3]).toBe(869.57);
+    expect(onSubmit.mock.calls[0][4]).toBe(130.43);
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+  });
+
   it('should include templateName in form submission for create mode', async () => {
     const mockOnSubmit = vi.fn();
 

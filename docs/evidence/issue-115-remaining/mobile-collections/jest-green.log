@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false --runInBand src/features/customer-statements
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/customer-statements/CollectionsWorkspace.test.tsx (7.094 s)
+PASS src/features/customer-statements/collectionsApi.test.ts
+PASS src/features/customer-statements/statementDocument.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        8.076 s
+Ran all test suites matching src/features/customer-statements.

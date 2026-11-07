@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/settings/StripePaymentsPanel.test.tsx (3 tests) 248ms
+ ✓ src/components/settings/StripeOperationsPanel.test.tsx (3 tests) 520ms
+   ✓ Stripe operations > shows server balances and verifies a payment without initiating a refund  399ms
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  00:07:52
+   Duration  2.33s (transform 211ms, setup 339ms, collect 1.03s, tests 768ms, environment 1.28s, prepare 364ms)

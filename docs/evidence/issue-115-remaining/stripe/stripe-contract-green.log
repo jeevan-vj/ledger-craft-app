@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ✓ src/stripe-operations.test.ts (1 test) 9ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:15:23
+   Duration  600ms (transform 58ms, setup 0ms, collect 67ms, tests 9ms, environment 0ms, prepare 213ms)

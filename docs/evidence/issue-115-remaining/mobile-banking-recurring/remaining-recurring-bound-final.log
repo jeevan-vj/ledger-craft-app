@@ -1,0 +1,572 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_b6f67c09-e8cb-4d35-a317-d019d2dd3c29","route":"/api/auth/*","method":"POST","status":200,"durationMs":149}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_6d4a789b-cbf4-420c-8c11-c1b01125be82","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":23}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_7dfd4118-b6de-4e6b-b2bb-5cabc85f6d4f","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_9c6a6a05-1641-4e0e-a298-f9630b2e2c69","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_00d3939f-7d76-414c-98cf-62796ffcc8de","route":"/api/recurring-templates/preview","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_9b16f135-17c2-4bed-a68c-0fd7ee89dd20","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_ffdf6e4e-b765-42e3-b674-083005f6a0e4","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_dc4f0907-2f9b-44ce-bc8f-7f8f223654e6","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_cab4a32e-9938-4c62-9b6d-caf24139abb3","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_3f0c1d5e-368d-43db-be0c-4f07b16d69f0","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_d706b5bc-a310-4aee-acce-0582a732c5c9","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_15c7055e-5833-40e8-af9e-35b897d08378","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":32}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_1100efde-4924-4fd2-ba72-7193b568b8b3","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_be42bc4f-2ba9-43d8-9db9-0eb632778cdf","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_1fc23e0a-6e02-4d04-983a-45aeab2f9aee","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_45c7a030-baa9-4aae-bf0f-9af3f3bf58ce","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_2dd7ea04-4733-4341-9cbd-f14e181caccd","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_1f16e785-a959-4a28-abdb-67242d9e1be9","route":"/api/auth/*","method":"POST","status":200,"durationMs":109}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_1326a1c0-c6ac-482e-bce1-3e9c42df2a19","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_cda3025e-15c4-4b52-bc44-3db16933f213","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_b0c29cae-991f-4f78-a313-cce3fd5930e4","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_5b454714-378c-4fe2-920b-68970cea5859","route":"/api/recurring-templates/:id","method":"PATCH","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_acf55e87-39d2-478e-9911-6cb29deccfa7","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":39}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_e8869037-67da-464b-bf6b-354f4ce01fae","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_f053e6b8-ecac-445c-9713-d87e407c482e","route":"/api/invoices","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_f8479529-ee95-4b64-b4e1-22a973977dca","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_b49c2173-efcb-4ed8-a8a6-a9fcbce01579","route":"/api/auth/*","method":"POST","status":200,"durationMs":107}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_757ab528-00dd-40e2-a8ee-852c017d8a80","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_6cf435e2-1c45-4187-9998-e756c144ffc8","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_245d465d-af16-4d35-b67f-b5b4ee06d90a","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_67bb0565-0346-4459-8295-a1f2a20d91b8","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_c7291fcd-1a23-45f8-a189-d294abbf5c69","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_a4152453-5beb-4992-8009-5150e05201d1","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_e4a114b3-a0d8-4838-a4cb-c9c0d0b631db","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":29}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_23efa7b0-ca84-41ab-a813-424cf8731740","route":"/api/invoices","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_f5028f30-9e65-4bc1-84a2-373fd1c37347","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_50efa59f-0784-4dc5-a503-74da06439d79","route":"/api/auth/*","method":"POST","status":200,"durationMs":118}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_47a3a790-1c77-41dc-aed7-bbf980006db4","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_41346ff7-cecd-4a2a-b8da-4b55cb91cf8c","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_41f611b0-513b-4268-9ede-4f84c5661070","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_887c9ba6-e427-4ba8-b971-614802f41192","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_90be7f5d-84cd-4d72-ad5e-6586516cfc10","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_3cd70485-c0ee-43cc-9de2-aa639675163d","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_576844a0-c64f-4fdb-9d68-afafca5b3e55","route":"/api/invoices","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_a549c9a6-af1e-41b6-9642-b9f5ab6d3ab6","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":3}
+
+ ✓ src/modules/recurring/recurring.delivery.test.ts (4 tests) 5004ms
+   ✓ recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST  1527ms
+   ✓ recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing  1167ms
+   ✓ recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested  1427ms
+   ✓ recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry  882ms
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_fceb3f61-50bb-4faa-9ddb-f4e55c6104e4","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_a829d449-68b6-491a-ab05-70da6060e804","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_06b9ec78-6cee-46f4-8edf-c6c74e5d2956","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_e817d1e4-fa40-47f3-8e6b-296fd265b2f6","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_2f580179-be19-4ae4-a24c-c6eaa5a38ff6","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_69fc3944-aafd-4d46-8308-eede171a5530","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_3d53082c-f83e-49a1-aac8-3b7242fa94e1","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_cfa67e64-074a-4a97-82ee-ff7f3271ae81","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_55218383-1617-44f3-a1c8-6eddb17f886b","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_29699120-b492-4208-8fba-650e2116019a","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_26531333-65ff-4651-9c4e-64c45614ad53","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_3b697de0-4fda-4a0c-a9bc-5a7188a8fcae","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_3dec8c59-e078-4a81-9ab3-54db3a7393cd","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_14978652-883f-4ee5-aa88-ba437c1e0f7a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_f4c88031-3bb0-4066-801f-f512792e364c","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_fdb777e6-ad97-4b63-848d-7c3ee16ed1bf","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_f4332069-6ef1-4a17-a0a6-03b74b2326c9","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_9ec21258-e15e-44eb-90a5-0c5292c47a85","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_7b21267a-1913-4385-821f-353c9d04cdf9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_784e19c7-1152-463b-978d-a7b27d8ee4b4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_ce740618-bb61-4a2d-840f-e4ccd0ba3434","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_31e7e7c4-b304-44b4-8a20-137781580894","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_9150be00-a716-40aa-8446-116fc80440f0","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_2b782cce-b097-4484-a8ab-23024907282f","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+ ✓ src/modules/recurring/recurring-delivery-scope.test.ts (2 tests) 1787ms
+   ✓ bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B  920ms
+   ✓ bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution  866ms
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_a9c28f62-1d18-4940-bd66-82a55b642618","route":"/api/auth/*","method":"POST","status":200,"durationMs":121}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_c0bbe30b-14a1-4894-8ef2-42b50142d46f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_d1a858e3-47c9-48ac-a09f-168af111cf23","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_5a80ccc1-ea65-4a35-addd-0c7cb68afd31","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_f1332ba1-215f-4dcb-842f-f8760bdd6e7e","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_b67e8e82-45b3-4922-8735-1e52e66d3c49","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_0c3e7719-1540-4d12-aa6e-87374c5cf232","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_9638c8c8-4a98-490b-8ccf-f67fdca0d51f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_dadc8e9c-d84b-42c0-8493-eedce53038fc","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_1dfb82e3-833e-4b0b-9c55-54bbae3e64c1","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_51305c55-cc75-47c6-8433-571d804f9f8b","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_8f5396c2-f2ed-4ebc-ae88-5df3f719506c","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_d2bd04f7-258e-400f-92b8-8c6248afe72b","route":"/api/auth/*","method":"POST","status":200,"durationMs":106}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_a7495d6d-cf6e-4f53-b80f-4a87d337010d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_95356d17-18d7-4d23-af4c-cae5e73d0f54","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_9bdf8bc1-f1f1-4032-8e21-5e20f12ed4f9","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_7a967f24-8bab-48be-883d-3062a44486de","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_36db16b3-7978-4c60-9092-14ccea4f568f","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_f8671061-c2df-4374-8487-fc31d83e3f6c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_fac2f6bd-773a-4728-a76d-aebe846bbc98","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_6f63ed47-e0df-46cb-9106-67b8ed61641e","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_5fee3c37-2075-43b2-9793-e9c3ac77831c","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_d26b5dc1-498e-47fe-ad50-2c137f68e0a3","route":"/api/me","method":"GET","status":200,"durationMs":1}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_acf7fb2b-2fc8-4f63-b24b-f41833830f95","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_ba3ab01c-a1b3-4fdb-ab31-037adbb1cb6b","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_6d8fa921-889d-4761-ac1e-80f3425c3898","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_1fed6a06-211d-42fb-850d-2318d4ab6583","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_af4b748f-edec-4855-847e-ca81c1087409","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_5fb888f6-8c3d-43de-8f2f-5deb90b0e77c","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_f12f4113-2386-497c-a3ea-cef25b79083c","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_1155ea25-e56c-4e20-8d88-f98578e1e046","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_db771bdb-4d66-4a52-9dab-7640f39e724e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_56651d65-faba-42f9-814c-e919199584cd","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_0d50a250-4216-4ee8-844b-cbaa1862ec13","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_1cf1266d-32bb-48ae-bea2-ab7c71bd4a71","route":"/api/me","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_72d13a64-27cc-47d4-b445-e757bf60e991","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_4f8e9a34-1c6d-48c6-96f9-bcd48b1cabde","route":"/api/auth/*","method":"POST","status":200,"durationMs":107}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_bf05f4c5-f78f-462d-977e-a7402a4993af","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_4e59ee95-530a-46d4-8a39-5373781b2863","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_fa3c8035-7fcd-4fd8-a566-494a44f59004","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_2fdaa6e5-dd21-4964-8113-aa14177bacf5","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_b33d99fe-3490-4928-965c-64ccd930ffd6","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_ca4df28f-bc35-4a41-a954-8c4d0368352d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_d4abeafa-02ae-40d2-ae30-c3d833e4b4ba","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_4b65e59a-39ad-48f1-92d2-d484136b2d7f","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_4f5a4769-4ef3-4f56-9e40-d786c7addcc0","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_f219a84c-f020-4c95-9f2d-faf294b5260d","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B
+{"msg":"http_request","requestId":"req_bf84f139-1ceb-49f3-aff5-db1916f7d35b","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_ed589cfc-b0b7-4d34-800b-93e6db10d0f6","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_58a50dcc-a4de-4681-8bf6-b97ae48fd008","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_fbd56a3b-2222-4d38-8c75-eeb2badc0372","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_b683b6d4-89a2-4def-9304-52e9b8607389","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_b1df96e9-4546-457c-acd0-6b032ace96ff","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_dcb593b0-8ac1-4151-8d1f-007dee1d16cf","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_98d00633-8a96-4bf3-bf01-5ca070ee4e0c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_04a34df7-50b4-408c-9f46-502aed910e79","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_8b148886-1c4e-4818-86e5-294cf1c235a7","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_9c7ee434-a4d9-4301-8e86-a86a0507497c","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_3b5a14d1-cffa-41d0-a56b-6b66643cf789","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed
+{"msg":"http_request","requestId":"req_4e2bc985-b6ae-4d54-8d66-276c022d074c","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_d9f5de84-9155-4c59-9bb1-185d04294d56","route":"/api/auth/*","method":"POST","status":200,"durationMs":100}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_33c8429e-41d4-4534-b7f0-de8a0c757a0e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_ea2ec8c5-5a1e-4184-a661-a61cec2df96f","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_9a506993-63e2-4824-8b2f-2ce077426188","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_82bd4f47-63ea-446a-86fa-bed975ddca62","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_be20a16b-c22c-49e7-a74e-ab934eb318d7","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_553ec430-34da-46d8-aba5-1a3fcb6f2a3f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_27aacd0f-95b7-4457-86f2-18ac6f22ee9d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_da6b88de-09ba-4496-8963-29b735abf84c","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_a9504bc1-abca-445d-bed0-ddefd9b37197","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_bb47e021-5c53-488b-945e-c9a2ecb639fc","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted
+{"msg":"http_request","requestId":"req_d17aa7f8-36db-40d9-baa5-b4fde866ebf3","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_f1ebb6d5-83fb-4cc1-913d-ff0c6bcb889e","route":"/api/auth/*","method":"POST","status":200,"durationMs":98}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_d1e591f3-ba7b-4528-8095-e6fdffb67cbb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_de39292b-4361-4609-822c-e46c9d19f4fe","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_e562497d-8e2f-4020-9691-adc46101208e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_181fc395-40c7-4d4c-a9a9-cc81c6da926e","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_0765a8a1-f5ff-4646-88c9-652661d38fd0","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_b2ded01c-e9aa-430d-86c3-40cfff240ab3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_db102e36-5498-496d-a927-f836d8820aa8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_6fc5750a-736f-45b2-b341-823b6008d625","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_3b453cc8-38a2-4135-b4f2-85fd412f2589","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_7e80d029-f30c-4f5d-b0c5-00e49b91ed3c","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-organisation-scope.test.ts > server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived
+{"msg":"http_request","requestId":"req_c4cb5d06-3d3c-45a2-8b1e-f1f358f6b838","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+ ✓ src/modules/recurring/recurring-organisation-scope.test.ts (7 tests) 7423ms
+   ✓ server recurring occurrences retain their verified template company > creates expense in company A after its creator selects company B  1449ms
+   ✓ server recurring occurrences retain their verified template company > creates invoice in company A after its creator selects company B  930ms
+   ✓ server recurring occurrences retain their verified template company > creates bill in company A after its creator selects company B  899ms
+   ✓ server recurring occurrences retain their verified template company > creates income in company A after its creator selects company B  980ms
+   ✓ server recurring occurrences retain their verified template company > refuses generation when the company A creator is removed  1075ms
+   ✓ server recurring occurrences retain their verified template company > refuses generation when the company A creator is demoted  1075ms
+   ✓ server recurring occurrences retain their verified template company > refuses generation when the company A creator is archived  1012ms
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_1268f2dd-1e22-4e38-9de3-b7222b130f01","route":"/api/auth/*","method":"POST","status":200,"durationMs":131}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_df86ba68-9f0b-45d4-bc4e-5062585af23f","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_aa513f18-a6fe-4a2f-8098-ecf0a53fa765","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_aadc86ac-8970-4357-8e52-6313c22025cc","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_91f02a61-2628-4f36-ac0b-2cf8f9dc60fe","route":"/api/recurring-templates","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_48a72f46-6f10-4a22-b7d6-f24f631ff710","route":"/api/recurring-templates","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_cab07c70-a256-4bcb-8108-7a75e0d108f0","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_9d4b8974-85a2-4b73-a69d-41f74589e7fa","route":"/api/recurring-templates/:id","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_7af4d3fe-8bab-43aa-920c-845f1df79089","route":"/api/recurring-templates/:id","method":"PATCH","status":200,"durationMs":3}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_346c44c2-9dfa-4b59-97cf-ebb9c7955099","route":"/api/recurring-templates/:id","method":"PATCH","status":409,"durationMs":2}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_365b442a-121a-4ad9-b924-f9292f588556","route":"/api/recurring-templates","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_07a8bf2e-584e-4157-b579-7bf8dda3765e","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.idempotency.test.ts > replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate
+{"msg":"http_request","requestId":"req_6e975d4f-47e2-443a-86e3-719eeb05ca49","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":5}
+
+ ✓ src/modules/recurring/recurring.idempotency.test.ts (1 test) 989ms
+   ✓ replays canonical create and update requests, rejects mismatches and keeps tenant scopes separate  988ms
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_93da6774-90c1-4455-8ac9-7ab2a93c166a","route":"/api/auth/*","method":"POST","status":200,"durationMs":127}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_c0bd5e34-0ea2-4222-a035-8ed7109de7d7","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_70a877c7-d887-4949-83fc-a147a8bbe8db","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_921ae1d7-eb57-45db-8c5c-1e95cff73b69","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_f747d231-6145-4fc5-b674-fd7c9bf12c80","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_2335b64c-a1ca-4d17-a7a9-ae9fb63f16f8","route":"/api/recurring-templates","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_16431b4c-2280-4637-922c-67c7707b010a","route":"/api/recurring-templates/:id/pause","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_107ad09f-5d98-42fe-a564-fe109386ff26","route":"/api/recurring-templates/:id/resume","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_02309910-7a68-4e36-8443-b1765a0ffc49","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":45}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_31e8e383-bbf0-4f5c-8a53-edb6f2413aab","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":47}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_0ead9ffc-f864-4233-938d-6b82ce8034d0","route":"/api/invoices","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_1a0f05af-d6c6-44d4-a00e-df06c8583fb2","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_3b1fd433-c147-4645-8f40-8543d05cc078","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_1b0d42f5-c66a-43ed-b62c-62db0f6d4505","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/recurring/recurring.test.ts > recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures
+{"msg":"http_request","requestId":"req_4d09f25e-d2e2-43ef-b217-d296468b22f3","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":11}
+
+ ✓ src/modules/recurring/recurring.test.ts (1 test) 1112ms
+   ✓ recurring scheduler > catches up month-end occurrences once, isolates tenants, pauses and records failures  1110ms
+ ✓ src/modules/recurring/schedule.test.ts (6 tests) 26ms
+
+ Test Files  6 passed (6)
+      Tests  21 passed (21)
+   Start at  00:23:56
+   Duration  26.12s (transform 2.08s, setup 82ms, collect 8.52s, tests 16.34s, environment 1ms, prepare 339ms)

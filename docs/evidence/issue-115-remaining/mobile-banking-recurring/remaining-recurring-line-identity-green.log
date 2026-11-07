@@ -1,0 +1,18 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/recurring/model/recurringForm.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/features/recurring/model/recurringForm.test.ts
+  ✓ creates and edits multiple invoice/bill lines without losing line-specific exact taxes (2 ms)
+  ✓ retains the correct original discount and tax identity after deleting an earlier additional line (2 ms)
+  mobile recurring document editor
+    ✓ builds a real invoice template with exact lines and the full schedule (22 ms)
+    ✓ builds supplier bills and never enables delivery without configured email (19 ms)
+    ✓ round trips an existing template without losing custom schedule or extra document lines (3 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       5 passed, 5 total
+Snapshots:   0 total
+Time:        1.28 s
+Ran all test suites matching src/features/recurring/model/recurringForm.test.ts.

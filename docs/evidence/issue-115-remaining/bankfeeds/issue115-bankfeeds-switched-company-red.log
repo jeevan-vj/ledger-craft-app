@@ -1,0 +1,32 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (5 tests | 1 failed) 8569ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  1899ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  1381ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  1897ms
+   ✓ Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records  1856ms
+   × Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company 1534ms
+     → Only the configured Personal App owner may manage this internal connection.
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > scheduled sync and deletion revoke the configured company even after its owner switches active company
+Error: Only the configured Personal App owner may manage this internal connection.
+ ❯ assertWriter src/modules/bank-feeds/bank-feeds.service.ts:22:103
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.ts:33:3
+ ❯ src/modules/auth/bind-organisation.ts:33:12
+ ❯ src/db/local.ts:79:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  00:07:46
+   Duration  11.47s (transform 1.21s, setup 31ms, collect 2.61s, tests 8.57s, environment 0ms, prepare 89ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts

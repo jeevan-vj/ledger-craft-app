@@ -1,0 +1,71 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/recurring/model/recurringForm.test.ts src/features/banking/model/statementMapping.test.ts src/features/banking/model/bankingForms.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/recurring/model/recurringForm.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './recurringForm' from 'src/features/recurring/model/recurringForm.test.ts'
+
+    However, Jest was able to find:
+        './recurringForm.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { emptyRecurringDraft, recurringPayloadFromDraft, recurringDraftFromTemplate } from './recurringForm';
+        | ^
+      2 | import { createRecurringTemplateRequestSchema } from '@ledgercraft/contracts';
+      3 |
+      4 | describe('mobile recurring document editor', () => {
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/recurring/model/recurringForm.test.ts:1:1)
+
+FAIL src/features/banking/model/statementMapping.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './statementMapping' from 'src/features/banking/model/statementMapping.test.ts'
+
+    However, Jest was able to find:
+        './statementMapping.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { statementCsvColumns, previewMappedStatement } from './statementMapping';
+        | ^
+      2 | describe('mapped statement preview', () => {
+      3 |   it('allows bank-specific column mapping and retains exact decimal strings', () => {
+      4 |     const csv = 'Posted,Memo,Value\n31/10/2026,Shop,-9007199254740993.01\n2026-10-31,Other,12.10';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/banking/model/statementMapping.test.ts:1:1)
+
+FAIL src/features/banking/model/bankingForms.test.ts
+  ● reviewed cross currency transfer › requires an explicitly reviewed rate and preserves its identifier
+
+    TypeError: expect(received).toMatch(expected)
+
+    Matcher error: received value must be a string
+
+    Received has value: undefined
+
+      20 |   it('requires an explicitly reviewed rate and preserves its identifier', () => {
+      21 |     const draft = { ...emptyTransferDraft(), destinationAccountId: 'bank-2', amount: '10.01' };
+    > 22 |     expect(validateTransferDraft(draft, 'bank-1', true).exchangeRateId).toMatch(/reviewed/i);
+         |                                                                         ^
+      23 |     const reviewed = { ...draft, exchangeRateId: 'rate-1' };
+      24 |     expect(validateTransferDraft(reviewed, 'bank-1', true)).toEqual({});
+      25 |     expect(transferPayload(reviewed, 'bank-1').exchangeRateId).toBe('rate-1');
+
+      at Object.toMatch (src/features/banking/model/bankingForms.test.ts:22:73)
+
+Test Suites: 3 failed, 3 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        0.99 s, estimated 1 s
+Ran all test suites matching src/features/recurring/model/recurringForm.test.ts|src/features/banking/model/statementMapping.test.ts|src/features/banking/model/bankingForms.test.ts.

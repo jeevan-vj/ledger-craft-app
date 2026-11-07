@@ -42,12 +42,15 @@ export interface Expense {
   id: string;
   description: string;
   amount: number;
+  amountText?: string;
+  taxAmountText?: string;
   categoryId?: string | null;
   category?: ExpenseCategory;
   accountId?: string | null;
   account?: Account;
   vendorName?: string | null;
   receiptUrl?: string | null;
+  receiptHash?: string | null;
   expenseDate: string;
   status: ExpenseStatus;
   isBillable: boolean;

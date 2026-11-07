@@ -1,0 +1,69 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/banking/BankStatementImportScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/banking/BankStatementImportScreen.test.tsx
+  statement mapping workflow
+    ✕ keeps cancellation empty and offers explicit mapping for unusual columns (1054 ms)
+
+  ● statement mapping workflow › keeps cancellation empty and offers explicit mapping for unusual columns
+
+    Unable to find an element with text: Column mapping
+
+    [36m<RCTScrollView>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<Feather />[39m
+        [36m</View>[39m
+        [36m<Text>[39m
+          [0mImport a bank statement[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mChoose a CSV with Date, Description and Amount columns. Debit/Credit columns are also supported.[0m
+        [36m</Text>[39m
+        [36m<View[39m
+          [33maccessibilityRole[39m=[32m"button"[39m
+          [33maccessibilityState[39m=[32m{
+            {
+              "busy": false,
+              "disabled": false,
+            }
+          }[39m
+          [33maccessible[39m=[32m{true}[39m
+          [33mnativeID[39m=[32m"0"[39m
+        [36m>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Feather />[39m
+            [36m</View>[39m
+            [36m<Text>[39m
+              [0mChoose CSV file[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mCSV headers must include Date, Description, and Amount (or Debit/Credit).[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</RCTScrollView>[39m
+
+      17 |     expect(screen.getByText('No statement selected')).toBeTruthy();
+      18 |     (DocumentPicker.getDocumentAsync as jest.Mock).mockResolvedValueOnce({ canceled: false, assets: [{ uri: 'file:///statement.csv', name: 'statement.csv' }] });
+    > 19 |     fireEvent.press(screen.getByText('Choose CSV file')); await waitFor(() => expect(screen.getByText('Column mapping')).toBeTruthy());
+         |                                                                        ^
+      20 |     expect(screen.getByText('Map date')).toBeTruthy(); expect(screen.getByText('Map amount')).toBeTruthy();
+      21 |     expect(screen.queryByText('Import 1 transaction')).toBeNull();
+      22 |   });
+
+      at Object.<anonymous> (src/screens/banking/BankStatementImportScreen.test.tsx:19:72)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        2.831 s
+Ran all test suites matching src/screens/banking/BankStatementImportScreen.test.tsx.

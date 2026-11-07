@@ -1,0 +1,22 @@
+Customer statement
+Business: Kauri Mobile Collections Limited
+Customer: Harbour Mobile Buyer
+Statement: Activity
+Period: 2026-10-01 to 2026-10-31
+Currency: NZD
+Generated: 2026-11-07T00:38:39.519Z
+Opening balance: 1000.00
+2026-10-05 JE-2026-DD4597B5 invoice payment · INV-2026-0001: Debit 0.00 | Credit 400.00 | Balance 600.00
+Closing balance: 600.00
+Current: 0.00
+1–30 days: 600.00
+31–60 days: 0.00
+61–90 days: 0.00
+Over90 days: 0.00
+Unallocated balance: 0.00
+Review note: Amounts are company-base NZD from posted receivable and customer-credit journals. Foreign
+invoices use recorded carrying amounts.
+Review note: Customer credits are shown separately from invoice aging; confirm any unallocated balance before
+collection.
+
+

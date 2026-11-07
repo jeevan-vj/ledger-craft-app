@@ -8,6 +8,6 @@ export function aiApiEnabled(): boolean {
 export async function scanReceiptImage(imageBase64: string, contentType?: string): Promise<ReceiptScanResult> {
   return apiRequest<ReceiptScanResult>('/api/ai/receipt-scan', {
     method: 'POST',
-    body: JSON.stringify({ imageBase64, contentType }),
+    body: JSON.stringify({ imageBase64, contentType, exactAmounts: true }),
   });
 }

@@ -1,0 +1,346 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_bc167c4a-bc54-4f26-8a54-5ef3bf530e3d","route":"/api/auth/*","method":"POST","status":200,"durationMs":125}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_e88733b0-51c2-4ae9-b084-6650e6050c1b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_d656f2c1-15e6-4d52-837a-5159ef8972b9","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_507f59e5-f03f-4ec7-a5cc-f80f03d9ca33","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_efd99cb6-472f-4d49-8902-c4aa660d613c","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_b8f4d4f9-8292-44f1-bd01-d9456714cff0","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_c7a66b5c-5203-463a-9bf7-8e40afb693f1","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_d40670d2-5da7-4d50-8804-30531b5e73a2","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_ca5f6934-cb8d-4e7c-a979-4185d7bc7fb9","route":"/api/invoices","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_7da04beb-ece7-4fca-8a30-cf25022159ec","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_470e4adf-9bb4-4f03-a18e-f8c12db7c55d","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_4938243f-fec8-41d7-978e-6d13faf37c95","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_a3256fd1-8743-4f77-8e72-a56cd6b18490","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_70d7633b-4bb6-440d-a6a3-253a7c264c49","route":"/api/auth/*","method":"POST","status":200,"durationMs":153}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_1fafaaaf-528c-40df-9577-2eca304afb34","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_b31a59e5-bf15-45b0-8e27-bf00d27f9074","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_a8a12ecf-4f81-4514-886f-a707a657764a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_0b76e754-c0f0-44a8-8862-fe7ebe4020a1","route":"/api/vendors","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_fbe37f7f-225a-4d4c-914f-7d7494622c7e","route":"/api/accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_d131baec-d921-4abe-8d25-03d481c7d852","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_dd7bdc6d-c64f-4e0c-965d-9444ce72303a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_d39a1d25-7ed1-4e51-bd57-b89cfeb344bf","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_8de9c01a-2357-495b-a1a1-a30aa0cb2eab","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_91c6c401-fba8-4a0b-8bf7-8c12edd131f1","route":"/api/me","method":"GET","status":200,"durationMs":1}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_d6390278-6889-4d02-8ba4-915e6a8a0edd","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_068b3ce3-6581-4262-990c-2f728f932d29","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":26}
+
+ ✓ src/modules/invoices/invoice-delivery-current-state.test.ts (2 tests) 2335ms
+   ✓ accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight  920ms
+   ✓ accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight  1413ms
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_3d793ccc-b7f4-4452-b1b7-7de7e471338b","route":"/api/auth/*","method":"POST","status":200,"durationMs":598}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_8c2493c3-1089-4959-ba0f-4d8d5f7f5107","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":58}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_87ce4c0a-5b02-4d23-b2e9-9bb747c23089","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":99}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_5fbc0e95-91df-4897-b087-c50b04b8a875","route":"/api/recurring-templates/preview","method":"POST","status":200,"durationMs":41}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_c24f43a3-e181-40ea-9780-3fa8cab0e87b","route":"/api/recurring-templates/preview","method":"POST","status":400,"durationMs":28}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_c9caf6df-bf46-426b-b9d3-dba32cc8c7cb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":51}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_7bb40c58-ca86-4571-bdfb-0e3f4dfd6827","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_06b602bd-7e80-4508-8b3b-6f54a84fd85b","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_c8d45355-a1d5-43c3-bbfa-d9673c033bd9","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":104}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_c466381b-1fbc-4319-a3fc-aeeab9872b90","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":63}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_2da9e13d-d649-4611-b950-29ba8d7b04d8","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":68}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_d43578e2-6749-498a-9f17-fc19e36224d3","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":67}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_afc4b4ad-bd93-4638-a395-ff6a53995b41","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":82}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_055403d1-5267-435a-8d80-c78ea232a273","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":122}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_ef3d1680-bf22-4540-86d0-78c977669ffd","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":65}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_14183181-e123-4df9-af50-372e2c7b78be","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":61}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST
+{"msg":"http_request","requestId":"req_d1d2e05c-8d29-4812-8be4-f68c973ef62a","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":21}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_8875e52a-0a94-46fe-9aa1-d40b38df1094","route":"/api/auth/*","method":"POST","status":200,"durationMs":272}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_264ba721-2ac0-40a1-b489-f263003807c7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":32}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_4664732e-6194-40e2-a805-a9231d947562","route":"/api/customers","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_96794a66-3305-4e23-9cd2-2283f58fcd20","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_b960fb5f-9e05-462a-a9aa-ee7a1bcad4d5","route":"/api/recurring-templates/:id","method":"PATCH","status":200,"durationMs":29}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_d0231ff3-14d0-40aa-ab16-9c1f5ebcb8cd","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":94}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_6032b159-302c-451b-adc8-56892ff37601","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_1eab73d8-b169-46d7-81f1-06fbad47431e","route":"/api/invoices","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing
+{"msg":"http_request","requestId":"req_93785d86-d0f6-4c5c-b54b-6b9ade369eba","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_0084c24c-307e-422d-a514-c16927d14ae3","route":"/api/auth/*","method":"POST","status":200,"durationMs":204}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_ecd7a61f-b2f2-4dab-a3a5-11f3ef30cd6b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_10780462-4c4a-4046-b2f3-ef3a5c13744b","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_81e8a4fa-0c2e-4d4b-9c09-d970b816d816","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_f0fb3726-2d4e-44da-be51-7a32499c68a9","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":46}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_9b24baf5-01c2-4026-8050-824bff0351e0","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_44adb703-8bf8-42b7-a5ff-01c14fbaa17b","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_6c4d8321-a8a5-46eb-8c2e-0ba92ba00c89","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":77}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_c51c003b-2ca3-41ed-b186-f82ea22d889a","route":"/api/invoices","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested
+{"msg":"http_request","requestId":"req_3ff770b3-c0b1-4efa-876e-105fba92a608","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_7ab09ccf-e7e9-42df-877f-35b7432ca136","route":"/api/auth/*","method":"POST","status":200,"durationMs":305}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_c86928ea-ee5a-4ea8-b0c2-eccc7dd67e6b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_fed290c5-aebc-45a5-89fe-397be476bf1c","route":"/api/customers","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_b957d1d1-0e4e-4e3b-9e12-c9f8e7eb6071","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_5c5ade8e-1bfe-41d4-b7a7-a4437c963dfe","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":41}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_a4a8d3cb-d62a-4951-bd60-4d18ed4e95f8","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_e6c2119e-10fd-4502-8a28-3635bb2c8b00","route":"/api/recurring-runs/process","method":"POST","status":200,"durationMs":69}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_093b2aaf-b46d-429f-9b3e-fac493d1fe3d","route":"/api/invoices","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/recurring/recurring.delivery.test.ts > recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry
+{"msg":"http_request","requestId":"req_62855dcd-cbec-4b35-bd90-95d6cb9d2fdc","route":"/api/recurring-runs","method":"GET","status":200,"durationMs":7}
+
+ ✓ src/modules/recurring/recurring.delivery.test.ts (4 tests) 11039ms
+   ✓ recurring preview and invoice delivery > previews bounded month-end dates, validates input, and matches actual Auckland scheduledFor dates across DST  3591ms
+   ✓ recurring preview and invoice delivery > auto-sends exactly once, posts one receivable journal, and does not duplicate on reprocessing  2743ms
+   ✓ recurring preview and invoice delivery > keeps an unconfigured auto-send draft unless mark_sent is requested  2223ms
+   ✓ recurring preview and invoice delivery > keeps the generated invoice after a send failure and reuses it on delivery retry  2456ms
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_896546c7-123f-4a2f-a17f-1afa56750ecb","route":"/api/auth/*","method":"POST","status":200,"durationMs":230}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_4be7f4a6-d1bd-43f7-aa9e-7f8bec124cdb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":20}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_a927e2f6-9fea-4bc3-af3a-a9dcaa5f5dd7","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_03dd84ae-6486-4a7b-aaee-0584a55fb982","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_42a7690b-9a6c-4eae-842e-12f7669bf10a","route":"/api/vendors","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_d00b0be2-7e49-40eb-b02f-1b74f564df9e","route":"/api/accounts","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_1c851d72-1354-4132-aafa-81819d015776","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_358a0344-1dcb-490b-b7f5-d8db659c3cd3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_b955a6a1-a4e7-4551-b3ec-dd2a5e2b81cc","route":"/api/invoices","method":"POST","status":201,"durationMs":54}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_b941b4c0-3e96-4bc7-af78-4502616bd84f","route":"/api/bills","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_1c0d956b-9f65-4175-8715-f204639ed032","route":"/api/me","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B
+{"msg":"http_request","requestId":"req_d6bde31f-0a17-4c61-821f-5b90072f9e7d","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_9b8be6b4-501e-407b-b827-5e1c17a6fd60","route":"/api/auth/*","method":"POST","status":200,"durationMs":188}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_f586237a-1a27-4e3a-8ce0-c732ad0567c7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_7912a0ff-e2ad-4cb0-84b7-8e7810cf4d8f","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_644df7db-2f6f-433a-93bf-b726ad5bc966","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_6f3a27dd-fa75-4e29-abdc-b806b4b3a7c9","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_2434512e-c13a-4a4c-8053-372666860486","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_e1ff53d5-7132-431f-be18-17d12af3cc2c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_b8ca5d03-9677-4da4-8efc-a6f1171603b7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_71c8530d-6bc0-4abe-8fa2-6c27f98c0a2b","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_2a30806c-16cd-46b6-a55f-c0ba2bbffc71","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_c3458b42-f8ae-41db-a81e-e63112430c58","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/recurring/recurring-delivery-scope.test.ts > bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution
+{"msg":"http_request","requestId":"req_50c1cbd6-3a1f-4c6e-ad45-6c9c1849caa3","route":"/api/recurring-templates","method":"POST","status":201,"durationMs":6}
+
+ ✓ src/modules/recurring/recurring-delivery-scope.test.ts (2 tests) 5274ms
+   ✓ bound recurring delivery and authoritative actor checks > emails the company A invoice and public share after the creator selects company B  2958ms
+   ✓ bound recurring delivery and authoritative actor checks > pauses a mirrored-owner schedule when authoritative Identity authorization denies execution  2309ms
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_db1885e1-92f4-4756-8f8f-4591da8acd00","route":"/api/auth/*","method":"POST","status":200,"durationMs":457}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_5703b9db-595a-4893-a822-6b32e8aef6bc","route":"/api/business-profile","method":"PUT","status":200,"durationMs":81}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_c8476605-26af-4b08-afe5-cd48a1b87c06","route":"/api/customers","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_29f960a5-9368-431c-bbcc-e9d222397c7d","route":"/api/invoices","method":"POST","status":201,"durationMs":70}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_aca5516c-6fc2-46bd-b346-8453baccb43f","route":"/api/invoices/:id/send","method":"POST","status":503,"durationMs":26}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_b842ccd5-558f-4ed6-b580-479e3a5344a7","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":52}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_99b0aed9-66d6-4e42-a393-767c5e4ddc4d","route":"/api/auth/*","method":"POST","status":200,"durationMs":376}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_d2243061-d50c-4a66-9a97-8fc1fc234bf8","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_3702aecd-c413-461e-9cad-57182cde8db3","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_812af5f0-431c-417e-abc3-a90cdc3bdaad","route":"/api/invoices","method":"POST","status":201,"durationMs":43}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_23fc3581-110a-4db7-96ea-ff69f166f322","route":"/api/invoices/:id/send","method":"POST","status":502,"durationMs":116}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_ec0446bc-cf56-460e-a94d-57fb128a1682","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_d0a52905-aa83-4080-8856-d0929a5e774c","route":"/api/invoices/:id/send","method":"POST","status":200,"durationMs":127}
+
+ ✓ src/modules/invoices/email-delivery.e2e.test.ts (2 tests) 6964ms
+   ✓ invoice delivery acceptance > keeps an invoice draft when no email transport was supplied  4024ms
+   ✓ invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance  2935ms
+
+ Test Files  4 passed (4)
+      Tests  10 passed (10)
+   Start at  03:01:38
+   Duration  38.34s (transform 1.31s, setup 93ms, collect 11.17s, tests 25.61s, environment 1ms, prepare 423ms)

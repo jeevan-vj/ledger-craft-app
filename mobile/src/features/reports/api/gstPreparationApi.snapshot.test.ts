@@ -1,0 +1,4 @@
+import { gstPreparationApi } from './gstPreparationApi';
+import { writeTaxDraft } from './taxDraftWrite';
+jest.mock('./taxDraftWrite', () => ({ writeTaxDraft: jest.fn() }));
+it('passes the server calculation fingerprint when saving a GST draft', async () => { const figures = { from: '2026-04-01', to: '2026-05-31', basis: 'hybrid', baseCurrency: 'NZD', totalSales: '1150.00', totalPurchases: '230.00', gstOnSales: '150.00', gstOnPurchases: '30.00', netGstPosition: '120.00', calculation: { fingerprint: 'a'.repeat(64) }, warnings: [] }; await gstPreparationApi.save(figures as never); expect(writeTaxDraft).toHaveBeenCalledWith(expect.objectContaining({ returnData: expect.objectContaining({ preparation: { basis: 'hybrid', baseCurrency: 'NZD', calculationFingerprint: 'a'.repeat(64) } }) }), undefined); });

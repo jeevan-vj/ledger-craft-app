@@ -1,50 +1,43 @@
-import React from 'react';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { beforeEach, expect, it, vi } from 'vitest';
 import { MemoryRouter } from 'react-router-dom';
 import IRDReportingPage from '../IRDReportingPage';
-import { supabaseDataService } from '@/services/supabaseDataService';
 
-const toast = vi.hoisted(() => vi.fn());
-vi.mock('@/hooks/use-toast', () => ({ useToast: () => ({ toast }) }));
-vi.mock('@/context/StableAuthContext', () => ({ useAuth: () => ({ user: { id: 'owner' } }) }));
-vi.mock('@/services/supabaseDataService', () => ({ supabaseDataService: {
-  getTaxReturnsByUser: vi.fn(async () => []), createTaxReturn: vi.fn(),
-  getInvoicesByPeriod: vi.fn(async () => []), getExpensesByPeriod: vi.fn(async () => []),
-} }));
-vi.mock('@/components/reporting/IRDReportingDashboard', () => ({ IRDReportingDashboard: ({ onCreateIncomeReturn, onCreateGSTReturn }: { onCreateIncomeReturn: (period: { start: string; end: string }) => void; onCreateGSTReturn: () => void }) =>
-  <><button onClick={() => onCreateIncomeReturn({ start: '2026-04-01', end: '2027-03-31' })}>Prepare income tax</button><button onClick={onCreateGSTReturn}>Prepare GST</button></>,
-}));
-vi.mock('@/services/taxCalculationService', () => ({ taxCalculationService: { generateIRDGSTReturn: vi.fn(async () => ({ gstReturn: {
-  salesDetails: { standardRated: 1610, zeroRated: 0, exempt: 0, totalSales: 1610, gstOnSales: 210 },
-  purchaseDetails: { standardRated: 625, capitalGoods: 0, totalPurchases: 625, gstOnPurchases: 75 },
-} })) } }));
-vi.mock('@/components/tax/GSTReturnWizard', () => ({ GSTReturnWizard: ({ onComplete }: { onComplete: (data: unknown) => void }) => <button onClick={() => onComplete({
-  returnPeriod: { startDate: '2026-11-01', endDate: '2026-11-30', quarter: 'CUSTOM', year: 2026 }, dueDate: '2027-01-15',
-  salesData: { totalSales: 1610, gstOnSales: 210, zeroRatedSales: 0, exemptSales: 0 },
-  purchaseData: { totalPurchases: 625, gstOnPurchases: 75, capitalGoods: 0, gstOnCapitalGoods: 0 },
-  adjustments: { badDebtAdjustments: 0, creditNoteAdjustments: 0, otherAdjustments: 0 },
-})}>Save reference GST draft</button> }));
-
-beforeEach(() => vi.clearAllMocks());
-
-it('opens an explicit ordinary-company worksheet without calculating personal tax bands', async () => {
+vi.mock('@/context/StableAuthContext', () => ({ useAuth: () => ({ me: { permissions: ['banking.write'] } }) }));
+vi.mock('@/components/layout/PageHeader', () => ({ PageHeader: ({ title }: { title: string }) => <h1>{title}</h1> }));
+const settings = { gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-11-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 3, configured: true, reviewRequired: false, warnings: [] };
+const period = { periodStart: '2026-11-01', periodEnd: '2026-11-30', dueDate: '2027-01-15', status: 'not_started', taxReturnId: null, netGst: null, irdReference: null };
+let saved: Record<string, unknown>; let writes: Array<{ path: string; body: Record<string, unknown> }>;
+beforeEach(() => {
+  writes = [];
+  vi.stubGlobal('fetch', vi.fn(async (path: string, init?: RequestInit) => {
+    const body = init?.body ? JSON.parse(String(init.body)) as Record<string, unknown> : undefined;
+    if (body) writes.push({ path, body });
+    let value: unknown;
+    if (path === '/api/tax/gst-periods') value = { settings, asOf: '2026-11-07', periods: [period], reviewRequired: false, warnings: [] };
+    else if (path === '/api/tax-returns' && !body) value = { taxReturns: [] };
+    else if (path.startsWith('/api/tax/gst-preparation')) value = { basis: 'invoice', from: period.periodStart, to: period.periodEnd, baseCurrency: 'NZD', totalSales: '1610.00', totalPurchases: '625.00', gstOnSales: '210.00', gstOnPurchases: '75.00', netGstPosition: '135.00', warnings: [] };
+    else if (body) { saved = { ...body, id: '11111111-1111-4111-8111-111111111111', submittedAt: null, irdReference: null, createdAt: '2026-11-07', updatedAt: '2026-11-07' }; value = saved; }
+    else value = saved;
+    return new Response(JSON.stringify(value), { status: body ? 201 : 200 });
+  }));
+});
+it('opens an explicit ordinary-company worksheet without calculating personal tax bands or posting a return', async () => {
   render(<MemoryRouter><IRDReportingPage /></MemoryRouter>);
-  fireEvent.click(await screen.findByRole('button', { name: 'Prepare income tax' }));
+  fireEvent.click(screen.getByRole('button', { name: 'Company tax worksheet' }));
   expect(await screen.findByRole('heading', { name: 'Company income tax worksheet' })).toBeInTheDocument();
   expect(screen.getByLabelText('I confirm this is an ordinary NZ company eligible for the 28% rate')).not.toBeChecked();
-  expect(supabaseDataService.createTaxReturn).not.toHaveBeenCalled();
-  expect(supabaseDataService.getInvoicesByPeriod).not.toHaveBeenCalled();
+  expect(writes).toHaveLength(0);
 });
-
-it('retains the confirmed custom due date in the saved preparation record', async () => {
-  vi.mocked(supabaseDataService.createTaxReturn).mockImplementation(async (record) => ({ ...record, id: 'draft-1', createdAt: '', updatedAt: '' }));
+it('retains the server-generated November due exception and exact figures in a saved preparation record', async () => {
   render(<MemoryRouter><IRDReportingPage /></MemoryRouter>);
-  fireEvent.click(await screen.findByRole('button', { name: 'Prepare GST' }));
-  fireEvent.click(screen.getByRole('button', { name: 'Save reference GST draft' }));
-  await waitFor(() => expect(supabaseDataService.createTaxReturn).toHaveBeenCalled());
-  expect(vi.mocked(supabaseDataService.createTaxReturn).mock.calls[0][0]).toMatchObject({
-    periodStart: '2026-11-01', periodEnd: '2026-11-30', netGst: 135,
-    returnData: { preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: '2027-01-15' } },
-  });
+  fireEvent.click(await screen.findByRole('button', { name: 'Prepare 2026-11-01 to 2026-11-30' }));
+  expect(screen.getByLabelText('GST due date (confirm in myIR)')).toHaveValue('2027-01-15');
+  expect(screen.getByLabelText('Registered GST basis')).toBeDisabled();
+  fireEvent.click(screen.getByRole('button', { name: 'Prepare GST worksheet' }));
+  await screen.findByText('NZD 135.00');
+  fireEvent.click(screen.getByLabelText('I have reviewed the worksheet and bank reconciliation'));
+  fireEvent.click(screen.getByRole('button', { name: 'Save GST worksheet draft' }));
+  await waitFor(() => expect(writes.find(write => write.path === '/api/tax-returns')?.body).toMatchObject({ periodStart: '2026-11-01', periodEnd: '2026-11-30', netGst: '135.00', returnData: { preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: '2027-01-15' } } }));
+  expect(await screen.findByRole('status')).toHaveTextContent('GST draft saved and reloaded');
 });

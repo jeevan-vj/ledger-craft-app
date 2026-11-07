@@ -1,5 +1,10 @@
-import { expenseTotals, expenseNet, expenseTaxRate } from '@/features/expenses/expenseTotals';
-import React, { useState, useEffect, useCallback } from 'react';
+import { reportToday } from '@ledgercraft/contracts';
+import { useQuery } from '@tanstack/react-query';
+import { reportsApi } from '@/features/reports/api/reportsApi';
+import { ReceiptAttachment } from '@/components/expense/ReceiptAttachment';
+import { receiptDuplicate } from '@/features/expenses/receiptDuplicate';
+import { expenseTotals, expenseNet, expenseTaxRate, reviewedReceiptTotals } from '@/features/expenses/expenseTotals';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
   View,
   Text,
@@ -28,6 +33,7 @@ import { Customer } from '@/services/customerService';
 import { ReceiptScanResult } from '@/types/receipt';
 import { Feather } from '@expo/vector-icons';
 import { useTheme } from '@/theme';
+import { space } from '@/theme/tokens';
 import { getServerCapabilities } from '@/services/capabilitiesService';
 
 type ExpenseEditNavigationProp = NativeStackNavigationProp<AppTabParamList, 'ExpenseEdit'>;
@@ -52,11 +58,21 @@ export default function ExpenseEditScreen() {
   // Loading initial data
   const [loadingExpense, setLoadingExpense] = useState(true);
   
+  const dateWasEdited = useRef(false);
+  const dateOptions = useQuery({queryKey:['reports','options'],queryFn:reportsApi.options});
+  const businessDate = dateOptions.data?.today ?? reportToday(new Date(), dateOptions.data?.timezone ?? 'Pacific/Auckland');
+  const businessDateRef = useRef(businessDate); businessDateRef.current = businessDate;
+
   // Form state
   const [description, setDescription] = useState('');
   const [status, setStatus] = useState<ExpenseStatus>('pending');
   const [amount, setAmount] = useState('');
-  const [expenseDate, setExpenseDate] = useState(new Date().toISOString().split('T')[0]);
+  const [duplicateWarning, setDuplicateWarning] = useState(false);
+  const [duplicateAccepted, setDuplicateAccepted] = useState(false);
+  const [receiptHash, setReceiptHash] = useState<string>();
+  const [receiptAmounts, setReceiptAmounts] = useState<{gross:string;tax:string} | null>(null);
+  const [expenseDate, setExpenseDate] = useState(businessDate);
+  useEffect(()=>{if(!dateWasEdited.current)setExpenseDate(businessDate);},[businessDate]);
   const [vendorName, setVendorName] = useState('');
   const [notes, setNotes] = useState('');
   const [currency, setCurrency] = useState('NZD');
@@ -105,7 +121,8 @@ export default function ExpenseEditScreen() {
       setDescription(expense.description || '');
       setStatus(expense.status);
       setAmount(expenseNet(expense.amount || 0, expense.taxAmount || 0));
-      setExpenseDate(expense.expenseDate || new Date().toISOString().split('T')[0]);
+      dateWasEdited.current = !!expense.expenseDate;
+      setExpenseDate(expense.expenseDate || businessDateRef.current);
       setVendorName(expense.vendorName || '');
       setNotes(expense.notes || '');
       setCurrency(expense.currency || 'NZD');
@@ -163,7 +180,7 @@ export default function ExpenseEditScreen() {
   }
   
   // Calculated tax
-  const totals = expenseTotals(amount, taxEnabled, taxRate);
+  const totals = receiptAmounts ? reviewedReceiptTotals(receiptAmounts.gross, receiptAmounts.tax) : expenseTotals(amount, taxEnabled, taxRate);
   const amountNum = Number(totals.net);
   const taxAmount = Number(totals.tax);
   const totalAmount = Number(totals.gross);
@@ -195,16 +212,22 @@ export default function ExpenseEditScreen() {
 
     try {
       setLoading(true);
+      if (receiptUrl && !duplicateAccepted) {
+        const existing = await expenseService.fetchExpenses();
+        if (receiptDuplicate({receiptHash,vendorName,expenseDate,amount:totals.gross},existing, expenseId)) { setDuplicateWarning(true); return; }
+      }
       
       const expenseData = {
         description: description.trim(),
         status,
         amount: totalAmount,
+        ...(receiptAmounts ? { amountText: totals.gross, taxAmountText: totals.tax } : {}),
         expenseDate,
         categoryId: selectedCategory?.id || null,
         accountId: selectedAccount?.id || null,
         vendorName: vendorName.trim() || null,
         receiptUrl,
+        ...(receiptHash ? {receiptHash} : {}),
         isBillable,
         customerId: isBillable && selectedCustomer ? selectedCustomer.id : null,
         taxAmount,
@@ -327,7 +350,8 @@ export default function ExpenseEditScreen() {
                 label="Amount"
                 value={amount}
                 onChangeText={(text) => {
-                  setAmount(text);
+                  setDuplicateAccepted(false); setReceiptAmounts(null);
+                setAmount(text);
                   if (errors.amount) setErrors({ ...errors, amount: '' });
                 }}
                 placeholder="0.00"
@@ -349,6 +373,7 @@ export default function ExpenseEditScreen() {
             label="Date"
             value={expenseDate}
             onChangeText={(text) => {
+              dateWasEdited.current = true;
               setExpenseDate(text);
               if (errors.expenseDate) setErrors({ ...errors, expenseDate: '' });
             }}
@@ -359,7 +384,7 @@ export default function ExpenseEditScreen() {
           <ModernInput
             label="Vendor"
             value={vendorName}
-            onChangeText={setVendorName}
+            onChangeText={value => {setDuplicateAccepted(false);setVendorName(value);}}
             placeholder="Vendor name (optional)"
           />
         </View>
@@ -420,11 +445,11 @@ export default function ExpenseEditScreen() {
           <View style={styles.switchRow}>
             <View style={styles.switchLabelContainer}>
               <Text style={styles.switchLabel}>Include Tax (GST)</Text>
-              <Text style={styles.switchSubtext}>{taxRate}%</Text>
+              <Text style={styles.switchSubtext}>{receiptAmounts ? 'Reviewed source amounts' : `${taxRate}%`}</Text>
             </View>
             <Switch
               value={taxEnabled}
-              onValueChange={setTaxEnabled}
+              onValueChange={value => { setDuplicateAccepted(false); setReceiptAmounts(null); setTaxEnabled(value); }}
               trackColor={{ false: palette.fill, true: palette.accent }}
               thumbColor={palette.text}
             />
@@ -437,7 +462,7 @@ export default function ExpenseEditScreen() {
                 <Text style={styles.taxValue}>${amountNum.toFixed(2)}</Text>
               </View>
               <View style={styles.taxRow}>
-                <Text style={styles.taxLabel}>Tax ({taxRate}%):</Text>
+                <Text style={styles.taxLabel}>{receiptAmounts ? 'GST from reviewed receipt' : `Tax (${taxRate}%):`}</Text>
                 <Text style={styles.taxValue}>${taxAmount.toFixed(2)}</Text>
               </View>
               <View style={[styles.taxRow, styles.taxTotal]}>
@@ -482,11 +507,13 @@ export default function ExpenseEditScreen() {
           )}
         </View>
 
+        {duplicateWarning && <View style={styles.card}><Text style={styles.receiptText}>Possible duplicate receipt. Review the existing expense before saving another.</Text><Text style={styles.receiptText}>I checked the duplicate and want to save another expense</Text><Switch accessibilityLabel="Save duplicate receipt after review" value={duplicateAccepted} onValueChange={setDuplicateAccepted} /></View>}
+        {receiptAmounts && <View style={styles.card}><Text style={styles.cardTitle}>Review receipt amounts</Text><Text style={styles.receiptText}>These are the source total including GST and actual GST. Check and edit both before saving.</Text><ModernInput accessibilityLabel="Reviewed receipt total" label="Receipt total including GST" value={receiptAmounts.gross} keyboardType="decimal-pad" onChangeText={value => {setDuplicateAccepted(false);setReceiptAmounts({...receiptAmounts,gross:value});}} /><ModernInput accessibilityLabel="Reviewed receipt GST" label="Receipt GST" value={receiptAmounts.tax} keyboardType="decimal-pad" onChangeText={value => {setDuplicateAccepted(false);setReceiptAmounts({...receiptAmounts,tax:value});}} /></View>}
         {/* Receipt Card */}
         <View style={styles.card}>
           <Text style={styles.cardTitle}>Receipt</Text>
           {receiptUrl ? (
-            <View style={styles.receiptContainer}>
+            <View style={{gap:space.md}}><ReceiptAttachment url={receiptUrl}/><View style={styles.receiptContainer}>
               <View style={styles.receiptInfo}>
                 <Feather name="file-text" size={18} color={palette.accentText} />
                 <Text style={styles.receiptText}>Receipt attached</Text>
@@ -497,18 +524,16 @@ export default function ExpenseEditScreen() {
               >
                 <Text style={styles.removeReceiptText}>Remove</Text>
               </TouchableOpacity>
-            </View>
-          ) : receiptScanAvailable ? (
+            </View></View>
+          ) : (
             <ModernButton
               onPress={() => setShowReceiptScanner(true)}
               variant="outline"
               fullWidth
               icon={<Feather name="camera" size={18} color={palette.text} />}
             >
-              Scan Receipt with AI
+              {receiptScanAvailable ? 'Capture and scan receipt' : 'Attach receipt'}
             </ModernButton>
-          ) : (
-            <Text style={styles.receiptText}>Receipt scanning isn’t set up on this server yet. Upload the receipt and enter the details manually.</Text>
           )}
         </View>
 
@@ -640,17 +665,21 @@ export default function ExpenseEditScreen() {
       <ReceiptScanner
         visible={showReceiptScanner}
         onScanComplete={(result: ReceiptScanResult, receiptUrl?: string) => {
+          setDuplicateWarning(false); setDuplicateAccepted(false); setReceiptHash(result.receiptHash);
           // Auto-fill form with scanned data (only if fields are empty)
           if (result.merchantName && !vendorName) {
             setVendorName(result.merchantName);
           }
-          if (result.total !== null && !amount) {
-            setAmount(result.total.toString());
+          if (result.total !== null) {
+            const reviewed = reviewedReceiptTotals(result.total, result.tax ?? '0.00');
+            setReceiptAmounts({gross:result.total,tax:result.tax ?? '0.00'});
+            setAmount(reviewed.net);
           }
-          if (result.date && !expenseDate) {
+          if (result.date) {
+            dateWasEdited.current = true;
             setExpenseDate(result.date);
           }
-          if (result.tax !== null && result.tax > 0 && !taxEnabled) {
+          if (result.tax !== null && /[1-9]/.test(result.tax) && !taxEnabled) {
             setTaxEnabled(true);
           }
           if (result.paymentMethod && !paymentMethod) {

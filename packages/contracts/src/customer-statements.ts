@@ -1,0 +1,11 @@
+import { z } from 'zod';
+import { gstDateSchema } from './gst-settings';
+const money = z.string().regex(/^-?\d+\.\d{2}$/);
+export const customerStatementQuerySchema = z.object({ type: z.enum(['open_items', 'activity']).default('open_items'), from: gstDateSchema, to: gstDateSchema }).refine(v => v.from <= v.to, { message: 'Statement start must not follow its end', path: ['from'] });
+export type CustomerStatementQuery = z.infer<typeof customerStatementQuerySchema>;
+export const statementLineSchema = z.object({ id: z.string(), date: gstDateSchema, kind: z.string(), reference: z.string(), description: z.string(), debit: money, credit: money, runningBalance: money, invoiceId: z.string().optional() });
+export const statementAgingSchema = z.object({ total: money, current: money, days1To30: money, days31To60: money, days61To90: money, over90: money, unallocatedControl: money, items: z.array(z.object({ id: z.string(), number: z.string(), partyId: z.string(), partyName: z.string(), issueDate: gstDateSchema, dueDate: gstDateSchema, balanceDue: money, daysOverdue: z.number(), bucket: z.enum(['current', '1-30', '31-60', '61-90', '90+']) })) });
+export const customerStatementSchema = z.object({ customer: z.object({ id: z.string(), name: z.string(), email: z.string() }), businessName: z.string(), currency: z.literal('NZD'), type: z.enum(['open_items', 'activity']), from: gstDateSchema, to: gstDateSchema, openingBalance: money, lines: z.array(statementLineSchema), closingBalance: money, aging: statementAgingSchema, generatedAt: z.string().datetime(), warnings: z.array(z.string()) });
+export type CustomerStatement = z.infer<typeof customerStatementSchema>;
+export const bulkStatementRequestSchema = z.object({ customerIds: z.array(z.string().uuid()).min(1).max(100), type: z.enum(['open_items', 'activity']).default('open_items'), from: gstDateSchema, to: gstDateSchema }).refine(v => v.from <= v.to, { message: 'Invalid statement period' });
+export const statementShareSchema = z.object({ token: z.string(), url: z.string(), expiresAt: z.string().datetime() });

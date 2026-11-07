@@ -1,0 +1,33 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/settings/StripeOperationsSection.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/components/settings/StripeOperationsSection.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module './StripeOperationsSection' from 'src/components/settings/StripeOperationsSection.test.tsx'
+
+    However, Jest was able to find:
+        './StripeOperationsSection.test.tsx'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+      2 | import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+      3 | import { fireEvent, render } from '@testing-library/react-native';
+    > 4 | import { StripeOperationsSection } from './StripeOperationsSection';
+        | ^
+      5 | import { stripeApi } from '@/features/stripe/api/stripeApi';
+      6 | jest.mock('@/features/stripe/api/stripeApi',()=>({stripeApi:{balance:jest.fn(),operations:jest.fn(),settlements:jest.fn(),verify:jest.fn(),refund:jest.fn()}}));
+      7 | function mount(){return render(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}><StripeOperationsSection/></QueryClientProvider>);}
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/components/settings/StripeOperationsSection.test.tsx:4:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        1.114 s
+Ran all test suites matching src/components/settings/StripeOperationsSection.test.tsx.

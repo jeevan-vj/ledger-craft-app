@@ -1,0 +1,66 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/ai/ai.test.ts > ai routes > unauthenticated POST /api/ai/receipt-scan returns 401
+{"msg":"http_request","requestId":"req_d5aba296-cb60-4496-98e7-42493bb1b5e0","route":"/api/ai/receipt-scan","method":"POST","status":401,"durationMs":8}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns a validated scan from the injected scanner and 503 without one
+{"msg":"http_request","requestId":"req_a1b9b7a3-4293-4a26-8651-9b64cbd0438e","route":"/api/auth/*","method":"POST","status":200,"durationMs":531}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns a validated scan from the injected scanner and 503 without one
+{"msg":"http_request","requestId":"req_17af25d9-8be9-499a-a043-897afc763e43","route":"/api/ai/receipt-scan","method":"POST","status":503,"durationMs":30}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns a validated scan from the injected scanner and 503 without one
+{"msg":"http_request","requestId":"req_1c1f8d23-82da-4c9a-b847-2eb1d17dc12d","route":"/api/ai/receipt-scan","method":"POST","status":400,"durationMs":23}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > unauthenticated POST /api/ai/chat returns 401
+{"msg":"http_request","requestId":"req_9d5464ef-7bc0-48b3-b884-5b9f5365a896","route":"/api/ai/chat","method":"POST","status":401,"durationMs":19}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns chat content from the injected completer and 503 without one
+{"msg":"http_request","requestId":"req_ac10eeec-e436-46f6-b1a9-7a540e5343bc","route":"/api/auth/*","method":"POST","status":200,"durationMs":411}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns chat content from the injected completer and 503 without one
+{"msg":"http_request","requestId":"req_49e362b9-58f7-4f28-ae62-b4d489a79b67","route":"/api/ai/chat","method":"POST","status":503,"durationMs":65}
+
+stdout | src/modules/ai/ai.test.ts > ai routes > returns chat content from the injected completer and 503 without one
+{"msg":"http_request","requestId":"req_625b72a9-055e-428f-8655-800eb1251d60","route":"/api/ai/chat","method":"POST","status":200,"durationMs":17}
+
+ ❯ src/modules/ai/ai.test.ts (4 tests | 1 failed) 8622ms
+   ✓ ai routes > unauthenticated POST /api/ai/receipt-scan returns 401 160ms
+   × ai routes > returns a validated scan from the injected scanner and 503 without one 4764ms
+     → expected 400 to be 200 // Object.is equality
+   ✓ ai routes > unauthenticated POST /api/ai/chat returns 401 27ms
+   ✓ ai routes > returns chat content from the injected completer and 503 without one  3662ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/ai/ai.test.ts > ai routes > returns a validated scan from the injected scanner and 503 without one
+AssertionError: expected 400 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 400
+
+ ❯ src/modules/ai/ai.test.ts:81:32
+     79|           body: JSON.stringify({ imageBase64: 'abc', contentType: 'ima…
+     80|         });
+     81|         expect(scanned.status).toBe(200);
+       |                                ^
+     82|         const result = receiptScanResultSchema.parse(await scanned.jso…
+     83|         expect(result.merchantName).toBe('North Harbour Cafe');
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+ ❯ src/modules/ai/ai.test.ts:45:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:12:57
+   Duration  25.22s (transform 6.67s, setup 90ms, collect 15.30s, tests 8.62s, environment 0ms, prepare 368ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/ai/ai.test.ts

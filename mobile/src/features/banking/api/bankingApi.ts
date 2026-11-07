@@ -1,3 +1,4 @@
+import { onlineManager } from '@tanstack/react-query';
 import { apiRequest } from '@/features/auth/api/http';
 import type { StatementTransactionInput } from '@/features/banking/model/statementImport';
 
@@ -41,7 +42,7 @@ export interface BankTransactionDto {
   merchant: string | null;
   isReconciled: boolean;
   notes: string | null;
-  source: 'import' | 'manual' | 'transfer';
+  source: 'import' | 'manual' | 'transfer' | 'feed';
   paymentMethod: 'bank_transfer' | 'cash' | 'card' | 'cheque' | 'other' | null;
   counterparty: string | null;
   transferId: string | null;
@@ -66,6 +67,7 @@ export interface BankTransactionWriteRequest {
 }
 
 export interface BankTransferWriteRequest {
+  exchangeRateId?: string;
   sourceAccountId: string;
   destinationAccountId: string;
   transactionDate: string;
@@ -213,89 +215,99 @@ export function bankTransactionQuery(filters: BankTransactionFilters): string {
   return pairs.map(([key, value]) => `${key}=${encodeURIComponent(value)}`).join('&');
 }
 
+export function bankingRequest<T>(path: string, init?: RequestInit): Promise<T> {
+  if (init?.method && !['GET', 'HEAD'].includes(init.method) && !onlineManager.isOnline()) {
+    return Promise.reject(new Error('You are offline. Reconnect and try again; nothing has been queued.'));
+  }
+  return apiRequest<T>(path, init);
+}
+
 export const bankingApi = {
+  getDefaultAccount: () => bankingRequest<{ bankAccountId: string | null }>('/api/bank-default-account'),
+  setDefaultAccount: (bankAccountId: string | null) => bankingRequest<{ bankAccountId: string | null }>('/api/bank-default-account', { method: 'PUT', body: JSON.stringify({ bankAccountId }) }),
+  movements: (id: string, from: string, to: string) => bankingRequest<{ bankAccountId: string; currency: string; from: string; to: string; openingBalance: string; inflows: string; outflows: string; movement: string; closingBalance: string }>(`/api/bank-accounts/${id}/movements?${new URLSearchParams({ from, to })}`),
   async listAccounts(): Promise<BankAccountDto[]> {
-    return (await apiRequest<{ bankAccounts: BankAccountDto[] }>('/api/bank-accounts', { method: 'GET' })).bankAccounts;
+    return (await bankingRequest<{ bankAccounts: BankAccountDto[] }>('/api/bank-accounts', { method: 'GET' })).bankAccounts;
   },
   getAccount(id: string): Promise<BankAccountDto> {
-    return apiRequest(`/api/bank-accounts/${id}`, { method: 'GET' });
+    return bankingRequest(`/api/bank-accounts/${id}`, { method: 'GET' });
   },
   createAccount(input: BankAccountWriteRequest): Promise<BankAccountDto> {
-    return apiRequest('/api/bank-accounts', { method: 'POST', body: JSON.stringify(input) });
+    return bankingRequest('/api/bank-accounts', { method: 'POST', body: JSON.stringify(input) });
   },
   updateAccount(id: string, input: Partial<BankAccountWriteRequest>): Promise<BankAccountDto> {
-    return apiRequest(`/api/bank-accounts/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+    return bankingRequest(`/api/bank-accounts/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
   },
   async removeAccount(id: string): Promise<void> {
-    await apiRequest<void>(`/api/bank-accounts/${id}`, { method: 'DELETE' });
+    await bankingRequest<void>(`/api/bank-accounts/${id}`, { method: 'DELETE' });
   },
   async listTransactions(bankAccountId?: string): Promise<BankTransactionDto[]> {
     const query = bankAccountId ? `?bankAccountId=${encodeURIComponent(bankAccountId)}` : '';
-    return (await apiRequest<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query}`, { method: 'GET' })).transactions;
+    return (await bankingRequest<{ transactions: BankTransactionDto[] }>(`/api/bank-transactions${query}`, { method: 'GET' })).transactions;
   },
   listReconciliationTransactions(filters: BankTransactionFilters): Promise<BankTransactionListResponse> {
     const query = bankTransactionQuery(filters);
-    return apiRequest(`/api/bank-transactions${query ? `?${query}` : ''}`, { method: 'GET' });
+    return bankingRequest(`/api/bank-transactions${query ? `?${query}` : ''}`, { method: 'GET' });
   },
   suggestions(transactionId: string): Promise<BankTransactionSuggestionResponse> {
-    return apiRequest(`/api/bank-transactions/${transactionId}/suggestions`, { method: 'GET' });
+    return bankingRequest(`/api/bank-transactions/${transactionId}/suggestions`, { method: 'GET' });
   },
   async suggestionsBatch(transactionIds: string[]): Promise<Record<string, BankTransactionSuggestionResponse>> {
     if (transactionIds.length === 0) return {};
-    const body = await apiRequest<{ items: BankTransactionSuggestionResponse[] }>('/api/bank-transactions/suggestions/batch', {
+    const body = await bankingRequest<{ items: BankTransactionSuggestionResponse[] }>('/api/bank-transactions/suggestions/batch', {
       method: 'POST', body: JSON.stringify({ transactionIds }),
     });
     return Object.fromEntries(body.items.map((item) => [item.transactionId, item]));
   },
   acceptSuggestion(transactionId: string, input: AcceptReconciliationRequest): Promise<BankReconciliationActionDto> {
-    return apiRequest(`/api/bank-transactions/${transactionId}/accept`, { method: 'POST', body: JSON.stringify(input) });
+    return bankingRequest(`/api/bank-transactions/${transactionId}/accept`, { method: 'POST', body: JSON.stringify(input) });
   },
   markPersonal(transactionId: string, notes?: string | null): Promise<BankReconciliationActionDto> {
-    return apiRequest(`/api/bank-transactions/${transactionId}/personal`, { method: 'POST', body: JSON.stringify(notes ? { notes } : {}) });
+    return bankingRequest(`/api/bank-transactions/${transactionId}/personal`, { method: 'POST', body: JSON.stringify(notes ? { notes } : {}) });
   },
   undoReconciliation(transactionId: string, input: { reason: string; reversalDate: string }): Promise<BankReconciliationActionDto> {
-    return apiRequest(`/api/bank-transactions/${transactionId}/undo`, { method: 'POST', body: JSON.stringify(input) });
+    return bankingRequest(`/api/bank-transactions/${transactionId}/undo`, { method: 'POST', body: JSON.stringify(input) });
   },
   async listMatchingRules(): Promise<BankMatchingRuleDto[]> {
-    return (await apiRequest<{ rules: BankMatchingRuleDto[] }>('/api/bank-matching-rules', { method: 'GET' })).rules;
+    return (await bankingRequest<{ rules: BankMatchingRuleDto[] }>('/api/bank-matching-rules', { method: 'GET' })).rules;
   },
   createMatchingRule(input: BankMatchingRuleWriteRequest): Promise<BankMatchingRuleDto> {
-    return apiRequest('/api/bank-matching-rules', { method: 'POST', body: JSON.stringify(input) });
+    return bankingRequest('/api/bank-matching-rules', { method: 'POST', body: JSON.stringify(input) });
   },
   updateMatchingRule(id: string, input: Partial<BankMatchingRuleWriteRequest>): Promise<BankMatchingRuleDto> {
-    return apiRequest(`/api/bank-matching-rules/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+    return bankingRequest(`/api/bank-matching-rules/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
   },
   async removeMatchingRule(id: string): Promise<void> {
-    await apiRequest<void>(`/api/bank-matching-rules/${id}`, { method: 'DELETE' });
+    await bankingRequest<void>(`/api/bank-matching-rules/${id}`, { method: 'DELETE' });
   },
   async listLedgerAccounts(): Promise<LedgerAccountDto[]> {
-    return (await apiRequest<{ accounts: LedgerAccountDto[] }>('/api/accounts', { method: 'GET' })).accounts.filter((account) => account.isActive);
+    return (await bankingRequest<{ accounts: LedgerAccountDto[] }>('/api/accounts', { method: 'GET' })).accounts.filter((account) => account.isActive);
   },
   async listReconciliationDocuments(type: 'invoice' | 'bill'): Promise<ReconciliationDocumentDto[]> {
     if (type === 'invoice') {
-      const body = await apiRequest<{ invoices: { id: string; invoiceNumber: string; customerName: string | null; date: string; balanceDue: string; currency: string; status: string }[] }>('/api/invoices', { method: 'GET' });
+      const body = await bankingRequest<{ invoices: { id: string; invoiceNumber: string; customerName: string | null; date: string; balanceDue: string; currency: string; status: string }[] }>('/api/invoices', { method: 'GET' });
       return body.invoices.filter((item) => !['draft', 'cancelled'].includes(item.status) && cents(item.balanceDue) > 0n).map((item) => ({ id: item.id, number: item.invoiceNumber, partyName: item.customerName ?? 'Customer', date: item.date, balanceDue: item.balanceDue, currency: item.currency, documentType: 'invoice' }));
     }
-    const body = await apiRequest<{ bills: { id: string; billNumber: string; vendorName: string; issueDate: string; balanceDue: string; currency: string; lifecycleStatus: string }[] }>('/api/bills', { method: 'GET' });
+    const body = await bankingRequest<{ bills: { id: string; billNumber: string; vendorName: string; issueDate: string; balanceDue: string; currency: string; lifecycleStatus: string }[] }>('/api/bills', { method: 'GET' });
     return body.bills.filter((item) => item.lifecycleStatus === 'received' && cents(item.balanceDue) > 0n).map((item) => ({ id: item.id, number: item.billNumber, partyName: item.vendorName, date: item.issueDate, balanceDue: item.balanceDue, currency: item.currency, documentType: 'bill' }));
   },
   getTransaction(id: string): Promise<BankTransactionDto> {
-    return apiRequest(`/api/bank-transactions/${id}`, { method: 'GET' });
+    return bankingRequest(`/api/bank-transactions/${id}`, { method: 'GET' });
   },
   createTransaction(input: BankTransactionWriteRequest): Promise<BankTransactionDto> {
-    return apiRequest('/api/bank-transactions', { method: 'POST', body: JSON.stringify(input) });
+    return bankingRequest('/api/bank-transactions', { method: 'POST', body: JSON.stringify(input) });
   },
   updateTransaction(id: string, input: Partial<Omit<BankTransactionWriteRequest, 'bankAccountId'>>): Promise<BankTransactionDto> {
-    return apiRequest(`/api/bank-transactions/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
+    return bankingRequest(`/api/bank-transactions/${id}`, { method: 'PATCH', body: JSON.stringify(input) });
   },
   async removeTransaction(id: string): Promise<void> {
-    await apiRequest<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
+    await bankingRequest<void>(`/api/bank-transactions/${id}`, { method: 'DELETE' });
   },
-  importTransactions(input: BankStatementImportRequest): Promise<BankStatementImportResponse> {
-    return apiRequest('/api/bank-transactions/import', { method: 'POST', body: JSON.stringify(input) });
+  importTransactions(input: BankStatementImportRequest, idempotencyKey?: string): Promise<BankStatementImportResponse> {
+    return bankingRequest('/api/bank-transactions/import', { method: 'POST', ...(idempotencyKey ? { headers: { 'Idempotency-Key': idempotencyKey } } : {}), body: JSON.stringify(input) });
   },
   createTransfer(input: BankTransferWriteRequest, idempotencyKey: string): Promise<BankTransferDto> {
-    return apiRequest('/api/bank-transfers', {
+    return bankingRequest('/api/bank-transfers', {
       method: 'POST',
       headers: { 'Idempotency-Key': idempotencyKey },
       body: JSON.stringify(input),

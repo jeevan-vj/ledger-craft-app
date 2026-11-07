@@ -26,6 +26,7 @@ export type HomeStackParamList = {
 };
 
 export type CustomerStackParamList = {
+  CustomerStatements: { customerId?: string } | undefined;
   CustomerList: undefined;
   CustomerCreate: undefined;
   CustomerDetail: { customerId: string };
@@ -80,6 +81,8 @@ export type BankingStackParamList = {
 };
 
 export type SettingsStackParamList = {
+  CustomerStatements: { customerId?: string } | undefined;
+  PaymentReminders: undefined;
   SettingsList: undefined;
   BusinessSettings: undefined;
   Reports: undefined;

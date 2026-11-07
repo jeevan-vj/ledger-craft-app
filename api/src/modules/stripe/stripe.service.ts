@@ -6,11 +6,10 @@ import { hasPermission } from '../auth/permissions';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import { moneyToCents } from '../invoices/money';
-import { createPaymentInTx } from '../payments/payments.service';
-import { createReceiptInTx } from '../receipts/receipts.service';
 import { calculatePlatformFeeCents } from './stripe.fees';
-import type { StripeConfig, StripeGateway, StripeWebhookEvent } from './stripe.gateway';
+import type { StripeConfig, StripeGateway } from './stripe.gateway';
 import * as repo from './stripe.repository';
+import { consumeStripeRateLimit } from './stripe.rate-limits';
 
 function requireEnabled(config: StripeConfig | undefined, gateway: StripeGateway | undefined): asserts config is StripeConfig {
   if (!config?.enabled || !gateway) throw new HTTPException(404, { message: 'Card payments are not available' });
@@ -30,8 +29,11 @@ function requireManage(ctx: OrganisationContext) {
   if (!hasPermission(ctx.role, 'payments.manage')) throw new HTTPException(403, { message: 'Missing permission: payments.manage' });
 }
 
-export async function getAccount(db: Database, userId: string): Promise<StripeAccountStatus> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => repo.accountDto(await repo.getConnectedAccount(tx, ctx.organisationId)));
+function approved(config: StripeConfig | undefined, organisationId: string) { return config?.enabled === true && (config.mock === true || config.approvedOrganisationIds?.includes(organisationId) === true); }
+function accountWithApproval(row: Awaited<ReturnType<typeof repo.getConnectedAccount>>, organisationId: string, config?: StripeConfig) { return { ...repo.accountDto(row), paymentsApproved: approved(config, organisationId) }; }
+
+export async function getAccount(db: Database, userId: string, config?: StripeConfig): Promise<StripeAccountStatus> {
+  return withOrganisationTx(db, userId, async (tx, ctx) => accountWithApproval(await repo.getConnectedAccount(tx, ctx.organisationId), ctx.organisationId, config));
 }
 
 export async function createAccount(db: Database, userId: string, gateway: StripeGateway | undefined, config: StripeConfig | undefined, idempotencyKey: string) {
@@ -43,9 +45,9 @@ export async function createAccount(db: Database, userId: string, gateway: Strip
     if (!profile) throw new HTTPException(400, { message: 'Set up your business profile first' });
     return { ctx, existing, profile };
   });
-  if (data.existing) return repo.accountDto(data.existing);
+  if (data.existing) return accountWithApproval(data.existing, data.ctx.organisationId, config);
   const remote = await gateway!.createConnectedAccount({ country: 'NZ', organisationId: data.ctx.organisationId, businessName: data.profile.name, email: data.profile.email, idempotencyKey });
-  return repo.accountDto(await db.transaction((tx) => repo.upsertConnectedAccount(tx, data.ctx, remote)));
+  return accountWithApproval(await db.transaction((tx) => repo.upsertConnectedAccount(tx, data.ctx, remote)), data.ctx.organisationId, config);
 }
 
 export async function refreshAccount(db: Database, userId: string, gateway: StripeGateway | undefined, config: StripeConfig | undefined) {
@@ -57,7 +59,7 @@ export async function refreshAccount(db: Database, userId: string, gateway: Stri
     return { ctx, existing };
   });
   const remote = await gateway!.retrieveConnectedAccount(data.existing.stripeAccountId);
-  return repo.accountDto(await db.transaction((tx) => repo.upsertConnectedAccount(tx, data.ctx, remote)));
+  return accountWithApproval(await db.transaction((tx) => repo.upsertConnectedAccount(tx, data.ctx, remote)), data.ctx.organisationId, config);
 }
 
 export async function createOnboardingLink(db: Database, userId: string, gateway: StripeGateway | undefined, config: StripeConfig | undefined) {
@@ -85,6 +87,7 @@ export async function createPaymentLink(db: Database, userId: string, invoiceId:
     if (account?.status !== 'active') throw new HTTPException(409, { message: 'Stripe onboarding must be active before accepting payments' });
     return { ctx, invoice, account };
   });
+  if (!approved(config, data.ctx.organisationId)) throw new HTTPException(403, { message: 'Card payments for this company await beta approval. Contact the platform owner before creating a payment link.' });
   if (data.invoice.currency !== 'NZD') throw new HTTPException(400, { message: 'Stripe payments currently require an NZD invoice' });
   if (data.invoice.paymentStatus === 'cancelled' || data.invoice.balanceDue === '0.00') throw new HTTPException(409, { message: 'This invoice cannot accept another payment' });
   const amountCents = stripeCents(input.amount ?? data.invoice.balanceDue);
@@ -95,6 +98,7 @@ export async function createPaymentLink(db: Database, userId: string, invoiceId:
   }
   if (amountCents < 50) throw new HTTPException(400, { message: 'Stripe requires a minimum NZD 0.50 payment' });
   if (BigInt(amountCents) > moneyToCents(data.invoice.balanceDue)) throw new HTTPException(400, { message: 'Payment exceeds invoice balance' });
+  await consumeStripeRateLimit(db, 'payment-link-create', `${data.ctx.organisationId}:${userId}`, 10, 60_000);
   const platformFeeCents = calculatePlatformFeeCents(amountCents, { basisPoints: config.platformFeeBasisPoints, fixedCents: config.platformFeeFixedCents });
   const id = crypto.randomUUID();
   const publicToken = `${data.ctx.organisationId}_${crypto.randomUUID()}`;
@@ -139,78 +143,19 @@ export async function cancelPaymentLink(db: Database, userId: string, invoiceId:
   return repo.paymentLinkDto((await repo.getPaymentLink(db, row.organisationId, row.id))!, config.appUrl);
 }
 
-export async function publicPaymentRedirect(db: Database, token: string): Promise<Response> {
+export async function publicPaymentRedirect(db: Database, token: string, config?: StripeConfig): Promise<Response> {
   const row = await repo.getPaymentLinkByToken(db, token);
   if (!row) return Response.json({ status: 'not_found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } });
+  await consumeStripeRateLimit(db, 'public-payment-link', row.id, 60, 60_000);
   if (row.status !== 'open') return Response.json({ status: row.status }, { status: 410, headers: { 'Cache-Control': 'no-store' } });
+  const invoice = await invoicesRepo.getInvoice(db, row.organisationId, row.invoiceId);
+  const account = await repo.getConnectedAccount(db, row.organisationId);
+  if (!approved(config, row.organisationId) || !invoice || invoice.status === 'cancelled' || account?.status !== 'active' || moneyToCents(invoice.balanceDue) < moneyToCents(row.amount)) {
+    await db.transaction(tx => repo.markLinkCancelled(tx, row.organisationId, row.id));
+    return Response.json({ status: 'cancelled' }, { status: 410, headers: { 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' } });
+  }
   if (row.expiresAt.getTime() <= Date.now()) return Response.json({ status: 'expired' }, { status: 410, headers: { 'Cache-Control': 'no-store' } });
   return new Response(null, { status: 302, headers: { Location: row.checkoutUrl, 'Cache-Control': 'no-store', 'Referrer-Policy': 'no-referrer' } });
 }
 
-function stringField(value: unknown): string | undefined { return typeof value === 'string' ? value : undefined; }
-function numberField(value: unknown): number | undefined { return typeof value === 'number' ? value : undefined; }
-
-export async function processWebhook(db: Database, event: StripeWebhookEvent, config: StripeConfig) {
-  if (event.livemode !== (config.mode === 'live')) throw new HTTPException(400, { message: 'Stripe event mode does not match this environment' });
-  if (event.type !== 'checkout.session.completed' && event.type !== 'checkout.session.async_payment_succeeded') return { received: true as const };
-  const object = event.data.object;
-  const metadata = object.metadata && typeof object.metadata === 'object' ? object.metadata as Record<string, unknown> : {};
-  const organisationId = stringField(metadata.organisation_id);
-  const linkId = stringField(metadata.payment_link_id);
-  const sessionId = stringField(object.id);
-  const paymentIntentId = stringField(object.payment_intent);
-  const amountTotal = numberField(object.amount_total);
-  if (!organisationId || !linkId || !sessionId || !paymentIntentId || amountTotal === undefined || object.currency !== 'nzd' || object.payment_status !== 'paid') {
-    throw new HTTPException(400, { message: 'Stripe Checkout event is incomplete or unpaid' });
-  }
-  await db.transaction(async (tx) => {
-    if (!await repo.claimEvent(tx, { id: event.id, organisationId, type: event.type, livemode: event.livemode })) return;
-    const link = await repo.getPaymentLinkBySession(tx, sessionId);
-    if (link?.id !== linkId || link?.organisationId !== organisationId || !link || moneyToCents(link.amount) !== BigInt(amountTotal)) {
-      await repo.completeEvent(tx, event.id, 'failed', 'Payment link integrity check failed');
-      throw new HTTPException(400, { message: 'Stripe payment did not match the local payment link' });
-    }
-    if (link.status === 'paid') { await repo.completeEvent(tx, event.id, 'ignored'); return; }
-    const payment = await createPaymentInTx(tx, { organisationId, userId: link.userId, role: 'owner' }, {
-      invoiceId: link.invoiceId, paymentMethod: 'online', amount: link.amount,
-      paymentDate: new Date().toISOString().slice(0, 10), referenceNumber: paymentIntentId,
-      notes: 'Paid through Stripe Checkout',
-    }, undefined, { clearingAccountNumber: '1130' });
-    const receipt = await createReceiptInTx(
-      tx,
-      { organisationId, userId: link.userId },
-      { paymentId: payment.id },
-      { provider: 'stripe', paymentIntentId, checkoutSessionId: sessionId },
-    );
-    await repo.markLinkPaid(tx, organisationId, link.id, { paymentIntentId, paymentId: payment.id, receiptId: receipt.id });
-    await repo.completeEvent(tx, event.id, 'processed');
-  });
-  return { received: true as const };
-}
-
-export async function processVerifiedWebhook(db: Database, event: StripeWebhookEvent, gateway: StripeGateway, config: StripeConfig) {
-  if (event.type === 'account.updated') {
-    const object = event.data.object;
-    const metadata = object.metadata && typeof object.metadata === 'object' ? object.metadata as Record<string, unknown> : {};
-    const organisationId = stringField(metadata.organisation_id);
-    const accountId = stringField(object.id) ?? event.account ?? undefined;
-    if (!organisationId || !accountId) throw new HTTPException(400, { message: 'Stripe account event is missing routing metadata' });
-    const current = await repo.getConnectedAccount(db, organisationId);
-    if (current?.stripeAccountId !== accountId) throw new HTTPException(400, { message: 'Unknown Stripe connected account' });
-    const remote = await gateway.retrieveConnectedAccount(accountId);
-    await db.transaction((tx) => repo.upsertConnectedAccount(tx, { organisationId, userId: current.userId }, remote));
-    return { received: true as const };
-  }
-  return processWebhook(db, event, config);
-}
-
-export async function resolveWebhookEvent(db: Database, payload: Uint8Array, signature: string, kind: 'platform' | 'connect', gateway: StripeGateway | undefined, config: StripeConfig | undefined) {
-  requireEnabled(config, gateway);
-  let event: StripeWebhookEvent;
-  try {
-    event = await gateway!.constructWebhookEvent(payload, signature, kind === 'platform' ? config.webhookSecret : config.connectWebhookSecret);
-  } catch {
-    throw new HTTPException(400, { message: 'Invalid Stripe webhook signature' });
-  }
-  return processVerifiedWebhook(db, event, gateway!, config);
-}
+export { processVerifiedWebhook, resolveWebhookEvent } from './stripe.webhooks';

@@ -1,5 +1,40 @@
 # LedgerCraft target architecture
 
+**Remaining issue #115 flows (implemented locally, 2026-11-07):** Web and
+Expo provide customer statements, secure retained snapshots, PDF/share delivery,
+automatic reminder settings and opt-outs. Reporting adds server month/quarter
+columns, organisation-calendar presets, CSV/PDF and complete Expo report views.
+Cash P&L recognises the exact GST-exclusive settled source components without
+rewriting journals; derived rows retain their source/settlement identity.
+Receipt capture supports reviewed batch drafts, PDFs, exact scan amounts,
+duplicates and unavailable-provider fallback. Mobile banking supports reviewed
+FX, mapped CSV import, persisted statements and full recurring invoice/bill
+forms. Server jobs stay bound to their owning company and verify current
+Identity permissions; a changed invoice cannot be resurrected after email
+acceptance. Imported bank movements update displayed balances exactly once.
+Migrations0029–0034 are additive. Akahu Personal App is internal and gated;
+Full App OAuth/accreditation remains unimplemented. Stripe adds verified
+settlement/refund operations, beta gates, persistent limits and read-only daily
+verification; payout/dispute/excess-capture accounting remains open. Live
+providers and installed-device acceptance are separate from local verification.
+Issue #114 remains parked by user instruction. Current evidence and outstanding
+work: `docs/evidence/issue-115-remaining/README.md`.
+
+**Issue #115 GST slice (implemented locally, 2026-11-07):** Web and Expo
+persist GST registration date, invoice/payments/hybrid basis, frequency and
+ending-month anchor. Migration `0028_gst-registration-settings.sql` is additive;
+legacy unknown settings require confirmation. Server-generated periods and
+canonical `gst-ledger-v2` snapshots retain exact totals, source identities,
+fingerprints and supported myIR preparation boxes. Draft revisions preserve
+prior snapshots; filed records are immutable, with read-only original-settings
+recalculation. Pre-registration sources and their later reversals remain
+excluded. Unknown sales classification and unsupported purchase mapping block
+filing rather than inventing boxes. NZ invoices apply registration-effective
+seller identity and buyer-information checks against reviewed NZD totals.
+Evidence and remaining epic gaps: `docs/evidence/issue-115/README.md`.
+These are local preparation and external-filing records, not IRD submission or
+installed-device acceptance. The rest of epic #115 remains open.
+
 **Accountant follow-up (implemented locally, 2026-11-06):** Completed bank
 statement cutoffs protect posted cash, bank metadata and linked chart identity.
 Only supported bank-side declarations affect reconciliation; books remain the

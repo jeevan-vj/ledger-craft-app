@@ -15,3 +15,13 @@ describe('banking forms', () => {
     expect(transferPayload(valid, 'bank-1').amount).toBe('10.01');
   });
 });
+
+describe('reviewed cross currency transfer', () => {
+  it('requires an explicitly reviewed rate and preserves its identifier', () => {
+    const draft = { ...emptyTransferDraft(), destinationAccountId: 'bank-2', amount: '10.01' };
+    expect(validateTransferDraft(draft, 'bank-1', true).exchangeRateId).toMatch(/reviewed/i);
+    const reviewed = { ...draft, exchangeRateId: 'rate-1' };
+    expect(validateTransferDraft(reviewed, 'bank-1', true)).toEqual({});
+    expect(transferPayload(reviewed, 'bank-1').exchangeRateId).toBe('rate-1');
+  });
+});

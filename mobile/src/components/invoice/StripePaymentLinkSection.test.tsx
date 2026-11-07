@@ -6,13 +6,13 @@ import { getServerCapabilities } from '@/services/capabilitiesService';
 import { stripeApi } from '@/features/stripe/api/stripeApi';
 
 jest.mock('@/services/capabilitiesService', () => ({ getServerCapabilities: jest.fn() }));
-jest.mock('@/features/stripe/api/stripeApi', () => ({ stripeApi: { createPaymentLink: jest.fn() } }));
+jest.mock('@/features/stripe/api/stripeApi', () => ({ stripeApi: { createPaymentLink: jest.fn(), account: jest.fn() } }));
 jest.mock('expo-clipboard', () => ({ setStringAsync: jest.fn() }));
 
 const eligible = { invoiceId: 'invoice-1', currency: 'NZD', status: 'sent', balanceDue: '115.00' };
 
 describe('StripePaymentLinkSection', () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => { jest.clearAllMocks(); jest.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:true}); });
 
   it('hides the action when Stripe is unavailable', async () => {
     jest.mocked(getServerCapabilities).mockResolvedValue({ email: 'available', ai: 'unavailable', stripe: 'unavailable' });
@@ -29,6 +29,11 @@ describe('StripePaymentLinkSection', () => {
     const view = render(<StripePaymentLinkSection invoiceId="invoice-1" {...invoice} />);
     expect(view.queryByText('Get paid by card')).toBeNull();
     expect(getServerCapabilities).not.toHaveBeenCalled();
+  });
+
+  it('hides a company waiting for beta approval', async()=>{
+    jest.mocked(getServerCapabilities).mockResolvedValue({email:'available',ai:'unavailable',stripe:'available'});jest.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:false});
+    const view=render(<StripePaymentLinkSection {...eligible}/>);await waitFor(()=>expect(stripeApi.account).toHaveBeenCalled());expect(view.queryByText('Get paid by card')).toBeNull();
   });
 
   it('creates and copies a hosted payment link when available', async () => {

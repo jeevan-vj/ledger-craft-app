@@ -1,0 +1,36 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts (4 tests | 1 failed) 3584ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  888ms
+   ✓ Personal App bank feeds > does not collapse genuine separate provider transactions with identical date, description and amount  729ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  844ms
+   × Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records 1122ms
+     → expected [ { …(5) } ] to have a length of +0 but got 1
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/bank-feeds/bank-feeds.service.test.ts > Personal App bank feeds > revokes and purges connection metadata before account deletion, retaining imported accounting records
+AssertionError: expected [ { …(5) } ] to have a length of +0 but got 1
+
+- Expected
++ Received
+
+- 0
++ 1
+
+ ❯ src/modules/bank-feeds/bank-feeds.service.test.ts:47:79
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:05:59
+   Duration  5.00s (transform 473ms, setup 24ms, collect 1.10s, tests 3.58s, environment 0ms, prepare 117ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/bank-feeds/bank-feeds.service.test.ts

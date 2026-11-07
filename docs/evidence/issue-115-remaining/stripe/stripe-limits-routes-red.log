@@ -1,0 +1,354 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_9305d52f-04be-4ae4-aa7a-52821ada080b","route":"/api/auth/*","method":"POST","status":200,"durationMs":185}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_10afeccc-6fd8-495d-a078-d5a7134013e6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":19}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_67c01502-fe7b-4c3c-9ad6-7249fc2a52b4","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_f44e0b5a-e207-4811-b346-de630be68702","route":"/api/invoices","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_5de21a0b-914b-47c7-8623-f49e94e8ede5","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_041c4836-e62e-45b9-bdc5-c37b67fd73a0","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_9d13299f-01c3-47d7-b854-708264e48e8a","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_1d685a90-f4ce-4d32-99f7-0becbec315ed","route":"/api/invoices/:id/payment-links","method":"POST","status":403,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_408c0ead-b450-4bbc-a45d-6868b43075b9","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7942e45e-de4c-4471-8fdb-0315f94fe400","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_886576f6-b7e5-43b3-914f-812de62bb19d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_92e4a7b7-131b-4ac5-957a-56c6a0710a2c","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_53b3f944-e9ab-48e8-a6c5-cb6aac4bc9ab","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_1235d972-efc4-4092-8e08-49315333e8f9","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_66d0d9dc-3886-42b4-94ef-6c5d0ee52bf9","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a200b230-c1c9-42d9-ac46-97803c8f10ea","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_ee7169cf-b04c-4e71-bbb7-9175913f577c","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_dd6cc911-662d-4324-93a1-cdea13801525","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_5c07aa08-1675-44aa-8d2e-e756bdd608e9","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_136c279e-80e0-4a0b-a39a-2f3c7aaadec7","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_5340d184-d974-44d8-88e0-e7e279ef7a39","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b452cffc-5de5-4755-a191-75aa83d46a5d","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d0d04758-cf41-4eab-a379-c8f7003b292b","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d3a9f0e2-6d26-48fa-91dc-75f30fa81188","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_149a1cdf-16de-4748-bc1b-52fd6b287859","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7e3b3c85-ce5a-44aa-94b4-d5d5bb5a0ee8","route":"/api/invoices/:id/payment-links","method":"POST","status":429,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_62f0ceae-57f0-4715-a11b-30c60813cf42","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a2a94413-3650-42ea-90b0-94fe6206d2da","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d02e9619-f641-4cac-8de6-f0221be05aac","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_2d0c6782-1b1b-447a-a4aa-09013a912649","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_60bc84cf-f9d1-413e-b88f-6c4d4fa8f9bf","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_03ddcd63-4505-4f62-b42d-6d06d451cc68","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_5610f68c-4459-402c-b9b5-31294d943123","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_3d2e64cd-d2bf-45e2-b7e5-f8f4eb02a072","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_bb45d043-5646-4575-89b7-a7eda7975991","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_59a48696-c50f-41ce-b001-481e0a66ae5e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_62a56691-f2e1-4216-a464-4784f6cb87e6","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_49a20840-b1b7-4da8-8573-6a52ee99ea56","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_2742e242-49e3-4c98-9ab2-d084ae30b924","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a3829849-467c-4e7d-b258-35f59e7f3f91","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7b0b1227-299a-4606-b262-d897c818cef4","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_29870746-1c01-4747-8070-a29f7a96f1bc","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_6b9fa493-ac96-49a0-866d-b3d708f61f06","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_da564ebc-dfdf-4838-b525-58f95d716230","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7a7c85a6-8e4c-48e7-b54f-ab253aa3fc2f","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_00376d1c-9ec3-4da5-99e3-dba2025d2c01","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7606240e-be0a-4a68-afc5-2250c73dd79e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_c9192b22-bcd5-47e0-9b1e-de5566f8ab56","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b90a6e69-4f10-4473-82d2-c8ac8366c6b9","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a7245ed6-a6c8-4d5e-8d5d-c5dc912ade92","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_56967d7f-d125-4607-a814-a39d8e053168","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_ee8c9672-ab99-4446-82ae-363cb9a11daf","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_8c317802-1e0e-4f9f-8617-d013a93d700a","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7c1411ab-190d-4d56-bef2-3bb6dfc7ad84","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_243c3f03-4218-4b8c-9da7-802db6aa2a31","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b7625d42-6973-4fa5-bf86-49167d51fb3a","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_88dc2e62-8a8f-46bf-acac-eea41dce2848","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_6ac909a0-526d-4098-85d2-b5e75213eafe","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a0b9f350-1f1b-4bef-aa14-f6b0ca581ca0","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_9c591124-9835-49c4-bf90-5dfa500a528d","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_4f8096fe-1bea-4c91-a3cd-25481bcf1686","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_e975b176-a0f3-4f94-b3d3-9b8b4364fbe8","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_3faecdfd-d42f-47fa-bbdd-da19cc3e28cf","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_294dec54-e5cf-4b0e-aabf-ad50d208cec1","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_08baa625-e71f-4677-8c78-109c77a8986c","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_46d6282c-04a4-4a7e-81e2-4c11b4eb40e4","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_09a7334b-8a94-48a2-804d-c0a9f93f2e69","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_e1035dd0-a40f-4ca5-9203-de7957bd1330","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_11139b45-312d-4592-ae58-67a6dfd14306","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_960d3f49-405e-4c67-90a5-95a29e9f5a6c","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_0450ce4e-32f9-41f5-ac9e-26880cb0cffc","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_43948224-956d-4247-9271-7daa166b1457","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_f1cbaa7c-3a54-4d9f-bc7d-3c6d83325c29","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_53509891-6cb8-433b-b00b-53ded9a6c54e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_eadee938-2f11-42f3-bd19-8494a2d89547","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d1971b8c-d139-4d91-83a9-4d324e63e883","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_516e3b8f-2f67-4ee1-b757-ccb5e05b6ad2","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_cd46dba3-1b11-487b-8a61-5a6601fb2652","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b572f3d8-903d-48b8-920c-56cb9b768d3c","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_f8dc84bc-a585-4295-a611-1778fed08088","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_08934482-8626-4fdc-882b-923bc48270e8","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_75a644ea-2e2a-4ad0-b60e-6586e023132b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_6d13ee55-dd89-4b5c-a4e8-3ab61ab7978e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_4fd19dfd-3ec1-479c-b938-eb78cb84c3fc","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d2dd1b7d-5c14-490c-af2b-edba980bf0b0","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_2ccb8dcf-b051-4ba9-b2ba-600c5c90bb75","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_81c30925-28da-47f8-928d-3c925a874706","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d676e328-6813-4433-8fda-24a68d9abde2","route":"/api/public/pay/:token","method":"GET","status":429,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_7c903bc6-ee02-49e1-8c4e-f9e8655a715d","route":"/api/auth/*","method":"POST","status":200,"durationMs":111}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_93f115db-bed6-4bcd-ae82-e25639aa882c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_ef210f8e-b629-4f1b-bfb6-6d7b923beb5e","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_42982718-cfd5-48c9-b542-9926d051ebc9","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_2f1510b0-1a50-4e20-b7bf-3e4ac36c9a7b","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_218a33cd-3c53-4289-a35b-f945a8de7762","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_20ad4c1a-dd09-4a45-a51f-cb0c9767c87d","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_62bd586d-b842-45aa-8258-cc563ff997b8","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_8376458b-48ca-4793-ad55-a45887bfe5dc","route":"/api/auth/*","method":"POST","status":200,"durationMs":125}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_7ddbc54a-bf66-4986-b80a-98e74bca77c5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_9d3626af-2dec-4e2b-a64e-2dd48eea3ee4","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_00d9a975-5d82-45e1-b3b0-2058ae8a4e0c","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_acc1759e-a0a9-4a13-b2b0-3b225c7bdb12","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_e8dc3461-d85d-426a-9f34-6677b84f8ee1","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_a5f88b23-aa14-444f-a279-087c0131af7f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":13}
+
+ ❯ src/modules/stripe/stripe.guardrails.test.ts (5 tests | 1 failed) 8266ms
+   ✓ Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation  1470ms
+   ✓ Stripe beta approval, rate limits and periodic verification > persists limit counts, isolates scopes and resets only after the window  1329ms
+   × Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available 2315ms
+     → promise resolved "{ received: true }" instead of rejecting
+   ✓ Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run  1556ms
+   ✓ Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry  1594ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+AssertionError: promise resolved "{ received: true }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "received": true,
+  }
+
+ ❯ src/modules/stripe/stripe.guardrails.test.ts:36:70
+     34|    await f.sql.unsafe('UPDATE stripe_rate_limits SET count=1000 WHERE …
+     35|    const event=f.gateway.completeCheckout(String(f.row.stripe_checkout…
+     36|    await expect(processVerifiedWebhook(f.db,event,f.gateway,f.config))…
+       |                                                                      ^
+     37|    await f.sql.unsafe('UPDATE stripe_rate_limits SET window_started_at…
+     38|    await processVerifiedWebhook(f.db,event,f.gateway,f.config);
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 4 passed (5)
+   Start at  00:27:18
+   Duration  14.58s (transform 2.58s, setup 98ms, collect 5.55s, tests 8.27s, environment 0ms, prepare 360ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.guardrails.test.ts '--maxWorkers=1'

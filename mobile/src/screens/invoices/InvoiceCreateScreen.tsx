@@ -1,3 +1,4 @@
+import { isNzBusinessCountry } from '@ledgercraft/contracts';
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import {
   View,
@@ -28,6 +29,7 @@ import { businessProfileService } from '@/services/businessProfileService';
 import { newInvoiceDefaults } from '@/features/invoices/firstInvoiceModel';
 import GuidedInvoiceCreate from '@/screens/invoices/GuidedInvoiceCreate';
 import { formatMoney } from '@/utils/money';
+import { invoiceBuyerFix } from '@/utils/invoiceBuyerCompliance';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { HeaderActionButton, HeaderActions, ScreenHeaderBar } from '@/components/ui/HeaderActions';
 import { NativeHeaderButton } from '@/components/ui/NativeHeaderButton';
@@ -61,6 +63,7 @@ function InvoiceEditor() {
     ? (route.params as InvoiceStackParamList['InvoiceCreate'])?.customerId
     : undefined;
   const isEditMode = !!invoiceId;
+  const initialInvoice = useRef<Invoice | undefined>(undefined);
 
   // Form state
   const [invoiceNumber, setInvoiceNumber] = useState('');
@@ -127,6 +130,7 @@ function InvoiceEditor() {
         const existingInvoice = await invoiceService.fetchInvoiceById(invoiceId);
         if (existingInvoice) {
           setInvoiceNumber(existingInvoice.invoiceNumber);
+          initialInvoice.current = existingInvoice;
           setCustomerId(existingInvoice.customerId || '');
           setDate(existingInvoice.date);
           setDueDate(existingInvoice.dueDate);
@@ -271,7 +275,10 @@ function InvoiceEditor() {
 
   const formatCurrency = (amount: number) => formatMoney(amount, currency || 'NZD');
 
+  const knownBaseTotal = initialInvoice.current && initialInvoice.current.total === total && initialInvoice.current.currency === currency ? initialInvoice.current.baseTotalText : undefined;
+  const buyerFix = invoiceBuyerFix(total, currency, isNzBusinessCountry(businessProfile?.country ?? '') ? businessProfile?.gstRegistrationStatus : undefined, selectedCustomer, knownBaseTotal);
   const isFormValid = (): boolean => {
+    if (buyerFix) return false;
     if (!invoiceNumber) return false;
     if (!customerId) return false;
     
@@ -285,6 +292,7 @@ function InvoiceEditor() {
   };
 
   const validateForm = (): boolean => {
+    if (buyerFix) return false;
     if (!invoiceNumber) {
       Alert.alert('Validation Error', 'Invoice number is required');
       return false;
@@ -521,6 +529,7 @@ function InvoiceEditor() {
                 <Text style={styles.placeholderText}>Tap to select customer</Text>
               )}
             </TouchableOpacity>
+            {buyerFix ? <Text accessibilityRole="alert" style={{ color: palette.danger }}>{buyerFix}</Text> : null}
           </View>
 
           {/* Smart Date Pickers */}

@@ -30,11 +30,12 @@ function escapeHtml(value: string): string {
 }
 
 function content(mail: InvoiceMail) {
-  const label = mail.kind === 'quote' ? 'Quote' : mail.kind === 'reminder' ? 'Payment reminder for invoice' : 'Invoice';
+  const label = mail.kind === 'statement' ? 'Customer statement' : mail.kind === 'quote' ? 'Quote' : mail.kind === 'reminder' ? 'Payment reminder for invoice' : 'Invoice';
   const amount = presentMoney(mail.amountDue, mail.currency);
   const date = presentDate(mail.dueDate);
   const lines = [
     `${label} ${mail.invoiceNumber} from ${mail.businessName ?? 'EasyBizInvoice'}`,
+    mail.message ?? null,
     `Amount due: ${amount}`,
     date ? `${mail.kind === 'quote' ? 'Valid until' : 'Due date'}: ${date}` : null,
     mail.publicUrl ? `View online: ${mail.publicUrl}` : null,
@@ -60,7 +61,7 @@ export function createResendInvoiceMailer(opts: ResendOptions = {}): InvoiceMail
         headers: {
           Authorization: `Bearer ${apiKey}`,
           'Content-Type': 'application/json',
-          'Idempotency-Key': `${mail.kind ?? 'invoice'}/${mail.invoiceId}`,
+          'Idempotency-Key': mail.deliveryKey ?? `${mail.kind ?? 'invoice'}/${mail.invoiceId}`,
         },
         body: JSON.stringify({
           from,
@@ -90,6 +91,9 @@ export function createResendInvoiceMailer(opts: ResendOptions = {}): InvoiceMail
     },
     async sendReminder(mail: InvoiceMail) {
       await post({ ...mail, kind: 'reminder' }, `Payment reminder for invoice ${mail.invoiceNumber}`);
+    },
+    async sendStatement(mail: InvoiceMail) {
+      await post({ ...mail, kind: 'statement' }, `Statement ${mail.invoiceNumber}`);
     },
     async sendQuote(mail: InvoiceMail) {
       await post({ ...mail, kind: 'quote' }, `Quote ${mail.invoiceNumber}`);

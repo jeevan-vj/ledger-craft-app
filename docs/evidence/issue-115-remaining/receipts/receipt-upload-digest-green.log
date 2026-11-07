@@ -1,0 +1,34 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_6bc6027b-5844-4c68-b74f-45d22ed0b993","route":"/api/objects","method":"GET","status":401,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_bb7f3215-963f-43ab-82e7-6df322792198","route":"/api/objects","method":"POST","status":401,"durationMs":0}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_2d13e367-e091-4587-a37a-99020f1f5a7b","route":"/api/auth/*","method":"POST","status":200,"durationMs":159}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_ea67fd0d-ff66-4622-a384-4cb20f7f644c","route":"/api/auth/*","method":"POST","status":200,"durationMs":108}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_41d56d2e-ca0a-48aa-b07c-3a7986681661","route":"/api/objects","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_47607975-83a1-4bb2-a3a4-caebd94eb8f2","route":"/api/objects","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_faff218d-0844-48ed-89da-e5d771211eed","route":"/api/objects","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_aac4a582-6c8f-4944-a3a8-b98388715fdb","route":"/api/objects","method":"GET","status":404,"durationMs":10}
+
+ ✓ src/modules/storage/objects.test.ts (2 tests) 1239ms
+   ✓ object routes > stores bytes, returns them, and hides them from other orgs  1210ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:10:29
+   Duration  5.33s (transform 1.88s, setup 29ms, collect 3.77s, tests 1.24s, environment 0ms, prepare 123ms)

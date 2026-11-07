@@ -1,3 +1,4 @@
+import { onlineManager } from '@tanstack/react-query';
 import * as SecureStore from 'expo-secure-store';
 import { bankingApi } from './bankingApi';
 
@@ -103,4 +104,13 @@ describe('bankingApi', () => {
     await bankingApi.undoReconciliation('tx-1', payload);
     expect(global.fetch).toHaveBeenCalledWith('https://api.example.test/api/bank-transactions/tx-1/undo', expect.objectContaining({ method: 'POST', body: JSON.stringify(payload) }));
   });
+});
+
+it('refuses offline bank mutations before any fetch, without queueing a later posting', async () => {
+  const fetcher = jest.fn(); global.fetch = fetcher;
+  onlineManager.setOnline(false);
+  try {
+    await expect(bankingApi.createTransaction({ bankAccountId: 'bank-1', transactionDate: '2026-10-01', description: 'Offline transfer', amount: '1.00', type: 'credit' })).rejects.toThrow(/offline.*try again/i);
+    expect(fetcher).not.toHaveBeenCalled();
+  } finally { onlineManager.setOnline(true); }
 });

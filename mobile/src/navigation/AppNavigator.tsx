@@ -1,3 +1,5 @@
+import CustomerStatementsScreen from '@/screens/customerStatements/CustomerStatementsScreen';
+import PaymentRemindersScreen from '@/screens/customerStatements/PaymentRemindersScreen';
 import settingsTabIcon from '../../assets/tabs/settings.png';
 import sellTabIcon from '../../assets/tabs/sell.png';
 import customersTabIcon from '../../assets/tabs/customers.png';
@@ -84,7 +86,7 @@ function CustomerNavigator() {
   return <CustomerStack.Navigator screenOptions={list}>
     <CustomerStack.Screen name="CustomerList" component={CustomerListScreen} options={{ title: 'Customers' }} />
     <CustomerStack.Screen name="CustomerCreate" component={CustomerFormScreen} options={{ ...form, title: 'New customer' }} />
-    <CustomerStack.Screen name="CustomerDetail" component={CustomerDetailScreen} options={{ ...detail, title: 'Customer' }} />
+    <CustomerStack.Screen name="CustomerStatements" component={CustomerStatementsScreen} options={{ ...detail, title: 'Customer statements' }} /><CustomerStack.Screen name="CustomerDetail" component={CustomerDetailScreen} options={{ ...detail, title: 'Customer' }} />
     <CustomerStack.Screen name="CustomerEdit" component={CustomerFormScreen} options={{ ...form, title: 'Edit customer' }} />
   </CustomerStack.Navigator>;
 }
@@ -93,7 +95,7 @@ function MoreNavigator() {
   return <MoreStack.Navigator screenOptions={list}>
     <MoreStack.Screen name="SettingsList" component={SettingsScreen} options={{ title: 'More', headerShown: false }} />
     <MoreStack.Screen name="BusinessSettings" component={BusinessSettingsScreen} options={{ ...detail, title: 'Business' }} />
-    <MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} /><MoreStack.Screen name="AccountingTools" component={AccountingToolsScreen} options={{ title: 'Accounting tools' }} />
+    <MoreStack.Screen name="CustomerStatements" component={CustomerStatementsScreen} options={{ ...detail, title: 'Customer statements' }} /><MoreStack.Screen name="PaymentReminders" component={PaymentRemindersScreen} options={{ ...detail, title: 'Payment reminders' }} /><MoreStack.Screen name="Reports" component={ReportsScreen} options={{ title: 'Reports' }} /><MoreStack.Screen name="AccountingTools" component={AccountingToolsScreen} options={{ title: 'Accounting tools' }} />
     <MoreStack.Screen name="CompanyTeam" component={CompanyTeamScreen} options={{ ...detail, title: 'Company & team' }} />
     <MoreStack.Screen name="RecurringSchedules" component={RecurringSchedulesScreen} options={{ ...detail, title: 'Recurring schedules' }} />
     <MoreStack.Screen name="AccountDeletion" component={AccountDeletionScreen} options={{ ...detail, title: 'Delete account' }} />

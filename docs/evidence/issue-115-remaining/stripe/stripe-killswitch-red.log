@@ -1,0 +1,42 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/stripe/stripe.real-gateway.test.ts (11 tests | 1 failed) 10ms
+   ✓ real Stripe gateway > creates a Stripe-responsible Accounts v2 connected account 4ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (0) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (1) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (2) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (3) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (4) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (5) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (6) 0ms
+   ✓ real Stripe gateway > reports Stripe capability without exposing configuration (7) 0ms
+   ✓ real Stripe gateway > fails closed without crashing when enabled real-mode configuration is incomplete 0ms
+   × retains a configured webhook receiver when the new-payment kill switch is off 4ms
+     → expected undefined to be false // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.real-gateway.test.ts > retains a configured webhook receiver when the new-payment kill switch is off
+AssertionError: expected undefined to be false // Object.is equality
+
+- Expected:
+false
+
++ Received:
+undefined
+
+ ❯ src/modules/stripe/stripe.real-gateway.test.ts:93:35
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 10 passed (11)
+   Start at  00:05:47
+   Duration  317ms (transform 62ms, setup 19ms, collect 56ms, tests 10ms, environment 0ms, prepare 107ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.real-gateway.test.ts '--maxWorkers=1'

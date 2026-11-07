@@ -1,0 +1,58 @@
+GST filing record - filed externally
+
+Period: 2026-10-01 to 2026-10-31
+
+Registered basis: Payments
+
+Saved total sales (including GST): $575.00
+
+Saved total purchases: $230.00
+
+Saved GST on sales: $75.00
+
+Saved GST on purchases: $30.00
+
+Saved net GST: $45.00
+
+GST No: 49-091-850
+
+GST registered from: 2026-10-01
+
+Due date: 2026-11-30
+
+External myIR confirmation: SYNTHETIC-MYIR-PAYMENTS-45.00
+
+myIR Box 5: $575.00
+
+myIR Box 6: $0.00
+
+myIR Box 7: $575.00
+
+myIR Box 8: $75.00
+
+myIR Box 9: $0.00
+
+myIR Box 10: $75.00
+
+myIR Box 11: $230.00
+
+myIR Box 12: $30.00
+
+myIR Box 13: $0.00
+
+myIR Box 14: $30.00
+
+myIR Box 15: $45.00
+
+Review warning: Reviewed preparation adjustments change this return only, not posted ledger balances. Do not
+duplicate credit notes already included in the books. Confirm adjustment treatment before filing.
+
+Calculation fingerprint: e03d6066634672e8d0598614ddb67db50464db7ab19414390a8fef8d97909fa7
+
+Calculated at: 2026-11-06T23:37:37.842Z
+
+
+
+EasyBizInvoice does not submit this return to IRD. File separately in myIR and retain supporting books. This is
+preparation, not filing acceptance.
+

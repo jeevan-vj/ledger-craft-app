@@ -1,0 +1,47 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false --runInBand src/features/customer-statements/collectionsApi.test.ts src/features/customer-statements/CollectionsWorkspace.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/customer-statements/CollectionsWorkspace.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module './collectionsApi' from 'src/features/customer-statements/CollectionsWorkspace.test.tsx'
+
+       6 | import { collectionsApi } from './collectionsApi';
+       7 | import { shareStatementPdf } from './statementDocument';
+    >  8 | jest.mock('./collectionsApi',()=>({collectionsApi:{customers:jest.fn(),statement:jest.fn(),share:jest.fn(),send:jest.fn(),bulk:jest.fn(),reminders:jest.fn(),saveReminders:jest.fn(),optOut:jest.fn(),setOptOut:jest.fn(),logs:jest.fn()}}));
+         |      ^
+       9 | jest.mock('./statementDocument',()=>({shareStatementPdf:jest.fn()}));
+      10 | const mockPermissions=['settings.write','banking.write'];jest.mock('@/store',()=>({useStore:(s:(v:object)=>unknown)=>s({permissions:mockPermissions})}));
+      11 | const query={type:'activity',from:'2026-10-01',to:'2026-10-31'};
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.mock (src/features/customer-statements/CollectionsWorkspace.test.tsx:8:6)
+
+FAIL src/features/customer-statements/collectionsApi.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './collectionsApi' from 'src/features/customer-statements/collectionsApi.test.ts'
+
+    However, Jest was able to find:
+        './collectionsApi.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { collectionsApi } from './collectionsApi';
+        | ^
+      2 | import { apiRequest } from '@/features/auth/api/http';
+      3 | jest.mock('@/features/auth/api/http',()=>({apiRequest:jest.fn()}));
+      4 | beforeEach(()=>jest.clearAllMocks());
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/customer-statements/collectionsApi.test.ts:1:1)
+
+Test Suites: 2 failed, 2 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.839 s
+Ran all test suites matching src/features/customer-statements/collectionsApi.test.ts|src/features/customer-statements/CollectionsWorkspace.test.tsx.

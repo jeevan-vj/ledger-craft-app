@@ -1,0 +1,24 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/expenses/prepareReceiptPhoto.web.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/expenses/prepareReceiptPhoto.web.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './prepareReceiptPhoto.web' from 'src/features/expenses/prepareReceiptPhoto.web.test.ts'
+
+    > 1 | import { prepareReceiptPhoto } from './prepareReceiptPhoto.web';
+        | ^
+      2 | import * as ImageManipulator from 'expo-image-manipulator';
+      3 | jest.mock('expo-image-manipulator',()=>({manipulateAsync:jest.fn(),SaveFormat:{JPEG:'jpeg'}}));
+      4 | jest.mock('@/features/invoice-import/cameraPhoto',()=>({CAMERA_UPLOAD_MAX_BYTES:950000,CAMERA_CAPTURE_QUALITY:0.82}));
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/expenses/prepareReceiptPhoto.web.test.ts:1:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.648 s
+Ran all test suites matching src/features/expenses/prepareReceiptPhoto.web.test.ts.

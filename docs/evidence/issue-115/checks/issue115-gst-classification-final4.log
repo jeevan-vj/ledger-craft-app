@@ -1,0 +1,436 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_0ee902f6-46a7-4a13-b102-2ce316017a39","route":"/api/auth/*","method":"POST","status":200,"durationMs":246}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_9c9e1538-3553-4cd8-a19c-6330f69298fe","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_fa911ae9-b90f-444f-accd-48ff30e75744","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_799798cf-1a34-4fba-b47b-1b7b21310974","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_d4ee7c23-afcc-49f9-911b-6158b110fdfa","route":"/api/vendors","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_337e3422-12f3-492f-9234-d1f00e3fb4e4","route":"/api/accounts","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_f8c5d930-b584-413a-ae04-1fcde06063c8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_634f08b2-8e02-4c86-90e8-8779f819e8f7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_49aae529-71f4-4af8-b8a5-bde495b58e37","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_db95b51f-1b81-4e8d-bdeb-29531b211b09","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_ff353d1f-ebab-4683-819c-e07423062024","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_2a089ed8-5f77-4d1d-9526-69664da597f3","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":34}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence
+{"msg":"http_request","requestId":"req_a179ac39-9566-469d-b2d0-ff2ed598a77e","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_ab8fdb19-c4da-4b3d-a415-af05a71ac7b0","route":"/api/auth/*","method":"POST","status":200,"durationMs":280}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_b932865d-f490-47fc-b8ac-265723288d42","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_2dc8ad67-fa67-427a-b32d-562e0bbb4f4e","route":"/api/customers","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_cb36e802-f260-4698-863c-c18d68e4289d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_52a8e897-e086-4cd0-a4ee-e933c3685f75","route":"/api/vendors","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_4e761d1d-5513-49d7-a2c6-30c33a630b0b","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_af02f475-263d-44bd-9815-63a94919174a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_a0174523-5bbb-43cd-a517-11aabd25166e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_caaf2a92-bdd3-421a-9956-b2041b5cdf3a","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_e24b1fc3-711f-4905-a8bd-8c3e8a0cf170","route":"/api/bills","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_59a4d78b-110b-4c44-bed8-eb596d932370","route":"/api/expenses","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_5090474d-e179-4706-b509-7204fe3d0253","route":"/api/expenses","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_4f46b837-2ff7-43d6-91e3-5c88db9d34ed","route":"/api/bills","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_d2ca2f6b-1055-49ce-b586-bf20f415cf5b","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments
+{"msg":"http_request","requestId":"req_a04b3aaf-885d-4074-b51f-2cbae266188a","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_b0460a44-5485-401a-ad09-b440c7594c16","route":"/api/auth/*","method":"POST","status":200,"durationMs":266}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_c9a0f3f6-7297-41fa-aea2-d603951f8b17","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_ef6c810d-33be-401b-97c2-fbd699be3085","route":"/api/customers","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_12d49265-6a75-4b84-bfb3-95952a43b260","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_33fb430f-a729-458a-8636-4c5b400c1aec","route":"/api/vendors","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_e33662f5-670f-44ab-a28c-4c96917ca5a3","route":"/api/accounts","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_9e76d9f5-d959-40b3-a9c2-1c3115afebc4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_3f0e9b7c-9e5d-439e-baf8-441d0719cbcd","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_714cd243-1511-440f-847e-5406888a5b78","route":"/api/invoices","method":"POST","status":201,"durationMs":56}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_4c24aed9-c0aa-4026-88e1-4fbfffb796e6","route":"/api/bills","method":"POST","status":201,"durationMs":52}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_8f96ba1b-a349-48b4-b200-d1bffb62a8c8","route":"/api/expenses","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents
+{"msg":"http_request","requestId":"req_4e74e105-cfd1-492e-8751-8203ead2671b","route":"/api/expenses","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_13264195-c818-4c4e-b1d0-8ae50fa068af","route":"/api/auth/*","method":"POST","status":200,"durationMs":213}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_86c6389d-e7b8-40c3-8b43-c6a930c8968e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":86}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_bfcc7307-04a1-47e2-895f-e75dd76fb2ab","route":"/api/customers","method":"POST","status":201,"durationMs":37}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_2ea9a187-3ca9-4666-90f9-60056aa9e986","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_e2546874-94bd-4da0-a127-77a777aa5f96","route":"/api/vendors","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_1a3a8e03-4536-4bad-818d-4067e7b9fb86","route":"/api/accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_553ff2f9-30e5-4c20-b8a7-fa9a08483880","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_bee162a7-af8b-4a0e-9ec4-4579e6a0f136","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_2a4fe6f6-8374-4ddc-9447-9928ba4cf4d5","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_2a04c942-71ed-4735-9b40-dc5d656175a0","route":"/api/bills","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_66d46040-8942-4ffc-b92e-77e54c6183ef","route":"/api/invoices","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_f71b41cd-5320-42a7-a871-253799ccae0b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":39}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_788d37c8-6335-4a11-8a4b-cab68e820e9d","route":"/api/payments","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts
+{"msg":"http_request","requestId":"req_061f7401-c188-4642-8e73-5ed5319179a4","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":49}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_4267926a-cd74-498d-9a3e-3e2578104fe6","route":"/api/auth/*","method":"POST","status":200,"durationMs":176}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_e5c13edd-df7a-46c0-8854-36ed092f41ff","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_9ea809d3-02ac-4fde-af18-73ac456990bd","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_cf4c1f0d-fe92-47e2-bea1-8f892eda3c19","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_a65aa260-881a-4062-99a9-607b3d12a091","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_d7663723-c236-4397-8cce-2f965d48b603","route":"/api/accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_754a708f-ded8-4d3b-91f5-d7964083bea0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":50}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_fc81fdda-eb54-4d13-a0d8-2ac94af9aaac","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_204fe05c-1dd9-4da6-9c0f-90382c8c94b8","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_55eab238-2e6d-4e17-98de-6c505ac7f028","route":"/api/bills","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_3f75b764-cbc9-4132-a03e-65a3c8aa70dd","route":"/api/expenses","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted
+{"msg":"http_request","requestId":"req_de9a7098-7972-458c-afab-5099b5ffaa6f","route":"/api/expenses/:id","method":"DELETE","status":204,"durationMs":8}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_79d51c8c-1ddf-4c56-8453-fb29d8ab8272","route":"/api/auth/*","method":"POST","status":200,"durationMs":170}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_7afa5e92-9e61-4db3-8f55-0985cc2cdf19","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_1f614714-5918-4e08-9bea-39f03b87d6ad","route":"/api/customers","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_4b5bdb18-cec3-4d58-88fa-4feafe16e3a2","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_684649f9-ec7d-4583-93ab-f43d96010471","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_84fe287c-dde3-4f6f-ac64-a9ec2c93243e","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_212d88c4-229c-480a-9bd9-1c069b93e83e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_c7fe1543-ef42-40a1-a523-bb6f8918c80c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_e5046ab7-58df-4fc6-b087-acff29e00433","route":"/api/invoices","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_d9d3667a-3837-485d-886b-b584d3639d42","route":"/api/bills","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross
+{"msg":"http_request","requestId":"req_18f32df1-0462-4ecf-8c49-b943dd06e3cd","route":"/api/expenses","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_20b78269-9064-46b9-9d40-515d3cc6f25f","route":"/api/auth/*","method":"POST","status":200,"durationMs":284}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_9792aa8b-e276-4705-aecc-01612b6392fa","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_03050273-3dc4-4274-bff6-824d423825e9","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_aab87085-6bea-4f62-884d-124660e073e9","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_3835cee1-33b5-49d8-8314-60ab415329dc","route":"/api/vendors","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_a7acb91d-5c4e-4eee-8329-2bbf937cd2d6","route":"/api/accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_bfcc9755-b178-4253-a99f-2b0eb4411804","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_28d1ce6b-bf41-4cd2-8e08-3bb9a16be003","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_39d76891-c09e-4bc5-9db0-253015603cd6","route":"/api/invoices","method":"POST","status":201,"durationMs":43}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_dbd6ba98-8a15-4efe-928a-6b1940e1e8bb","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_082b4105-b001-4011-a06e-214be65a0bb9","route":"/api/invoices","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_97a9c3ec-22ac-42c1-8465-ab5f005747ad","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":65}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_e9d888ee-a6a0-4ee6-be71-fdac92c6a505","route":"/api/credit-notes","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_7e22788b-6270-4d9b-ac58-10cfe270d15d","route":"/api/payments","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_3d4daeff-12ff-4e22-916a-31b5f7360def","route":"/api/credit-notes","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund
+{"msg":"http_request","requestId":"req_041fc6ee-3b3a-4517-bb84-5ae120dbb4b5","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_1e43464a-19b9-454e-95c0-5c2770eb759a","route":"/api/auth/*","method":"POST","status":200,"durationMs":227}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_eb72dc1b-8254-4a30-ad07-6de315a6e6d5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_908e725a-21e2-48a8-a11e-2df32a5d6815","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_c31bb354-d59f-4440-9435-12f97e98a616","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_aaaa6b82-b169-4c0b-ba95-74adbde8b16f","route":"/api/vendors","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_d295c9ba-6443-4d3f-baa5-8b48796e3924","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_5cde4bdf-0be3-47ba-a9b6-218653c5f46c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_e4fcb39e-99d2-4fbf-a7b6-29b85db01526","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_ad823c1a-5fed-441f-9d29-2faeed5a29a6","route":"/api/invoices","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_829fb53c-7dd9-4fcf-9a9b-9665539b7204","route":"/api/bills","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_26410025-daf3-45a9-9683-125425a888f7","route":"/api/expenses","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_0920a7e4-60df-4efd-87df-eeb9831e22aa","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_ca6ddd74-69d8-48d3-8d69-10300be00825","route":"/api/bills","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_87b2e8a6-f3c1-4a5d-831c-d2aa9d969ff2","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":35}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_98dfc196-4b83-4072-9139-11bface46d05","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_1d6978ae-2c8e-4f14-83cb-af98d38968f0","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_6abe6860-ce2b-4c79-9bf6-ea58b97f2ef3","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":32}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration
+{"msg":"http_request","requestId":"req_77f7f38b-95e6-40cc-9970-3ff56190625f","route":"/api/payments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_ed6cf471-4c9e-4f52-ac53-aa4004f7f865","route":"/api/auth/*","method":"POST","status":200,"durationMs":195}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_390254d0-8b0b-4e51-8466-e08d9f326a52","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_1754150e-af6a-4e16-afa9-8672ef42806c","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_63a1b018-7400-497b-93f8-4610d17e8cac","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_c20f01ef-5901-4fc5-8fcc-14a5430ba274","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_80abdc78-9030-4320-9ad9-db97dd176de4","route":"/api/accounts","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_93c6a7b9-e55a-4744-a769-d8e448f9678a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_a4435f02-e09d-4a9a-a8af-1d25127cba95","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_54ee3578-e8f0-4629-9ca7-2a3017fdbf55","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_3748d674-b36b-4807-b3c5-563f635ed9bd","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_04156f75-f506-4d02-927d-3231ef670d12","route":"/api/invoices","method":"POST","status":201,"durationMs":43}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts
+{"msg":"http_request","requestId":"req_18f72c2d-dd4f-4817-b18b-888a871d24f1","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":89}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_e8aa81fb-56ea-4e28-bfe0-3f01719aa6f8","route":"/api/auth/*","method":"POST","status":200,"durationMs":140}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_26599d8d-b24b-4f7e-9b82-124c1ff186d3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_74b29e15-9569-4cab-a61a-9e8e92a44a47","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_d7fb7deb-f73f-489d-9027-8ad65998e921","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_9669de11-f47f-4946-adab-43d9505f55b7","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_9818876a-cde9-468a-9be4-4571c7ec5e58","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_b8840796-2421-4c7a-afff-fd95fa78dfe9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_f4b539b1-5908-40db-a880-d8107e56719d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_d3e4d38d-02cc-4541-99e4-8370c0c8bd1c","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_4f4d85c4-1c18-4287-be62-94463b36abb1","route":"/api/bills","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_7808dfad-c0aa-4376-ab76-87ad73d4d64c","route":"/api/accounts","method":"POST","status":201,"durationMs":37}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_1edfb5d5-811e-4e86-a8bc-dcf4cc9ff178","route":"/api/accounts","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_7d9c57cd-38eb-4ab8-8c23-7a6c35c6df1c","route":"/api/journal-entries","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_1c40841f-f781-44df-bd8e-8df82a89558c","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_3d13a96c-e123-4b22-8d5e-b8640108e543","route":"/api/journal-entries","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-classification.test.ts > GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals
+{"msg":"http_request","requestId":"req_498c7b10-53eb-4c30-a578-6f5be3710c13","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":6}
+
+ ✓ src/modules/tax/gst-classification.test.ts (10 tests) 22444ms
+   ✓ GST source classification never reconstructs gross from rounded GST > does not treat a declared non-fifteen-percent sales tax as standard GST box evidence  2000ms
+   ✓ GST source classification never reconstructs gross from rounded GST > keeps exempt purchases out of eligible gross and allocates actual supplier payments  2265ms
+   ✓ GST source classification never reconstructs gross from rounded GST > uses source gross for a partial/private claim and preserves its own cents  2319ms
+   ✓ GST source classification never reconstructs gross from rounded GST > requires explicit zero-rated/exempt review for untaxed sales, including mixed lines and receipts  2947ms
+   ✓ GST source classification never reconstructs gross from rounded GST > does not fabricate a historical eligible gross after the receipt source is deleted  2287ms
+   ✓ GST source classification never reconstructs gross from rounded GST > does not label an unexplained non-standard receipt GST amount as fully eligible fifteen-percent gross  2105ms
+   ✓ GST source classification never reconstructs gross from rounded GST > conserves untaxed gross through receivable credits and a later customer refund  2667ms
+   ✓ GST source classification never reconstructs gross from rounded GST > excludes pre-registration source bills and sales even when their payments fall after registration  2225ms
+   ✓ GST source classification never reconstructs gross from rounded GST > reports unsupported sales classification instead of letting an ordinary review invent discounted mixed-sale facts  1886ms
+   ✓ GST source classification never reconstructs gross from rounded GST > does not invent source gross for manual GST-control journals  1736ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  23:35:30
+   Duration  28.99s (transform 2.90s, setup 63ms, collect 5.93s, tests 22.44s, environment 0ms, prepare 111ms)

@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/pages/__tests__/Expenses.receipts.test.tsx (1 test) 35ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  00:21:43
+   Duration  912ms (transform 91ms, setup 70ms, collect 250ms, tests 35ms, environment 269ms, prepare 59ms)

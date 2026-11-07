@@ -1,0 +1,48 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+stderr | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stdout | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Scan completed with: {
+  scanResult: {
+    merchantName: 'Supplier',
+    date: null,
+    total: '230.00',
+    tax: '30.00',
+    subtotal: '200.00',
+    items: [],
+    paymentMethod: 'card',
+    suggestedCategory: null,
+    confidence: 1,
+    notes: null
+  },
+  receiptUrl: 'https://example.test/scanned-receipt.jpg'
+}
+Setting receipt URL: https://example.test/scanned-receipt.jpg
+
+ ✓ src/components/expense/__tests__/ReceiptInbox.test.tsx (2 tests) 835ms
+   ✓ receipt inbox review > prefills a matching existing category from the scanned suggestion without creating categories  395ms
+   ✓ receipt inbox review > uploads without scanning unavailable AI, requires review and explicit save, and preserves exact edited GST  438ms
+ ✓ src/components/expense/__tests__/ReceiptUpload.test.tsx (14 tests) 2779ms
+   ✓ ReceiptUpload > renders upload interface by default  344ms
+   ✓ ReceiptUpload > attaches a completed AI scan without a missing state setter  518ms
+   ✓ ReceiptUpload > validates file size limits  1157ms
+ ✓ src/features/expenses/receiptInbox.test.ts (3 tests) 31ms
+ ✓ src/pages/__tests__/Expenses.receipts.test.tsx (1 test) 139ms
+ ✓ src/components/expense/__tests__/ExpenseFormDrawer.test.tsx (10 tests) 8150ms
+   ✓ ExpenseFormDrawer > renders the form when open  1692ms
+   ✓ ExpenseFormDrawer > offers only active settlement accounts for paying an expense  1620ms
+   ✓ ExpenseFormDrawer > shows edit title when editing existing expense  540ms
+   ✓ ExpenseFormDrawer > submits form with correct data  1139ms
+   ✓ ExpenseFormDrawer > preserves receipt GST and claim percentages for authoritative posting  817ms
+   ✓ ExpenseFormDrawer > shows customer field when isBillable is true  493ms
+   ✓ ExpenseFormDrawer > closes drawer when cancel button clicked  374ms
+   ✓ ExpenseFormDrawer > validates required fields  506ms
+   ✓ ExpenseFormDrawer > validates amount field  693ms
+
+ Test Files  5 passed (5)
+      Tests  30 passed (30)
+   Start at  00:30:15
+   Duration  13.14s (transform 2.79s, setup 1.06s, collect 7.36s, tests 11.93s, environment 5.44s, prepare 1.77s)

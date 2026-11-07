@@ -1,0 +1,33 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/expense/ReceiptAttachment.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/components/expense/ReceiptAttachment.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module './ReceiptAttachment' from 'src/components/expense/ReceiptAttachment.test.tsx'
+
+    However, Jest was able to find:
+        './ReceiptAttachment.test.tsx'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+      1 | import React from 'react';
+      2 | import { fireEvent, render, waitFor } from '@testing-library/react-native';
+    > 3 | import { ReceiptAttachment } from './ReceiptAttachment';
+        | ^
+      4 | import { apiFetch } from '@/features/auth/api/http';
+      5 | jest.mock('@/features/auth/api/http',()=>({apiFetch:jest.fn(),rejectFailedResponse:jest.fn()}));
+      6 | jest.mock('expo-file-system/legacy',()=>({cacheDirectory:'file:///cache/',writeAsStringAsync:jest.fn(),EncodingType:{Base64:'base64'}}));
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/components/expense/ReceiptAttachment.test.tsx:3:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.729 s
+Ran all test suites matching src/components/expense/ReceiptAttachment.test.tsx.

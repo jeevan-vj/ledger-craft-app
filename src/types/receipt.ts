@@ -1,9 +1,9 @@
 export interface ReceiptScanResult {
   merchantName: string | null;
   date: string | null;
-  total: number | null;
-  tax: number | null;
-  subtotal: number | null;
+  total: string | null;
+  tax: string | null;
+  subtotal: string | null;
   items: ReceiptItem[];
   paymentMethod: 'cash' | 'card' | 'other' | null;
   suggestedCategory: string | null;
@@ -14,8 +14,8 @@ export interface ReceiptScanResult {
 
 export interface ReceiptItem {
   description: string;
-  quantity: number;
-  price: number;
+  quantity: string;
+  price: string;
 }
 
 export interface ReceiptScanError {

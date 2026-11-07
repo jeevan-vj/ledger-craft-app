@@ -9,6 +9,8 @@ export interface OnboardingData {
   invoiceNumberFormat: string;
   defaultTaxRate?: number;
   gstRegistrationStatus: 'unknown' | 'registered' | 'not_registered';
+  taxId?: string;
+  gstRegisteredFrom?: string;
   phone?: string;
   address?: string;
   city?: string;

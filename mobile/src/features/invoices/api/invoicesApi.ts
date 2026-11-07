@@ -36,17 +36,20 @@ export interface MobileInvoiceDto {
   }>;
   additionalChargesTotal?: string;
   total: string;
+  baseTotal?: string | null;
   totalPaid: string;
   totalCredited?: string;
   balanceDue: string;
   paymentStatus: string;
   taxInclusive: boolean;
   status: InvoiceStatus;
+  effectiveStatus?: InvoiceStatus;
   notes: string | null;
   terms: string | null;
   currency: string;
   customerName: string | null;
   customerEmail?: string | null;
+  customerDetails?: { name: string; email?: string | null; phone?: string | null; address?: string | null; city?: string | null; state?: string | null; zip?: string | null; country?: string | null } | null;
   sourceQuoteId?: string;
   sourceQuoteNumber?: string;
   items: Array<{
@@ -112,7 +115,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     sourceImportDocumentId: dto.sourceImportDocumentId,
     thirdPartyIssued: dto.thirdPartyIssued,
     customerId: dto.customerId,
-    customer: dto.customerName
+    customer: dto.customerDetails ? { ...dto.customerDetails, id: dto.customerId, email: dto.customerDetails.email ?? '', country: dto.customerDetails.country ?? undefined } : dto.customerName
       ? {
           id: dto.customerId,
           name: dto.customerName,
@@ -133,6 +136,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     additionalChargesTotal:
       dto.additionalChargesTotal == null ? undefined : Number(dto.additionalChargesTotal),
     total: Number(dto.total),
+    baseTotalText: dto.baseTotal ?? undefined,
     totalPaid: Number(dto.totalPaid),
     totalPaidText: dto.totalPaid,
     totalCreditedText: dto.totalCredited ?? '0.00',
@@ -140,7 +144,7 @@ export function toInvoice(dto: MobileInvoiceDto): Invoice {
     balanceDueText: dto.balanceDue,
     paymentStatus: dto.paymentStatus,
     taxInclusive: dto.taxInclusive,
-    status: dto.status,
+    status: dto.effectiveStatus ?? dto.status,
     notes: dto.notes,
     terms: dto.terms,
     currency: dto.currency,

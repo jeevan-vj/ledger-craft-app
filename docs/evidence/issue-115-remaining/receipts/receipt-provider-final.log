@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/modules/ai/receipt-pdf.test.ts (3 tests) 11ms
+ ✓ src/modules/ai/openai.test.ts (4 tests) 9ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  00:20:06
+   Duration  959ms (transform 267ms, setup 35ms, collect 487ms, tests 20ms, environment 0ms, prepare 161ms)

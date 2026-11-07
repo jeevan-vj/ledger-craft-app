@@ -1,3 +1,4 @@
+import { isNzBusinessCountry } from '@ledgercraft/contracts';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ActivityIndicator,
@@ -34,6 +35,7 @@ import type { InvoiceStackParamList } from '@/navigation/types';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 import { formatMoney } from '@/utils/money';
+import { invoiceBuyerFix } from '@/utils/invoiceBuyerCompliance';
 
 type Navigation = NativeStackNavigationProp<InvoiceStackParamList, 'InvoiceCreate'>;
 
@@ -195,6 +197,8 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
           name: customerName,
           email: customerEmail,
         })) || lineStepError(description, amount);
+    const buyerFix = invoiceBuyerFix(totals.total, defaults.currency, isNzBusinessCountry(profile.country) ? profile.gstRegistrationStatus : undefined, selectedCustomer ?? { name: customerName, email: customerEmail });
+    if (buyerFix) { setError(buyerFix); return; }
     if (validation || amountValue == null) {
       setError(validation || 'Enter an amount greater than zero.');
       return;

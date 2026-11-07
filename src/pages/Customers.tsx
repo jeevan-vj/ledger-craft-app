@@ -42,6 +42,7 @@ import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table';
+import { CustomerDocumentLinks } from '@/features/customer-statements/CustomerDocumentLinks';
 import CustomerFormDrawer from '@/components/customer/CustomerFormDrawer';
 
 const VIP_OPTIONS = [
@@ -589,9 +590,7 @@ const Customers = () => {
                       )}
                     </div>
                     <div className="flex space-x-1">
-                      <Button variant="ghost" size="sm" asChild>
-                        <Link to={`/quotes?customerId=${customer.id}`} aria-label={`Quotes for ${customer.name}`}>Quotes</Link>
-                      </Button>
+                      <CustomerDocumentLinks customer={customer} />
                       <Button
                         variant="ghost"
                         size="icon"
@@ -705,9 +704,7 @@ const Customers = () => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="ghost" size="sm" asChild>
-                            <Link to={`/quotes?customerId=${customer.id}`} aria-label={`Quotes for ${customer.name}`}>Quotes</Link>
-                          </Button>
+                          <CustomerDocumentLinks customer={customer} />
                           <Button
                             variant="ghost"
                             size="icon"

@@ -27,6 +27,7 @@ import { formatInvoiceNumber } from './numbering';
 import { computeInvoiceTotals } from './totals';
 import { convertToBase, currencyRepository, resolveDocumentCurrency } from '../currency/currency.service';
 import * as shareService from './share';
+import { assertGstBuyerInformation, assertGstSellerReady } from './gst-compliance';
 
 const PUBLIC_APP_URL = 'https://easybiz.iamjeevan.com';
 
@@ -96,7 +97,10 @@ export async function createInvoiceInTx(
   const defaultTaxRate = profile.defaultTaxRate ?? '0';
   const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.date);
   const totals = computeInvoiceTotals(input, defaultTaxRate, resolved.currency.precision);
+  const baseTotal = convertToBase(totals.total, resolved.rate, resolved.base.precision);
+  assertGstBuyerInformation(profile, customer, resolved.currency.code, totals.total, input.date, { baseCurrency: resolved.base.code, baseTotal });
   const status = input.status === 'sent' ? 'draft' : (input.status ?? 'draft');
+  if (status !== 'draft') assertGstSellerReady(profile, input.date, totals.taxAmount);
   const invoice = await invoicesRepo.insertInvoice(tx, ctx, {
     customerId: input.customerId,
     invoiceNumber,
@@ -112,7 +116,7 @@ export async function createInvoiceInTx(
     baseCurrency: resolved.base.code,
     baseSubtotal: convertToBase(totals.subtotal, resolved.rate, resolved.base.precision),
     baseTaxAmount: convertToBase(totals.taxAmount, resolved.rate, resolved.base.precision),
-    baseTotal: convertToBase(totals.total, resolved.rate, resolved.base.precision),
+    baseTotal,
     status,
     totals,
   });
@@ -161,7 +165,12 @@ export async function updateInvoiceForUser(
   id: string,
   input: UpdateInvoiceRequest,
 ): Promise<InvoiceDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => updateInvoiceInTx(tx, ctx, id, input));
+}
+
+export async function updateInvoiceInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, id: string, input: UpdateInvoiceRequest,
+): Promise<InvoiceDto> {
     const existing = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Invoice not found' });
     if (await hasActiveCreditNotes(tx, ctx.organisationId, id) && Object.keys(input).some(key => !['notes', 'terms', 'dueDate', 'paymentTermDays', 'expectedUpdatedAt'].includes(key))) {
@@ -221,6 +230,15 @@ export async function updateInvoiceForUser(
       );
     }
 
+    const complianceProfile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    const complianceCustomer = await customersRepo.getCustomer(tx, ctx.organisationId, existing.customerId);
+    if (!complianceCustomer) throw new HTTPException(400, { message: 'Customer not found' });
+    assertGstBuyerInformation(complianceProfile, complianceCustomer, existing.currency, totals?.total ?? existing.total, date, {
+      baseCurrency: existing.baseCurrency,
+      baseTotal: totals ? convertToBase(totals.total, existing.exchangeRate, resolvedCurrency.base.precision) : existing.baseTotal,
+    });
+    if (input.status && input.status !== 'draft' && input.status !== existing.status) assertGstSellerReady(complianceProfile, date, totals?.taxAmount ?? existing.taxAmount);
+
     const currencySnapshot = totals ? {
       exchangeRate: existing.exchangeRate, exchangeRateId: existing.exchangeRateId,
       baseCurrency: existing.baseCurrency,
@@ -254,17 +272,9 @@ export async function updateInvoiceForUser(
     }
     await invoicesRepo.recordHistory(tx, ctx, id, { action: 'updated', fromStatus: existing.status, toStatus: updated.status });
     return updated;
-  });
 }
 
-export async function sendInvoiceForUser(
-  db: Database,
-  userId: string,
-  id: string,
-  input: SendInvoiceRequest,
-  mailer: InvoiceMailer,
-): Promise<InvoiceDto> {
-  const prepared = await withOrganisationTx(db, userId, async (tx, ctx) => {
+export async function prepareInvoiceDeliveryInTx(tx: Database, ctx: { organisationId: string; userId: string }, id: string, input: SendInvoiceRequest) {
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
     const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
@@ -277,8 +287,38 @@ export async function sendInvoiceForUser(
     }
 
     const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    assertGstBuyerInformation(profile, customer, invoice.currency, invoice.total, invoice.date, invoice);
+    assertGstSellerReady(profile, invoice.date, invoice.taxAmount);
     return { invoice, recipients: validRecipients, businessName: profile?.name ?? 'EasyBizInvoice' };
-  });
+}
+
+export async function completeInvoiceDeliveryInTx(tx: Database, ctx: { organisationId: string; userId: string }, prepared: InvoiceDto): Promise<InvoiceDto> {
+  const id = prepared.id;
+  const current = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
+  if (!current) throw new HTTPException(404, { message: 'Invoice not found' });
+  // Transport acceptance describes the prepared snapshot. A later edit,
+  // cancellation or settlement must never be replaced by its completion.
+  if (JSON.stringify({ ...current, effectiveStatus: undefined }) !== JSON.stringify({ ...prepared, effectiveStatus: undefined })) {
+    throw apiError(409, 'INVOICE_CHANGED_AFTER_DELIVERY', 'Email was accepted for the earlier invoice snapshot. The invoice changed during delivery and has not been marked sent. Review its current state before sending again.');
+  }
+    if (prepared.status === 'sent') {
+      return prepared;
+    }
+    const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
+    if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
+    await postInvoiceJournal(tx, ctx, { invoiceId: sent.id, invoiceNumber: sent.invoiceNumber, date: sent.date, subtotal: sent.subtotal, taxAmount: sent.taxAmount, total: sent.total });
+    await invoicesRepo.recordHistory(tx, ctx, id, { action: 'sent', fromStatus: prepared.status, toStatus: 'sent' });
+    return sent;
+}
+
+export async function sendInvoiceForUser(
+  db: Database,
+  userId: string,
+  id: string,
+  input: SendInvoiceRequest,
+  mailer: InvoiceMailer,
+): Promise<InvoiceDto> {
+  const prepared = await withOrganisationTx(db, userId, (tx, ctx) => prepareInvoiceDeliveryInTx(tx, ctx, id, input));
 
   if (mailer.availability === 'unavailable') {
     await mailer.sendInvoice({ invoiceId: prepared.invoice.id, invoiceNumber: prepared.invoice.invoiceNumber, to: prepared.recipients });
@@ -305,16 +345,7 @@ export async function sendInvoiceForUser(
     throw apiError(502, 'email_failed', 'Failed to resend invoice email');
   }
 
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    if (prepared.invoice.status === 'sent') {
-      return prepared.invoice;
-    }
-    const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');
-    if (!sent) throw new HTTPException(404, { message: 'Invoice not found' });
-    await postInvoiceJournal(tx, ctx, { invoiceId: sent.id, invoiceNumber: sent.invoiceNumber, date: sent.date, subtotal: sent.subtotal, taxAmount: sent.taxAmount, total: sent.total });
-    await invoicesRepo.recordHistory(tx, ctx, id, { action: 'sent', fromStatus: prepared.invoice.status, toStatus: 'sent' });
-    return sent;
-  });
+  return withOrganisationTx(db, userId, (tx, ctx) => completeInvoiceDeliveryInTx(tx, ctx, prepared.invoice));
 }
 
 export async function remindInvoiceForUser(

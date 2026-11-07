@@ -1,0 +1,71 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_fb324b50-1ee6-49b5-b1e1-6bfff099c5fe","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_bff9eb6d-5fcd-46ef-97c4-521622f3607d","route":"/api/auth/*","method":"POST","status":200,"durationMs":95}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_3b4903a1-e10d-4738-975c-59b3b2650920","route":"/api/me","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_cdf4cc5a-e202-4e8a-b9b0-2cd1124cb6aa","route":"/api/objects","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_554899a2-2567-4ca7-9977-31c2ce3aaa20","route":"/api/objects","method":"POST","status":403,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_6bcf1a53-c0c4-40d0-b154-908073d619ac","route":"/api/objects/receipts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_81f800a6-b2ac-42a6-a6f7-6d15e592d6f4","route":"/api/objects","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_30f23765-ed66-4b57-97ba-a4755037b2a1","route":"/api/objects","method":"GET","status":404,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_046d5c52-fc03-4502-bce5-80a9420561c0","route":"/api/objects/receipts","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_a0ce95ab-ef6a-44df-ab30-21c31dbc8b3c","route":"/api/objects/receipts","method":"DELETE","status":404,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_59d4314b-d315-451d-9585-0b81f9c32acf","route":"/api/objects/receipts","method":"DELETE","status":204,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_4eb1dce9-5107-4cdc-9cb8-91628388fb3b","route":"/api/objects/receipts","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_1a247d3a-6d0f-4a8c-9c0b-aab7a98f101d","route":"/api/objects","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_53c3022b-0dbc-4314-8746-da188551ff63","route":"/api/objects","method":"POST","status":401,"durationMs":0}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_eab3f9a6-9ccf-4931-b800-3f9f708414f9","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_d1665d80-e299-448d-b3cc-5696b4fc817d","route":"/api/auth/*","method":"POST","status":200,"durationMs":103}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_0165ff71-0c18-43fe-830e-9de8daf91371","route":"/api/objects","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_7786f564-78a1-40d2-890c-ec70b3dfda34","route":"/api/objects","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_61079ad5-d97b-4db9-b41a-f614586902c0","route":"/api/objects","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_43a89451-5e64-4962-a96b-c18b84eb5a6b","route":"/api/objects","method":"GET","status":404,"durationMs":3}
+
+ ✓ src/modules/storage/objects.test.ts (3 tests) 1935ms
+   ✓ object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes  934ms
+   ✓ object routes > stores bytes, returns them, and hides them from other orgs  992ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  00:22:41
+   Duration  5.09s (transform 1.31s, setup 30ms, collect 2.85s, tests 1.94s, environment 0ms, prepare 113ms)

@@ -11,15 +11,18 @@ export type InvoiceMail = {
   dueDate?: string | null;
   businessName?: string;
   publicUrl?: string;
-  kind?: 'invoice' | 'quote' | 'reminder';
+  kind?: 'invoice' | 'quote' | 'reminder' | 'statement';
+  deliveryKey?: string;
+  message?: string;
 };
 
 export type InvoiceMailer = {
   readonly availability?: 'available' | 'unavailable';
   sendInvoice(mail: InvoiceMail): Promise<void>;
   sendReminder?(mail: InvoiceMail): Promise<void>;
-  /** Optional until a provider exists. Production leaves this unset and quote send returns 503. */
+  /** Optional provider methods fail closed when the transport lacks support. */
   sendQuote?(mail: InvoiceMail): Promise<void>;
+  sendStatement?(mail: InvoiceMail): Promise<void>;
 };
 
 export function createLoggingInvoiceMailer(): InvoiceMailer {
@@ -42,6 +45,7 @@ export function createUnavailableInvoiceMailer(): InvoiceMailer {
     availability: 'unavailable',
     sendInvoice: unavailable,
     sendReminder: unavailable,
+    sendStatement: unavailable,
     sendQuote: async () => {
       throw apiError(503, 'EMAIL_UNAVAILABLE', 'Email delivery is unavailable. Share the quote link instead.');
     },

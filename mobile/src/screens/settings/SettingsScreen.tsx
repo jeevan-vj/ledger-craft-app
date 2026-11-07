@@ -15,6 +15,8 @@ import { StripeSettingsSection } from '@/components/settings/StripeSettingsSecti
 type NavigationProp = NativeStackNavigationProp<MoreStackParamList, 'SettingsList'>;
 
 const rowIcons: Record<MoreMenuScreen, React.ComponentProps<typeof Feather>['name']> = {
+  CustomerStatements: 'file-text',
+  PaymentReminders: 'bell',
   BusinessSettings: 'briefcase',
   CompanyTeam: 'users',
   RecurringSchedules: 'repeat',

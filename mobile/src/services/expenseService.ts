@@ -235,8 +235,8 @@ export class ExpenseService {
       if (expensesApiEnabled()) {
         return expensesApi.create({
           description: expense.description,
-          amount: String(expense.amount),
-          taxAmount: String(expense.taxAmount ?? 0),
+          amount: expense.amountText ?? String(expense.amount),
+          taxAmount: expense.taxAmountText ?? String(expense.taxAmount ?? 0),
           currency: expense.currency || 'NZD',
           expenseDate: expense.expenseDate,
           status: expense.status,
@@ -246,6 +246,7 @@ export class ExpenseService {
           customerId: expense.customerId ?? null,
           vendorName: expense.vendorName ?? null,
           receiptUrl: expense.receiptUrl ?? null,
+          receiptHash: expense.receiptHash ?? null,
           paymentMethod: expense.paymentMethod ?? null,
           notes: expense.notes ?? null,
         });
@@ -331,8 +332,8 @@ export class ExpenseService {
       if (expensesApiEnabled()) {
         const input: Record<string, unknown> = {};
         if (expense.description !== undefined) input.description = expense.description;
-        if (expense.amount !== undefined) input.amount = String(expense.amount);
-        if (expense.taxAmount !== undefined) input.taxAmount = String(expense.taxAmount);
+        if (expense.amount !== undefined) input.amount = expense.amountText ?? String(expense.amount);
+        if (expense.taxAmount !== undefined) input.taxAmount = expense.taxAmountText ?? String(expense.taxAmount);
         if (expense.currency !== undefined) input.currency = expense.currency;
         if (expense.expenseDate !== undefined) input.expenseDate = expense.expenseDate;
         if (expense.status !== undefined) input.status = expense.status;

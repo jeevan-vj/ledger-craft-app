@@ -116,6 +116,8 @@ const CreateInvoice = () => {
         items: items,
         subtotal: subtotal,
         taxAmount: taxAmount,
+        taxInclusive: values.taxInclusive,
+        taxRate: values.taxRate,
         total: total,
         status: 'draft',
         currency: values.currency,

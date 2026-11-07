@@ -46,7 +46,14 @@ import { dashboardLayouts, savedReportDefinitions } from './schema/dashboards';
 import { importBatches, importDocumentEvents, importDocuments } from './schema/invoice-imports';
 import { stripeAccountRoutes, stripeConnectedAccounts, stripeEvents, stripePaymentLinks } from './schema/stripe';
 
+import { bankPreferences } from './schema/bank-preferences';
+import { reminderSettings, reminderOptOuts, reminderLogs, statementShares } from './schema/customer-collections';
+import { bankFeedConnections, bankFeedAccounts, bankFeedTransactions } from './schema/bank-feeds';
+import { stripeRateLimits, stripeVerificationState, stripeVerifications } from './schema/stripe';
+
 export const schema = {
+  bankPreferences, reminderSettings, reminderOptOuts, reminderLogs, statementShares,
+  bankFeedConnections, bankFeedAccounts, bankFeedTransactions, stripeVerifications, stripeRateLimits, stripeVerificationState,
   creditNotes,
   creditNoteLines,
   creditNoteRefunds,

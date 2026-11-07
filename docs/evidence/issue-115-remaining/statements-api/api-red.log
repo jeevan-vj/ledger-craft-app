@@ -1,0 +1,30 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/customer-statements/customer-statements.test.ts [ src/modules/customer-statements/customer-statements.test.ts ]
+Error: Cannot find module './customer-statements.service' imported from '/workspace/ledger-craft-app/api/src/modules/customer-statements/customer-statements.test.ts'
+ ❯ src/modules/customer-statements/customer-statements.test.ts:5:31
+      3| import { createAuth } from '../auth/auth';
+      4| import { withTestDb } from '../../test/harness';
+      5| import { customerStatementForUser } from './customer-statements.servic…
+       |                               ^
+      6| import { runPaymentReminders, updateReminderSettingsForUser, setRemind…
+      7| import { createUnavailableInvoiceMailer } from '../invoices/mailer';
+
+Caused by: Error: Failed to load url ./customer-statements.service (resolved id: ./customer-statements.service) in /workspace/ledger-craft-app/api/src/modules/customer-statements/customer-statements.test.ts. Does the file exist?
+ ❯ loadAndTransform ../node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51920:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:00:20
+   Duration  3.38s (transform 1.47s, setup 31ms, collect 0ms, tests 0ms, environment 0ms, prepare 119ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/customer-statements/customer-statements.test.ts

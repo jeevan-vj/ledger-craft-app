@@ -1,0 +1,69 @@
+{
+  "platform": "Chromium web, real local Hono/SQLite with explicit Stripe mock gateway; no real Stripe payment",
+  "expected": {
+    "gross": "100.00",
+    "platformFee": "4.30",
+    "netClearing": "95.70",
+    "refundRestoresInvoice": "100.00",
+    "clearingAfterRefund": "0.00"
+  },
+  "errors": [],
+  "cases": {
+    "desktop": {
+      "invoiceId": "d9165f1c-176a-4f12-bc11-69079ff8a57f",
+      "paymentId": "35d51386-a449-40ff-85fa-921459604224",
+      "before": {
+        "currency": "NZD",
+        "available": "95.70",
+        "pending": "0.00",
+        "ledgerClearing": "95.70",
+        "difference": "0.00",
+        "checkedAt": "2026-11-07T00:34:47.028Z",
+        "warnings": [
+          "Platform fees have no assumed input GST. Confirm their supporting tax invoices."
+        ]
+      },
+      "after": {
+        "currency": "NZD",
+        "available": "0.00",
+        "pending": "0.00",
+        "ledgerClearing": "0.00",
+        "difference": "0.00",
+        "checkedAt": "2026-11-07T00:34:49.027Z",
+        "warnings": [
+          "Platform fees have no assumed input GST. Confirm their supporting tax invoices."
+        ]
+      },
+      "finalInvoiceBalance": "100.00",
+      "finalPaymentStatus": "refunded"
+    },
+    "phone": {
+      "invoiceId": "f10c9a2d-df59-4f35-9363-22c84efd9dfc",
+      "paymentId": "19f8addf-fb22-4b10-99e1-97e97db964fd",
+      "before": {
+        "currency": "NZD",
+        "available": "95.70",
+        "pending": "0.00",
+        "ledgerClearing": "95.70",
+        "difference": "0.00",
+        "checkedAt": "2026-11-07T00:34:56.284Z",
+        "warnings": [
+          "Platform fees have no assumed input GST. Confirm their supporting tax invoices."
+        ]
+      },
+      "after": {
+        "currency": "NZD",
+        "available": "0.00",
+        "pending": "0.00",
+        "ledgerClearing": "0.00",
+        "difference": "0.00",
+        "checkedAt": "2026-11-07T00:34:58.133Z",
+        "warnings": [
+          "Platform fees have no assumed input GST. Confirm their supporting tax invoices."
+        ]
+      },
+      "finalInvoiceBalance": "100.00",
+      "finalPaymentStatus": "refunded"
+    }
+  }
+}

@@ -35,3 +35,7 @@ it('requires a fresh review when server warnings change even if the balances are
  jest.mocked(settlementMatchingApi.summary).mockResolvedValue({...summary,warnings:[warning]} as never);fireEvent(screen.getByLabelText('Confirm bank statement review'),'valueChange',true);fireEvent.press(screen.getByText('Complete reviewed statement'));
  expect(await screen.findByText('Statement balances or review warnings changed. Review the refreshed summary before completing.')).toBeTruthy();expect(screen.getByText(warning)).toBeTruthy();expect(settlementMatchingApi.complete).not.toHaveBeenCalled();
 });
+it('retains read-only summary access without offering completion to a report reader',async()=>{
+ const screen=render(<StatementSummaryPanel bankAccountId="bank" canWrite={false}/>);fireEvent.press(screen.getByText('Review bank statement'));fireEvent.press(await screen.findByText('Statement 2026-11-01 to 2026-11-06 · In progress'));await screen.findByText('Final statement difference: $0.00');
+ expect(screen.queryByText('Complete reviewed statement')).toBeNull();expect(screen.getByText('Read-only statement review')).toBeTruthy();expect(settlementMatchingApi.complete).not.toHaveBeenCalled();
+});

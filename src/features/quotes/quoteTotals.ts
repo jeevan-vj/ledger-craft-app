@@ -45,6 +45,9 @@ export function previewQuoteTotals(input: QuotePreviewInput): QuotePreviewTotals
       unit: item.unit || 'ea',
       rate: decimalText(Number(item.rate)),
       rateUnit: item.rateUnit || item.unit || 'ea',
+      discountType: item.discountType,
+      discountValue: item.discountValue == null ? undefined : decimalText(item.discountValue),
+      taxes: item.taxes?.map(tax => ({ ...tax, rate: decimalText(tax.rate) })),
     }));
   try {
     const totals = computeInvoiceTotals(

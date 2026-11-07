@@ -1,0 +1,533 @@
+{
+  "platform": "Expo web / Chromium390x844 / actual HonoSQLite / synthetic companies; no native device or provider delivery",
+  "errors": [],
+  "expected": {
+    "generatedInvoiceTotal": "115.02",
+    "generatedInvoiceGst": "15.00",
+    "initialBankClosing": "906.03",
+    "afterFx": "902.13",
+    "usdAfterFx": "10.00",
+    "csvUniqueAdded": 1,
+    "csvDuplicatesSkipped": 1
+  },
+  "actual": {
+    "preview": {
+      "occurrences": [
+        {
+          "runAt": "2027-01-30T20:00:00.000Z",
+          "localDate": "2027-01-31"
+        },
+        {
+          "runAt": "2027-02-27T20:00:00.000Z",
+          "localDate": "2027-02-28"
+        },
+        {
+          "runAt": "2027-03-30T20:00:00.000Z",
+          "localDate": "2027-03-31"
+        }
+      ]
+    },
+    "invoiceTemplate": {
+      "id": "e0732a2f-deed-40fd-90d5-e9f5752ad789",
+      "name": "Monthly service",
+      "kind": "invoice",
+      "status": "active",
+      "payload": {
+        "kind": "invoice",
+        "input": {
+          "customerId": "148faf16-8d8b-41c0-878e-ee2a870a614d",
+          "date": "2027-01-31",
+          "dueDate": "2027-02-10",
+          "currency": "NZD",
+          "taxInclusive": true,
+          "taxRate": "15",
+          "items": [
+            {
+              "description": "Main service",
+              "quantity": "1",
+              "rate": "115.00"
+            },
+            {
+              "description": "Zero tax service",
+              "quantity": "2",
+              "rate": "0.01",
+              "taxes": [
+                {
+                  "id": "gst",
+                  "name": "GST",
+                  "rate": "0"
+                }
+              ]
+            }
+          ]
+        },
+        "send": {
+          "mode": "draft"
+        }
+      },
+      "schedule": {
+        "frequency": "monthly",
+        "interval": 1,
+        "startDate": "2027-01-31",
+        "endDate": "2027-03-31",
+        "occurrenceLimit": 3,
+        "timezone": "Pacific/Auckland",
+        "localTime": "09:00",
+        "dayOfMonth": "last"
+      },
+      "sourceInvoiceId": null,
+      "nextRunAt": "2027-01-30T20:00:00.000Z",
+      "lastRunAt": null,
+      "occurrencesCreated": 0,
+      "createdAt": "2026-11-07T03:06:24.000Z",
+      "updatedAt": "2026-11-07T03:06:24.000Z"
+    },
+    "billTemplate": {
+      "id": "d32d9ff7-1f55-4e58-a522-2ac7c6961143",
+      "name": "Monthly rent",
+      "kind": "bill",
+      "status": "active",
+      "payload": {
+        "kind": "bill",
+        "input": {
+          "vendorId": "e17e49fd-cf7c-4525-b82f-fa17c0455758",
+          "issueDate": "2027-01-31",
+          "dueDate": "2027-02-10",
+          "currency": "NZD",
+          "taxInclusive": true,
+          "lines": [
+            {
+              "description": "Premises",
+              "quantity": "1",
+              "unitPrice": "115.00",
+              "taxRate": "15",
+              "accountId": "73d2441b-5c48-4756-96c5-d9d3844510a8"
+            }
+          ]
+        }
+      },
+      "schedule": {
+        "frequency": "monthly",
+        "interval": 1,
+        "startDate": "2027-01-31",
+        "occurrenceLimit": 1,
+        "timezone": "Pacific/Auckland",
+        "localTime": "09:00"
+      },
+      "sourceInvoiceId": null,
+      "nextRunAt": "2027-01-30T20:00:00.000Z",
+      "lastRunAt": null,
+      "occurrencesCreated": 0,
+      "createdAt": "2026-11-07T03:06:25.000Z",
+      "updatedAt": "2026-11-07T03:06:25.000Z"
+    },
+    "invoices": [
+      {
+        "id": "9a0e45b0-7b21-4e13-bcb0-7666c7a85a3c",
+        "invoiceNumber": "INV-2027-0003",
+        "externalNumber": null,
+        "externalIssuerName": null,
+        "sourceImportDocumentId": null,
+        "thirdPartyIssued": false,
+        "externalId": null,
+        "customerId": "148faf16-8d8b-41c0-878e-ee2a870a614d",
+        "date": "2027-03-31",
+        "dueDate": "2027-04-10",
+        "paymentTermDays": 30,
+        "subtotal": "100.02",
+        "taxAmount": "15.00",
+        "discountType": "fixed",
+        "discountPercent": null,
+        "discount": null,
+        "additionalCharges": null,
+        "additionalChargesTotal": "0.00",
+        "total": "115.02",
+        "totalPaid": "0.00",
+        "totalCredited": "0.00",
+        "taxCredited": "0.00",
+        "baseCredited": "0.00",
+        "baseTaxCredited": "0.00",
+        "balanceDue": "115.02",
+        "paymentStatus": "unpaid",
+        "taxInclusive": true,
+        "status": "draft",
+        "effectiveStatus": "draft",
+        "notes": null,
+        "terms": null,
+        "currency": "NZD",
+        "exchangeRate": "1",
+        "exchangeRateId": null,
+        "baseCurrency": "NZD",
+        "baseSubtotal": "100.02",
+        "baseTaxAmount": "15.00",
+        "baseTotal": "115.02",
+        "customerName": "Harbour customer",
+        "customerEmail": "buyer@example.test",
+        "customerDetails": {
+          "name": "Harbour customer",
+          "email": "buyer@example.test",
+          "address": null,
+          "phone": null,
+          "city": null,
+          "state": null,
+          "zip": null,
+          "country": "NZ"
+        },
+        "items": [
+          {
+            "id": "27003b28-6c53-4994-8b74-b095a77aa608",
+            "description": "Main service",
+            "quantity": "1.00",
+            "unit": "ea",
+            "rate": "115.00",
+            "rateUnit": "ea",
+            "tax": "15.00",
+            "total": "115.00",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "default",
+                "name": "Tax",
+                "rate": "15.00"
+              }
+            ]
+          },
+          {
+            "id": "b385f533-aef6-4a48-ae79-80a9c2a66c1e",
+            "description": "Zero tax service",
+            "quantity": "2.00",
+            "unit": "ea",
+            "rate": "0.01",
+            "rateUnit": "ea",
+            "tax": "0.00",
+            "total": "0.02",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "gst",
+                "name": "GST",
+                "rate": "0"
+              }
+            ]
+          }
+        ],
+        "createdAt": "2026-11-07T03:06:25.000Z",
+        "updatedAt": "2026-11-07T03:06:25.000Z",
+        "archivedAt": null
+      },
+      {
+        "id": "75d0f981-b28f-4090-b6a0-36194b6edc03",
+        "invoiceNumber": "INV-2027-0002",
+        "externalNumber": null,
+        "externalIssuerName": null,
+        "sourceImportDocumentId": null,
+        "thirdPartyIssued": false,
+        "externalId": null,
+        "customerId": "148faf16-8d8b-41c0-878e-ee2a870a614d",
+        "date": "2027-02-28",
+        "dueDate": "2027-03-10",
+        "paymentTermDays": 30,
+        "subtotal": "100.02",
+        "taxAmount": "15.00",
+        "discountType": "fixed",
+        "discountPercent": null,
+        "discount": null,
+        "additionalCharges": null,
+        "additionalChargesTotal": "0.00",
+        "total": "115.02",
+        "totalPaid": "0.00",
+        "totalCredited": "0.00",
+        "taxCredited": "0.00",
+        "baseCredited": "0.00",
+        "baseTaxCredited": "0.00",
+        "balanceDue": "115.02",
+        "paymentStatus": "unpaid",
+        "taxInclusive": true,
+        "status": "draft",
+        "effectiveStatus": "draft",
+        "notes": null,
+        "terms": null,
+        "currency": "NZD",
+        "exchangeRate": "1",
+        "exchangeRateId": null,
+        "baseCurrency": "NZD",
+        "baseSubtotal": "100.02",
+        "baseTaxAmount": "15.00",
+        "baseTotal": "115.02",
+        "customerName": "Harbour customer",
+        "customerEmail": "buyer@example.test",
+        "customerDetails": {
+          "name": "Harbour customer",
+          "email": "buyer@example.test",
+          "address": null,
+          "phone": null,
+          "city": null,
+          "state": null,
+          "zip": null,
+          "country": "NZ"
+        },
+        "items": [
+          {
+            "id": "396ccdfd-9146-415f-b246-0707bd223135",
+            "description": "Main service",
+            "quantity": "1.00",
+            "unit": "ea",
+            "rate": "115.00",
+            "rateUnit": "ea",
+            "tax": "15.00",
+            "total": "115.00",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "default",
+                "name": "Tax",
+                "rate": "15.00"
+              }
+            ]
+          },
+          {
+            "id": "51903955-1b42-422a-aab0-10e2702e6053",
+            "description": "Zero tax service",
+            "quantity": "2.00",
+            "unit": "ea",
+            "rate": "0.01",
+            "rateUnit": "ea",
+            "tax": "0.00",
+            "total": "0.02",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "gst",
+                "name": "GST",
+                "rate": "0"
+              }
+            ]
+          }
+        ],
+        "createdAt": "2026-11-07T03:06:25.000Z",
+        "updatedAt": "2026-11-07T03:06:25.000Z",
+        "archivedAt": null
+      },
+      {
+        "id": "7cf7f531-cc70-4642-b2d3-214ee39a107d",
+        "invoiceNumber": "INV-2027-0001",
+        "externalNumber": null,
+        "externalIssuerName": null,
+        "sourceImportDocumentId": null,
+        "thirdPartyIssued": false,
+        "externalId": null,
+        "customerId": "148faf16-8d8b-41c0-878e-ee2a870a614d",
+        "date": "2027-01-31",
+        "dueDate": "2027-02-10",
+        "paymentTermDays": 30,
+        "subtotal": "100.02",
+        "taxAmount": "15.00",
+        "discountType": "fixed",
+        "discountPercent": null,
+        "discount": null,
+        "additionalCharges": null,
+        "additionalChargesTotal": "0.00",
+        "total": "115.02",
+        "totalPaid": "0.00",
+        "totalCredited": "0.00",
+        "taxCredited": "0.00",
+        "baseCredited": "0.00",
+        "baseTaxCredited": "0.00",
+        "balanceDue": "115.02",
+        "paymentStatus": "unpaid",
+        "taxInclusive": true,
+        "status": "draft",
+        "effectiveStatus": "draft",
+        "notes": null,
+        "terms": null,
+        "currency": "NZD",
+        "exchangeRate": "1",
+        "exchangeRateId": null,
+        "baseCurrency": "NZD",
+        "baseSubtotal": "100.02",
+        "baseTaxAmount": "15.00",
+        "baseTotal": "115.02",
+        "customerName": "Harbour customer",
+        "customerEmail": "buyer@example.test",
+        "customerDetails": {
+          "name": "Harbour customer",
+          "email": "buyer@example.test",
+          "address": null,
+          "phone": null,
+          "city": null,
+          "state": null,
+          "zip": null,
+          "country": "NZ"
+        },
+        "items": [
+          {
+            "id": "0a503231-efff-4b8a-8a37-47ad765e4a8b",
+            "description": "Main service",
+            "quantity": "1.00",
+            "unit": "ea",
+            "rate": "115.00",
+            "rateUnit": "ea",
+            "tax": "15.00",
+            "total": "115.00",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "default",
+                "name": "Tax",
+                "rate": "15.00"
+              }
+            ]
+          },
+          {
+            "id": "48f6266b-d8f5-45ff-809c-acdf46ec726f",
+            "description": "Zero tax service",
+            "quantity": "2.00",
+            "unit": "ea",
+            "rate": "0.01",
+            "rateUnit": "ea",
+            "tax": "0.00",
+            "total": "0.02",
+            "discountType": "fixed",
+            "discountValue": null,
+            "discountAmount": "0.00",
+            "taxes": [
+              {
+                "id": "gst",
+                "name": "GST",
+                "rate": "0"
+              }
+            ]
+          }
+        ],
+        "createdAt": "2026-11-07T03:06:25.000Z",
+        "updatedAt": "2026-11-07T03:06:25.000Z",
+        "archivedAt": null
+      }
+    ],
+    "sessions": [
+      {
+        "id": "467c4fbc-2d47-4a8f-a546-49086047419c",
+        "bankAccountId": "a2112ae8-1b7d-40ad-b24e-24ec9d64e879",
+        "statementStartDate": "2026-10-01",
+        "statementEndDate": "2026-10-31",
+        "statementOpeningBalance": "0.00",
+        "statementClosingBalance": "906.07",
+        "bookOpeningBalance": "0.00",
+        "bookClosingBalance": null,
+        "totalDeposits": "0.00",
+        "totalWithdrawals": "0.00",
+        "status": "in_progress",
+        "reconciledAt": null,
+        "matchedCount": 0,
+        "unmatchedBankCount": 0,
+        "unmatchedBookCount": 0,
+        "adjustmentCount": 0,
+        "difference": "0.00",
+        "notes": null,
+        "createdAt": "2026-11-07T03:06:30.000Z",
+        "updatedAt": "2026-11-07T03:06:30.000Z"
+      }
+    ],
+    "import": {
+      "importedCount": 1,
+      "duplicatesSkipped": 1,
+      "transactions": [
+        {
+          "id": "544df2cd-775c-4fd7-8b23-b72f8c077b2a",
+          "bankAccountId": "a2112ae8-1b7d-40ad-b24e-24ec9d64e879",
+          "transactionDate": "2026-10-06",
+          "description": "New receipt",
+          "reference": null,
+          "amount": "12.10",
+          "type": "credit",
+          "balance": null,
+          "category": null,
+          "merchant": null,
+          "isReconciled": false,
+          "notes": null,
+          "source": "import",
+          "paymentMethod": null,
+          "counterparty": null,
+          "transferId": null,
+          "splits": [],
+          "documentConnections": [],
+          "attachments": [],
+          "createdAt": "2026-11-07T03:06:34.000Z",
+          "updatedAt": "2026-11-07T03:06:34.000Z"
+        }
+      ]
+    },
+    "fxTransfer": {
+      "id": "481435bf-3f8b-4cb6-a34a-8ba8ca9cffc5",
+      "sourceAccountId": "a2112ae8-1b7d-40ad-b24e-24ec9d64e879",
+      "destinationAccountId": "c7456306-0f1a-4820-aeaa-686e4aab9edf",
+      "transactionDate": "2026-11-01",
+      "amount": "16.00",
+      "currency": "NZD",
+      "destinationCurrency": "USD",
+      "destinationAmount": "10.00",
+      "exchangeRate": "1.6",
+      "exchangeRateId": "15b66b9d-afd2-4128-876c-5794bafadd06",
+      "description": "Account transfer",
+      "reference": null,
+      "sourceTransaction": {
+        "id": "a3ace19d-951c-4199-aa74-99cb87323bde",
+        "bankAccountId": "a2112ae8-1b7d-40ad-b24e-24ec9d64e879",
+        "transactionDate": "2026-11-01",
+        "description": "Account transfer",
+        "reference": null,
+        "amount": "16.00",
+        "type": "debit",
+        "balance": "902.13",
+        "category": "Transfer",
+        "merchant": null,
+        "isReconciled": true,
+        "notes": null,
+        "source": "transfer",
+        "paymentMethod": "bank_transfer",
+        "counterparty": null,
+        "transferId": "481435bf-3f8b-4cb6-a34a-8ba8ca9cffc5",
+        "splits": [],
+        "documentConnections": [],
+        "attachments": [],
+        "createdAt": "2026-11-07T03:06:37.000Z",
+        "updatedAt": "2026-11-07T03:06:37.000Z"
+      },
+      "destinationTransaction": {
+        "id": "1f3d9682-0af4-4701-ba39-16c93481b050",
+        "bankAccountId": "c7456306-0f1a-4820-aeaa-686e4aab9edf",
+        "transactionDate": "2026-11-01",
+        "description": "Account transfer",
+        "reference": null,
+        "amount": "10.00",
+        "type": "credit",
+        "balance": "10.00",
+        "category": "Transfer",
+        "merchant": null,
+        "isReconciled": true,
+        "notes": null,
+        "source": "transfer",
+        "paymentMethod": "bank_transfer",
+        "counterparty": null,
+        "transferId": "481435bf-3f8b-4cb6-a34a-8ba8ca9cffc5",
+        "splits": [],
+        "documentConnections": [],
+        "attachments": [],
+        "createdAt": "2026-11-07T03:06:37.000Z",
+        "updatedAt": "2026-11-07T03:06:37.000Z"
+      },
+      "createdAt": "2026-11-07T03:06:37.000Z",
+      "updatedAt": "2026-11-07T03:06:37.000Z"
+    }
+  }
+}

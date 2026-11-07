@@ -1,0 +1,82 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_5ce0578d-177d-4970-b3c7-23c0aa4d7b88","route":"/api/auth/*","method":"POST","status":200,"durationMs":159}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_86ae5536-a9da-414e-a6b7-5505b6d2ae62","route":"/api/business-profile","method":"PUT","status":200,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_40b4e279-7d9b-4deb-8b3c-630d5fbf3a7d","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_52514e98-4ef7-49cf-80ab-b1548e2b43b4","route":"/api/invoices","method":"POST","status":201,"durationMs":70}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_299274ea-794f-41bd-bd51-7fc4e77b9a17","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_25765c7f-4f54-4355-a418-28c460ee1d22","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_63b6d68a-1d8b-4e48-853a-cf539512882f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_8369e810-42f3-4633-8317-b8e5071db38d","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_724b5330-ae7a-459b-8a9c-238978b23f44","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":8}
+
+ ❯ src/modules/stripe/stripe.operations.test.ts (10 tests | 1 failed | 9 skipped) 1952ms
+   ↓ Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+   ↓ Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+   ↓ Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+   ↓ Stripe finance operations > expires an open link after a manual payment changes its balance
+   ↓ Stripe finance operations > requires owner/admin on every operational route and isolates another company
+   ↓ Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+   ↓ Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+   ↓ Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+   × Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment 1950ms
+     → expected { …(4) } to match object { result: 'mismatch', …(1) }
+(2 matching properties omitted from actual)
+   ↓ Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+AssertionError: expected { …(4) } to match object { result: 'mismatch', …(1) }
+(2 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "differences": ArrayContaining [
+-     "partial_refund",
+-   ],
+-   "result": "mismatch",
++   "differences": [],
++   "result": "match",
+  }
+
+ ❯ src/modules/stripe/stripe.operations.test.ts:138:41
+    136|       const remote=await f.gateway.retrievePayment!(`pi_mock_${f.row.s…
+    137|       const verification=await f.call(`/api/payments/${paid.paymentId}…
+    138|       expect(await verification.json()).toMatchObject({result:'mismatc…
+       |                                         ^
+    139|     }finally{await f.sql.end();}
+    140|   }));
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 9 skipped (10)
+   Start at  00:30:34
+   Duration  15.13s (transform 4.81s, setup 95ms, collect 12.21s, tests 1.95s, environment 0ms, prepare 279ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.operations.test.ts '--maxWorkers=1' -t 'externally partial refund'

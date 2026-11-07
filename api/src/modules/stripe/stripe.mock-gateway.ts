@@ -1,4 +1,4 @@
-import type { CreateCheckoutSessionInput, StripeGateway, StripeRemoteAccount, StripeWebhookEvent } from './stripe.gateway';
+import type { CreateCheckoutSessionInput, StripeGateway, StripeRemoteAccount, StripeRemotePayment, StripeWebhookEvent } from './stripe.gateway';
 
 type MockCheckout = CreateCheckoutSessionInput & { id: string; successUrl: string; cancelUrl: string; expiresAt: number; paid: boolean };
 
@@ -27,7 +27,18 @@ export function isMockStripeGateway(gateway: StripeGateway | undefined): gateway
 export function createMockStripeGateway(appUrl: string): MockStripeGateway {
   const baseUrl = appUrl.replace(/\/$/, '');
   const accounts = new Map<string, StripeRemoteAccount>();
+  const refunds = new Map<string, string>();
   const checkouts = new Map<string, MockCheckout>();
+  const remotePayment = (checkout: MockCheckout): StripeRemotePayment => ({
+    id: `pi_mock_${checkout.id}`, sessionId: checkout.id,
+    status: checkout.paid ? 'succeeded' : 'requires_payment_method', currency: 'nzd',
+    amountCents: checkout.paid ? checkout.amountCents : 0,
+    refundedCents: refunds.has(checkout.id) ? checkout.amountCents : 0,
+    platformFeeCents: checkout.platformFeeCents,
+    applicationFeeRefundedCents: refunds.has(checkout.id) ? checkout.platformFeeCents : 0,
+    destinationAccountId: checkout.connectedAccountId,
+    organisationId: checkout.organisationId, paymentLinkId: checkout.paymentLinkId,
+  });
   return {
     mock: true,
     createConnectedAccount(input) {
@@ -57,6 +68,35 @@ export function createMockStripeGateway(appUrl: string): MockStripeGateway {
     expireCheckoutSession(sessionId) {
       checkouts.delete(sessionId);
       return Promise.resolve();
+    },
+    retrieveCheckoutPayment(sessionId) {
+      const checkout = checkouts.get(sessionId);
+      if (!checkout?.paid) return Promise.reject(new Error('Checkout is not paid'));
+      return Promise.resolve(remotePayment(checkout));
+    },
+    listRecentPayments(organisationId, destinationAccountId, since) {
+      return Promise.resolve({ items: [...checkouts.values()].filter(row => row.organisationId === organisationId && row.connectedAccountId === destinationAccountId && (row.expiresAt - 86_400) * 1000 >= since.getTime() && row.paid).map(remotePayment), complete: true });
+    },
+    retrieveFeePayment(applicationFeeId) {
+      const checkout = [...checkouts.values()].find(row => `fee_mock_${row.id}` === applicationFeeId);
+      if (!checkout?.paid) return Promise.reject(new Error('Unknown mock application fee'));
+      return Promise.resolve(remotePayment(checkout));
+    },
+    retrievePayment(paymentIntentId) {
+      const checkout = [...checkouts.values()].find(row => `pi_mock_${row.id}` === paymentIntentId);
+      if (!checkout?.paid) return Promise.reject(new Error('Unknown mock payment'));
+      return Promise.resolve(remotePayment(checkout));
+    },
+    retrieveBalance(accountId) {
+      let availableCents = 0;
+      for (const checkout of checkouts.values()) if (checkout.connectedAccountId === accountId && checkout.paid && !refunds.has(checkout.id)) availableCents += checkout.amountCents - checkout.platformFeeCents;
+      return Promise.resolve({ availableCents, pendingCents: 0, currency: 'NZD' });
+    },
+    createFullRefund(paymentIntentId, idempotencyKey) {
+      const checkout = [...checkouts.values()].find(row => `pi_mock_${row.id}` === paymentIntentId);
+      if (!checkout?.paid) return Promise.reject(new Error('Unknown mock payment'));
+      const id = refunds.get(checkout.id) ?? `re_mock_${idempotencyKey}`;
+      refunds.set(checkout.id, id); return Promise.resolve({ id, status: 'succeeded' });
     },
     constructWebhookEvent(payload, signature, secret) {
       if (signature !== 'mock_signature' || secret !== 'whsec_mock') return Promise.reject(new Error('Invalid mock signature'));

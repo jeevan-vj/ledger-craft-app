@@ -1,0 +1,15 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/expense/ReceiptScanner.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/components/expense/ReceiptScanner.test.tsx
+  mobile receipt capture
+    ✓ captures and uploads while unavailable, offers manual entry, and preserves the same attachment (139 ms)
+    ✓ auto-scans when available and keeps an uploaded receipt after failure for retry or manual entry (64 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       2 passed, 2 total
+Snapshots:   0 total
+Time:        1.74 s, estimated 2 s
+Ran all test suites matching src/components/expense/ReceiptScanner.test.tsx.

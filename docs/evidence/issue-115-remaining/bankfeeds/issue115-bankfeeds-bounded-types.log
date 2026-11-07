@@ -1,0 +1,6 @@
+$ tsc --noEmit
+src/modules/stripe/stripe.guardrails.test.ts(25,78): error TS2307: Cannot find module './stripe.verification' or its corresponding type declarations.
+src/modules/stripe/stripe.guardrails.test.ts(41,78): error TS2307: Cannot find module './stripe.verification' or its corresponding type declarations.
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @ledgercraft/api@0.0.1 type-check: `tsc --noEmit`
+Exit status 2

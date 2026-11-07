@@ -336,14 +336,14 @@ export const ReceiptScanner: React.FC<ReceiptScannerProps> = ({
               {scanResult.total && (
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Total:</span>
-                  <span className="text-sm font-medium">${scanResult.total.toFixed(2)}</span>
+                  <span className="text-sm font-medium">${scanResult.total}</span>
                 </div>
               )}
 
               {scanResult.tax && (
                 <div className="flex justify-between">
                   <span className="text-sm text-muted-foreground">Tax:</span>
-                  <span className="text-sm font-medium">${scanResult.tax.toFixed(2)}</span>
+                  <span className="text-sm font-medium">${scanResult.tax}</span>
                 </div>
               )}
 
@@ -367,11 +367,11 @@ export const ReceiptScanner: React.FC<ReceiptScannerProps> = ({
                   {scanResult.items.map((item, index) => (
                     <div key={index} className="flex justify-between text-xs">
                       <span className="truncate mr-2">
-                        {item.quantity > 1 && `${item.quantity}x `}
+                        {item.quantity !== '1' && `${item.quantity}x `}
                         {item.description}
                       </span>
                       <span className="text-muted-foreground">
-                        ${item.price.toFixed(2)}
+                        ${item.price}
                       </span>
                     </div>
                   ))}

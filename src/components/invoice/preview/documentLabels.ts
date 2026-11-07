@@ -4,6 +4,11 @@ export interface DocumentLabels {
   dateLabel: string;
   dueLabel: string;
   showPayment: boolean;
+  sellerTaxId?: string | null;
+  showTax?: boolean;
+  taxLabel?: string;
+  taxReviewWarning?: string;
+  taxPriceNote?: string;
 }
 
 /** Default copy. Invoice templates keep their current wording when this is used. */

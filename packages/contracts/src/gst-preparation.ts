@@ -1,30 +1,39 @@
 import { z } from 'zod';
+import { gstCalculationSnapshotSchema } from './gst-calculation';
 
 export const taxPeriodDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine((value) => {
   const parsed = new Date(`${value}T00:00:00.000Z`);
   return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === value;
 }, 'Must be a valid calendar date');
 const money = z.string().regex(/^-?\d+\.\d{2}$/);
+export const gstBasisSchema = z.enum(['invoice', 'payments', 'hybrid']);
+export const gstSalesClassificationReviewSchema = z.object({
+  zeroRatedSales: money, exemptSales: money,
+  reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200),
+}).strict();
 
-export const gstPreparationQuerySchema = z.object({ from: taxPeriodDateSchema, to: taxPeriodDateSchema, basis: z.enum(['invoice', 'payments']).optional() }).strict()
+export const gstPreparationQuerySchema = z.object({ from: taxPeriodDateSchema, to: taxPeriodDateSchema, basis: gstBasisSchema.optional() }).strict()
   .refine((value) => value.from <= value.to, { message: 'From date must not be after to date', path: ['from'] });
 
 export const gstPreparationResponseSchema = z.object({
-  basis: z.enum(['invoice', 'payments']),
+  basis: gstBasisSchema,
   from: taxPeriodDateSchema,
   to: taxPeriodDateSchema,
   baseCurrency: z.literal('NZD'),
   totalSales: money,
   totalPurchases: money,
+  zeroRatedSales: money.optional(), exemptSales: money.optional(), unclassifiedSales: money.optional(), claimablePurchases: money.optional(), salesClassificationSupported: z.boolean().optional(),
   gstOnSales: z.string().regex(/^-?\d+\.\d{2}$/),
   gstOnPurchases: z.string().regex(/^-?\d+\.\d{2}$/),
   netGstPosition: z.string().regex(/^-?\d+\.\d{2}$/),
   warnings: z.array(z.string()),
   requiresReview: z.boolean().optional(),
+  calculation: gstCalculationSnapshotSchema.optional(),
   review: z.object({
     confirmed: z.literal(true), reviewedAt: z.string().datetime(), reviewedBy: z.string().min(1),
     adjustments: z.array(z.object({ kind: z.enum(['output', 'input']), amount: money, grossAdjustment: money.optional(), reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200) })),
     unadjustedGstOnSales: money, unadjustedGstOnPurchases: money, unadjustedTotalSales: money.optional(), unadjustedTotalPurchases: money.optional(),
+    salesClassificationReview: gstSalesClassificationReviewSchema.optional(),
   }).optional(),
 }).strict();
 
@@ -37,8 +46,9 @@ export const gstAdjustmentSchema = z.object({
   reason: z.string().trim().min(8).max(1000), sourceReference: z.string().trim().min(1).max(200),
 }).strict();
 export const gstAdjustmentPreparationRequestSchema = z.object({
-  ...orderedPeriod, basis: z.enum(['invoice', 'payments']).optional(),
+  ...orderedPeriod, basis: gstBasisSchema.optional(),
   reviewConfirmed: z.literal(true), adjustments: z.array(gstAdjustmentSchema).max(100),
+  salesClassificationReview: gstSalesClassificationReviewSchema.optional(),
 }).strict().refine((value) => value.from <= value.to, { message: 'From date must not be after to date', path: ['from'] });
 const nonnegativeMoney = z.string().regex(/^\d+\.\d{2}$/);
 export const companyTaxAdjustmentSchema = z.object({

@@ -11,6 +11,7 @@ import type { Database } from '../../db/client';
 import { customers } from '../../db/schema/customers';
 import { invoiceAttachments, invoiceHistory, invoices, lineItems } from '../../db/schema/invoices';
 import { quotes } from '../../db/schema/quotes';
+import { organisationToday } from '../accounting/organisation-date';
 import { decimal, roundMoney } from './money';
 import type { ComputedInvoiceTotals } from './totals';
 
@@ -37,6 +38,8 @@ function toDto(
   customerName: string | null,
   customerEmail: string | null,
   sourceQuote?: { id: string; quoteNumber: string },
+  customerDetails?: InvoiceDto['customerDetails'] | null,
+  asOf?: string,
 ): InvoiceDto {
   return invoiceSchema.parse({
     id: row.id,
@@ -69,6 +72,7 @@ function toDto(
     paymentStatus: row.paymentStatus,
     taxInclusive: row.taxInclusive,
     status: row.lifecycleStatus === 'cancelled' ? 'cancelled' : row.status,
+    effectiveStatus: row.lifecycleStatus === 'cancelled' ? 'cancelled' : ['sent', 'overdue'].includes(row.status) && asOf ? (row.dueDate < asOf && decimal(row.balanceDue).compare(0) > 0 ? 'overdue' : 'sent') : row.status,
     notes: row.notes ?? null,
     terms: row.terms ?? null,
     currency: row.currency,
@@ -80,6 +84,7 @@ function toDto(
     baseTotal: row.baseTotal,
     customerName,
     customerEmail,
+    customerDetails: customerDetails ?? undefined,
     items: lines,
     ...(sourceQuote ? { sourceQuoteId: sourceQuote.id, sourceQuoteNumber: sourceQuote.quoteNumber } : {}),
     createdAt: row.createdAt.toISOString(),
@@ -109,17 +114,19 @@ async function sourceQuotesByInvoice(
 
 export async function listInvoices(tx: Database, organisationId: string): Promise<InvoiceDto[]> {
   const rows = await tx
-    .select({ invoice: invoices, customerName: customers.name, customerEmail: customers.email })
+    .select({ invoice: invoices, customerName: customers.name, customerEmail: customers.email,
+      customerDetails: { name: customers.name, email: customers.email, address: customers.address, phone: customers.phone, city: customers.city, state: customers.state, zip: customers.zip, country: customers.country } })
     .from(invoices)
     .leftJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
     .where(and(eq(invoices.organisationId, organisationId), isNull(invoices.archivedAt)))
     .orderBy(desc(invoices.date), desc(invoices.createdAt));
   const sources = await sourceQuotesByInvoice(tx, organisationId);
 
+  const asOf = await organisationToday(tx, organisationId);
   const result: InvoiceDto[] = [];
   for (const row of rows) {
     const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
-    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, sources.get(row.invoice.id)));
+    result.push(toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, sources.get(row.invoice.id), row.customerDetails, asOf));
   }
   return result;
 }
@@ -130,14 +137,15 @@ export async function getInvoice(
   id: string,
 ): Promise<InvoiceDto | undefined> {
   const [row] = await tx
-    .select({ invoice: invoices, customerName: customers.name, customerEmail: customers.email })
+    .select({ invoice: invoices, customerName: customers.name, customerEmail: customers.email,
+      customerDetails: { name: customers.name, email: customers.email, address: customers.address, phone: customers.phone, city: customers.city, state: customers.state, zip: customers.zip, country: customers.country } })
     .from(invoices)
     .leftJoin(customers, and(eq(customers.id, invoices.customerId), eq(customers.organisationId, organisationId)))
     .where(and(eq(invoices.id, id), eq(invoices.organisationId, organisationId)));
   if (!row) return undefined;
   const lines = await tx.select().from(lineItems).where(and(eq(lineItems.invoiceId, row.invoice.id), eq(lineItems.organisationId, organisationId)));
   const source = await sourceQuoteForInvoice(tx, organisationId, row.invoice.id);
-  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, source);
+  return toDto(row.invoice, lines.map(toLineDto), row.customerName ?? null, row.customerEmail ?? null, source, row.customerDetails, await organisationToday(tx, organisationId));
 }
 
 async function sourceQuoteForInvoice(

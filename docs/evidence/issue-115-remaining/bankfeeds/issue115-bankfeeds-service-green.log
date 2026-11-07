@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/modules/bank-feeds/bank-feeds.service.test.ts (2 tests) 1380ms
+   ✓ Personal App bank feeds > imports exact feed statements once, retains existing import duplicate detection, observes one-hour rest and hides provider tokens  702ms
+   ✓ Personal App bank feeds > revokes on401, prevents another org using Personal credentials, and disconnect retains accounting records  677ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  00:03:26
+   Duration  2.74s (transform 446ms, setup 25ms, collect 1.07s, tests 1.38s, environment 0ms, prepare 94ms)

@@ -33,6 +33,12 @@ export interface StripeGateway {
   createAccountLink(input: { accountId: string; returnUrl: string; refreshUrl: string }): Promise<{ url: string; expiresAt: number }>;
   createCheckoutSession(input: CreateCheckoutSessionInput, idempotencyKey: string): Promise<{ id: string; url: string; expiresAt: number }>;
   expireCheckoutSession(sessionId: string): Promise<void>;
+  retrieveCheckoutPayment?(sessionId: string): Promise<StripeRemotePayment>;
+  listRecentPayments?(organisationId: string, destinationAccountId: string, since: Date): Promise<{ items: StripeRemotePayment[]; complete: boolean }>;
+  retrieveFeePayment?(applicationFeeId: string): Promise<StripeRemotePayment>;
+  retrievePayment?(paymentIntentId: string): Promise<StripeRemotePayment>;
+  retrieveBalance?(accountId: string): Promise<StripeRemoteBalance>;
+  createFullRefund?(paymentIntentId: string, idempotencyKey: string): Promise<{ id: string; status: string }>;
   constructWebhookEvent(payload: Uint8Array, signature: string, secret: string): Promise<StripeWebhookEvent>;
 }
 
@@ -41,8 +47,18 @@ export type StripeConfig = {
   mode: 'test' | 'live';
   mock?: boolean;
   appUrl: string;
+  approvedOrganisationIds?: string[];
   platformFeeBasisPoints: number;
   platformFeeFixedCents: number;
   webhookSecret: string;
   connectWebhookSecret: string;
 };
+
+/** Retrieved provider facts; webhooks supply identifiers, never money authority. */
+export type StripeRemotePayment = {
+  id: string; sessionId: string | null; status: string; currency: string;
+  amountCents: number; refundedCents: number; platformFeeCents: number;
+  applicationFeeRefundedCents: number; destinationAccountId: string | null;
+  organisationId: string | null; paymentLinkId: string | null;
+};
+export type StripeRemoteBalance = { availableCents: number; pendingCents: number; currency: 'NZD' };

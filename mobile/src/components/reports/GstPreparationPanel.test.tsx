@@ -121,3 +121,21 @@ it('reloads a saved reviewed117 draft instead of silently replacing it with raw1
  const screen=render(<GstPreparationPanel/>);fireEvent.changeText(screen.getByLabelText('GST period start'),figures.from);fireEvent.changeText(screen.getByLabelText('GST period end'),figures.to);fireEvent.press(screen.getByText('Prepare GST figures'));
  expect(await screen.findByText('Net GST payable: $117.00')).toBeTruthy();expect(screen.queryByText('Net GST payable: $135.00')).toBeNull();
 });
+
+it('uses persisted hybrid basis and server period dates without offering a silent basis change', async () => {
+ const screen = render(<GstPreparationPanel initialFrom="2026-04-01" initialTo="2026-05-31" registeredBasis="hybrid" />);
+ expect(screen.getByLabelText('GST period start').props.value).toBe('2026-04-01'); expect(screen.getByLabelText('GST period end').props.value).toBe('2026-05-31');
+ expect(screen.getByText('Registered GST basis: Hybrid')).toBeTruthy(); expect(screen.queryByText('Payments basis')).toBeNull();
+ fireEvent.press(screen.getByText('Prepare GST figures')); await waitFor(() => expect(gstPreparationApi.prepare).toHaveBeenCalledWith('2026-04-01', '2026-05-31', 'hybrid'));
+});
+it('records explicit zero-rated/exempt classification with reason/reference rather than guessing from zero tax', async () => {
+ jest.mocked(gstPreparationApi.prepare).mockResolvedValue({ ...figures, unclassifiedSales: '500.00', requiresReview: true, warnings: ['Review zero-rated or exempt sales.'] } as never);
+ jest.mocked(gstPreparationApi.review).mockResolvedValue({ ...figures, requiresReview: false, review: { confirmed: true, adjustments: [] } } as never);
+ const screen = render(<GstPreparationPanel />); fireEvent.press(screen.getByText('Prepare GST figures')); await screen.findByText('Review zero-rated or exempt sales.');
+ fireEvent.press(screen.getByText('Review GST adjustments')); fireEvent.press(screen.getByText('Review zero-rated and exempt sales'));
+ fireEvent.changeText(screen.getByLabelText('Reviewed zero-rated sales'), '500.00'); fireEvent.changeText(screen.getByLabelText('Reviewed exempt sales'), '0.00'); fireEvent.changeText(screen.getByLabelText('Sales classification reason'), 'Verified export services'); fireEvent.changeText(screen.getByLabelText('Sales classification source reference'), 'EXPORT-001');
+ fireEvent(screen.getByLabelText('Confirm GST adjustment review'), 'valueChange', true); fireEvent.press(screen.getByText('Apply reviewed GST adjustments'));
+ await waitFor(() => expect(gstPreparationApi.review).toHaveBeenCalledWith(expect.objectContaining({ salesClassificationReview: { zeroRatedSales: '500.00', exemptSales: '0.00', reason: 'Verified export services', sourceReference: 'EXPORT-001' } })));
+});
+it('requires renewed review when source fingerprint changes even if the displayed amounts stay equal', async () => { jest.mocked(gstPreparationApi.prepare).mockResolvedValueOnce({ ...figures, calculation: { fingerprint: 'a'.repeat(64), myIrBoxes: {} } } as never).mockResolvedValueOnce({ ...figures, calculation: { fingerprint: 'b'.repeat(64), myIrBoxes: {} } } as never); const screen = render(<GstPreparationPanel />); fireEvent.press(screen.getByText('Prepare GST figures')); await screen.findByText('Net GST payable: $120.00'); fireEvent.press(screen.getByText('Save GST draft')); expect(await screen.findByText('Figures or source books changed. Review the refreshed figures, then save the draft again.')).toBeTruthy(); expect(gstPreparationApi.save).not.toHaveBeenCalled(); });
+it('creates a new revision instead of patching an immutable canonical draft', async () => { jest.mocked(gstPreparationApi.listDrafts).mockResolvedValue([{ ...draft, returnData: { gstCalculation: { fingerprint: 'a'.repeat(64) } } }] as never); const s = render(<GstPreparationPanel initialFrom={figures.from} initialTo={figures.to} />); fireEvent.press(s.getByText('Prepare GST figures')); await s.findByText('Saved GST return: draft'); fireEvent.press(s.getByText('Save revised GST draft')); await waitFor(() => expect(gstPreparationApi.save).toHaveBeenCalledWith(figures)); expect(gstPreparationApi.save).not.toHaveBeenCalledWith(figures, 'draft-1'); });

@@ -1,0 +1,862 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/expenses/ExpenseCreateScreen.test.tsx src/screens/expenses/ExpenseEditScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/expenses/ExpenseCreateScreen.test.tsx (6.307 s)
+  ● mobile expense accounting › defaults to the NZ business calendar day across UTC midnight when settings are unavailable
+
+    Unable to find an element with displayValue: 2026-11-07
+
+    [36m<View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAmount[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0m$[0m
+              [36m</Text>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Expense amount"[39m
+                [33mplaceholder[39m=[32m"0.00"[39m
+                [33mvalue[39m=[32m""[39m
+              [36m/>[39m
+              [36m<Text>[39m
+                [0mNZD[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDescription[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Description"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"What was this for"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDate[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Date"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"YYYY-MM-DD"[39m
+                  [33mvalue[39m=[32m"2026-11-06"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mVendor[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Vendor"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Who you paid"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCategorization[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCategory [0m
+                [36m<Text>[39m
+                  [0m*[0m
+                [36m</Text>[39m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mTap to select category[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPaid from account[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mChoose payment account[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mPayment & Tax[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPayment Method[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mSelect payment method[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mInclude Tax (GST)[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m15%[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mBillable[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mMark as Billable[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mCharge to a customer[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReceipt[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"0"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Feather />[39m
+                [36m</View>[39m
+                [36m<Text>[39m
+                  [0mAttach receipt[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAdditional Information[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mNotes[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Notes"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Additional notes (optional)"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"1"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCreate Expense[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      22 |   it('defaults to the NZ business calendar day across UTC midnight when settings are unavailable',async()=>{
+      23 |     jest.useFakeTimers({doNotFake:['setTimeout','setInterval','setImmediate','clearTimeout','clearInterval','clearImmediate','nextTick','queueMicrotask','performance']});jest.setSystemTime(new Date('2026-11-06T12:30:00Z'));
+    > 24 |     const screen=render(<ExpenseCreateScreen/>);expect(screen.getByDisplayValue('2026-11-07')).toBeTruthy();
+         |                                                               ^
+      25 |   });
+      26 |   it('uses the configured company timezone and preserves a date explicitly entered before settings arrive',async()=>{
+      27 |     jest.useFakeTimers({doNotFake:['setTimeout','setInterval','setImmediate','clearTimeout','clearInterval','clearImmediate','nextTick','queueMicrotask','performance']});jest.setSystemTime(new Date('2026-11-07T04:30:00Z'));
+
+      at Object.getByDisplayValue (src/screens/expenses/ExpenseCreateScreen.test.tsx:24:63)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● mobile expense accounting › uses the configured company timezone and preserves a date explicitly entered before settings arrive
+
+    Unable to find an element with displayValue: 2026-11-06
+
+    [36m<View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAmount[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0m$[0m
+              [36m</Text>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Expense amount"[39m
+                [33mplaceholder[39m=[32m"0.00"[39m
+                [33mvalue[39m=[32m""[39m
+              [36m/>[39m
+              [36m<Text>[39m
+                [0mNZD[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDescription[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Description"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"What was this for"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDate[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Date"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"YYYY-MM-DD"[39m
+                  [33mvalue[39m=[32m"2026-11-07"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mVendor[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Vendor"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Who you paid"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCategorization[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCategory [0m
+                [36m<Text>[39m
+                  [0m*[0m
+                [36m</Text>[39m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mTap to select category[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPaid from account[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mChoose payment account[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mPayment & Tax[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPayment Method[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mSelect payment method[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mInclude Tax (GST)[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m15%[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mBillable[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mMark as Billable[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mCharge to a customer[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReceipt[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"2"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Feather />[39m
+                [36m</View>[39m
+                [36m<Text>[39m
+                  [0mAttach receipt[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAdditional Information[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mNotes[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Notes"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Additional notes (optional)"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"3"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCreate Expense[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      27 |     jest.useFakeTimers({doNotFake:['setTimeout','setInterval','setImmediate','clearTimeout','clearInterval','clearImmediate','nextTick','queueMicrotask','performance']});jest.setSystemTime(new Date('2026-11-07T04:30:00Z'));
+      28 |     jest.mocked(reportsApi.options).mockResolvedValue({today:'2026-11-06',timezone:'America/Los_Angeles'} as never);
+    > 29 |     const screen=render(<ExpenseCreateScreen/>);await screen.findByDisplayValue('2026-11-06');
+         |                                                              ^
+      30 |     fireEvent.changeText(screen.getByPlaceholderText('YYYY-MM-DD'),'2026-10-01');expect(screen.getByDisplayValue('2026-10-01')).toBeTruthy();
+      31 |   });
+      32 |   it('warns about a matching saved receipt and requires explicit duplicate override', async () => {
+
+      at Object.findByDisplayValue (src/screens/expenses/ExpenseCreateScreen.test.tsx:29:62)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+FAIL src/screens/expenses/ExpenseEditScreen.test.tsx
+  ● uses the NZ business day only for a missing legacy date and preserves stored dates
+
+    Unable to find an element with displayValue: 2026-11-07
+
+    [36m<View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mExpense Details[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDescription[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Description"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Enter expense description"[39m
+                  [33mvalue[39m=[32m"Undated legacy cost"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mAmount[0m
+                  [36m</Text>[39m
+                  [36m<View>[39m
+                    [36m<TextInput[39m
+                      [33maccessibilityLabel[39m=[32m"Amount"[39m
+                      [33maccessibilityState[39m=[32m{
+                        {
+                          "disabled": false,
+                        }
+                      }[39m
+                      [33mplaceholder[39m=[32m"0.00"[39m
+                      [33mvalue[39m=[32m"100.00"[39m
+                    [36m/>[39m
+                  [36m</View>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mCurrency[0m
+                  [36m</Text>[39m
+                  [36m<View>[39m
+                    [36m<TextInput[39m
+                      [33maccessibilityLabel[39m=[32m"Currency"[39m
+                      [33maccessibilityState[39m=[32m{
+                        {
+                          "disabled": false,
+                        }
+                      }[39m
+                      [33mplaceholder[39m=[32m"NZD"[39m
+                      [33mvalue[39m=[32m"NZD"[39m
+                    [36m/>[39m
+                  [36m</View>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDate[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Date"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"YYYY-MM-DD"[39m
+                  [33mvalue[39m=[32m"2026-11-06"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mVendor[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Vendor"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Vendor name (optional)"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCategorization[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCategory [0m
+                [36m<Text>[39m
+                  [0m*[0m
+                [36m</Text>[39m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mTap to select category[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mChange[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPaid from account[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mChoose payment account[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mChange[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mPayment & Tax[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPayment Method[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mSelect payment method[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mChange[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mInclude Tax (GST)[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m15%[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{true}[39m
+              [36m/>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mSubtotal:[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m100.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mTax (15%):[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m15.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mTotal:[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m115.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mBillable[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mMark as Billable[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mCharge to a customer[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReceipt[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"0"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Feather />[39m
+                [36m</View>[39m
+                [36m<Text>[39m
+                  [0mAttach receipt[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAdditional Information[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mNotes[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Notes"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Additional notes (optional)"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mApproval status[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0mOnly approved expenses are included in posted accounts and GST reports.[0m
+            [36m</Text>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"1"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mPending[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"2"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mApproved[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View[39m
+              [33maccessibilityRole[39m=[32m"button"[39m
+              [33maccessibilityState[39m=[32m{
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }[39m
+              [33maccessible[39m=[32m{true}[39m
+              [33mnativeID[39m=[32m"3"[39m
+            [36m>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mRejected[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"4"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mUpdate Expense[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      25 |  jest.useFakeTimers({doNotFake:['setTimeout','setInterval','setImmediate','clearTimeout','clearInterval','clearImmediate','nextTick','queueMicrotask','performance']});jest.setSystemTime(new Date('2026-11-06T12:30:00Z'));
+      26 |  jest.mocked(expenseService.fetchExpenseById).mockResolvedValue({id:'expense-1',description:'Undated legacy cost',amount:115,taxAmount:15,status:'pending',expenseDate:'',currency:'NZD'} as never);
+    > 27 |  const screen=render(<ExpenseEditScreen/>);await screen.findByDisplayValue('2026-11-07');
+         |                                                         ^
+      28 | });
+      29 |
+      30 | it('approves an expense without adding GST again to the already gross stored amount', async () => {
+
+      at Object.findByDisplayValue (src/screens/expenses/ExpenseEditScreen.test.tsx:27:57)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 2 failed, 2 total
+Tests:       3 failed, 4 passed, 7 total
+Snapshots:   0 total
+Time:        9.478 s
+Ran all test suites matching src/screens/expenses/ExpenseCreateScreen.test.tsx|src/screens/expenses/ExpenseEditScreen.test.tsx.

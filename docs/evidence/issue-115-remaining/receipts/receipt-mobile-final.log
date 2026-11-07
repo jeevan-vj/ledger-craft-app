@@ -1,0 +1,16 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/expense/ReceiptAttachment.test.tsx src/components/expense/ReceiptScanner.test.tsx src/screens/expenses/ExpenseCreateScreen.test.tsx src/screens/expenses/ExpenseEditScreen.test.tsx src/features/expenses/receiptDuplicate.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/expenses/ExpenseCreateScreen.test.tsx
+PASS src/components/expense/ReceiptScanner.test.tsx
+PASS src/screens/expenses/ExpenseEditScreen.test.tsx
+PASS src/components/expense/ReceiptAttachment.test.tsx
+PASS src/features/expenses/receiptDuplicate.test.ts
+
+Test Suites: 5 passed, 5 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        4.808 s, estimated 6 s
+Ran all test suites matching src/components/expense/ReceiptAttachment.test.tsx|src/components/expense/ReceiptScanner.test.tsx|src/screens/expenses/ExpenseCreateScreen.test.tsx|src/screens/expenses/ExpenseEditScreen.test.tsx|src/features/expenses/receiptDuplicate.test.ts.

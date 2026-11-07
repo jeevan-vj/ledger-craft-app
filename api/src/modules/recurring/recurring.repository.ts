@@ -1,6 +1,7 @@
 import { recurringPayloadSchema, recurringRunSchema, recurringScheduleSchema, recurringTemplateSchema, type CreateRecurringTemplateRequest, type RecurringRunDto, type RecurringTemplateDto, type UpdateRecurringTemplateRequest } from '@ledgercraft/contracts';
-import { and, asc, desc, eq, isNotNull, lte, or } from 'drizzle-orm';
+import { and, asc, desc, eq, isNotNull, isNull, lte, or } from 'drizzle-orm';
 import type { Database } from '../../db/client';
+import { organisationMemberships, organisations } from '../../db/schema/identity';
 import { recurringRuns, recurringTemplates } from '../../db/schema/recurring';
 
 const iso = (value: Date | null) => value?.toISOString() ?? null;
@@ -66,3 +67,11 @@ export async function succeedRun(tx: Database, runId: string, generatedId: strin
 export async function failRun(tx: Database, runId: string, reason: string, nextAttemptAt: Date, delivery?: { generatedId: string; message: string }) { await tx.update(recurringRuns).set({ status: 'failed', generatedId: delivery?.generatedId, deliveryStatus: delivery ? 'failed' : 'not_requested', failureReason: (delivery?.message ?? reason).slice(0, 500), nextAttemptAt, updatedAt: new Date() }).where(eq(recurringRuns.id, runId)); }
 export async function advanceTemplate(tx: Database, organisationId: string, id: string, scheduledFor: Date, nextRunAt: Date | null, count: number) { await tx.update(recurringTemplates).set({ lastRunAt: scheduledFor, nextRunAt, occurrencesCreated: count, status: nextRunAt ? 'active' : 'ended', updatedAt: new Date() }).where(and(eq(recurringTemplates.organisationId, organisationId), eq(recurringTemplates.id, id))); }
 export async function nextAlarm(tx: Database) { const [row] = await tx.select({ at: recurringTemplates.nextRunAt }).from(recurringTemplates).where(and(eq(recurringTemplates.status, 'active'), isNotNull(recurringTemplates.nextRunAt))).orderBy(asc(recurringTemplates.nextRunAt)).limit(1); return row?.at ?? null; }
+
+/** Scheduler context is bound to the template, never the creator's active selection. */
+export async function executionMembership(tx: Database, organisationId: string, userId: string) {
+  const [row] = await tx.select({ role: organisationMemberships.role }).from(organisationMemberships)
+    .innerJoin(organisations, eq(organisations.id, organisationMemberships.organisationId))
+    .where(and(eq(organisationMemberships.organisationId, organisationId), eq(organisationMemberships.userId, userId), isNull(organisationMemberships.removedAt), isNull(organisations.archivedAt)));
+  return row;
+}

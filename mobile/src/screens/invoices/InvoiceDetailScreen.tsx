@@ -1,3 +1,4 @@
+import { InvoiceReminderPanel } from '@/features/customer-statements/PaymentRemindersWorkspace';
 import { InvoiceCreditNotesSection } from '@/components/invoice/InvoiceCreditNotesSection';
 import { invoiceSettlementLabel } from '@/features/invoices/settlementLabel';
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
@@ -583,6 +584,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
           </View>
         )}
 
+        {!createdDraft ? <InvoiceReminderPanel invoiceId={invoice.id} /> : null}
         {!createdDraft ? <InvoiceCreditNotesSection ownerId={paymentOwnerId} invoice={invoice} canWrite={canWrite} onChanged={() => { void refreshInvoice(); }} /> : null}
         {createdDraft || showFinishDraft(invoice.status, canWrite) ? null : (
           <InvoiceDeliverySection

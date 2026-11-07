@@ -1,0 +1,321 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_bd76a452-61fc-49a3-9747-d57aa0b8b787","route":"/api/auth/*","method":"POST","status":200,"durationMs":127}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_025f7d2a-997f-47e4-a170-991bba7cb928","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_8df514e7-a1e7-4682-b1b8-641019ced350","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_b0073b6e-43ea-4589-87c9-fcfa17d6748e","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_54afdefd-b608-4a4c-95d1-6efae56fa67f","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":28}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_0a443cb1-4475-4aed-bbc1-ed4345b037ee","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_fc555878-5283-4af8-b82d-ea33ec18e7bf","route":"/api/payments","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_7f5cf4ae-e5c7-404e-90a9-142fe3ff913c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":25}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+{"msg":"http_request","requestId":"req_9d8e8125-5538-45a1-b112-1dd7705158ed","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_73ce7abb-dba1-4f11-9f45-756c91e3370a","route":"/api/auth/*","method":"POST","status":200,"durationMs":129}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_3a007633-edad-4ab6-8044-c6c490d7bc90","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_5f312879-732a-4e5b-b885-341e34a6d79c","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_3a806fda-37f9-4b3e-bb01-8e259836b6d3","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_059f1632-3dba-460d-b754-c184826068c8","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":26}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+{"msg":"http_request","requestId":"req_55914637-e976-444d-9585-fe7b96fc1a54","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_36948dfa-9147-400c-8e40-3f310a26334e","route":"/api/auth/*","method":"POST","status":200,"durationMs":123}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_7ecc13d1-f392-42e2-8c81-52617aa40f58","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_3f572074-dbaf-4231-9778-ffd40a113e03","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_d2821140-2e47-4481-acd5-88bda8f47f1b","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_30d04bbf-709f-423d-bb7d-9fd648f1321d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":21}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_7d641cc1-2084-4a46-bb69-93eddbd7b1b5","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+{"msg":"http_request","requestId":"req_f14aec99-7667-45fa-8689-35fae55a44e3","route":"/api/payments","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_3241cf2b-8334-41db-bc76-0806918354ec","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_5e4abdec-6907-4b2d-8f2c-9ab25c11faae","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_44d34348-9978-4827-8369-4521b85d42f5","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_38b76530-7d73-406e-8639-041fa38a92c5","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_b738097e-285d-4f42-93a7-37148e4b3831","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":26}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_58f3d12a-0c28-4473-be6a-727cf27f73e5","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+{"msg":"http_request","requestId":"req_d4fdd7ff-1453-42d1-b562-626230ded875","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_a19bfd1d-177d-446d-a9f2-ae8024a6a1ab","route":"/api/auth/*","method":"POST","status":200,"durationMs":103}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_f6e81016-c0b2-48fe-951e-be93da273171","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_034df3fc-ecea-4fb1-a934-12951fbf8b60","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_4eb0b55f-380d-4df5-87f7-711193fb5d40","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_3fa55d67-6f8e-4aa3-b304-409ba1c3cd64","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_e10ea12f-7cf6-44e8-9551-77521a98c653","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_f5126833-9f8f-4b22-8728-8b50e3b8d641","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_c0a49e8b-5a7a-48b7-87cc-bc2cd0a823df","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_28026851-21e0-4872-abb9-a67ab90fbe30","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+{"msg":"http_request","requestId":"req_ae9d503a-71dc-44b3-a40f-63b0809ea5af","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_6e252371-98ea-411a-9dc6-3f848b9a1de5","route":"/api/auth/*","method":"POST","status":200,"durationMs":106}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_de89a24b-13cf-4725-8684-73a58768424c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_d89709f8-e23c-4b06-b8d8-b9f1b21c9bbe","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_18f9ef34-bf8c-4b81-9b33-f050b326f22b","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_419e1e11-c79d-409b-a9c0-7321d6b23ea0","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":31}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_1365ed97-f8ef-4319-9344-76e1f386a64c","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_5de060d8-8242-4bb1-9122-dabb4ab20391","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_d9024353-e989-41fd-967f-c2ed92367324","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_fbde2dc9-deae-46c9-9931-d0b0844821a5","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+{"msg":"http_request","requestId":"req_6ad12f8d-63f3-4af7-a048-329b1fd2e27b","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_e34bcb43-95f9-4beb-a29f-305e9b55b7f1","route":"/api/auth/*","method":"POST","status":200,"durationMs":122}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_ea16c92d-2cf9-46b9-9325-963992d92438","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_e731bbe6-13fb-4a56-913c-a263ceebcbf8","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_506d5130-4640-4e85-9544-c27ef341516e","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_258de21c-f244-4d36-94e4-4e9cc973f9e4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_2b013f27-e587-4012-80e7-8fda6c4bb1e9","route":"/api/me","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_846622f6-39e6-4ea3-8a3a-da49da63eea4","route":"/api/auth/*","method":"POST","status":200,"durationMs":136}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_973913de-66ef-4989-b639-12a654bbe7f3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_04b23a90-70b7-427e-b9a9-d74d5bb0408d","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_20f89e6e-5e5d-47f8-a732-95c32a29b5bd","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_802092b8-71c8-47c2-b77a-4272042fc91a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":16}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+{"msg":"http_request","requestId":"req_12e37884-0068-4d26-b5d0-ec4fb62b32ec","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_1f18f6f2-c324-4306-b91b-f331ed5271a6","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_a92fabf7-30cc-4d86-93ac-e2cd051d30f2","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_d7ccaab8-ab54-48bb-88f0-df790a92ee53","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_a0d52e7a-24fa-430e-959c-3cdadef0479d","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_79677b9a-16a6-4a56-a686-e76afb834c75","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":20}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_6bc96c57-f008-4af9-be49-b80a067023c3","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_57874fd2-038a-4733-87ac-b19048087324","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_37e8f456-7a68-4987-a0f1-a36fc0d14404","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_257b7131-f4af-4bd4-9046-9a448c023d8a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_4bb972b9-5775-40dd-a6c5-fdd9f477df18","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_ddb1d607-5c6c-442d-aca1-d59749c8b533","route":"/api/auth/*","method":"POST","status":200,"durationMs":139}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_7e98d284-f7ef-4d96-91de-0203cb24d835","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_cc416ebf-13d4-4911-880f-a035495d9bd0","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_02454ea3-f894-4a88-81c8-3c32793510f2","route":"/api/invoices","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_4917eddc-312b-4af0-8fcb-d7d8e42cb4fa","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":26}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_ba48de67-c924-459b-ab1d-d968b602bfc5","route":"/api/me","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_37e030c6-50eb-4370-9bb8-f62fdeb4e506","route":"/api/customers/:id/statement","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_a05024d1-dfca-4ff2-816d-0b78e1b49eb4","route":"/api/customers/:id/statement","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_a755c5aa-6937-4d35-8e94-1deef68e4506","route":"/api/customers/:id/statement/share","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_bfbdb49e-9356-48e8-801e-3ff0cc875cd0","route":"/api/public/customer-statements/:token","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_1b7c1b2d-cdd6-41d1-9eee-a2454d2016e4","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_b8055eb8-7190-4237-968c-f897a9908aa7","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":39}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_2e9427a9-7472-4e23-a5d1-977d4edb1ed5","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_2d63a77c-2abc-46fc-aee3-d8aefe787ee5","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_1ac85d55-95cb-4630-b22c-0fe2206684e4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":28}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_6f389e38-00be-4b14-b724-d682bdf81f9d","route":"/api/customer-statements/send-bulk","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts
+{"msg":"http_request","requestId":"req_1c165fca-c76c-4dc3-bae9-1edd14d717ec","route":"/api/customers/:id/statement/share","method":"POST","status":403,"durationMs":23}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_3364da67-010c-4f59-90b3-6a7ce9cc446f","route":"/api/auth/*","method":"POST","status":200,"durationMs":128}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_2a4ab37d-582b-4b2b-bd3b-ac28adb83b7e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_f88c4e68-a69f-4c31-83b9-2568f7f611d4","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_1c8221fe-9555-42bf-aaad-731734191e9e","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_9823f10d-99c5-43d3-9cda-d82018e7a625","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":20}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_1ac75ece-f9f1-4eeb-9d52-0dfba5761794","route":"/api/me","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_fada0e1d-4f85-4397-9f79-f9f26b308cd4","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_d1bb4ca0-2540-49ee-b8c5-e39c78fa9b6a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_6a138da2-0731-48b7-8858-375d0a4b7ecc","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_4fcb7fab-8a8b-4657-9464-3574424ca7fa","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_8f462f32-6a10-4d92-a649-b41b487e3710","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":24}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation
+{"msg":"http_request","requestId":"req_cdac1f4f-067d-41cd-a957-7678d9665df5","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+ ✓ src/modules/customer-statements/customer-statements.test.ts (10 tests) 13588ms
+   ✓ customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal  1221ms
+   ✓ customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded  1119ms
+   ✓ customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links  1252ms
+   ✓ customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log  1156ms
+   ✓ customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods  1229ms
+   ✓ customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations  1240ms
+   ✓ customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders  1521ms
+   ✓ customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices  1321ms
+   ✓ customer statements and automatic reminders > serves authorised HTTP statements, anonymous public snapshots and idempotent bulk-send counts  1556ms
+   ✓ customer statements and automatic reminders > requires the live Identity reminder actor when supplied and does not fall back after revocation  1969ms
+ ✓ src/modules/invoices/resend.test.ts (12 tests) 29ms
+ ✓ src/modules/customer-statements/collections-mailer.test.ts (1 test) 7ms
+
+ Test Files  3 passed (3)
+      Tests  23 passed (23)
+   Start at  00:29:10
+   Duration  17.86s (transform 1.75s, setup 85ms, collect 3.42s, tests 13.62s, environment 1ms, prepare 221ms)

@@ -1,0 +1,241 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_acb2a619-648f-4832-905a-017995c7dffd","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_48f18582-b229-4242-a16c-5cda3339fcfd","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_03de23c4-ed2b-4077-a184-66d47caa693d","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_d6928810-3c0a-41b9-8086-d683c9dcf837","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_ac385e0b-4c0a-4907-8252-c7e12fd4ecb8","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_1612a5db-9cfc-4584-820a-e91e3db543c1","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_5e967d1f-d7d9-460c-aee7-0764f60386f6","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_dd5d6c06-3fbe-43ec-8fef-7dcdcb1fe5a8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_6eff5149-4c94-4170-9733-d0304b74e141","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_33bf6da1-396d-4b5c-ae1e-a9673808075e","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_75e335ee-2b06-4f92-93b8-6cc2deb692c9","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_b1740e95-c5ff-4c21-ade7-e0ef18b68bb7","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_17cefdb5-df94-4390-a0e0-ff5f7fc168d9","route":"/api/expenses/:id","method":"DELETE","status":204,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_f0345039-342f-4ed7-bd2a-4e5e8007c378","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_bc6a3795-68f9-4c39-98ef-a7d6387ca919","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_5e845118-41dd-41ea-a0fb-6efcef5b888f","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_409ef7e3-6337-47b2-b800-bbfaaad6d220","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_cb25ea6e-e03a-4cfd-80f8-b25d3fa59b2f","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_77764908-8bb9-423b-9e3a-77b4ca42cd6e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_37ea64fa-cee3-4635-ae15-69ee253cf884","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_e48dcf88-a8a5-4096-ae7f-e4c23f919bf8","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_ffaba015-576b-4fdc-8515-93a6fa94f494","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_25ffc20c-c367-4e52-85e8-f7ed68bd000f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_0c973641-aa89-426f-b131-c37c654c5f36","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_4ecb555b-930c-40e0-9117-aa43b6d753c7","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_dcd9a49a-579f-464a-9030-deae353b413e","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_795d6fc1-6617-4bd3-b066-197ea1171900","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_55b57eba-1a26-440a-8f7b-1c1e5830b5db","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_36753ac4-6d4a-44f1-a6cb-6f2eb2434b39","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_3c5ed091-c749-4e0a-8c0b-4b636a568825","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_821cc589-1b1c-4586-b934-f0eb36547d43","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_b54f501c-1809-412b-a1cc-620a9db1729e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_6549ac6d-657c-4b82-ae9c-1d3db2e5a729","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_f52034ef-474c-46a3-9bb4-30765844c86f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_ed8eb8ac-1d84-48e1-b42a-aba876119ab5","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_737f08aa-5de2-486c-b365-a6f4c52b3aa1","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_8873c4ce-2040-4a49-be06-73fceff44887","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_0f296af9-1d8c-4f98-9566-c0e62351aa29","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_97cb07fb-a4e6-4997-ae5d-01b93c6b91eb","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_e2404ccd-ef7f-44ea-9f50-dd0298ecf3a5","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_9225565c-6524-429b-af9a-f13002e4139d","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_9e830a99-b8c8-470a-8b33-8c1cdd8a914c","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_c750797f-25c7-4691-810a-0d70319350f5","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_727d9a3d-2f83-400e-8dbf-96b8ebfea849","route":"/api/bills/:id/void","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_43e69da0-e2e9-407a-9934-979e5c631c08","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts (3 tests | 3 failed) 5531ms
+   × GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return 1811ms
+     → expected { basis: 'invoice', …(15) } to match object { totalPurchases: '0.00', …(2) }
+(27 matching properties omitted from actual)
+   × GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales 2404ms
+     → expected { basis: 'invoice', …(16) } to match object { totalSales: '0.00', …(2) }
+(28 matching properties omitted from actual)
+   × GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return 1314ms
+     → expected { basis: 'invoice', …(16) } to match object { totalPurchases: '0.00', …(2) }
+(28 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+AssertionError: expected { basis: 'invoice', …(15) } to match object { totalPurchases: '0.00', …(2) }
+(27 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "gstOnPurchases": "0.00",
+-   "netGstPosition": "0.00",
+-   "totalPurchases": "0.00",
++   "gstOnPurchases": "-30.00",
++   "netGstPosition": "30.00",
++   "totalPurchases": "-230.00",
+  }
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts:19:48
+     17|       for (const basis of ['invoice', 'payments', 'hybrid']) {
+     18|         await f.request('/api/tax/gst-settings', 'PUT', { ...settings,…
+     19|         expect(await f.request(period, 'GET')).toMatchObject({ totalPu…
+       |                                                ^
+     20|       }
+     21|     } finally { await f.sql.end(); }
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+AssertionError: expected { basis: 'invoice', …(16) } to match object { totalSales: '0.00', …(2) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "gstOnSales": "0.00",
+-   "netGstPosition": "0.00",
+-   "totalSales": "0.00",
++   "gstOnSales": "-15.00",
++   "netGstPosition": "-15.00",
++   "totalSales": "-115.00",
+  }
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts:31:46
+     29|       await f.request('/api/tax/gst-settings', 'PUT', settings);
+     30|       await f.request(`/api/invoices/${invoice.id}/cancel`, 'POST', { …
+     31|       expect(await f.request(period, 'GET')).toMatchObject({ totalSale…
+       |                                              ^
+     32|     } finally { await f.sql.end(); }
+     33|   }));
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+AssertionError: expected { basis: 'invoice', …(16) } to match object { totalPurchases: '0.00', …(2) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "gstOnPurchases": "0.00",
+-   "netGstPosition": "0.00",
+-   "totalPurchases": "0.00",
++   "gstOnPurchases": "-15.00",
++   "netGstPosition": "15.00",
++   "totalPurchases": "-115.00",
+  }
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts:42:46
+     40|       await f.request('/api/tax/gst-settings', 'PUT', settings);
+     41|       await f.request(`/api/bills/${bill.id}/void`, 'POST', {});
+     42|       expect(await f.request(period, 'GET')).toMatchObject({ totalPurc…
+       |                                              ^
+     43|     } finally { await f.sql.end(); }
+     44|   }));
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  23:29:21
+   Duration  10.77s (transform 2.37s, setup 42ms, collect 4.84s, tests 5.53s, environment 0ms, prepare 168ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/tax/gst-registration-reversals.test.ts

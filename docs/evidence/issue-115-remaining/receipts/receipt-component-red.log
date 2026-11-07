@@ -1,0 +1,31 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/expense/__tests__/ReceiptInbox.test.tsx [ src/components/expense/__tests__/ReceiptInbox.test.tsx ]
+Error: Failed to resolve import "../ReceiptInbox" from "src/components/expense/__tests__/ReceiptInbox.test.tsx". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /workspace/ledger-craft-app/src/components/expense/__tests__/ReceiptInbox.test.tsx:3:0
+  20 |  const __vi_import_0__ = await import("react/jsx-dev-runtime");
+  21 |  const __vi_import_1__ = await import("@testing-library/react");
+  22 |  const __vi_import_2__ = await import("../ReceiptInbox");
+     |                                       ^
+  23 |
+  24 |
+ ❯ TransformPluginContext._formatError node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49255:41
+ ❯ TransformPluginContext.error node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49250:16
+ ❯ normalizeUrl node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64041:23
+ ❯ node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64173:39
+ ❯ TransformPluginContext.transform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:64100:7
+ ❯ PluginContainer.transform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:49096:18
+ ❯ loadAndTransform node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51929:27
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  00:02:32
+   Duration  860ms (transform 37ms, setup 99ms, collect 0ms, tests 0ms, environment 345ms, prepare 173ms)

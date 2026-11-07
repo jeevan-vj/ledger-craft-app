@@ -60,7 +60,7 @@ async function saveProfile(app: ReturnType<typeof createApp>, cookie: string) {
       email: 'stall@example.com',
       country: 'NZ',
       defaultTaxRate: '15',
-      gstRegistrationStatus: 'registered',
+      gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01',
     }),
   });
   expect(response.status).toBe(200);

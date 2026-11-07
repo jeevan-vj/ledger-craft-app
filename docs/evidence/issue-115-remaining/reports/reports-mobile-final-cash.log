@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watch=false src/screens/reports/ReportsScreen.test.tsx src/features/reports/api/reportsApi.contract.test.ts src/features/reports/model/financialReportShare.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/reports/ReportsScreen.test.tsx (5.57 s)
+PASS src/features/reports/model/financialReportShare.test.ts
+PASS src/features/reports/api/reportsApi.contract.test.ts
+
+Test Suites: 3 passed, 3 total
+Tests:       13 passed, 13 total
+Snapshots:   0 total
+Time:        6.32 s, estimated 8 s
+Ran all test suites matching src/screens/reports/ReportsScreen.test.tsx|src/features/reports/api/reportsApi.contract.test.ts|src/features/reports/model/financialReportShare.test.ts.

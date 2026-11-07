@@ -32,6 +32,7 @@ export const expenses = sqliteTable('expenses', {
   accountId: text('account_id'),
   vendorName: text('vendor_name'),
   receiptUrl: text('receipt_url'),
+  receiptHash: text('receipt_hash'),
   expenseDate: text('expense_date').notNull(),
   status: text('status').notNull().default('pending'),
   isBillable: integer('is_billable', { mode: 'boolean' }).notNull().default(false),

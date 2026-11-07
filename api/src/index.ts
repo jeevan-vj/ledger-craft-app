@@ -10,6 +10,7 @@ import { purgeLocalOrganisationData } from './modules/auth/local-organisation-pu
 import { createRuntimeInvoiceMailer } from './modules/invoices/resend';
 import { createFilesystemObjectStore } from './modules/storage/filesystem';
 import { createFilesystemFileStorage } from './modules/storage/filesystem-file-storage';
+import { bankFeedConfigFromEnv, bankFeedPreDeleteHook } from './modules/bank-feeds/bank-feeds.service';
 import { stripePaymentsCapability, stripeRuntimeFromEnv } from './modules/stripe/stripe.real-gateway';
 
 function createRuntimeApp() {
@@ -25,6 +26,9 @@ function createRuntimeApp() {
   return createApp({
     auth,
     db,
+    appUrl: process.env.APP_URL,
+    bankFeedConfig: bankFeedConfigFromEnv(process.env),
+    accountPreDeleteHooks: [bankFeedPreDeleteHook(db, bankFeedConfigFromEnv(process.env))],
     invoiceMailer,
     objectStore,
     fileStorage,

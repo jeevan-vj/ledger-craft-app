@@ -15,9 +15,11 @@ describe('mobile navigation links', () => {
     expect(screens).toEqual([
       'Reports',
       'AccountingTools',
+      'CustomerStatements',
       'ItemList',
       'BankAccountList',
       'BankReconciliation',
+      'PaymentReminders',
       'BusinessSettings',
       'CompanyTeam',
       'RecurringSchedules',

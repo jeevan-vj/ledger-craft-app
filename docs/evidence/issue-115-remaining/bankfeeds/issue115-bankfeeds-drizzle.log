@@ -1,0 +1,7 @@
+Reading config file '/workspace/ledger-craft-app/api/bankfeeds-generation.config.ts'
+3 tables
+bank_feed_accounts 9 columns 1 indexes 2 fks
+bank_feed_connections 5 columns 0 indexes 2 fks
+bank_feed_transactions 5 columns 1 indexes 3 fks
+
+[✓] Your SQL migration file ➜ /tmp/issue115-bankfeeds-drizzle/0000_military_george_stacy.sql 🚀

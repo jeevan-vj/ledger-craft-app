@@ -25,7 +25,7 @@ describe('quick sale receipt and daily takings flow', () => {
       const headers = { ...jsonHeaders, Cookie: cookie };
       const profile = await app.request('/api/business-profile', {
         method: 'PUT', headers,
-        body: JSON.stringify({ name: 'Market Stall', email: 'stall@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered' }),
+        body: JSON.stringify({ name: 'Market Stall', email: 'stall@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' }),
       });
       expect(profile.status).toBe(200);
 

@@ -1,4 +1,4 @@
-import { createStripePaymentLinkRequestSchema, stripeOnboardingLinkRequestSchema } from '@ledgercraft/contracts';
+import { createStripePaymentLinkRequestSchema, stripeOnboardingLinkRequestSchema, stripeFullRefundRequestSchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import { HTTPException } from 'hono/http-exception';
 import type { AppEnv } from '../../types';
@@ -7,6 +7,7 @@ import { parseIdempotencyKey } from '../invoices/idempotency';
 import { isMockStripeGateway } from './stripe.mock-gateway';
 import * as repo from './stripe.repository';
 import * as service from './stripe.service';
+import * as operations from './stripe.operations.service';
 
 function escapeHtml(value: string) {
   return value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]!);
@@ -64,7 +65,7 @@ export function stripePublicRoutes() {
   routes.get('/api/public/pay/:token', async (c) => {
     const db = c.get('db');
     if (!db) throw new HTTPException(503, { message: 'Database unavailable' });
-    return service.publicPaymentRedirect(db, c.req.param('token'));
+    return service.publicPaymentRedirect(db, c.req.param('token'), c.get('stripeConfig'));
   });
   for (const kind of ['platform', 'connect'] as const) {
     routes.post(`/api/stripe/webhooks/${kind}`, async (c) => {
@@ -85,7 +86,7 @@ export function stripeRoutes() {
   const routes = new Hono<AppEnv>();
   routes.get('/api/payments/stripe/account', async (c) => {
     const { db, user } = await requireSession(c);
-    return c.json(await service.getAccount(db, user.id));
+    return c.json(await service.getAccount(db, user.id, c.get('stripeConfig')));
   });
   routes.post('/api/payments/stripe/account', async (c) => {
     const { db, user } = await requireSession(c);
@@ -120,6 +121,16 @@ export function stripeRoutes() {
   routes.post('/api/invoices/:id/payment-links/:linkId/cancel', async (c) => {
     const { db, user } = await requireSession(c);
     return c.json(await service.cancelPaymentLink(db, user.id, c.req.param('id'), c.req.param('linkId'), c.get('stripeGateway'), c.get('stripeConfig')));
+  });
+  routes.get('/api/payments/stripe/balance', async c => { const { db, user } = await requireSession(c); return c.json(await operations.balance(db, user.id, c.get('stripeGateway'), c.get('stripeConfig'))); });
+  routes.get('/api/payments/stripe/settlements', async c => { const { db, user } = await requireSession(c); return c.json(await operations.settlements(db, user.id)); });
+  routes.get('/api/payments/stripe/operations', async c => { const { db, user } = await requireSession(c); return c.json(await operations.operations(db, user.id)); });
+  routes.post('/api/payments/:id/stripe/verify', async c => { const { db, user } = await requireSession(c); return c.json(await operations.verify(db, user.id, c.req.param('id'), c.get('stripeGateway'), c.get('stripeConfig'))); });
+  routes.post('/api/payments/:id/stripe/refund', async c => {
+    const { db, user } = await requireSession(c); const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+    if (!key) throw new HTTPException(400, { message: 'Idempotency-Key is required' });
+    const input = stripeFullRefundRequestSchema.parse(await c.req.json());
+    return c.json(await operations.refund(db, user.id, c.req.param('id'), input.reason, key, c.get('stripeGateway'), c.get('stripeConfig')), 202);
   });
   return routes;
 }

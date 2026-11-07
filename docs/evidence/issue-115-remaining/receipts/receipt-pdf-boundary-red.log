@@ -1,0 +1,39 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/ai/receipt-pdf.test.ts (3 tests | 1 failed) 21ms
+   ✓ PDF receipt extraction > rejects malformed PDF encoding as a correctable input error 3ms
+   × PDF receipt extraction > sends bounded extracted PDF text, never a PDF image_url, and returns exact decimal strings 15ms
+     → expected [ 'END_UNTRUSTED_DOCUMENT', …(1) ] to have a length of 1 but got 2
+   ✓ PDF receipt extraction > converts compressed/scanned PDFs with the existing Workers AI document path and removes boundary injection 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/ai/receipt-pdf.test.ts > PDF receipt extraction > sends bounded extracted PDF text, never a PDF image_url, and returns exact decimal strings
+AssertionError: expected [ 'END_UNTRUSTED_DOCUMENT', …(1) ] to have a length of 1 but got 2
+
+- Expected
++ Received
+
+- 1
++ 2
+
+ ❯ src/modules/ai/receipt-pdf.test.ts:16:54
+     14|     expect(request).toContain('Harbour Supplies total 115.00 GST 15.00…
+     15|     expect(request).not.toContain('image_url');
+     16|     expect(request.match(/END_UNTRUSTED_DOCUMENT/g)).toHaveLength(1);
+       |                                                      ^
+     17|     expect(result.total).toBe('115.00'); expect(result.tax).toBe('15.0…
+     18|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:19:41
+   Duration  737ms (transform 292ms, setup 31ms, collect 438ms, tests 21ms, environment 0ms, prepare 99ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/ai/receipt-pdf.test.ts

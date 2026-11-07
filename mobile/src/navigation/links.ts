@@ -22,6 +22,12 @@ export const mobileLinking: LinkingOptions<RootStackParamList> = {
               CompanyTeam: 'settings',
               AccountSecurity: 'settings/security',
               AccountingTools: 'accounting/tools',
+              CustomerStatements: 'customer-statements',
+              PaymentReminders: 'settings/payment-reminders',
+              BankAccountList: 'banking/accounts',
+              BankAccountDetail: 'banking/accounts/:bankAccountId',
+              BankStatementImport: 'banking/accounts/:bankAccountId/import',
+              RecurringSchedules: 'settings/recurring',
               BankReconciliation: 'banking/reconcile',
               BankReconciliationMatch: 'banking/reconcile/:transactionId',
               BankMatchingRules: 'banking/reconcile/rules',
@@ -51,6 +57,7 @@ export const moreMenuSections = [
   {
     title: 'Sales',
     rows: [
+      { label: 'Customer statements', subtitle: 'Open items, activity and secure sharing', screen: 'CustomerStatements' },
       {
         label: 'Items',
         subtitle: 'Products, services and prices',
@@ -76,6 +83,7 @@ export const moreMenuSections = [
   {
     title: 'Account',
     rows: [
+      { label: 'Payment reminders', subtitle: 'Schedules, opt-outs and delivery history', screen: 'PaymentReminders' },
       {
         label: 'Business profile',
         subtitle: 'Details, GST, invoices and quotes',

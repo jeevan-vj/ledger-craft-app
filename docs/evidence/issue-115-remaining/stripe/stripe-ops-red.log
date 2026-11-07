@@ -1,0 +1,150 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_81f4a363-b206-41a5-bb1d-a9b90d883f3c","route":"/api/auth/*","method":"POST","status":200,"durationMs":145}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_43eff8c2-3473-4769-bc37-c3dc3879c68d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_d1cad383-4026-4a28-bb83-80cd15d72692","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_20c6b782-0a8a-4f6d-bd19-c589482eb151","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_e2e8bf63-ec6a-41df-b979-b549e6943b00","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_55c315ef-29d8-409b-a3f8-c99819511357","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_2f5f5220-8d07-48c3-9685-b3210a80e5f9","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_d716617a-ee79-485e-8fdb-16f86d07543b","route":"/api/auth/*","method":"POST","status":200,"durationMs":99}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_07a7d9b1-84fc-47e1-9ed7-f66fccadb061","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_c2e77d08-cc40-46c0-a79f-8cf0b9198d83","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_62e0b1a1-2b08-4488-87d4-1ef0bea137cb","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_168d3e30-2fdb-4e3e-bb80-a771e0437e82","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_d71c6e12-2975-446c-ac1a-e49b02ab9141","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_a168cdc3-afe0-4c20-b8b4-69e57157cde4","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_bc6cfa63-57eb-48a5-a550-cb508e53bd49","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_9adc5bcb-d946-4d3f-acee-6b5ffd2a61a0","route":"/api/payments/:id/stripe/verify","method":"POST","status":404,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_a160363b-4321-47e7-ad5f-6de95ee56a6a","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_dbadfdce-e7ae-48cb-9300-98d783d5943b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_86a9ef8c-e591-486c-875b-4a16823f0019","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_882f440d-4c19-48f9-8b60-34cde3d18d44","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_39e4871d-6580-4945-a245-45cb0640cab0","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_c109b2fb-77b5-4d59-bb2a-b86494f408ca","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_32cdaf01-b052-40b8-8791-c90790fe9127","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_a3c8adb6-47dd-4eb5-8aa6-29a7c09bf561","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_d7cc4a28-97dc-40ff-9133-60032c4554f1","route":"/api/payments/stripe/balance","method":"GET","status":404,"durationMs":3}
+
+ ❯ src/modules/stripe/stripe.operations.test.ts (3 tests | 3 failed) 2830ms
+   × Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different 1010ms
+     → f.gateway.retrieveCheckoutPayment is not a function
+   × Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation 1017ms
+     → {"error":{"code":"NOT_FOUND","message":"Not found","requestId":"req_9adc5bcb-d946-4d3f-acee-6b5ffd2a61a0"}}: expected 404 to be 200 // Object.is equality
+   × Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books 800ms
+     → expected 404 to be 200 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+TypeError: f.gateway.retrieveCheckoutPayment is not a function
+ ❯ src/modules/stripe/stripe.operations.test.ts:35:38
+     33|     try {
+     34|       const event = f.gateway.completeCheckout(f.row.stripe_checkout_s…
+     35|       const remote = await f.gateway.retrieveCheckoutPayment!(f.row.st…
+       |                                      ^
+     36|       f.gateway.retrieveCheckoutPayment = async () => ({ ...remote, de…
+     37|       await expect(processVerifiedWebhook(f.db, event, f.gateway, f.co…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+AssertionError: {"error":{"code":"NOT_FOUND","message":"Not found","requestId":"req_9adc5bcb-d946-4d3f-acee-6b5ffd2a61a0"}}: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ src/modules/stripe/stripe.operations.test.ts:49:58
+     47|       const paid = await (await f.call(`/api/invoices/${f.invoice.id}/…
+     48|       const verify = await f.call(`/api/payments/${paid.paymentId}/str…
+     49|       expect(verify.status, await verify.clone().text()).toBe(200);
+       |                                                          ^
+     50|       expect(await verify.json()).toMatchObject({ result: 'match', dif…
+     51|       const refund = await f.call(`/api/payments/${paid.paymentId}/str…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ src/modules/stripe/stripe.operations.test.ts:70:30
+     68|       const paid = await (await f.call(`/api/invoices/${f.invoice.id}/…
+     69|       const balance = await f.call('/api/payments/stripe/balance');
+     70|       expect(balance.status).toBe(200);
+       |                              ^
+     71|       expect(await balance.json()).toMatchObject({ currency: 'NZD', av…
+     72|       await f.sql.unsafe("UPDATE payments SET amount = '90.00' WHERE i…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  00:00:35
+   Duration  6.60s (transform 1.64s, setup 26ms, collect 3.42s, tests 2.83s, environment 0ms, prepare 131ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/stripe/stripe.operations.test.ts '--maxWorkers=1'

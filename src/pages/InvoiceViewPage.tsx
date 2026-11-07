@@ -13,6 +13,7 @@ import ShareInvoiceModal from '@/components/invoice/ShareInvoiceModal';
 import { getServerCapabilities } from '@/services/capabilitiesService';
 import { StripePaymentLinkDialog } from '@/components/invoice/StripePaymentLinkDialog';
 import { InvoiceCreditNotesPanel } from '@/components/accounting/InvoiceCreditNotesPanel';
+import { InvoiceReminders } from '@/features/customer-statements/InvoiceReminders';
 import { settlementLabel } from '@/features/accounting-completion/settlementLabel';
 import type { InvoiceTemplateId } from '@/components/invoice/templates/InvoiceTemplates';
 
@@ -128,6 +129,7 @@ const InvoiceViewPage = () => {
       ) : null}
       {Number(invoice.totalCredited ?? 0) > 0 && <Card className="mb-6 space-y-2 p-5"><h2 className="font-semibold">{settlementLabel(invoice) ?? 'Partly credited'}</h2><p className="text-sm tabular-nums">Cash received: {invoice.currency} {invoice.totalPaid?.toFixed(2) ?? 'Unavailable'} · Credit notes: {invoice.currency} {invoice.totalCredited?.toFixed(2)} · Balance due: {invoice.currency} {invoice.balanceDue?.toFixed(2) ?? 'Unavailable'}</p></Card>}
       {creditsOpen && <div className="mb-6"><InvoiceCreditNotesPanel invoiceId={invoice.id} currency={invoice.currency} canIssue={!['draft', 'cancelled'].includes(invoice.status)} onChanged={() => void refreshInvoices()} /></div>}
+      <InvoiceReminders invoiceId={invoice.id} />
       <InvoicePreview 
         invoice={invoice} 
         selectedTemplate={(invoice.templateName as InvoiceTemplateId) || "classic"}

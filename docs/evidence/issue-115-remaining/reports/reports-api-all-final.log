@@ -1,0 +1,879 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_e99ea481-32b4-4980-acfa-d7f398efc63e","route":"/api/auth/*","method":"POST","status":200,"durationMs":135}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_e137cefb-87f8-43f8-bd5c-66122c0a4974","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_f508451a-7450-4927-a7c9-56a0a2352e3f","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_708d633c-6fef-40da-bc25-dedfba544a82","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_df44f7f3-2935-4990-9347-6c79c0f8d46d","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_24acf809-d6b4-45dd-905e-af56dbb9010f","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_c9c3b03c-c91c-4bbf-8c0a-f0fd358ae55f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_02e1b102-531c-4226-a292-62dc6aa9ea97","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_35db3146-cd44-4ab6-8fdb-cbb9da01a201","route":"/api/invoices","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_acdf4c33-e4dc-4752-ae72-6ce2152edcf3","route":"/api/bills","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_9a4cd0e6-a6ac-4bf9-ac4f-f117a2c1afd4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":22}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_2cb885ab-ec5e-457f-b21b-5ac2ae1e40ff","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_b107b167-92b7-4a48-bf41-7ddc1ec44850","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_921a21ce-016b-4ab6-ac1f-29ff391e28a3","route":"/api/fx-revaluations","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_05b6ff34-331f-4cef-8711-3721b235790a","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_567a69a7-c666-4ec2-98a3-29cc4e43c177","route":"/api/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_fc41d191-0451-429d-87af-bde5195a2bd7","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_07c89bd0-dff4-4e20-a5fb-03bf72f5bf67","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_3f88f509-55c0-43c0-817e-f73ecc1230b2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_d4f5c7bf-4353-4e5d-baa8-0ff59898db99","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_eaf5ebf3-47db-4a3b-a86c-092afab0f502","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_0057c761-63e1-4407-b7b1-a9e4e9af5d8d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_71313113-301f-45c8-aff5-d6b35b26b99e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_8ce428bb-ce91-40cb-93bb-90c25c2d2eda","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_28338b14-b74d-43cf-ad71-f96690e3e40f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_b694335c-69f8-474e-8eab-87f99072ce8d","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_1eab78aa-fae8-41e9-8da8-0f9ad0bef890","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_5f639b78-cdf0-4824-b5d6-c685036739cd","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_092bad1f-a511-446b-9692-de12e0e49c47","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_89401284-4813-42f4-94f7-9ce86926c432","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_7fd18190-686c-4741-8725-7431d4e48adf","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_d2c048f4-de6f-4151-997c-a469f2b0b966","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_4ef46761-d132-4c6b-808e-0a3e1d4878fe","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_f822956a-b925-4bfc-a19d-c67483b6b20d","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_ae8f6e80-939f-4fa3-8c11-622c225627d2","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_8e762307-20e6-49bd-a256-d36582d5d845","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_cac2d44e-d0cb-4281-8f35-6d5b01f2167a","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_ceae3ed2-cc12-4371-8835-1f3991d60644","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_314b5196-5efb-49e7-a08e-a4b39ee70fb6","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_3c397071-3f6f-4477-b577-dec19ad65d16","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_6124719a-8f18-4a38-bebb-c4231e583d2b","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_221a6cc1-805f-457f-a9c0-340d14518e47","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_041babe1-dfb1-4538-972a-c1a58d5bf790","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_2aa64eb0-59bb-41d4-8c18-8cbeefd2b478","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_032493df-b108-4bc7-8fbf-43b43f72fe96","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_4536e750-cdde-4a8d-be03-528edb580bb9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_a5fa4857-a92f-415b-a0be-b4c4deb68226","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_df2f1106-8794-49a1-822e-9ca943aaf7a6","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_6c2e85c6-f2b9-4f16-98c1-702583f0e7d3","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":19}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_e104e8b0-8986-4c0d-8fb3-86ce230dd621","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_ef9d8a25-abcf-4322-b167-2c01f9535355","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_33a04f16-746c-47db-8232-b4b8fa858c79","route":"/api/bills/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_eb865b24-76c2-41bc-a73b-5a61aa2ad7df","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_8bb3d000-742d-4940-a781-ba5988aa50cf","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_c06a438d-52c5-49bd-99d1-a354730bcdf1","route":"/api/bills/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_01b8dfb4-abe3-41c9-a7a2-068dee6969c0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_0a121fe2-76bf-4fef-85bd-99b64b4151a6","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_bd152166-f80f-4817-bf0f-cd37ae361bb2","route":"/api/auth/*","method":"POST","status":200,"durationMs":85}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_fa1e0d35-796d-407e-a795-a469e0d99271","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_e8f43bdf-c459-45a6-a5dc-fbe598cb03f7","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_620e2c1d-14b8-498b-b513-59c7bd98064f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_8596a3d4-b54f-4135-a60f-c2d4c9dfff07","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_070ec47b-c57c-4ff2-9173-6348cbdf3bad","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_3af6ab6e-8ac1-41ba-b06e-80cb6ee7ae52","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_aadb6b08-a9a8-40f9-b11e-3ebd8fe1d692","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_443bd55f-3d61-4cee-820b-55409f181aee","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_6c71988c-ba13-454c-8980-dd99a0e4bec1","route":"/api/bills","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_e624e92f-dd04-4ba5-93cf-37d592c2aceb","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_8a7f13ec-64cc-4de0-8330-76047b5c9e23","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_8df9277a-271b-4e54-8af6-e36766a6c095","route":"/api/reports/financial","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_1fe9b025-03cf-445d-a561-53bdfcff7190","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_9f711697-972a-4a7c-9b3e-eeefcb10fb2b","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_115162af-e2ef-4f3c-bd2f-9b17bd742311","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_929d3fbe-ab1c-446b-8bdc-ca93b5c664b5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_f29de1ab-b397-46b7-a21b-f9034c005f37","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_24f1dfc1-3228-4b9d-aaf0-a38070dfa0cd","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_e7eebe3a-b6d3-41a0-a4a7-c7b77add5058","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_9558f48b-512c-4548-829d-0c113e1b25f8","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_d94cc6e7-4e4b-46bc-97a7-13b5db07a2b4","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_c40c7595-ec02-4001-8959-9b2a6d99eff0","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_6ce8b50a-ecb6-4b4d-933d-de81df131d22","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_cb9106fc-5a30-4992-9c10-ceae5d37b2eb","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_712ab7c2-275d-4f9e-8b15-c60aad05156c","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_bd5d18d7-0723-46f2-88ba-5c3cdcb6a7f7","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_327738b4-8ca9-4010-aabe-4788992f6bc6","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_a6ff61bc-b417-4124-95b2-bc7f23104b72","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_edeb4f20-749f-4ce6-ad10-c41541f9351a","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_22c7d501-5311-4fcb-91b2-bca55445ef00","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_55d50611-c8a2-4d41-9584-7a0faf86475b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_ec7e9948-5c55-46ad-8fca-d9b64e11f635","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_6428b4b7-5aa6-43a6-9a85-e8c6d4899ebb","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_4c2c7563-fa19-4a4a-ae31-0e9ae510deef","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_50a27baa-24bc-4dea-acf4-90b467209166","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_29dce7b4-44c4-4b16-9226-3089ba2be350","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_7aefb175-254e-4bc9-86d4-87bb7401f249","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_fc6fba55-a629-4145-a8d6-f08f7480f394","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_9541d609-91e1-4c48-9d72-b9eac1ecea36","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+ ✓ src/modules/reports/reports-aging-history.test.ts (5 tests) 4676ms
+   ✓ historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing  1126ms
+   ✓ historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt  928ms
+   ✓ historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status  880ms
+   ✓ historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing  779ms
+   ✓ historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo  961ms
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_c25afa74-aafc-4211-aee5-3434bd3ac9c2","route":"/api/auth/*","method":"POST","status":200,"durationMs":120}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_1ac704f2-082d-4f3f-a2d7-94b0cdaf1287","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_bd9a811c-d77b-4126-be9d-a2bdb3652aab","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_874cd778-6187-4cb6-a744-5e6e9dc652c8","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_b5d11a7e-76df-44fb-bf5e-4b6865a959b5","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_62933991-7a19-4915-99d2-de97e3cc83ef","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_f59d92ea-1dc7-4d6c-a2ff-ac06e443884f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_a8ac20e4-e6b3-4356-b0b8-9e6ddac05dd7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_7b46be45-19c5-4e7c-b551-093a70b86c13","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_339cb422-8aef-4dfb-966d-301ef477a70b","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_29a0740d-27f8-4f65-93bd-190f0c51cb81","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_fcfd8958-3da5-483b-81a1-6409fc213596","route":"/api/payments","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_5890770e-a1f6-4eac-9647-d654edb9140e","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_2b329b93-3071-4d3f-a97a-aa92810fbbfc","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_59bddefb-95d1-4861-a874-9b5b6830bed3","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_d75b2888-c695-4b20-872b-8e736cc792e0","route":"/api/expenses","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_e2d0efab-0a45-4adb-87c8-380911b18bd4","route":"/api/accounts","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_188f41e4-facd-4e7f-8659-f0c422ff4e1c","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_6893f71e-591c-44d3-80bf-cce023b6e9a2","route":"/api/journal-entries","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_88a21fce-30ff-437c-85cb-44f34961c211","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_9954b171-3ff3-4c9f-b88c-d7d6248a1382","route":"/api/reports/financial","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_28f41b42-d431-40fa-8dbd-51fc686376e3","route":"/api/credit-notes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_e0e203c0-d690-40b8-ab39-303df317fa59","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_1340a138-240f-402c-b46a-9185cc9182a4","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_c760d550-a505-48c5-b4f3-1f316e4c68f9","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_6a3329da-3736-4ff5-be02-001f946fd71d","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_73e344e8-e15b-49b5-abf9-7259f3361a6a","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_ffa7278d-b9e8-4346-aa41-15d6c7dd7a26","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_4de9f348-630e-4661-a0ab-56bd5352aac4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_f46e742d-5ef0-4809-aea1-4a553f63dce4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash
+{"msg":"http_request","requestId":"req_7791d451-2f62-4a13-ac31-21616817148c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_33b5dbb4-9cbb-4018-946e-bfa9e17e8421","route":"/api/auth/*","method":"POST","status":200,"durationMs":93}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_3f556001-7cd5-47f7-8fbb-c587002d13b3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_998e43f7-3e3e-44b8-a449-f366204f51a0","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_4f1b1126-1d39-42c4-bea8-1b1e29cd8794","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_79aa8611-73ec-4677-b648-a9750c3c3717","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_89bb7777-ffcd-4251-8034-fbde911bb147","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_e9047603-c066-4eee-b774-b22b13af7527","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_27bd7840-760c-4c12-a89d-2e628a1faf23","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_e4b75be3-9ee1-4075-b1e8-1021f54b8574","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_c4ef9a3b-49cf-4655-b687-d50b9573b36f","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_c50a9fa5-40c6-429b-9097-a140119eb177","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_9f8020f2-c427-4408-a97c-6db755ea1e34","route":"/api/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_52cf4e26-64c7-47cb-826c-593fb6827375","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_9fdd720f-dfc1-4581-8cd9-1ab9656aece2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_5ed651bc-e2f7-463b-b296-67a5390e6c86","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_c98f975c-d055-4c33-bfb7-bcd317e3de2c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_76d4b752-6822-457d-8788-b921875cd5df","route":"/api/credit-notes/:id/refunds/:refundId/reverse","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_c5c9b4fa-c723-48d8-b8fc-bfe51d0d85d6","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_ff5e40f6-778d-45d9-9209-da20a2930b1e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period
+{"msg":"http_request","requestId":"req_208485a7-b535-4ed8-8de6-c07fb161f4de","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_e522be2f-13e8-4011-bf53-384203f3968f","route":"/api/auth/*","method":"POST","status":200,"durationMs":96}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_a604bd1a-94c6-4235-bd74-51607f180972","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_aa00a599-9bd1-4160-9aa2-6d6a85d0ef9c","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_f5b7edea-21b1-4489-a979-9e51b7ec78c7","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_61204104-f6dd-466d-8300-b8a90192ce70","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_fc93cc7f-92fe-4623-998a-6a17d58e83ee","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_0c982a7a-95cb-411d-bfea-93afc309f5e9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_0d01e28b-f00e-4d06-b72b-995c522c9476","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_c84f5d46-8ee4-420f-92da-9a2ed6953697","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_3fa729d8-8b6c-492e-999c-28efa6ebc60c","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_301296b7-b3d1-4ea7-a304-738b3fbd6ba3","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_f383faa2-aa24-4943-b842-96847d197fbb","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_333d088b-a3cd-468a-a3a1-e792fc32bf7d","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_d38c4feb-475b-4ba7-bd06-642654dc86a3","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_3e28ebb1-cb24-4c04-bff7-2bc140392f97","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_73d64cd1-82af-4cf1-8666-b1aefcec3027","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_2f39d726-4cae-4851-8c4a-e9f35020f5b0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports
+{"msg":"http_request","requestId":"req_78b9c374-e5e6-4ea4-8f39-1c88f182704b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_7a977d3e-b130-4fc6-86ef-38fa4ac35bb3","route":"/api/auth/*","method":"POST","status":200,"durationMs":83}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_7a40eeeb-b200-40cd-8767-4907add403f6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_0ab04645-9fc5-47fc-a77e-cc59136792e6","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_de86eba4-770b-4563-aaed-c25648ee4e6f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_a70e8067-471b-4ff1-8280-9d2f379ba02c","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_c5125f69-2d15-43a1-86ad-69244d9e96b1","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_ab09391c-9737-4a40-8380-fa7ef5e938ef","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_cbb2b7de-eb6c-4bc7-94cd-111f6b48e92a","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_eba5097f-144f-43dc-84a0-5b1718a50918","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_21140654-4fa0-4b57-80fc-db4fc945a56a","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_6f3abd71-1e8c-4589-8ef7-4cc5b4cca4cd","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_7b0df1ed-5d64-4bc5-be7c-7fcd9daa424a","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_568cd975-d004-4f1b-b780-9d8c2114571b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_49cd37f0-34e1-453b-b721-f5572bf64b91","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":13}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_76870dbd-ade6-41d1-923f-29a84b63c038","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_f5772342-d206-40f9-8a7e-580ba62746d5","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_bc03c4df-bda7-497e-951c-5a7d3548699b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_d8be0d4d-f1d1-49c3-90b4-f6f5a55d854e","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_e004b8d7-de70-4835-864a-da6ef997986f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_0b0d6da3-cfe5-45a6-818a-6a006cfe5858","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal
+{"msg":"http_request","requestId":"req_9524e228-7708-49da-8e79-1dd75feda3ef","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_3420a981-7a9d-47a7-8569-fa1219a2fb84","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_8804989b-4170-44cd-94ae-62feb1057695","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_8fa37c88-4ef5-4d11-8156-36fa128356bb","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_67f75293-993a-4e6e-8bf4-fe00020054ff","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_43493e01-5e72-4abf-963f-8b33dd475185","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_5e65ca86-f5d8-4825-a108-03c54019938b","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_edd6763f-a2d7-42f9-9697-3d2818f2a2c2","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_f9d3f531-e855-4d52-9e5b-571074cd2ea5","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_73350916-1aca-47c7-8bc7-df32502d2c55","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_dd64da42-ffaa-47fe-8c3a-9f1f343a0d5e","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_46a96065-0d91-4d91-b5cf-a2430e693432","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_5cf96b35-9cd8-4297-9926-b20d92acaf29","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_9e21b063-b960-4a65-8437-8f75badb893d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_e31f65e6-2b60-4324-98b0-0dadabfdfb17","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_dcd8d812-05bc-4924-b52c-e931f8aa6824","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_929db0cc-3812-4d92-a26f-50fa7d50263f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_909f78b6-dbc9-4d30-8453-01df48d83bee","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition
+{"msg":"http_request","requestId":"req_12e63d44-e143-4a58-9f73-1cb45a5fa845","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_d68f9854-6d37-492b-82aa-3939149bf74d","route":"/api/auth/*","method":"POST","status":200,"durationMs":96}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_fe91e7ed-57be-4fe1-8b0b-3c31c0c79f63","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_df0d799e-585b-43e6-817c-94e6d9f987ff","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_2beea8da-55b2-4da7-a50b-9c01ad42edef","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_3ed30b8c-7bcf-4bdc-b61d-f84d4f54b9b9","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_c08961e2-b367-49e4-bd4a-441c9557645f","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_3ceb79b3-8349-4fe0-9e60-15b604c609c3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_dc979ec8-4a79-49fc-be7f-b95c3c867ce7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_e60ae113-6028-41d9-9939-afe11a2e9d15","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_29c9ea21-24f0-487a-ab32-3ba33d12a06c","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_88540b4a-affb-41e1-bb99-560da378999c","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_e6466c47-3048-4344-9d1d-0028881fe521","route":"/api/accounts","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_365fe38f-3dcc-40f0-a956-fa4fad3b9acf","route":"/api/journal-entries","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_ee929e05-c0ab-417f-ae0f-fca3eff7a725","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/reports/cash-recognition-history.test.ts > cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income
+{"msg":"http_request","requestId":"req_05ed6078-629a-479c-a69f-7c5e634be1f0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+ ✓ src/modules/reports/cash-recognition-history.test.ts (6 tests) 5565ms
+   ✓ cash P&L source carrying allocations and dated history > recognises partial receipt/bill costs, preserves prior periods through credit and reversals, and retains actual manual capital cash  1181ms
+   ✓ cash P&L source carrying allocations and dated history > recognises customer-credit refunds only when cash leaves and their reversals only in the later period  894ms
+   ✓ cash P&L source carrying allocations and dated history > uses original NZD carrying income/cost and separately posted realised FX, preserving prior cash reports  862ms
+   ✓ cash P&L source carrying allocations and dated history > recognises combined bank acceptance once and undoes classification without inventing a cash reversal  858ms
+   ✓ cash P&L source carrying allocations and dated history > conserves source cents and dates credit rounding changes without rewriting prior cash recognition  924ms
+   ✓ cash P&L source carrying allocations and dated history > keeps unsupported receivable cash visible and warns instead of inventing income  843ms
+stdout | src/modules/reports/report-columns.test.ts > posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget
+{"case":"10000-lines-12-columns","durationMs":428.2968630000005}
+
+ ✓ src/modules/reports/report-columns.test.ts (2 tests) 3444ms
+   ✓ posted-ledger report columns > matches each single month and full totals on accrual and cash basis, with quarter and clipped windows  1426ms
+   ✓ posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget  2016ms
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_0d966158-ccea-41bc-82ea-973d1f2a5fa8","route":"/api/reports/financial","method":"GET","status":401,"durationMs":4}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_3b826bbc-0ca5-404d-abea-de5a2c14f055","route":"/api/reports/financial","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_e99dabba-a65d-4998-933d-3684e78ed9e9","route":"/api/auth/*","method":"POST","status":200,"durationMs":135}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_08942ff0-0112-4ff5-bd0f-d03107c6793b","route":"/api/auth/*","method":"POST","status":200,"durationMs":98}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_1a962ce5-c6e9-4dbf-b093-5baf2605253b","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_671af766-32e2-4938-b720-d00b6277e978","route":"/api/journal-entries","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_c2de62f6-680e-49ca-8f17-44772a5e63c3","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_cb7924a7-80c1-4221-afc3-54f2bb6f8fc5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_f7a88cba-6f8a-4b7c-a6c7-ad41fe3aa45c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_c81e20ac-c670-44e5-8ef8-78b431d6ab9e","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_113e961d-27cc-4313-8eb9-ab1604abc7e9","route":"/api/auth/*","method":"POST","status":200,"durationMs":102}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_1234e282-e8d3-4951-82a7-7a1bb73d37d7","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_bceec64c-ad7c-4d17-b7be-10c5ec395120","route":"/api/journal-entries","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_1713e1c2-a6b9-444c-b7fb-ab4f1e8c666b","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":10}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_e205ed73-c112-41fb-8137-4b6034748bc6","route":"/api/journal-entries/:id","method":"PATCH","status":409,"durationMs":14}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_50a90e99-5df5-4ce9-88c6-08329017d39e","route":"/api/journal-entries/:id","method":"DELETE","status":409,"durationMs":5}
+
+ ✓ src/modules/reports/reports.test.ts (5 tests) 2173ms
+   ✓ server-authoritative reports > derives balanced reports from posted journals and isolates organisations  1110ms
+   ✓ server-authoritative reports > rejects mutation or deletion of posted journals  1031ms
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_3a9287f5-4564-4f54-bac2-4294e8fccbca","route":"/api/auth/*","method":"POST","status":200,"durationMs":173}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_356970df-17b8-40ea-9230-61771b93903b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_706b3b74-ab90-4ec4-9831-3676ff7b735b","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_932a84ea-e273-48fa-8ba0-8b8baca2d39a","route":"/api/invoices","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_9524aab5-3345-4a5e-a483-55bec2561f34","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":32}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_b1841878-790a-492f-ad46-af72a59a8e74","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_b90704c5-3b4c-4116-ae08-41282c678192","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":24}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_52343e08-dd4d-467a-b74b-08a1229eee39","route":"/api/payments","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_6fc5f80f-bf98-42be-b6bf-6f3f92e3cb4b","route":"/api/expenses","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_a16b2a9e-7984-439a-a793-c795f596d6c9","route":"/api/accounts","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_14543191-e148-41ac-b9f8-ae2bb614e280","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_c0304c38-5129-4b94-b31f-6bd310ddd04d","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_5514a1c8-609b-4adc-b6c6-56a58676a06c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_9b4a2c2a-c0aa-4183-b2d0-491bd880182c","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_5774b187-99b5-46d5-afa4-e4f3678fc5dd","route":"/api/bills","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_ac25ccc1-9caa-473f-b11a-ae9274c4547e","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_8392e050-eada-493f-9d51-3f71d2582ac6","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_d9500b05-b41b-46da-8a3a-357c1cdad89e","route":"/api/credit-notes","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_225b2c1d-e353-4516-827f-e3300b5240bc","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_ea90b883-0d50-4cc4-9b8d-015c3301de40","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_e51b8bf1-63ff-44ba-8e84-367524da88cb","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":32}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_75f718e7-aabb-4143-8a21-c6c266bbe229","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":21}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_b60a3cb8-71d2-4dc9-9881-cb6681ae5437","route":"/api/payments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_15e25331-de44-46ea-aac4-45fb6c42345e","route":"/api/payments","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_663a97ec-5c8d-4381-b35e-2e76e473cf76","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_48aea1e2-4ccf-4274-8d33-5b8db8fa5295","route":"/api/reports/financial","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_84ebae38-9bf5-4c33-a7e9-b9caef59a80f","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_b61c065b-659a-448b-8725-d4a14c457b6d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_cd968c45-cec8-4f3a-95a3-846487ee459e","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_c341c051-8a5c-4a65-ab75-da1b168c72a0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_82977a1d-1592-428c-b999-c54031346727","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_79f1543c-6cea-4002-8249-bc04497a68f8","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_0a77a5d7-c0c5-4764-85c4-4123a4809dc6","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/reports/accountant-month-close.e2e.test.ts > independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal
+{"msg":"http_request","requestId":"req_5b9f7b57-f6d5-4365-a787-b7cade9d1d2b","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":13}
+
+ ✓ src/modules/reports/accountant-month-close.e2e.test.ts (1 test) 1854ms
+   ✓ independent accountant month-close acceptance > agrees to fixed October working papers and preserves that close after November settlements, reversals and a credit reversal  1853ms
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_8a7ac2c5-d49c-4040-9dbb-e9f76231f2bb","route":"/api/auth/*","method":"POST","status":200,"durationMs":175}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_232bb899-b5ef-4b38-a0fa-a61bb69f8387","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_7b1b0f46-c493-4c1c-b65a-ed349a733a93","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_ba40e953-6f21-4a7a-a2ab-08db6bf1c56f","route":"/api/invoices","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_02541c0f-1e6d-4e97-b0d6-5530a415deeb","route":"/api/payments","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_0115258c-6527-4474-85f0-d76fd979afa5","route":"/api/expenses","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_a54b030b-cac7-40a1-9a20-67aef8e1999f","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_898f6476-c9e3-4cb5-ad42-f0466371c4a5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":20}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_a2b35dc9-535d-49dd-bb65-87b59bf7087c","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_10c71d5c-bdb6-458c-aeed-ef4eb0746e57","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":15}
+
+ ✓ src/modules/reports/cash-report-receipts.test.ts (1 test) 1292ms
+   ✓ recognises the GST-exclusive paid portion of a credit invoice in cash P&L  1290ms
+ ✓ src/modules/reports/account-statement-opening.test.ts (1 test) 1043ms
+   ✓ account statements use posted opening journals > reports5000 once when metadata5000 has a matching reviewed opening journal  1042ms
+ ✓ src/modules/reports/report-options.test.ts (1 test) 1029ms
+   ✓ supplies server business-calendar choices without requiring settings-write/read permission  1028ms
+ ✓ src/modules/reports/trial-balance-signs.test.ts (2 tests) 21ms
+
+ Test Files  9 passed (9)
+      Tests  24 passed (24)
+   Start at  00:28:50
+   Duration  34.19s (transform 1.61s, setup 111ms, collect 10.96s, tests 21.10s, environment 1ms, prepare 607ms)

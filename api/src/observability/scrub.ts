@@ -98,6 +98,7 @@ export function isSensitiveKey(key: string): boolean {
 /** Removes query strings, share tokens, credentials, and email addresses from free text. */
 export function scrubText(value: string): string {
   let text = value.replace(/https?:\/\/[^\s"'<>]+/gi, (url) => scrubUrl(url));
+  text = text.replace(/(\/(?:shared\/statement|api\/public\/customer-statements)\/)[^/?#\s"'<>]+/gi, '$1[redacted]');
   text = text.replace(SHARE_PAIR, '$1_[redacted]');
   text = text.replace(/[?#][^\s"'<>]*/g, '');
   text = text.replace(/\bBearer\s+\S+/gi, 'Bearer [redacted]');
@@ -122,6 +123,7 @@ export function toRouteTemplate(value: string): string {
     path = value;
   }
   path = path.split(/[?#]/, 1)[0] ?? path;
+  path = path.replace(/\/api\/public\/customer-statements\/[^/]+/gi, '/api/public/customer-statements/:token');
   path = path.replace(SHARE_PATH, '/api/public/$1/:token');
   const segments = path.split('/').map((segment) => {
     if (segment.startsWith(':')) return segment;

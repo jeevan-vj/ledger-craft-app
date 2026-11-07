@@ -1,0 +1,46 @@
+{
+  "platform": "Chromium web, real local API; provider credentials unavailable",
+  "cases": [
+    {
+      "name": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "summary": {
+        "mode": "unavailable",
+        "fullAppAvailable": false,
+        "status": "not_connected",
+        "lastAttemptAt": null,
+        "lastSyncedAt": null,
+        "nextSyncAt": null,
+        "accounts": [],
+        "warnings": [
+          "Bank feeds are unavailable. An owner must configure the internal Personal App connection.",
+          "Feed lines remain unreconciled until reviewed. Existing accounting records are retained on disconnect."
+        ]
+      }
+    },
+    {
+      "name": "phone",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "summary": {
+        "mode": "unavailable",
+        "fullAppAvailable": false,
+        "status": "not_connected",
+        "lastAttemptAt": null,
+        "lastSyncedAt": null,
+        "nextSyncAt": null,
+        "accounts": [],
+        "warnings": [
+          "Bank feeds are unavailable. An owner must configure the internal Personal App connection.",
+          "Feed lines remain unreconciled until reviewed. Existing accounting records are retained on disconnect."
+        ]
+      }
+    }
+  ],
+  "errors": []
+}

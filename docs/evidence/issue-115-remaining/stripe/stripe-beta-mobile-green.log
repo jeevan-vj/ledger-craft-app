@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/settings/StripeOperationsSection.test.tsx src/components/settings/StripeSettingsSection.test.tsx src/components/invoice/StripePaymentLinkSection.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/components/settings/StripeSettingsSection.test.tsx
+PASS src/components/settings/StripeOperationsSection.test.tsx
+PASS src/components/invoice/StripePaymentLinkSection.test.tsx
+
+Test Suites: 3 passed, 3 total
+Tests:       12 passed, 12 total
+Snapshots:   0 total
+Time:        3.704 s, estimated 5 s
+Ran all test suites matching src/components/settings/StripeOperationsSection.test.tsx|src/components/settings/StripeSettingsSection.test.tsx|src/components/invoice/StripePaymentLinkSection.test.tsx.

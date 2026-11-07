@@ -1,0 +1,126 @@
+EasyBizInvoice
+G
+GST and tax records
+
+Registered periods, reviewed calculations and retained filing confirmations
+
+GST periods and returns
+Company tax worksheet
+Refresh tax records
+GST returns
+
+Periods and due dates follow the registered settings. Filing takes place separately in myIR.
+
+Confirm registered GST settings
+
+Due dates use published NZ national holidays. Confirm regional anniversary days, IRD extensions and the final date in myIR before filing.
+
+Registered GST periods and filing records
+Taxable period	Due date	Status	Net GST	myIR reference	Action
+2026-10-01
+to 2026-10-31	2026-11-30	Draft	NZD 141.00	—	View return
+2026-11-01
+to 2026-11-30	2027-01-15	Not started	Not prepared	—	Prepare
+GST worksheet
+
+Choose your registered accounting basis. Figures use posted records and reviewed exchange rates. Confirm adjustments and bank reconciliation before saving a draft.
+
+This worksheet uses the saved registered basis and server-generated period. Change registration choices in GST settings, not in an individual return.
+
+GST period start
+GST period end
+Registered GST basis
+Invoice basis
+Payments basis
+Hybrid basis
+GST due date (confirm in myIR)
+Add GST adjustment
+I need to classify zero-rated or exempt sales
+Prepare GST worksheet
+
+Payments basis · NZD
+
+Total sales including GST
+NZD 1380.00
+Total purchases including GST
+NZD 349.00
+Output GST
+NZD 180.00
+Input GST
+NZD 39.00
+Net GST position (negative is refundable)
+NZD 141.00
+I have reviewed the worksheet and bank reconciliation
+Save GST worksheet draft
+
+GST draft saved and reloaded
+
+Draft preparation does not submit a return to IRD. Confirm your registered period and due date in myIR.
+
+Saved GST return
+
+2026-10-01 to 2026-10-31 · draft
+
+Payments basis
+
+Saved total sales
+NZD 1380.00
+Saved total purchases
+NZD 349.00
+Saved output GST
+NZD 180.00
+Saved input GST
+NZD 39.00
+Saved net GST
+NZD 141.00
+
+Confirmed due date: 2026-11-30
+
+Calculation and source audit
+Download GST record PDF
+Preview current books using original settings
+Prepare a new draft from current books
+Record an existing myIR filing
+
+File separately in myIR first. This action only retains your confirmation reference and makes this saved record read-only.
+
+myIR confirmation reference
+I have already filed this return separately in myIR
+Record existing myIR filing
+Retained GST records
+
+Historical drafts and filed snapshots retain the settings used when they were prepared.
+
+2026-10-01 to 2026-10-31 · draft · NZD 141.00
+View saved GST record
+
+Nothing on this page submits to IRD. File separately in myIR and retain the actual confirmation reference. Your accountant should confirm registration choices and tax treatment.
+
+Update available
+
+Refresh EasyBizInvoice to use the latest improvements and fixes.
+
+Update now
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Saved-return actions must fit within the phone content width
++ actual - expected
+
++ [
++   'Preview current books using original settings'
++ ]
+- []
+
+    at run (file:///workspace/ledger-craft-app/scripts/issue115-gst-web-proof.mjs:102:12)
+    at async file:///workspace/ledger-craft-app/scripts/issue115-gst-web-proof.mjs:141:52 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: [ 'Preview current books using original settings' ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1

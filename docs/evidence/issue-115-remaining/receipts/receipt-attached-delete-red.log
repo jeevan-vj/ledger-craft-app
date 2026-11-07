@@ -1,0 +1,104 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_df5ccd94-6a03-4385-b558-7c7b70d9f477","route":"/api/auth/*","method":"POST","status":200,"durationMs":129}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_c927ae93-42dc-4688-9262-cea12880ddc7","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_5814e5b2-7b86-495d-8ec2-e4460099275a","route":"/api/me","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_bb66b47b-054e-4b44-858b-68aed78601f2","route":"/api/objects","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_6ceb894a-dcd3-4647-ab37-429a48d3655c","route":"/api/objects","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_8db6f0b3-1675-4411-bee3-53dd9bc97dd7","route":"/api/objects/receipts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_3a0292bf-d457-421f-945f-046a3d6901fd","route":"/api/objects","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_5549fa6c-cb2c-42cb-b6f8-482efcfcd280","route":"/api/objects","method":"GET","status":404,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_125fde44-ba12-4ea3-b6b8-2cee63941e2d","route":"/api/objects/receipts","method":"POST","status":400,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_82116dd2-5982-4c9a-9e83-e22adf3bbcc3","route":"/api/objects/receipts","method":"DELETE","status":404,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_efbaa8d3-89c7-439d-a2ce-8dfac5e73869","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_a6784e78-6577-4709-9097-f2d90445d0c6","route":"/api/objects/receipts","method":"DELETE","status":204,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_234710e4-254b-426f-8c99-dfb173eabf6c","route":"/api/expenses/:id","method":"DELETE","status":204,"durationMs":5}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_97abe6b5-545f-496c-a02f-1130fa7ce539","route":"/api/objects/receipts","method":"DELETE","status":204,"durationMs":2}
+
+stdout | src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+{"msg":"http_request","requestId":"req_94c7448b-d828-4128-8ef7-ffd74c4c29f1","route":"/api/objects/receipts","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_2d339a08-d7bd-4be0-86b7-aff073740f4b","route":"/api/objects","method":"GET","status":401,"durationMs":0}
+
+stdout | src/modules/storage/objects.test.ts > object routes > unauthenticated GET/POST /api/objects return 401
+{"msg":"http_request","requestId":"req_b43efe0b-b3ea-4826-b266-ed23a81f2344","route":"/api/objects","method":"POST","status":401,"durationMs":0}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_90476377-a2bc-4c1f-a2fc-a6b6d877caff","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_354ae54c-a2b1-4521-8842-faf56805826c","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_2cf99d08-52f8-4c7c-a11e-e541d5270b0e","route":"/api/objects","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_2624cd8d-a304-4a24-b6e5-e8129551ece6","route":"/api/objects","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_54864dea-5004-438f-b556-2e9d0f394243","route":"/api/objects","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/storage/objects.test.ts > object routes > stores bytes, returns them, and hides them from other orgs
+{"msg":"http_request","requestId":"req_a5c72ee5-84c8-46ab-8025-d597d2ae50fc","route":"/api/objects","method":"GET","status":404,"durationMs":2}
+
+ ❯ src/modules/storage/objects.test.ts (3 tests | 1 failed) 1827ms
+   × object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes 951ms
+     → expected 204 to be 409 // Object.is equality
+   ✓ object routes > unauthenticated GET/POST /api/objects return 401 7ms
+   ✓ object routes > stores bytes, returns them, and hides them from other orgs  867ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/storage/objects.test.ts > object routes > allows receipt-only upload/deletion to an accountant without widening generic object writes
+AssertionError: expected 204 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 204
+
+ ❯ src/modules/storage/objects.test.ts:52:134
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:23:31
+   Duration  6.31s (transform 1.87s, setup 86ms, collect 4.02s, tests 1.83s, environment 0ms, prepare 142ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/storage/objects.test.ts

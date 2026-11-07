@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { objectSchema, type ObjectDto, type UploadObjectRequest } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
@@ -11,6 +12,7 @@ import {
   objectUrl,
 } from './keys';
 import type { ObjectStore, StoredObject } from './object-store';
+import { receiptHasFinancialReference } from './receipt-references.repository';
 
 export async function uploadObjectForUser(
   db: Database,
@@ -38,6 +40,7 @@ export async function uploadObjectForUser(
       contentType: input.contentType,
       size: bytes.byteLength,
       kind: input.kind,
+      sha256: createHash('sha256').update(bytes).digest('hex'),
     });
   });
 }
@@ -61,9 +64,12 @@ export async function deleteObjectForUser(
   userId: string,
   store: ObjectStore,
   key: string,
+  receiptOnly = false,
 ): Promise<void> {
-  await withOrganisationTx(db, userId, async (_tx, ctx) => {
+  await withOrganisationTx(db, userId, async (tx, ctx) => {
     assertKeyOwned(key, ctx.organisationId);
+    if (receiptOnly && !key.startsWith(`${ctx.organisationId}/receipts/`)) throw apiError(404, 'NOT_FOUND', 'Receipt not found');
+    if (key.startsWith(`${ctx.organisationId}/receipts/`) && await receiptHasFinancialReference(tx, ctx.organisationId, key)) throw apiError(409, 'RECEIPT_IN_USE', 'This receipt is attached to a saved financial record. Remove or correct the record through its review workflow; the receipt has been retained.');
     await store.delete(key);
   });
 }

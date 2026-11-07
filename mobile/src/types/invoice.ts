@@ -50,6 +50,10 @@ export interface BusinessProfile {
   website?: string | null;
   defaultTaxRate?: number | null;
   gstRegistrationStatus?: 'unknown' | 'registered' | 'not_registered';
+  gstRegisteredFrom?: string | null;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   defaultNotes?: string | null;
   defaultTerms?: string | null;
   currency?: string;
@@ -93,6 +97,7 @@ export interface Invoice {
   additionalChargesList?: AdditionalCharge[];
   additionalChargesTotal?: number;
   total: number;
+  baseTotalText?: string;
   totalPaid?: number;
   totalPaidText?: string;
   totalCreditedText?: string;

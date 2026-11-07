@@ -1,0 +1,745 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_6f3e340f-2e9f-4c60-afc5-cba538b7c765","route":"/api/auth/*","method":"POST","status":200,"durationMs":118}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_63443c62-208c-454a-a673-3dab949cccd7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_5d329729-d954-4e00-b2b3-5c4ff3a5b7c3","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_5388d80e-e626-4be9-9794-22f32fd89aa1","route":"/api/invoices","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_933c5f38-cc81-462b-935b-b88fbb71108e","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_a2d9e336-0ffd-4a3a-8f3a-8c84318cd1e2","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_b310a393-1bb2-489c-b012-f3b4bc5f09aa","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_0230b4d6-5167-40a0-aabd-9cc9e154e7bc","route":"/api/payments/stripe/account","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_ccfd8b73-be98-4c91-9aea-022770c46b0d","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_ae5f66fc-a6cf-4084-a74a-e992e587faea","route":"/api/invoices/:id/payment-links","method":"POST","status":403,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_b5202d52-da43-489e-a0f0-90de7eb318de","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation
+{"msg":"http_request","requestId":"req_ec21e8a6-7ce5-44bc-8f98-52155b23ccb4","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_6c282f64-46f3-488c-b15e-4c6161e17ce6","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_ffe5b19e-810e-455a-9bdd-d17eedc126a9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_25596bb8-fea9-4e70-ab0a-e4433aeec4bc","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_976a7d1b-25ee-49bb-9d50-9fde60252542","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a10d6a62-2820-4a78-9895-82e8258b33df","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_eacef659-72c9-4e35-bbf9-ef699dd6b7f2","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_56a89e2f-be02-4d22-8f68-b0edd98b7845","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_c0c05ed7-aec2-4bc3-ba45-eb80e449b36e","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_e5b2e417-1009-45c2-978c-c643111be888","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_bc367ede-9138-402e-a58a-91c9b2d253e0","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_31e85063-8952-4a02-8c2a-884c99015c3b","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_597b1a35-65df-4427-a6fe-4d958bab7008","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_fde48488-72cb-4366-9087-daafc67609fd","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_dbc59c7c-ae04-4805-b990-a533713a8e0a","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_83fbabb6-2612-4dc9-9ef5-ed392414c7eb","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_49d79455-9319-47c7-b34b-31abe2f395bf","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_1f06e1bb-71e1-4d30-a0b0-f485e9eb9045","route":"/api/invoices/:id/payment-links","method":"POST","status":429,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_76593d71-877c-48a9-b507-94663dabfbf3","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_ee864d45-9cbd-4bc1-a3c7-959527503093","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_7bbb199c-1f7d-4ee9-910c-a567257d50c5","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_1b6e6e5c-fac2-404c-b220-ac65d54fd2da","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_8086d692-a389-4fc7-bdc5-d55f65c078c2","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_bbdf9ae2-3196-41c9-a6a5-4512deaf6b7d","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_5e4307f6-4d8f-4fcb-ad48-4eb564d9a78b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_847cc5ae-f720-48f7-b29d-9941dfc54ac5","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_deb5fb04-2308-404f-a72c-4890436804e2","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_bbe17dc1-c998-456b-bd71-d95e6bee3b22","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_02312fa5-f32a-4ccd-9e65-023587d0f509","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b83f79b8-211f-4737-8f5b-366b61ea2367","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_75e40ae6-0b91-4ecc-b777-46e5712f93b5","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a7320701-3cfc-4f1c-8af9-d794a5164007","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_2841e5d8-7668-4972-9005-baeed513e489","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_56b79bac-5ea2-4a24-9595-0b9c6555ee46","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_75d5c4b5-53be-45f5-8c15-2b72e4237a14","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_862dcb9a-af4f-4d38-89a8-cf31a3b0bc77","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_ba99a056-5c25-4ffd-b95e-5283cbf513f1","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_277f15cf-dfb0-45be-bc4d-cd40a458a20d","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_1d0f8a57-a986-4062-948d-733ed730688a","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_93e90690-d14c-409b-884c-be3c4aa28974","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a98bf1a9-d89d-41eb-88f3-9ae54736b08f","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_94e5b120-af63-4027-8c1b-01c2656302c5","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_e3ae27f3-d648-441f-a63a-67dfdfa3ac8d","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_24f78151-3d56-4467-be43-0f140a177fad","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d6f854a6-e4bd-403d-b47c-bca87b39b8e6","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_15c4de04-8eec-419a-9cb3-fa95f067090c","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b65daeb2-7a55-4299-a644-96d1c7afcfe7","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b6b831cd-41f1-4d2c-bd2c-364ebca7a1ed","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_5406fb44-5106-4688-8fd4-64981b8c17e1","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_b13f2263-49e2-4e4d-a8cd-d14adee4ba88","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_89e29035-e0e3-45b5-a590-cd4f47add16c","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_38fbffcd-c767-4b1b-94c2-dad3bc413569","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_84648489-18a3-406b-b32d-c0ad6849fe82","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_83cb24eb-3545-4b9b-a8f7-cb9fdb4b5fd9","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_bac87a42-a50d-4131-b021-0c0b1213a47d","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_0012ef65-9413-4a04-aa85-1ad17b9d451e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_41231668-f36c-4349-b661-3a8fadd14775","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_4273722e-d399-4eab-a220-1db7847d367e","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_8794289e-313b-4e43-8696-3dc64a6bf94b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_9437ddc9-a1dd-48e0-a132-f92dd79d3f75","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_9b4ea3c8-32be-40f2-b71c-ebef4cd59a6b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_9a085893-ca9c-4582-bff1-58a8282beb2b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_0cf3f2cf-fdaa-4fba-bb08-b75117f432ef","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_9485bcfa-499d-4ae2-ab27-46424f742a0b","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_965b369a-8dc5-4f3d-a324-0278490d3969","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_f1d8e7b3-8e66-4ced-a529-2d988cdbe725","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_44a38970-b8e0-48cf-9c3d-5c4b19b906b2","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_66b6e20e-46e8-4deb-890a-c2da8ae32a62","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_cfc6d59d-7970-4bc3-9670-3adf902cb3dd","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_d050bf3e-6ffd-4d56-99d1-938ceaa69e64","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_0b62786c-4d34-4a19-ba97-2c88e46dce61","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_09cf73ae-6296-4d4d-bc3a-63405a5e6dcf","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_0505d178-61fd-4670-93fe-ff5eae0196e4","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_a882b3a3-0c26-45b1-a7df-cd24ca6f653a","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_6d916593-9e9a-4baa-9f79-c22f27794dbe","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_de60f650-0ac0-4e7d-a1c7-04a8a3d8b6df","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_76fb6605-4099-4256-802f-c1f64123dc74","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_1b2e492d-a986-427a-b3b8-03fbeb37f912","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_f0af2424-3191-4912-9704-4ca358d9b838","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available
+{"msg":"http_request","requestId":"req_fccd1960-9cc7-4e77-8be1-12a9e1f7e06f","route":"/api/public/pay/:token","method":"GET","status":429,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_4877c0fd-d49d-40b5-999d-bb95c7d2634b","route":"/api/auth/*","method":"POST","status":200,"durationMs":104}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_4dac613e-1a87-4919-86e3-394304125cf6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_d4d3041b-ee3f-4c63-9143-9080dd6d4be6","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_feeda3ac-a57a-490e-a53f-e28d610c7010","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_3b008e9d-b3ad-42c6-9015-d6a007e84e7b","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_42e0753d-40df-4ab5-af19-091ef7c958ab","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_9d459e16-14ea-4bee-80f9-2ffc897a1ed4","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run
+{"msg":"http_request","requestId":"req_71601b66-d29d-4567-8dab-ead84b3e517d","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_b9031d58-b6e6-4f9f-b9ff-0bf9eb143aa1","route":"/api/auth/*","method":"POST","status":200,"durationMs":104}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_c2fc4850-9e81-4018-b866-3f30a99b3b3c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_ad238257-1ea2-41e6-b9d3-5fd805028df9","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_84ffd157-14de-4f35-b87a-76cb87a11315","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_8909c005-9cb7-400d-8cfb-62b792a7dd0b","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_4ca43e2d-a8b2-4975-9114-ed6325cf97d8","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/stripe/stripe.guardrails.test.ts > Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry
+{"msg":"http_request","requestId":"req_5e2dbbc4-036b-4c42-a5c5-7dc1ff960b5f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":9}
+
+ ✓ src/modules/stripe/stripe.guardrails.test.ts (5 tests) 5320ms
+   ✓ Stripe beta approval, rate limits and periodic verification > denies new real-mode links by default and permits only the explicitly approved organisation  797ms
+   ✓ Stripe beta approval, rate limits and periodic verification > persists limit counts, isolates scopes and resets only after the window  612ms
+   ✓ Stripe beta approval, rate limits and periodic verification > limits actual link/redirect/webhook flows while replayed successful requests remain available  1419ms
+   ✓ Stripe beta approval, rate limits and periodic verification > discovers a missing provider payment and records mismatches without posting or duplicating a daily run  1353ms
+   ✓ Stripe beta approval, rate limits and periodic verification > records unavailable provider checks and incomplete discovery honestly with bounded retry  1135ms
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_1585aaa5-b95d-43de-8f34-c2d343c4aaa3","route":"/api/auth/*","method":"POST","status":200,"durationMs":121}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_3484a2ea-0100-4c07-bbd3-867603a349f3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_60cff681-9b35-419c-9f17-f71c09527272","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_387bd275-51aa-4b7a-a6fd-cf86a2d79f42","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_90adcd6d-41db-4157-874c-d39d29816c75","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_5a323368-5593-480e-bbe8-0dbb55243292","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_581822b5-167a-4c74-8d34-5f1398c80824","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_dedda400-60ae-4db4-8e05-dffe68dd1bf8","route":"/api/auth/*","method":"POST","status":200,"durationMs":145}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_a46995cf-d82d-46e4-8221-b3d1e7e3f0aa","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_b2c05618-4c79-46ed-8234-3a124e034d0e","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_532a76b9-7c21-420b-832e-5e0e9ce7c1e0","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_30908da1-dbf8-4231-950e-65657cb6c571","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_2d5822d6-9e71-4bf6-ab77-bfb44300c47f","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_9a281bdf-fdfe-4031-b2c4-d1f1d8103cdb","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_24c305ea-1056-43bb-8725-79af7cd32a79","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_2051de04-56ba-4845-9ceb-05d78f1396cf","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_071d5927-c0ce-4dca-82c8-f5fe6b765214","route":"/api/payments/:id/stripe/refund","method":"POST","status":202,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_218cc651-8895-4e30-996a-7760f8388aab","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_8064f527-ebb9-48de-8238-20e40eed0f3b","route":"/api/auth/*","method":"POST","status":200,"durationMs":121}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_7ac5de57-4a13-4a63-adc8-d0e958e48e55","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_7860e4e8-ea72-45ac-bce3-b4b1ba30c143","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_6f0ef8f3-e9df-4eae-af08-d32c8554106d","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_302c1cff-bb63-4bd7-af63-3a2610d79acf","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_2180692a-dd4a-4216-b334-0b94d272689e","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_0ac7d44b-ee37-49b8-922b-acf0b26a69fa","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_8b5a2752-61a1-4e2f-9773-5ab4d15d2df8","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_0cdc15ff-f9c0-40ef-8d06-840ad59874dc","route":"/api/auth/*","method":"POST","status":200,"durationMs":124}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_cc9c9676-4d48-4664-a0a8-ee9419e247b9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_59699e4f-c068-4d0e-a202-b77325b749dc","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_90b4d621-2690-42ac-a091-788cfb440b5e","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_3ce04191-55cd-45ec-bac8-861cf29c354e","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_c186ab44-b880-43e8-8380-b6b6c28be8fe","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_6de32b0f-9757-4a83-b37c-fa5fb4fcdf1f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_895f4422-0ea2-4ebb-9920-2dfbb6cba606","route":"/api/payments","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_6675c840-fee0-4de0-8b2b-d26766dad0dc","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_bafd477b-2151-41c2-8af1-e7ecdac20240","route":"/api/auth/*","method":"POST","status":200,"durationMs":167}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_54fa716f-f7e0-430c-b712-b89c1036d4af","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_73de9336-2581-4fec-8487-654e540fc499","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_e7afd59e-acdd-4e4d-8efd-6fecd4c3e540","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f00674a2-6557-4d6c-bb71-951625cb7603","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_47cd338a-9a8c-4471-8b70-1ab7714fd981","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_3024d12b-a763-4503-98e3-77fda5b297ab","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_3035225a-919b-4767-af11-a6b0cd260563","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_929b27bd-c7ba-4117-9299-b27715b5ef37","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_6ce42036-2f35-4d61-acf0-75c5b9bed069","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f58a8940-55ab-486f-ae5c-91d86aa283f4","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_13df5a2b-49f4-404d-a1fa-87e7ee3c2f06","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_264356d3-286f-43c5-956c-8a97a32fc334","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_974a0b1b-cada-411e-bb95-2040bbcccbf6","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_7d95695d-57be-449d-9471-ee0502ff7ba7","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_74296696-4e71-41cb-8a28-5d3f7666c882","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_d6909f66-48b4-4b2f-8223-c4ddf6b71a6c","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_8880bd30-436f-4cce-8ba6-6fbaa03fa066","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_bc36fbb5-74ee-47b5-b26f-edce2c87ed47","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_3c525c49-91b2-4ae7-a0e6-2d735ff86cfd","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_113e7fb7-e6c3-49f2-ab24-3ecd52950b46","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_04a13cc7-5361-4078-9cbc-7e457626b498","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_db6abd81-9506-4570-849b-82794bd6672c","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_19a4db33-7375-48e3-af79-dc12e5878530","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_235d4d93-8c9c-495f-a2ea-856a4f83d7e3","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_025cf469-628e-404b-96f4-de10200f588a","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_2654d32c-a140-47dd-a90c-e3bd11b4163a","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_e14aca21-7bb0-4660-8a21-33cee66ca2d1","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_1d2f5834-f96b-47a2-a225-0d0898770174","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_5471bf04-de9f-4bd5-b64c-affa17104125","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4d70be24-0472-452b-a2d0-a3143fab0a66","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_29a58806-3056-4524-b720-1cc5033ffce5","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_7bd7b3f3-9d7c-48d9-be09-05411280b3fc","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_cd24c296-46f0-4d3c-b849-ef7dd050c178","route":"/api/auth/*","method":"POST","status":200,"durationMs":103}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_fdc8c7e0-9454-48a7-84a2-54d806d7eeb2","route":"/api/payments/:id/stripe/verify","method":"POST","status":404,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_474120b2-74c5-49a8-bc4a-d56e1b2a7c87","route":"/api/auth/*","method":"POST","status":200,"durationMs":128}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_03777618-1aef-43d6-8353-ebca7face409","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_98727955-2484-40cc-9af4-25fd510ead85","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_a04f9229-71e5-42b0-b369-4105f5c75a16","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_368f7cd5-3f26-4fc2-9468-b267788ad4f3","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_618a67da-7a25-4246-9e74-2d6a78ed5d28","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_0f93c83f-b1f6-4a76-a545-d2cc549f16c5","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_869e8066-564f-46fb-9f75-58a83f462d42","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_021a2727-84f3-49c3-ae10-4d72189fff58","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_f729508c-3600-408c-a73d-d007b3807469","route":"/api/payments/:id/stripe/refund","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_923e3f5a-1136-494d-88a5-fe525a2ebd96","route":"/api/auth/*","method":"POST","status":200,"durationMs":147}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_26ee8cdc-94ea-4f9c-a848-0eba7f244415","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_d5311137-9cdc-4717-9ef7-03c56fdaec25","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_a78310f2-35f6-4d02-a846-5eba8bb16fbd","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_1111473a-c375-47aa-9a3c-0db5fc51828f","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_4e38e90f-494c-4068-8732-4a165a07b133","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_5bd668c7-fb02-4439-b9e3-4fa611eafc66","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_7ceddad9-0ed0-4f4f-9411-53c88f952d6c","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_daf84e97-7e07-4a91-a717-4f027bfa26bc","route":"/api/auth/*","method":"POST","status":200,"durationMs":89}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_7bfe5c94-ca3e-4900-8dac-48a6fdb278d3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_12c1e201-f4fc-4c32-a2e7-2eeae0ac8270","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_566a5a35-3732-49fe-80f3-fdf780388a66","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_f0445819-686e-48d0-9506-8af7eaa35555","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_f1ada315-6656-4bb2-8b20-c9a635a70980","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_ad34c48e-f70c-44c2-9ae7-cb5e9cd350fd","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_355c302c-d5e7-4cba-89c2-0ffa7ce0a380","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_9bfbd996-50ab-4a44-a43b-c7da6c658919","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_2dee8c1c-55b3-4fc8-9eb2-a48616a71a0a","route":"/api/auth/*","method":"POST","status":200,"durationMs":135}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_201e992a-f6a0-4065-8d72-f35e34d80881","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_7e3ebf32-07af-4bbd-8d22-e7b38ef4ccf1","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_14ef3998-fab0-4798-b5ea-e75f2711534b","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_fd29f9af-73c0-4f1b-a0b4-026cefcb14b0","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_14e4d68c-abfd-4ef4-a570-e0691cb88323","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_761ce14c-be3a-4a24-9099-853082ce4c2c","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_5d847e4d-8b3b-4c03-96a5-282773a1b451","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_c6534e99-ff7a-4e87-a6e9-7f6b35eed5e6","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_74c390b1-7f6c-4c2d-bcf6-4ebe8c600304","route":"/api/auth/*","method":"POST","status":200,"durationMs":141}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_d537ef39-fc4c-4e7e-b9f2-fb6f888637f6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_df34e38f-e144-480d-9598-43def6e44849","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_0c36b914-ff71-41bb-94a8-83f606dea7b9","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_ff04a01a-6fa4-43bd-b41f-f7466d0e2bed","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_2add6d29-d9f5-4942-884c-3d0c5b757014","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_8669c23e-e3e3-43dd-8cf9-89c5ec010c1b","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_e5049f7d-b02b-4c05-9b85-389ec91ca73a","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_d0e75a2b-5211-40c4-b9b5-1e689b2f534c","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_a6bdc35b-9731-4287-a621-9132206d8a2c","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":6}
+
+ ✓ src/modules/stripe/stripe.operations.test.ts (10 tests) 14044ms
+   ✓ Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different  1100ms
+   ✓ Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation  1491ms
+   ✓ Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links  1412ms
+   ✓ Stripe finance operations > expires an open link after a manual payment changes its balance  1465ms
+   ✓ Stripe finance operations > requires owner/admin on every operational route and isolates another company  1788ms
+   ✓ Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation  1346ms
+   ✓ Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once  1186ms
+   ✓ Stripe finance operations > does not reverse a customer payment when only its application fee was returned  1574ms
+   ✓ Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment  1059ms
+   ✓ Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books  1618ms
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_416efa77-d9c5-4d1b-9bc0-9b60915e9055","route":"/api/auth/*","method":"POST","status":200,"durationMs":193}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_c6b289bc-64b4-47fb-8732-d5fc22d27f83","route":"/api/business-profile","method":"PUT","status":200,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_7c94acee-cf94-4393-8526-229b378bcdd3","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_adaacb48-99c1-4d91-81ae-906fd5117136","route":"/api/invoices","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_167f859f-c4aa-438e-b4cc-97836f65569b","route":"/api/payments/stripe/account","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_7df410ab-11d6-43b0-aed6-a20be5dde169","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_5fc95299-bde9-4722-89c9-f0004ffdf049","route":"/api/payments/stripe/account/onboarding-link","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_4f62316d-6b80-49c4-8fb9-a268cb33bcd9","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_5b2ef3ce-6390-4c59-9818-49457f25cf57","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_70605100-1144-4a7e-9946-f617df0cb2dc","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_737a6c01-d390-45c9-87f0-c646933f475a","route":"/api/public/pay/:token","method":"GET","status":302,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_c0f034cc-7817-4385-a294-077539707eb7","route":"/api/stripe/webhooks/platform","method":"POST","status":200,"durationMs":45}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_ec2cb60c-fff2-40b9-b336-d1d31b4f3830","route":"/api/stripe/webhooks/platform","method":"POST","status":200,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_954e6fc4-fb02-4a2d-a361-9b3922c0d827","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_46f8b1a3-6499-470d-bd4f-849dcfcd4c11","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.integration.test.ts > Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook
+{"msg":"http_request","requestId":"req_fa16faac-0ccc-4fbc-bfba-1497a25cd0ba","route":"/api/receipts/:id","method":"GET","status":200,"durationMs":5}
+
+ ✓ src/modules/stripe/stripe.integration.test.ts (1 test) 1692ms
+   ✓ Stripe Connect payment links > onboards an organisation and settles an invoice once per verified webhook  1690ms
+ ✓ src/modules/stripe/stripe.signature.test.ts (1 test) 13ms
+ ✓ src/modules/stripe/stripe.real-gateway.test.ts (16 tests) 15ms
+ ✓ src/modules/stripe/stripe.mock-gateway.test.ts (3 tests) 5ms
+ ✓ src/modules/stripe/stripe.fees.test.ts (3 tests) 3ms
+
+ Test Files  7 passed (7)
+      Tests  39 passed (39)
+   Start at  00:31:11
+   Duration  28.74s (transform 1.37s, setup 96ms, collect 5.74s, tests 21.09s, environment 1ms, prepare 518ms)

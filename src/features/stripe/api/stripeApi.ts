@@ -1,4 +1,4 @@
-import type { CreateStripePaymentLinkRequest, StripeAccountStatus, StripeOnboardingLink, StripePaymentLink } from '@ledgercraft/contracts';
+import type { CreateStripePaymentLinkRequest, StripeAccountStatus, StripeOnboardingLink, StripePaymentLink, StripeBalance, StripeVerification, StripeOperations, StripeSettlements } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
 
 export class StripeApiError extends Error {
@@ -12,6 +12,11 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 
 export const stripeApi = {
+  balance: () => request<StripeBalance>('/api/payments/stripe/balance'),
+  operations: () => request<StripeOperations>('/api/payments/stripe/operations'),
+  settlements: () => request<StripeSettlements>('/api/payments/stripe/settlements'),
+  verify: (paymentId: string) => request<StripeVerification>(`/api/payments/${paymentId}/stripe/verify`, { method: 'POST', body: '{}' }),
+  refund: (paymentId: string, reason: string, key: string) => request<{ id: string; status: string; awaitingWebhook: true }>(`/api/payments/${paymentId}/stripe/refund`, { method: 'POST', headers: { 'Idempotency-Key': key }, body: JSON.stringify({ reason }) }),
   account: () => request<StripeAccountStatus>('/api/payments/stripe/account'),
   createAccount: () => request<StripeAccountStatus>('/api/payments/stripe/account', { method: 'POST', headers: { 'Idempotency-Key': crypto.randomUUID() } }),
   refreshAccount: () => request<StripeAccountStatus>('/api/payments/stripe/account/refresh', { method: 'POST' }),

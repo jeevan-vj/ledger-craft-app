@@ -1,0 +1,72 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_c0827494-d9a5-4750-ac89-de33b978b0de","route":"/api/auth/*","method":"POST","status":200,"durationMs":161}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_2948c890-7e3f-4823-9d02-1ca88940012a","route":"/api/expenses","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_85585ec0-06b5-4e1a-a1ba-2b2ef6fa0254","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_1044f5e5-68d9-4324-bd01-211420253477","route":"/api/expenses","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_2f004a6f-bae2-499a-a908-25072c7ec70c","route":"/api/expenses/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+{"msg":"http_request","requestId":"req_a7006559-1b37-40a9-a330-830045f59b38","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+ ❯ src/modules/expenses/receipt-hash.test.ts (1 test | 1 failed) 1031ms
+   × receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block 1030ms
+     → expected { …(30) } to match object { receiptHash: null, receiptUrl: null }
+(28 matching properties omitted from actual)
+     → expected 201 to be 422 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+AssertionError: expected { …(30) } to match object { receiptHash: null, receiptUrl: null }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "receiptHash": null,
++   "receiptHash": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "receiptUrl": null,
+  }
+
+ ❯ src/modules/expenses/receipt-hash.test.ts:21:171
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/expenses/receipt-hash.test.ts > receipt duplicate identity > round-trips a receipt digest and exact amounts without making duplicate warnings a posting block
+AssertionError: expected 201 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 201
+
+ ❯ src/modules/expenses/receipt-hash.test.ts:22:165
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  00:16:33
+   Duration  4.60s (transform 1.55s, setup 29ms, collect 3.22s, tests 1.03s, environment 0ms, prepare 128ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/expenses/receipt-hash.test.ts

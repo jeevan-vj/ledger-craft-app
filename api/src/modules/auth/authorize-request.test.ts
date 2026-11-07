@@ -3,6 +3,14 @@ import { createApp } from '../../app';
 import { permissionForRequest } from './authorize-request';
 
 describe('permissionForRequest', () => {
+  it('protects GST registration changes and financial filing writes independently of report read access', () => {
+    expect(permissionForRequest('PUT', '/api/tax/gst-settings')).toBe('settings.write');
+    expect(permissionForRequest('GET', '/api/tax/gst-settings')).toBe('settings.read');
+    expect(permissionForRequest('POST', '/api/tax-returns/id/file')).toBe('banking.write');
+    expect(permissionForRequest('POST', '/api/tax-returns')).toBe('banking.write');
+    expect(permissionForRequest('PATCH', '/api/tax-returns/id')).toBe('banking.write');
+    expect(permissionForRequest('DELETE', '/api/tax-returns/id')).toBe('banking.write');
+  });
   it.each([
     ['GET', '/api/customers', 'customers.read'],
     ['POST', '/api/customers', 'customers.write'],
@@ -19,14 +27,14 @@ describe('permissionForRequest', () => {
     ['POST', '/api/book-entries', 'banking.write'],
     ['GET', '/api/tax-returns', 'reports.read'],
     ['GET', '/api/tax/gst-preparation', 'reports.read'],
-    ['POST', '/api/tax/gst-preparation', 'reports.read'],
+    ['POST', '/api/tax/gst-preparation', 'banking.write'],
     ['POST', '/api/tax/company-income-tax-preparation', 'reports.read'],
     ['GET', '/api/journal-entries/ledger-audit', 'banking.read'],
     ['POST', '/api/journal-entries/ledger-audit/apply', 'banking.write'],
     ['POST', '/api/journal-entries/opening-balances', 'banking.write'],
     ['POST', '/api/fx-revaluations/preview', 'banking.read'],
     ['POST', '/api/fx-revaluations', 'banking.write'],
-    ['POST', '/api/tax-returns', 'reports.read'],
+    ['POST', '/api/tax-returns', 'banking.write'],
     ['GET', '/api/items', 'settings.read'],
     ['POST', '/api/recurring-templates/preview', 'settings.read'],
     ['GET', '/api/items/export', 'settings.write'],

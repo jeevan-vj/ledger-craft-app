@@ -29,12 +29,12 @@
     },
     {
       "id": "customers", "title": "Customers", "required": true, "status": "partial", "backlogTask": "AKP-08",
-      "gap": "A single postal address is stored. Contact people, separate billing and shipping addresses, statements, bulk import/export, and portal login remain open.",
+      "gap": "Statements, immutable sharing, PDF and automatic reminders exist on web and Expo. Contact people, separate billing/shipping addresses, bulk customer import/export and authenticated portal remain open.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/customer.test.ts"] },
-        "api": { "applicable": true, "paths": ["api/src/modules/customers/customers.test.ts"] },
-        "web": { "applicable": true, "paths": ["src/features/customers/hooks/useCustomers.test.tsx"], "gap": "No authenticated portal or statement E2E exists." },
-        "mobile": { "applicable": true, "paths": ["mobile/src/services/__tests__/customerService.test.ts"], "gap": "Contacts, statements, and portal workflows are absent." }
+        "api": { "applicable": true, "paths": ["api/src/modules/customers/customers.test.ts", "docs/evidence/issue-115-remaining/README.md"] },
+        "web": { "applicable": true, "paths": ["src/features/customers/hooks/useCustomers.test.tsx", "docs/evidence/issue-115-remaining/README.md"], "gap": "See current scope and acceptance limits in docs/evidence/issue-115-remaining/README.md." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/services/__tests__/customerService.test.ts", "docs/evidence/issue-115-remaining/README.md"], "gap": "See current scope and acceptance limits in docs/evidence/issue-115-remaining/README.md." }
       }
     },
     {
@@ -77,12 +77,12 @@
     },
     {
       "id": "payment-and-bank-accounts", "title": "Payment/bank accounts", "required": true, "status": "partial", "backlogTask": "AKP-02",
-      "gap": "Default payment account, statements, performance, bulk state changes, and a unified posting model remain open.",
+      "gap": "Saved default payment accounts, exact movement summaries, statement review/resume and mobile CSV/FX workflows exist. Bank-account bulk state changes and broader performance acceptance remain open.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/bank.test.ts"] },
-        "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts", "api/src/modules/accounts/accounts.test.ts"] },
-        "web": { "applicable": true, "paths": ["src/components/bank-account/__tests__/BankAccountDialog.test.tsx"], "gap": "No E2E proves statements, defaults, or bulk state changes." },
-        "mobile": { "applicable": true, "paths": ["mobile/src/features/banking/api/bankingApi.test.ts", "mobile/src/features/banking/model/bankAccountForms.test.ts"], "gap": "Statements, defaults, and bulk state changes are absent." }
+        "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts", "api/src/modules/accounts/accounts.test.ts", "docs/evidence/issue-115-remaining/README.md"] },
+        "web": { "applicable": true, "paths": ["src/components/bank-account/__tests__/BankAccountDialog.test.tsx", "docs/evidence/issue-115-remaining/README.md"], "gap": "See current scope and acceptance limits in docs/evidence/issue-115-remaining/README.md." },
+        "mobile": { "applicable": true, "paths": ["mobile/src/features/banking/api/bankingApi.test.ts", "mobile/src/features/banking/model/bankAccountForms.test.ts", "docs/evidence/issue-115-remaining/README.md"], "gap": "See current scope and acceptance limits in docs/evidence/issue-115-remaining/README.md." }
       }
     },
     {
@@ -133,12 +133,12 @@
     },
     {
       "id": "financial-reports", "title": "Financial reports", "required": true, "status": "partial", "backlogTask": "AKP-05",
-      "gap": "Statements, the general ledger, and account statements are calculated from posted journals with cash/accrual, comparison, and account, customer, and vendor filters. categoryIds is accepted and ignored because journal lines have no category. baseCurrency is fixed to NZD, and foreign-currency documents are excluded from GST instead of converted.",
+      "gap": "Server month/quarter columns, configurable NZ presets, exact cash-source recognition, CSV/PDF and Expo reporting exist. Category dimensions are unsupported; reports remain in company NZD base currency. Installed-device acceptance remains open.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/report.test.ts"] },
-        "api": { "applicable": true, "paths": ["api/src/modules/reports/reports.test.ts"] },
-        "web": { "applicable": true, "paths": ["src/pages/__tests__/FinancialReportsPage.test.tsx", "src/features/reports/api/reportsApi.test.ts"] },
-        "mobile": { "applicable": true, "paths": ["mobile/src/screens/reports/ReportsScreen.test.tsx", "mobile/src/features/reports/api/reportsApi.test.ts"] }
+        "api": { "applicable": true, "paths": ["api/src/modules/reports/reports.test.ts", "docs/evidence/issue-115-remaining/README.md"] },
+        "web": { "applicable": true, "paths": ["src/pages/__tests__/FinancialReportsPage.test.tsx", "src/features/reports/api/reportsApi.test.ts", "docs/evidence/issue-115-remaining/README.md"] },
+        "mobile": { "applicable": true, "paths": ["mobile/src/screens/reports/ReportsScreen.test.tsx", "mobile/src/features/reports/api/reportsApi.test.ts", "docs/evidence/issue-115-remaining/README.md"] }
       }
     },
     {
@@ -203,12 +203,12 @@
     },
     {
       "id": "attachments-and-uploads", "title": "Attachments/uploads", "required": true, "status": "partial", "backlogTask": "AKP-07",
-      "gap": "Invoices, bills, and bank transactions store organisation-scoped attachments. Items and customer contacts do not. Mobile invoice and bill screens list attachments, and no mobile test covers upload or authorization.",
+      "gap": "Invoices, bills, bank transactions and reviewed expense receipts have scoped attachments. Receipt upload/read/delete has real role/tenant tests and web/Expo browser proof. Item/customer attachment parity and installed-device acceptance remain open.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/object.test.ts"] },
-        "api": { "applicable": true, "paths": ["api/src/modules/storage/objects.test.ts", "api/src/modules/storage/keys.test.ts", "api/src/modules/invoices/invoice-lifecycle.test.ts", "api/src/modules/purchases/purchases.test.ts"] },
-        "web": { "applicable": true, "paths": ["tests/e2e/receipt-management.spec.ts", "src/components/bank-account/BankTransactionDetails.tsx"] },
-        "mobile": { "applicable": true, "paths": ["mobile/src/screens/invoices/InvoiceDetailScreen.tsx", "mobile/src/screens/purchases/BillDetailScreen.tsx"], "gap": "Screens list attachments. No mobile test covers upload or authorization." }
+        "api": { "applicable": true, "paths": ["api/src/modules/storage/objects.test.ts", "api/src/modules/storage/keys.test.ts", "api/src/modules/invoices/invoice-lifecycle.test.ts", "api/src/modules/purchases/purchases.test.ts", "docs/evidence/issue-115-remaining/README.md"] },
+        "web": { "applicable": true, "paths": ["tests/e2e/receipt-management.spec.ts", "src/components/bank-account/BankTransactionDetails.tsx", "docs/evidence/issue-115-remaining/README.md"] },
+        "mobile": { "applicable": true, "paths": ["mobile/src/screens/invoices/InvoiceDetailScreen.tsx", "mobile/src/screens/purchases/BillDetailScreen.tsx", "docs/evidence/issue-115-remaining/README.md"], "gap": "See current scope and acceptance limits in docs/evidence/issue-115-remaining/README.md." }
       }
     },
     {
@@ -243,12 +243,12 @@
     },
     {
       "id": "mobile-coverage", "title": "Mobile coverage", "required": true, "status": "partial", "backlogTask": "AKP-10",
-      "gap": "Dashboard, invoices, customers, items, expenses, purchases, bank accounts, transactions, transfers, reports, company and team, recurring schedules, and currency settings have Expo screens. Reconciliation, the customer portal, journal administration, and authenticated native-device QA remain open.",
+      "gap": "Expo includes full reporting, statements/reminders, mapped CSV/reconciliation, bank defaults/FX and recurring templates. Authenticated customer portal, installed-device/native release acceptance and broader parity remain open.",
       "verification": {
         "contract": { "applicable": false, "paths": [], "reason": "Mobile consumes the domain contracts recorded by each capability." },
         "api": { "applicable": false, "paths": [], "reason": "Mobile consumes the same Hono APIs recorded by each capability." },
         "web": { "applicable": false, "paths": [], "reason": "This row measures the native client." },
-        "mobile": { "applicable": true, "paths": ["mobile/src/navigation/links.test.ts", "mobile/src/screens/main/DashboardScreen.test.tsx", "mobile/src/screens/reports/ReportsScreen.test.tsx"] }
+        "mobile": { "applicable": true, "paths": ["mobile/src/navigation/links.test.ts", "mobile/src/screens/main/DashboardScreen.test.tsx", "mobile/src/screens/reports/ReportsScreen.test.tsx", "docs/evidence/issue-115-remaining/README.md"] }
       }
     }
   ],

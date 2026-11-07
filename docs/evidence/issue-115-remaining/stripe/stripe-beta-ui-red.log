@@ -1,0 +1,686 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/components/settings/StripePaymentsPanel.test.tsx (4 tests | 1 failed) 1198ms
+   ✓ StripePaymentsPanel > starts Stripe-hosted onboarding for a disconnected organisation 127ms
+   ✓ StripePaymentsPanel > shows enabled charges and payouts without displaying account secrets 16ms
+   × StripePaymentsPanel > shows pending beta approval instead of claiming a connected account can accept payments 1013ms
+     → Unable to find an element with the text: Card payments await beta approval. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card text-card-foreground shadow-surface overflow-hidden"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6 border-b bg-muted/40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-start gap-4"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#635BFF] text-white"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"20"[39m
+                [33mx[39m=[32m"2"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<line[39m
+                [33mx1[39m=[32m"2"[39m
+                [33mx2[39m=[32m"22"[39m
+                [33my1[39m=[32m"10"[39m
+                [33my2[39m=[32m"10"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight"[39m
+            [36m>[39m
+              [0mReady to accept card payments[0m
+            [36m</h3>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-sm text-muted-foreground mt-1 max-w-2xl"[39m
+            [36m>[39m
+              [0mCustomers can pay NZD invoices securely through Stripe Checkout.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 space-y-5 pt-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-3 sm:grid-cols-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mCharges [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mPayouts [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw mr-2 h-4 w-4"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mRefresh status[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+        [36m>[39m
+          [0mReview Stripe balances and payments[0m
+        [36m</button>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+        [36m>[39m
+          [0mStripe securely collects verification and payout details. LedgerCraft never stores your Stripe password or bank credentials.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card text-card-foreground shadow-surface overflow-hidden"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6 border-b bg-muted/40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-start gap-4"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#635BFF] text-white"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"20"[39m
+                [33mx[39m=[32m"2"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<line[39m
+                [33mx1[39m=[32m"2"[39m
+                [33mx2[39m=[32m"22"[39m
+                [33my1[39m=[32m"10"[39m
+                [33my2[39m=[32m"10"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight"[39m
+            [36m>[39m
+              [0mReady to accept card payments[0m
+            [36m</h3>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-sm text-muted-foreground mt-1 max-w-2xl"[39m
+            [36m>[39m
+              [0mCustomers can pay NZD invoices securely through Stripe Checkout.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 space-y-5 pt-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-3 sm:grid-cols-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mCharges [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mPayouts [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw mr-2 h-4 w-4"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mRefresh status[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+        [36m>[39m
+          [0mReview Stripe balances and payments[0m
+        [36m</button>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+        [36m>[39m
+          [0mStripe securely collects verification and payout details. LedgerCraft never stores your Stripe password or bank credentials.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+   ✓ StripePaymentsPanel > refreshes an incomplete account without restarting onboarding 40ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/settings/StripePaymentsPanel.test.tsx > StripePaymentsPanel > shows pending beta approval instead of claiming a connected account can accept payments
+TestingLibraryElementError: Unable to find an element with the text: Card payments await beta approval. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card text-card-foreground shadow-surface overflow-hidden"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6 border-b bg-muted/40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-start gap-4"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#635BFF] text-white"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"20"[39m
+                [33mx[39m=[32m"2"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<line[39m
+                [33mx1[39m=[32m"2"[39m
+                [33mx2[39m=[32m"22"[39m
+                [33my1[39m=[32m"10"[39m
+                [33my2[39m=[32m"10"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight"[39m
+            [36m>[39m
+              [0mReady to accept card payments[0m
+            [36m</h3>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-sm text-muted-foreground mt-1 max-w-2xl"[39m
+            [36m>[39m
+              [0mCustomers can pay NZD invoices securely through Stripe Checkout.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 space-y-5 pt-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-3 sm:grid-cols-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mCharges [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mPayouts [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw mr-2 h-4 w-4"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mRefresh status[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+        [36m>[39m
+          [0mReview Stripe balances and payments[0m
+        [36m</button>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+        [36m>[39m
+          [0mStripe securely collects verification and payout details. LedgerCraft never stores your Stripe password or bank credentials.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"rounded-2xl bg-card text-card-foreground shadow-surface overflow-hidden"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"flex flex-col space-y-1.5 p-6 border-b bg-muted/40"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex items-start gap-4"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#635BFF] text-white"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<rect[39m
+                [33mheight[39m=[32m"14"[39m
+                [33mrx[39m=[32m"2"[39m
+                [33mwidth[39m=[32m"20"[39m
+                [33mx[39m=[32m"2"[39m
+                [33my[39m=[32m"5"[39m
+              [36m/>[39m
+              [36m<line[39m
+                [33mx1[39m=[32m"2"[39m
+                [33mx2[39m=[32m"22"[39m
+                [33my1[39m=[32m"10"[39m
+                [33my2[39m=[32m"10"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+          [36m</span>[39m
+          [36m<div>[39m
+            [36m<h3[39m
+              [33mclass[39m=[32m"text-2xl font-semibold leading-none tracking-tight"[39m
+            [36m>[39m
+              [0mReady to accept card payments[0m
+            [36m</h3>[39m
+            [36m<p[39m
+              [33mclass[39m=[32m"text-sm text-muted-foreground mt-1 max-w-2xl"[39m
+            [36m>[39m
+              [0mCustomers can pay NZD invoices securely through Stripe Checkout.[0m
+            [36m</p>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+      [36m</div>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"p-6 space-y-5 pt-6"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid gap-3 sm:grid-cols-2"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mCharges [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex items-center gap-2 rounded-xl border p-4"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-check h-5 w-5 text-emerald-600"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M20 6 9 17l-5-5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [36m<span[39m
+              [33mclass[39m=[32m"font-medium"[39m
+            [36m>[39m
+              [0mPayouts [0m
+              [0menabled[0m
+            [36m</span>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"flex flex-wrap gap-3"[39m
+        [36m>[39m
+          [36m<button[39m
+            [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+            [33mtype[39m=[32m"button"[39m
+          [36m>[39m
+            [36m<svg[39m
+              [33mclass[39m=[32m"lucide lucide-refresh-cw mr-2 h-4 w-4"[39m
+              [33mfill[39m=[32m"none"[39m
+              [33mheight[39m=[32m"24"[39m
+              [33mstroke[39m=[32m"currentColor"[39m
+              [33mstroke-linecap[39m=[32m"round"[39m
+              [33mstroke-linejoin[39m=[32m"round"[39m
+              [33mstroke-width[39m=[32m"2"[39m
+              [33mviewBox[39m=[32m"0 0 24 24"[39m
+              [33mwidth[39m=[32m"24"[39m
+              [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+            [36m>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 3v5h-5"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"[39m
+              [36m/>[39m
+              [36m<path[39m
+                [33md[39m=[32m"M8 16H3v5"[39m
+              [36m/>[39m
+            [36m</svg>[39m
+            [0mRefresh status[0m
+          [36m</button>[39m
+        [36m</div>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"[39m
+        [36m>[39m
+          [0mReview Stripe balances and payments[0m
+        [36m</button>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-xs text-muted-foreground"[39m
+        [36m>[39m
+          [0mStripe securely collects verification and payout details. LedgerCraft never stores your Stripe password or bank credentials.[0m
+        [36m</p>[39m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</div>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ findByText node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/settings/StripePaymentsPanel.test.tsx:35:56
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 passed (4)
+   Start at  00:27:20
+   Duration  3.20s (transform 220ms, setup 186ms, collect 606ms, tests 1.20s, environment 567ms, prepare 150ms)

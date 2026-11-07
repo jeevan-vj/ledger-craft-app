@@ -26,8 +26,8 @@ export const useReceiptScanning = (): UseReceiptScanningResult => {
       return;
     }
 
-    if (!file.type.startsWith('image/')) {
-      setError('Please select a valid image file.');
+    if (!file.type.startsWith('image/') && file.type !== 'application/pdf') {
+      setError('Please select a receipt image or PDF.');
       return;
     }
 
@@ -38,7 +38,7 @@ export const useReceiptScanning = (): UseReceiptScanningResult => {
 
     try {
       // Compress image to reduce API costs and improve performance
-      const compressedImage = await OpenAIReceiptService.compressImage(file, 1024, 0.8);
+      const compressedImage = file.type === 'application/pdf' ? await OpenAIReceiptService.fileToBase64(file) : await OpenAIReceiptService.compressImage(file, 1024, 0.8);
       
       // Scan the receipt
       const result = await openaiReceiptService.scanReceipt(compressedImage, {
@@ -47,8 +47,6 @@ export const useReceiptScanning = (): UseReceiptScanningResult => {
 
       setScanResult(result);
 
-      // Log for debugging (remove in production)
-      console.log('Receipt scan result:', result);
 
     } catch (err) {
       console.error('Receipt scanning failed:', err);

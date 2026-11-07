@@ -1,0 +1,2 @@
+src/features/bank-feeds/BankFeedsPanel.tsx(16,60): error TS2551: Property 'replaceAll' does not exist on type '"not_connected" | "revoked" | "connected" | "disconnected"'. Did you mean 'replace'?
+  Property 'replaceAll' does not exist on type '"not_connected"'.

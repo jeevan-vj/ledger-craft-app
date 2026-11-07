@@ -17,6 +17,10 @@ export interface MobileBusinessProfileDto {
   website: string | null;
   defaultTaxRate: string | null;
   gstRegistrationStatus: 'unknown' | 'registered' | 'not_registered';
+  gstRegisteredFrom?: string | null;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   defaultTerms: string | null;
   paymentTermDays: number;
   defaultNotes: string | null;
@@ -53,6 +57,10 @@ export function toBusinessProfile(dto: MobileBusinessProfileDto): BusinessProfil
     defaultQuoteKind: dto.defaultQuoteKind ?? 'quote',
     defaultTaxRate: dto.defaultTaxRate == null ? undefined : Number(dto.defaultTaxRate),
     gstRegistrationStatus: dto.gstRegistrationStatus,
+    gstRegisteredFrom: dto.gstRegisteredFrom,
+    gstAccountingBasis: dto.gstAccountingBasis,
+    gstFilingFrequency: dto.gstFilingFrequency,
+    gstPeriodAnchor: dto.gstPeriodAnchor,
     address: dto.address ?? undefined,
     city: dto.city ?? undefined,
     state: dto.state ?? undefined,

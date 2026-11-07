@@ -1,0 +1,155 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/expense/ReceiptScanner.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/components/expense/ReceiptScanner.test.tsx
+  mobile receipt capture
+    ✕ captures and uploads while unavailable, offers manual entry, and preserves the same attachment (102 ms)
+    ✕ auto-scans when available and keeps an uploaded receipt after failure for retry or manual entry (16 ms)
+
+  ● mobile receipt capture › captures and uploads while unavailable, offers manual entry, and preserves the same attachment
+
+    Unable to find an element with text: Capture receipt
+
+    [36m<Modal>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Text>[39m
+              [0m✕[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mScan Receipt[0m
+          [36m</Text>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+        [36m<RCTScrollView>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt scanning is not available. Please configure your OpenAI API key.[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0mSelect a receipt image to scan[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessibilityRole[39m=[32m"button"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "busy": false,
+                    "disabled": false,
+                  }
+                }[39m
+                [33maccessible[39m=[32m{true}[39m
+                [33mnativeID[39m=[32m"0"[39m
+              [36m>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mSelect Image[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</RCTScrollView>[39m
+      [36m</View>[39m
+    [36m</Modal>[39m
+
+      14 |  it('captures and uploads while unavailable, offers manual entry, and preserves the same attachment',async()=>{
+      15 |   const complete=jest.fn();const screen=render(<ReceiptScanner visible onClose={jest.fn()} onScanComplete={complete}/>);
+    > 16 |   expect(screen.getByText('Capture receipt')).toBeTruthy();fireEvent.press(screen.getByText('Take photo'));
+         |                 ^
+      17 |   await waitFor(()=>expect(screen.getByText('Enter manually with receipt')).toBeTruthy());expect(scanReceiptImage).not.toHaveBeenCalled();
+      18 |   fireEvent.press(screen.getByText('Enter manually with receipt'));
+      19 |   expect(complete).toHaveBeenCalledWith(expect.objectContaining({total:null,tax:null}),'/api/objects/file?key=receipt');
+
+      at Object.getByText (src/components/expense/ReceiptScanner.test.tsx:16:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+  ● mobile receipt capture › auto-scans when available and keeps an uploaded receipt after failure for retry or manual entry
+
+    Unable to find an element with text: Take photo
+
+    [36m<Modal>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<View[39m
+            [33maccessible[39m=[32m{true}[39m
+          [36m>[39m
+            [36m<Text>[39m
+              [0m✕[0m
+            [36m</Text>[39m
+          [36m</View>[39m
+          [36m<Text>[39m
+            [0mScan Receipt[0m
+          [36m</Text>[39m
+          [36m<View />[39m
+        [36m</View>[39m
+        [36m<RCTScrollView>[39m
+          [36m<View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt scanning is not available. Please configure your OpenAI API key.[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt[0m
+              [36m</Text>[39m
+              [36m<Text>[39m
+                [0mSelect a receipt image to scan[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessibilityRole[39m=[32m"button"[39m
+                [33maccessibilityState[39m=[32m{
+                  {
+                    "busy": false,
+                    "disabled": false,
+                  }
+                }[39m
+                [33maccessible[39m=[32m{true}[39m
+                [33mnativeID[39m=[32m"1"[39m
+              [36m>[39m
+                [36m<View>[39m
+                  [36m<Text>[39m
+                    [0mSelect Image[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</RCTScrollView>[39m
+      [36m</View>[39m
+    [36m</Modal>[39m
+
+      21 |  it('auto-scans when available and keeps an uploaded receipt after failure for retry or manual entry',async()=>{
+      22 |   jest.mocked(getServerCapabilities).mockResolvedValue({ai:'available'} as never);jest.mocked(scanReceiptImage).mockRejectedValueOnce(Error('Unreadable'));
+    > 23 |   const screen=render(<ReceiptScanner visible onClose={jest.fn()} onScanComplete={jest.fn()}/>);fireEvent.press(screen.getByText('Take photo'));
+         |                                                                                                                        ^
+      24 |   await waitFor(()=>expect(screen.getByText("Couldn't read this receipt. Retry or enter the details manually.")).toBeTruthy());expect(objectsApi.upload).toHaveBeenCalledTimes(1);expect(screen.getByText('Enter manually with receipt')).toBeTruthy();
+      25 |  });
+      26 | });
+
+      at Object.getByText (src/components/expense/ReceiptScanner.test.tsx:23:120)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 2 total
+Snapshots:   0 total
+Time:        1.683 s
+Ran all test suites matching src/components/expense/ReceiptScanner.test.tsx.

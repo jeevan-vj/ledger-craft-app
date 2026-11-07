@@ -378,6 +378,7 @@ export async function importTransactions(
         (item) =>
           item.transactionDate === row.transactionDate &&
           item.description === row.description &&
+          item.type === row.type &&
           item.amount === amount,
       );
     if (isDup) {

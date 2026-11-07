@@ -253,11 +253,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
     }
     
     if (scanResult.total) {
-      form.setValue('amount', scanResult.total);
+      form.setValue('amount', Number(scanResult.total));
     }
     
     if (scanResult.tax) {
-      form.setValue('taxAmount', scanResult.tax);
+      form.setValue('taxAmount', Number(scanResult.tax));
     }
     
     if (scanResult.paymentMethod) {

@@ -1,0 +1,157 @@
+Good to see you
+Collections
+C
+Closing cash
+$400.00
+
+
+
+New invoice
+
+New quote
+
+Record payment
+
+Add expense
+
+Add customer
+Business reports
+Posted ledger
+30 days
+90 days
+Year
+Summary
+Revenue
+$1,000.00
+Expenses
+$0.00
+Net income
+$1,000.00
+1 source record
+Server-authoritative · Posted ledger
+Receivables
+Outstanding receivables
+$600.00
+1 source record
+Server-authoritative · Posted ledger
+Payables
+Outstanding payables
+$0.00
+No source activity in this period.
+Server-authoritative · Posted ledger
+Cash
+Cash in
+$400.00
+Cash out
+$0.00
+Net cash flow
+$400.00
+Closing cash
+$400.00
+1 source record
+Server-authoritative · Posted ledger
+Tax
+GST collected
+$0.00
+GST paid
+$0.00
+Net GST payable
+$0.00
+No source activity in this period.
+Server-authoritative · Posted ledger
+Activity
+Activity count
+1
+1 source record
+Operational activity
+Quotes
+Open quotes
+0
+$0.00 still open
+0 accepted, not invoiced
+
+Tasks
+
+1 overdue invoice
+Follow up and keep cash flow moving.
+Review
+Dismiss
+Needs action
+See all
+
+Harbour Mobile Buyer
+INV-2026-0001 · 20 Sept
+$1,000.00
+Overdue
+Invoices
+Import
+New
+Invoices
+Quotes
+All documents
+Sales
+Regular invoices
+All
+Draft
+Sent
+Paid
+Overdue
+
+Draft
+
+Sent
+
+Paid
+
+Harbour Mobile Buyer
+INV-2026-0001 · 10 Oct 2026
+$1,000.00
+Overdue
+
+
+Home
+
+
+Invoices
+
+
+Customers
+
+
+More
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+locator.click: Timeout 60000ms exceeded.
+Call log:
+[2m  - waiting for getByText('INV-2026-0001').first()[22m
+[2m    - locator resolved to <div dir="auto" class="css-text-146c3p1">INV-2026-0001 · 20 Sept</div>[22m
+[2m  - attempting click action[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="css-view-g5y9jx r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx">…</div> from <div class="css-view-g5y9jx r-bottom-1p0dtai r-left-1d2f490 r-position-u8s1d r-right-zchlnj r-top-ipm5af">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m    - waiting 20ms[22m
+[2m    2 × waiting for element to be visible, enabled and stable[22m
+[2m      - element is visible, enabled and stable[22m
+[2m      - scrolling into view if needed[22m
+[2m      - done scrolling[22m
+[2m      - <div class="css-view-g5y9jx r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx">…</div> from <div class="css-view-g5y9jx r-bottom-1p0dtai r-left-1d2f490 r-position-u8s1d r-right-zchlnj r-top-ipm5af">…</div> subtree intercepts pointer events[22m
+[2m    - retrying click action[22m
+[2m      - waiting 100ms[22m
+[2m    110 × waiting for element to be visible, enabled and stable[22m
+[2m        - element is visible, enabled and stable[22m
+[2m        - scrolling into view if needed[22m
+[2m        - done scrolling[22m
+[2m        - <div class="css-view-g5y9jx r-WebkitOverflowScrolling-150rngu r-flexDirection-eqz5dr r-flexGrow-16y2uox r-flexShrink-1wbh5a2 r-overflowX-11yh6sk r-overflowY-1rnoaur r-transform-agouwx">…</div> from <div class="css-view-g5y9jx r-bottom-1p0dtai r-left-1d2f490 r-position-u8s1d r-right-zchlnj r-top-ipm5af">…</div> subtree intercepts pointer events[22m
+[2m      - retrying click action[22m
+[2m        - waiting 500ms[22m
+
+    at /workspace/ledger-craft-app/scripts/issue115-mobile-collections-proof.mjs:22:195 {
+  name: 'TimeoutError'
+}
+
+Node.js v24.22.1

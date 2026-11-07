@@ -24,7 +24,7 @@ import type { InvoiceImportExtractionProvider } from './types';
 const RETRY_NOTE = 'Your previous reply was not valid JSON for the schema. Return only one valid JSON object with every required field.';
 const MAX_CONVERTED_DOCUMENT_CHARS = 30_000;
 
-function boundedConvertedText(value: string): string {
+export function boundedConvertedText(value: string): string {
   // Strip control characters and fence markers so converted text cannot close the untrusted boundary.
   // eslint-disable-next-line no-control-regex
   const withoutControls = value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, '');
@@ -36,7 +36,7 @@ function boundedConvertedText(value: string): string {
   return withoutMarkers.slice(0, MAX_CONVERTED_DOCUMENT_CHARS);
 }
 
-async function workersAiDocumentContent(
+export async function workersAiDocumentContent(
   file: { bytes: Uint8Array; mimeType: string; filename: string },
   ai: WorkersAiBinding,
 ): Promise<string | { dataUrl: string }> {

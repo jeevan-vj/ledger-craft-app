@@ -30,6 +30,11 @@ describe('StripePaymentsPanel', () => {
     expect(view.container.textContent).not.toMatch(/acct_|sk_test|whsec_/);
   });
 
+  it('shows pending beta approval instead of claiming a connected account can accept payments', async()=>{
+    vi.mocked(stripeApi.account).mockResolvedValue({status:'active',chargesEnabled:true,payoutsEnabled:true,detailsSubmitted:true,requirementsDue:[],disabledReason:null,paymentsApproved:false});
+    render(<StripePaymentsPanel/>);expect(await screen.findByText('Card payments await beta approval')).toBeInTheDocument();expect(screen.queryByText('Ready to accept card payments')).not.toBeInTheDocument();
+  });
+
   it('refreshes an incomplete account without restarting onboarding', async () => {
     vi.mocked(stripeApi.account).mockResolvedValue({ status: 'onboarding', chargesEnabled: false, payoutsEnabled: false, detailsSubmitted: true, requirementsDue: ['external_account'], disabledReason: null });
     vi.mocked(stripeApi.refreshAccount).mockResolvedValue({ status: 'active', chargesEnabled: true, payoutsEnabled: true, detailsSubmitted: true, requirementsDue: [], disabledReason: null });

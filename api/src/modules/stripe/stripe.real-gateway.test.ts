@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 const stripeMocks = vi.hoisted(() => ({
   v1AccountCreate: vi.fn(),
   v2AccountCreate: vi.fn(),
+  feeRetrieve: vi.fn(), chargeRetrieve: vi.fn(), intentRetrieve: vi.fn(), intentList: vi.fn(),
 }));
 
 vi.mock('stripe', () => {
@@ -12,6 +13,9 @@ vi.mock('stripe', () => {
 
     accounts = { create: stripeMocks.v1AccountCreate };
     accountLinks = { create: vi.fn() };
+    applicationFees = { retrieve: stripeMocks.feeRetrieve };
+    charges = { retrieve: stripeMocks.chargeRetrieve };
+    paymentIntents = { retrieve: stripeMocks.intentRetrieve, list: stripeMocks.intentList };
     checkout = { sessions: { create: vi.fn(), expire: vi.fn() } };
     webhooks = { constructEventAsync: vi.fn() };
     v2 = {
@@ -86,4 +90,42 @@ describe('real Stripe gateway', () => {
   it('fails closed without crashing when enabled real-mode configuration is incomplete', () => {
     expect(stripeRuntimeFromEnv({ STRIPE_PAYMENTS_ENABLED: 'true' })).toBeUndefined();
   });
+});
+
+it('retains a configured webhook receiver when the new-payment kill switch is off', () => {
+  const runtime = stripeRuntimeFromEnv({ STRIPE_PAYMENTS_ENABLED: 'false', STRIPE_SECRET_KEY: 'sk_test_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect' });
+  expect(runtime?.config.enabled).toBe(false);
+  expect(runtime?.gateway.constructWebhookEvent).toBeTypeOf('function');
+  expect(stripePaymentsCapability({ STRIPE_PAYMENTS_ENABLED: 'false' })).toBe('unavailable');
+});
+
+it('does not enable a disabled local mock through real webhook credentials', () => {
+ expect(stripeRuntimeFromEnv({STRIPE_PAYMENTS_ENABLED:'false',STRIPE_MOCK_MODE:'true',APP_URL:'http://localhost:8080',STRIPE_SECRET_KEY:'sk_test_example',STRIPE_WEBHOOK_SECRET:'whsec_test',STRIPE_CONNECT_WEBHOOK_SECRET:'whsec_test'})).toBeUndefined();
+});
+
+it('retrieves a real-shaped ApplicationFee through its charge before reading authoritative payment facts', async () => {
+ stripeMocks.feeRetrieve.mockResolvedValue({id:'fee_sdk',charge:'ch_sdk'});
+ stripeMocks.chargeRetrieve.mockResolvedValue({id:'ch_sdk',payment_intent:'pi_sdk'});
+ stripeMocks.intentRetrieve.mockResolvedValue({id:'pi_sdk',status:'succeeded',currency:'nzd',amount_received:10000,application_fee_amount:430,transfer_data:{destination:'acct_sdk'},metadata:{organisation_id:'org_sdk',payment_link_id:'link_sdk'},latest_charge:{amount_refunded:10000,application_fee:{amount_refunded:430}}});
+ const remote=await createStripeGateway('sk_test_fixture').retrieveFeePayment!('fee_sdk');
+ expect(remote).toMatchObject({id:'pi_sdk',amountCents:10000,applicationFeeRefundedCents:430,destinationAccountId:'acct_sdk'});
+ expect(stripeMocks.feeRetrieve).toHaveBeenCalledWith('fee_sdk');expect(stripeMocks.chargeRetrieve).toHaveBeenCalledWith('ch_sdk');expect(stripeMocks.intentRetrieve).toHaveBeenCalledWith('pi_sdk',{expand:['latest_charge.application_fee']});
+});
+
+it('paginates the last48h provider window, retaining only the destination or declared organisation for audit',async()=>{
+ stripeMocks.intentList.mockReset();
+ const intent=(id:string,org:string,destination:string)=>({id,status:'succeeded',currency:'nzd',amount_received:10000,application_fee_amount:430,metadata:{organisation_id:org,payment_link_id:'link1'},transfer_data:{destination}});
+ stripeMocks.intentList.mockResolvedValueOnce({data:[intent('pi_foreign','org_other','acct_other')],has_more:true}).mockResolvedValueOnce({data:[intent('pi_scoped','org_target','acct_target'),intent('pi_wrongroute','org_target','acct_wrong')],has_more:false});
+ const since=new Date('2026-11-05T00:00:00Z');const result=await createStripeGateway('sk_test_fixture').listRecentPayments!('org_target','acct_target',since);
+ expect(result.complete).toBe(true);expect(result.items.map(item=>item.id)).toEqual(['pi_scoped','pi_wrongroute']);expect(stripeMocks.intentList).toHaveBeenNthCalledWith(2,expect.objectContaining({starting_after:'pi_foreign',created:{gte:Math.floor(since.getTime()/1000)}}));
+});
+it('reports incomplete provider discovery when Stripe pagination cannot establish a complete window',async()=>{
+ stripeMocks.intentList.mockReset();stripeMocks.intentList.mockResolvedValue({data:[],has_more:true});
+ expect(await createStripeGateway('sk_test_fixture').listRecentPayments!('org_target','acct_target',new Date())).toEqual({items:[],complete:false});
+ expect(stripeMocks.intentList).toHaveBeenCalledTimes(1);
+});
+it('defaults real beta approval to empty and parses only explicit organisation IDs',()=>{
+ const env={STRIPE_PAYMENTS_ENABLED:'true',STRIPE_SECRET_KEY:'sk_test_fixture',STRIPE_WEBHOOK_SECRET:'whsec_platform',STRIPE_CONNECT_WEBHOOK_SECRET:'whsec_connect'};
+ expect(stripeRuntimeFromEnv(env)?.config.approvedOrganisationIds).toEqual([]);
+ expect(stripeRuntimeFromEnv({...env,STRIPE_APPROVED_ORGANISATION_IDS:'org_one, org_two,,'})?.config.approvedOrganisationIds).toEqual(['org_one','org_two']);
 });

@@ -1,322 +1,56 @@
-import React, { useState, useEffect } from 'react';
-import { IRDReportingDashboard } from '@/components/reporting/IRDReportingDashboard';
-import { GSTReturnWizard, GSTReturnData } from '@/components/tax/GSTReturnWizard';
-import { useToast } from '@/hooks/use-toast';
-import { useAuth } from "@/context/StableAuthContext";
-import { Skeleton } from '@/components/ui/skeleton';
-import { Card, CardContent } from '@/components/ui/card';
-import { TaxReturn } from '@/types/payment';
-import { supabaseDataService } from '@/services/supabaseDataService';
-import { taxCalculationService } from '@/services/taxCalculationService';
+import { useAuth } from '@/context/StableAuthContext';
+import { useEffect, useState } from 'react';
+import type { GstPeriodsResponse, TaxReturnDto } from '@ledgercraft/contracts';
+import { Link } from 'react-router-dom';
 import { PageHeader } from '@/components/layout/PageHeader';
-import { downloadCompanyTaxPdf } from '@/features/accounting-completion/companyTaxPdf';
-import { downloadGstReturnPdf } from '@/features/tax/export/gstReturnPdf';
+import { Button } from '@/components/ui/button';
+import { ContentPanel } from '@/components/ui/ContentPanel';
 import { GstPreparationPanel } from '@/components/accounting/GstPreparationPanel';
 import { CompanyTaxPreparationPanel } from '@/components/accounting/CompanyTaxPreparationPanel';
-import { Button } from '@/components/ui/button';
-import { netGstAfterAdjustments } from '@/features/tax/gstPreparation';
+import { downloadCompanyTaxPdf } from '@/features/accounting-completion/companyTaxPdf';
+import { GstPeriodsOverview, type GstPeriodRow } from '@/features/tax/GstPeriodsOverview';
+import { GstSavedReturn } from '@/features/tax/GstSavedReturn';
+import { gstSettingsApi } from '@/features/tax/gstSettingsApi';
 
 export default function IRDReportingPage() {
-  const [taxReturns, setTaxReturns] = useState<TaxReturn[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [complianceStatus, setComplianceStatus] = useState({
-    isCompliant: true,
-    issues: [] as string[],
-    warnings: [] as string[]
-  });
-  const [nextGSTDueDate, setNextGSTDueDate] = useState('');
-  const [showGSTWizard, setShowGSTWizard] = useState(false);
+  const { me } = useAuth(); const canWrite = me?.permissions.includes('banking.write') === true;
+  const [data, setData] = useState<GstPeriodsResponse>(); const [records, setRecords] = useState<TaxReturnDto[]>([]);
+  const [period, setPeriod] = useState<GstPeriodRow>(); const [selected, setSelected] = useState<TaxReturnDto>();
   const [worksheet, setWorksheet] = useState<'gst' | 'company'>('gst');
-  
-  const { toast } = useToast();
-  const { user } = useAuth();
-
-  const fetchTaxReturns = async (background = false) => {
-    if (!user?.id) return;
-    
-    if (!background) setIsLoading(true);
-    try {
-      // Fetch real tax returns from Supabase
-      const returns = await supabaseDataService.getTaxReturnsByUser(user.id);
-      setTaxReturns(returns);
-      
-      // Calculate compliance status based on real data
-      const now = new Date();
-      const currentQuarter = Math.floor(now.getMonth() / 3);
-      const quarterEnd = new Date(now.getFullYear(), (currentQuarter + 1) * 3, 0);
-      const nextDueDate = new Date(quarterEnd.getFullYear(), quarterEnd.getMonth() + 1, 28);
-      
-      setNextGSTDueDate(nextDueDate.toISOString().split('T')[0]);
-      
-      // Check for overdue returns
-      const overdueReturns = returns.filter(r => 
-        r.status === 'draft' && new Date(nextDueDate) < now
-      );
-      
-      const warnings = [];
-      const issues = [];
-      
-      if (overdueReturns.length > 0) {
-        issues.push(`${overdueReturns.length} overdue tax return(s) require immediate attention`);
-      }
-      
-      const daysUntilDue = Math.ceil((nextDueDate.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
-      if (daysUntilDue <= 15 && daysUntilDue > 0) {
-        warnings.push(`Next GST return due in ${daysUntilDue} days`);
-      }
-      
-      // Check if user has transactions but no recent returns
-      const lastReturn = returns.find(r => r.returnType === 'GST');
-      if (!lastReturn || new Date(lastReturn.periodEnd) < new Date(now.getFullYear(), now.getMonth() - 6, 1)) {
-        warnings.push('Consider reviewing expense categorization for tax optimization');
-      }
-      
-      setComplianceStatus({
-        isCompliant: issues.length === 0,
-        issues,
-        warnings
-      });
-      
-    } catch (error) {
-      console.error('Error fetching tax returns:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load tax returns",
-        variant: "destructive"
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (user?.id) {
-      fetchTaxReturns();
-    }
-  }, [user?.id]);
-
-  const handleCreateGSTReturn = () => {
-    setShowGSTWizard(true);
-  };
-
-  const handleGSTWizardComplete = async (returnData: GSTReturnData) => {
-    if (!user?.id) return;
-
-    try {
-      toast({
-        title: 'Saving GST Return',
-        description: 'Creating an invoice-basis draft from posted invoices, supplier bills, expenses, and reconciliations...',
-      });
-
-      const irdReturnData = await taxCalculationService.generateIRDGSTReturn(
-        user.id,
-        returnData.returnPeriod.startDate,
-        returnData.returnPeriod.endDate
-      );
-
-      const netGst = netGstAfterAdjustments(returnData.salesData.gstOnSales,
-        returnData.purchaseData.gstOnPurchases,
-        returnData.purchaseData.gstOnCapitalGoods,
-        returnData.adjustments.badDebtAdjustments,
-        returnData.adjustments.creditNoteAdjustments,
-        returnData.adjustments.otherAdjustments);
-
-      const newReturnData: Omit<TaxReturn, 'id' | 'createdAt' | 'updatedAt'> = {
-        userId: user.id,
-        periodStart: returnData.returnPeriod.startDate,
-        periodEnd: returnData.returnPeriod.endDate,
-        returnType: 'GST',
-        totalSales: returnData.salesData.totalSales,
-        totalPurchases: returnData.purchaseData.totalPurchases,
-        gstOnSales: returnData.salesData.gstOnSales,
-        gstOnPurchases: returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods,
-        netGst,
-        status: 'draft',
-        returnData: {
-          ...irdReturnData,
-          preparation: { basis: 'invoice', baseCurrency: 'NZD', dueDate: returnData.dueDate },
-          gstReturn: {
-            salesDetails: {
-              standardRated: irdReturnData.gstReturn?.salesDetails.standardRated ?? returnData.salesData.totalSales,
-              zeroRated: returnData.salesData.zeroRatedSales,
-              exempt: returnData.salesData.exemptSales,
-              totalSales: returnData.salesData.totalSales,
-              gstOnSales: returnData.salesData.gstOnSales,
-            },
-            purchaseDetails: {
-              standardRated: irdReturnData.gstReturn?.purchaseDetails.standardRated ?? returnData.purchaseData.totalPurchases,
-              capitalGoods: returnData.purchaseData.capitalGoods,
-              totalPurchases: returnData.purchaseData.totalPurchases,
-              gstOnPurchases: returnData.purchaseData.gstOnPurchases + returnData.purchaseData.gstOnCapitalGoods,
-            },
-            adjustments: {
-              badDebts: returnData.adjustments.badDebtAdjustments,
-              otherAdjustments:
-                returnData.adjustments.creditNoteAdjustments + returnData.adjustments.otherAdjustments,
-            },
-          },
-          reconciliation: returnData.reconciliation,
-        },
-      };
-
-      const createdReturn = await supabaseDataService.createTaxReturn(newReturnData);
-      setTaxReturns((prev) => [createdReturn, ...prev]);
-      setShowGSTWizard(false);
-
-      toast({
-        title: 'GST return saved',
-        description: `Draft created with $${Math.abs(newReturnData.netGst).toFixed(2)} ${newReturnData.netGst >= 0 ? 'owing' : 'refund'}`,
-      });
-    } catch (error) {
-      console.error('Error creating GST return:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to save GST return. Please check your transaction data.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  const handleCreateIncomeReturn = () => { setShowGSTWizard(false); setWorksheet('company'); };
-
-  const handleSubmitReturn = async (returnId: string, irdReference: string) => {
-    try {
-      toast({
-        title: 'Recording filed return',
-        description: 'Saving your myIR confirmation reference...',
-      });
-
-      const updatedReturn = await supabaseDataService.fileTaxReturn(returnId, irdReference);
-      
-      setTaxReturns(prev => 
-        prev.map(ret => ret.id === returnId ? updatedReturn : ret)
-      );
-      
-      toast({
-        title: 'GST return recorded as filed',
-        description: `IRD confirmation reference: ${irdReference}`,
-      });
-    } catch (error) {
-      console.error('Error recording filed tax return:', error);
-      toast({
-        title: 'Could not record filed return',
-        description: error instanceof Error ? error.message : 'Please try again.',
-        variant: 'destructive',
-      });
-      throw error;
-    }
-  };
-
-  const handleExportReturn = async (returnId: string, format: string) => {
-    try {
-      const taxReturn = taxReturns.find((row) => row.id === returnId);
-      if (!taxReturn) throw new Error('Tax return not found');
-      if (format !== 'pdf') throw new Error(`Unsupported export format: ${format}`);
-      if (taxReturn.returnType === 'Income_Tax') {
-        if (!taxReturn.returnData?.companyIncomeTax) throw new Error('This record has no reviewed company tax worksheet to export.');
-        await downloadCompanyTaxPdf(taxReturn.returnData.companyIncomeTax);
-      } else { await downloadGstReturnPdf(taxReturn); }
-
-      toast({
-        title: 'Tax worksheet downloaded',
-        description: 'Your PDF preparation and filing record is ready.',
-      });
-    } catch (error) {
-      toast({
-        title: 'Could not download tax worksheet',
-        description: error instanceof Error ? error.message : 'Please try again.',
-        variant: 'destructive',
-      });
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="space-y-6">
-        {/* Header Skeleton */}
-        <div className="flex items-center justify-between">
-          <div>
-            <Skeleton className="h-8 w-48 mb-2" />
-            <Skeleton className="h-4 w-64" />
-          </div>
-          <div className="flex gap-3">
-            <Skeleton className="h-10 w-32" />
-            <Skeleton className="h-10 w-32" />
-          </div>
-        </div>
-
-        {/* Compliance Status Skeleton */}
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex items-center justify-between mb-4">
-              <Skeleton className="h-6 w-40" />
-              <div className="flex items-center gap-4">
-                <Skeleton className="h-4 w-24" />
-                <Skeleton className="h-2 w-24" />
-              </div>
-            </div>
-            <Skeleton className="h-16 w-full" />
-          </CardContent>
-        </Card>
-
-        {/* Metrics Cards Skeleton */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          {[...Array(4)].map((_, i) => (
-            <Card key={i}>
-              <CardContent className="p-6">
-                <div className="flex items-center gap-3">
-                  <Skeleton className="w-10 h-10 rounded-lg" />
-                  <div>
-                    <Skeleton className="h-4 w-20 mb-1" />
-                    <Skeleton className="h-6 w-12" />
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-
-        {/* Table Skeleton */}
-        <Card>
-          <CardContent className="p-6">
-            <Skeleton className="h-6 w-32 mb-4" />
-            <div className="space-y-3">
-              {[...Array(3)].map((_, i) => (
-                <Skeleton key={i} className="h-16 w-full" />
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
-    );
+  const [busy, setBusy] = useState(false); const [error, setError] = useState('');
+  async function load() {
+    setBusy(true); setError('');
+    try { const [overview, returns] = await Promise.all([gstSettingsApi.periods(), gstSettingsApi.returns()]); setData(overview); setRecords(returns.taxReturns); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : 'Tax records are unavailable.'); }
+    finally { setBusy(false); }
   }
-
-  return (
-    <div className="space-y-6">
-      <PageHeader
-        title="IRD Tax Reporting"
-        description="Prepare reviewed GST and company tax worksheets, then file separately in myIR"
-        onBack={showGSTWizard ? () => setShowGSTWizard(false) : undefined}
-      />
-
-      {!showGSTWizard && <div className="space-y-4"><div className="flex flex-wrap gap-2"><Button variant={worksheet === 'gst' ? 'default' : 'outline'} onClick={() => setWorksheet('gst')}>GST worksheet</Button><Button variant={worksheet === 'company' ? 'default' : 'outline'} onClick={() => setWorksheet('company')}>Company tax worksheet</Button></div>{worksheet === 'gst' ? <GstPreparationPanel onSaved={() => void fetchTaxReturns(true)} /> : <CompanyTaxPreparationPanel onSaved={() => void fetchTaxReturns(true)} />}</div>}
-      {showGSTWizard ? (
-        <GSTReturnWizard
-          onComplete={handleGSTWizardComplete}
-          onCancel={() => setShowGSTWizard(false)}
-        />
-      ) : (
-        <IRDReportingDashboard
-          taxReturns={taxReturns}
-          nextGSTDueDate={nextGSTDueDate}
-          complianceStatus={complianceStatus}
-          onCreateGSTReturn={handleCreateGSTReturn}
-          onCreateIncomeReturn={handleCreateIncomeReturn}
-          onSubmitReturn={handleSubmitReturn}
-          onExportReturn={handleExportReturn}
-          isLoading={isLoading}
-        />
-      )}
-    </div>
-  );
+  useEffect(() => { void load(); }, []);
+  async function view(id: string) {
+    setBusy(true); setError('');
+    try { setSelected(await gstSettingsApi.getReturn(id)); setWorksheet('gst'); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : 'Saved return is unavailable.'); }
+    finally { setBusy(false); }
+  }
+  function prepare(value: GstPeriodRow) { setPeriod(value); setSelected(undefined); setWorksheet('gst'); }
+  async function companyPdf(record: TaxReturnDto) {
+    setError('');
+    try { if (!record.returnData?.companyIncomeTax) throw new Error('This record has no reviewed company worksheet.'); await downloadCompanyTaxPdf(record.returnData.companyIncomeTax); }
+    catch (caught) { setError(caught instanceof Error ? caught.message : 'Company worksheet unavailable.'); }
+  }
+  const basis = data?.settings.gstAccountingBasis;
+  return <div className="space-y-6">
+    <PageHeader title="GST and tax records" description="Registered periods, reviewed calculations and retained filing confirmations" />
+    <div className="flex flex-wrap gap-3"><Button variant={worksheet === 'gst' ? 'default' : 'outline'} onClick={() => setWorksheet('gst')}>GST periods and returns</Button>{canWrite && <Button variant={worksheet === 'company' ? 'default' : 'outline'} onClick={() => { setWorksheet('company'); setSelected(undefined); }}>Company tax worksheet</Button>}<Button variant="outline" disabled={busy} onClick={() => void load()}>Refresh tax records</Button></div>
+    {error && <ContentPanel><p role="alert" className="text-sm text-destructive">{error}</p><Button className="mt-3" onClick={() => void load()}>Retry tax records</Button></ContentPanel>}
+    {!data && busy && <ContentPanel><p role="status">Loading registered GST periods…</p></ContentPanel>}
+    {worksheet === 'gst' && <>
+      {data && <GstPeriodsOverview canWrite={canWrite} data={data} onPrepare={prepare} onView={id => void view(id)} />}
+      {period && data?.settings.configured && basis && <GstPreparationPanel canWrite={canWrite} key={`${period.periodStart}-${period.periodEnd}-${basis}`} registeredBasis={basis} period={{ periodStart: period.periodStart, periodEnd: period.periodEnd, dueDate: period.dueDate }} onSaved={() => void load()} />}
+      {selected?.returnType === 'GST' && <GstSavedReturn canWrite={canWrite} value={selected} onFiled={() => void load()} onPrepareNew={data?.settings.configured && data.periods.some(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd) ? () => prepare(data.periods.find(row => row.periodStart === selected.periodStart && row.periodEnd === selected.periodEnd)!) : undefined} />}
+      {data?.reviewRequired && <p className="text-sm text-muted-foreground">Your registered choices need review. <Link className="font-medium text-primary underline" to="/tax-config">Open GST settings</Link>.</p>}
+      {records.filter(record => record.returnType === 'GST').length > 0 && <ContentPanel><section aria-label="Retained GST records" className="space-y-4"><h2 className="text-lg font-semibold">Retained GST records</h2><p className="text-sm text-muted-foreground">Historical drafts and filed snapshots retain the settings used when they were prepared.</p><ul className="divide-y divide-border">{records.filter(record => record.returnType === 'GST').map(record => <li key={record.id} className="flex flex-wrap items-center justify-between gap-3 py-3"><span className="text-sm">{record.periodStart} to {record.periodEnd} · {record.status === 'submitted' ? 'Recorded as filed' : record.status} · NZD {record.netGst}{record.irdReference && ` · ${record.irdReference}`}</span><Button variant="outline" onClick={() => void view(record.id)}>View saved GST record</Button></li>)}</ul></section></ContentPanel>}
+    </>}
+    {worksheet === 'company' && <><CompanyTaxPreparationPanel onSaved={() => void load()} />{records.filter(record => record.returnType === 'Income_Tax').map(record => <ContentPanel key={record.id}><div className="flex flex-wrap items-center justify-between gap-3"><p>{record.periodStart} to {record.periodEnd} · NZD {record.netGst}</p><Button variant="outline" onClick={() => void companyPdf(record)}>Download company worksheet</Button></div></ContentPanel>)}</>}
+    <p className="text-xs text-muted-foreground">Nothing on this page submits to IRD. File separately in myIR and retain the actual confirmation reference. Your accountant should confirm registration choices and tax treatment.</p>
+  </div>;
 }

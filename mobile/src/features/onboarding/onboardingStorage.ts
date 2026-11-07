@@ -13,6 +13,8 @@ export interface BusinessDraft {
   businessName: string;
   country: string;
   gstRegistrationStatus: GstRegistrationStatus;
+  taxId?: string;
+  gstRegisteredFrom?: string;
 }
 
 async function read(key: string): Promise<string | null> {

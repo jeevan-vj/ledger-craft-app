@@ -1,3 +1,4 @@
+import { gstDateSchema, normalizeNzGstNumber } from '@ledgercraft/contracts';
 import React, { useEffect, useState } from 'react';
 import {
   Alert,
@@ -70,6 +71,8 @@ export default function OnboardingScreen() {
         businessName: business?.businessName || current.businessName,
         country: business?.country || current.country,
         gstRegistrationStatus: business?.gstRegistrationStatus || current.gstRegistrationStatus,
+        taxId: business?.taxId || current.taxId,
+        gstRegisteredFrom: business?.gstRegisteredFrom || current.gstRegisteredFrom,
       }));
       if (business) setStep(Math.max(0, Math.min(2, business.step)));
     }).catch(() => undefined);
@@ -86,6 +89,8 @@ export default function OnboardingScreen() {
       businessName: data.businessName,
       country: data.country,
       gstRegistrationStatus: data.gstRegistrationStatus,
+      taxId: data.taxId,
+      gstRegisteredFrom: data.gstRegisteredFrom,
     }).catch(() => undefined);
   };
 
@@ -108,6 +113,11 @@ export default function OnboardingScreen() {
       return;
     }
 
+    const nzRegistered = data.gstRegistrationStatus === 'registered' && ['NZ', 'New Zealand'].includes(data.country);
+    const normalizedGst = normalizeNzGstNumber(data.taxId ?? '');
+    if (nzRegistered && (!normalizedGst || !gstDateSchema.safeParse(data.gstRegisteredFrom).success)) {
+      setError('Enter a valid NZ GST number and registration date before finishing setup.'); return;
+    }
     const tax = businessTaxDefaults(data.country, data.gstRegistrationStatus);
     setIsLoading(true);
     try {
@@ -117,6 +127,7 @@ export default function OnboardingScreen() {
         businessEmail: data.businessEmail || user?.email || '',
         phone: data.phone?.trim() || undefined,
         ...tax,
+        ...(nzRegistered ? { taxId: normalizedGst!, gstRegisteredFrom: data.gstRegisteredFrom } : {}),
       });
       await Promise.all([
         onboardingStorage.clearAccountDraft(),
@@ -206,6 +217,11 @@ export default function OnboardingScreen() {
             <View style={styles.options}>
               <TaxOption selected={data.gstRegistrationStatus === 'registered'} title="Yes, calculate GST" body="Use the country tax default on new transactions." onPress={() => selectGst('registered')} />
               <TaxOption selected={data.gstRegistrationStatus === 'not_registered'} title="No, I’m not registered" body="New transactions will not add GST by default." onPress={() => selectGst('not_registered')} />
+              {data.gstRegistrationStatus === 'registered' && ['NZ', 'New Zealand'].includes(data.country) ? <>
+                <ModernInput label="NZ GST number" value={data.taxId ?? ''} onChangeText={taxId => update({ taxId })} placeholder="49091850" />
+                <ModernInput label="GST registered from" value={data.gstRegisteredFrom ?? ''} onChangeText={gstRegisteredFrom => update({ gstRegisteredFrom })} placeholder="YYYY-MM-DD" />
+                <Text style={styles.footerNote}>Confirm your filing basis and frequency in Reports → GST settings before saving a return.</Text>
+              </> : null}
               {error ? <Text style={styles.error}>{error}</Text> : null}
             </View>
             ) : null}

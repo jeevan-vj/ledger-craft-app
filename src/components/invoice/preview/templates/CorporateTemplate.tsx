@@ -1,3 +1,4 @@
+import { DocumentGstIdentity } from '../DocumentGstIdentity';
 import { BankPaymentDetails } from '../BankPaymentDetails';
 import { resolveDocumentLabels, type DocumentLabels } from '../documentLabels';
 import React from 'react';
@@ -102,6 +103,7 @@ const CorporateTemplate = ({
           <div className="mb-4 sm:mb-6">
             <h3 className="text-xs font-bold uppercase tracking-wider mb-1 sm:mb-2" style={{ color: theme.textLight }}>From</h3>
             <h4 className="text-lg sm:text-xl font-bold mb-1" style={{ color: theme.text }}>{companyName}</h4>
+            <DocumentGstIdentity labels={copy} />
             <p className="text-xs sm:text-sm whitespace-pre-line no-underline no-autolink" style={{ color: theme.textLight }}>{companyAddress}</p>
             {companyPhone && (
               isMobile ? (
@@ -190,9 +192,9 @@ const CorporateTemplate = ({
             <span className="font-medium" style={{ color: theme.text }}>Subtotal:</span>
             <span style={{ color: theme.text }}>{formatCurrency(invoice.subtotal, invoice.currency)}</span>
           </div>
-          {showPositiveAmount(tax) && (
+          {copy.showTax !== false && (copy.taxLabel === 'GST' || showPositiveAmount(tax)) && (
           <div className="flex justify-between py-1 sm:py-2 text-xs sm:text-sm">
-            <span className="font-medium" style={{ color: theme.text }}>Tax ({taxRate}%):</span>
+            <span className="font-medium" style={{ color: theme.text }}>{copy.taxLabel ?? 'Tax'} ({taxRate}%):</span>
             <span style={{ color: theme.text }}>{formatCurrency(tax, invoice.currency)}</span>
           </div>
           )}

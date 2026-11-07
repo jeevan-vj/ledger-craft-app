@@ -1,0 +1,191 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_9cf17748-abc6-4f99-9dfa-75f5f11515ca","route":"/api/auth/*","method":"POST","status":200,"durationMs":142}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_ec8682b5-f812-4271-828c-0f292c078fa7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_f338e56b-3b60-40c8-a86b-b2a0ed90fbe2","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_1b7549ee-e03b-4f8e-a209-c3ba984d8871","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_926ab678-0cf9-4e99-9a4c-173c9699ee4a","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_5a3c4554-f197-4ce2-8a34-2b33aaab144e","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_eb0943c5-3401-43ad-95fd-18a1eb87457b","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_6201bf4d-c497-4343-abbe-8f4327a450de","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_f7d070ed-9875-4d6b-8d53-9f755094244e","route":"/api/invoices","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_686f1fef-466f-496d-baa8-50556d7fb0ef","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_1bb29e40-d4eb-4744-8305-da251599d3bb","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_eaabb4ec-02e7-4f5a-9511-29bed6284cf6","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_59f74cd7-e62b-4fd3-9155-b56eaa2680f8","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_e2c9f3d4-c9ce-439a-9bec-cc67762bfd75","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_1008e5bf-3ec8-4587-93ce-866f981ab34b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_4398cee7-25af-41dd-b8a4-64b391a472a9","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_6782c09d-b2d0-44c6-9457-211b9d3174fa","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_65812a33-e10e-4a92-9e85-f06c2a770ebe","route":"/api/vendors","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_4a5e73f7-474d-40b4-beb3-91e56a525b64","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_24d7d220-f3e8-4698-8c73-25d0556be9ff","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_a705707c-ae20-43b7-9d9a-010268a30fea","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_63ec0e58-5408-4e69-b174-e5a887684e45","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_0bd7756c-dd5b-4225-9617-478ea33ef19e","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_b1d875f0-2433-479f-817f-84360de2f7e4","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_6fb5c535-23de-4153-a779-310eab14f181","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_8fc6f938-78db-43a0-aed1-c7abc912ea92","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+ ❯ src/modules/invoices/invoice-delivery-current-state.test.ts (2 tests | 2 failed) 2037ms
+   × accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight 1092ms
+     → promise resolved "{ …(46) }" instead of rejecting
+   × accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight 943ms
+     → promise resolved "{ …(46) }" instead of rejecting
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+ FAIL  src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+AssertionError: promise resolved "{ …(46) }" instead of rejecting
+
+- Expected
++ Received
+
+- Error {
+-   "message": "rejected promise",
++ {
++   "additionalCharges": null,
++   "additionalChargesList": undefined,
++   "additionalChargesTotal": "0.00",
++   "archivedAt": null,
++   "balanceDue": "100.00",
++   "baseCredited": "0.00",
++   "baseCurrency": "NZD",
++   "baseSubtotal": "100.00",
++   "baseTaxAmount": "0.00",
++   "baseTaxCredited": "0.00",
++   "baseTotal": "100.00",
++   "createdAt": "2026-11-07T02:59:37.000Z",
++   "currency": "NZD",
++   "customerDetails": {
++     "address": null,
++     "city": null,
++     "country": "NZ",
++     "email": "buyer@example.test",
++     "name": "US customer",
++     "phone": null,
++     "state": null,
++     "zip": null,
++   },
++   "customerEmail": "buyer@example.test",
++   "customerId": "d2175211-b3dd-493e-b00a-a93cac38e612",
++   "customerName": "US customer",
++   "date": "2026-11-07",
++   "discount": null,
++   "discountPercent": null,
++   "discountType": "fixed",
++   "dueDate": "2026-11-21",
++   "effectiveStatus": "cancelled",
++   "exchangeRate": "1",
++   "exchangeRateId": null,
++   "externalId": null,
++   "externalIssuerName": null,
++   "externalNumber": null,
++   "id": "3478dcb5-c103-45d5-bc21-084e4b91774f",
++   "invoiceNumber": "INV-2026-0002",
++   "items": [
++     {
++       "description": "Original delivery draft",
++       "discountAmount": "0.00",
++       "discountType": "fixed",
++       "discountValue": null,
++       "id": "c60be49d-99ae-4964-ae7a-ed1083d28273",
++       "quantity": "1.00",
++       "rate": "100.00",
++       "rateUnit": "ea",
++       "tax": "0.00",
++       "taxes": [],
++       "total": "100.00",
++       "unit": "ea",
++     },
++   ],
++   "notes": null,
++   "paymentStatus": "cancelled",
++   "paymentTermDays": 30,
++   "sourceImportDocumentId": null,
++   "status": "cancelled",
++   "subtotal": "100.00",
++   "taxAmount": "0.00",
++   "taxCredited": "0.00",
++   "taxInclusive": true,
++   "terms": null,
++   "thirdPartyIssued": false,
++   "total": "100.00",
++   "totalCredited": "0.00",
++   "totalPaid": "0.00",
++   "updatedAt": "2026-11-07T02:59:37.348Z",
+  }
+
+ ❯ src/modules/invoices/invoice-delivery-current-state.test.ts:28:30
+     26|         // Transport acceptance is real in this fixture; completion mu…
+     27|         // stale posting rather than resurrect or issue changed financ…
+     28|         await expect(delivery).rejects.toMatchObject({ status: 409 });
+       |                              ^
+     29|         expect(accepted).toBe(1);
+     30|         const [current] = await f.db.select().from(invoices).where(eq(…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  02:59:32
+   Duration  5.57s (transform 1.59s, setup 25ms, collect 3.23s, tests 2.04s, environment 0ms, prepare 85ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/invoices/invoice-delivery-current-state.test.ts

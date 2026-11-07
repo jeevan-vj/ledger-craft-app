@@ -1,5 +1,6 @@
 import Stripe from 'stripe';
 import type { StripeConfig, StripeGateway, StripeRemoteAccount, StripeWebhookEvent } from './stripe.gateway';
+import { paymentFacts } from './stripe.remote';
 import { createMockStripeGateway } from './stripe.mock-gateway';
 
 const STRIPE_API_VERSION = '2026-09-30.endive' as const;
@@ -144,6 +145,45 @@ export function createStripeGateway(secretKey: string): StripeGateway {
     async expireCheckoutSession(sessionId) {
       await stripe.checkout.sessions.expire(sessionId);
     },
+    async retrieveCheckoutPayment(sessionId) {
+      const session = await stripe.checkout.sessions.retrieve(sessionId);
+      if (session.payment_status !== 'paid' || typeof session.payment_intent !== 'string') throw new Error('Stripe Checkout is not paid');
+      return paymentFacts(await stripe.paymentIntents.retrieve(session.payment_intent, { expand: ['latest_charge.application_fee'] }), session.id);
+    },
+    async listRecentPayments(organisationId, destinationAccountId, since) {
+      const items = [];
+      let after: string | undefined;
+      for (let page = 0; page < 100; page++) {
+        const batch = await stripe.paymentIntents.list({ created: { gte: Math.floor(since.getTime() / 1000) }, limit: 100, ...(after ? { starting_after: after } : {}), expand: ['data.latest_charge.application_fee'] });
+        for (const intent of batch.data) {
+          const facts = paymentFacts(intent);
+          if (facts.organisationId === organisationId || facts.destinationAccountId === destinationAccountId) items.push(facts);
+        }
+        if (!batch.has_more) return { items, complete: true };
+        after = batch.data.at(-1)?.id;
+        if (!after) return { items, complete: false };
+      }
+      return { items, complete: false };
+    },
+    async retrieveFeePayment(applicationFeeId) {
+      const fee = await stripe.applicationFees.retrieve(applicationFeeId);
+      const charge = await stripe.charges.retrieve(typeof fee.charge === 'string' ? fee.charge : fee.charge.id);
+      const intentId = typeof charge.payment_intent === 'string' ? charge.payment_intent : charge.payment_intent?.id;
+      if (!intentId) throw new Error('Stripe application fee has no associated payment intent');
+      return paymentFacts(await stripe.paymentIntents.retrieve(intentId, { expand: ['latest_charge.application_fee'] }));
+    },
+    async retrievePayment(paymentIntentId) {
+      return paymentFacts(await stripe.paymentIntents.retrieve(paymentIntentId, { expand: ['latest_charge.application_fee'] }));
+    },
+    async retrieveBalance(accountId) {
+      const balance = await stripe.balance.retrieve({}, { stripeAccount: accountId });
+      const sum = (rows: typeof balance.available) => rows.filter(row => row.currency === 'nzd').reduce((total, row) => total + row.amount, 0);
+      return { availableCents: sum(balance.available), pendingCents: sum(balance.pending), currency: 'NZD' };
+    },
+    async createFullRefund(paymentIntentId, idempotencyKey) {
+      const refund = await stripe.refunds.create({ payment_intent: paymentIntentId, reverse_transfer: true, refund_application_fee: true }, { idempotencyKey });
+      return { id: refund.id, status: refund.status ?? 'pending' };
+    },
     async constructWebhookEvent(payload, signature, secret) {
       const event = await stripe.webhooks.constructEventAsync(
         new TextDecoder().decode(payload), signature, secret, 300, Stripe.createSubtleCryptoProvider(),
@@ -154,7 +194,8 @@ export function createStripeGateway(secretKey: string): StripeGateway {
 }
 
 export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): { gateway: StripeGateway; config: StripeConfig } | undefined {
-  const availability = stripeAvailability(env);
+  const webhookOnly = env.STRIPE_MOCK_MODE !== 'true' && env.STRIPE_PAYMENTS_ENABLED !== 'true' && !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET && !!env.STRIPE_CONNECT_WEBHOOK_SECRET && !!secretKeyMode(env.STRIPE_SECRET_KEY);
+  const availability = stripeAvailability(webhookOnly ? { ...env, STRIPE_PAYMENTS_ENABLED: 'true' } : env);
   if (availability.capability !== 'available') {
     if (env.STRIPE_MOCK_MODE === 'true' && availability.error) throw new Error(availability.error);
     return undefined;
@@ -182,7 +223,8 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
   return {
     gateway: createStripeGateway(secretKey),
     config: {
-      enabled: true, mode,
+      enabled: env.STRIPE_PAYMENTS_ENABLED === 'true', mode,
+      approvedOrganisationIds: (env.STRIPE_APPROVED_ORGANISATION_IDS ?? '').split(',').map(value => value.trim()).filter(Boolean),
       appUrl,
       platformFeeBasisPoints: basisPoints,
       platformFeeFixedCents: fixedCents,

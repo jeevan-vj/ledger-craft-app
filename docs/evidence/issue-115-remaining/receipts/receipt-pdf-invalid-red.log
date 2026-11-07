@@ -1,0 +1,34 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/ai/receipt-pdf.test.ts (3 tests | 1 failed) 36ms
+   × PDF receipt extraction > rejects malformed PDF encoding as a correctable input error 22ms
+     → expected DOMException{ stack: 'InvalidCharact…' } to match object { status: 422 }
+   ✓ PDF receipt extraction > sends bounded extracted PDF text, never a PDF image_url, and returns exact decimal strings 9ms
+   ✓ PDF receipt extraction > converts compressed/scanned PDFs with the existing Workers AI document path and removes boundary injection 3ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/ai/receipt-pdf.test.ts > PDF receipt extraction > rejects malformed PDF encoding as a correctable input error
+AssertionError: expected DOMException{ stack: 'InvalidCharact…' } to match object { status: 422 }
+
+- Expected
++ Received
+
+- {
+-   "status": 422,
++ InvalidCharacterError {
++   "message": "Invalid character",
+  }
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  00:14:02
+   Duration  1.87s (transform 784ms, setup 70ms, collect 1.21s, tests 36ms, environment 0ms, prepare 197ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/ai/receipt-pdf.test.ts

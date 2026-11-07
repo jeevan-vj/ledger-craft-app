@@ -17,6 +17,8 @@ import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import * as invoicesRepo from './invoices.repository';
+import * as customersRepo from '../customers/customers.repository';
+import { assertGstBuyerInformation, assertGstSellerReady } from './gst-compliance';
 
 type ShareRow = typeof sharedInvoices.$inferSelect;
 
@@ -101,57 +103,63 @@ export async function revokeSharesForUser(
 }
 
 export async function createShareForUser(
-  db: Database,
-  userId: string,
-  invoiceId: string,
-  input: CreateShareInvoiceRequest,
+  db: Database, userId: string, invoiceId: string, input: CreateShareInvoiceRequest,
 ): Promise<{ share: ShareInvoiceResponse; created: boolean }> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const invoice = await requireInvoice(tx, ctx.organisationId, invoiceId);
-    const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
-    if (!profile) {
-      throw new HTTPException(400, { message: 'Set up your business profile first' });
-    }
+  return withOrganisationTx(db, userId, (tx, ctx) => createInvoiceShareInTx(tx, ctx, invoiceId, input));
+}
 
-    const templateName = input.templateName ?? 'classic';
-    const now = new Date();
-    if (!input.replace) {
-      const existing = (await listActiveShares(tx, ctx.organisationId, invoice.id, now))
-        .find((row) => templateNameOf(row) === templateName);
-      if (existing) return { share: presentShare(existing), created: false };
-    }
+/** For authenticated server-owned jobs already bound to a verified organisation. */
+export async function createInvoiceShareInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, invoiceId: string, input: CreateShareInvoiceRequest,
+): Promise<{ share: ShareInvoiceResponse; created: boolean }> {
+  const invoice = await requireInvoice(tx, ctx.organisationId, invoiceId);
+  const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+  if (!profile) {
+    throw new HTTPException(400, { message: 'Set up your business profile first' });
+  }
+  const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
+  if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
+  assertGstBuyerInformation(profile, customer, invoice.currency, invoice.total, invoice.date, invoice);
+  assertGstSellerReady(profile, invoice.date, invoice.taxAmount);
 
-    const expiresAt = parseExpiry(input.expiresAt);
-    if (input.replace) {
-      await tx
-        .update(sharedInvoices)
-        .set({ isActive: false })
-        .where(and(
-          eq(sharedInvoices.organisationId, ctx.organisationId),
-          eq(sharedInvoices.originalInvoiceId, invoice.id),
-          eq(sharedInvoices.isActive, true),
-        ));
-    }
+  const templateName = input.templateName ?? 'classic';
+  const now = new Date();
+  if (!input.replace) {
+    const existing = (await listActiveShares(tx, ctx.organisationId, invoice.id, now))
+      .find((row) => templateNameOf(row) === templateName);
+    if (existing) return { share: presentShare(existing), created: false };
+  }
 
-    const shareToken = `${ctx.organisationId}_${crypto.randomUUID()}`;
-    const attachments = (await invoicesRepo.listAttachments(tx, ctx.organisationId, invoice.id))
-      .filter((attachment) => attachment.role !== 'source_document');
-    const [row] = await tx.insert(sharedInvoices).values({
-      organisationId: ctx.organisationId,
-      originalInvoiceId: invoice.id,
-      invoiceData: invoice,
-      templateData: { templateName, businessProfile: profile, attachments },
-      attachmentIds: attachments.map((attachment) => attachment.id),
-      shareToken,
-      expiresAt,
-      accessCount: 0,
-      isActive: true,
-      createdBy: ctx.userId,
-      createdAt: now,
-    }).returning();
-    if (!row) throw new HTTPException(500, { message: 'Share was not created' });
-    return { share: presentShare(row), created: true };
-  });
+  const expiresAt = parseExpiry(input.expiresAt);
+  if (input.replace) {
+    await tx
+      .update(sharedInvoices)
+      .set({ isActive: false })
+      .where(and(
+        eq(sharedInvoices.organisationId, ctx.organisationId),
+        eq(sharedInvoices.originalInvoiceId, invoice.id),
+        eq(sharedInvoices.isActive, true),
+      ));
+  }
+
+  const shareToken = `${ctx.organisationId}_${crypto.randomUUID()}`;
+  const attachments = (await invoicesRepo.listAttachments(tx, ctx.organisationId, invoice.id))
+    .filter((attachment) => attachment.role !== 'source_document');
+  const [row] = await tx.insert(sharedInvoices).values({
+    organisationId: ctx.organisationId,
+    originalInvoiceId: invoice.id,
+    invoiceData: invoice,
+    templateData: { templateName, businessProfile: profile, attachments },
+    attachmentIds: attachments.map((attachment) => attachment.id),
+    shareToken,
+    expiresAt,
+    accessCount: 0,
+    isActive: true,
+    createdBy: ctx.userId,
+    createdAt: now,
+  }).returning();
+  if (!row) throw new HTTPException(500, { message: 'Share was not created' });
+  return { share: presentShare(row), created: true };
 }
 
 export async function getPublicSharedInvoice(

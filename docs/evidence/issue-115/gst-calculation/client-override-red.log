@@ -1,0 +1,72 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_2e8415e0-54af-46a3-ba58-2d1ff0a98e66","route":"/api/auth/*","method":"POST","status":200,"durationMs":137}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_a19897ec-3d8c-4dff-a757-35e6b4aaaaf6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_be3fa969-fc25-403a-b039-85e9f8cfae8c","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_fcdb4682-ff48-4658-8b43-9b86bc8a13df","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_dfe64fdc-3b25-45d3-b3d7-774e4adc4e62","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_2ddeca0f-7c34-4e51-92fd-10a8f2a19420","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_b678a236-de90-4674-8047-49825557567b","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_5012b103-6599-4afc-bea4-a3583ef522ad","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_23895c9a-9d6f-4a69-b0b0-42a8f43c8996","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_b09e16e5-8a04-4572-9bcb-ea51e34bf1f0","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+{"msg":"http_request","requestId":"req_752eee3d-e82c-455c-909f-39b3eda0d1b4","route":"/api/tax-returns","method":"POST","status":201,"durationMs":7}
+
+ ❯ src/modules/tax/gst-calculation.test.ts (1 test | 1 failed) 1115ms
+   × authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings 1114ms
+     → {"id":"fbfafeaf-0b0c-4391-ac28-b6caa2f4b27a","periodStart":"2026-04-01","periodEnd":"2026-04-30","returnType":"GST","totalSales":"9999.00","totalPurchases":"0.00","gstOnSales":"1304.22","gstOnPurchases":"0.00","netGst":"1304.22","status":"draft","submittedAt":null,"irdReference":null,"returnData":null,"createdAt":"2026-11-06T23:06:40.000Z","updatedAt":"2026-11-06T23:06:40.000Z"}: expected 201 to be 422 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/tax/gst-calculation.test.ts > authoritative saved GST calculation > refuses a GST return assembled from client totals without reviewed registered settings
+AssertionError: {"id":"fbfafeaf-0b0c-4391-ac28-b6caa2f4b27a","periodStart":"2026-04-01","periodEnd":"2026-04-30","returnType":"GST","totalSales":"9999.00","totalPurchases":"0.00","gstOnSales":"1304.22","gstOnPurchases":"0.00","netGst":"1304.22","status":"draft","submittedAt":null,"irdReference":null,"returnData":null,"createdAt":"2026-11-06T23:06:40.000Z","updatedAt":"2026-11-06T23:06:40.000Z"}: expected 201 to be 422 // Object.is equality
+
+- Expected
++ Received
+
+- 422
++ 201
+
+ ❯ Object.request src/modules/currency/settlement.test-helper.ts:18:52
+     16|     const text = await response.text();
+     17|     const value = text ? JSON.parse(text) : null;
+     18|     expect(response.status, JSON.stringify(value)).toBe(expected);
+       |                                                    ^
+     19|     return value as T;
+     20|   };
+ ❯ src/modules/tax/gst-calculation.test.ts:9:7
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  23:06:36
+   Duration  4.73s (transform 1.62s, setup 30ms, collect 3.28s, tests 1.12s, environment 0ms, prepare 139ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/tax/gst-calculation.test.ts

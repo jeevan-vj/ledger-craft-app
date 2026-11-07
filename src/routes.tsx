@@ -23,6 +23,9 @@ const Dashboard = lazy(() => import("@/pages/Dashboard"));
 const Invoices = lazy(() => import("@/pages/Invoices"));
 const CreateInvoice = lazy(() => import("@/pages/CreateInvoice"));
 const EditInvoice = lazy(() => import("@/pages/EditInvoice"));
+const CustomerStatementPage = lazy(() => import("@/features/customer-statements/CustomerStatementPage"));
+const ReminderSettingsPage = lazy(() => import("@/features/customer-statements/ReminderSettingsPage"));
+const SharedStatementPage = lazy(() => import("@/features/customer-statements/SharedStatementPage"));
 const Customers = lazy(() => import("@/pages/Customers"));
 const Items = lazy(() => import("@/pages/Items"));
 const Settings = lazy(() => import("@/pages/Settings"));
@@ -100,6 +103,7 @@ const Root = () => {
 }
 
 const appRoutes: RouteObject[] = [
+  { path: "/shared/statement/:token", element: <QueryClientProvider client={queryClient}><SuspenseWrapper><SharedStatementPage /></SuspenseWrapper></QueryClientProvider> },
   {
     element: <Root />,
     errorElement: <RouteErrorFallback />,
@@ -171,6 +175,8 @@ const appRoutes: RouteObject[] = [
           { path: "quotes/:id/edit", element: <EditQuote /> },
           { path: "quotes/:id", element: <QuoteViewPage /> },
           { path: "customers", element: <Customers /> },
+          { path: "customer-statements", element: <CustomerStatementPage /> },
+          { path: "payment-reminders", element: <ReminderSettingsPage /> },
           { path: "items", element: <Items /> },
           { path: "settings", element: <Settings /> },
           { path: "accounts", element: <AccountsPage /> },
@@ -223,7 +229,7 @@ const appRoutes: RouteObject[] = [
           { 
             path: "tax-config", 
             element: (
-              <PermissionGuard permission="settings:manage">
+              <PermissionGuard permission="reports:view">
                 <TaxConfigurationPage />
               </PermissionGuard>
             )
@@ -257,7 +263,7 @@ const appRoutes: RouteObject[] = [
           { 
             path: "ird-reports", 
             element: (
-              <PermissionGuard permission="reports:generate">
+              <PermissionGuard permission="reports:view">
                 <IRDReportingPage />
               </PermissionGuard>
             )

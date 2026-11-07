@@ -1,0 +1,854 @@
+{
+  "expected": {
+    "sales": "1150.00",
+    "purchases": "575.00",
+    "net": "75.00"
+  },
+  "preparation": {
+    "basis": "invoice",
+    "from": "2026-04-01",
+    "to": "2026-04-30",
+    "baseCurrency": "NZD",
+    "totalSales": "1150.00",
+    "totalPurchases": "575.00",
+    "zeroRatedSales": "0.00",
+    "exemptSales": "0.00",
+    "unclassifiedSales": "0.00",
+    "claimablePurchases": "575.00",
+    "salesClassificationSupported": true,
+    "gstOnSales": "150.00",
+    "gstOnPurchases": "75.00",
+    "netGstPosition": "75.00",
+    "warnings": [],
+    "calculation": {
+      "version": "gst-ledger-v2",
+      "fingerprint": "dc97863126c388a682e2470317b585e533562b470daa38f2b0b06edf37db4e4f",
+      "calculatedAt": "2026-11-06T23:28:30.533Z",
+      "period": {
+        "from": "2026-04-01",
+        "to": "2026-04-30",
+        "basis": "invoice"
+      },
+      "settings": {
+        "gstRegistrationStatus": "registered",
+        "taxId": "49091850",
+        "gstRegisteredFrom": "2026-04-01",
+        "gstAccountingBasis": "invoice",
+        "gstFilingFrequency": "monthly",
+        "gstPeriodAnchor": 3,
+        "configured": true,
+        "reviewRequired": false,
+        "warnings": []
+      },
+      "figures": {
+        "totalSales": "1150.00",
+        "totalPurchases": "575.00",
+        "gstOnSales": "150.00",
+        "gstOnPurchases": "75.00",
+        "netGst": "75.00"
+      },
+      "sources": [
+        {
+          "type": "billPayments",
+          "id": "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909",
+          "date": "2026-04-21",
+          "documentId": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+          "values": {
+            "amount": "69.00",
+            "currency": "NZD",
+            "baseAmount": "69.00",
+            "bookBaseAmount": "69.00",
+            "exchangeRate": "1",
+            "reversalDate": null
+          }
+        },
+        {
+          "type": "bills",
+          "id": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+          "date": "2026-04-12",
+          "values": {
+            "total": "345.00",
+            "taxAmount": "45.00",
+            "currency": "NZD",
+            "baseTotal": "345.00",
+            "baseTaxAmount": "45.00",
+            "exchangeRate": "1",
+            "taxInclusive": true
+          }
+        },
+        {
+          "type": "expenses",
+          "id": "48d017d5-eb01-4b53-99f0-d4fd1a4437be",
+          "date": "2026-04-12",
+          "values": {
+            "amount": "230.00",
+            "taxAmount": "30.00",
+            "currency": "NZD",
+            "baseAmount": "230.00",
+            "baseTaxAmount": "30.00",
+            "exchangeRate": "1",
+            "gstTreatment": "standard",
+            "claimablePercentage": 100,
+            "privateUsePercentage": 0
+          }
+        },
+        {
+          "type": "invoices",
+          "id": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+          "date": "2026-04-05",
+          "values": {
+            "total": "1150.00",
+            "taxAmount": "150.00",
+            "currency": "NZD",
+            "baseTotal": "1150.00",
+            "baseTaxAmount": "150.00",
+            "exchangeRate": "1",
+            "taxInclusive": false
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "00d416eb-5c74-44d4-befd-82fe6de6e1e6",
+          "date": "2026-04-05",
+          "values": {
+            "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+            "accountId": "6db592c9-b1a6-49dd-a91c-937012768d0c",
+            "accountNumber": "1200",
+            "accountClass": "asset",
+            "debit": "1150.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "12b9d315-a2e7-442a-bada-9588eb6eb8c6",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+            "accountId": "5538f6c2-7554-4b6e-a2cc-280c59cf20c9",
+            "accountNumber": "2150",
+            "accountClass": "asset",
+            "debit": "30.00",
+            "credit": "0.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "20a85f19-73af-4f13-a2cd-c6693cb30f71",
+          "date": "2026-04-05",
+          "values": {
+            "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+            "accountId": "4c6ceb71-29f5-4877-b0d9-4d71418116d9",
+            "accountNumber": "2200",
+            "accountClass": "liability",
+            "debit": "0.00",
+            "credit": "150.00",
+            "lineOrder": 3
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "289cc6ad-44b7-4f42-adb4-3e82c5722e36",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+            "accountId": "bfed4b51-3891-44fd-a971-931f0dbbc500",
+            "accountNumber": "5000",
+            "accountClass": "expense",
+            "debit": "200.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "3e9ba00d-dde2-45ce-a28c-ab10440b2378",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+            "accountId": "493c61f1-c53b-49e9-85bf-e6d60f4ed9e2",
+            "accountNumber": "2100",
+            "accountClass": "liability",
+            "debit": "0.00",
+            "credit": "345.00",
+            "lineOrder": 3
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "542ce949-a5e9-4790-bcc5-cbf6c9f6d1d7",
+          "date": "2026-04-21",
+          "values": {
+            "journalId": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+            "accountId": "493c61f1-c53b-49e9-85bf-e6d60f4ed9e2",
+            "accountNumber": "2100",
+            "accountClass": "liability",
+            "debit": "69.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "62c4e908-c172-420f-8902-5bc8faa3c8c5",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+            "accountId": "5538f6c2-7554-4b6e-a2cc-280c59cf20c9",
+            "accountNumber": "2150",
+            "accountClass": "asset",
+            "debit": "45.00",
+            "credit": "0.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "99bbbc13-2763-4cc4-9b55-dd18719240e6",
+          "date": "2026-04-20",
+          "values": {
+            "journalId": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+            "accountId": "2a8e8215-32be-4bf2-875b-7fa8d0c6d7f7",
+            "accountNumber": "1110",
+            "accountClass": "asset",
+            "debit": "575.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "9fb035d9-ecc7-46e6-a7b6-6d5c6b996fa1",
+          "date": "2026-04-20",
+          "values": {
+            "journalId": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+            "accountId": "6db592c9-b1a6-49dd-a91c-937012768d0c",
+            "accountNumber": "1200",
+            "accountClass": "asset",
+            "debit": "0.00",
+            "credit": "575.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "a68a9a94-ac87-4c4a-b4a5-2626851bef98",
+          "date": "2026-04-05",
+          "values": {
+            "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+            "accountId": "c6b56b09-b10b-4503-a6ab-a7dcc33e1fc3",
+            "accountNumber": "4000",
+            "accountClass": "revenue",
+            "debit": "0.00",
+            "credit": "1000.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "b29b86b8-4d73-4204-9415-4d73dd57de51",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+            "accountId": "5825bd8b-c245-4eec-96cf-9cf8aec397a2",
+            "accountNumber": "5300",
+            "accountClass": "expense",
+            "debit": "300.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "b40c5e68-1b14-4e10-9f5f-113d4d6c3913",
+          "date": "2026-04-12",
+          "values": {
+            "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+            "accountId": "2a8e8215-32be-4bf2-875b-7fa8d0c6d7f7",
+            "accountNumber": "1110",
+            "accountClass": "asset",
+            "debit": "0.00",
+            "credit": "230.00",
+            "lineOrder": 3
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "f86c079b-d12d-4b61-a528-f5c113f8589a",
+          "date": "2026-04-21",
+          "values": {
+            "journalId": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+            "accountId": "72f0f7a1-a0fe-45f3-a2c7-a4f0d0bce68e",
+            "accountNumber": "BANK-1EB6352E",
+            "accountClass": "asset",
+            "debit": "0.00",
+            "credit": "69.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journals",
+          "id": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+          "date": "2026-04-20",
+          "values": {
+            "referenceType": "invoice_payment",
+            "referenceId": "be7c6654-1f22-4fb1-919b-b49a237d2ade",
+            "total": "575.00"
+          }
+        },
+        {
+          "type": "journals",
+          "id": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+          "date": "2026-04-21",
+          "values": {
+            "referenceType": "bill_payment",
+            "referenceId": "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909",
+            "total": "69.00"
+          }
+        },
+        {
+          "type": "journals",
+          "id": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+          "date": "2026-04-12",
+          "values": {
+            "referenceType": "bill",
+            "referenceId": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+            "total": "345.00"
+          }
+        },
+        {
+          "type": "journals",
+          "id": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+          "date": "2026-04-12",
+          "values": {
+            "referenceType": "expense",
+            "referenceId": "48d017d5-eb01-4b53-99f0-d4fd1a4437be",
+            "total": "230.00"
+          }
+        },
+        {
+          "type": "journals",
+          "id": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+          "date": "2026-04-05",
+          "values": {
+            "referenceType": "invoice",
+            "referenceId": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+            "total": "1150.00"
+          }
+        },
+        {
+          "type": "payments",
+          "id": "be7c6654-1f22-4fb1-919b-b49a237d2ade",
+          "date": "2026-04-20",
+          "documentId": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+          "values": {
+            "amount": "575.00",
+            "currency": "NZD",
+            "baseAmount": "575.00",
+            "bookBaseAmount": "575.00",
+            "exchangeRate": "1",
+            "reversalDate": null
+          }
+        }
+      ],
+      "sourceIds": {
+        "journals": [
+          "25762cae-e84e-42bc-81c8-e3997caa66b8",
+          "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+          "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+          "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+          "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115"
+        ],
+        "journalLines": [
+          "00d416eb-5c74-44d4-befd-82fe6de6e1e6",
+          "12b9d315-a2e7-442a-bada-9588eb6eb8c6",
+          "20a85f19-73af-4f13-a2cd-c6693cb30f71",
+          "289cc6ad-44b7-4f42-adb4-3e82c5722e36",
+          "3e9ba00d-dde2-45ce-a28c-ab10440b2378",
+          "542ce949-a5e9-4790-bcc5-cbf6c9f6d1d7",
+          "62c4e908-c172-420f-8902-5bc8faa3c8c5",
+          "99bbbc13-2763-4cc4-9b55-dd18719240e6",
+          "9fb035d9-ecc7-46e6-a7b6-6d5c6b996fa1",
+          "a68a9a94-ac87-4c4a-b4a5-2626851bef98",
+          "b29b86b8-4d73-4204-9415-4d73dd57de51",
+          "b40c5e68-1b14-4e10-9f5f-113d4d6c3913",
+          "f86c079b-d12d-4b61-a528-f5c113f8589a"
+        ],
+        "invoices": [
+          "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14"
+        ],
+        "bills": [
+          "c75c8984-f0ad-402a-93d9-c4a256ee5aee"
+        ],
+        "expenses": [
+          "48d017d5-eb01-4b53-99f0-d4fd1a4437be"
+        ],
+        "payments": [
+          "be7c6654-1f22-4fb1-919b-b49a237d2ade"
+        ],
+        "billPayments": [
+          "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909"
+        ],
+        "creditNotes": [],
+        "creditNoteRefunds": []
+      },
+      "sourceCounts": {
+        "journals": 5,
+        "journalLines": 13,
+        "invoices": 1,
+        "bills": 1,
+        "expenses": 1,
+        "payments": 1,
+        "billPayments": 1,
+        "creditNotes": 0,
+        "creditNoteRefunds": 0
+      },
+      "myIrBoxes": {
+        "5": "1150.00",
+        "6": "0.00",
+        "7": "1150.00",
+        "8": "150.00",
+        "9": "0.00",
+        "10": "150.00",
+        "11": "575.00",
+        "12": "75.00",
+        "13": "0.00",
+        "14": "75.00",
+        "15": "75.00"
+      },
+      "mappingStatus": "supported",
+      "warnings": [],
+      "requiresReview": false,
+      "result": "payable"
+    }
+  },
+  "saved": {
+    "id": "0b7dfe76-ecb7-40fb-a6ee-f091372e8961",
+    "periodStart": "2026-04-01",
+    "periodEnd": "2026-04-30",
+    "returnType": "GST",
+    "totalSales": "1150.00",
+    "totalPurchases": "575.00",
+    "gstOnSales": "150.00",
+    "gstOnPurchases": "75.00",
+    "netGst": "75.00",
+    "status": "draft",
+    "submittedAt": null,
+    "irdReference": null,
+    "returnData": {
+      "preparation": {
+        "basis": "invoice",
+        "baseCurrency": "NZD",
+        "dueDate": "2026-05-28",
+        "calculationFingerprint": "dc97863126c388a682e2470317b585e533562b470daa38f2b0b06edf37db4e4f"
+      },
+      "gstCalculation": {
+        "version": "gst-ledger-v2",
+        "fingerprint": "dc97863126c388a682e2470317b585e533562b470daa38f2b0b06edf37db4e4f",
+        "calculatedAt": "2026-11-06T23:28:30.580Z",
+        "period": {
+          "from": "2026-04-01",
+          "to": "2026-04-30",
+          "basis": "invoice"
+        },
+        "settings": {
+          "gstRegistrationStatus": "registered",
+          "taxId": "49091850",
+          "gstRegisteredFrom": "2026-04-01",
+          "gstAccountingBasis": "invoice",
+          "gstFilingFrequency": "monthly",
+          "gstPeriodAnchor": 3,
+          "configured": true,
+          "reviewRequired": false,
+          "warnings": []
+        },
+        "figures": {
+          "totalSales": "1150.00",
+          "totalPurchases": "575.00",
+          "gstOnSales": "150.00",
+          "gstOnPurchases": "75.00",
+          "netGst": "75.00"
+        },
+        "sources": [
+          {
+            "type": "billPayments",
+            "id": "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909",
+            "date": "2026-04-21",
+            "documentId": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+            "values": {
+              "amount": "69.00",
+              "currency": "NZD",
+              "baseAmount": "69.00",
+              "bookBaseAmount": "69.00",
+              "exchangeRate": "1",
+              "reversalDate": null
+            }
+          },
+          {
+            "type": "bills",
+            "id": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+            "date": "2026-04-12",
+            "values": {
+              "total": "345.00",
+              "taxAmount": "45.00",
+              "currency": "NZD",
+              "baseTotal": "345.00",
+              "baseTaxAmount": "45.00",
+              "exchangeRate": "1",
+              "taxInclusive": true
+            }
+          },
+          {
+            "type": "expenses",
+            "id": "48d017d5-eb01-4b53-99f0-d4fd1a4437be",
+            "date": "2026-04-12",
+            "values": {
+              "amount": "230.00",
+              "taxAmount": "30.00",
+              "currency": "NZD",
+              "baseAmount": "230.00",
+              "baseTaxAmount": "30.00",
+              "exchangeRate": "1",
+              "gstTreatment": "standard",
+              "claimablePercentage": 100,
+              "privateUsePercentage": 0
+            }
+          },
+          {
+            "type": "invoices",
+            "id": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+            "date": "2026-04-05",
+            "values": {
+              "total": "1150.00",
+              "taxAmount": "150.00",
+              "currency": "NZD",
+              "baseTotal": "1150.00",
+              "baseTaxAmount": "150.00",
+              "exchangeRate": "1",
+              "taxInclusive": false
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "00d416eb-5c74-44d4-befd-82fe6de6e1e6",
+            "date": "2026-04-05",
+            "values": {
+              "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+              "accountId": "6db592c9-b1a6-49dd-a91c-937012768d0c",
+              "accountNumber": "1200",
+              "accountClass": "asset",
+              "debit": "1150.00",
+              "credit": "0.00",
+              "lineOrder": 1
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "12b9d315-a2e7-442a-bada-9588eb6eb8c6",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+              "accountId": "5538f6c2-7554-4b6e-a2cc-280c59cf20c9",
+              "accountNumber": "2150",
+              "accountClass": "asset",
+              "debit": "30.00",
+              "credit": "0.00",
+              "lineOrder": 2
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "20a85f19-73af-4f13-a2cd-c6693cb30f71",
+            "date": "2026-04-05",
+            "values": {
+              "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+              "accountId": "4c6ceb71-29f5-4877-b0d9-4d71418116d9",
+              "accountNumber": "2200",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "150.00",
+              "lineOrder": 3
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "289cc6ad-44b7-4f42-adb4-3e82c5722e36",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+              "accountId": "bfed4b51-3891-44fd-a971-931f0dbbc500",
+              "accountNumber": "5000",
+              "accountClass": "expense",
+              "debit": "200.00",
+              "credit": "0.00",
+              "lineOrder": 1
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "3e9ba00d-dde2-45ce-a28c-ab10440b2378",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+              "accountId": "493c61f1-c53b-49e9-85bf-e6d60f4ed9e2",
+              "accountNumber": "2100",
+              "accountClass": "liability",
+              "debit": "0.00",
+              "credit": "345.00",
+              "lineOrder": 3
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "542ce949-a5e9-4790-bcc5-cbf6c9f6d1d7",
+            "date": "2026-04-21",
+            "values": {
+              "journalId": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+              "accountId": "493c61f1-c53b-49e9-85bf-e6d60f4ed9e2",
+              "accountNumber": "2100",
+              "accountClass": "liability",
+              "debit": "69.00",
+              "credit": "0.00",
+              "lineOrder": 1
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "62c4e908-c172-420f-8902-5bc8faa3c8c5",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+              "accountId": "5538f6c2-7554-4b6e-a2cc-280c59cf20c9",
+              "accountNumber": "2150",
+              "accountClass": "asset",
+              "debit": "45.00",
+              "credit": "0.00",
+              "lineOrder": 2
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "99bbbc13-2763-4cc4-9b55-dd18719240e6",
+            "date": "2026-04-20",
+            "values": {
+              "journalId": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+              "accountId": "2a8e8215-32be-4bf2-875b-7fa8d0c6d7f7",
+              "accountNumber": "1110",
+              "accountClass": "asset",
+              "debit": "575.00",
+              "credit": "0.00",
+              "lineOrder": 1
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "9fb035d9-ecc7-46e6-a7b6-6d5c6b996fa1",
+            "date": "2026-04-20",
+            "values": {
+              "journalId": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+              "accountId": "6db592c9-b1a6-49dd-a91c-937012768d0c",
+              "accountNumber": "1200",
+              "accountClass": "asset",
+              "debit": "0.00",
+              "credit": "575.00",
+              "lineOrder": 2
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "a68a9a94-ac87-4c4a-b4a5-2626851bef98",
+            "date": "2026-04-05",
+            "values": {
+              "journalId": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+              "accountId": "c6b56b09-b10b-4503-a6ab-a7dcc33e1fc3",
+              "accountNumber": "4000",
+              "accountClass": "revenue",
+              "debit": "0.00",
+              "credit": "1000.00",
+              "lineOrder": 2
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "b29b86b8-4d73-4204-9415-4d73dd57de51",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+              "accountId": "5825bd8b-c245-4eec-96cf-9cf8aec397a2",
+              "accountNumber": "5300",
+              "accountClass": "expense",
+              "debit": "300.00",
+              "credit": "0.00",
+              "lineOrder": 1
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "b40c5e68-1b14-4e10-9f5f-113d4d6c3913",
+            "date": "2026-04-12",
+            "values": {
+              "journalId": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+              "accountId": "2a8e8215-32be-4bf2-875b-7fa8d0c6d7f7",
+              "accountNumber": "1110",
+              "accountClass": "asset",
+              "debit": "0.00",
+              "credit": "230.00",
+              "lineOrder": 3
+            }
+          },
+          {
+            "type": "journalLines",
+            "id": "f86c079b-d12d-4b61-a528-f5c113f8589a",
+            "date": "2026-04-21",
+            "values": {
+              "journalId": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+              "accountId": "72f0f7a1-a0fe-45f3-a2c7-a4f0d0bce68e",
+              "accountNumber": "BANK-1EB6352E",
+              "accountClass": "asset",
+              "debit": "0.00",
+              "credit": "69.00",
+              "lineOrder": 2
+            }
+          },
+          {
+            "type": "journals",
+            "id": "25762cae-e84e-42bc-81c8-e3997caa66b8",
+            "date": "2026-04-20",
+            "values": {
+              "referenceType": "invoice_payment",
+              "referenceId": "be7c6654-1f22-4fb1-919b-b49a237d2ade",
+              "total": "575.00"
+            }
+          },
+          {
+            "type": "journals",
+            "id": "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+            "date": "2026-04-21",
+            "values": {
+              "referenceType": "bill_payment",
+              "referenceId": "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909",
+              "total": "69.00"
+            }
+          },
+          {
+            "type": "journals",
+            "id": "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+            "date": "2026-04-12",
+            "values": {
+              "referenceType": "bill",
+              "referenceId": "c75c8984-f0ad-402a-93d9-c4a256ee5aee",
+              "total": "345.00"
+            }
+          },
+          {
+            "type": "journals",
+            "id": "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+            "date": "2026-04-12",
+            "values": {
+              "referenceType": "expense",
+              "referenceId": "48d017d5-eb01-4b53-99f0-d4fd1a4437be",
+              "total": "230.00"
+            }
+          },
+          {
+            "type": "journals",
+            "id": "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115",
+            "date": "2026-04-05",
+            "values": {
+              "referenceType": "invoice",
+              "referenceId": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+              "total": "1150.00"
+            }
+          },
+          {
+            "type": "payments",
+            "id": "be7c6654-1f22-4fb1-919b-b49a237d2ade",
+            "date": "2026-04-20",
+            "documentId": "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14",
+            "values": {
+              "amount": "575.00",
+              "currency": "NZD",
+              "baseAmount": "575.00",
+              "bookBaseAmount": "575.00",
+              "exchangeRate": "1",
+              "reversalDate": null
+            }
+          }
+        ],
+        "sourceIds": {
+          "journals": [
+            "25762cae-e84e-42bc-81c8-e3997caa66b8",
+            "3dfadd67-66af-440d-a2ff-10cfa2e504d8",
+            "a50c4f83-6caf-4346-b509-c13c56e88dfb",
+            "ad2b566b-0c53-419c-8ec0-1b85fe8837fe",
+            "cc9785c2-f6cf-49c8-bef3-f3fa46f1f115"
+          ],
+          "journalLines": [
+            "00d416eb-5c74-44d4-befd-82fe6de6e1e6",
+            "12b9d315-a2e7-442a-bada-9588eb6eb8c6",
+            "20a85f19-73af-4f13-a2cd-c6693cb30f71",
+            "289cc6ad-44b7-4f42-adb4-3e82c5722e36",
+            "3e9ba00d-dde2-45ce-a28c-ab10440b2378",
+            "542ce949-a5e9-4790-bcc5-cbf6c9f6d1d7",
+            "62c4e908-c172-420f-8902-5bc8faa3c8c5",
+            "99bbbc13-2763-4cc4-9b55-dd18719240e6",
+            "9fb035d9-ecc7-46e6-a7b6-6d5c6b996fa1",
+            "a68a9a94-ac87-4c4a-b4a5-2626851bef98",
+            "b29b86b8-4d73-4204-9415-4d73dd57de51",
+            "b40c5e68-1b14-4e10-9f5f-113d4d6c3913",
+            "f86c079b-d12d-4b61-a528-f5c113f8589a"
+          ],
+          "invoices": [
+            "8d03dc36-04f7-4f04-98f8-0fdf8d3cbe14"
+          ],
+          "bills": [
+            "c75c8984-f0ad-402a-93d9-c4a256ee5aee"
+          ],
+          "expenses": [
+            "48d017d5-eb01-4b53-99f0-d4fd1a4437be"
+          ],
+          "payments": [
+            "be7c6654-1f22-4fb1-919b-b49a237d2ade"
+          ],
+          "billPayments": [
+            "a79d2ecf-a2a0-4bd2-808f-aaeb34f1d909"
+          ],
+          "creditNotes": [],
+          "creditNoteRefunds": []
+        },
+        "sourceCounts": {
+          "journals": 5,
+          "journalLines": 13,
+          "invoices": 1,
+          "bills": 1,
+          "expenses": 1,
+          "payments": 1,
+          "billPayments": 1,
+          "creditNotes": 0,
+          "creditNoteRefunds": 0
+        },
+        "myIrBoxes": {
+          "5": "1150.00",
+          "6": "0.00",
+          "7": "1150.00",
+          "8": "150.00",
+          "9": "0.00",
+          "10": "150.00",
+          "11": "575.00",
+          "12": "75.00",
+          "13": "0.00",
+          "14": "75.00",
+          "15": "75.00"
+        },
+        "mappingStatus": "supported",
+        "warnings": [],
+        "requiresReview": false,
+        "result": "payable"
+      }
+    },
+    "createdAt": "2026-11-06T23:28:30.000Z",
+    "updatedAt": "2026-11-06T23:28:30.000Z"
+  }
+}

@@ -8,6 +8,7 @@ import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import * as expensesService from './expenses.service';
+import { parseIdempotencyKey, hashIdempotencyPayload } from '../invoices/idempotency';
 
 export function expenseRoutes() {
   const routes = new Hono<AppEnv>();
@@ -26,7 +27,7 @@ export function expenseRoutes() {
     routes.post(`${prefix}/expenses`, async (c) => {
       const { db, user } = await requireSession(c);
       const input = createExpenseRequestSchema.parse(await c.req.json());
-      return c.json(await expensesService.createExpenseForUser(db, user.id, input), 201);
+      return c.json(await expensesService.createExpenseForUser(db, user.id, input, (() => { const key = parseIdempotencyKey(c.req.header('Idempotency-Key')); return key ? { key, method: 'POST', path: '/api/expenses', requestHash: hashIdempotencyPayload(input) } : undefined; })()), 201);
     });
 
     routes.patch(`${prefix}/expenses/:id`, async (c) => {

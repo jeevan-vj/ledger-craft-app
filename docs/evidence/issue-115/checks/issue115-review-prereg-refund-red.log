@@ -1,0 +1,100 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_f0882f62-0ef7-44f7-bade-63570182a116","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_e0449871-c076-486b-86a7-d392918571cf","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_d4198df9-7d99-49e6-a559-05302b09de95","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_c2efb2b1-90ea-4ab9-86b0-a0d59276fe86","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_f5795937-e1e8-4885-a203-07c0b54182fb","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_1776c2be-1c92-4cb3-8c67-e20d278fe731","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_c761626d-1d41-4020-9d09-d096d824f3e8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_731a06e6-bc54-4a23-859c-cd5b3f6fbee7","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_9357ef4e-12f9-466b-9fb0-efa8cdc92c10","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_f15caf00-b7de-4666-af42-e7890ca061f3","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_4d196d07-4efa-4091-8044-4a3b91f7c82f","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_96dc6903-8ce7-4a87-8986-7b8fcca1d26f","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_fac29707-faa6-447e-8b0d-16a6ae62318e","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_2693518d-6f44-46c1-a23f-fe1330a0dec6","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_a401817b-9816-4627-9c4b-c056fc7bb1fe","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_9bf92c81-c3b7-421f-846c-df9affa08896","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_962429e6-a48c-45e4-a3ec-857532bb0e75","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts (4 tests | 1 failed | 3 skipped) 1328ms
+   ↓ GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+   ↓ GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+   ↓ GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+   × GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply 1316ms
+     → expected { basis: 'invoice', …(16) } to match object { totalSales: '0.00', …(2) }
+(28 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+AssertionError: expected { basis: 'invoice', …(16) } to match object { totalSales: '0.00', …(2) }
+(28 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "gstOnSales": "0.00",
+-   "netGstPosition": "0.00",
+-   "totalSales": "0.00",
++   "gstOnSales": "-15.00",
++   "netGstPosition": "-15.00",
++   "totalSales": "-115.00",
+  }
+
+ ❯ src/modules/tax/gst-registration-reversals.test.ts:61:48
+     59|       for (const basis of ['invoice', 'payments', 'hybrid']) {
+     60|         await f.request('/api/tax/gst-settings', 'PUT', { ...settings,…
+     61|         expect(await f.request(period, 'GET')).toMatchObject({ totalSa…
+       |                                                ^
+     62|       }
+     63|     } finally { await f.sql.end(); }
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 3 skipped (4)
+   Start at  23:30:03
+   Duration  6.23s (transform 1.96s, setup 44ms, collect 4.21s, tests 1.33s, environment 0ms, prepare 210ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/tax/gst-registration-reversals.test.ts -t 'later customer credit'

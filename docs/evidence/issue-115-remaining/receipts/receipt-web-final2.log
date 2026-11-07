@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/expenses/receiptInbox.test.ts (3 tests) 12ms
+ ✓ src/components/expense/__tests__/ReceiptInbox.test.tsx (1 test) 202ms
+
+ Test Files  2 passed (2)
+      Tests  4 passed (4)
+   Start at  00:17:26
+   Duration  1.62s (transform 384ms, setup 171ms, collect 682ms, tests 214ms, environment 742ms, prepare 332ms)

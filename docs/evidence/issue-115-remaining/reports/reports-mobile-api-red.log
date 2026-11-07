@@ -1,0 +1,35 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watch=false src/features/reports/api/reportsApi.contract.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/reports/api/reportsApi.contract.test.ts
+  ✕ validates report DTOs and forwards comparison, columns and account filters (3 ms)
+
+  ● validates report DTOs and forwards comparison, columns and account filters
+
+    expect(received).rejects.toThrow()
+
+    Received promise resolved instead of rejected
+    Resolved to value: {"meta": {}}
+
+      4 | it('validates report DTOs and forwards comparison, columns and account filters',async()=>{
+      5 |  (apiRequest as jest.Mock).mockResolvedValue({meta:{}});
+    > 6 |  await expect(reportsApi.financial({from:'2026-04-01',to:'2026-04-30',basis:'cash',baseCurrency:'NZD',columns:'month',comparisonFrom:'2025-04-01',comparisonTo:'2025-04-30',accountIds:['11111111-1111-4111-8111-111111111111']})).rejects.toThrow();
+        |        ^
+      7 |  expect(apiRequest).toHaveBeenCalledWith(expect.stringContaining('columns=month'),{method:'GET'});
+      8 |  expect(apiRequest).toHaveBeenCalledWith(expect.stringContaining('accountIds=11111111-1111-4111-8111-111111111111'),{method:'GET'});
+      9 | });
+
+      at expect (node_modules/expect/build/index.js:2116:15)
+      at Object.expect (src/features/reports/api/reportsApi.contract.test.ts:6:8)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 1 total
+Snapshots:   0 total
+Time:        0.936 s
+Ran all test suites matching src/features/reports/api/reportsApi.contract.test.ts.

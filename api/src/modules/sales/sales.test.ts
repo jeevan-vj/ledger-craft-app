@@ -59,7 +59,7 @@ async function saveProfile(
       email: 'stall@example.com',
       country: 'NZ',
       defaultTaxRate: '15',
-      gstRegistrationStatus: 'registered',
+      gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01',
       ...extra,
     }),
   });
@@ -414,7 +414,7 @@ describe('sale routes', () => {
         expect(unregistered.invoice.total).toBe('4.50');
         expect(unregistered.invoice.taxAmount).toBe('0.00');
 
-        await saveProfile(app, owner.cookie, { gstRegistrationStatus: 'registered', defaultTaxRate: '0' });
+        await saveProfile(app, owner.cookie, { gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01', defaultTaxRate: '0' });
         const zeroDefault = saleResponseSchema.parse(await (await postSale(app, owner.cookie, 'gst-6', {
           lines: [{ quantity: '1', price: '4.50' }],
           paymentMethod: 'cash',

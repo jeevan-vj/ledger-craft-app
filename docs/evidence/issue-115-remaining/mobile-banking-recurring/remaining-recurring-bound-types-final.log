@@ -1,0 +1,11 @@
+$ tsc --noEmit
+src/modules/stripe/stripe.guardrails.test.ts(9,33): error TS2339: Property 'approvedOrganisationIds' does not exist on type 'StripeConfig'.
+src/modules/stripe/stripe.guardrails.test.ts(11,13): error TS2339: Property 'approvedOrganisationIds' does not exist on type 'StripeConfig'.
+src/modules/stripe/stripe.guardrails.test.ts(16,51): error TS2307: Cannot find module './stripe.rate-limits' or its corresponding type declarations.
+src/modules/stripe/stripe.guardrails.test.ts(25,78): error TS2307: Cannot find module './stripe.verification' or its corresponding type declarations.
+src/modules/stripe/stripe.guardrails.test.ts(41,78): error TS2307: Cannot find module './stripe.verification' or its corresponding type declarations.
+src/modules/stripe/stripe.guardrails.test.ts(43,14): error TS2339: Property 'listRecentPayments' does not exist on type 'MockStripeGateway'.
+src/modules/stripe/stripe.guardrails.test.ts(46,14): error TS2339: Property 'listRecentPayments' does not exist on type 'MockStripeGateway'.
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_RUN_FIRST_FAIL] @ledgercraft/api@0.0.1 type-check: `tsc --noEmit`
+Exit status 2

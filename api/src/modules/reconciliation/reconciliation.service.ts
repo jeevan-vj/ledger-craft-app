@@ -23,6 +23,7 @@ import { assertSupportedStatementBank } from '../currency/currency.service';
 import { existingPostingRetry, matchExistingPosting } from './existing-posting';
 import { bankLedgerBalance } from './existing-posting.repository';
 import { decimal } from '../invoices/money';
+import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
@@ -81,8 +82,10 @@ export async function createSessionForUser(
   db: Database,
   userId: string,
   input: CreateReconciliationSessionRequest,
+  idempotency?: IdempotencyScope,
 ): Promise<ReconciliationSessionDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) { const previous = await getIdempotencyRecord(tx, ctx, idempotency); if (previous) { assertReplayMatches(previous.requestHash, idempotency.requestHash); return previous.responseBody as ReconciliationSessionDto; } }
     const account = await bankRepo.getAccount(tx, ctx.organisationId, input.bankAccountId);
     if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
     await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
@@ -93,7 +96,9 @@ export async function createSessionForUser(
       input.statementStartDate,
     );
     const opening = await bankLedgerBalance(tx, ctx.organisationId, account.id, input.statementStartDate, true);
-    return repo.insertSession(tx, ctx, input, opening.hasEntries ? opening.balance : previous ?? account.openingBalance);
+    const session = await repo.insertSession(tx, ctx, input, opening.hasEntries ? opening.balance : previous ?? account.openingBalance);
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: session });
+    return session;
   });
 }
 
@@ -180,8 +185,10 @@ export async function createAdjustmentForUser(
   userId: string,
   sessionId: string,
   input: CreateReconciliationAdjustmentRequest,
+  idempotency?: IdempotencyScope,
 ): Promise<ReconciliationAdjustmentDto> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (idempotency) { const previous = await getIdempotencyRecord(tx, ctx, idempotency); if (previous) { assertReplayMatches(previous.requestHash, idempotency.requestHash); return previous.responseBody as ReconciliationAdjustmentDto; } }
     const session = await repo.getSession(tx, ctx.organisationId, sessionId);
     if (!session) throw new HTTPException(404, { message: 'Reconciliation session not found' });
     if (session.status !== 'in_progress') throw apiError(409, 'BANK_STATEMENT_CLOSED', 'Completed or locked statements cannot be changed');
@@ -191,7 +198,9 @@ export async function createAdjustmentForUser(
     if (!/^-?\d+(?:\.\d{1,2})?$/.test(input.amount) || decimal(input.amount).compare(0) === 0 || (input.adjustmentType !== 'bank_error' && decimal(input.amount).compare(0) < 0)) {
       throw apiError(422, 'INVALID_ADJUSTMENT_AMOUNT', 'Use a non-zero amount with at most two decimal places; timing items must be positive.');
     }
-    return repo.insertAdjustment(tx, ctx, sessionId, input);
+    const adjustment = await repo.insertAdjustment(tx, ctx, sessionId, input);
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: adjustment });
+    return adjustment;
   });
 }
 

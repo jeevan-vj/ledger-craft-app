@@ -6,6 +6,7 @@ export function storageApiEnabled(): boolean {
 
 interface ObjectDto {
   key: string;
+  sha256?: string;
   url: string;
   contentType: string;
   size: number;
@@ -26,7 +27,7 @@ export const objectsApi = {
     contentType: string;
     contentBase64: string;
   }): Promise<ObjectDto> {
-    return apiRequest<ObjectDto>('/api/objects', {
+    return apiRequest<ObjectDto>(input.kind === 'receipt' ? '/api/objects/receipts' : '/api/objects', {
       method: 'POST',
       body: JSON.stringify(input),
     });
@@ -35,7 +36,8 @@ export const objectsApi = {
   async delete(urlOrPath: string): Promise<boolean> {
     try {
       const key = objectKeyFromUrl(urlOrPath);
-      await apiRequest<void>(`/api/objects?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
+      const endpoint = key.split('/')[1] === 'receipts' ? '/api/objects/receipts' : '/api/objects';
+      await apiRequest<void>(`${endpoint}?key=${encodeURIComponent(key)}`, { method: 'DELETE' });
       return true;
     } catch (error) {
       console.error('Error deleting file:', error);

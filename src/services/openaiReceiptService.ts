@@ -25,7 +25,7 @@ class OpenAIReceiptService {
       ? imageData
       : `data:image/jpeg;base64,${imageData}`;
     try {
-      return await scanReceiptImage(base64Data);
+      return await scanReceiptImage(base64Data, base64Data.startsWith('data:application/pdf;') ? 'application/pdf' : undefined);
     } catch (error) {
       throw new ReceiptScanError({
         code: 'API_ERROR',

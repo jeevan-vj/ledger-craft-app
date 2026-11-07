@@ -1,0 +1,80 @@
+{
+  "platform": "Actual Chromium web/public invoice UI, desktop1440x900 and phone390x844; real Hono/SQLite HTTP seed",
+  "expected": {
+    "gross": "1150.00",
+    "subtotal": "1000.00",
+    "gst": "150.00",
+    "gstNumber": "49-098-576",
+    "buyerPhone": "021 555 0100"
+  },
+  "errors": [],
+  "documents": [
+    {
+      "template": "classic",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    },
+    {
+      "template": "modern",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    },
+    {
+      "template": "minimal",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    },
+    {
+      "template": "executive",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    },
+    {
+      "template": "corporate",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    },
+    {
+      "template": "modernpro",
+      "title": "Tax invoice",
+      "gstNumber": "49-098-576",
+      "buyerIdentifier": "021 555 0100",
+      "gross": "1150.00",
+      "tax": "150.00"
+    }
+  ],
+  "build": {
+    "version": "0.0.8",
+    "buildTime": 1794008140374,
+    "hash": "6489cf661d77",
+    "environment": "development",
+    "timestamp": "2026-11-06T23:35:40.374Z"
+  },
+  "threshold": {
+    "at1000": "1000.00",
+    "actualUiSaved": {
+      "total": "1000.00",
+      "subtotal": "869.57",
+      "taxAmount": "130.43",
+      "taxInclusive": true
+    },
+    "over1000Code": "GST_BUYER_DETAILS_REQUIRED",
+    "originalRetained": "1000.00"
+  },
+  "originalShareUnaffectedByLaterProfileChange": true
+}

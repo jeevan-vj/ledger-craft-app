@@ -107,7 +107,12 @@ export async function createBillForUser(
   input: CreateBillRequest,
   idempotency?: IdempotencyScope,
 ) {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => createBillInTx(tx, ctx, input, idempotency));
+}
+
+export async function createBillInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, input: CreateBillRequest, idempotency?: IdempotencyScope,
+) {
     if (idempotency) {
       const existing = await getIdempotencyRecord(tx, ctx, idempotency);
       if (existing) {
@@ -126,7 +131,6 @@ export async function createBillForUser(
       await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: bill });
     }
     return bill;
-  });
 }
 
 export async function updateBillForUser(db: Database, userId: string, id: string, input: UpdateBillRequest) {

@@ -1,0 +1,61 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_f446a89b-ec82-48af-8597-c40ef87f491c","route":"/api/auth/*","method":"POST","status":200,"durationMs":209}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_3a2200b7-3110-42b9-aff0-9be25faddf02","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_19dadff4-dca0-43cb-a3d3-48a96b924cbb","route":"/api/customers","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_95b1d1e9-601f-4150-9969-4787505b183b","route":"/api/invoices","method":"POST","status":201,"durationMs":75}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_5ed0d811-fd93-4ebc-bf5e-8f4b9deaa346","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":46}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_3946e6d2-2ab9-4a4e-b986-6c69b8380e58","route":"/api/me","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+{"msg":"http_request","requestId":"req_d8cb0948-2646-44ef-8259-7322d2a6a121","route":"/api/invoices","method":"POST","status":201,"durationMs":40}
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts (8 tests | 1 failed | 7 skipped) 2482ms
+   ↓ customer statements and automatic reminders > retains historical opening/closing balances and exact running totals across later payment reversal
+   ↓ customer statements and automatic reminders > sends each configured step once and never sends after payment or optout; unavailable email is bounded
+   ↓ customer statements and automatic reminders > uses stable email delivery claims, preserves public snapshots and revokes or expires links
+   ↓ customer statements and automatic reminders > cancels later reminders when payment settles the invoice and retains one unavailable log
+   ↓ customer statements and automatic reminders > shows receivable credits and customer-credit refunds without rewriting earlier periods
+   ↓ customer statements and automatic reminders > attributes a bank-reconciliation undo to its original customer allocations
+   ↓ customer statements and automatic reminders > isolates companies and prevents read-only users from sharing or changing reminders
+   × customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices 2479ms
+     → expected '' to match /^http:\/\/localhost:8080\/shared\/in…/\
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/customer-statements/customer-statements.test.ts > customer statements and automatic reminders > waits until the configured Auckland local time and never targets drafts or cancelled invoices
+AssertionError: expected '' to match /^http:\/\/localhost:8080\/shared\/in…/\
+
+- Expected:
+/^http:\/\/localhost:8080\/shared\/invoice\//
+
++ Received:
+""
+
+ ❯ src/modules/customer-statements/customer-statements.test.ts:85:266
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 skipped (8)
+   Start at  00:09:35
+   Duration  10.86s (transform 3.27s, setup 78ms, collect 7.26s, tests 2.48s, environment 0ms, prepare 307ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/customer-statements/customer-statements.test.ts -t 'waits until'

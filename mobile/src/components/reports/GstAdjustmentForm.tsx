@@ -5,7 +5,7 @@ import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { useTheme, space } from '@/theme';
 
-export function GstAdjustmentForm({ disabled, onReview, initialRows }: { initialRows: GstAdjustment[]; disabled: boolean; onReview: (rows: GstAdjustment[]) => Promise<void> }) {
+export function GstAdjustmentForm({ disabled, onReview, initialRows, children }: { initialRows: GstAdjustment[]; disabled: boolean; onReview: (rows: GstAdjustment[]) => Promise<void>; children?: React.ReactNode }) {
   const theme = useTheme();
   const [open, setOpen] = useState(false);
   const [kind, setKind] = useState<GstAdjustment['kind']>('output');
@@ -35,6 +35,7 @@ export function GstAdjustmentForm({ disabled, onReview, initialRows }: { initial
       <ModernButton variant="secondary" disabled={disabled} onPress={add}>Add adjustment</ModernButton>
       {error ? <Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{error}</Text> : null}
       {rows.map((row, index) => <View key={index}><Text style={theme.type.body}>{row.kind}: {row.amount}{row.grossAdjustment ? ` · gross ${row.grossAdjustment}` : ''} · {row.sourceReference}</Text><Text style={theme.type.caption}>{row.reason}</Text><ModernButton variant="ghost" onPress={() => { setRows(rows.filter((_, position) => position !== index)); setConfirmed(false); }}>Remove adjustment {index + 1}</ModernButton></View>)}
+      {children}
       <Text style={theme.type.body}>I have reviewed the source books and adjustments</Text>
       <Switch disabled={disabled} accessibilityLabel="Confirm GST adjustment review" value={confirmed} onValueChange={setConfirmed} />
       <ModernButton disabled={disabled || !confirmed} onPress={() => void onReview(rows)}>Apply reviewed GST adjustments</ModernButton>

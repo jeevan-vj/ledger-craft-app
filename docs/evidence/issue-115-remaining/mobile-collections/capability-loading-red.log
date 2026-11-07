@@ -1,0 +1,236 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false --runInBand src/features/customer-statements/CollectionsWorkspace.test.tsx -t reports failed delivery-capability
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/customer-statements/CollectionsWorkspace.test.tsx
+  ✕ reports failed delivery-capability loading without claiming email is unconfigured (1240 ms)
+  ○ skipped loads the canonical statement and shares the exact received PDF data
+  ○ skipped shows empty and retryable errors and hides write actions for readers
+  ○ skipped shows unavailable-email settings and saves only an explicit owner review
+  ○ skipped shows empty invoice history and lets an accountant opt out using the shared API
+  ○ skipped retains one delivery key on a failed send retry and accepts only a confirmed success
+  ○ skipped shows a loading indicator while customers are unresolved and a readable empty worksheet
+  ○ skipped keeps reminder settings readable without exposing owner mutation actions
+
+  ● reports failed delivery-capability loading without claiming email is unconfigured
+
+    Unable to find an element with text: Delivery settings could not be loaded.
+
+    [36m<View>[39m
+      [36m<Text>[39m
+        [0mCustomer statements[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mReview posted customer activity, outstanding invoices and aging in company-base NZD.[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mHarbour Buyer[0m
+      [36m</Text>[39m
+      [36m<View[39m
+        [33maccessibilityRole[39m=[32m"button"[39m
+        [33maccessibilityState[39m=[32m{
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mnativeID[39m=[32m"0"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mChoose statement customer[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0mStatement start[0m
+          [0m [0m
+        [36m</Text>[39m
+        [36m<TextInput[39m
+          [33maccessibilityLabel[39m=[32m"Statement start"[39m
+          [33mvalue[39m=[32m"2026-10-01"[39m
+        [36m/>[39m
+      [36m</View>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0mStatement end[0m
+          [0m [0m
+        [36m</Text>[39m
+        [36m<TextInput[39m
+          [33maccessibilityLabel[39m=[32m"Statement end"[39m
+          [33mvalue[39m=[32m"2026-10-31"[39m
+        [36m/>[39m
+      [36m</View>[39m
+      [36m<View[39m
+        [33maccessibilityRole[39m=[32m"button"[39m
+        [33maccessibilityState[39m=[32m{
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mnativeID[39m=[32m"1"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mActivity statement[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<View[39m
+        [33maccessibilityRole[39m=[32m"button"[39m
+        [33maccessibilityState[39m=[32m{
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mnativeID[39m=[32m"2"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mPrepare customer statement[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mHarbour Buyer[0m
+        [0m · [0m
+        [0m2026-10-01[0m
+        [0m to [0m
+        [0m2026-10-31[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mOpening balance: NZD [0m
+        [0m1000.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mClosing balance: NZD [0m
+        [0m600.00[0m
+      [36m</Text>[39m
+      [36m<View>[39m
+        [36m<Text>[39m
+          [0m2026-10-05[0m
+          [0m · [0m
+          [0mPAY-1[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mInvoice payment[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mDebit NZD [0m
+          [0m0.00[0m
+          [0m · Credit NZD [0m
+          [0m400.00[0m
+        [36m</Text>[39m
+        [36m<Text>[39m
+          [0mRunning balance: NZD [0m
+          [0m600.00[0m
+        [36m</Text>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mReceivables aging[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mCurrent[0m
+        [0m: NZD [0m
+        [0m0.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0m1–30 days[0m
+        [0m: NZD [0m
+        [0m600.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0m31–60 days[0m
+        [0m: NZD [0m
+        [0m0.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0m61–90 days[0m
+        [0m: NZD [0m
+        [0m0.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mOver90 days[0m
+        [0m: NZD [0m
+        [0m0.00[0m
+      [36m</Text>[39m
+      [36m<Text>[39m
+        [0mUnallocated balance[0m
+        [0m: NZD [0m
+        [0m0.00[0m
+      [36m</Text>[39m
+      [36m<View[39m
+        [33maccessibilityRole[39m=[32m"button"[39m
+        [33maccessibilityState[39m=[32m{
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mnativeID[39m=[32m"3"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mShare statement PDF[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<View[39m
+        [33maccessibilityRole[39m=[32m"button"[39m
+        [33maccessibilityState[39m=[32m{
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }[39m
+        [33maccessible[39m=[32m{true}[39m
+        [33mnativeID[39m=[32m"4"[39m
+      [36m>[39m
+        [36m<View>[39m
+          [36m<Text>[39m
+            [0mCreate secure statement link[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+      [36m<Text>[39m
+        [0mEmail delivery is unavailable. Download the PDF or share a secure link.[0m
+      [36m</Text>[39m
+      [36m<View>[39m
+        [36m<View>[39m
+          [36m<RCTSwitch[39m
+            [33maccessibilityLabel[39m=[32m"Exclude this customer from automatic reminders"[39m
+            [33maccessibilityRole[39m=[32m"switch"[39m
+            [33mvalue[39m=[32m{false}[39m
+          [36m/>[39m
+          [36m<Text>[39m
+            [0mExclude this [0m
+            [0mcustomer[0m
+            [0m from automatic reminders[0m
+          [36m</Text>[39m
+        [36m</View>[39m
+      [36m</View>[39m
+    [36m</View>[39m
+
+      22 | it('shows a loading indicator while customers are unresolved and a readable empty worksheet',async()=>{jest.mocked(collectionsApi.customers).mockReturnValue(new Promise(()=>{}));const s=show(<CustomerStatementWorkspace/>);expect(s.getByLabelText('Loading statement customers')).toBeTruthy();s.unmount();jest.mocked(collectionsApi.customers).mockResolvedValue([{id:'buyer',name:'Harbour Buyer',email:'buyer@example.test'}]as never);jest.mocked(collectionsApi.statement).mockResolvedValue({...statement,lines:[],openingBalance:'0.00',closingBalance:'0.00'}as never);const empty=show(<CustomerStatementWorkspace initialCustomerId="buyer"/>);await empty.findByText('Harbour Buyer');fireEvent.press(empty.getByText('Prepare customer statement'));await empty.findByText('No statement movements in this period.');});
+      23 | it('keeps reminder settings readable without exposing owner mutation actions',async()=>{mockPermissions.splice(0,mockPermissions.length,'settings.read');const s=show(<PaymentRemindersWorkspace/>);await s.findByText('Read-only settings. An owner or administrator must change automatic reminder schedules.');expect(s.queryByText('Save automatic reminder settings')).toBeNull();});
+    > 24 | it('reports failed delivery-capability loading without claiming email is unconfigured',async()=>{jest.mocked(collectionsApi.reminders).mockRejectedValue(new Error('Delivery settings could not be loaded.'));const s=show(<CustomerStatementWorkspace initialCustomerId="buyer"/>);await s.findByText('Harbour Buyer');fireEvent.press(s.getByText('Prepare customer statement'));await s.findByText('Closing balance: NZD 600.00');await s.findByText('Delivery settings could not be loaded.');expect(s.queryByText('Email delivery is unavailable. Download the PDF or share a secure link.')).toBeNull();});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                              ^
+      25 |
+
+      at Object.findByText (src/features/customer-statements/CollectionsWorkspace.test.tsx:24:430)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 7 skipped, 8 total
+Snapshots:   0 total
+Time:        3.569 s, estimated 4 s
+Ran all test suites matching src/features/customer-statements/CollectionsWorkspace.test.tsx with tests matching "reports failed delivery-capability".

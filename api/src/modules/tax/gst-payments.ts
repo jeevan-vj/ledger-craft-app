@@ -3,6 +3,7 @@ import type { Database } from '../../db/client';
 import { decimal, roundMoney } from '../invoices/money';
 import { ledgerRows, unconvertedForeignCurrencyDocumentIds } from '../reports/reports.repository';
 import { gstSettlements } from './gst-payments.repository';
+import { gstRegistrationExclusions, type GstRegistrationExclusions } from './gst-registration.repository';
 
 type Settlement = { id: string; documentId: string; amount: string; date: string; reversalDate: string | null; status: string; total: string; baseTotal: string; currency: string; bookBaseAmount?: string | null };
 type CreditMovement = { id: string; documentId: string; amount: string; tax: string; date: string; reversalDate: string | null };
@@ -48,8 +49,10 @@ export function allocateGstSettlements(rows: Settlement[], tax: Map<string, stri
   return { gross: roundMoney(gross), tax: roundMoney(gst) };
 }
 
-export async function paymentsBasisGst(tx: Database, organisationId: string, period: GstPreparationQuery) {
-  const allRows = await ledgerRows(tx, organisationId, { from: '0001-01-01', to: period.to, basis: 'accrual', baseCurrency: 'NZD' });
+export async function paymentsBasisGst(tx: Database, organisationId: string, period: GstPreparationQuery, registeredFrom?: string, registration?: GstRegistrationExclusions) {
+  const exclusions = registration ?? (registeredFrom ? await gstRegistrationExclusions(tx, organisationId, registeredFrom) : undefined);
+  const allRows = (await ledgerRows(tx, organisationId, { from: registeredFrom ?? '0001-01-01', to: period.to, basis: 'accrual', baseCurrency: 'NZD' }))
+    .filter(row => !exclusions?.journalIds.has(row.journalEntryId));
   const foreign = await unconvertedForeignCurrencyDocumentIds(tx, organisationId, 'NZD');
   const settlements = await gstSettlements(tx, organisationId);
   const sourceTax = (kind: string, number: string) => new Map(allRows.filter(row => row.referenceType === kind && row.referenceId && !foreign.has(row.referenceId))
@@ -57,9 +60,10 @@ export async function paymentsBasisGst(tx: Database, organisationId: string, per
     .map(id => [id, allRows.filter(row => row.referenceType === kind && row.referenceId === id && row.accountNumber === number).reduce((sum, row) => kind === 'invoice' ? sum.add(row.credit).sub(row.debit) : sum.add(row.debit).sub(row.credit), decimal(0)).toFixed()]));
   const salesRows = settlements.sales.filter(row => row.currency === 'NZD' || row.bookBaseAmount !== null);
   const purchaseRows = settlements.purchases.filter(row => row.currency === 'NZD' || row.bookBaseAmount !== null);
-  const creditMovements = settlements.credits.map(row => ({ ...row, tax: decimal(row.tax).sub(row.liabilityTax).toFixed() }));
+  const creditMovements = settlements.credits.filter(row => !exclusions?.creditNoteIds.has(row.id)).map(row => ({ ...row, tax: decimal(row.tax).sub(row.liabilityTax).toFixed() }));
   const sales = allocateGstSettlements(salesRows, sourceTax('invoice', '2200'), period, creditMovements);
-  const refunds = allocateGstSettlements(settlements.refunds, new Map(settlements.refunds.map(row => [row.documentId, row.tax])), period);
+  const refundRows = settlements.refunds.filter(row => !exclusions?.creditNoteIds.has(row.documentId));
+  const refunds = allocateGstSettlements(refundRows, new Map(refundRows.map(row => [row.documentId, row.tax])), period);
   const bills = allocateGstSettlements(purchaseRows, sourceTax('bill', '2150'), period);
   // Approved expenses are already paid source postings. Their immutable reversal
   // entries preserve history even when the source record has been deleted.

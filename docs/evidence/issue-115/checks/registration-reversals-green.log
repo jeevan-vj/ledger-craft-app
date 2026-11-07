@@ -1,0 +1,413 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_41d41487-20b4-4882-afd1-a5f69fc5e0b8","route":"/api/auth/*","method":"POST","status":200,"durationMs":152}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_a711e6c2-18ab-47a7-88ed-21435deca893","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_55e2d0e4-2af7-46ee-aa4b-97d74e39c89a","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_ec649ab6-ddb3-46d9-8e64-8055677711c5","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_e4196845-ced1-4f5e-a6c1-fa638338e1f8","route":"/api/payments","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_7b4c4d97-a21c-4790-80b5-40c3634fa1c8","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_9d5e07dc-18cc-4b74-a9d5-b698dfcf29b9","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_3825b563-b6b2-4a9f-bb19-c90cee8f470c","route":"/api/payments","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_5d69406a-1dcb-4107-b961-6e3bc7ea3b34","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_e409fcd0-88a2-409c-80b7-909a1c61276f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_3db1f844-db98-40a0-a90b-944b4fb03d93","route":"/api/vendors","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_8be9d1d7-cd6d-4e54-b1a9-e18a0501078c","route":"/api/bills","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_00cb5139-d8bc-4b44-9737-69ef955ff2db","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_49411e3f-db26-4222-a113-8d1d79a0235b","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_81cad20c-f331-4d62-bb45-dd394c84cd18","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_661fe2a8-36cc-4685-be16-b80f10a748a1","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_4a318bfb-6e4b-4ec8-bb36-d7b1289d72d8","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_41159439-f285-4a96-aff9-2a5084ec6f0f","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_67022607-7268-49ac-8175-381042836a38","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_b8d90a65-6280-4ad5-a70d-e7f8484d614f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":52}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_eabe000d-b957-4c2d-8ec3-715c7b9d7b58","route":"/api/tax/gst-preparation","method":"POST","status":422,"durationMs":16}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_280967e9-2a1c-4963-89bc-d62f798b5220","route":"/api/tax/gst-preparation","method":"POST","status":422,"durationMs":17}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST
+{"msg":"http_request","requestId":"req_4f16d847-f94b-491a-bc75-969ddc557b64","route":"/api/tax/gst-preparation","method":"POST","status":200,"durationMs":23}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_f80b69b8-b769-4510-b3f2-4503745d28c9","route":"/api/auth/*","method":"POST","status":200,"durationMs":103}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_d759e775-a5dd-4efc-b71a-6181e46458d1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_d3736ad4-7c4f-4f78-8ddc-982dfa0a86c5","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_c19f4ce2-81a0-4833-a1a1-e0b3a039679c","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_49eb57da-a5e9-487d-a1ea-90fdcff2180f","route":"/api/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_ced4b5bc-1aa6-499e-b135-cc72b25d0cae","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_a3f57c73-a014-42ce-b1b7-7b2f42c301bf","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_80aeb433-f7ff-4629-b307-24cd9dde3e54","route":"/api/payments","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_b87fe219-dd24-4666-b04b-901097eb5923","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_e20e653f-5ef9-480d-ae26-740dccbfc5ac","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_5ea44fc1-606c-4113-9a48-7138ebb53ad0","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_32f50855-ed41-48eb-be07-9413d07f31c5","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_aa7b1383-8f47-4b19-82fe-7bd79ee9b9c8","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_3224c8b7-5854-44b5-80ad-e9a4206502a3","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_b38eb342-e8cb-48a1-b918-8468b387a88f","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_863a81ad-8bbf-474a-a3a4-5e051b5f5d2f","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_cf86a94c-b227-4dab-b16e-5f697b699bc6","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":31}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_5413c2ee-7540-49f9-97f9-9dc60aa252d1","route":"/api/tax/gst-preparation","method":"GET","status":422,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_558325fc-a861-4a39-892e-5166e8f6af14","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_50415432-c163-45c1-9860-bdb178109e75","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_b91bc5d9-2929-479e-ba47-f628845d0e1c","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis
+{"msg":"http_request","requestId":"req_5e36c06f-8aec-4e36-8d20-234ed14344e6","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_4ebf2a3b-cf98-449f-bd03-6f2d61044524","route":"/api/auth/*","method":"POST","status":200,"durationMs":98}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_826be76f-bdbd-4da5-b447-3975bd3830bc","route":"/api/business-profile","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_09d20b9e-2bb5-4ea9-893d-1d97fbfa1f14","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_5842c860-750c-4b7b-bd83-059bdb6e05dc","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_ada800e0-c438-4f1c-86fb-22e1640461c0","route":"/api/payments","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_7a2dc965-6998-4ff9-9912-37659c884f13","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_d95ac54e-529c-44bd-a5af-b891f67774f8","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_5ea69b3b-2d47-4cfa-812f-bc8e74a8c543","route":"/api/payments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_d0e26f6c-84a4-4c29-ad51-f27091faa77c","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_d61950d3-c325-4991-9d74-a3eed22204df","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_f2d7ade9-c186-4e7c-a147-b09ca4a35bd6","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_06f070be-7f3d-480c-a334-e0f80e06fb7a","route":"/api/bills","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_1b2e7196-6c25-4e83-96c3-f6fc0708e784","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_4b334c63-621d-43b6-a602-c767d0eea6e5","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_e5b948d8-a943-4566-8f7d-de2677ae8e5f","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_3593d773-4de0-4f9c-a34c-b8947574fba5","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/tax/gst-registered-calculation.test.ts > registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot
+{"msg":"http_request","requestId":"req_47e37da0-0d4c-48b3-a7ad-5576e4dcdb3d","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":18}
+
+ ✓ src/modules/tax/gst-registered-calculation.test.ts (3 tests) 3178ms
+   ✓ registered GST basis is the calculation authority > requires explicit and complete zero-rated versus exempt classification without changing GST  1205ms
+   ✓ registered GST basis is the calculation authority > uses hybrid invoice sales and paid purchases, rather than silently choosing invoice basis  1027ms
+   ✓ registered GST basis is the calculation authority > excludes pre-registration movements and returns a server source/version snapshot  944ms
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_ae3f1573-01e1-4b55-8146-09f0e1e52d5a","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_3cf74bbf-eff0-411a-81f9-b42d73a37df7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_83844ec7-e8c4-4088-bcdf-51fad71256d5","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_014514e2-255e-4115-860c-c4ee7eb9690b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_f27dda67-1bbb-4c97-8764-7bf9067b548f","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_d99d6de3-b65e-49e5-b2cd-9e285034e01a","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_22997415-5888-4129-b92a-64cce3bd1d3d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_a237be9d-5529-47cf-bbd3-cb73a07d273d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_b77bc541-b6ee-4820-90d4-d7cd5632fed3","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_10b8e2c1-c0d3-4cf0-b5f6-6209c34beba3","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_4bf8fd51-163d-406e-97f2-406accea6306","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_b81b7bdd-43d3-45a0-95d0-b70a5aa1567c","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_89a7291d-8f73-4e3e-a424-d54e25f21fc2","route":"/api/expenses/:id","method":"DELETE","status":204,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_09205b7a-d107-4fae-b115-52e87a32c0f1","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_dba0b891-9fe3-46a3-a434-6e2d68a61db9","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_d92a8671-6a4b-4557-8234-feaabdb2783d","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_99d0a19c-30bb-49f8-ba1c-006a2cedbb05","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_538f16e1-892b-45f3-914e-17544f31e314","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return
+{"msg":"http_request","requestId":"req_f716d766-ecc6-4602-a321-35583af609ff","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_3169da44-f279-465f-9465-da57184cb5e3","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_a199f79f-cc2a-4908-b864-680e81c20857","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_56e44040-2729-44ad-946d-fb4cdfeb73dd","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_1ca14791-48df-4e2a-a8da-dfc241b999f1","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_ac7e0a38-7e32-43e7-9686-c47e2f8be2fb","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_a9dc05ad-2503-44f9-8173-44adf9d4a8ea","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_63cef1e0-0107-4ed1-a93d-a15ce882efa3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_64f6809e-9fe3-486a-b853-e5e0e46f6a43","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_34813d0f-5c14-4c7b-a4ff-6cba8191f82c","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_feb1394a-d088-4715-a561-d12864df1e03","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_5d441c12-3cc5-471f-bc23-c41ef028d73b","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_eb059f12-62c3-4cf6-a95b-dfa064c39cbc","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_2b6ed1d7-9b27-4822-a700-baf23bf31880","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_d4019f7d-0ea3-4b7a-8d20-d73081a9f7c2","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales
+{"msg":"http_request","requestId":"req_528aa342-2669-4f02-a35d-28d9b4485b3e","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_538ec406-0cce-452e-b686-0a5299458167","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_382a6e7f-12fd-4dab-b663-7c4f8ebe3bc3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_29e68160-8dd1-4e51-87dc-38361ea20f7b","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_0209efc8-7a9c-47a5-93b8-de85c0b322d6","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_423106d5-54ec-4356-af34-cbc836ee6907","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_e589ee14-c63c-4d70-ad8b-a7f3b27ed1a8","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_43dfda24-ea6d-4ed5-abd5-d7dec15a0f01","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_00b9b228-8d99-46d3-8fca-9e7b576a1ef3","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_d0fbef2e-0b3d-48ba-847d-c34ebf0752e6","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_d8a582f1-09e8-42cf-b500-ac545bf4e123","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_080f6ee0-da8d-4a1a-bcd2-f13d68cbb872","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_0afee2d9-e9e0-41cd-8b85-55599d099db7","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_e73eaa4a-14dc-4389-91e4-66b759c31a1b","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_05c7d53d-4a4d-4d68-8ec2-fedcd4e8c67d","route":"/api/bills/:id/void","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return
+{"msg":"http_request","requestId":"req_0f897e76-234c-4a64-b62a-187395ebef15","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_e0a154a3-59f3-4788-97f4-262a6919dc4a","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_59f2b8ff-beb1-4813-bcbf-23dfc5d2826f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_568c344d-f2ee-4bea-b435-8a6455e77db5","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_4aaa71a6-ee2a-4a61-b85a-abcddf601f36","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_186de451-be22-4ef4-a6ed-7bbc9976cb4c","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_cc965d0f-37e4-445a-aeb8-654e1b065744","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_a9178ca5-59c0-4b64-828e-ce09008dff08","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_f221d015-24eb-4663-b2a7-508414be0c79","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_baed9be5-eb90-4e7e-bf83-0e4b4b3b14ad","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_9f7f2905-7632-4a24-a78c-668603fe9ecb","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_de44fa17-b8cd-45aa-9ddb-22304676d098","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_21e1f276-f2c0-40a4-9541-ec7e10b4bae8","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_d3353c62-e90c-4637-a01b-6f51a1da53b1","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_a8e1f182-747a-4d64-a38a-3def905dc62e","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_32df71e2-7c89-4a7c-8b28-398a06f83fe0","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_a8782054-ddc2-4b87-9d9d-a914f1e97481","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_108efd01-f242-4e1e-8284-853283c75d71","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_42001efc-9f0b-4ebf-8719-bfbb664f523b","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_73da9e9a-6607-4ad9-a2cf-5fcebe051684","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_56b0ea6e-334d-4f18-9a2a-d0eaeff4d892","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-registration-reversals.test.ts > GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply
+{"msg":"http_request","requestId":"req_671bbf54-a4b8-40dd-86b1-8ea7a19709fb","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+ ✓ src/modules/tax/gst-registration-reversals.test.ts (4 tests) 6939ms
+   ✓ GST registration follows original source eligibility across later reversals > does not reverse an excluded pre-registration expense claim into the first GST return  1002ms
+   ✓ GST registration follows original source eligibility across later reversals > does not include cancellation of an excluded pre-registration invoice as negative taxable sales  999ms
+   ✓ GST registration follows original source eligibility across later reversals > does not reclaim a voided pre-registration supplier bill in the first GST return  1742ms
+   ✓ GST registration follows original source eligibility across later reversals > does not include a later customer credit and refund for an excluded pre-registration supply  3194ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed (7)
+   Start at  23:31:09
+   Duration  14.61s (transform 1.33s, setup 36ms, collect 3.89s, tests 10.12s, environment 0ms, prepare 162ms)

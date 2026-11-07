@@ -1,7 +1,10 @@
+import { runStripeVerification, nextStripeVerificationTime } from '../modules/stripe/stripe.verification';
+import type { RecurringKind } from '@ledgercraft/contracts';
+import { isRecurringActorAuthorised } from '../modules/recurring/recurring.generate';
 import { DurableObject } from 'cloudflare:workers';
 import * as Sentry from '@sentry/cloudflare';
 import type { CloudflareOptions } from '@sentry/cloudflare';
-import { and, eq, isNull } from 'drizzle-orm';
+import { and, eq, isNull, inArray } from 'drizzle-orm';
 import { createApp } from '../app';
 import { activeOrganisationSelections, organisationMemberships, organisations, users } from '../db/schema/identity';
 import { createAuth, type Auth } from '../modules/auth/auth';
@@ -15,6 +18,9 @@ import { createSentryReporter, tagActiveRequest } from '../observability/sentry-
 import { publicLedgerOrganisationId } from './public-routes';
 import { durableDatabase, durableFileStorage, durableObjectStore, migrateStorage } from './storage';
 import { createR2FileStorage } from '../modules/storage/r2-file-storage';
+import { runOperationalJobs } from './operational-alarm';
+import { runPaymentReminders } from '../modules/payment-reminders/payment-reminders.service';
+import { bankFeedConfigFromEnv, bankFeedPreDeleteHook, runDueBankFeeds } from '../modules/bank-feeds/bank-feeds.service';
 import { runDue } from '../modules/recurring/recurring.service';
 import { createOpenAiChatCompleter, createOpenAiReceiptScanner } from '../modules/ai/openai';
 import { createExtractionProvider } from '../modules/invoice-imports/extraction';
@@ -45,6 +51,7 @@ export interface Env {
   SENTRY_ENVIRONMENT?: string;
   SENTRY_RELEASE?: string;
   SENTRY_DEBUG_ROUTE?: string;
+  STRIPE_APPROVED_ORGANISATION_IDS?: string;
   STRIPE_PAYMENTS_ENABLED?: string;
   STRIPE_MOCK_MODE?: string;
   STRIPE_SECRET_KEY?: string;
@@ -52,6 +59,10 @@ export interface Env {
   STRIPE_CONNECT_WEBHOOK_SECRET?: string;
   STRIPE_PLATFORM_FEE_BPS?: string;
   STRIPE_PLATFORM_FEE_FIXED_CENTS?: string;
+  AKAHU_APP_ID?: string;
+  AKAHU_USER_TOKEN?: string;
+  AKAHU_ORGANISATION_ID?: string;
+  AKAHU_USER_ID?: string;
   APP_URL?: string;
   CF_VERSION_METADATA?: WorkerVersionMetadata;
   /** Optional Phase 1 binding. Wrangler keeps it disabled until the bucket exists. */
@@ -82,7 +93,7 @@ function identityHealthResponse(storage: DurableObjectState['storage'], env: Env
   storage.sql.exec('SELECT 1').toArray();
   const applied = storage.sql.exec<{name:string}>('SELECT name FROM _migrations ORDER BY name DESC LIMIT 1').toArray()[0];
   const capabilities = {
-    email: env.RESEND_API_KEY?.trim() && env.RESEND_FROM?.trim() ? 'available' : 'unavailable',
+    email: createInvoiceMailerFromEnv(env).availability ?? 'unavailable',
     ai: env.OPENAI_API_KEY?.trim() || env.XAI_API_KEY?.trim() || env.AI ? 'available' : 'unavailable',
     stripe: stripePaymentsCapability(env as unknown as Record<string, string | undefined>),
   };
@@ -107,6 +118,18 @@ class IdentityBase extends DurableObject<Env> {
     this.db = durableDatabase(ctx.storage);
     this.auth = createAuth(this.db, { sendAuthEmail: createAuthEmailSender(env) });
   }
+  async canManageBankFeeds(organisationId: string, userId: string): Promise<boolean> {
+    return isRecurringActorAuthorised(this.db, organisationId, userId, 'income');
+  }
+  async reminderActor(organisationId: string): Promise<string | null> {
+    const [actor] = await this.db.select({ userId: organisationMemberships.userId })
+      .from(organisationMemberships).innerJoin(organisations, eq(organisations.id, organisationMemberships.organisationId))
+      .where(and(eq(organisations.id, organisationId), isNull(organisations.archivedAt), isNull(organisationMemberships.removedAt), inArray(organisationMemberships.role, ['owner', 'admin', 'accountant']))).limit(1);
+    return actor?.userId ?? null;
+  }
+  async canRunRecurring(organisationId: string, userId: string, kind: RecurringKind): Promise<boolean> {
+    return isRecurringActorAuthorised(this.db, organisationId, userId, kind);
+  }
   async dispatch(request: Request): Promise<Response> {
     const requestId = resolveRequestId(request.headers.get('x-request-id'));
     const path = new URL(request.url).pathname;
@@ -130,6 +153,10 @@ class IdentityBase extends DurableObject<Env> {
         return createApp({
           db: this.db,
           auth: this.auth,
+          accountPreDeleteHooks: [{ name: 'Akahu', required: true, onBeforeAccountDelete: async context => {
+            const config = bankFeedConfigFromEnv(this.env);
+            if (config && config.userId === context.userId) await this.env.LEDGERS.getByName(config.organisationId).revokeBankFeedAccess(context.userId, context.deletionKey);
+          } }],
           purgeOrganisation: async (organisationId) => this.env.LEDGERS.getByName(organisationId).purgeAccountData(organisationId),
           removeOrganisationMembership: async (organisationId, userId) => this.env.LEDGERS.getByName(organisationId).removeAccountMembership(userId),
         }).fetch(request);
@@ -155,6 +182,7 @@ class IdentityBase extends DurableObject<Env> {
 class LedgerBase extends DurableObject<Env> {
   private db;
   private readonly accountPurgeGate = new AccountPurgeGate();
+  private alarmScheduling: Promise<void> = Promise.resolve();
   constructor(ctx: DurableObjectState, env: Env) {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => migrateStorage(ctx.storage));
@@ -189,6 +217,8 @@ class LedgerBase extends DurableObject<Env> {
       const app = createApp({
         db:this.db,
         auth:sessionAuth,
+        appUrl: this.env.APP_URL,
+        bankFeedConfig: bankFeedConfigFromEnv(this.env),
         objectStore:durableObjectStore(this.ctx.storage),
         fileStorage:this.env.DOCUMENTS
           ? createR2FileStorage(this.env.DOCUMENTS)
@@ -206,7 +236,15 @@ class LedgerBase extends DurableObject<Env> {
           extractDocument: (file, context) => createExtractionProvider({ env: this.env }).extractDocument(file, context),
         },
         actorUserId: userId,
-        scheduleRecurringAlarm: async (timestamp) => this.accountPurgeGate.scheduleAlarm(() => this.ctx.storage.setAlarm(timestamp)),
+        recurringExecutionAuthorizer: (organisationId, actorId, kind) => this.env.IDENTITY.getByName('identity-v1').canRunRecurring(organisationId, actorId, kind),
+        scheduleRecurringAlarm: async (timestamp) => this.accountPurgeGate.scheduleAlarm(() => {
+          const write = this.alarmScheduling.then(async () => {
+            const current = await this.ctx.storage.getAlarm();
+            if (current === null || timestamp < current) await this.ctx.storage.setAlarm(timestamp);
+          });
+          this.alarmScheduling = write.catch(() => undefined);
+          return write;
+        }),
         stripeGateway: stripe?.gateway,
         stripeConfig: stripe?.config,
       });
@@ -222,6 +260,10 @@ class LedgerBase extends DurableObject<Env> {
     return processVerifiedWebhook(this.db, event, stripe.gateway, stripe.config);
   }
 
+  async revokeBankFeedAccess(userId: string, deletionKey: string): Promise<void> {
+    await bankFeedPreDeleteHook(this.db, bankFeedConfigFromEnv(this.env)).onBeforeAccountDelete({ userId, deletionKey });
+  }
+
   async purgeAccountData(organisationId: string): Promise<void> {
     await purgeLedgerAccountData(this.ctx.storage, this.env.DOCUMENTS, organisationId, this.accountPurgeGate);
   }
@@ -233,7 +275,32 @@ class LedgerBase extends DurableObject<Env> {
   async alarm(): Promise<void> {
     await runRecurringAlarm(
       this.accountPurgeGate,
-      () => runDue(this.db, new Date(), 100, undefined, createInvoiceMailerFromEnv(this.env)),
+      async () => {
+        const now = new Date();
+        const mailer = createInvoiceMailerFromEnv(this.env);
+        const companies = await this.db.select({ id: organisations.id }).from(organisations).where(isNull(organisations.archivedAt));
+        const feeds = bankFeedConfigFromEnv(this.env);
+        const stripe = stripeRuntimeFromEnv(this.env as unknown as Record<string, string | undefined>);
+        return runOperationalJobs([
+          async () => { const result = await runDue(this.db, now, 100, undefined, mailer, (organisationId, userId, kind) => this.env.IDENTITY.getByName('identity-v1').canRunRecurring(organisationId, userId, kind)); return result.nextAlarmAt ? new Date(result.nextAlarmAt).getTime() : null; },
+          ...companies.map(company => async () => {
+            const actor = await this.env.IDENTITY.getByName('identity-v1').reminderActor(company.id);
+            return (await runPaymentReminders(this.db, company.id, mailer, now, this.env.APP_URL, actor ? { userId: actor } : null)).nextRunAt;
+          }),
+          async () => {
+            if (!feeds || !companies.some(company => company.id === feeds.organisationId)) return null;
+            const authorizer = (actor: { organisationId: string; userId: string }) => this.env.IDENTITY.getByName('identity-v1').canManageBankFeeds(actor.organisationId, actor.userId);
+            if (!await authorizer(feeds)) return null;
+            await runDueBankFeeds(this.db, feeds, now, authorizer);
+            return now.getTime() + 86_400_000;
+          },
+          async () => {
+            if (!stripe?.gateway.listRecentPayments || !stripe.gateway.retrievePayment || !stripe.gateway.retrieveBalance) return null;
+            await runStripeVerification(this.db, stripe.gateway, stripe.config, now);
+            return await nextStripeVerificationTime(this.db, now) ?? null;
+          },
+        ], now.getTime());
+      },
       (timestamp) => this.ctx.storage.setAlarm(timestamp),
     );
   }

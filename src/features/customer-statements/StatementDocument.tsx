@@ -1,0 +1,11 @@
+import type { CustomerStatement } from '@ledgercraft/contracts';
+export function StatementDocument({ value }: { value: CustomerStatement }) {
+  return <section aria-label="Customer statement" className="space-y-5">
+    <div><h2 className="text-xl font-semibold">{value.businessName}</h2><p className="mt-2 font-medium">{value.customer.name}</p><p className="text-sm text-muted-foreground">{value.type === 'activity' ? 'Activity statement' : 'Open items statement'} · {value.from} to {value.to} · {value.currency}</p></div>
+    <dl className="flex flex-wrap gap-6"><div><dt>Opening balance</dt><dd className="font-semibold tabular-nums">{value.openingBalance}</dd></div><div><dt>Closing balance</dt><dd className="font-semibold tabular-nums">{value.closingBalance}</dd></div></dl>
+    <div className="overflow-x-auto"><table aria-label="Statement activity" className="w-full text-left text-sm"><thead><tr>{['Date', 'Reference', 'Description', 'Debit', 'Credit', 'Balance'].map(label => <th className="p-3" key={label}>{label}</th>)}</tr></thead><tbody>{value.lines.map(line => <tr className="border-t border-border" key={line.id}><td className="whitespace-nowrap p-3">{line.date}</td><td className="p-3">{line.reference}</td><td className="p-3">{line.description}</td>{[line.debit, line.credit, line.runningBalance].map((amount, index) => <td className="p-3 text-right tabular-nums" key={index}>{amount}</td>)}</tr>)}</tbody></table></div>
+    {value.lines.length === 0 && <p>No matching activity for this statement.</p>}
+    <h3 className="font-semibold">Aging at {value.to}</h3><dl className="grid grid-cols-2 gap-4 sm:grid-cols-3">{([['Current', value.aging.current], ['1–30 days', value.aging.days1To30], ['31–60 days', value.aging.days31To60], ['61–90 days', value.aging.days61To90], ['90+ days', value.aging.over90], ['Unallocated control', value.aging.unallocatedControl]]).map(([label, amount]) => <div key={label}><dt className="text-sm text-muted-foreground">{label}</dt><dd className="tabular-nums">{amount}</dd></div>)}</dl>
+    {value.warnings.map(warning => <p className="text-sm text-muted-foreground" key={warning}>{warning}</p>)}<p className="text-xs text-muted-foreground">Generated {value.generatedAt}</p>
+  </section>;
+}

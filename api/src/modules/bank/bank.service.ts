@@ -25,6 +25,7 @@ import type { Database } from '../../db/client';
 import { csvCell } from '../../lib/csv';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './bank.repository';
+import { defaultBankAccount } from './bank-workspace.repository';
 import * as detailsRepo from './bank-details.repository';
 import { decimal, roundMoney } from '../invoices/money';
 import {
@@ -103,6 +104,7 @@ export async function updateBankAccountForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getAccount(tx, ctx.organisationId, id);
     if (!current) throw new HTTPException(404, { message: 'Bank account not found' });
+    if ((input.isActive === false || (input.currency !== undefined && input.currency !== current.currency)) && await defaultBankAccount(tx, ctx.organisationId) === id) throw new HTTPException(409, { message: 'Choose another default payment account before deactivating or changing its currency' });
     const financialChange = (input.currency !== undefined && input.currency !== current.currency)
       || (input.openingBalance !== undefined && decimal(input.openingBalance).compare(current.openingBalance) !== 0)
       || (input.currentBalance !== undefined && decimal(input.currentBalance).compare(current.currentBalance) !== 0);
@@ -117,6 +119,7 @@ export async function updateBankAccountForUser(
 
 export async function deleteBankAccountForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    if (await defaultBankAccount(tx, ctx.organisationId) === id) throw new HTTPException(409, { message: 'Choose another default payment account before deleting this account' });
     if ((await closedBankStatements(tx, ctx.organisationId)).some(row => row.bankAccountId === id)) {
       throw new HTTPException(409, { message: 'A bank account with completed statements cannot be deleted; deactivate it instead' });
     }
@@ -189,19 +192,21 @@ export async function getBankTransactionForUser(
 }
 
 export async function createBankTransactionForUser(
-  db: Database,
-  userId: string,
-  input: CreateBankTransactionRequest,
+  db: Database, userId: string, input: CreateBankTransactionRequest,
 ): Promise<BankTransactionDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
-    if (!account || !account.isActive) throw new HTTPException(400, { message: 'Active bank account not found' });
-    const balance = applyAmount(account.currentBalance, input.type, input.amount);
-    const transaction = await repo.insertManualTransaction(tx, ctx, input, balance);
-    await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
-    await postBankTransaction(tx, ctx, account, transaction);
-    return transaction;
-  });
+  return withOrganisationTx(db, userId, (tx, ctx) => createBankTransactionInTx(tx, ctx, input));
+}
+
+export async function createBankTransactionInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, input: CreateBankTransactionRequest,
+): Promise<BankTransactionDto> {
+  const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
+  if (!account || !account.isActive) throw new HTTPException(400, { message: 'Active bank account not found' });
+  const balance = applyAmount(account.currentBalance, input.type, input.amount);
+  const transaction = await repo.insertManualTransaction(tx, ctx, input, balance);
+  await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
+  await postBankTransaction(tx, ctx, account, transaction);
+  return transaction;
 }
 
 export async function updateBankTransactionForUser(
@@ -444,20 +449,27 @@ export async function getBankTransferForUser(db: Database, userId: string, id: s
 }
 
 export async function importBankTransactionsForUser(
-  db: Database,
-  userId: string,
-  input: ImportBankTransactionsRequest,
+  db: Database, userId: string, input: ImportBankTransactionsRequest,
 ): Promise<ImportBankTransactionsResponse> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
-    if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
-    await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
-    const result = await repo.importTransactions(tx, ctx, input);
-    for (const transaction of result.imported) await postBankTransaction(tx, ctx, account, transaction);
-    return importBankTransactionsResponseSchema.parse({
-      importedCount: result.imported.length,
-      duplicatesSkipped: result.duplicatesSkipped,
-      transactions: result.imported,
-    });
+  return withOrganisationTx(db, userId, (tx, ctx) => importBankTransactionsInTx(tx, ctx, input));
+}
+
+/** Server jobs must use their already validated organisation, not active selection. */
+export async function importBankTransactionsInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, input: ImportBankTransactionsRequest,
+): Promise<ImportBankTransactionsResponse> {
+  const account = await repo.getAccount(tx, ctx.organisationId, input.bankAccountId);
+  if (!account) throw new HTTPException(400, { message: 'Bank account not found' });
+  await assertSupportedStatementBank(tx, ctx.organisationId, account.currency);
+  const result = await repo.importTransactions(tx, ctx, input);
+  for (const transaction of result.imported) await postBankTransaction(tx, ctx, account, transaction);
+  if (result.imported.length) {
+    const balance = result.imported.reduce((value, transaction) => applyAmount(value, transaction.type, transaction.amount), account.currentBalance);
+    await repo.setAccountBalance(tx, ctx.organisationId, account.id, balance);
+  }
+  return importBankTransactionsResponseSchema.parse({
+    importedCount: result.imported.length,
+    duplicatesSkipped: result.duplicatesSkipped,
+    transactions: result.imported,
   });
 }

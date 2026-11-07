@@ -1,0 +1,580 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/components/invoice/StripePaymentLinkDialog.test.tsx (2 tests | 1 failed) 1251ms
+   × StripePaymentLinkDialog > blocks link creation while the company awaits beta approval 1125ms
+     → Unable to find an element with the text: Card payments await beta approval. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mdata-scroll-locked[39m=[32m"1"[39m
+  [33mstyle[39m=[32m"pointer-events: none;"[39m
+[36m>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mclass[39m=[32m"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"radix-:r2:"[39m
+    [33maria-labelledby[39m=[32m"radix-:r1:"[39m
+    [33mclass[39m=[32m"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg max-h-[90dvh] overflow-y-auto sm:max-w-md"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mid[39m=[32m"radix-:r0:"[39m
+    [33mrole[39m=[32m"dialog"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex flex-col space-y-1.5 text-center sm:text-left"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-lg font-semibold leading-none tracking-tight flex items-center gap-2"[39m
+        [33mid[39m=[32m"radix-:r1:"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5 text-[#635BFF]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"24"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"24"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<rect[39m
+            [33mheight[39m=[32m"14"[39m
+            [33mrx[39m=[32m"2"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mx[39m=[32m"2"[39m
+            [33my[39m=[32m"5"[39m
+          [36m/>[39m
+          [36m<line[39m
+            [33mx1[39m=[32m"2"[39m
+            [33mx2[39m=[32m"22"[39m
+            [33my1[39m=[32m"10"[39m
+            [33my2[39m=[32m"10"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mCard payment[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [33mid[39m=[32m"radix-:r2:"[39m
+      [36m>[39m
+        [0mCreate a secure Stripe Checkout link for invoice [0m
+        [0mINV1[0m
+        [0m.[0m
+      [36m</p>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"space-y-5 py-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"rounded-2xl bg-muted/50 p-5"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mAmount due[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"mt-1 text-3xl font-semibold"[39m
+        [36m>[39m
+          [0mNZ$115.00[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 w-full"[39m
+      [36m>[39m
+        [0mCreate payment link[0m
+      [36m</button>[39m
+    [36m</div>[39m
+    [36m<button[39m
+      [33mclass[39m=[32m"absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"[39m
+      [33mtype[39m=[32m"button"[39m
+    [36m>[39m
+      [36m<svg[39m
+        [33mclass[39m=[32m"lucide lucide-x h-4 w-4"[39m
+        [33mfill[39m=[32m"none"[39m
+        [33mheight[39m=[32m"24"[39m
+        [33mstroke[39m=[32m"currentColor"[39m
+        [33mstroke-linecap[39m=[32m"round"[39m
+        [33mstroke-linejoin[39m=[32m"round"[39m
+        [33mstroke-width[39m=[32m"2"[39m
+        [33mviewBox[39m=[32m"0 0 24 24"[39m
+        [33mwidth[39m=[32m"24"[39m
+        [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+      [36m>[39m
+        [36m<path[39m
+          [33md[39m=[32m"M18 6 6 18"[39m
+        [36m/>[39m
+        [36m<path[39m
+          [33md[39m=[32m"m6 6 12 12"[39m
+        [36m/>[39m
+      [36m</svg>[39m
+      [36m<span[39m
+        [33mclass[39m=[32m"sr-only"[39m
+      [36m>[39m
+        [0mClose[0m
+      [36m</span>[39m
+    [36m</button>[39m
+  [36m</div>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mdata-scroll-locked[39m=[32m"1"[39m
+  [33mstyle[39m=[32m"pointer-events: none;"[39m
+[36m>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mclass[39m=[32m"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"radix-:r2:"[39m
+    [33maria-labelledby[39m=[32m"radix-:r1:"[39m
+    [33mclass[39m=[32m"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg max-h-[90dvh] overflow-y-auto sm:max-w-md"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mid[39m=[32m"radix-:r0:"[39m
+    [33mrole[39m=[32m"dialog"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex flex-col space-y-1.5 text-center sm:text-left"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-lg font-semibold leading-none tracking-tight flex items-center gap-2"[39m
+        [33mid[39m=[32m"radix-:r1:"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5 text-[#635BFF]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"24"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"24"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<rect[39m
+            [33mheight[39m=[32m"14"[39m
+            [33mrx[39m=[32m"2"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mx[39m=[32m"2"[39m
+            [33my[39m=[32m"5"[39m
+          [36m/>[39m
+          [36m<line[39m
+            [33mx1[39m=[32m"2"[39m
+            [33mx2[39m=[32m"22"[39m
+            [33my1[39m=[32m"10"[39m
+            [33my2[39m=[32m"10"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mCard payment[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [33mid[39m=[32m"radix-:r2:"[39m
+      [36m>[39m
+        [0mCreate a secure Stripe Checkout link for invoice [0m
+        [0mINV1[0m
+        [0m.[0m
+      [36m</p>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"space-y-5 py-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"rounded-2xl bg-muted/50 p-5"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mAmount due[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"mt-1 text-3xl font-semibold"[39m
+        [36m>[39m
+          [0mNZ$115.00[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 w-full"[39m
+      [36m>[39m
+        [0mCreate payment link[0m
+      [36m</button>[39m
+    [36m</div>[39m
+    [36m<button[39m
+      [33mclass[39m=[32m"absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"[39m
+      [33mtype[39m=[32m"button"[39m
+    [36m>[39m
+      [36m<svg[39m
+        [33mclass[39m=[32m"lucide lucide-x h-4 w-4"[39m
+        [33mfill[39m=[32m"none"[39m
+        [33mheight[39m=[32m"24"[39m
+        [33mstroke[39m=[32m"currentColor"[39m
+        [33mstroke-linecap[39m=[32m"round"[39m
+        [33mstroke-linejoin[39m=[32m"round"[39m
+        [33mstroke-width[39m=[32m"2"[39m
+        [33mviewBox[39m=[32m"0 0 24 24"[39m
+        [33mwidth[39m=[32m"24"[39m
+        [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+      [36m>[39m
+        [36m<path[39m
+          [33md[39m=[32m"M18 6 6 18"[39m
+        [36m/>[39m
+        [36m<path[39m
+          [33md[39m=[32m"m6 6 12 12"[39m
+        [36m/>[39m
+      [36m</svg>[39m
+      [36m<span[39m
+        [33mclass[39m=[32m"sr-only"[39m
+      [36m>[39m
+        [0mClose[0m
+      [36m</span>[39m
+    [36m</button>[39m
+  [36m</div>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+[36m</body>[39m
+   ✓ StripePaymentLinkDialog > shows the exact platform fee and a scannable hosted-payment link 125ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/invoice/StripePaymentLinkDialog.test.tsx > StripePaymentLinkDialog > blocks link creation while the company awaits beta approval
+TestingLibraryElementError: Unable to find an element with the text: Card payments await beta approval. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mdata-scroll-locked[39m=[32m"1"[39m
+  [33mstyle[39m=[32m"pointer-events: none;"[39m
+[36m>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mclass[39m=[32m"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"radix-:r2:"[39m
+    [33maria-labelledby[39m=[32m"radix-:r1:"[39m
+    [33mclass[39m=[32m"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg max-h-[90dvh] overflow-y-auto sm:max-w-md"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mid[39m=[32m"radix-:r0:"[39m
+    [33mrole[39m=[32m"dialog"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex flex-col space-y-1.5 text-center sm:text-left"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-lg font-semibold leading-none tracking-tight flex items-center gap-2"[39m
+        [33mid[39m=[32m"radix-:r1:"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5 text-[#635BFF]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"24"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"24"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<rect[39m
+            [33mheight[39m=[32m"14"[39m
+            [33mrx[39m=[32m"2"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mx[39m=[32m"2"[39m
+            [33my[39m=[32m"5"[39m
+          [36m/>[39m
+          [36m<line[39m
+            [33mx1[39m=[32m"2"[39m
+            [33mx2[39m=[32m"22"[39m
+            [33my1[39m=[32m"10"[39m
+            [33my2[39m=[32m"10"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mCard payment[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [33mid[39m=[32m"radix-:r2:"[39m
+      [36m>[39m
+        [0mCreate a secure Stripe Checkout link for invoice [0m
+        [0mINV1[0m
+        [0m.[0m
+      [36m</p>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"space-y-5 py-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"rounded-2xl bg-muted/50 p-5"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mAmount due[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"mt-1 text-3xl font-semibold"[39m
+        [36m>[39m
+          [0mNZ$115.00[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 w-full"[39m
+      [36m>[39m
+        [0mCreate payment link[0m
+      [36m</button>[39m
+    [36m</div>[39m
+    [36m<button[39m
+      [33mclass[39m=[32m"absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"[39m
+      [33mtype[39m=[32m"button"[39m
+    [36m>[39m
+      [36m<svg[39m
+        [33mclass[39m=[32m"lucide lucide-x h-4 w-4"[39m
+        [33mfill[39m=[32m"none"[39m
+        [33mheight[39m=[32m"24"[39m
+        [33mstroke[39m=[32m"currentColor"[39m
+        [33mstroke-linecap[39m=[32m"round"[39m
+        [33mstroke-linejoin[39m=[32m"round"[39m
+        [33mstroke-width[39m=[32m"2"[39m
+        [33mviewBox[39m=[32m"0 0 24 24"[39m
+        [33mwidth[39m=[32m"24"[39m
+        [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+      [36m>[39m
+        [36m<path[39m
+          [33md[39m=[32m"M18 6 6 18"[39m
+        [36m/>[39m
+        [36m<path[39m
+          [33md[39m=[32m"m6 6 12 12"[39m
+        [36m/>[39m
+      [36m</svg>[39m
+      [36m<span[39m
+        [33mclass[39m=[32m"sr-only"[39m
+      [36m>[39m
+        [0mClose[0m
+      [36m</span>[39m
+    [36m</button>[39m
+  [36m</div>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+[36m</body>[39m
+
+Ignored nodes: comments, script, style
+[36m<body[39m
+  [33mdata-scroll-locked[39m=[32m"1"[39m
+  [33mstyle[39m=[32m"pointer-events: none;"[39m
+[36m>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mclass[39m=[32m"fixed inset-0 z-50 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+  [36m/>[39m
+  [36m<div[39m
+    [33maria-describedby[39m=[32m"radix-:r2:"[39m
+    [33maria-labelledby[39m=[32m"radix-:r1:"[39m
+    [33mclass[39m=[32m"fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg max-h-[90dvh] overflow-y-auto sm:max-w-md"[39m
+    [33mdata-state[39m=[32m"open"[39m
+    [33mid[39m=[32m"radix-:r0:"[39m
+    [33mrole[39m=[32m"dialog"[39m
+    [33mstyle[39m=[32m"pointer-events: auto;"[39m
+    [33mtabindex[39m=[32m"-1"[39m
+  [36m>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"flex flex-col space-y-1.5 text-center sm:text-left"[39m
+    [36m>[39m
+      [36m<h2[39m
+        [33mclass[39m=[32m"text-lg font-semibold leading-none tracking-tight flex items-center gap-2"[39m
+        [33mid[39m=[32m"radix-:r1:"[39m
+      [36m>[39m
+        [36m<svg[39m
+          [33mclass[39m=[32m"lucide lucide-credit-card h-5 w-5 text-[#635BFF]"[39m
+          [33mfill[39m=[32m"none"[39m
+          [33mheight[39m=[32m"24"[39m
+          [33mstroke[39m=[32m"currentColor"[39m
+          [33mstroke-linecap[39m=[32m"round"[39m
+          [33mstroke-linejoin[39m=[32m"round"[39m
+          [33mstroke-width[39m=[32m"2"[39m
+          [33mviewBox[39m=[32m"0 0 24 24"[39m
+          [33mwidth[39m=[32m"24"[39m
+          [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+        [36m>[39m
+          [36m<rect[39m
+            [33mheight[39m=[32m"14"[39m
+            [33mrx[39m=[32m"2"[39m
+            [33mwidth[39m=[32m"20"[39m
+            [33mx[39m=[32m"2"[39m
+            [33my[39m=[32m"5"[39m
+          [36m/>[39m
+          [36m<line[39m
+            [33mx1[39m=[32m"2"[39m
+            [33mx2[39m=[32m"22"[39m
+            [33my1[39m=[32m"10"[39m
+            [33my2[39m=[32m"10"[39m
+          [36m/>[39m
+        [36m</svg>[39m
+        [0mCard payment[0m
+      [36m</h2>[39m
+      [36m<p[39m
+        [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [33mid[39m=[32m"radix-:r2:"[39m
+      [36m>[39m
+        [0mCreate a secure Stripe Checkout link for invoice [0m
+        [0mINV1[0m
+        [0m.[0m
+      [36m</p>[39m
+    [36m</div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"space-y-5 py-2"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"rounded-2xl bg-muted/50 p-5"[39m
+      [36m>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+        [36m>[39m
+          [0mAmount due[0m
+        [36m</p>[39m
+        [36m<p[39m
+          [33mclass[39m=[32m"mt-1 text-3xl font-semibold"[39m
+        [36m>[39m
+          [0mNZ$115.00[0m
+        [36m</p>[39m
+      [36m</div>[39m
+      [36m<button[39m
+        [33mclass[39m=[32m"inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 w-full"[39m
+      [36m>[39m
+        [0mCreate payment link[0m
+      [36m</button>[39m
+    [36m</div>[39m
+    [36m<button[39m
+      [33mclass[39m=[32m"absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground"[39m
+      [33mtype[39m=[32m"button"[39m
+    [36m>[39m
+      [36m<svg[39m
+        [33mclass[39m=[32m"lucide lucide-x h-4 w-4"[39m
+        [33mfill[39m=[32m"none"[39m
+        [33mheight[39m=[32m"24"[39m
+        [33mstroke[39m=[32m"currentColor"[39m
+        [33mstroke-linecap[39m=[32m"round"[39m
+        [33mstroke-linejoin[39m=[32m"round"[39m
+        [33mstroke-width[39m=[32m"2"[39m
+        [33mviewBox[39m=[32m"0 0 24 24"[39m
+        [33mwidth[39m=[32m"24"[39m
+        [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+      [36m>[39m
+        [36m<path[39m
+          [33md[39m=[32m"M18 6 6 18"[39m
+        [36m/>[39m
+        [36m<path[39m
+          [33md[39m=[32m"m6 6 12 12"[39m
+        [36m/>[39m
+      [36m</svg>[39m
+      [36m<span[39m
+        [33mclass[39m=[32m"sr-only"[39m
+      [36m>[39m
+        [0mClose[0m
+      [36m</span>[39m
+    [36m</button>[39m
+  [36m</div>[39m
+  [36m<span[39m
+    [33maria-hidden[39m=[32m"true"[39m
+    [33mdata-aria-hidden[39m=[32m"true"[39m
+    [33mdata-radix-focus-guard[39m=[32m""[39m
+    [33mstyle[39m=[32m"outline: none; opacity: 0; position: fixed; pointer-events: none;"[39m
+    [33mtabindex[39m=[32m"0"[39m
+  [36m/>[39m
+[36m</body>[39m
+ ❯ waitForWrapper node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:163:27
+ ❯ findByText node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:86:33
+ ❯ src/components/invoice/StripePaymentLinkDialog.test.tsx:13:428
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  00:28:23
+   Duration  2.57s (transform 136ms, setup 132ms, collect 421ms, tests 1.25s, environment 427ms, prepare 106ms)

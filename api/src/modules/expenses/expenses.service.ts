@@ -1,4 +1,5 @@
 import { decimal, roundMoney } from '../invoices/money';
+import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 import {
   expenseListResponseSchema,
   type CreateExpenseCategoryRequest,
@@ -10,6 +11,7 @@ import {
   type UpdateExpenseRequest,
 } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
+import { apiError } from '../../http-error';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as repo from './expenses.repository';
@@ -76,8 +78,16 @@ export async function createExpenseForUser(
   db: Database,
   userId: string,
   input: CreateExpenseRequest,
+  idempotency?: IdempotencyScope,
 ): Promise<ExpenseDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
+  return withOrganisationTx(db, userId, (tx, ctx) => createExpenseInTx(tx, ctx, input, idempotency));
+}
+
+export async function createExpenseInTx(
+  tx: Database, ctx: { organisationId: string; userId: string }, input: CreateExpenseRequest, idempotency?: IdempotencyScope,
+): Promise<ExpenseDto> {
+    if (idempotency) { const existing = await getIdempotencyRecord(tx, ctx, idempotency); if (existing) { assertReplayMatches(existing.requestHash, idempotency.requestHash); return existing.responseBody as ExpenseDto; } }
+    if (decimal(input.taxAmount ?? '0').compare(input.amount) > 0) throw apiError(422, 'INVALID_RECEIPT_AMOUNTS', 'Receipt GST cannot exceed the total amount. Review both amounts before saving.');
     await assertRefs(tx, ctx.organisationId, input);
     const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.expenseDate);
     const amount = roundAt(input.amount, resolved.currency.precision);
@@ -89,8 +99,8 @@ export async function createExpenseForUser(
     });
     if (resolved.rateId) await currencyRepository.recordRateUsage(tx, ctx.organisationId, resolved.rateId, 'expense', expense.id);
     await postApprovedExpense(tx, ctx, expense);
+    if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, {status:201,body:expense});
     return expense;
-  });
 }
 
 export async function updateExpenseForUser(
@@ -106,6 +116,7 @@ export async function updateExpenseForUser(
     await assertRefs(tx, ctx.organisationId, input);
     const existing = await repo.getExpense(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Expense not found' });
+    if (decimal(input.taxAmount ?? existing.taxAmount).compare(input.amount ?? existing.amount) > 0) throw apiError(422, 'INVALID_RECEIPT_AMOUNTS', 'Receipt GST cannot exceed the total amount. Review both amounts before saving.');
     if (existing.status === 'approved' && Object.keys(input).some((key) => key !== 'notes')) {
       throw new HTTPException(409, { message: 'Approved expenses are immutable; reject and record a corrected expense' });
     }

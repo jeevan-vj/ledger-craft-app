@@ -1,0 +1,347 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/expenses/ExpenseCreateScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/expenses/ExpenseCreateScreen.test.tsx
+  mobile expense accounting
+    ✓ warns about a matching saved receipt and requires explicit duplicate override (316 ms)
+    ✕ reviews scanned gross and GST without adding GST a second time and retains exact editable source amounts (112 ms)
+    ✓ saves the displayed gross payment and input GST rather than treating the net cost as cash paid (121 ms)
+
+  ● mobile expense accounting › reviews scanned gross and GST without adding GST a second time and retains exact editable source amounts
+
+    Unable to find an element with text: GST from reviewed receipt
+
+    [36m<View>[39m
+      [36m<RCTScrollView>[39m
+        [36m<View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAmount[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0m$[0m
+              [36m</Text>[39m
+              [36m<TextInput[39m
+                [33maccessibilityLabel[39m=[32m"Expense amount"[39m
+                [33mplaceholder[39m=[32m"0.00"[39m
+                [33mvalue[39m=[32m"100.00"[39m
+              [36m/>[39m
+              [36m<Text>[39m
+                [0mNZD[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDescription[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Description"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"What was this for"[39m
+                  [33mvalue[39m=[32m"Receipt supplies"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mDate[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Date"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"YYYY-MM-DD"[39m
+                  [33mvalue[39m=[32m"2026-10-01"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mVendor[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Vendor"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Who you paid"[39m
+                  [33mvalue[39m=[32m"Supplier"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mCategorization[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCategory [0m
+                [36m<Text>[39m
+                  [0m*[0m
+                [36m</Text>[39m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mTap to select category[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPaid from account[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mChoose payment account[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mPayment & Tax[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mPayment Method[0m
+              [36m</Text>[39m
+              [36m<View[39m
+                [33maccessible[39m=[32m{true}[39m
+              [36m>[39m
+                [36m<Text>[39m
+                  [0mCard[0m
+                [36m</Text>[39m
+                [36m<Feather />[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mInclude Tax (GST)[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m15[0m
+                  [0m%[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{true}[39m
+              [36m/>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mSubtotal:[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m100.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mTax ([0m
+                  [0m15[0m
+                  [0m%):[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m15.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mTotal:[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0m$[0m
+                  [0m115.00[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mBillable[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<Text>[39m
+                  [0mMark as Billable[0m
+                [36m</Text>[39m
+                [36m<Text>[39m
+                  [0mCharge to a customer[0m
+                [36m</Text>[39m
+              [36m</View>[39m
+              [36m<RCTSwitch[39m
+                [33maccessibilityRole[39m=[32m"switch"[39m
+                [33mvalue[39m=[32m{false}[39m
+              [36m/>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReview receipt amounts[0m
+            [36m</Text>[39m
+            [36m<Text>[39m
+              [0mThese are the source total including GST and actual GST. Check and edit both before saving.[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt total including GST[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Reviewed receipt total"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mvalue[39m=[32m"115.00"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mReceipt GST[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Reviewed receipt GST"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mvalue[39m=[32m"15.00"[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mReceipt[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<View>[39m
+                [36m<View[39m
+                  [33maccessibilityRole[39m=[32m"button"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "busy": false,
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33maccessible[39m=[32m{true}[39m
+                  [33mnativeID[39m=[32m"5"[39m
+                [36m>[39m
+                  [36m<View>[39m
+                    [36m<Text>[39m
+                      [0mOpen attached receipt[0m
+                    [36m</Text>[39m
+                  [36m</View>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+              [36m<View>[39m
+                [36m<View>[39m
+                  [36m<Feather />[39m
+                  [36m<Text>[39m
+                    [0mReceipt attached[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+                [36m<View[39m
+                  [33maccessible[39m=[32m{true}[39m
+                [36m>[39m
+                  [36m<Text>[39m
+                    [0mRemove[0m
+                  [36m</Text>[39m
+                [36m</View>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View>[39m
+            [36m<Text>[39m
+              [0mAdditional Information[0m
+            [36m</Text>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mNotes[0m
+              [36m</Text>[39m
+              [36m<View>[39m
+                [36m<TextInput[39m
+                  [33maccessibilityLabel[39m=[32m"Notes"[39m
+                  [33maccessibilityState[39m=[32m{
+                    {
+                      "disabled": false,
+                    }
+                  }[39m
+                  [33mplaceholder[39m=[32m"Additional notes (optional)"[39m
+                  [33mvalue[39m=[32m""[39m
+                [36m/>[39m
+              [36m</View>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+          [36m<View[39m
+            [33maccessibilityRole[39m=[32m"button"[39m
+            [33maccessibilityState[39m=[32m{
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }[39m
+            [33maccessible[39m=[32m{true}[39m
+            [33mnativeID[39m=[32m"4"[39m
+          [36m>[39m
+            [36m<View>[39m
+              [36m<Text>[39m
+                [0mCreate Expense[0m
+              [36m</Text>[39m
+            [36m</View>[39m
+          [36m</View>[39m
+        [36m</View>[39m
+      [36m</RCTScrollView>[39m
+    [36m</View>[39m
+
+      31 |     expect(screen.getByLabelText('Reviewed receipt total').props.value).toBe('115.00');
+      32 |     expect(screen.getByLabelText('Reviewed receipt GST').props.value).toBe('15.00');
+    > 33 |     expect(screen.getByText('GST from reviewed receipt')).toBeTruthy();
+         |                   ^
+      34 |     fireEvent.press(screen.getByText('Create Expense'));
+      35 |     await waitFor(() => expect(expenseService.createExpense).toHaveBeenCalledWith(expect.objectContaining({amount:115,taxAmount:15,amountText:'115.00',taxAmountText:'15.00',receiptUrl:'/api/objects?key=receipt'})));
+      36 |   });
+
+      at Object.getByText (src/screens/expenses/ExpenseCreateScreen.test.tsx:33:19)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 2 passed, 3 total
+Snapshots:   0 total
+Time:        2.681 s, estimated 3 s
+Ran all test suites matching src/screens/expenses/ExpenseCreateScreen.test.tsx.
