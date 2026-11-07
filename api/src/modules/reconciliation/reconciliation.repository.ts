@@ -13,6 +13,8 @@ import {
 } from '@ledgercraft/contracts';
 import { and, desc, eq, getTableColumns, gte, lte } from 'drizzle-orm';
 import type { Database } from '../../db/client';
+import { journalEntries } from '../../db/schema/accounts';
+import { creditNoteRefunds } from '../../db/schema/credit-notes';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
 import { payments } from '../../db/schema/payments';
@@ -172,9 +174,12 @@ export async function completeSession(
   id: string,
   input: { bookClosingBalance: string; difference: string },
 ): Promise<ReconciliationSessionDto | undefined> {
+  const matches = await listMatches(tx, organisationId, id);
+  const confirmed = matches.filter(row => row.status === 'confirmed');
   const [row] = await tx
     .update(reconciliationSessions)
     .set({
+      matchedCount: confirmed.length,
       status: 'completed',
       bookClosingBalance: input.bookClosingBalance,
       difference: input.difference,
@@ -222,6 +227,7 @@ export async function insertMatch(
       invoiceId: input.bookItemType === 'invoice' ? input.bookItemId : null,
       billId: input.bookItemType === 'bill' ? input.bookItemId : null,
       paymentId: input.bookItemType === 'payment' ? input.bookItemId : null,
+      journalEntryId: input.bookItemType === 'credit_refund' ? input.bookItemId : null,
       expenseId: input.bookItemType === 'expense' ? input.bookItemId : null,
       matchType: input.matchType ?? 'manual',
       confidenceScore: (percent / 100).toFixed(4),
@@ -316,7 +322,9 @@ export async function listBookEntries(
   const supplierPayments = await tx.select({ payment: billPayments, number: bills.billNumber }).from(billPayments)
     .innerJoin(bills, and(eq(bills.organisationId, organisationId), eq(bills.id, billPayments.billId)))
     .where(and(eq(billPayments.organisationId, organisationId), eq(billPayments.status, 'completed'), gte(billPayments.paymentDate, from), lte(billPayments.paymentDate, to)));
+  const refunds = await refundBookEntries(tx, organisationId, from, to);
   const entries: BookEntryDto[] = [
+    ...refunds.map(row => bookEntrySchema.parse({ id: row.id, type: 'credit_refund', date: row.date, amount: roundMoney(row.amount), description: 'Customer credit refund', reference: row.reference })),
     ...supplierPayments.map(({ payment, number }) => bookEntrySchema.parse({
       id: payment.id, type: 'bill_payment', date: payment.paymentDate, description: `Supplier payment - ${number}`,
       amount: roundMoney(payment.baseAmount ?? payment.amount), reference: payment.referenceNumber ?? number,
@@ -367,4 +375,13 @@ export async function supplierPaymentAmount(tx: Database, organisationId: string
   const [row] = await tx.select({ amount: billPayments.amount, baseAmount: billPayments.baseAmount, status: billPayments.status }).from(billPayments)
     .where(and(eq(billPayments.organisationId, organisationId), eq(billPayments.id, id), eq(billPayments.status, 'completed')));
   return row ? row.baseAmount ?? row.amount : undefined;
+}
+
+async function refundBookEntries(tx: Database, organisationId: string, from: string, to: string, id?: string) {
+  return tx.select({ id: journalEntries.id, amount: creditNoteRefunds.baseAmount, date: creditNoteRefunds.refundDate, reference: creditNoteRefunds.reference, bankAccountId: creditNoteRefunds.bankAccountId }).from(journalEntries)
+    .innerJoin(creditNoteRefunds, and(eq(creditNoteRefunds.organisationId, organisationId), eq(creditNoteRefunds.id, journalEntries.referenceId)))
+    .where(and(eq(journalEntries.organisationId, organisationId), eq(journalEntries.referenceType, 'credit_note_refund'), eq(journalEntries.status, 'posted'), eq(creditNoteRefunds.status, 'completed'), gte(creditNoteRefunds.refundDate, from), lte(creditNoteRefunds.refundDate, to), id ? eq(journalEntries.id, id) : undefined));
+}
+export async function creditRefundBookEntry(tx: Database, organisationId: string, id: string) {
+  return (await refundBookEntries(tx, organisationId, '0000-01-01', '9999-12-31', id))[0];
 }

@@ -28,9 +28,14 @@ import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, typ
 async function bookAmount(
   tx: Parameters<typeof invoicesRepo.getInvoice>[0],
   organisationId: string,
-  type: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
+  type: 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense' | 'credit_refund',
   id: string,
 ): Promise<string> {
+  if (type === 'credit_refund') {
+    const refund = await repo.creditRefundBookEntry(tx, organisationId, id);
+    if (!refund) throw new HTTPException(400, { message: 'Completed credit-note refund journal not found' });
+    return refund.amount;
+  }
   if (type === 'bill_payment') {
     const amount = await repo.supplierPaymentAmount(tx, organisationId, id);
     if (amount === undefined) throw new HTTPException(400, { message: 'Completed supplier payment not found' });

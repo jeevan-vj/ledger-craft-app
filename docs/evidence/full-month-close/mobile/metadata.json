@@ -1,0 +1,91 @@
+{
+  "platform": "Actual Expo web / Chromium / 390x844 / dark / Pacific/Auckland; local Hono/SQLite",
+  "nativeDeviceChecks": "Pending installed iOS/Android PDF generation/share sheet, date picker/keyboard, back gestures and background/offline QA",
+  "baseCommit": "77c560b3a192ea6630331095c8c37204328a8b99",
+  "branch": "codex/full-month-close-acceptance",
+  "workingTreeSourceHashes": {
+    "mobile/src/components/banking/ExistingSettlementPanel.test.tsx": "a9a5861b9db0f89d088451c8cf58354c10cb8c4c04a81e30dc2bf68ec8401773",
+    "mobile/src/components/banking/ExistingSettlementPanel.tsx": "564d8079cc25a8973a4cf343f41c57b087f91fba975515bb9b57ffb99bcbcc8b",
+    "mobile/src/components/reports/FinancialReportWorkspace.tsx": "5f55b523222b9328b09190d90b80be736f89a76a90c7e3fa961ba2de3e1b2f85",
+    "mobile/src/components/ui/SmartDatePicker.test.tsx": "017daffd6604c27755a33a588df473080e8e7d6566fcc09dba1e7d65dbc032a0",
+    "mobile/src/components/ui/SmartDatePicker.tsx": "bf2496f1b67394f242b4dc7b10c0b407ef505f9333a6634d70db5bc07dcb6e08",
+    "mobile/src/features/reports/model/financialReportHtml.ts": "efb16fe29a317760b7aff4e62081b6648a22455df9dfc0a5851d28e432acf4e3",
+    "mobile/src/features/reports/model/financialReportShare.test.ts": "217532749613951ae99c047fe96c73795b482d5a113d90208bcb3a5a1b87fd2f",
+    "mobile/src/features/reports/model/financialReportShare.ts": "bf00376d923a09e1655be6f81d49be8f3202b76afae2a534b2060fe54d191f57",
+    "mobile/src/features/reports/model/financialReportShare.web.test.ts": "f7a02f87325aca9fa52ee17c22c11635727f25f6ea3ec3ba81deb8ddf68ef426",
+    "mobile/src/features/reports/model/financialReportShare.web.ts": "0d2df355ca0959c897834782d3c6db657904be5cc3e53121ff33e04b0b61ba4d",
+    "mobile/src/screens/banking/BankStatementImportScreen.test.tsx": "8acde106724d5cada62fda371248a550fa17a356e0882e320c86307e844202b3",
+    "mobile/src/screens/banking/BankStatementImportScreen.tsx": "115e8be8a246c25c24f76092e0b21d258c3e38185bc7b85f0c5a9c5004525364",
+    "mobile/src/screens/expenses/ExpenseEditScreen.test.tsx": "89724d57c13a6599a4ddb9dfa6c41ffbf43f24f63100c7887fc9b5330763223d",
+    "mobile/src/screens/expenses/ExpenseEditScreen.tsx": "bfcc321c6aed2dbed9207272ea0bf38e4013d070a3df3bbbac2d59723cab79b6",
+    "mobile/src/screens/main/homeTaskStorage.test.ts": "425351b2cd402645a14920933646191232ba2799fcee6fd3b9c307f817c8a520",
+    "mobile/src/screens/main/homeTaskStorage.ts": "5ae462b7fc1af530496810dd96605c3dfbc73cfa0004fd3e085faebbbb5c1cc9",
+    "mobile/src/screens/reports/ReportsScreen.test.tsx": "a4d213df06d034e629680e9cd78354b6da68dbc1d1ee5c604ad4c188b19d9740"
+  },
+  "driverSha256": "eeab4c866d919dc1c2b40f2c31d88262ad6f58365ee2bfb08e7e4d16d63eded5",
+  "expectedSha256": "c581c7343a971e4844971a5885d601a4c70308fc66ed423e53f9e388a05b3739",
+  "phases": [
+    "audit",
+    "bank",
+    "bill",
+    "credits",
+    "expense",
+    "exports",
+    "gst-evidence",
+    "invoices",
+    "reports",
+    "setup",
+    "signup"
+  ],
+  "unknownConsoleErrors": 0,
+  "pageErrors": 0,
+  "expectedOnboardingDiagnostics": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": {
+        "url": "http://127.0.0.1:3001/api/me",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ],
+  "warnings": "React Native Web shadow/pointerEvents deprecation warnings are retained in each phase JSON.",
+  "exportFiles": 13,
+  "companyProfileId": "5d0c28e0-af63-4d6d-8040-cdfa630be799",
+  "companyName": "Kauri Mobile Services Limited",
+  "bankAccountId": "4212858c-600d-401e-af64-56a768415faa",
+  "verification": {
+    "node": "20.20.2",
+    "npmCi": {
+      "exitCode": 0,
+      "packages": 2182
+    },
+    "lint": {
+      "exitCode": 0,
+      "errors": 0,
+      "warnings": 74
+    },
+    "typecheck": {
+      "exitCode": 0
+    },
+    "jest": {
+      "exitCode": 0,
+      "suites": 146,
+      "tests": 658,
+      "warnings": [
+        "Worker process teardown warning"
+      ]
+    },
+    "iosExport": {
+      "exitCode": 0,
+      "path": "/tmp/expo-ios-monthclose-verified"
+    }
+  },
+  "finalOperationalPhases": 10,
+  "supplementalReadOnlyPhases": [
+    "gst-evidence"
+  ],
+  "expoRestartAfterNpmCi": true,
+  "browserBundle": "http://127.0.0.1:8081/index.ts.bundle?platform=web (Metro development bundle; working-tree source hashes recorded, no production/native deployment)",
+  "driverWhitespaceCleanup": "Trailing space removed after verification; production source hashes and driver behaviour are unchanged."
+}

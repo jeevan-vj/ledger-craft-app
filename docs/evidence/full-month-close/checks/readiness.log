@@ -1,0 +1,95 @@
+TAP version 13
+# Subtest: .github/scripts/verify-api-readiness.test.mjs
+ok 1 - .github/scripts/verify-api-readiness.test.mjs
+  ---
+  duration_ms: 187.93223
+  type: 'test'
+  ...
+# Subtest: .github/scripts/verify-web-quality-gates.test.mjs
+not ok 2 - .github/scripts/verify-web-quality-gates.test.mjs
+  ---
+  duration_ms: 261.067482
+  type: 'test'
+  location: '/workspace/ledger-craft-app/.github/scripts/verify-web-quality-gates.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: scripts/upload-api-sourcemaps.test.mjs
+ok 3 - scripts/upload-api-sourcemaps.test.mjs
+  ---
+  duration_ms: 198.038578
+  type: 'test'
+  ...
+# Subtest: scripts/verify-akaunting-core.test.mjs
+ok 4 - scripts/verify-akaunting-core.test.mjs
+  ---
+  duration_ms: 122.646345
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 336.575221
+TAP version 13
+# Subtest: scripts/upload-web-sourcemaps.test.mjs
+ok 1 - scripts/upload-web-sourcemaps.test.mjs
+  ---
+  duration_ms: 252.772606
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 278.615014
+Akaunting core parity report (report)
+Baseline: akaunting/akaunting@edde6b54f27ee0635b9a5dbde52117d441a18195 (reviewed 2026-09-29)
+Core: 6/25 available; 17 partial; 2 missing
+
+Required core blockers:
+- business-dashboard [partial] (AKP-10): Saved layouts and saved reports exist. Summary, receivables, payables, cash, and tax widgets use posted-ledger reports; recent activity is operational. There is no expenses-by-category widget, and drill-down rows link to a document or the accounting page rather than the journal lines behind every total.
+- products-and-services [partial] (AKP-07): Media and per-item multiple-tax behavior remain open.
+- customers [partial] (AKP-08): Statements, immutable sharing, PDF and automatic reminders exist on web and Expo. Contact people, separate billing/shipping addresses, bulk customer import/export and authenticated portal remain open.
+- sales-invoices [partial] (AKP-07): Cancel, restore, archive, duplicate, history, line discounts, multiple line taxes, attachments, and CSV import/export are implemented. Send and remind return 503 EMAIL_UNAVAILABLE unless a mail provider is configured. Recurrence is the recurring-activity capability.
+- vendors-and-bills [partial] (AKP-01): The API covers vendor contacts and defaults, attachments, history, cancel/restore, split payments, and vendor CSV. Web page tests only cover the import-link permission. Recurring bills are the recurring-activity capability.
+- payment-and-bank-accounts [partial] (AKP-02): Saved default payment accounts, exact movement summaries, statement review/resume and mobile CSV/FX workflows exist. Bank-account bulk state changes and broader performance acceptance remain open.
+- transfers [partial] (AKP-02): Same-currency transfers and reviewed-rate cross-currency transfers post equal and opposite reconciled legs. Web BankTransferDialog and mobile BankTransferFormScreen do not send exchangeRateId, so those screens cannot complete a cross-currency transfer. Transfers have no edit or void lifecycle.
+- financial-reports [partial] (AKP-05): Server month/quarter columns, configurable NZ presets, exact cash-source recognition, CSV/PDF and Expo reporting exist. Category dimensions are unsupported; reports remain in company NZD base currency. Installed-device acceptance remains open.
+- tax [partial] (AKP-11): GST configuration, returns, and IRD filing exist, and invoice lines can carry multiple taxes. A reusable tax-rate catalogue and compound or withholding tax types are not implemented.
+- currencies-and-localization [partial] (AKP-06): The organisation catalogue, immutable dated rates, locale, timezone, and financial-year settings exist, and invoices, bills, expenses, and explicit-rate transfers snapshot base amounts. Realized and unrealized exchange-difference journals are not posted. Financial reports stay NZD and do not convert foreign amounts. The settings screens have no dedicated automated test.
+- company-settings [partial] (AKP-11): Business identity, invoice defaults, and template appearance exist. Currency, locale, and financial year are the currency-settings API. Email templates, reminder schedules, and a notification centre are not implemented.
+- companies-and-organisations [partial] (AKP-03): Create, rename, switch, and ledger isolation are implemented and tested. Archive is implemented on POST /api/organisations/:id/archive and in the web and mobile company screens, but no automated test calls it. Restore and ownership transfer are not implemented.
+- users-and-permissions [partial] (AKP-03): Fixed owner, admin, accountant, member, and read-only roles, hashed invitations, and server permission checks are implemented. Custom roles are not implemented, and invitations are share links rather than outbound email.
+- customer-portal [missing] (AKP-08): Customers cannot authenticate, manage profiles, or list invoices, statements, payments, and receipts.
+- attachments-and-uploads [partial] (AKP-07): Invoices, bills, bank transactions and reviewed expense receipts have scoped attachments. Receipt upload/read/delete has real role/tenant tests and web/Expo browser proof. Item/customer attachment parity and installed-device acceptance remain open.
+- import-export [partial] (AKP-09): Items, invoices, vendors, bill export, and bank transactions have preview or import and export paths. Customers, accounts, journals, categories, and taxes do not.
+- search-bulk-actions-notifications [partial] (AKP-12): Items support server bulk activate, deactivate, and delete. There is no organisation-scoped cross-domain search and no persistent notification centre.
+- external-api-and-api-keys [missing] (AKP-13): No API-key lifecycle, scoped external API, OpenAPI publication, or webhook delivery exists.
+- mobile-coverage [partial] (AKP-10): Expo includes full reporting, statements/reminders, mapped CSV/reconciliation, bank defaults/FX and recurring templates. Authenticated customer portal, installed-device/native release acceptance and broader parity remain open.
+
+Optional extensions (non-blocking):
+- AKX-00 [planned]: Catalogue decisions are planned but do not block core parity.
+- AKX-01 [deferred]: Requires an explicit product decision.
+- AKX-02 [available]: Implemented as the shared quote and estimate slice; it remains outside the core gate.
+- AKX-03 [deferred]: Requires an explicit product decision.
+- AKX-04 [deferred]: Requires a provider and architecture exception decision.
+- AKX-05 [deferred]: Requires an explicit product decision.
+- AKX-06 [deferred]: Requires an explicit product decision.
+- AKX-07 [deferred]: Requires an explicit product decision.
+- AKX-08 [deferred]: Requires jurisdiction-specific compliance approval.
+- AKX-09 [deferred]: Requires an explicit product decision.
+- AKX-10 [deferred]: Requires named integration approvals and certification.
+
+Result: PASS

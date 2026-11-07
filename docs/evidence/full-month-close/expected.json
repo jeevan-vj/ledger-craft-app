@@ -1,0 +1,438 @@
+{
+  "frozenAt": "2026-11-07",
+  "method": "Independent Python Decimal, prescribed transactions only; no production totals helpers, API responses or browser lookups used.",
+  "period": {
+    "from": "2026-10-01",
+    "to": "2026-10-31",
+    "asOf": "2026-10-31",
+    "currency": "NZD",
+    "registeredFrom": "2026-10-01",
+    "gstBasis": "invoice",
+    "gstFrequency": "monthly"
+  },
+  "economicJournals": [
+    {
+      "date": "2026-09-30",
+      "reference": "Opening capital",
+      "debits": "10000.00",
+      "credits": "10000.00",
+      "lines": [
+        {
+          "accountRole": "bank",
+          "debit": "10000.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-02",
+      "reference": "Invoice A",
+      "debits": "2300.00",
+      "credits": "2300.00",
+      "lines": [
+        {
+          "accountRole": "receivables",
+          "debit": "2300.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "2000.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "300.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-03",
+      "reference": "Invoice B",
+      "debits": "1150.00",
+      "credits": "1150.00",
+      "lines": [
+        {
+          "accountRole": "receivables",
+          "debit": "1150.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "1000.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "150.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-04",
+      "reference": "Supplier bill",
+      "debits": "1150.00",
+      "credits": "1150.00",
+      "lines": [
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1000.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "150.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "1150.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-05",
+      "reference": "Receipt A",
+      "debits": "1150.00",
+      "credits": "1150.00",
+      "lines": [
+        {
+          "accountRole": "bank",
+          "debit": "1150.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "0.00",
+          "credit": "1150.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-06",
+      "reference": "Receipt B",
+      "debits": "1150.00",
+      "credits": "1150.00",
+      "lines": [
+        {
+          "accountRole": "bank",
+          "debit": "1150.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "0.00",
+          "credit": "1150.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-08",
+      "reference": "Supplier payment",
+      "debits": "575.00",
+      "credits": "575.00",
+      "lines": [
+        {
+          "accountRole": "payables",
+          "debit": "575.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "bank",
+          "debit": "0.00",
+          "credit": "575.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-09",
+      "reference": "Paid expense",
+      "debits": "230.00",
+      "credits": "230.00",
+      "lines": [
+        {
+          "accountRole": "operatingCosts",
+          "debit": "200.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "30.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "bank",
+          "debit": "0.00",
+          "credit": "230.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-10",
+      "reference": "Credit A against unpaid balance",
+      "debits": "230.00",
+      "credits": "230.00",
+      "lines": [
+        {
+          "accountRole": "sales",
+          "debit": "200.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "30.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "0.00",
+          "credit": "230.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-11",
+      "reference": "Credit B against paid invoice",
+      "debits": "115.00",
+      "credits": "115.00",
+      "lines": [
+        {
+          "accountRole": "sales",
+          "debit": "100.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "15.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "115.00"
+        }
+      ]
+    },
+    {
+      "date": "2026-10-12",
+      "reference": "Refund credit B",
+      "debits": "115.00",
+      "credits": "115.00",
+      "lines": [
+        {
+          "accountRole": "customerCredit",
+          "debit": "115.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "bank",
+          "debit": "0.00",
+          "credit": "115.00"
+        }
+      ]
+    }
+  ],
+  "trialBalance": {
+    "rows": [
+      {
+        "accountRole": "bank",
+        "debit": "11380.00",
+        "credit": "0.00"
+      },
+      {
+        "accountRole": "capital",
+        "debit": "0.00",
+        "credit": "10000.00"
+      },
+      {
+        "accountRole": "receivables",
+        "debit": "920.00",
+        "credit": "0.00"
+      },
+      {
+        "accountRole": "sales",
+        "debit": "0.00",
+        "credit": "2700.00"
+      },
+      {
+        "accountRole": "outputGst",
+        "debit": "0.00",
+        "credit": "405.00"
+      },
+      {
+        "accountRole": "operatingCosts",
+        "debit": "1200.00",
+        "credit": "0.00"
+      },
+      {
+        "accountRole": "inputGst",
+        "debit": "180.00",
+        "credit": "0.00"
+      },
+      {
+        "accountRole": "payables",
+        "debit": "0.00",
+        "credit": "575.00"
+      },
+      {
+        "accountRole": "customerCredit",
+        "debit": "0.00",
+        "credit": "0.00"
+      }
+    ],
+    "totalDebits": "13680.00",
+    "totalCredits": "13680.00",
+    "balanced": true,
+    "chartPolicy": "Separate GST input asset and output liability, operating costs grouped. Map account roles using static chart setup before reading reports.",
+    "oneGstControlAlternative": {
+      "netGstCredit": "225.00",
+      "totalDebits": "13500.00",
+      "totalCredits": "13500.00"
+    }
+  },
+  "profitLoss": {
+    "accrual": {
+      "revenue": "2700.00",
+      "expenses": "1200.00",
+      "netIncome": "1500.00"
+    },
+    "cash": {
+      "revenue": "1900.00",
+      "expenses": "700.00",
+      "netIncome": "1200.00"
+    }
+  },
+  "balanceSheet": {
+    "separateGstControls": {
+      "cash": "11380.00",
+      "receivables": "920.00",
+      "inputGstAsset": "180.00",
+      "assets": "12480.00",
+      "payables": "575.00",
+      "outputGstLiability": "405.00",
+      "liabilities": "980.00",
+      "capital": "10000.00",
+      "retainedEarnings": "1500.00",
+      "equity": "11500.00",
+      "balanced": true
+    },
+    "netGstPresentation": {
+      "assets": "12300.00",
+      "liabilities": "800.00",
+      "equity": "11500.00",
+      "netGstLiability": "225.00",
+      "balanced": true
+    }
+  },
+  "cashFlow": {
+    "openingCash": "10000.00",
+    "financingInflow": "0.00",
+    "customerReceipts": "2300.00",
+    "customerRefunds": "115.00",
+    "supplierPayments": "575.00",
+    "paidExpenses": "230.00",
+    "operatingNet": "1380.00",
+    "netCashFlow": "1380.00",
+    "closingCash": "11380.00"
+  },
+  "receivablesAging": {
+    "total": "920.00",
+    "current": "920.00",
+    "days1To30": "0.00",
+    "days31To60": "0.00",
+    "days61To90": "0.00",
+    "over90": "0.00",
+    "unallocatedControl": "0.00",
+    "invoiceA": "920.00",
+    "invoiceB": "0.00"
+  },
+  "payablesAging": {
+    "total": "575.00",
+    "current": "575.00",
+    "days1To30": "0.00",
+    "days31To60": "0.00",
+    "days61To90": "0.00",
+    "over90": "0.00",
+    "unallocatedControl": "0.00"
+  },
+  "gst": {
+    "invoice": {
+      "salesGross": "3105.00",
+      "purchaseGross": "1380.00",
+      "output": "405.00",
+      "input": "180.00",
+      "net": "225.00"
+    },
+    "payments": {
+      "salesGross": "2185.00",
+      "purchaseGross": "805.00",
+      "output": "285.00",
+      "input": "105.00",
+      "net": "180.00"
+    },
+    "hybrid": {
+      "salesGross": "3105.00",
+      "purchaseGross": "805.00",
+      "output": "405.00",
+      "input": "105.00",
+      "net": "300.00"
+    }
+  },
+  "bankReconciliation": {
+    "opening": "10000.00",
+    "movements": [
+      {
+        "date": "2026-10-05",
+        "amount": "1150.00",
+        "direction": "credit",
+        "source": "Receipt A"
+      },
+      {
+        "date": "2026-10-06",
+        "amount": "1150.00",
+        "direction": "credit",
+        "source": "Receipt B"
+      },
+      {
+        "date": "2026-10-08",
+        "amount": "575.00",
+        "direction": "debit",
+        "source": "Supplier payment"
+      },
+      {
+        "date": "2026-10-09",
+        "amount": "230.00",
+        "direction": "debit",
+        "source": "Paid expense"
+      },
+      {
+        "date": "2026-10-12",
+        "amount": "115.00",
+        "direction": "debit",
+        "source": "Refund credit B"
+      }
+    ],
+    "netMovement": "1380.00",
+    "closing": "11380.00",
+    "unmatchedCount": 0,
+    "difference": "0.00",
+    "condition": "All five statement movements match existing economic postings. No artificial adjustment or duplicate income/expense may force a zero."
+  },
+  "controls": {
+    "customerCreditClosing": "0.00",
+    "baseEconomicJournalCount": 11,
+    "baseEconomicJournalDebits": "18165.00",
+    "baseEconomicJournalCredits": "18165.00",
+    "reconciliation": "Technical import/classification reversal entries may exist but must have no net effect on frozen report or source amounts. Do not require exactly 11 total rows after reconciliation."
+  },
+  "version": "working-paper-v2",
+  "openingPolicy": "Opening balances as at 2026-09-30, brought forward to 1 October. This is not an October capital contribution."
+}

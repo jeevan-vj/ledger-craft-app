@@ -12,6 +12,7 @@ import { decimal } from '../invoices/money';
 import { historicalAgingDocuments } from './reports-aging.repository';
 import {recogniseCashRows} from './cash-recognition';
 import {cashRecognitionLinks} from './cash-recognition.repository';
+import { bankReconciliationActions } from '../../db/schema/reconciliation-actions';
 import { exchangeRates } from '../../db/schema/currency';
 
 export type LedgerRow = {
@@ -165,4 +166,12 @@ export async function cashLedgerHistory(tx:Database,organisationId:string,query:
 export async function ledgerRows(tx:Database,organisationId:string,query:FinancialReportQuery,before?:string):Promise<LedgerRow[]>{
  if(query.basis!=='cash')return rawLedgerRows(tx,organisationId,query,before);
  const history=await cashLedgerHistory(tx,organisationId,query);return history.rows.filter(row=>before?row.date<before:row.date>=query.from&&row.date<=query.to);
+}
+
+/** Persistent source identities also cover reversed actions: a later undo must
+ * not rewrite the grouping of a historical report. Dates stay on ledger rows. */
+export async function cashFlowGroups(tx: Database, organisationId: string) {
+  const actions = await tx.select({ id: bankReconciliationActions.id, journalEntryId: bankReconciliationActions.journalEntryId, transactionId: bankReconciliationActions.transactionId })
+    .from(bankReconciliationActions).where(eq(bankReconciliationActions.organisationId, organisationId));
+  return Object.fromEntries(actions.flatMap(action => [[action.id, action.transactionId], [action.journalEntryId, action.transactionId]]));
 }

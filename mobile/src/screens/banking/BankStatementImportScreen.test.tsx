@@ -1,4 +1,5 @@
 import React from 'react';
+import {ScrollView} from 'react-native';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import * as DocumentPicker from 'expo-document-picker';
@@ -22,3 +23,5 @@ describe('statement mapping workflow', () => {
     expect(screen.queryByText('Import 1 transaction')).toBeNull();
   });
 });
+
+it('does not put an empty error string directly inside the scroll view',()=>{const ui=wrap();const children=ui.UNSAFE_getByType(ScrollView).props.children;expect(children.filter((child:unknown)=>typeof child==='string')).toEqual([]);});

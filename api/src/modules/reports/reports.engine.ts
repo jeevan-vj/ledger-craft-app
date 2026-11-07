@@ -61,7 +61,7 @@ function summary(rows: DocumentRow[]) {
   return { subtotal: money(totals.subtotal), tax: money(totals.tax), total: money(totals.total), paid: money(totals.paid), outstanding: money(totals.outstanding) };
 }
 
-export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; foreignCurrencyGstDocuments?: number; cashWarnings?:string[]; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
+export function buildFinancialReport(input: { query: FinancialReportQuery; periodRows: LedgerRow[]; openingRows: LedgerRow[]; taxRows?: LedgerRow[]; foreignCurrencyGstDocuments?: number; cashWarnings?:string[]; cashFlowGroups?: Record<string, string>; receivables: DocumentRow[]; payables: DocumentRow[]; comparison?: { rows: LedgerRow[]; from: string; to: string } }): FinancialReportResponse {
   const { query, periodRows, openingRows } = input;
   const period = aggregate(periodRows); const opening = aggregate(openingRows);
   const rows = accountRows(periodRows);
@@ -89,7 +89,23 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
     ? sum.add(row.balance) : row.accountClass === 'expense' ? sum.sub(row.balance) : sum, zero());
   const equity = ledgerEquity.add(cumulativeIncome);
   const cashRows = periodRows.filter((row) => ['bank', 'cash'].includes(row.accountType)); const openingCashRows = openingRows.filter((row) => ['bank', 'cash'].includes(row.accountType));
-  const inflows = cashRows.reduce((sum, row) => sum.add(row.debit), zero()); const outflows = cashRows.reduce((sum, row) => sum.add(row.credit), zero()); const openingCash = openingCashRows.reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero());
+  // Imported statement cash and its matching reclassification describe one
+  // movement. Net only these linked technical legs; keep source receipts and
+  // refunds gross, and retain every original line in the trial balance/ledger.
+  const technicalCash = new Map<string, ReturnType<typeof decimal>>();
+  let inflows = zero(); let outflows = zero();
+  for (const row of cashRows) {
+    const group = row.referenceType === 'bank_transaction' ? row.referenceId
+      : ['bank_reconciliation_accept', 'bank_reconciliation_undo'].includes(row.referenceType ?? '')
+        ? input.cashFlowGroups?.[row.referenceId ?? ''] : undefined;
+    if (group) technicalCash.set(group, (technicalCash.get(group) ?? zero()).add(row.debit).sub(row.credit));
+    else { inflows = inflows.add(row.debit); outflows = outflows.add(row.credit); }
+  }
+  for (const amount of technicalCash.values()) {
+    if (amount.compare(0) > 0) inflows = inflows.add(amount);
+    else outflows = outflows.sub(amount);
+  }
+  const openingCash = openingCashRows.reduce((sum, row) => sum.add(decimal(row.debit).sub(row.credit)), zero());
   const comparisonRows = input.comparison?.rows ?? []; const comparisonAccounts = accountRows(comparisonRows); const compRevenue = comparisonAccounts.filter((row) => row.accountClass === 'revenue').reduce((sum, row) => sum.add(row.balance), zero()); const compExpenses = comparisonAccounts.filter((row) => row.accountClass === 'expense').reduce((sum, row) => sum.add(row.balance), zero());
   const sales = summary(input.receivables); const purchases = summary(input.payables);
   const taxAccountRows = accountRows(input.taxRows ?? periodRows);
@@ -112,13 +128,13 @@ export function buildFinancialReport(input: { query: FinancialReportQuery; perio
   const columns = columnMode ? { mode: columnMode, periods: reportColumnPeriods(query.from, query.to, columnMode).map(period => {
     const report = buildFinancialReport({ query: { ...query, from: period.from, to: period.to, columns: undefined, comparisonFrom: undefined, comparisonTo: undefined },
       periodRows: periodRows.filter(row => row.date >= period.from && row.date <= period.to),
-      openingRows: [...openingRows, ...periodRows.filter(row => row.date < period.from)], receivables: [], payables: [] });
+      openingRows: [...openingRows, ...periodRows.filter(row => row.date < period.from)], receivables: [], payables: [], cashFlowGroups: input.cashFlowGroups });
     return { ...period, profitLoss: report.profitLoss, cashFlow: report.cashFlow };
   }) } : undefined;
   return financialReportResponseSchema.parse({
     ...(columns ? { columns } : {}),
     meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString(), ...(input.cashWarnings?.length?{warnings:input.cashWarnings}:{}), ...(query.basis==='cash'?{cashRecognition:'settled-source-components-v1'}:{}) },
-    trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), balanced: totalDebits.compare(totalCredits) === 0 },
+    trialBalance: { rows: trialRows, totalDebits: money(totalDebits), totalCredits: money(totalCredits), closingDebits: money(trialRows.reduce((sum, row) => sum.add(row.closingDebit), zero())), closingCredits: money(trialRows.reduce((sum, row) => sum.add(row.closingCredit), zero())), balanced: totalDebits.compare(totalCredits) === 0 },
     profitLoss: { rows: rows.filter((row) => row.accountClass === 'revenue' || row.accountClass === 'expense'), revenue: money(revenue), expenses: money(expenses), netIncome: money(netIncome) },
     balanceSheet: { rows: accountRows([...openingRows, ...periodRows]).filter((row) => ['asset', 'liability', 'equity'].includes(row.accountClass)), assets: money(assets), liabilities: money(liabilities), equity: money(equity), balanced: assets.compare(liabilities.add(equity)) === 0 },
     cashFlow: { rows: accountRows(cashRows), openingCash: money(openingCash), inflows: money(inflows), outflows: money(outflows), netCashFlow: money(inflows.sub(outflows)), closingCash: money(openingCash.add(inflows).sub(outflows)) },

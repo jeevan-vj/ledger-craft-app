@@ -1,0 +1,17 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: actual Worker Identity/Ledger routes preserve collections and authoritative recurring execution
+ok 1 - actual Worker Identity/Ledger routes preserve collections and authoritative recurring execution
+  ---
+  duration_ms: 9826.248854
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10098.531849

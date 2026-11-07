@@ -1,0 +1,65 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/components/payment/PaymentForm.date.test.tsx (1 test | 1 failed) 356ms
+   × submits the selected local calendar day without shifting an Auckland receipt into the previous day 354ms
+     → expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received:
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "paymentDate": "2026-10-05",
++   {
++     "amount": 2300,
++     "generateReceipt": true,
++     "invoiceId": "33333333-3333-4333-8333-333333333333",
++     "notes": "",
++     "paymentDate": "2026-10-04",
++     "paymentMethod": "bank_transfer",
++     "referenceNumber": "",
+    },
+  ]
+
+
+Number of calls: 1
+
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/components/payment/PaymentForm.date.test.tsx > submits the selected local calendar day without shifting an Auckland receipt into the previous day
+AssertionError: expected "spy" to be called with arguments: [ ObjectContaining{…} ]
+
+Received:
+
+  1st spy call:
+
+  [
+-   ObjectContaining {
+-     "paymentDate": "2026-10-05",
++   {
++     "amount": 2300,
++     "generateReceipt": true,
++     "invoiceId": "33333333-3333-4333-8333-333333333333",
++     "notes": "",
++     "paymentDate": "2026-10-04",
++     "paymentMethod": "bank_transfer",
++     "referenceNumber": "",
+    },
+  ]
+
+
+Number of calls: 1
+
+ ❯ src/components/payment/PaymentForm.date.test.tsx:12:19
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  17:24:01
+   Duration  2.02s (transform 424ms, setup 91ms, collect 882ms, tests 356ms, environment 353ms, prepare 60ms)

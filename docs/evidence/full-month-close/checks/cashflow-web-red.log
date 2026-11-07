@@ -1,0 +1,688 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx (8 tests | 1 failed) 768ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances 248ms
+   ✓ Financial reports GST return > labels a refund from IRD and displays its magnitude without a negative sign 76ms
+   ✓ Financial reports GST return > shows a nil GST position without implying a payment or refund 73ms
+   ✓ Financial reports GST return > labels GST as invoice basis on a cash-basis report and surfaces foreign-currency warnings 64ms
+   ✓ honours the accounting report link period and basis before exporting 39ms
+   ✓ offers NZ presets, server columns and PDF export without computing browser totals 102ms
+   ✓ shows trial-balance closing sides and server closing totals distinctly from period movement 64ms
+   × shows net account cash movement rather than journal turnover as cash flow 100ms
+     → Unable to find an accessible element with the role "columnheader" and name "Net cash movement"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Cash flow":
+  <h3
+    class="text-2xl font-semibold leading-none tracking-tight"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  --------------------------------------------------
+  table:
+
+  Name "":
+  <table
+    class="w-full caption-bottom text-sm"
+  />
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  <thead
+    class="[&_tr]:border-b"
+  />
+
+  Name "":
+  <tbody
+    class="[&_tr:last-child]:border-0"
+  />
+
+  --------------------------------------------------
+  row:
+
+  Name "Account Class Debit Credit Balance":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  Name "1110 · Bank asset $5,520.00 $4,140.00 $1,380.00":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Account":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Class":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Debit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Credit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Balance":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  --------------------------------------------------
+  cell:
+
+  Name "1110 · Bank":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+  />
+
+  Name "asset":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+  />
+
+  Name "$5,520.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$4,140.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$1,380.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<div
+  aria-labelledby="radix-:r30:-trigger-cash-flow"
+  class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+  data-orientation="horizontal"
+  data-state="active"
+  id="radix-:r30:-content-cash-flow"
+  role="tabpanel"
+  tabindex="0"
+>
+  <div
+    class="rounded-2xl bg-card text-card-foreground shadow-surface"
+  >
+    <div
+      class="flex flex-col space-y-1.5 p-6"
+    >
+      <h3
+        class="text-2xl font-semibold leading-none tracking-tight"
+      >
+        Cash flow
+      </h3>
+    </div>
+    <div
+      class="p-6 pt-0 space-y-5"
+    >
+      <div
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Opening cash
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $10,000.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Inflows
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $2,300.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Outflows
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $920.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Closing cash
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $11,380.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="overflow-x-auto"
+      >
+        <div
+          class="relative w-full overflow-auto"
+        >
+          <table
+            class="w-full caption-bottom text-sm"
+          >
+            <thead
+              class="[&_tr]:border-b"
+            >
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              >
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  Account
+                </th>
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  Class
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Debit
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Credit
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Balance
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="[&_tr:last-child]:border-0"
+            >
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              >
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+                >
+                  1110 ·
+                  Bank
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+                >
+                  asset
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+                >
+                  $5,520.00
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+                >
+                  $4,140.00
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+                >
+                  $1,380.00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/FinancialReportsPage.test.tsx > shows net account cash movement rather than journal turnover as cash flow
+TestingLibraryElementError: Unable to find an accessible element with the role "columnheader" and name "Net cash movement"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Cash flow":
+  <h3
+    class="text-2xl font-semibold leading-none tracking-tight"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  --------------------------------------------------
+  table:
+
+  Name "":
+  <table
+    class="w-full caption-bottom text-sm"
+  />
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  <thead
+    class="[&_tr]:border-b"
+  />
+
+  Name "":
+  <tbody
+    class="[&_tr:last-child]:border-0"
+  />
+
+  --------------------------------------------------
+  row:
+
+  Name "Account Class Debit Credit Balance":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  Name "1110 · Bank asset $5,520.00 $4,140.00 $1,380.00":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Account":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Class":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Debit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Credit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Balance":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  --------------------------------------------------
+  cell:
+
+  Name "1110 · Bank":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+  />
+
+  Name "asset":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+  />
+
+  Name "$5,520.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$4,140.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$1,380.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<div
+  aria-labelledby="radix-:r30:-trigger-cash-flow"
+  class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+  data-orientation="horizontal"
+  data-state="active"
+  id="radix-:r30:-content-cash-flow"
+  role="tabpanel"
+  tabindex="0"
+>
+  <div
+    class="rounded-2xl bg-card text-card-foreground shadow-surface"
+  >
+    <div
+      class="flex flex-col space-y-1.5 p-6"
+    >
+      <h3
+        class="text-2xl font-semibold leading-none tracking-tight"
+      >
+        Cash flow
+      </h3>
+    </div>
+    <div
+      class="p-6 pt-0 space-y-5"
+    >
+      <div
+        class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4"
+      >
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Opening cash
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $10,000.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Inflows
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $2,300.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Outflows
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $920.00
+            </p>
+          </div>
+        </div>
+        <div
+          class="rounded-2xl bg-card text-card-foreground shadow-surface"
+        >
+          <div
+            class="p-5"
+          >
+            <p
+              class="text-sm text-muted-foreground"
+            >
+              Closing cash
+            </p>
+            <p
+              class="mt-2 text-2xl font-bold tabular-nums"
+            >
+              $11,380.00
+            </p>
+          </div>
+        </div>
+      </div>
+      <div
+        class="overflow-x-auto"
+      >
+        <div
+          class="relative w-full overflow-auto"
+        >
+          <table
+            class="w-full caption-bottom text-sm"
+          >
+            <thead
+              class="[&_tr]:border-b"
+            >
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              >
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  Account
+                </th>
+                <th
+                  class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+                >
+                  Class
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Debit
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Credit
+                </th>
+                <th
+                  class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+                >
+                  Balance
+                </th>
+              </tr>
+            </thead>
+            <tbody
+              class="[&_tr:last-child]:border-0"
+            >
+              <tr
+                class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+              >
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+                >
+                  1110 ·
+                  Bank
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+                >
+                  asset
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+                >
+                  $5,520.00
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+                >
+                  $4,140.00
+                </td>
+                <td
+                  class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+                >
+                  $1,380.00
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ getByRole node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx:174:64
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 7 passed (8)
+   Start at  04:41:07
+   Duration  2.34s (transform 349ms, setup 92ms, collect 827ms, tests 768ms, environment 329ms, prepare 58ms)
