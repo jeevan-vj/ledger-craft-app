@@ -87,7 +87,9 @@ describe('Stripe finance operations', () => {
     try {
       await processVerifiedWebhook(f.db, f.gateway.completeCheckout(f.row.stripe_checkout_session_id as string), f.gateway, f.config);
       const paid = stripePaymentLinkSchema.parse(await (await f.call(`/api/invoices/${f.invoice.id}/payment-links/${f.link.id}`)).json());
-      const credit = await f.call('/api/credit-notes', {invoiceId:f.invoice.id,issueDate:'2026-11-07',reason:'Customer return credit issued',taxInclusive:false,taxRate:'0',items:[{description:'Returned consulting',quantity:'1',rate:'100'}]},'credit-first');
+      const paymentDate = (await f.sql.unsafe('SELECT payment_date FROM payments WHERE id = ?', [paid.paymentId]))[0]?.payment_date;
+      expect(paymentDate, 'recorded Stripe payment date').toEqual(expect.stringMatching(/^\d{4}-\d{2}-\d{2}$/));
+      const credit = await f.call('/api/credit-notes', {invoiceId:f.invoice.id,issueDate:paymentDate,reason:'Customer return credit issued',taxInclusive:false,taxRate:'0',items:[{description:'Returned consulting',quantity:'1',rate:'100'}]},'credit-first');
       expect(credit.status,await credit.clone().text()).toBe(201);
       let calls = 0; f.gateway.createFullRefund = async () => { calls++; return {id:'re_should_not_send',status:'succeeded'}; };
       expect((await f.call(`/api/payments/${paid.paymentId}/stripe/refund`, {reason:'Customer requested full refund'}, 'credit-refund')).status).toBe(409);
