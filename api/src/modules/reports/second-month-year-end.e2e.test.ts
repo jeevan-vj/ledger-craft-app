@@ -1,8 +1,15 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeAll, describe, expect, it, vi } from 'vitest';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getDatabaseUrl } from '../../env';
 import type { FinancialReportResponse, GstPreparationResponse } from '@ledgercraft/contracts';
 import { withTestDb } from '../../test/harness';
 import { secondMonthFixture, periodPath, reportSections } from './second-month.test-helper';
+
+const historicalEvidencePath = new URL('../../../../docs/evidence/second-month-year-end/api/results.json', import.meta.url);
+let historicalEvidenceBefore: string;
+beforeAll(async () => { historicalEvidenceBefore = await readFile(historicalEvidencePath, 'utf8'); });
 
 type PaperTrial = { rows: Array<{ accountRole: string; debit: string; credit: string }>; totalDebits: string; totalCredits: string };
 type PaperPeriod = { closingTrialBalance: PaperTrial; profitLoss: { accrual: { revenue: string; expenses: string; netIncome: string }; cash?: { revenue: string; expenses: string; netIncome: string } }; balanceSheet: { assets: string; liabilities: string; equity: string; balanced: boolean }; cashFlow?: { openingCash: string; inflows: string; outflows: string; netCashFlow: string; closingCash: string }; receivablesAging: Record<string, string>; payablesAging: Record<string, string> };
@@ -71,9 +78,16 @@ describe('second month and NZ financial-year rollover through real HTTP/SQLite',
         const aprilCash = await f.request<FinancialReportResponse>(periodPath('2027-04-01', '2027-04-30', '&comparisonFrom=2026-04-01&comparisonTo=2027-03-31').replace('basis=accrual', 'basis=cash')); expect(aprilCash.profitLoss).toMatchObject(paper.april.profitLoss.cash); expect(aprilCash.comparison).toMatchObject(paper.yearEnd.profitLoss.cash);
         const aprilGst = await f.request<GstPreparationResponse>('/api/tax/gst-preparation?from=2027-04-01&to=2027-04-30'); expect(aprilGst).toMatchObject({ gstOnSales: '30.00', gstOnPurchases: '15.00', netGstPosition: '15.00' });
         const retainedDraft = await f.request(`/api/tax-returns/${draft.id}`); expect(retainedDraft).toEqual(draft);
-        const directory = new URL('../../../../docs/evidence/second-month-year-end/api/', import.meta.url); await mkdir(directory, { recursive: true });
-        await writeFile(new URL('results.json', directory), JSON.stringify({ scope: 'Real HTTP and SQLite acceptance, not UI', clock: '2027-05-01T00:00:00Z; Date-only fake clock for future close guard', expectedVersion: paper.version, octoberBefore: f.october, octoberAfter, november, novemberCash: cash, novemberGst: gst, rejectedAlternativeGstBasis: mismatchedBasis, gstDraft: retainedDraft, yearEnd: priorYear, april, aprilCash, aprilGst, monthly, quarterly, noSyntheticFiscalClosingJournal: true, overpaymentRejection: f.overpayment, recoveredReceipt: f.recoveredReceipt, commands: f.commands }, null, 2) + '\n');
+        const directory = process.env.LEDGERCRAFT_SECOND_MONTH_EVIDENCE_DIR
+          ? resolve(process.env.LEDGERCRAFT_SECOND_MONTH_EVIDENCE_DIR)
+          : fileURLToPath(new URL('./second-month-evidence/', getDatabaseUrl()));
+        await mkdir(directory, { recursive: true });
+        await writeFile(join(directory, 'results.json'), JSON.stringify({ scope: 'Real HTTP and SQLite acceptance, not UI', clock: '2027-05-01T00:00:00Z; Date-only fake clock for future close guard', expectedVersion: paper.version, octoberBefore: f.october, octoberAfter, november, novemberCash: cash, novemberGst: gst, rejectedAlternativeGstBasis: mismatchedBasis, gstDraft: retainedDraft, yearEnd: priorYear, april, aprilCash, aprilGst, monthly, quarterly, noSyntheticFiscalClosingJournal: true, overpaymentRejection: f.overpayment, recoveredReceipt: f.recoveredReceipt, commands: f.commands }, null, 2) + '\n', { flag: 'wx' });
       } finally { await f.sql.end(); }
     }); } finally { vi.useRealTimers(); }
   }, 60_000);
+  it('preserves the historical year-end evidence when the suite runs', async () => {
+    expect(await readFile(historicalEvidencePath, 'utf8')).toBe(historicalEvidenceBefore);
+  });
+
 });

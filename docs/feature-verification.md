@@ -70,3 +70,5 @@ The month-close API test writes fresh evidence beside its isolated test database
 The API report accepts additional complete-file rerun JSON paths after the output directory. It retains every attempt and uses the latest assertion statuses. Do not pass a name-filtered partial run as a replacement for a complete file; skipped assertions remain incomplete. Preserve original failure logs.
 
 Standalone catalogue/quote, calendar and payment proof drivers create a unique mode0700 temporary output directory by default and print its path. An explicit `PROOF_OUTPUT`, including page-render proof output, must also be a private non-symlink directory.
+
+The second-month/year-end API test similarly writes beside its isolated database. Use a new `LEDGERCRAFT_SECOND_MONTH_EVIDENCE_DIR` to retain a run explicitly; an existing `results.json` is never overwritten.

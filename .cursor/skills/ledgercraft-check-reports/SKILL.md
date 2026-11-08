@@ -63,3 +63,7 @@ Run these additional integration files as part of this domain:
 - `api/src/modules/reports/close-pack.test.ts`
 
 The feature entered main at `8f6bb6866c27a5fed5f9a1aa1caa728e16a94d4f`. Prior screenshot evidence is in `docs/evidence/self-service-month-close/README.md`; it is historical evidence, not a new run of this skill. Record fresh UI results separately.
+
+## Second-month and year-end reporting
+
+Main PR #174 adds explicit accumulated earnings, next-month carry-forward and financial-year rollover acceptance. Run `api/src/modules/reports/second-month-year-end.e2e.test.ts`; verify closing/opening trial balance continuity, accumulated earnings included in equity, date-scoped profit, and immutable prior close/GST snapshots. Prior upstream UI evidence is in `docs/evidence/second-month-year-end/README.md`; record new runs separately and never overwrite those historical artifacts.

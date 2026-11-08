@@ -31,3 +31,11 @@ The catalogue/quote, calendar and payment drivers now create unique owner-only t
 The first independent review found that the repository-wide log ignore rule excluded54 original logs from the PR, including10 README-linked logs and the draft-posting, cache, calendar, label and evidence-preservation red regressions. Those logs are now explicitly tracked after a credential/share-token scan; the original local copies remain private. Only trailing whitespace was normalized; substantive output is unchanged. Every relative Markdown evidence link was checked against Git's staged file inventory, not merely the working filesystem. No product code changed for this review fix.
 
 [Tracked-link and retained-log audit](retained-log-audit.json).
+
+## 2026-11-09 main integration
+
+Main PR #174 (`fa64e43`) adds accumulated earnings and second-month/year-end evidence. Merge `1578d5d` preserves both documentation/evidence sets; conflicts were confined to AGENTS, TARGET_ARCHITECTURE and PDF attributes. Product code merged automatically, including the distinct close-pack helper name. The reports skill now includes the new flow. Upstream browser evidence remains attributed to its original run.
+
+The new upstream API test repeated #164 by overwriting its historical `results.json`. A preservation regression failed before the fix (one pass/one failure), then the combined quote, October and year-end suites passed12/12 across3 files. The test now writes beside its isolated database, or to a fresh `LEDGERCRAFT_SECOND_MONTH_EVIDENCE_DIR`, with exclusive creation. The historical file was restored to committed bytes and remains unchanged after the green run. Web quote/close-pack/report tests pass17/17 across3 files; app TypeScript exits0. Earnings contracts pass2/2; API TypeScript exits0 under Node24.
+
+Evidence: [red output](year-end-preservation-red.log.gz), [green API output](year-end-preservation-green.log.gz), [green web output](year-end-web-green.log.gz), [counts and historical SHA-256 comparison](year-end-preservation.json). Logs retain their original bytes in compressed form. Initial invocation/config-path errors were corrected before these recorded red/green checks and are not product failures.

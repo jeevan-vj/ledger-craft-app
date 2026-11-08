@@ -337,7 +337,7 @@
       "module": "reports",
       "route": "/financial-reports",
       "skill": ".cursor/skills/ledgercraft-check-reports/SKILL.md",
-      "flow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month. Download an authenticated accountant ZIP; verify report membership, SHA-256 checksums and reports/banking permission boundaries.",
+      "flow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month. Download an authenticated accountant ZIP; verify report membership, SHA-256 checksums and reports/banking permission boundaries. Reconcile the next month and financial-year rollover; distinguish period profit from accumulated earnings and retain earlier close evidence.",
       "expectation": "Use frozen Decimal working paper: TB 13680 each side, assets 12480 = liabilities 980 + equity 11500, profit 1500, cash 11380, AR 920, AP 575. Cash profit 1200; later settlement does not alter historical close.",
       "apiTests": [
         "api/src/modules/reports/account-statement-opening.test.ts",
@@ -352,6 +352,7 @@
         "api/src/modules/reports/report-options.test.ts",
         "api/src/modules/reports/reports-aging-history.test.ts",
         "api/src/modules/reports/reports.test.ts",
+        "api/src/modules/reports/second-month-year-end.e2e.test.ts",
         "api/src/modules/reports/trial-balance-signs.test.ts"
       ],
       "uiDrivers": [
