@@ -1,5 +1,12 @@
 # AGENTS.md
 
+**Accounting chart calendar cutoff (implemented locally, 2026-11-08):** Selected reporting end dates use local calendar noon for chart anchors, preserving the chosen day in Auckland and UTC. Fresh browser evidence confirms October31 selects May–October monthly charts and October4–31 daily charts. Tests and screenshots are in `docs/evidence/feature-verification/2026-11-08/` (issue #168); no deployment is claimed.
+
+**Quote conversion draft integrity (implemented locally, 2026-11-08):** Quote conversion creates an unposted draft through `createInvoiceInTx`; it no longer explicitly posts a journal. Conversion and idempotent replay leave books unchanged. Web conversion refreshes the invoice cache before navigating, including the combined accept-and-convert path (#169). The ordinary invoice issue transition owns the first posting. Historical journals are not rewritten; any previously posted converted drafts require separately reviewed correction. Evidence: `docs/evidence/feature-verification/2026-11-08/`, GitHub #167. Local verification is not deployment.
+
+
+**Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
+
 **Full month-close acceptance (verified locally, 2026-11-07):** Independent
 Decimal working papers reconcile an October NZ services case through real web and
 Expo business operations: closing TB13,680 each side, assets12,480 = liabilities980

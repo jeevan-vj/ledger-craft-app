@@ -3,6 +3,9 @@ name: ledgercraft-bootstrap
 description: Start-here operating instructions for LedgerCraft reconstruction. Use at the beginning of any session, when verifying W1, continuing W2+, launching specialist agents, or when the user mentions reconstruction, Hono, verify, pnpm workspace, or lost database.
 ---
 
+**Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
+
+
 # LedgerCraft bootstrap
 
 **Full month-close acceptance (verified locally, 2026-11-07):** Independent

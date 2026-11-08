@@ -1,14 +1,15 @@
+import { proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {chromium,expect} from '@playwright/test';
-const origin='http://127.0.0.1:8080';
+const origin=localProofOrigin(process.env.CLOSE_WEB_URL??'http://127.0.0.1:8080');
 const out=process.env.CLOSE_OUTPUT??'/tmp/full-month-close-web';
 const stage=process.env.CLOSE_STAGE??'signup';
 await mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+const browser=await chromium.launch(proofBrowserOptions());
 const saved=stage==='signup'?{}:JSON.parse(await readFile(`${out}/state.json`,'utf8'));
 const context=await browser.newContext({viewport:{width:1440,height:900},timezoneId:'Pacific/Auckland',acceptDownloads:true,...(stage==='signup'?{}:{storageState:`${out}/session.json`})});
-const page=await context.newPage();page.setDefaultTimeout(20000);
+const page=await context.newPage();page.setDefaultTimeout(Number(process.env.PROOF_TIMEOUT_MS??20000));
 const errors=[];const warnings=[];const expectedOnboardingDiagnostics=[];
 page.on('pageerror',e=>errors.push(e.message));
 page.on('console',message=>{const text=message.text();const url=message.location().url;
@@ -45,7 +46,7 @@ try{
  }
  if(stage==='receipts'){
  saved.receipts??=[];
- for(const [index,day] of [[0,5],[1,6]]){if(saved.receipts[index])continue;await go('/payments');await page.getByRole('button',{name:/^Record payment$/i}).first().click();const d=page.getByRole('dialog');await d.getByText(`#${saved.invoices[index].invoiceNumber}`,{exact:true}).click();await d.getByLabel(/^Payment Amount/).fill('1150');await d.getByRole('combobox').click();await page.getByRole('option',{name:'Bank Transfer',exact:true}).click();await calendar(d.getByRole('button',{name:/^\d{2} \w{3} \d{4}$/}),day);const receipt=await response('/api/payments',()=>d.getByRole('button',{name:'Record Payment',exact:true}).click());assert.equal(receipt.paymentDate,`2026-10-0${day}`);saved.receipts.push(receipt);await shot(`06-receipt-${index+1}`);}
+ for(const [index,day] of [[0,5],[1,6]]){if(saved.receipts[index])continue;await go('/payments');await page.getByRole('button',{name:/^Record payment$/i}).first().click();const d=page.getByRole('dialog');await d.getByText(`#${saved.invoices[index].invoiceNumber}`,{exact:true}).click();await d.getByLabel(/^Payment Amount/).fill('1150');await d.getByRole('combobox').click();await page.getByRole('option',{name:'Bank Transfer',exact:true}).click();await calendar(d.getByRole('button',{name:/^\d{2} \w{3} \d{4}$/}),day);const receipt=await response('/api/payments',()=>d.getByRole('button',{name:'Record Payment',exact:true}).click());assert.equal(receipt.paymentDate,`2026-10-0${day}`);saved.receipts.push(receipt);await expect(d).not.toBeVisible();await page.waitForLoadState('networkidle');await shot(`06-receipt-${index+1}`);}
  }
 
  if(stage==='purchases'){

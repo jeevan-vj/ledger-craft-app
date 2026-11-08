@@ -469,9 +469,9 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Sale Price *</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <div className="relative">
+                    <DollarSign aria-hidden="true" className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <FormControl>
                       <Input
                         type="number"
                         inputMode="decimal"
@@ -484,8 +484,8 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
                         onKeyDown={handleKeyDown}
                         className="h-11 pl-10 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                       />
-                    </div>
-                  </FormControl>
+                    </FormControl>
+                  </div>
                   {form.formState.errors.salePrice && (
                     <FormMessage>{form.formState.errors.salePrice.message}</FormMessage>
                   )}
@@ -553,9 +553,9 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className="text-sm font-medium">Purchase Price *</FormLabel>
-                  <FormControl>
-                    <div className="relative">
-                      <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <div className="relative">
+                    <DollarSign aria-hidden="true" className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <FormControl>
                       <Input
                         type="number"
                         step="0.01"
@@ -567,8 +567,8 @@ export function ItemForm({ initialData, onSubmit, isLoading = false, categories,
                         onKeyDown={handleKeyDown}
                         className="h-11 pl-10 focus:ring-2 focus:ring-primary focus:border-primary transition-all duration-200"
                       />
-                    </div>
-                  </FormControl>
+                    </FormControl>
+                  </div>
                   {form.formState.errors.purchasePrice && (
                     <FormMessage>{form.formState.errors.purchasePrice.message}</FormMessage>
                   )}

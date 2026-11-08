@@ -1,0 +1,17 @@
+{
+  "platform": "Expo web Chromium 390x844; no native device claim",
+  "phase": "signup",
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [],
+  "expectedOnboardingDiagnostics": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "location": {
+        "url": "http://127.0.0.1:3002/api/me",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ]
+}

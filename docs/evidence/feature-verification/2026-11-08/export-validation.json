@@ -1,0 +1,53 @@
+{
+  "extractor": "pypdf 7.0.0",
+  "results": [
+    {
+      "report": "trial-balance",
+      "pdfBytes": 15160,
+      "pdfPages": 1,
+      "expectedValue": "13,680",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    },
+    {
+      "report": "profit-loss",
+      "pdfBytes": 5548,
+      "pdfPages": 1,
+      "expectedValue": "1,500",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    },
+    {
+      "report": "balance-sheet",
+      "pdfBytes": 10046,
+      "pdfPages": 1,
+      "expectedValue": "12,480",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    },
+    {
+      "report": "cash-flow",
+      "pdfBytes": 5565,
+      "pdfPages": 1,
+      "expectedValue": "11,380",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    },
+    {
+      "report": "receivables-aging",
+      "pdfBytes": 5831,
+      "pdfPages": 1,
+      "expectedValue": "920",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    },
+    {
+      "report": "payables-aging",
+      "pdfBytes": 5835,
+      "pdfPages": 1,
+      "expectedValue": "575",
+      "pdfTextConfirmed": true,
+      "csvConfirmed": true
+    }
+  ]
+}

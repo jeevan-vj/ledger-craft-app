@@ -1,0 +1,22 @@
+{
+  "node": "20",
+  "build": "Expo web export --platform web --max-workers 1",
+  "artifacts": [
+    {
+      "path": "_expo/static/js/web/index-c2c6a19414771edb9316ae2b07640072.js",
+      "sha256": "34623418005c15b7ce6059ce154ffdb8c0a7b3404b83d3d0ab91bc72c26b459e"
+    },
+    {
+      "path": "_expo/static/js/web/html2canvas-0975c78a1e7295785551305bdf1926ca.js",
+      "sha256": "a5c91c63bae49a2aaf04adf96927cc76dcd90c70f112a4c902c7b56255239f76"
+    },
+    {
+      "path": "_expo/static/js/web/index-932719ec3e8f392db3e6ad5ab15a5392.js",
+      "sha256": "a6f449910efa955020a622519fbaa96053ec9566a86242e1756a6607c23d9207"
+    },
+    {
+      "path": "_expo/static/js/web/purify-9724a09794123824105f9f7dab3057c9.js",
+      "sha256": "1a478c8abd053c93a3031943dd1e58f2ab3df22291c61af65aa6a5aaa3fdfac0"
+    }
+  ]
+}

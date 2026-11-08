@@ -11,7 +11,6 @@ import {
   type IdempotencyScope,
 } from '../invoices/idempotency';
 import * as invoicesRepo from '../invoices/invoices.repository';
-import { postInvoiceJournal } from '../invoices/invoices.journal';
 import { createInvoiceInTx } from '../invoices/invoices.service';
 import { addCalendarDays } from '../invoices/payment-terms';
 import * as quotesRepo from './quotes.repository';
@@ -74,14 +73,7 @@ export async function convertQuoteForUser(
     };
     const invoice = await createInvoiceInTx(tx, ctx, input);
     assertConversionTotals(quote, invoice);
-    await postInvoiceJournal(tx, ctx, {
-      invoiceId: invoice.id,
-      invoiceNumber: invoice.invoiceNumber,
-      date: invoice.date,
-      subtotal: invoice.subtotal,
-      taxAmount: invoice.taxAmount,
-      total: invoice.total,
-    });
+    // Conversion retains a draft; the ordinary invoice issue transition owns posting.
     const linked = await quotesRepo.linkConvertedInvoice(tx, ctx.organisationId, quote.id, invoice.id);
     if (!linked || linked.convertedInvoiceId !== invoice.id) {
       throw new HTTPException(409, { message: 'Quote was already converted' });

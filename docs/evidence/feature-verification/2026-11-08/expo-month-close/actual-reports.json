@@ -1,0 +1,1493 @@
+{
+  "expectedVersion": "working-paper-v2",
+  "report": {
+    "meta": {
+      "from": "2026-10-01",
+      "to": "2026-10-31",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-08T07:47:41.846Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "3450.00",
+          "credit": "2530.00",
+          "balance": "920.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "920.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "300.00",
+          "credit": "3000.00",
+          "balance": "2700.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "2700.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "405.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "2120.00",
+          "credit": "920.00",
+          "balance": "1200.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1200.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "180.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "575.00",
+          "credit": "1150.00",
+          "balance": "575.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "575.00"
+        },
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "11380.00",
+          "openingDebit": "10000.00",
+          "openingCredit": "0.00",
+          "closingDebit": "11380.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "6051073c-d0de-4900-b37a-ab7aeb00c9b3",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "115.00",
+          "credit": "115.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "6575e1df-b585-45fe-8b9a-931956b35787",
+          "accountNumber": "3000",
+          "accountName": "Owner Capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "0.00",
+          "balance": "10000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "10000.00",
+          "closingDebit": "0.00",
+          "closingCredit": "10000.00"
+        }
+      ],
+      "totalDebits": "14605.00",
+      "totalCredits": "14605.00",
+      "closingDebits": "13680.00",
+      "closingCredits": "13680.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "300.00",
+          "credit": "3000.00",
+          "balance": "2700.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "2120.00",
+          "credit": "920.00",
+          "balance": "1200.00"
+        }
+      ],
+      "revenue": "2700.00",
+      "expenses": "1200.00",
+      "netIncome": "1500.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "3450.00",
+          "credit": "2530.00",
+          "balance": "920.00"
+        },
+        {
+          "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "575.00",
+          "credit": "1150.00",
+          "balance": "575.00"
+        },
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00"
+        },
+        {
+          "accountId": "6051073c-d0de-4900-b37a-ab7aeb00c9b3",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "115.00",
+          "credit": "115.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "6575e1df-b585-45fe-8b9a-931956b35787",
+          "accountNumber": "3000",
+          "accountName": "Owner Capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "10000.00",
+          "balance": "10000.00"
+        },
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "15520.00",
+          "credit": "4140.00",
+          "balance": "11380.00"
+        }
+      ],
+      "assets": "12480.00",
+      "liabilities": "980.00",
+      "equity": "11500.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "1380.00"
+        }
+      ],
+      "openingCash": "10000.00",
+      "inflows": "2300.00",
+      "outflows": "920.00",
+      "netCashFlow": "1380.00",
+      "closingCash": "11380.00"
+    },
+    "receivablesAging": {
+      "total": "920.00",
+      "unallocatedControl": "0.00",
+      "current": "920.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "5b7bda12-7b4d-434d-9118-5f3371388f5c",
+          "number": "INV-2026-0001",
+          "partyId": "4ebd11b8-17fc-42d4-aa5b-d8118eb1661d",
+          "partyName": "Harbour Customer A",
+          "issueDate": "2026-10-02",
+          "dueDate": "2026-10-31",
+          "balanceDue": "920.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "575.00",
+      "unallocatedControl": "0.00",
+      "current": "575.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "c459af51-9c44-4b56-babe-e4a46053b208",
+          "number": "BILL-0001",
+          "partyId": "3dcc64ed-4978-4531-b793-928b40ffdb87",
+          "partyName": "Kauri Office Supplier",
+          "issueDate": "2026-10-04",
+          "dueDate": "2026-10-31",
+          "balanceDue": "575.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "3000.00",
+      "tax": "450.00",
+      "total": "3450.00",
+      "paid": "2300.00",
+      "outstanding": "920.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "1000.00",
+      "tax": "150.00",
+      "total": "1150.00",
+      "paid": "575.00",
+      "outstanding": "575.00"
+    },
+    "taxSummary": {
+      "collected": "405.00",
+      "paid": "180.00",
+      "netPayable": "225.00",
+      "outputGst": "405.00",
+      "inputGst": "180.00",
+      "netGst": "225.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "3450.00",
+          "credit": "2530.00",
+          "balance": "920.00"
+        },
+        {
+          "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "575.00",
+          "credit": "1150.00",
+          "balance": "575.00"
+        },
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00"
+        },
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "300.00",
+          "credit": "3000.00",
+          "balance": "2700.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "2120.00",
+          "credit": "920.00",
+          "balance": "1200.00"
+        },
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "1380.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "cash": {
+    "meta": {
+      "from": "2026-10-01",
+      "to": "2026-10-31",
+      "basis": "cash",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-08T07:47:46.315Z",
+      "cashRecognition": "settled-source-components-v1"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "11380.00",
+          "openingDebit": "10000.00",
+          "openingCredit": "0.00",
+          "closingDebit": "11380.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "15.00",
+          "credit": "300.00",
+          "balance": "285.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "285.00"
+        },
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "100.00",
+          "credit": "2000.00",
+          "balance": "1900.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "1900.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "105.00",
+          "credit": "0.00",
+          "balance": "105.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "105.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "1620.00",
+          "credit": "920.00",
+          "balance": "700.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "700.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "6575e1df-b585-45fe-8b9a-931956b35787",
+          "accountNumber": "3000",
+          "accountName": "Owner Capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "0.00",
+          "balance": "10000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "10000.00",
+          "closingDebit": "0.00",
+          "closingCredit": "10000.00"
+        }
+      ],
+      "totalDebits": "9660.00",
+      "totalCredits": "9660.00",
+      "closingDebits": "12185.00",
+      "closingCredits": "12185.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "100.00",
+          "credit": "2000.00",
+          "balance": "1900.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "1620.00",
+          "credit": "920.00",
+          "balance": "700.00"
+        }
+      ],
+      "revenue": "1900.00",
+      "expenses": "700.00",
+      "netIncome": "1200.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "105.00",
+          "credit": "0.00",
+          "balance": "105.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "15.00",
+          "credit": "300.00",
+          "balance": "285.00"
+        },
+        {
+          "accountId": "6575e1df-b585-45fe-8b9a-931956b35787",
+          "accountNumber": "3000",
+          "accountName": "Owner Capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "10000.00",
+          "balance": "10000.00"
+        },
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "15520.00",
+          "credit": "4140.00",
+          "balance": "11380.00"
+        }
+      ],
+      "assets": "11485.00",
+      "liabilities": "285.00",
+      "equity": "11200.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "1380.00"
+        }
+      ],
+      "openingCash": "10000.00",
+      "inflows": "2300.00",
+      "outflows": "920.00",
+      "netCashFlow": "1380.00",
+      "closingCash": "11380.00"
+    },
+    "receivablesAging": {
+      "total": "920.00",
+      "unallocatedControl": "0.00",
+      "current": "920.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "5b7bda12-7b4d-434d-9118-5f3371388f5c",
+          "number": "INV-2026-0001",
+          "partyId": "4ebd11b8-17fc-42d4-aa5b-d8118eb1661d",
+          "partyName": "Harbour Customer A",
+          "issueDate": "2026-10-02",
+          "dueDate": "2026-10-31",
+          "balanceDue": "920.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "575.00",
+      "unallocatedControl": "0.00",
+      "current": "575.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": [
+        {
+          "id": "c459af51-9c44-4b56-babe-e4a46053b208",
+          "number": "BILL-0001",
+          "partyId": "3dcc64ed-4978-4531-b793-928b40ffdb87",
+          "partyName": "Kauri Office Supplier",
+          "issueDate": "2026-10-04",
+          "dueDate": "2026-10-31",
+          "balanceDue": "575.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "3000.00",
+      "tax": "450.00",
+      "total": "3450.00",
+      "paid": "2300.00",
+      "outstanding": "920.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "1000.00",
+      "tax": "150.00",
+      "total": "1150.00",
+      "paid": "575.00",
+      "outstanding": "575.00"
+    },
+    "taxSummary": {
+      "collected": "405.00",
+      "paid": "180.00",
+      "netPayable": "225.00",
+      "outputGst": "405.00",
+      "inputGst": "180.00",
+      "netGst": "225.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "3450.00",
+          "credit": "2530.00",
+          "balance": "920.00"
+        },
+        {
+          "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "575.00",
+          "credit": "1150.00",
+          "balance": "575.00"
+        },
+        {
+          "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "180.00",
+          "credit": "0.00",
+          "balance": "180.00"
+        },
+        {
+          "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "45.00",
+          "credit": "450.00",
+          "balance": "405.00"
+        },
+        {
+          "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "300.00",
+          "credit": "3000.00",
+          "balance": "2700.00"
+        },
+        {
+          "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "2300.00",
+          "credit": "2300.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "2120.00",
+          "credit": "920.00",
+          "balance": "1200.00"
+        },
+        {
+          "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+          "accountNumber": "BANK-3019B105",
+          "accountName": "Kauri Operating",
+          "accountClass": "asset",
+          "debit": "5520.00",
+          "credit": "4140.00",
+          "balance": "1380.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "generalLedger": {
+    "meta": {
+      "from": "2026-09-30",
+      "to": "2026-10-31",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-08T07:47:45.453Z"
+    },
+    "lines": [
+      {
+        "journalEntryId": "866a6453-bb36-4a0d-8a15-b35bb226a6ae",
+        "entryNumber": "JE-2026-9EAD28A9",
+        "date": "2026-09-30",
+        "description": "Opening balances: MOBILE-OPEN-2026 [79680f03d420a27a36d9170c332a29077fc86a36197abd9bcdc24ba860a2e73f]",
+        "referenceType": "opening_balance",
+        "referenceId": "initial",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "10000.00",
+        "credit": "0.00",
+        "runningBalance": "10000.00"
+      },
+      {
+        "journalEntryId": "866a6453-bb36-4a0d-8a15-b35bb226a6ae",
+        "entryNumber": "JE-2026-9EAD28A9",
+        "date": "2026-09-30",
+        "description": "Opening balances: MOBILE-OPEN-2026 [79680f03d420a27a36d9170c332a29077fc86a36197abd9bcdc24ba860a2e73f]",
+        "referenceType": "opening_balance",
+        "referenceId": "initial",
+        "accountId": "6575e1df-b585-45fe-8b9a-931956b35787",
+        "accountNumber": "3000",
+        "accountName": "Owner Capital",
+        "debit": "0.00",
+        "credit": "10000.00",
+        "runningBalance": "-10000.00"
+      },
+      {
+        "journalEntryId": "0752ab6d-5ad7-4153-b14f-9eefc165ec70",
+        "entryNumber": "JE-2026-001",
+        "date": "2026-10-02",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5b7bda12-7b4d-434d-9118-5f3371388f5c",
+        "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "2300.00",
+        "credit": "0.00",
+        "runningBalance": "2300.00"
+      },
+      {
+        "journalEntryId": "0752ab6d-5ad7-4153-b14f-9eefc165ec70",
+        "entryNumber": "JE-2026-001",
+        "date": "2026-10-02",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5b7bda12-7b4d-434d-9118-5f3371388f5c",
+        "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "0.00",
+        "credit": "2000.00",
+        "runningBalance": "-2000.00"
+      },
+      {
+        "journalEntryId": "0752ab6d-5ad7-4153-b14f-9eefc165ec70",
+        "entryNumber": "JE-2026-001",
+        "date": "2026-10-02",
+        "description": "Invoice INV-2026-0001",
+        "referenceType": "invoice",
+        "referenceId": "5b7bda12-7b4d-434d-9118-5f3371388f5c",
+        "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "0.00",
+        "credit": "300.00",
+        "runningBalance": "-300.00"
+      },
+      {
+        "journalEntryId": "14132f7f-8398-4f8e-98a1-584f1a64fba1",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-10-03",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "2de558a4-11ec-492e-a921-9f502cc85e0e",
+        "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "3450.00"
+      },
+      {
+        "journalEntryId": "14132f7f-8398-4f8e-98a1-584f1a64fba1",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-10-03",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "2de558a4-11ec-492e-a921-9f502cc85e0e",
+        "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "0.00",
+        "credit": "1000.00",
+        "runningBalance": "-3000.00"
+      },
+      {
+        "journalEntryId": "14132f7f-8398-4f8e-98a1-584f1a64fba1",
+        "entryNumber": "JE-2026-002",
+        "date": "2026-10-03",
+        "description": "Invoice INV-2026-0002",
+        "referenceType": "invoice",
+        "referenceId": "2de558a4-11ec-492e-a921-9f502cc85e0e",
+        "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "0.00",
+        "credit": "150.00",
+        "runningBalance": "-450.00"
+      },
+      {
+        "journalEntryId": "5cdd7e83-3898-4711-ac23-6ef20575195a",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-10-04",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "c459af51-9c44-4b56-babe-e4a46053b208",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "1000.00",
+        "credit": "0.00",
+        "runningBalance": "1000.00"
+      },
+      {
+        "journalEntryId": "5cdd7e83-3898-4711-ac23-6ef20575195a",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-10-04",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "c459af51-9c44-4b56-babe-e4a46053b208",
+        "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+        "accountNumber": "2150",
+        "accountName": "GST Paid on Purchases",
+        "debit": "150.00",
+        "credit": "0.00",
+        "runningBalance": "150.00"
+      },
+      {
+        "journalEntryId": "5cdd7e83-3898-4711-ac23-6ef20575195a",
+        "entryNumber": "JE-2026-003",
+        "date": "2026-10-04",
+        "description": "Bill BILL-0001",
+        "referenceType": "bill",
+        "referenceId": "c459af51-9c44-4b56-babe-e4a46053b208",
+        "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+        "accountNumber": "2100",
+        "accountName": "Accounts Payable",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "-1150.00"
+      },
+      {
+        "journalEntryId": "6e27fabe-6f2b-454c-a672-137d97b3787f",
+        "entryNumber": "JE-2026-150950E1",
+        "date": "2026-10-05",
+        "description": "Payment for INV-2026-0001",
+        "referenceType": "invoice_payment",
+        "referenceId": "aa55bf51-7766-460f-ae37-f8ace523b777",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "11150.00"
+      },
+      {
+        "journalEntryId": "6e27fabe-6f2b-454c-a672-137d97b3787f",
+        "entryNumber": "JE-2026-150950E1",
+        "date": "2026-10-05",
+        "description": "Payment for INV-2026-0001",
+        "referenceType": "invoice_payment",
+        "referenceId": "aa55bf51-7766-460f-ae37-f8ace523b777",
+        "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "2300.00"
+      },
+      {
+        "journalEntryId": "a3a08ac4-e8a6-4a6a-905a-e4e0566b8120",
+        "entryNumber": "JE-2026-661FC2D3",
+        "date": "2026-10-05",
+        "description": "Match existing payment: Customer A receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "48749a47-0fc3-45e2-9d10-a5406aba440a",
+        "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "1150.00"
+      },
+      {
+        "journalEntryId": "a3a08ac4-e8a6-4a6a-905a-e4e0566b8120",
+        "entryNumber": "JE-2026-661FC2D3",
+        "date": "2026-10-05",
+        "description": "Match existing payment: Customer A receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "48749a47-0fc3-45e2-9d10-a5406aba440a",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "10000.00"
+      },
+      {
+        "journalEntryId": "f7ab3c2e-ae77-4007-9c34-fa7e8f9a422f",
+        "entryNumber": "JE-2026-8DDD7739",
+        "date": "2026-10-05",
+        "description": "Customer A receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "20b3c136-4556-4e65-ad8d-0fcaf5c7188f",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "11150.00"
+      },
+      {
+        "journalEntryId": "f7ab3c2e-ae77-4007-9c34-fa7e8f9a422f",
+        "entryNumber": "JE-2026-8DDD7739",
+        "date": "2026-10-05",
+        "description": "Customer A receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "20b3c136-4556-4e65-ad8d-0fcaf5c7188f",
+        "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "0.00"
+      },
+      {
+        "journalEntryId": "fb95ddcb-a7b4-4b09-a893-ff264fa6da9a",
+        "entryNumber": "JE-2026-6EDCE8B5",
+        "date": "2026-10-06",
+        "description": "Customer B receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "73cb1819-455f-408f-b1ee-96e1ef272e7d",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "12300.00"
+      },
+      {
+        "journalEntryId": "fb95ddcb-a7b4-4b09-a893-ff264fa6da9a",
+        "entryNumber": "JE-2026-6EDCE8B5",
+        "date": "2026-10-06",
+        "description": "Customer B receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "73cb1819-455f-408f-b1ee-96e1ef272e7d",
+        "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "-1150.00"
+      },
+      {
+        "journalEntryId": "34c8e4d7-68ca-4730-ab0c-423a019176d9",
+        "entryNumber": "JE-2026-89C5CD25",
+        "date": "2026-10-06",
+        "description": "Payment for INV-2026-0002",
+        "referenceType": "invoice_payment",
+        "referenceId": "91e726b9-f8b9-4804-8b99-37b74304494f",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "13450.00"
+      },
+      {
+        "journalEntryId": "34c8e4d7-68ca-4730-ab0c-423a019176d9",
+        "entryNumber": "JE-2026-89C5CD25",
+        "date": "2026-10-06",
+        "description": "Payment for INV-2026-0002",
+        "referenceType": "invoice_payment",
+        "referenceId": "91e726b9-f8b9-4804-8b99-37b74304494f",
+        "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "1150.00"
+      },
+      {
+        "journalEntryId": "0146c34d-6a15-4fd9-91d5-5436a0dcf585",
+        "entryNumber": "JE-2026-CC851065",
+        "date": "2026-10-06",
+        "description": "Match existing payment: Customer B receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "8998c125-39d3-4ddd-a732-3b1108390360",
+        "accountId": "2acee858-3652-4f35-9b6b-5cf761141385",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "1150.00",
+        "credit": "0.00",
+        "runningBalance": "0.00"
+      },
+      {
+        "journalEntryId": "0146c34d-6a15-4fd9-91d5-5436a0dcf585",
+        "entryNumber": "JE-2026-CC851065",
+        "date": "2026-10-06",
+        "description": "Match existing payment: Customer B receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "8998c125-39d3-4ddd-a732-3b1108390360",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "1150.00",
+        "runningBalance": "12300.00"
+      },
+      {
+        "journalEntryId": "a69661cd-07af-4f00-94f2-c5a2c2a8f656",
+        "entryNumber": "JE-2026-004",
+        "date": "2026-10-08",
+        "description": "Payment for BILL-0001",
+        "referenceType": "bill_payment",
+        "referenceId": "fbe405cd-5716-4bc5-a646-e75afc470510",
+        "accountId": "3224cf45-04fd-4685-a5f8-f20240cb0b95",
+        "accountNumber": "2100",
+        "accountName": "Accounts Payable",
+        "debit": "575.00",
+        "credit": "0.00",
+        "runningBalance": "-575.00"
+      },
+      {
+        "journalEntryId": "a69661cd-07af-4f00-94f2-c5a2c2a8f656",
+        "entryNumber": "JE-2026-004",
+        "date": "2026-10-08",
+        "description": "Payment for BILL-0001",
+        "referenceType": "bill_payment",
+        "referenceId": "fbe405cd-5716-4bc5-a646-e75afc470510",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "575.00",
+        "runningBalance": "11725.00"
+      },
+      {
+        "journalEntryId": "4b9cc08a-045c-4bf3-ab8d-5b40d972ad9d",
+        "entryNumber": "JE-2026-0636F939",
+        "date": "2026-10-08",
+        "description": "Match existing bill_payment: Supplier instalment",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "03ad5ded-161f-4bdd-8497-00d363728a01",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "575.00",
+        "credit": "0.00",
+        "runningBalance": "12300.00"
+      },
+      {
+        "journalEntryId": "4b9cc08a-045c-4bf3-ab8d-5b40d972ad9d",
+        "entryNumber": "JE-2026-0636F939",
+        "date": "2026-10-08",
+        "description": "Match existing bill_payment: Supplier instalment",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "03ad5ded-161f-4bdd-8497-00d363728a01",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "0.00",
+        "credit": "575.00",
+        "runningBalance": "425.00"
+      },
+      {
+        "journalEntryId": "b1d747ea-1e70-4b9c-a384-2eb18d66467e",
+        "entryNumber": "JE-2026-404C7FC8",
+        "date": "2026-10-08",
+        "description": "Supplier instalment",
+        "referenceType": "bank_transaction",
+        "referenceId": "acf97f56-029f-44e2-b2c0-53e41b2164f9",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "575.00",
+        "credit": "0.00",
+        "runningBalance": "1000.00"
+      },
+      {
+        "journalEntryId": "b1d747ea-1e70-4b9c-a384-2eb18d66467e",
+        "entryNumber": "JE-2026-404C7FC8",
+        "date": "2026-10-08",
+        "description": "Supplier instalment",
+        "referenceType": "bank_transaction",
+        "referenceId": "acf97f56-029f-44e2-b2c0-53e41b2164f9",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "575.00",
+        "runningBalance": "11725.00"
+      },
+      {
+        "journalEntryId": "689727b5-2f47-44c6-9029-e9844943ab85",
+        "entryNumber": "JE-2026-0942B156",
+        "date": "2026-10-09",
+        "description": "Match existing expense: Office supplies",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "55c29fe9-4f89-4b5c-b124-d559a8ca9d15",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "11955.00"
+      },
+      {
+        "journalEntryId": "689727b5-2f47-44c6-9029-e9844943ab85",
+        "entryNumber": "JE-2026-0942B156",
+        "date": "2026-10-09",
+        "description": "Match existing expense: Office supplies",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "55c29fe9-4f89-4b5c-b124-d559a8ca9d15",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "770.00"
+      },
+      {
+        "journalEntryId": "867adc47-d54b-4c7a-9c82-08b388a1d67d",
+        "entryNumber": "JE-2026-69621F92",
+        "date": "2026-10-09",
+        "description": "Office supplies",
+        "referenceType": "bank_transaction",
+        "referenceId": "f5218a16-69b1-49ef-8c60-f4b21856584e",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "1000.00"
+      },
+      {
+        "journalEntryId": "867adc47-d54b-4c7a-9c82-08b388a1d67d",
+        "entryNumber": "JE-2026-69621F92",
+        "date": "2026-10-09",
+        "description": "Office supplies",
+        "referenceType": "bank_transaction",
+        "referenceId": "f5218a16-69b1-49ef-8c60-f4b21856584e",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "11725.00"
+      },
+      {
+        "journalEntryId": "84660ef0-7ef7-495b-9343-248a8937f026",
+        "entryNumber": "JE-2026-F643CB12",
+        "date": "2026-10-09",
+        "description": "October office supplies",
+        "referenceType": "expense",
+        "referenceId": "b7cd2e8e-03b8-490b-9023-8449dddebecb",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "200.00",
+        "credit": "0.00",
+        "runningBalance": "1200.00"
+      },
+      {
+        "journalEntryId": "84660ef0-7ef7-495b-9343-248a8937f026",
+        "entryNumber": "JE-2026-F643CB12",
+        "date": "2026-10-09",
+        "description": "October office supplies",
+        "referenceType": "expense",
+        "referenceId": "b7cd2e8e-03b8-490b-9023-8449dddebecb",
+        "accountId": "7aefc116-f203-4be6-8717-ffbd9a3109eb",
+        "accountNumber": "2150",
+        "accountName": "GST Paid on Purchases",
+        "debit": "30.00",
+        "credit": "0.00",
+        "runningBalance": "180.00"
+      },
+      {
+        "journalEntryId": "84660ef0-7ef7-495b-9343-248a8937f026",
+        "entryNumber": "JE-2026-F643CB12",
+        "date": "2026-10-09",
+        "description": "October office supplies",
+        "referenceType": "expense",
+        "referenceId": "b7cd2e8e-03b8-490b-9023-8449dddebecb",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "11495.00"
+      },
+      {
+        "journalEntryId": "eb812f1c-a0fe-41c8-988c-60a4633e8157",
+        "entryNumber": "JE-2026-AC9B41F1",
+        "date": "2026-10-10",
+        "description": "CN-2026-E0E9334B: Reviewed service return A",
+        "referenceType": "credit_note",
+        "referenceId": "e0e9334b-4165-4d18-830b-531bd42ad2ee",
+        "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "200.00",
+        "credit": "0.00",
+        "runningBalance": "-2800.00"
+      },
+      {
+        "journalEntryId": "eb812f1c-a0fe-41c8-988c-60a4633e8157",
+        "entryNumber": "JE-2026-AC9B41F1",
+        "date": "2026-10-10",
+        "description": "CN-2026-E0E9334B: Reviewed service return A",
+        "referenceType": "credit_note",
+        "referenceId": "e0e9334b-4165-4d18-830b-531bd42ad2ee",
+        "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "30.00",
+        "credit": "0.00",
+        "runningBalance": "-420.00"
+      },
+      {
+        "journalEntryId": "eb812f1c-a0fe-41c8-988c-60a4633e8157",
+        "entryNumber": "JE-2026-AC9B41F1",
+        "date": "2026-10-10",
+        "description": "CN-2026-E0E9334B: Reviewed service return A",
+        "referenceType": "credit_note",
+        "referenceId": "e0e9334b-4165-4d18-830b-531bd42ad2ee",
+        "accountId": "4002243b-3284-4e07-a4cb-661bda853012",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "920.00"
+      },
+      {
+        "journalEntryId": "ad6e27a0-e63a-4257-87e8-d8949474f536",
+        "entryNumber": "JE-2026-40C1F2C2",
+        "date": "2026-10-11",
+        "description": "CN-2026-EF55924B: Reviewed service return B",
+        "referenceType": "credit_note",
+        "referenceId": "ef55924b-0c9c-404f-92f4-ba1cf693309f",
+        "accountId": "7adecb3f-a4ff-4e0c-a7f3-e80a18366876",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "100.00",
+        "credit": "0.00",
+        "runningBalance": "-2700.00"
+      },
+      {
+        "journalEntryId": "ad6e27a0-e63a-4257-87e8-d8949474f536",
+        "entryNumber": "JE-2026-40C1F2C2",
+        "date": "2026-10-11",
+        "description": "CN-2026-EF55924B: Reviewed service return B",
+        "referenceType": "credit_note",
+        "referenceId": "ef55924b-0c9c-404f-92f4-ba1cf693309f",
+        "accountId": "09055b6a-b795-4ee6-97da-25db1c7bcb8d",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "15.00",
+        "credit": "0.00",
+        "runningBalance": "-405.00"
+      },
+      {
+        "journalEntryId": "ad6e27a0-e63a-4257-87e8-d8949474f536",
+        "entryNumber": "JE-2026-40C1F2C2",
+        "date": "2026-10-11",
+        "description": "CN-2026-EF55924B: Reviewed service return B",
+        "referenceType": "credit_note",
+        "referenceId": "ef55924b-0c9c-404f-92f4-ba1cf693309f",
+        "accountId": "6051073c-d0de-4900-b37a-ab7aeb00c9b3",
+        "accountNumber": "2300",
+        "accountName": "Customer Credits",
+        "debit": "0.00",
+        "credit": "115.00",
+        "runningBalance": "-115.00"
+      },
+      {
+        "journalEntryId": "b16780a8-2e5a-4448-b69a-4b6f263898c4",
+        "entryNumber": "JE-2026-21135994",
+        "date": "2026-10-12",
+        "description": "Refund CN-2026-EF55924B",
+        "referenceType": "credit_note_refund",
+        "referenceId": "5420b2f3-19a4-4987-a2b5-ff077e4bc364",
+        "accountId": "6051073c-d0de-4900-b37a-ab7aeb00c9b3",
+        "accountNumber": "2300",
+        "accountName": "Customer Credits",
+        "debit": "115.00",
+        "credit": "0.00",
+        "runningBalance": "0.00"
+      },
+      {
+        "journalEntryId": "b16780a8-2e5a-4448-b69a-4b6f263898c4",
+        "entryNumber": "JE-2026-21135994",
+        "date": "2026-10-12",
+        "description": "Refund CN-2026-EF55924B",
+        "referenceType": "credit_note_refund",
+        "referenceId": "5420b2f3-19a4-4987-a2b5-ff077e4bc364",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "115.00",
+        "runningBalance": "11380.00"
+      },
+      {
+        "journalEntryId": "c8ad3517-4a03-4025-81b1-6f7aa7bb2b52",
+        "entryNumber": "JE-2026-44A1F2D3",
+        "date": "2026-10-12",
+        "description": "Customer B refund",
+        "referenceType": "bank_transaction",
+        "referenceId": "cb9b1f8b-3395-4a9a-a823-b8c0c2554d79",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "115.00",
+        "credit": "0.00",
+        "runningBalance": "1315.00"
+      },
+      {
+        "journalEntryId": "c8ad3517-4a03-4025-81b1-6f7aa7bb2b52",
+        "entryNumber": "JE-2026-44A1F2D3",
+        "date": "2026-10-12",
+        "description": "Customer B refund",
+        "referenceType": "bank_transaction",
+        "referenceId": "cb9b1f8b-3395-4a9a-a823-b8c0c2554d79",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "0.00",
+        "credit": "115.00",
+        "runningBalance": "11265.00"
+      },
+      {
+        "journalEntryId": "0370ee14-0789-4689-9b40-f3ffe69fb891",
+        "entryNumber": "JE-2026-CE37EC6B",
+        "date": "2026-10-12",
+        "description": "Match existing credit_refund: Customer B refund",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "408666f5-5416-4829-a9eb-d0f14a46ac0f",
+        "accountId": "9d35e604-0e4e-4571-9987-9b51e9314718",
+        "accountNumber": "BANK-3019B105",
+        "accountName": "Kauri Operating",
+        "debit": "115.00",
+        "credit": "0.00",
+        "runningBalance": "11380.00"
+      },
+      {
+        "journalEntryId": "0370ee14-0789-4689-9b40-f3ffe69fb891",
+        "entryNumber": "JE-2026-CE37EC6B",
+        "date": "2026-10-12",
+        "description": "Match existing credit_refund: Customer B refund",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "408666f5-5416-4829-a9eb-d0f14a46ac0f",
+        "accountId": "1b3dab47-5e15-415d-a5a4-c66715c83fef",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "0.00",
+        "credit": "115.00",
+        "runningBalance": "1200.00"
+      }
+    ]
+  }
+}

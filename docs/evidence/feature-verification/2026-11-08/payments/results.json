@@ -1,0 +1,25 @@
+{
+  "platform": "real local Vite web and Hono/SQLite",
+  "setup": "API-created synthetic user, profile, customer and issued invoices; payments through actual UI",
+  "cases": [
+    {
+      "label": "desktop",
+      "invoiceId": "4a9793c0-a3a4-4be7-8ba2-515c8befdb0b",
+      "paymentId": "70082280-4e6b-4dc4-a865-2cad0bbc501d",
+      "amount": "57.50",
+      "balanceDue": "57.50",
+      "receipts": 1,
+      "paymentJournals": 1
+    },
+    {
+      "label": "phone",
+      "invoiceId": "86302c97-f583-4db2-bd83-cd30dfe352c2",
+      "paymentId": "1fdd8ea6-4315-4537-ae3b-660c3d844134",
+      "amount": "57.50",
+      "balanceDue": "57.50",
+      "receipts": 1,
+      "paymentJournals": 1
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,76 @@
+{
+  "baseSha": "0a35c75f75d9013d28b44f1ba7354a8c72b55df2",
+  "workingTree": "Local uncommitted fixes and evidence; no hosted CI, merge or deployment",
+  "checks": {
+    "api": {
+      "files": 135,
+      "passed": 601,
+      "failed": 0,
+      "method": "Latest complete-file results; original failures retained; normal repository timeouts unchanged.",
+      "attempts": [
+        {
+          "report": "ledgercraft-feature-api-results.json",
+          "passed": 594,
+          "failed": 6
+        },
+        {
+          "report": "ledgercraft-focused-fixes-results.json",
+          "passed": 13,
+          "failed": 0
+        },
+        {
+          "report": "ledgercraft-api-rerun-results.json",
+          "passed": 28,
+          "failed": 0
+        }
+      ]
+    },
+    "web": {
+      "files": 169,
+      "passed": 874,
+      "failed": 0,
+      "method": "Latest complete-file results; original failures retained; normal repository timeouts unchanged.",
+      "attempts": [
+        {
+          "report": "ledgercraft-feature-web-results.json",
+          "passed": 865,
+          "failed": 7
+        },
+        {
+          "report": "ledgercraft-web-rerun-results.json",
+          "passed": 54,
+          "failed": 0
+        },
+        {
+          "report": "ledgercraft-quote-cache-results.json",
+          "passed": 5,
+          "failed": 0
+        }
+      ]
+    },
+    "contracts": {
+      "files": 44,
+      "passed": 162
+    },
+    "proofRuntime": {
+      "passed": 4
+    },
+    "webTypecheck": "PASS",
+    "apiContractsTypecheck": "PASS",
+    "webLint": {
+      "errors": 0,
+      "warnings": 120
+    },
+    "changedFilesLint": {
+      "errors": 0,
+      "warnings": 1
+    },
+    "webBuild": "PASS including postbuild version verification",
+    "expoWebExport": "PASS; no native-device claim",
+    "skills": {
+      "validated": 25
+    },
+    "nativeDevice": "NOT_RUN",
+    "liveProviders": "NOT_RUN"
+  }
+}

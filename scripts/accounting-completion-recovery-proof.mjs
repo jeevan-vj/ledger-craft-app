@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
@@ -6,7 +7,7 @@ const origin = process.env.BUSINESS_WEB_URL ?? 'http://127.0.0.1:8080';
 const output = process.env.COMPLETION_RECOVERY_OUTPUT ?? '/tmp/ledgercraft-accounting-completion-recovery';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(origin).hostname));
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
+const browser = await chromium.launch(proofBrowserOptions());
 const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
 const page = await context.newPage(); page.setDefaultTimeout(25_000);
 const errors = []; page.on('pageerror', error => errors.push(error.message));

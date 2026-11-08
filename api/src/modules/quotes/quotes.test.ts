@@ -559,6 +559,18 @@ describe('quote routes', () => {
 
         const listed = (await (await app.request('/api/invoices', { headers })).json()) as { invoices: { id: string }[] };
         expect(listed.invoices).toHaveLength(1);
+        expect(invoiceSchema.parse(await (await app.request(`/api/invoices/${converted.invoice.id}`, { headers })).json()).status).toBe('draft');
+        expect(await journalRows(db)).toEqual([]);
+
+        const registered = await app.request('/api/business-profile', {
+          method: 'PUT', headers,
+          body: JSON.stringify({ name: 'Kauri Studio Ltd', email: 'hello@kauristudio.nz', country: 'NZ', address: '10 Kauri Road', city: 'Auckland', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-01-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 10 }),
+        });
+        expect(registered.status, await registered.clone().text()).toBe(200);
+        for (let attempt = 0; attempt < 2; attempt++) {
+          const issued = await app.request(`/api/invoices/${converted.invoice.id}`, { method: 'PATCH', headers, body: JSON.stringify({ status: 'sent' }) });
+          expect(issued.status, await issued.clone().text()).toBe(200);
+        }
         const journals = await journalRows(db);
         expect(journals).toHaveLength(1);
         expect(journals[0]?.reference_type).toBe('invoice');

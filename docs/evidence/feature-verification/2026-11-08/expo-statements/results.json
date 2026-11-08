@@ -1,0 +1,98 @@
+{
+  "platform": "Expo web / Chromium390x844 / real local Hono+SQLite",
+  "expected": {
+    "openingBalance": "1000.00",
+    "closingBalance": "600.00",
+    "payment": "400.00"
+  },
+  "errors": [],
+  "statement": {
+    "customer": {
+      "id": "aa9094ba-a705-46e6-9d21-acacf3cbf461",
+      "name": "Harbour Mobile Buyer",
+      "email": "buyer@example.test"
+    },
+    "businessName": "Kauri Mobile Collections Limited",
+    "currency": "NZD",
+    "type": "activity",
+    "from": "2026-10-01",
+    "to": "2026-10-31",
+    "openingBalance": "1000.00",
+    "lines": [
+      {
+        "id": "109f7122-f12e-442b-9d82-d7c978387c21-f9fa7be9-9a33-4f57-8fbe-7a1a6a93e953",
+        "date": "2026-10-05",
+        "kind": "invoice_payment",
+        "reference": "JE-2026-259D64E5",
+        "description": "invoice payment · INV-2026-0001",
+        "debit": "0.00",
+        "credit": "400.00",
+        "runningBalance": "600.00",
+        "invoiceId": "f9fa7be9-9a33-4f57-8fbe-7a1a6a93e953"
+      }
+    ],
+    "closingBalance": "600.00",
+    "aging": {
+      "total": "600.00",
+      "current": "0.00",
+      "days1To30": "600.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "unallocatedControl": "0.00",
+      "items": [
+        {
+          "id": "f9fa7be9-9a33-4f57-8fbe-7a1a6a93e953",
+          "number": "INV-2026-0001",
+          "partyId": "aa9094ba-a705-46e6-9d21-acacf3cbf461",
+          "partyName": "Harbour Mobile Buyer",
+          "issueDate": "2026-09-20",
+          "dueDate": "2026-10-10",
+          "balanceDue": "600.00",
+          "daysOverdue": 21,
+          "bucket": "1-30"
+        }
+      ]
+    },
+    "generatedAt": "2026-11-08T07:54:05.235Z",
+    "warnings": [
+      "Amounts are company-base NZD from posted receivable and customer-credit journals. Foreign invoices use recorded carrying amounts.",
+      "Customer credits are shown separately from invoice aging; confirm any unallocated balance before collection."
+    ]
+  },
+  "secureShare": {
+    "expires": true,
+    "closingBalance": "600.00"
+  },
+  "reminderSettings": {
+    "enabled": true,
+    "timeZone": "Pacific/Auckland",
+    "localTime": "10:30",
+    "steps": [
+      {
+        "id": "before-due",
+        "offsetDays": -3,
+        "reminderType": "gentle"
+      },
+      {
+        "id": "due",
+        "offsetDays": 0,
+        "reminderType": "gentle"
+      },
+      {
+        "id": "week-overdue",
+        "offsetDays": 7,
+        "reminderType": "firm"
+      },
+      {
+        "id": "fortnight-overdue",
+        "offsetDays": 14,
+        "reminderType": "final"
+      }
+    ],
+    "emailAvailable": false,
+    "warnings": [
+      "Email delivery is unavailable. Scheduled steps are logged as skipped without retrying."
+    ]
+  }
+}

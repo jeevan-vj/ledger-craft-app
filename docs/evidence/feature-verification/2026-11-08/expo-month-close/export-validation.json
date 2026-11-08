@@ -1,0 +1,48 @@
+{
+  "extractor": "pypdf 7.0.0",
+  "checks": [
+    {
+      "section": "profit-loss",
+      "pdf": "exports/Report-profit-loss-2026-10-01-2026-10-31.pdf",
+      "expected": "1,500.00",
+      "status": "PASS",
+      "pages": 1
+    },
+    {
+      "section": "balance-sheet",
+      "pdf": "exports/Report-balance-sheet-2026-10-01-2026-10-31.pdf",
+      "expected": "12,480.00",
+      "status": "PASS",
+      "pages": 1
+    },
+    {
+      "section": "trial-balance",
+      "pdf": "exports/Report-trial-balance-2026-10-01-2026-10-31.pdf",
+      "expected": "13,680.00",
+      "status": "PASS",
+      "pages": 1
+    },
+    {
+      "section": "cash-flow",
+      "pdf": "exports/Report-cash-flow-2026-10-01-2026-10-31.pdf",
+      "expected": "11,380.00",
+      "status": "PASS",
+      "pages": 1
+    },
+    {
+      "section": "receivables",
+      "pdf": "exports/Report-receivables-2026-10-01-2026-10-31.pdf",
+      "expected": "920.00",
+      "status": "PASS",
+      "pages": 1
+    },
+    {
+      "section": "payables",
+      "pdf": "exports/Report-payables-2026-10-01-2026-10-31.pdf",
+      "expected": "575.00",
+      "status": "PASS",
+      "pages": 1
+    }
+  ],
+  "gstPdfNet225": "PASS"
+}

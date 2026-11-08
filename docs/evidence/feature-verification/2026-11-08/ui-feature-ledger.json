@@ -1,0 +1,790 @@
+{
+  "scope": "Fresh local UI evidence; API report is separate. PARTIAL never means whole-feature PASS.",
+  "features": [
+    {
+      "feature": "identity",
+      "title": "Account access and recovery",
+      "requiredFlow": "Sign up, sign in, inspect sessions, request reset, reject expired/reused reset, revoke another session.",
+      "accountingExpectation": "Reset revokes old cookie and bearer sessions; neutral unknown-email response; do not expose tokens in screenshots.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Synthetic signup and onboarding on web and Expo; reset/session security is separately integration-tested.",
+      "screenshots": [
+        {
+          "path": "pages/settings-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/settings-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "companies",
+      "title": "Companies and permissions",
+      "requiredFlow": "Create two synthetic companies, switch, invite a read-only member, attempt a forbidden write and cross-company read.",
+      "accountingExpectation": "Each company retains separate books; revoked membership immediately loses access; invitations do not imply email delivery.",
+      "uiStatus": "RENDER_ONLY",
+      "confirmedScope": "Authenticated route rendered; complete business workflow is not yet confirmed.",
+      "screenshots": [
+        {
+          "path": "pages/settings-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/settings-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": []
+    },
+    {
+      "feature": "profile",
+      "title": "Business settings and branding",
+      "requiredFlow": "Save business identity, valid logo and invoice palette, reload, preview an invoice; reject malformed and oversized logos.",
+      "accountingExpectation": "Printed seller identity matches effective GST registration; failed photo reads must not save a broken profile.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Business identity and effective GST settings saved; complete logo/palette workflow not rerun.",
+      "screenshots": [
+        {
+          "path": "pages/settings-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/settings-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "customers",
+      "title": "Customers and collections",
+      "requiredFlow": "Create and edit a customer, create an invoice, view balance, archive and check historical documents.",
+      "accountingExpectation": "Customer history remains intact; current outstanding amount agrees with invoice balances, not gross sales.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Customer creation within invoice flows; customer statements verified separately.",
+      "screenshots": [
+        {
+          "path": "pages/customers-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/customers-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-statements"
+      ]
+    },
+    {
+      "feature": "catalogue",
+      "title": "Products and services",
+      "requiredFlow": "Create an active priced service, edit price, use it on a draft, deactivate, inspect an existing invoice.",
+      "accountingExpectation": "Historical invoice values remain unchanged; new selection respects active state and exact quantity/price.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Actual catalogue create/edit/reload price125 at desktop/phone; input labels accessible. Deactivation/history flow not rerun.",
+      "screenshots": [
+        {
+          "path": "pages/items-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/items-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "catalogue-quotes"
+      ]
+    },
+    {
+      "feature": "quotes",
+      "title": "Quotes and estimates",
+      "requiredFlow": "Create, revise, share, accept and convert a quote; retry conversion; decline another quote.",
+      "accountingExpectation": "Quote alone posts no journal; conversion creates one invoice; revoked/expired public links cannot act.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Create quote115, mark sent/accepted and convert once to draft; full trial balance unchanged after fixing #167.",
+      "screenshots": [
+        {
+          "path": "pages/quotes-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/quotes-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "catalogue-quotes"
+      ]
+    },
+    {
+      "feature": "invoices",
+      "title": "Invoice lifecycle",
+      "requiredFlow": "Create a draft with discounts and multiple taxes, reload, issue, duplicate, cancel and restore; inspect audit history.",
+      "accountingExpectation": "Server totals win; drafts do not post; cancellation/restoration is balanced and immutable; explicit exempt taxes remain empty.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Create, date, issue and reload two October invoices; snapshot replacement/revocation and actual PDF verified separately.",
+      "screenshots": [
+        {
+          "path": "pages/invoices-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/invoices-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "payments",
+      "title": "Payments and receipts",
+      "requiredFlow": "Part-pay an issued invoice, retry the same key, attempt overpayment, settle, inspect receipt, reverse with a dated reason.",
+      "accountingExpectation": "Exactly one receipt/journal per accepted payment; balance cannot go negative; reversal preserves original payment and receipt.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "UI receipts and independent report reconciliation; fresh desktop/phone reload confirms exactly one receipt and journal per payment.",
+      "screenshots": [
+        {
+          "path": "pages/payments-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/payments-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "payments",
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "credit-notes",
+      "title": "Customer credits and refunds",
+      "requiredFlow": "Credit an unpaid invoice, allocate credit, credit a paid invoice and refund the correct receipt; attempt excess refund.",
+      "accountingExpectation": "Credits and refunds have distinct source identities; remaining refundable value is checked live; originals remain visible.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Unpaid and paid source credits plus customer refund; independent October totals reconcile.",
+      "screenshots": [
+        {
+          "path": "pages/invoices-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/invoices-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "purchases",
+      "title": "Vendors and bills",
+      "requiredFlow": "Create vendor and draft bill, receive, split-pay, retry, cancel/restore where permitted; export vendors.",
+      "accountingExpectation": "Draft bill posts nothing; AP equals unpaid received bills; duplicate payment cannot reduce AP twice; CSV neutralises formulas.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Vendor and bill creation, receipt/posting, partial supplier payment through web and Expo.",
+      "screenshots": [
+        {
+          "path": "pages/bills-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/bills-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "expenses",
+      "title": "Expenses and receipt capture",
+      "requiredFlow": "Create an expense with tax on/off, approve/pay, attach receipt, reload; review duplicate receipt and failed scan.",
+      "accountingExpectation": "GST follows reviewed exact amount; failed AI must leave a reviewable draft, never silently post; retained source stays private.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Paid approved expense through web and Expo; batch receipt images/PDF, reviewed exact draft and duplicate gate through web.",
+      "screenshots": [
+        {
+          "path": "pages/expenses-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/expenses-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "banking",
+      "title": "Bank accounts and transactions",
+      "requiredFlow": "Create a bank account, record transfer, import a mapped CSV twice, review balances and saved statement.",
+      "accountingExpectation": "Import changes displayed balance once; transfers net to zero across own accounts; foreign bank statements fail closed.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Five statement lines imported and matched to existing settlements; displayed balances and final reports agree.",
+      "screenshots": [
+        {
+          "path": "pages/bank-accounts-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/bank-accounts-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "reconciliation",
+      "title": "Bank reconciliation",
+      "requiredFlow": "Match bank lines to existing invoice receipts, supplier payment, paid expense and customer refund; undo/rematch and complete.",
+      "accountingExpectation": "No second income/GST/cash posting; completed cutoff and linked account identity are protected; difference is zero.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Five matches and completed statement with zero difference on web and Expo.",
+      "screenshots": [
+        {
+          "path": "pages/reconciliation-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/reconciliation-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "journals",
+      "title": "Chart of accounts and journals",
+      "requiredFlow": "Create accounts, post reviewed opening balances and multiline journal, retry, inspect/export every line; reject imbalance.",
+      "accountingExpectation": "Debits equal credits exactly; posted entries immutable; opening and period turnover are distinct from closing balance.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Reviewed opening balances and retained source journals; Expo chart setup explicitly uses API.",
+      "screenshots": [
+        {
+          "path": "pages/journal-entries-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/journal-entries-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "reports",
+      "title": "Financial reports and dashboards",
+      "requiredFlow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month.",
+      "accountingExpectation": "Use frozen Decimal working paper: TB 13680 each side, assets 12480 = liabilities 980 + equity 11500, profit 1500, cash 11380, AR 920, AP 575. Cash profit 1200; later settlement does not alter historical close.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Web and Expo independent month-close totals, six actual PDF/CSV pairs per platform, complete report screenshots and historical API reconciliation.",
+      "screenshots": [
+        {
+          "path": "pages/financial-reports-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/financial-reports-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "gst",
+      "title": "GST settings and returns",
+      "requiredFlow": "Confirm registration date/basis/frequency, prepare each supported basis, retain/revise draft, record synthetic external-filing reference, inspect immutable snapshot.",
+      "accountingExpectation": "October working paper gives invoice 225, payments 180, hybrid 300. Pre-registration sources stay excluded; unknown mappings block filing. This is preparation and recording, not IRD submission.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Web and Expo registered settings, exact retained invoice-basis GST225 and actual preparation PDFs; alternate bases at API boundary.",
+      "screenshots": [
+        {
+          "path": "pages/ird-reports-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/ird-reports-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "web-month-close",
+        "expo-month-close"
+      ]
+    },
+    {
+      "feature": "currency",
+      "title": "Currency and reviewed FX",
+      "requiredFlow": "Set base currency/dated rate, create foreign source, review carrying settlement, post period-end revaluation and next-day reversal.",
+      "accountingExpectation": "Used rates/snapshots immutable; report base restrictions remain explicit; unsupported foreign bank matching is rejected.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Actual web reviewed AR/AP revaluation160 to170, next-day reversal160, settlement165 and realized gain/loss5. Expo reviewed transfer16NZD to10USD.",
+      "screenshots": [
+        {
+          "path": "pages/settings-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/settings-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "fx",
+        "expo-recurring-banking"
+      ]
+    },
+    {
+      "feature": "recurring",
+      "title": "Recurring documents",
+      "requiredFlow": "Create invoice/bill templates, preview occurrence, pause/resume/end; exercise duplicate/catch-up and revoked permission.",
+      "accountingExpectation": "One document per occurrence across retries/restarts; owning-company context and current permissions govern jobs; unavailable mail is not sent.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Expo invoice/bill schedule create, NZ month-end preview, pause/resume and four unique generated documents; generated invoice115.02/GST15.",
+      "screenshots": [
+        {
+          "path": "pages/recurring-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/recurring-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "expo-recurring-banking"
+      ]
+    },
+    {
+      "feature": "statements",
+      "title": "Statements and reminders",
+      "requiredFlow": "Generate a dated customer statement, retain/share snapshot, download PDF, change source, inspect original snapshot, opt out and run reminder contract.",
+      "accountingExpectation": "Snapshot remains unchanged; opt-out is respected; transport acceptance and live delivery are separate evidence.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Web retained snapshot690 after current changes575; Expo opening1000/payment400/closing600, actual PDF, secure share, optouts and reminder preferences persist.",
+      "screenshots": [
+        {
+          "path": "pages/customer-statements-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/customer-statements-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "statements-canonical",
+        "expo-statements"
+      ]
+    },
+    {
+      "feature": "imports",
+      "title": "Invoice and document imports",
+      "requiredFlow": "Import PDF/photo, review extracted lines/contact/duplicate, choose sales or purchase, commit draft, inspect locked original; reject over-limit and malicious input.",
+      "accountingExpectation": "Only reviewed drafts are committed; no send/pay/post side effect; exact cents and document prompt boundaries hold; unavailable provider is visible.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Three images plus PDF uploaded; unavailable-AI manual review, persisted exact 115/GST15 draft and duplicate override gate verified.",
+      "screenshots": [
+        {
+          "path": "pages/invoices-import-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/invoices-import-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "receipt-import"
+      ]
+    },
+    {
+      "feature": "quick-sale",
+      "title": "Quick sale",
+      "requiredFlow": "On Expo enable Sell, arrange tiles, charge cart, double-tap/retry, view/share receipt, inspect day summary and offline error.",
+      "accountingExpectation": "One invoice/full payment/receipt per persisted cart key; daily gross equals method totals; once-rounded cart total; named customer sale remains in day summary.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Expo cart/favourites persistence, cash sale/receipt/QR, anonymous Paid snapshot, daily summary, offline guard and lost-response idempotent retry.",
+      "screenshots": [
+        {
+          "path": "pages/invoices-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/invoices-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "quick-sale"
+      ]
+    },
+    {
+      "feature": "stripe",
+      "title": "Stripe payment operations",
+      "requiredFlow": "Use local mock onboarding/Checkout, deliver signed duplicate events, inspect settlement/refund and read-only daily verification; test unavailable capability.",
+      "accountingExpectation": "Verified event creates one payment/clearing posting; paid capture is not bank payout; payout/dispute/excess-capture gaps remain explicit.",
+      "uiStatus": "RENDER_ONLY",
+      "confirmedScope": "Authenticated route rendered; complete business workflow is not yet confirmed.",
+      "screenshots": [
+        {
+          "path": "pages/settings-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/settings-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": []
+    },
+    {
+      "feature": "bank-feeds",
+      "title": "Bank feed connections",
+      "requiredFlow": "Test disabled capability, internal Personal App gate, mocked import retry and disconnect; verify tenant scoping.",
+      "accountingExpectation": "Never claim Full App OAuth/accreditation or live bank proof from mocks; credentials remain server-only.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Web authenticated unavailable-state gate verified at both widths; no live bank connection.",
+      "screenshots": [
+        {
+          "path": "pages/bank-accounts-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/bank-accounts-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "bank-feeds"
+      ]
+    },
+    {
+      "feature": "assistant",
+      "title": "Assistant and scanned documents",
+      "requiredFlow": "Test unavailable provider and bounded receipt/PDF extraction; supply embedded prompt instructions; inspect reviewed draft.",
+      "accountingExpectation": "Document content is untrusted; AI cannot silently post financial transactions; confidence and unavailable states remain visible.",
+      "uiStatus": "RENDER_ONLY",
+      "confirmedScope": "Authenticated route rendered; complete business workflow is not yet confirmed.",
+      "screenshots": [
+        {
+          "path": "pages/expenses-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/expenses-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": []
+    },
+    {
+      "feature": "dashboard",
+      "title": "Dashboard and saved reports",
+      "requiredFlow": "Change layout, save filter, reload/switch company, open linked source and compare summary to posted reports.",
+      "accountingExpectation": "Operational activity is distinguished from ledger totals; per-user layouts and company-scoped saved filters do not leak.",
+      "uiStatus": "PARTIAL",
+      "confirmedScope": "Actual Auckland/UTC selected October31 cutoff requests six May\u2013October monthly and28 October4\u201331 daily reports; all200, screenshots at desktop/phone. Saved layouts not rerun.",
+      "screenshots": [
+        {
+          "path": "pages/dashboard-desktop.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          }
+        },
+        {
+          "path": "pages/dashboard-phone.png",
+          "status": "RENDER_ONLY",
+          "viewport": {
+            "width": 390,
+            "height": 844
+          }
+        }
+      ],
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "workflowEvidence": [
+        "dashboard-calendar"
+      ]
+    }
+  ]
+}

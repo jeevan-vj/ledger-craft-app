@@ -18,3 +18,11 @@ it('opens the real report export rather than simulating a successful download', 
  mount(); fireEvent.click(await screen.findByRole('button', { name: 'Export report' }));
  await waitFor(() => expect(screen.getByTestId('location')).toHaveTextContent('/financial-reports?from=2026-04-01&to=2026-04-30'));
 });
+it('keeps the selected calendar cutoff for charts in the browser timezone', async () => {
+ mount(); await screen.findByRole('button', { name: 'Export report' });
+ for (const method of [accountingService.getRevenueExpenseData, accountingService.getCashFlowData]) {
+  const through = vi.mocked(method).mock.calls.at(-1)?.[1];
+  expect(through).toBeInstanceOf(Date);
+  expect([through!.getFullYear(), through!.getMonth() + 1, through!.getDate()]).toEqual([2026, 4, 30]);
+ }
+});

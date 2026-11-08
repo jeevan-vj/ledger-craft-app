@@ -1,0 +1,11 @@
+{
+  "platform": "real Vite web/Hono/SQLite",
+  "itemId": "47da7d09-11a0-4b19-8185-d3b57f782bec",
+  "editedPrice": "125",
+  "quoteId": "173fc7c7-cd4a-4ccb-afe5-e1bd3f8caaaf",
+  "quoteTotal": "115.00",
+  "invoiceId": "6dc45115-ab16-4a63-ad3c-0cc9f782e3f3",
+  "invoiceStatus": "draft",
+  "ledgerUnchanged": true,
+  "errors": []
+}

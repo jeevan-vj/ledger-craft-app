@@ -34,7 +34,7 @@ export default function AccountingDashboardPage() {
   const periodFrom = query.get('from'); const periodTo = query.get('to');
   const requested = financialReportQuerySchema.safeParse({ from: periodFrom, to: periodTo });
   const period = requested.success ? { startDate: requested.data.from, endDate: requested.data.to } : undefined;
-  const through = period ? new Date(period.endDate + 'T12:00:00Z') : new Date();
+  const through = period ? new Date(period.endDate + 'T12:00:00') : new Date();
   const [financialSummary, setFinancialSummary] = useState<FinancialSummary | null>(null);
   const [accountBalances, setAccountBalances] = useState<AccountBalanceSummary[]>([]);
   const [revenueExpenseData, setRevenueExpenseData] = useState<RevenueExpenseData[]>([]);

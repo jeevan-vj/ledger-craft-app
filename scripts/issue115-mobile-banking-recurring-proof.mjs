@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
@@ -6,7 +7,7 @@ const apiOrigin = process.env.ISSUE115_API_URL ?? 'http://127.0.0.1:3001';
 const out = process.env.ISSUE115_MOBILE_BANK_OUTPUT ?? '/tmp/ledgercraft-remaining-mobile-banking-recurring';
 for (const url of [origin, apiOrigin]) assert.ok(['127.0.0.1', 'localhost'].includes(new URL(url).hostname));
 await mkdir(out, { recursive: true });
-const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--no-sandbox'] });
+const browser = await chromium.launch(proofBrowserOptions());
 const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: 'dark', timezoneId: 'Pacific/Auckland' });
 const page = await context.newPage(); page.setDefaultTimeout(60_000);
 const results = { platform: 'Expo web / Chromium390x844 / actual HonoSQLite / synthetic companies; no native device or provider delivery', errors: [], expected: { generatedInvoiceTotal: '115.02', generatedInvoiceGst: '15.00', initialBankClosing: '906.03', afterFx: '902.13', usdAfterFx: '10.00', csvUniqueAdded: 1, csvDuplicatesSkipped: 1 }, actual: {} };

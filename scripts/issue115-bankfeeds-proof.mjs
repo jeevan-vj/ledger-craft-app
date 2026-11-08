@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import path from 'node:path';
 import {mkdir,writeFile} from 'node:fs/promises';
@@ -5,7 +6,7 @@ import {chromium} from '@playwright/test';
 const origin=process.env.ISSUE115_WEB_ORIGIN??'http://127.0.0.1:8080';
 assert.ok(['127.0.0.1','localhost'].includes(new URL(origin).hostname));
 const output=process.env.ISSUE115_BANKFEEDS_OUTPUT??'/tmp/ledgercraft-issue115-bankfeeds';await mkdir(output,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox'],headless:true});
+const browser=await chromium.launch(proofBrowserOptions());
 const results={platform:'Chromium web, real local API; provider credentials unavailable',cases:[],errors:[]};
 try{
  for(const [name,viewport]of[['desktop',{width:1440,height:900}],['phone',{width:390,height:844}]]){

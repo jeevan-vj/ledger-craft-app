@@ -1,10 +1,11 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {execFileSync} from 'node:child_process';
 import {chromium,expect} from '@playwright/test';
 const web=process.env.REPORT_WEB_ORIGIN??'http://127.0.0.1:8080';const apiOrigin=process.env.REPORT_API_ORIGIN??'http://127.0.0.1:3001';const mobile=process.env.REPORT_MOBILE_ORIGIN??'http://127.0.0.1:8081';const checkLayout=process.env.REPORT_LAYOUT_CHECK==='1';const out=process.env.REPORT_OUTPUT??'/tmp/ledgercraft-issue115-reports';
 for(const u of [web,apiOrigin,mobile])assert.ok(['localhost','127.0.0.1'].includes(new URL(u).hostname));await mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});const results={platform:'Actual Chromium desktop1440x900 / webphone390x844 / Expo-web390x844, real local Hono/SQLite, synthetic books',expected:{revenue:'1500.00',expenses:'300.00',netIncome:'1200.00',aprilNet:'800.00',mayNet:'400.00',assets:'6425.00',liabilities:'225.00',equity:'6200.00',cash:'5460.00',receivables:'920.00',cashRevenue:'700.00',cashExpenses:'300.00',cashNet:'400.00'},cases:[],errors:[]};let page;
+const browser=await chromium.launch(proofBrowserOptions());const results={platform:'Actual Chromium desktop1440x900 / webphone390x844 / Expo-web390x844, real local Hono/SQLite, synthetic books',expected:{revenue:'1500.00',expenses:'300.00',netIncome:'1200.00',aprilNet:'800.00',mayNet:'400.00',assets:'6425.00',liabilities:'225.00',equity:'6200.00',cash:'5460.00',receivables:'920.00',cashRevenue:'700.00',cashExpenses:'300.00',cashNet:'400.00'},cases:[],errors:[]};let page;
 async function run(name,origin,viewport,isMobile=false){
  const context=await browser.newContext({viewport,acceptDownloads:true,timezoneId:'Pacific/Auckland',colorScheme:isMobile?'dark':'light'});page=await context.newPage();page.setDefaultTimeout(90_000);page.on('pageerror',e=>results.errors.push(`${name}: ${e.message}`));
  let signUpRetries=0;const build=!isMobile?await(await context.request.get(`${origin}/version.json`)).json():null;

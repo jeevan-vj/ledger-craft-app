@@ -96,7 +96,7 @@
     },
     {
       "id": "transfers", "title": "Transfers", "required": true, "status": "partial", "backlogTask": "AKP-02",
-      "gap": "Same-currency transfers and reviewed-rate cross-currency transfers post equal and opposite reconciled legs. Web BankTransferDialog and mobile BankTransferFormScreen do not send exchangeRateId, so those screens cannot complete a cross-currency transfer. Transfers have no edit or void lifecycle.",
+      "gap": "Same-currency and reviewed-rate cross-currency transfers post equal and opposite reconciled legs. Expo selects an immutable exchangeRateId and the fresh local workflow verifies16NZD to10USD. Web cross-currency transfer acceptance remains separate. Transfers have no edit or void lifecycle.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/bank.test.ts"] },
         "api": { "applicable": true, "paths": ["api/src/modules/bank/bank.test.ts", "api/src/modules/currency/currency.test.ts"] },
@@ -143,7 +143,7 @@
     },
     {
       "id": "tax", "title": "Tax", "required": true, "status": "partial", "backlogTask": "AKP-11",
-      "gap": "GST configuration, returns, and IRD filing exist, and invoice lines can carry multiple taxes. A reusable tax-rate catalogue and compound or withholding tax types are not implemented.",
+      "gap": "GST registration settings, supported preparation boxes, immutable saved returns and external-filing records exist; the application does not submit to IRD. Invoice lines can carry multiple taxes. A reusable tax-rate catalogue and compound or withholding tax types remain open.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/tax.test.ts"] },
         "api": { "applicable": true, "paths": ["api/src/modules/tax/tax.test.ts"] },
@@ -153,7 +153,7 @@
     },
     {
       "id": "currencies-and-localization", "title": "Currencies and localization", "required": true, "status": "partial", "backlogTask": "AKP-06",
-      "gap": "The organisation catalogue, immutable dated rates, locale, timezone, and financial-year settings exist, and invoices, bills, expenses, and explicit-rate transfers snapshot base amounts. Realized and unrealized exchange-difference journals are not posted. Financial reports stay NZD and do not convert foreign amounts. The settings screens have no dedicated automated test.",
+      "gap": "The organisation catalogue, immutable dated rates, locale, timezone and financial-year settings exist. Sources retain base-currency snapshots; reviewed foreign settlements and period-end revaluation post exact realized/unrealized differences with next-day reversal. Fresh web and Expo workflow evidence is in docs/evidence/feature-verification/2026-11-08. Reports remain NZD-only; broader currency-policy and native-device acceptance remain separate.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/currency.test.ts"] },
         "api": { "applicable": true, "paths": ["api/src/modules/currency/currency.test.ts"] },
@@ -163,7 +163,7 @@
     },
     {
       "id": "company-settings", "title": "Company settings", "required": true, "status": "partial", "backlogTask": "AKP-11",
-      "gap": "Business identity, invoice defaults, and template appearance exist. Currency, locale, and financial year are the currency-settings API. Email templates, reminder schedules, and a notification centre are not implemented.",
+      "gap": "Business identity, invoice defaults and template appearance exist. Currency, locale and financial-year settings and automatic reminder schedules are implemented. Email templates and a persistent notification centre remain open; live mail delivery is separate.",
       "verification": {
         "contract": { "applicable": true, "paths": ["packages/contracts/src/business-profile.test.ts"] },
         "api": { "applicable": true, "paths": ["api/src/modules/business-profile/business-profile.test.ts"] },
