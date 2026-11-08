@@ -1,0 +1,108 @@
+EasyBizInvoice
+Home
+Invoices
+Quotes
+Customers
+Items
+Purchases
+Money
+Expenses
+Payments
+Receipts
+Bank Accounts
+Import
+Accounts
+Categories
+Expense Categories
+Reports
+Recurring
+Settings
+v0.0.8
+DEV
+714cae
+Kauri Month Close Owner's organisation
+M
+Kauri Month Close Owner
+Payments
+Recover payment
+Record Payment
+You have 1 invoice with outstanding payments. Record a payment
+Received
+$2300.00
+Payments
+2
+Average
+$1150.00
+Pending
+0
+Payment History
+2 payments
+All Status
+All Methods
+Date	Invoice	Amount	Method	Reference	Status	Actions
+06 Oct 2026
+#INV-2026-0002
+	$1150.00	Bank Transfer	-
+Completed
+
+
+05 Oct 2026
+#INV-2026-0001
+	$1150.00	Bank Transfer	-
+Completed
+
+Update available
+
+Refresh EasyBizInvoice to use the latest improvements and fixes.
+
+Update now
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+
++ [
++   {
++     message: 'DataManager: Error fetching invoices: TypeError: Failed to fetch\n' +
++       '    at request (http://127.0.0.1:8080/src/features/invoices/api/invoicesApi.ts:157:28)\n' +
++       '    at Object.list (http://127.0.0.1:8080/src/features/invoices/api/invoicesApi.ts:174:28)\n' +
++       '    at Object.getInvoices (http://127.0.0.1:8080/src/services/supabaseService.ts:385:32)\n' +
++       '    at http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:299:78\n' +
++       '    at SOLIDDataManager.fetchData (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:284:34)\n' +
++       '    at SOLIDDataManager.fetchInvoices (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:299:20)\n' +
++       '    at SOLIDDataManager.createPayment (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:746:22)\n' +
++       '    at async http://127.0.0.1:8080/src/hooks/useAppData.ts:116:24\n' +
++       '    at async handleCreatePayment (http://127.0.0.1:8080/src/pages/PaymentsPage.tsx:63:13)\n' +
++       '    at async handleSubmit (http://127.0.0.1:8080/src/components/payment/PaymentForm.tsx:115:13)',
++     url: 'http://127.0.0.1:8080/src/services/DataManagerSOLID.ts'
++   }
++ ]
+- []
+
+    at file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/full-month-close-web-proof.mjs:84:9 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [
+    {
+      message: 'DataManager: Error fetching invoices: TypeError: Failed to fetch\n' +
+        '    at request (http://127.0.0.1:8080/src/features/invoices/api/invoicesApi.ts:157:28)\n' +
+        '    at Object.list (http://127.0.0.1:8080/src/features/invoices/api/invoicesApi.ts:174:28)\n' +
+        '    at Object.getInvoices (http://127.0.0.1:8080/src/services/supabaseService.ts:385:32)\n' +
+        '    at http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:299:78\n' +
+        '    at SOLIDDataManager.fetchData (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:284:34)\n' +
+        '    at SOLIDDataManager.fetchInvoices (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:299:20)\n' +
+        '    at SOLIDDataManager.createPayment (http://127.0.0.1:8080/src/services/DataManagerSOLID.ts:746:22)\n' +
+        '    at async http://127.0.0.1:8080/src/hooks/useAppData.ts:116:24\n' +
+        '    at async handleCreatePayment (http://127.0.0.1:8080/src/pages/PaymentsPage.tsx:63:13)\n' +
+        '    at async handleSubmit (http://127.0.0.1:8080/src/components/payment/PaymentForm.tsx:115:13)',
+      url: 'http://127.0.0.1:8080/src/services/DataManagerSOLID.ts'
+    }
+  ],
+  expected: [],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v24.22.1

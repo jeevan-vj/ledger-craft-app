@@ -1,0 +1,12 @@
+✔ portable proof defaults use the Playwright-installed browser (3.010609ms)
+✔ an explicit Linux or custom browser remains supported (0.649498ms)
+✔ proof runs accept alternate loopback ports but refuse hosted targets (1.695431ms)
+✔ network settling waits for an in-flight API read before navigating (35.459743ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 395.535052

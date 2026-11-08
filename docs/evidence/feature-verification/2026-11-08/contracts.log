@@ -1,0 +1,62 @@
+$ pnpm --filter @ledgercraft/contracts test
+$ vitest run
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/packages/contracts
+
+ ✓ src/bank.test.ts (6 tests) 346ms
+ ✓ src/payment.test.ts (6 tests) 96ms
+ ✓ src/invoice-import.test.ts (8 tests) 544ms
+ ✓ src/gst-settings.test.ts (4 tests) 253ms
+ ✓ src/business-profile.test.ts (9 tests) 286ms
+ ✓ src/purchase.test.ts (6 tests) 197ms
+ ✓ src/invoice.test.ts (13 tests) 509ms
+ ✓ src/tax.test.ts (5 tests) 35ms
+ ✓ src/quote.test.ts (4 tests) 253ms
+ ✓ src/sale.test.ts (5 tests) 308ms
+ ✓ src/recurring.test.ts (4 tests) 1249ms
+   ✓ recurring contracts > accepts exact-money invoice schedules and all interval families  932ms
+ ✓ src/currency.test.ts (5 tests) 577ms
+ ✓ src/report.test.ts (2 tests) 294ms
+ ✓ src/dashboard.test.ts (4 tests) 379ms
+ ✓ src/session.test.ts (6 tests) 263ms
+ ✓ src/expense.test.ts (3 tests) 166ms
+ ✓ src/tax-completion.test.ts (3 tests) 330ms
+ ✓ src/receipt.test.ts (3 tests) 274ms
+ ✓ src/reconciliation.test.ts (4 tests) 253ms
+ ✓ src/stripe.test.ts (4 tests) 440ms
+ ✓ src/report-columns.test.ts (5 tests) 1537ms
+   ✓ report columns and NZ date-only presets > accepts optional month/quarter columns without changing omitted queries  643ms
+   ✓ rejects a column range over 120 periods before expensive report generation  634ms
+ ✓ src/item.test.ts (5 tests) 242ms
+ ✓ src/report-export.test.ts (2 tests) 32ms
+ ✓ src/gst-hybrid.test.ts (3 tests) 316ms
+ ✓ src/organisation.test.ts (3 tests) 241ms
+ ✓ src/gst-preparation.test.ts (2 tests) 278ms
+ ✓ src/accounting-recovery.test.ts (2 tests) 452ms
+ ✓ src/customer-statements.test.ts (2 tests) 1342ms
+   ✓ customer statement and reminder boundaries > requires unique finite reminder steps and valid IANA timezone/local time  1015ms
+ ✓ src/credit-note.test.ts (2 tests) 348ms
+   ✓ credit note contracts > requires a source invoice, positive credit lines, explicit GST treatment and documentary reason  323ms
+ ✓ src/customer.test.ts (4 tests) 261ms
+ ✓ src/health.test.ts (4 tests) 104ms
+ ✓ src/journal-multiline.test.ts (2 tests) 242ms
+ ✓ src/reconciliation-summary.test.ts (2 tests) 156ms
+ ✓ src/error.test.ts (4 tests) 448ms
+ ✓ src/fx-revaluation.test.ts (1 test) 373ms
+   ✓ reviewed period-end valuation contract > requires actual dates, explicit reviewed rates and a review reason  363ms
+ ✓ src/ai.test.ts (3 tests) 499ms
+   ✓ ai contracts > accepts a Workers AI receipt result provider  346ms
+ ✓ src/gst-calculation.test.ts (1 test) 425ms
+ ✓ src/stripe-operations.test.ts (1 test) 552ms
+   ✓ Stripe operational DTOs > requires exact signed balance text and an explicit full-refund reason  528ms
+ ✓ src/conversation.test.ts (1 test) 257ms
+ ✓ src/object.test.ts (2 tests) 59ms
+ ✓ src/journal.test.ts (2 tests) 61ms
+ ✓ src/settlement.test.ts (2 tests) 233ms
+ ✓ src/bank-feeds.test.ts (2 tests) 348ms
+ ✓ src/receipt-exact.test.ts (1 test) 238ms
+
+ Test Files  44 passed (44)
+      Tests  162 passed (162)
+   Start at  20:06:33
+   Duration  56.31s (transform 22.85s, setup 0ms, collect 81.48s, tests 16.09s, environment 395ms, prepare 182.08s)

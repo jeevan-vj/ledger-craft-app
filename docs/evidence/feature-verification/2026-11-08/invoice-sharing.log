@@ -1,0 +1,18 @@
+
+Running 1 test using 1 worker
+
+[1A[2K(node:86006) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K(node:86006) Warning: The 'NO_COLOR' env is ignored due to the 'FORCE_COLOR' env being set.
+(Use `node --trace-warnings ...` to show where the warning was created)
+
+
+[1A[2K[1/1] [chromium] › tests/e2e/invoice-sharing-controls-local.spec.ts:5:1 › sender explicitly replaces expiry and snapshot; recipients lose old links
+[1A[2K  1 passed (31.7s)
+
+To open last HTML report run:
+[36m[39m
+[36m  pnpm exec playwright show-report[39m
+[36m[39m

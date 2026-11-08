@@ -1,0 +1,55 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > shows a report failure and retry instead of an endless loading skeleton
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+All accounting data loaded successfully
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+All accounting data loaded successfully
+
+ ❯ src/pages/__tests__/AccountingDashboardPage.test.tsx (3 tests | 1 failed) 694ms
+   ✓ shows a report failure and retry instead of an endless loading skeleton  389ms
+   ✓ opens the real report export rather than simulating a successful download 222ms
+   × keeps the selected calendar cutoff for charts in the browser timezone 79ms
+     → expected [ 2026, 5, 1 ] to deeply equal [ 2026, 4, 30 ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+AssertionError: expected [ 2026, 5, 1 ] to deeply equal [ 2026, 4, 30 ]
+
+- Expected
++ Received
+
+  [
+    2026,
+-   4,
+-   30,
++   5,
++   1,
+  ]
+
+ ❯ src/pages/__tests__/AccountingDashboardPage.test.tsx:26:81
+     24|   const through = vi.mocked(method).mock.calls.at(-1)?.[1];
+     25|   expect(through).toBeInstanceOf(Date);
+     26|   expect([through!.getFullYear(), through!.getMonth() + 1, through!.ge…
+       |                                                                                 ^
+     27|  }
+     28| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)
+   Start at  20:58:33
+   Duration  7.34s (transform 1.34s, setup 524ms, collect 2.11s, tests 694ms, environment 2.16s, prepare 308ms)

@@ -1,0 +1,640 @@
+{
+  "reviewedHead": "56a603593dda23fed0d4c5d878449c6370a65f19",
+  "logCount": 54,
+  "normalization": "Trailing whitespace only; private originals retained locally",
+  "credentialScan": "No credential assignments, auth cookie headers, provider keys or public share-token URLs matched",
+  "logs": [
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/api-initial.log",
+      "bytes": 1448370,
+      "sha256": "a60e404780627f9e6c9214858539b1ac19c8391c5a7e3b5492aadb2ea5cd1c89"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/api-rerun.log",
+      "bytes": 112109,
+      "sha256": "738a55bc97f8856a7554134d88e415c5a97d8bdd3faceddaa4f3dc397c0033a5"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/api-types.log",
+      "bytes": 125,
+      "sha256": "26797778123762ff9a257b4a482f8f74b9c4822bd4f2cdc4c29c094dd34c61f9"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/bank-feeds.log",
+      "bytes": 127,
+      "sha256": "ffb4521721882290c0c7b0c9442f816dea73bef51a1fc0ab9bcc18b6c932df5a"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-bank.log",
+      "bytes": 10,
+      "sha256": "fe3f5f41b96e43d3b80a506ff9b53700b3f8fba270b93816bb4b461ff6b714ea"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-credits.log",
+      "bytes": 13,
+      "sha256": "7dd8f34ff526c74abbaf060a5bd1f07e0fe9071c5f45f2461debc4199760a47b"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-gst.log",
+      "bytes": 9,
+      "sha256": "f027129b7cc33a792ce3dedfa6b66f8fce1dec104101559932ce3295dbdb9e5a"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-invoices.log",
+      "bytes": 14,
+      "sha256": "4bf212e24633f22e5c4a36faea98f3229c6fed26048ddb0a61660d9cf2bb51c7"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-purchases.log",
+      "bytes": 15,
+      "sha256": "5f53091ffe65c7ed3b5f49aec1d242871fe814c253e80f67b553decec2263908"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-receipts.log",
+      "bytes": 3597,
+      "sha256": "8dedfedc90703133e112575ca71aab6a009ea449d0051fe739b0cdc41715fc58"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-red.log",
+      "bytes": 328,
+      "sha256": "9d6cbfff7c26c11a799970d001d629caf2351b68c5d5a090db521ce80522db87"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-reports.log",
+      "bytes": 13,
+      "sha256": "a52d7b9cffb3a94cc902c86a87cd86da31917a7396d861ba96c6f2311594606b"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/browser-signup.log",
+      "bytes": 12,
+      "sha256": "3cca04672740cc5634d023b5857ba639717c2e9cf6616a9f4837f163dd0387b6"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/catalogue-quotes-complete.log",
+      "bytes": 99,
+      "sha256": "ea99237fc4f85ab31426b7443aad00ea0916f10c509a5b2346457277b70bc956"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/catalogue-quotes-confirmed.log",
+      "bytes": 12893,
+      "sha256": "ceb66e34119757a43017b0fd3f2094c5570dd8b8acc8041a47fc7d0725ecc30c"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/catalogue-quotes-postfix.log",
+      "bytes": 99,
+      "sha256": "ea99237fc4f85ab31426b7443aad00ea0916f10c509a5b2346457277b70bc956"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/changed-files-lint.log",
+      "bytes": 308,
+      "sha256": "0242ec19b449ce1bcd73c8432f6f9814e61f6cb8a5822ee5026692e4da7b1870"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/contracts.log",
+      "bytes": 3183,
+      "sha256": "341b94e92bdbf1168962f0fec563cac783e0bfd933e76bcc95f618caab093243"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/dashboard-calendar.log",
+      "bytes": 138,
+      "sha256": "58a2c76a07ae662d26f829d1cd4f6a1d9f67e595e8a8f3dd1389fdd884221839"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/dashboard-date-nz-green.log",
+      "bytes": 1452,
+      "sha256": "6641ab19ed004757e8a25888bdaa1fceb32a2819352acfe4d5d7274989c224d2"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/dashboard-date-red.log",
+      "bytes": 2364,
+      "sha256": "3c0ca884fdff09ce0308a1b334cf6303e03108713319055a3ad9999e57c39e64"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/dashboard-date-utc-green.log",
+      "bytes": 1385,
+      "sha256": "c1cb2fad392fc30160df2ff2f440dce74a8823b868722b3dc48db09008f472b2"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/evidence-history-green.log",
+      "bytes": 34764,
+      "sha256": "63e5b0a77863b784fe56978707a8c41d981423d769515e1f6522360caf30e591"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/evidence-history-red.log",
+      "bytes": 245949,
+      "sha256": "2718b921c1c12c28c94f5d05ad15b5ea7735fa72088c5d559c2f3ff067cae246"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/feature-build-complete.log",
+      "bytes": 18812,
+      "sha256": "61aa7927a70d8b123bd5aad51c485384a8ebfaf9ac90a0f0aff168e9f8adf5a5"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/feature-build-final.log",
+      "bytes": 18812,
+      "sha256": "4a3706fd9f5babdb09669d95b2e77012ce5f40101484b483424212d6c77d4811"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/feature-build-version-fixed.log",
+      "bytes": 47,
+      "sha256": "d25f1e3bcf5299ad7d26956e42ff042e9fe6a2c96e1280c6477c70db8f9c8acf"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/feature-lint.log",
+      "bytes": 27999,
+      "sha256": "df609ed3af30cb0cb6cf6137d0cf02278c2b3837c9c660b581d7431099a7c89d"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/feature-typecheck.log",
+      "bytes": 104,
+      "sha256": "48c1bbaa889c026335c3945506b1c30f963fe0092355ce57636a77162e2be0a9"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/focused-fixes.log",
+      "bytes": 74633,
+      "sha256": "aeb7006a2f6f5268f806fc6190f17eed12c344f46d6980142a97e82ed6749015"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/fx-built.log",
+      "bytes": 200,
+      "sha256": "ac04af6e0b6cf394d804a4ecdb0d3a0d51be577ee699bf953bf6b4bf0c3b3570"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/invoice-sharing.log",
+      "bytes": 665,
+      "sha256": "a315615d3a29800c789453b29dd9fa875139477d683a0d9e7f38e4f4e88d6c49"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/item-label-green.log",
+      "bytes": 424,
+      "sha256": "158df53e2240fa98e11fa40c7b48a323d0f68e1c2f3abbe002e9b9eb085e566a"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/item-label-red.log",
+      "bytes": 37699,
+      "sha256": "baf9715948d3fa67c6f80d3d1b4eb521ca63f85b6ff5ca045887667eb84c220b"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/mobile-recurring-built.log",
+      "bytes": 445,
+      "sha256": "c84ed41e06cb8542d44a2d546fece2916a6360857c17b6e0420daa6a574d0517"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/mobile-statements-built.log",
+      "bytes": 180,
+      "sha256": "66cb2262b73b9ab6bf029aa43feaf4cf0e8fd4c35689ca6907f30838d0b2463e"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/parity-report.log",
+      "bytes": 6050,
+      "sha256": "d5a98c8864576c8ff6099d7e9fce72891f3bafa121c35ec9a7f2e8afe2a9fbdc"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/payment-settled.log",
+      "bytes": 111,
+      "sha256": "e2bf188ba97a34018c5ad121cefeafc1b14b1122f62eb4e8358c36ad5c021a79"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/proof-runtime-final.log",
+      "bytes": 898,
+      "sha256": "2632c8569b6497875c5d4f247916aea94b8d012df9899c1cc795ed767b91a75e"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/proof-runtime-green.log",
+      "bytes": 435,
+      "sha256": "826c41deaed454b4eb997def6279e09070feb51000a836c7ea7f33b7759c6b8e"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/proof-runtime-red.log",
+      "bytes": 1513,
+      "sha256": "4271b56192ad05f9defb51c59e315272eceac581cc43ec111e4d9763e56c96e6"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quick-sale-final.log",
+      "bytes": 205,
+      "sha256": "d9cb733de55033cdd949b88fe064cd823169491a056cde19619629ecec7ba236"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-cache-green.log",
+      "bytes": 550,
+      "sha256": "c774521c0cb90d3369b23d5d34870fffc2708f46a9b8fd3c2dabf680c76633f3"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-cache-lint.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-cache-red.log",
+      "bytes": 4106,
+      "sha256": "b17c4f436afe03f1234b3cb8baa2a75bdb6faa5b03c7cdc5a6f5475505cf0e80"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-cache-typecheck-initial.log",
+      "bytes": 1724,
+      "sha256": "c14dde6464cdfed9ee9ff7fe1305a2019c4dc5f5dc00f18e93cd888cb15a0bd9"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-draft-green.log",
+      "bytes": 28328,
+      "sha256": "a180a8729b04ac25e5cd828efcbe3876d5315715dd20adae14d0fac82357cd5a"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/quote-draft-red.log",
+      "bytes": 6099,
+      "sha256": "bfea5fd72914a990d666782c15dbcfabfc604be76635d21feb0728084c5f0109"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/receipts-built.log",
+      "bytes": 175,
+      "sha256": "2bf6efe3f9b19a524c9296838fec7a69538ba9366f5f3cc7e9e54dbcb6ce93af"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/statements-canonical.log",
+      "bytes": 169,
+      "sha256": "72d5a7ed17b7dba1d1fc68b2c84260d5ea5ee80c784bf4badbfda3086996278e"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/web-initial.log",
+      "bytes": 54036,
+      "sha256": "01e9d9a0a6b2c94319a698841852912dd589341b6f72fdef983dd44ff8573555"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/web-rerun.log",
+      "bytes": 5666,
+      "sha256": "4f2fd1b51a95bb12347b3a40712af92b2188e9fcb08da2774370cdfb2a34772f"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/web-typecheck-final.log",
+      "bytes": 104,
+      "sha256": "48c1bbaa889c026335c3945506b1c30f963fe0092355ce57636a77162e2be0a9"
+    },
+    {
+      "path": "docs/evidence/feature-verification/2026-11-08/web-typecheck-verified.log",
+      "bytes": 104,
+      "sha256": "48c1bbaa889c026335c3945506b1c30f963fe0092355ce57636a77162e2be0a9"
+    }
+  ],
+  "markdownLinks": [
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "../../../feature-verification.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "../../../feature-verification.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close-results.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "export-validation.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/17-trial-balance.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/18-phone-trial-balance.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/17-profit-loss.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/18-phone-profit-loss.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/17-cash-flow.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/18-phone-cash-flow.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/16-bank-reconciliation-completed.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/21-gst-worksheet.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/23-phone-gst.png",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-month-close/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "statements-canonical.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "statements-canonical/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "bank-feeds.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "bank-feeds/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "browser-receipts.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "verification-summary.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "api-feature-results.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "ui-feature-ledger.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-month-close/audit.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-month-close/actual-reports.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-month-close/export-validation.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-month-close/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "quick-sale/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "quick-sale-final.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-recurring-banking/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "payments/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "payment-settled.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "receipt-import/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "receipts-built.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "catalogue-quotes/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "catalogue-quotes-complete.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-build-fixed.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "feature-build-version-fixed.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "fx/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "expo-statements/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "dashboard-calendar/results.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "dashboard-calendar/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-build-final.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "catalogue-quotes-before-cache-fix/",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-build-complete.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "feature-build-complete.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/evidence/feature-verification/2026-11-08/README.md",
+      "target": "web-typecheck-verified.log",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "feature-verification.json",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-identity/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-companies/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-profile/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-customers/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-catalogue/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-quotes/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-invoices/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-payments/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-credit-notes/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-purchases/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-expenses/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-banking/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-reconciliation/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-journals/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-reports/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-gst/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-currency/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-recurring/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-statements/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-imports/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-quick-sale/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-stripe/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-bank-feeds/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-assistant/SKILL.md",
+      "tracked": true
+    },
+    {
+      "document": "docs/feature-verification.md",
+      "target": "../.cursor/skills/ledgercraft-check-dashboard/SKILL.md",
+      "tracked": true
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+ ❯ src/pages/__tests__/QuoteViewPage.test.tsx (2 tests | 2 failed) 2296ms
+   × refreshes saved invoices before navigating from a accepted quote 1191ms
+     → expected "spy" to be called 1 times, but got 0 times
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div>[39m
+        [0mNew invoice[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+   × refreshes saved invoices before navigating from a sent quote 1102ms
+     → expected "spy" to be called 1 times, but got 0 times
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body[39m
+    [33mstyle[39m=[32m""[39m
+  [36m>[39m
+    [36m<div>[39m
+      [36m<div>[39m
+        [0mNew invoice[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/QuoteViewPage.test.tsx > refreshes saved invoices before navigating from a accepted quote
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body>[39m
+    [36m<div>[39m
+      [36m<div>[39m
+        [0mNew invoice[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/pages/__tests__/QuoteViewPage.test.tsx:20:52
+     18|  if (status === 'accepted') fireEvent.click(screen.getByRole('button',…
+     19|  else { fireEvent.click(screen.getByRole('button', { name: 'Mark accep…
+     20|  await waitFor(() => expect(mocks.refreshInvoices).toHaveBeenCalledTim…
+       |                                                    ^
+     21|  expect(screen.queryByText('New invoice')).not.toBeInTheDocument();
+     22|  await act(async () => complete());
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/pages/__tests__/QuoteViewPage.test.tsx > refreshes saved invoices before navigating from a sent quote
+AssertionError: expected "spy" to be called 1 times, but got 0 times
+
+Ignored nodes: comments, script, style
+[36m<html>[39m
+  [36m<head />[39m
+  [36m<body[39m
+    [33mstyle[39m=[32m""[39m
+  [36m>[39m
+    [36m<div>[39m
+      [36m<div>[39m
+        [0mNew invoice[0m
+      [36m</div>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ❯ src/pages/__tests__/QuoteViewPage.test.tsx:20:52
+     18|  if (status === 'accepted') fireEvent.click(screen.getByRole('button',…
+     19|  else { fireEvent.click(screen.getByRole('button', { name: 'Mark accep…
+     20|  await waitFor(() => expect(mocks.refreshInvoices).toHaveBeenCalledTim…
+       |                                                    ^
+     21|  expect(screen.queryByText('New invoice')).not.toBeInTheDocument();
+     22|  await act(async () => complete());
+ ❯ runWithExpensiveErrorDiagnosticsDisabled node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:47:12
+ ❯ checkCallback node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ❯ Timeout.checkRealTimersCallback node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  21:05:34
+   Duration  4.01s (transform 184ms, setup 149ms, collect 496ms, tests 2.30s, environment 587ms, prepare 152ms)

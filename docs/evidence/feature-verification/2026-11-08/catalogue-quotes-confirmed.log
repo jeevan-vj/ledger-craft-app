@@ -1,0 +1,497 @@
+Primary proof failure: AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  {
+    balanced: true,
++   closingCredits: '13795.00',
++   closingDebits: '13795.00',
+-   closingCredits: '13680.00',
+-   closingDebits: '13680.00',
+    rows: [
+      {
+        accountClass: 'asset',
+        accountId: '9a6d4bd1-0ad7-4173-8a97-350e4429e6ba',
+        accountName: 'October Operating Ledger',
+...
+        accountNumber: '1200',
++       balance: '1035.00',
+-       balance: '920.00',
+        closingCredit: '0.00',
++       closingDebit: '1035.00',
+-       closingDebit: '920.00',
+        credit: '2530.00',
++       debit: '3565.00',
+-       debit: '3450.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+        accountClass: 'revenue',
+...
+        accountNumber: '4000',
++       balance: '2800.00',
++       closingCredit: '2800.00',
+-       balance: '2700.00',
+-       closingCredit: '2700.00',
+        closingDebit: '0.00',
++       credit: '3100.00',
+-       credit: '3000.00',
+        debit: '300.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+...
+        accountNumber: '2200',
++       balance: '420.00',
++       closingCredit: '420.00',
+-       balance: '405.00',
+-       closingCredit: '405.00',
+        closingDebit: '0.00',
++       credit: '465.00',
+-       credit: '450.00',
+        debit: '45.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+...
+    ],
++   totalCredits: '24720.00',
++   totalDebits: '24720.00'
+-   totalCredits: '24605.00',
+-   totalDebits: '24605.00'
+  }
+
+    at file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/catalogue-quote-proof.mjs:31:101 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: [Object],
+  expected: [Object],
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+EasyBizInvoice
+M
+Back to Invoices
+Delivery
+
+Email isn't set up on this server yet. Share a secure invoice link instead.
+
+Share link instead
+Duplicate
+Cancel
+Archive
+Credit notes and refunds
+Print
+Attach file
+Attachments
+
+No private files attached.
+
+History
+created · 11/8/2026, 8:49:35 PM
+
+Converted from quote QUO-2026-0002
+
+Automatic reminders
+Exclude this invoice from automatic reminders
+
+No automatic reminders have been processed.
+
+TAX INVOICE
+
+#INV-2026-0003
+
+Kauri October Close Web Limited
+
+GST No: 49-098-576
+
+Line prices exclude GST. Subtotal excludes GST; total includes GST.
+
+New Zealand
+
+Bill To:
+
+Quote verification customer
+
+New Zealand
+
+quote-review@example.test
+Invoice Number:
+INV-2026-0003
+Invoice Date:
+Nov 08, 2026
+Due Date:
+Dec 08, 2026
+Item	Quantity	Price	Amount
+Reviewed quote service	1	NZ$100.00	NZ$100.00
+Subtotal:
+NZ$100.00
+GST (15.00%):
+NZ$15.00
+Total:
+NZ$115.00
+Download PDF
+Update available
+
+Refresh EasyBizInvoice to use the latest improvements and fixes.
+
+Update now
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
++ actual - expected
+... Skipped lines
+
+  {
+    balanced: true,
++   closingCredits: '13795.00',
++   closingDebits: '13795.00',
+-   closingCredits: '13680.00',
+-   closingDebits: '13680.00',
+    rows: [
+      {
+        accountClass: 'asset',
+        accountId: '9a6d4bd1-0ad7-4173-8a97-350e4429e6ba',
+        accountName: 'October Operating Ledger',
+...
+        accountNumber: '1200',
++       balance: '1035.00',
+-       balance: '920.00',
+        closingCredit: '0.00',
++       closingDebit: '1035.00',
+-       closingDebit: '920.00',
+        credit: '2530.00',
++       debit: '3565.00',
+-       debit: '3450.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+        accountClass: 'revenue',
+...
+        accountNumber: '4000',
++       balance: '2800.00',
++       closingCredit: '2800.00',
+-       balance: '2700.00',
+-       closingCredit: '2700.00',
+        closingDebit: '0.00',
++       credit: '3100.00',
+-       credit: '3000.00',
+        debit: '300.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+...
+        accountNumber: '2200',
++       balance: '420.00',
++       closingCredit: '420.00',
+-       balance: '405.00',
+-       closingCredit: '405.00',
+        closingDebit: '0.00',
++       credit: '465.00',
+-       credit: '450.00',
+        debit: '45.00',
+        openingCredit: '0.00',
+        openingDebit: '0.00'
+      },
+      {
+...
+    ],
++   totalCredits: '24720.00',
++   totalDebits: '24720.00'
+-   totalCredits: '24605.00',
+-   totalDebits: '24605.00'
+  }
+
+    at file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/catalogue-quote-proof.mjs:31:101 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: {
+    rows: [
+      {
+        accountId: '9a6d4bd1-0ad7-4173-8a97-350e4429e6ba',
+        accountNumber: 'BANK-ABAA80AA',
+        accountName: 'October Operating Ledger',
+        accountClass: 'asset',
+        debit: '15520.00',
+        credit: '4140.00',
+        balance: '11380.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '11380.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'b1109772-a1a6-46d6-9b8f-7299af289d39',
+        accountNumber: '3000',
+        accountName: 'Owner capital',
+        accountClass: 'equity',
+        debit: '0.00',
+        credit: '10000.00',
+        balance: '10000.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '10000.00'
+      },
+      {
+        accountId: 'e308f24c-e13c-47c6-bb6f-b9d5158a702c',
+        accountNumber: '1200',
+        accountName: 'Accounts Receivable',
+        accountClass: 'asset',
+        debit: '3565.00',
+        credit: '2530.00',
+        balance: '1035.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '1035.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: '0aa9b1eb-9210-414d-9a4a-62623f21dfdf',
+        accountNumber: '4000',
+        accountName: 'Sales Revenue',
+        accountClass: 'revenue',
+        debit: '300.00',
+        credit: '3100.00',
+        balance: '2800.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '2800.00'
+      },
+      {
+        accountId: 'b16abc6f-1860-4567-a280-e37a54df6d6b',
+        accountNumber: '2200',
+        accountName: 'GST Collected on Sales',
+        accountClass: 'liability',
+        debit: '45.00',
+        credit: '465.00',
+        balance: '420.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '420.00'
+      },
+      {
+        accountId: 'f06f9214-a07b-4c12-a340-c5d8332d8887',
+        accountNumber: '5000',
+        accountName: 'Operating Expenses',
+        accountClass: 'expense',
+        debit: '2120.00',
+        credit: '920.00',
+        balance: '1200.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '1200.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: '72cd0f79-7daf-4cd3-b640-2d7fc47c49b9',
+        accountNumber: '2150',
+        accountName: 'GST Paid on Purchases',
+        accountClass: 'asset',
+        debit: '180.00',
+        credit: '0.00',
+        balance: '180.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '180.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'cdb13448-6ae4-4226-92f1-311929188529',
+        accountNumber: '2100',
+        accountName: 'Accounts Payable',
+        accountClass: 'liability',
+        debit: '575.00',
+        credit: '1150.00',
+        balance: '575.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '575.00'
+      },
+      {
+        accountId: '4b8a6438-8fce-4b0d-a1bd-acf117203d01',
+        accountNumber: '4900',
+        accountName: 'Other Income',
+        accountClass: 'revenue',
+        debit: '2300.00',
+        credit: '2300.00',
+        balance: '0.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'a384dc75-1a6c-4e0a-ad6c-d651ccf3948f',
+        accountNumber: '2300',
+        accountName: 'Customer Credits',
+        accountClass: 'liability',
+        debit: '115.00',
+        credit: '115.00',
+        balance: '0.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '0.00'
+      }
+    ],
+    totalDebits: '24720.00',
+    totalCredits: '24720.00',
+    closingDebits: '13795.00',
+    closingCredits: '13795.00',
+    balanced: true
+  },
+  expected: {
+    rows: [
+      {
+        accountId: '9a6d4bd1-0ad7-4173-8a97-350e4429e6ba',
+        accountNumber: 'BANK-ABAA80AA',
+        accountName: 'October Operating Ledger',
+        accountClass: 'asset',
+        debit: '15520.00',
+        credit: '4140.00',
+        balance: '11380.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '11380.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'b1109772-a1a6-46d6-9b8f-7299af289d39',
+        accountNumber: '3000',
+        accountName: 'Owner capital',
+        accountClass: 'equity',
+        debit: '0.00',
+        credit: '10000.00',
+        balance: '10000.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '10000.00'
+      },
+      {
+        accountId: 'e308f24c-e13c-47c6-bb6f-b9d5158a702c',
+        accountNumber: '1200',
+        accountName: 'Accounts Receivable',
+        accountClass: 'asset',
+        debit: '3450.00',
+        credit: '2530.00',
+        balance: '920.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '920.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: '0aa9b1eb-9210-414d-9a4a-62623f21dfdf',
+        accountNumber: '4000',
+        accountName: 'Sales Revenue',
+        accountClass: 'revenue',
+        debit: '300.00',
+        credit: '3000.00',
+        balance: '2700.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '2700.00'
+      },
+      {
+        accountId: 'b16abc6f-1860-4567-a280-e37a54df6d6b',
+        accountNumber: '2200',
+        accountName: 'GST Collected on Sales',
+        accountClass: 'liability',
+        debit: '45.00',
+        credit: '450.00',
+        balance: '405.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '405.00'
+      },
+      {
+        accountId: 'f06f9214-a07b-4c12-a340-c5d8332d8887',
+        accountNumber: '5000',
+        accountName: 'Operating Expenses',
+        accountClass: 'expense',
+        debit: '2120.00',
+        credit: '920.00',
+        balance: '1200.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '1200.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: '72cd0f79-7daf-4cd3-b640-2d7fc47c49b9',
+        accountNumber: '2150',
+        accountName: 'GST Paid on Purchases',
+        accountClass: 'asset',
+        debit: '180.00',
+        credit: '0.00',
+        balance: '180.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '180.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'cdb13448-6ae4-4226-92f1-311929188529',
+        accountNumber: '2100',
+        accountName: 'Accounts Payable',
+        accountClass: 'liability',
+        debit: '575.00',
+        credit: '1150.00',
+        balance: '575.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '575.00'
+      },
+      {
+        accountId: '4b8a6438-8fce-4b0d-a1bd-acf117203d01',
+        accountNumber: '4900',
+        accountName: 'Other Income',
+        accountClass: 'revenue',
+        debit: '2300.00',
+        credit: '2300.00',
+        balance: '0.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '0.00'
+      },
+      {
+        accountId: 'a384dc75-1a6c-4e0a-ad6c-d651ccf3948f',
+        accountNumber: '2300',
+        accountName: 'Customer Credits',
+        accountClass: 'liability',
+        debit: '115.00',
+        credit: '115.00',
+        balance: '0.00',
+        openingDebit: '0.00',
+        openingCredit: '0.00',
+        closingDebit: '0.00',
+        closingCredit: '0.00'
+      }
+    ],
+    totalDebits: '24605.00',
+    totalCredits: '24605.00',
+    closingDebits: '13680.00',
+    closingCredits: '13680.00',
+    balanced: true
+  },
+  operator: 'deepStrictEqual',
+  diff: 'simple'
+}
+
+Node.js v26.7.0

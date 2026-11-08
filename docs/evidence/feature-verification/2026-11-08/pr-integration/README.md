@@ -25,3 +25,9 @@ Hosted output for that exact head: web173 files/885 tests, API143 files/626 test
 ## Standalone proof artifact directories
 
 The catalogue/quote, calendar and payment drivers now create unique owner-only temporary directories by default, or validate explicitly chosen private outputs. Page rendering validates its explicit output, and both resumable close drivers require private explicit output. Seven runtime regressions pass after the new unique-directory test failed before implementation; all changed drivers pass Node22 syntax checks. Calendar sorting now states its ISO-string comparison explicitly; the chronological expectation is unchanged. See `fresh-output-red.log` and `fresh-output-green.log`.
+
+## Independent review: retained-log delivery
+
+The first independent review found that the repository-wide log ignore rule excluded54 original logs from the PR, including10 README-linked logs and the draft-posting, cache, calendar, label and evidence-preservation red regressions. Those logs are now explicitly tracked after a credential/share-token scan; the original local copies remain private. Only trailing whitespace was normalized; substantive output is unchanged. Every relative Markdown evidence link was checked against Git's staged file inventory, not merely the working filesystem. No product code changed for this review fix.
+
+[Tracked-link and retained-log audit](retained-log-audit.json).

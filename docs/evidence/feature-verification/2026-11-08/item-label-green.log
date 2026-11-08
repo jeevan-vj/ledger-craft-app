@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+ ✓ src/components/item/ItemForm.test.tsx (1 test) 1951ms
+   ✓ catalogue price accessibility > names both price inputs for assistive technology  1940ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  20:40:22
+   Duration  9.10s (transform 558ms, setup 477ms, collect 2.10s, tests 1.95s, environment 2.00s, prepare 383ms)
