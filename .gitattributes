@@ -3,3 +3,6 @@ docs/evidence/full-month-close/**/*.gz binary
 docs/evidence/self-service-month-close/**/*.pdf binary
 docs/evidence/self-service-month-close/**/*.gz binary
 docs/evidence/feature-verification/**/*.pdf binary
+
+docs/evidence/second-month-year-end/**/*.pdf binary
+docs/evidence/second-month-year-end/**/*.gz binary

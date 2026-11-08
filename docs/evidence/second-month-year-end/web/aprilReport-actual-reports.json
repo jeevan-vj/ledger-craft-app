@@ -1,0 +1,629 @@
+{
+  "financial": {
+    "meta": {
+      "from": "2027-04-01",
+      "to": "2027-04-30",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2027-05-01T00:00:00.000Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "1fa738ac-0d59-4b09-a3c6-f0811c97bca6",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "230.00",
+          "credit": "230.00",
+          "balance": "460.00",
+          "openingDebit": "460.00",
+          "openingCredit": "0.00",
+          "closingDebit": "460.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3ec54f23-21d5-48f3-80ef-386ecede128c",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "200.00",
+          "balance": "3800.00",
+          "openingDebit": "0.00",
+          "openingCredit": "3600.00",
+          "closingDebit": "0.00",
+          "closingCredit": "3800.00"
+        },
+        {
+          "accountId": "ba178bc1-7a9c-4a6e-8fa4-878364cd5f70",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "30.00",
+          "balance": "570.00",
+          "openingDebit": "0.00",
+          "openingCredit": "540.00",
+          "closingDebit": "0.00",
+          "closingCredit": "570.00"
+        },
+        {
+          "accountId": "79d5ef30-944c-40ff-be33-ccaf6c8e80b2",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "100.00",
+          "credit": "0.00",
+          "balance": "1800.00",
+          "openingDebit": "1700.00",
+          "openingCredit": "0.00",
+          "closingDebit": "1800.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "3b50fa37-eb1a-43cb-b44a-cf599bb150fa",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "15.00",
+          "credit": "0.00",
+          "balance": "270.00",
+          "openingDebit": "255.00",
+          "openingCredit": "0.00",
+          "closingDebit": "270.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "9ff79bcb-6849-49d3-80a7-5801954e0ce5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "115.00",
+          "balance": "345.00",
+          "openingDebit": "0.00",
+          "openingCredit": "230.00",
+          "closingDebit": "0.00",
+          "closingCredit": "345.00"
+        },
+        {
+          "accountId": "3c6c0bac-dee9-4109-9799-44e583ebc5cf",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "230.00",
+          "credit": "230.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+          "accountNumber": "BANK-8D26BCD7",
+          "accountName": "October Operating",
+          "accountClass": "asset",
+          "debit": "460.00",
+          "credit": "230.00",
+          "balance": "12185.00",
+          "openingDebit": "11955.00",
+          "openingCredit": "0.00",
+          "closingDebit": "12185.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "b9e7100e-dd32-4e4e-8df7-6d8ad7a7a724",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "0.00",
+          "balance": "10000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "10000.00",
+          "closingDebit": "0.00",
+          "closingCredit": "10000.00"
+        },
+        {
+          "accountId": "ad4c7956-b1ef-47e1-bed7-df4a53b1bb55",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "0.00",
+          "balance": "0.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "0.00",
+          "closingCredit": "0.00"
+        }
+      ],
+      "totalDebits": "1035.00",
+      "totalCredits": "1035.00",
+      "closingDebits": "14715.00",
+      "closingCredits": "14715.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "3ec54f23-21d5-48f3-80ef-386ecede128c",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "200.00",
+          "balance": "200.00"
+        },
+        {
+          "accountId": "3c6c0bac-dee9-4109-9799-44e583ebc5cf",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "230.00",
+          "credit": "230.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "79d5ef30-944c-40ff-be33-ccaf6c8e80b2",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "100.00",
+          "credit": "0.00",
+          "balance": "100.00"
+        }
+      ],
+      "revenue": "200.00",
+      "expenses": "100.00",
+      "netIncome": "100.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "1fa738ac-0d59-4b09-a3c6-f0811c97bca6",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "4830.00",
+          "credit": "4370.00",
+          "balance": "460.00"
+        },
+        {
+          "accountId": "9ff79bcb-6849-49d3-80a7-5801954e0ce5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "1380.00",
+          "credit": "1725.00",
+          "balance": "345.00"
+        },
+        {
+          "accountId": "3b50fa37-eb1a-43cb-b44a-cf599bb150fa",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "270.00",
+          "credit": "0.00",
+          "balance": "270.00"
+        },
+        {
+          "accountId": "ba178bc1-7a9c-4a6e-8fa4-878364cd5f70",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "60.00",
+          "credit": "630.00",
+          "balance": "570.00"
+        },
+        {
+          "accountId": "ad4c7956-b1ef-47e1-bed7-df4a53b1bb55",
+          "accountNumber": "2300",
+          "accountName": "Customer Credits",
+          "accountClass": "liability",
+          "debit": "115.00",
+          "credit": "115.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "b9e7100e-dd32-4e4e-8df7-6d8ad7a7a724",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "0.00",
+          "credit": "10000.00",
+          "balance": "10000.00"
+        },
+        {
+          "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+          "accountNumber": "BANK-8D26BCD7",
+          "accountName": "October Operating",
+          "accountClass": "asset",
+          "debit": "19890.00",
+          "credit": "7705.00",
+          "balance": "12185.00"
+        }
+      ],
+      "assets": "12915.00",
+      "liabilities": "915.00",
+      "equity": "12000.00",
+      "accumulatedEarnings": "2000.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+          "accountNumber": "BANK-8D26BCD7",
+          "accountName": "October Operating",
+          "accountClass": "asset",
+          "debit": "460.00",
+          "credit": "230.00",
+          "balance": "230.00"
+        }
+      ],
+      "openingCash": "11955.00",
+      "inflows": "230.00",
+      "outflows": "0.00",
+      "netCashFlow": "230.00",
+      "closingCash": "12185.00"
+    },
+    "receivablesAging": {
+      "total": "460.00",
+      "unallocatedControl": "0.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "460.00",
+      "items": [
+        {
+          "id": "9ae73704-7987-46f0-94ac-fc195496f352",
+          "number": "INV-2026-0003",
+          "partyId": "9f33acf2-28a3-4082-8ef6-adadc9c1f27d",
+          "partyName": "Pohutukawa November Limited",
+          "issueDate": "2026-11-04",
+          "dueDate": "2026-11-30",
+          "balanceDue": "460.00",
+          "daysOverdue": 151,
+          "bucket": "90+"
+        }
+      ]
+    },
+    "payablesAging": {
+      "total": "345.00",
+      "unallocatedControl": "0.00",
+      "current": "115.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "230.00",
+      "items": [
+        {
+          "id": "9e97424a-ab78-478b-8c55-cf15e01821e3",
+          "number": "BILL-0002",
+          "partyId": "f7a5059d-b9bb-4737-bfe2-9cd8bc9aa2d1",
+          "partyName": "Rimu Subcontracting Limited",
+          "issueDate": "2026-11-07",
+          "dueDate": "2026-11-30",
+          "balanceDue": "230.00",
+          "daysOverdue": 151,
+          "bucket": "90+"
+        },
+        {
+          "id": "df32dc26-704f-4813-bd20-8a810b74e33f",
+          "number": "BILL-0003",
+          "partyId": "f7a5059d-b9bb-4737-bfe2-9cd8bc9aa2d1",
+          "partyName": "Rimu Subcontracting Limited",
+          "issueDate": "2027-04-01",
+          "dueDate": "2027-04-30",
+          "balanceDue": "115.00",
+          "daysOverdue": 0,
+          "bucket": "current"
+        }
+      ]
+    },
+    "salesSummary": {
+      "subtotal": "4200.00",
+      "tax": "630.00",
+      "total": "4830.00",
+      "paid": "4025.00",
+      "outstanding": "460.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "1500.00",
+      "tax": "225.00",
+      "total": "1725.00",
+      "paid": "1380.00",
+      "outstanding": "345.00"
+    },
+    "taxSummary": {
+      "collected": "30.00",
+      "paid": "15.00",
+      "netPayable": "15.00",
+      "outputGst": "30.00",
+      "inputGst": "15.00",
+      "netGst": "15.00",
+      "position": "payable",
+      "gstAccounts": [
+        {
+          "accountId": "3b50fa37-eb1a-43cb-b44a-cf599bb150fa",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "15.00",
+          "credit": "0.00",
+          "balance": "15.00"
+        },
+        {
+          "accountId": "ba178bc1-7a9c-4a6e-8fa4-878364cd5f70",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "30.00",
+          "balance": "30.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "1fa738ac-0d59-4b09-a3c6-f0811c97bca6",
+          "accountNumber": "1200",
+          "accountName": "Accounts Receivable",
+          "accountClass": "asset",
+          "debit": "230.00",
+          "credit": "230.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "9ff79bcb-6849-49d3-80a7-5801954e0ce5",
+          "accountNumber": "2100",
+          "accountName": "Accounts Payable",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "115.00",
+          "balance": "115.00"
+        },
+        {
+          "accountId": "3b50fa37-eb1a-43cb-b44a-cf599bb150fa",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "15.00",
+          "credit": "0.00",
+          "balance": "15.00"
+        },
+        {
+          "accountId": "ba178bc1-7a9c-4a6e-8fa4-878364cd5f70",
+          "accountNumber": "2200",
+          "accountName": "GST Collected on Sales",
+          "accountClass": "liability",
+          "debit": "0.00",
+          "credit": "30.00",
+          "balance": "30.00"
+        },
+        {
+          "accountId": "3ec54f23-21d5-48f3-80ef-386ecede128c",
+          "accountNumber": "4000",
+          "accountName": "Sales Revenue",
+          "accountClass": "revenue",
+          "debit": "0.00",
+          "credit": "200.00",
+          "balance": "200.00"
+        },
+        {
+          "accountId": "3c6c0bac-dee9-4109-9799-44e583ebc5cf",
+          "accountNumber": "4900",
+          "accountName": "Other Income",
+          "accountClass": "revenue",
+          "debit": "230.00",
+          "credit": "230.00",
+          "balance": "0.00"
+        },
+        {
+          "accountId": "79d5ef30-944c-40ff-be33-ccaf6c8e80b2",
+          "accountNumber": "5000",
+          "accountName": "Operating Expenses",
+          "accountClass": "expense",
+          "debit": "100.00",
+          "credit": "0.00",
+          "balance": "100.00"
+        },
+        {
+          "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+          "accountNumber": "BANK-8D26BCD7",
+          "accountName": "October Operating",
+          "accountClass": "asset",
+          "debit": "460.00",
+          "credit": "230.00",
+          "balance": "230.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "generalLedger": {
+    "meta": {
+      "from": "2027-04-01",
+      "to": "2027-04-30",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2027-05-01T00:00:00.000Z"
+    },
+    "lines": [
+      {
+        "journalEntryId": "f15dad54-6e51-40c7-8f83-55f452823285",
+        "entryNumber": "JE-2027-001",
+        "date": "2027-04-01",
+        "description": "Invoice INV-2027-0004",
+        "referenceType": "invoice",
+        "referenceId": "955812d8-0417-477a-b5fa-9092eb9eecad",
+        "accountId": "1fa738ac-0d59-4b09-a3c6-f0811c97bca6",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "690.00"
+      },
+      {
+        "journalEntryId": "f15dad54-6e51-40c7-8f83-55f452823285",
+        "entryNumber": "JE-2027-001",
+        "date": "2027-04-01",
+        "description": "Invoice INV-2027-0004",
+        "referenceType": "invoice",
+        "referenceId": "955812d8-0417-477a-b5fa-9092eb9eecad",
+        "accountId": "3ec54f23-21d5-48f3-80ef-386ecede128c",
+        "accountNumber": "4000",
+        "accountName": "Sales Revenue",
+        "debit": "0.00",
+        "credit": "200.00",
+        "runningBalance": "-3800.00"
+      },
+      {
+        "journalEntryId": "f15dad54-6e51-40c7-8f83-55f452823285",
+        "entryNumber": "JE-2027-001",
+        "date": "2027-04-01",
+        "description": "Invoice INV-2027-0004",
+        "referenceType": "invoice",
+        "referenceId": "955812d8-0417-477a-b5fa-9092eb9eecad",
+        "accountId": "ba178bc1-7a9c-4a6e-8fa4-878364cd5f70",
+        "accountNumber": "2200",
+        "accountName": "GST Collected on Sales",
+        "debit": "0.00",
+        "credit": "30.00",
+        "runningBalance": "-570.00"
+      },
+      {
+        "journalEntryId": "5e8a586d-2c7a-4eb1-be94-7e80c7642a63",
+        "entryNumber": "JE-2027-002",
+        "date": "2027-04-01",
+        "description": "Bill BILL-0003",
+        "referenceType": "bill",
+        "referenceId": "df32dc26-704f-4813-bd20-8a810b74e33f",
+        "accountId": "79d5ef30-944c-40ff-be33-ccaf6c8e80b2",
+        "accountNumber": "5000",
+        "accountName": "Operating Expenses",
+        "debit": "100.00",
+        "credit": "0.00",
+        "runningBalance": "1800.00"
+      },
+      {
+        "journalEntryId": "5e8a586d-2c7a-4eb1-be94-7e80c7642a63",
+        "entryNumber": "JE-2027-002",
+        "date": "2027-04-01",
+        "description": "Bill BILL-0003",
+        "referenceType": "bill",
+        "referenceId": "df32dc26-704f-4813-bd20-8a810b74e33f",
+        "accountId": "3b50fa37-eb1a-43cb-b44a-cf599bb150fa",
+        "accountNumber": "2150",
+        "accountName": "GST Paid on Purchases",
+        "debit": "15.00",
+        "credit": "0.00",
+        "runningBalance": "270.00"
+      },
+      {
+        "journalEntryId": "5e8a586d-2c7a-4eb1-be94-7e80c7642a63",
+        "entryNumber": "JE-2027-002",
+        "date": "2027-04-01",
+        "description": "Bill BILL-0003",
+        "referenceType": "bill",
+        "referenceId": "df32dc26-704f-4813-bd20-8a810b74e33f",
+        "accountId": "9ff79bcb-6849-49d3-80a7-5801954e0ce5",
+        "accountNumber": "2100",
+        "accountName": "Accounts Payable",
+        "debit": "0.00",
+        "credit": "115.00",
+        "runningBalance": "-345.00"
+      },
+      {
+        "journalEntryId": "5bb36a4c-e8a0-42ee-9ab7-6c328a677e93",
+        "entryNumber": "JE-2027-215430CD",
+        "date": "2027-04-01",
+        "description": "Match existing payment: April client receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "9b738f76-9ae7-423d-909a-0bb0d8631e48",
+        "accountId": "3c6c0bac-dee9-4109-9799-44e583ebc5cf",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "230.00"
+      },
+      {
+        "journalEntryId": "5bb36a4c-e8a0-42ee-9ab7-6c328a677e93",
+        "entryNumber": "JE-2027-215430CD",
+        "date": "2027-04-01",
+        "description": "Match existing payment: April client receipt",
+        "referenceType": "bank_reconciliation_accept",
+        "referenceId": "9b738f76-9ae7-423d-909a-0bb0d8631e48",
+        "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+        "accountNumber": "BANK-8D26BCD7",
+        "accountName": "October Operating",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "11725.00"
+      },
+      {
+        "journalEntryId": "ef301a93-d4f0-4c88-9b15-145931fa62ae",
+        "entryNumber": "JE-2027-39049283",
+        "date": "2027-04-01",
+        "description": "April client receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "f7b6c7d9-74d3-4422-a031-3e7c19a8cba5",
+        "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+        "accountNumber": "BANK-8D26BCD7",
+        "accountName": "October Operating",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "11955.00"
+      },
+      {
+        "journalEntryId": "ef301a93-d4f0-4c88-9b15-145931fa62ae",
+        "entryNumber": "JE-2027-39049283",
+        "date": "2027-04-01",
+        "description": "April client receipt",
+        "referenceType": "bank_transaction",
+        "referenceId": "f7b6c7d9-74d3-4422-a031-3e7c19a8cba5",
+        "accountId": "3c6c0bac-dee9-4109-9799-44e583ebc5cf",
+        "accountNumber": "4900",
+        "accountName": "Other Income",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "0.00"
+      },
+      {
+        "journalEntryId": "4e1e7834-557c-4a47-9481-59fef84f3f38",
+        "entryNumber": "JE-2027-75B49498",
+        "date": "2027-04-01",
+        "description": "Payment for INV-2027-0004",
+        "referenceType": "invoice_payment",
+        "referenceId": "5dcccd0a-3b08-4191-a15f-3b9348b7df55",
+        "accountId": "53473c4f-ffa3-4cc4-aee3-e1c25172eb4a",
+        "accountNumber": "BANK-8D26BCD7",
+        "accountName": "October Operating",
+        "debit": "230.00",
+        "credit": "0.00",
+        "runningBalance": "12185.00"
+      },
+      {
+        "journalEntryId": "4e1e7834-557c-4a47-9481-59fef84f3f38",
+        "entryNumber": "JE-2027-75B49498",
+        "date": "2027-04-01",
+        "description": "Payment for INV-2027-0004",
+        "referenceType": "invoice_payment",
+        "referenceId": "5dcccd0a-3b08-4191-a15f-3b9348b7df55",
+        "accountId": "1fa738ac-0d59-4b09-a3c6-f0811c97bca6",
+        "accountNumber": "1200",
+        "accountName": "Accounts Receivable",
+        "debit": "0.00",
+        "credit": "230.00",
+        "runningBalance": "460.00"
+      }
+    ]
+  }
+}

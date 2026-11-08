@@ -1,0 +1,1032 @@
+{
+  "version": "second-month-year-end-working-paper-v1",
+  "frozenAt": "2026-11-08",
+  "method": "Independent Python Decimal from prescribed journals and prior frozen working paper only. No production code, API response, browser result or production totals helper read before freezing.",
+  "currency": "NZD",
+  "calendar": {
+    "financialYearStartMonth": 4,
+    "financialYearEnd": "2027-03-31",
+    "nextFinancialYearStart": "2027-04-01",
+    "timezone": "Pacific/Auckland",
+    "gstBasis": "invoice",
+    "gstFrequency": "monthly",
+    "gstPeriodAnchor": 10
+  },
+  "openingSource": {
+    "path": "docs/evidence/full-month-close/expected.json",
+    "version": "working-paper-v2",
+    "sha256": "c581c7343a971e4844971a5885d601a4c70308fc66ed423e53f9e388a05b3739",
+    "asOf": "2026-10-31",
+    "trialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "11380.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "920.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "2700.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "405.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1200.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "180.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "575.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "13680.00",
+      "totalCredits": "13680.00",
+      "balanced": true,
+      "chartPolicy": "Separate GST input asset and output liability, operating costs grouped. Map account roles using static chart setup before reading reports.",
+      "oneGstControlAlternative": {
+        "netGstCredit": "225.00",
+        "totalDebits": "13500.00",
+        "totalCredits": "13500.00"
+      }
+    },
+    "balanceSheet": {
+      "cash": "11380.00",
+      "receivables": "920.00",
+      "inputGstAsset": "180.00",
+      "assets": "12480.00",
+      "payables": "575.00",
+      "outputGstLiability": "405.00",
+      "liabilities": "980.00",
+      "capital": "10000.00",
+      "retainedEarnings": "1500.00",
+      "equity": "11500.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "accrual": {
+        "revenue": "2700.00",
+        "expenses": "1200.00",
+        "netIncome": "1500.00"
+      },
+      "cash": {
+        "revenue": "1900.00",
+        "expenses": "700.00",
+        "netIncome": "1200.00"
+      }
+    },
+    "cashFlow": {
+      "openingCash": "10000.00",
+      "financingInflow": "0.00",
+      "customerReceipts": "2300.00",
+      "customerRefunds": "115.00",
+      "supplierPayments": "575.00",
+      "paidExpenses": "230.00",
+      "operatingNet": "1380.00",
+      "netCashFlow": "1380.00",
+      "closingCash": "11380.00"
+    },
+    "receivablesAging": {
+      "total": "920.00",
+      "current": "920.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "unallocatedControl": "0.00",
+      "invoiceA": "920.00",
+      "invoiceB": "0.00"
+    },
+    "payablesAging": {
+      "total": "575.00",
+      "current": "575.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "unallocatedControl": "0.00"
+    },
+    "gst": {
+      "invoice": {
+        "salesGross": "3105.00",
+        "purchaseGross": "1380.00",
+        "output": "405.00",
+        "input": "180.00",
+        "net": "225.00"
+      },
+      "payments": {
+        "salesGross": "2185.00",
+        "purchaseGross": "805.00",
+        "output": "285.00",
+        "input": "105.00",
+        "net": "180.00"
+      },
+      "hybrid": {
+        "salesGross": "3105.00",
+        "purchaseGross": "805.00",
+        "output": "405.00",
+        "input": "105.00",
+        "net": "300.00"
+      }
+    }
+  },
+  "november": {
+    "period": {
+      "from": "2026-11-01",
+      "to": "2026-11-30",
+      "asOf": "2026-11-30"
+    },
+    "economicJournals": [
+      {
+        "date": "2026-11-02",
+        "reference": "Collect October invoice A remaining balance",
+        "debits": "920.00",
+        "credits": "920.00",
+        "lines": [
+          {
+            "accountRole": "bank",
+            "debit": "920.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "receivables",
+            "debit": "0.00",
+            "credit": "920.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-03",
+        "reference": "Pay remaining October bill",
+        "debits": "575.00",
+        "credits": "575.00",
+        "lines": [
+          {
+            "accountRole": "payables",
+            "debit": "575.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "bank",
+            "debit": "0.00",
+            "credit": "575.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-04",
+        "reference": "Invoice C November services",
+        "debits": "1150.00",
+        "credits": "1150.00",
+        "lines": [
+          {
+            "accountRole": "receivables",
+            "debit": "1150.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "sales",
+            "debit": "0.00",
+            "credit": "1000.00"
+          },
+          {
+            "accountRole": "outputGst",
+            "debit": "0.00",
+            "credit": "150.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-05",
+        "reference": "Half payment invoice C",
+        "debits": "575.00",
+        "credits": "575.00",
+        "lines": [
+          {
+            "accountRole": "bank",
+            "debit": "575.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "receivables",
+            "debit": "0.00",
+            "credit": "575.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-06",
+        "reference": "Credit C against unpaid balance",
+        "debits": "115.00",
+        "credits": "115.00",
+        "lines": [
+          {
+            "accountRole": "sales",
+            "debit": "100.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "outputGst",
+            "debit": "15.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "receivables",
+            "debit": "0.00",
+            "credit": "115.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-07",
+        "reference": "Receive November bill",
+        "debits": "460.00",
+        "credits": "460.00",
+        "lines": [
+          {
+            "accountRole": "operatingCosts",
+            "debit": "400.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "inputGst",
+            "debit": "60.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "payables",
+            "debit": "0.00",
+            "credit": "460.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-08",
+        "reference": "Half payment November bill",
+        "debits": "230.00",
+        "credits": "230.00",
+        "lines": [
+          {
+            "accountRole": "payables",
+            "debit": "230.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "bank",
+            "debit": "0.00",
+            "credit": "230.00"
+          }
+        ]
+      },
+      {
+        "date": "2026-11-08",
+        "reference": "Paid November expense",
+        "debits": "115.00",
+        "credits": "115.00",
+        "lines": [
+          {
+            "accountRole": "operatingCosts",
+            "debit": "100.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "inputGst",
+            "debit": "15.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "bank",
+            "debit": "0.00",
+            "credit": "115.00"
+          }
+        ]
+      }
+    ],
+    "openingTrialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "11380.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "920.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "2700.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "405.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1200.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "180.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "575.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "13680.00",
+      "totalCredits": "13680.00",
+      "balanced": true
+    },
+    "closingTrialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "11955.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "460.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "3600.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "540.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1700.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "255.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "230.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "14370.00",
+      "totalCredits": "14370.00",
+      "balanced": true
+    },
+    "economicPeriodDebits": "4140.00",
+    "economicPeriodCredits": "4140.00",
+    "technicalImportMatchTurnoverIfBothLegsRetained": "4830.00",
+    "periodTurnoverWithThoseTechnicalLegs": "8970.00",
+    "profitLoss": {
+      "accrual": {
+        "revenue": "900.00",
+        "expenses": "500.00",
+        "netIncome": "400.00"
+      },
+      "cash": {
+        "revenue": "1300.00",
+        "expenses": "800.00",
+        "netIncome": "500.00"
+      }
+    },
+    "financialYearToDateProfitLoss": {
+      "from": "2026-04-01",
+      "to": "2026-11-30",
+      "revenue": "3600.00",
+      "expenses": "1700.00",
+      "netIncome": "1900.00"
+    },
+    "balanceSheet": {
+      "cash": "11955.00",
+      "receivables": "460.00",
+      "inputGstAsset": "255.00",
+      "assets": "12670.00",
+      "payables": "230.00",
+      "outputGstLiability": "540.00",
+      "liabilities": "770.00",
+      "capital": "10000.00",
+      "priorFinancialYearEarnings": "0.00",
+      "currentFinancialYearEarnings": "1900.00",
+      "accumulatedEarnings": "1900.00",
+      "equity": "11900.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "openingCash": "11380.00",
+      "customerReceipts": "1495.00",
+      "supplierPayments": "805.00",
+      "paidExpenses": "115.00",
+      "customerRefunds": "0.00",
+      "inflows": "1495.00",
+      "outflows": "920.00",
+      "operatingNet": "575.00",
+      "netCashFlow": "575.00",
+      "closingCash": "11955.00"
+    },
+    "receivablesAging": {
+      "total": "460.00",
+      "current": "460.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "unallocatedControl": "0.00"
+    },
+    "payablesAging": {
+      "total": "230.00",
+      "current": "230.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "unallocatedControl": "0.00"
+    },
+    "gst": {
+      "invoice": {
+        "salesGross": "1035.00",
+        "purchaseGross": "575.00",
+        "output": "135.00",
+        "input": "75.00",
+        "net": "60.00"
+      },
+      "payments": {
+        "salesGross": "1495.00",
+        "purchaseGross": "920.00",
+        "output": "195.00",
+        "input": "120.00",
+        "net": "75.00"
+      },
+      "hybrid": {
+        "salesGross": "1035.00",
+        "purchaseGross": "920.00",
+        "output": "135.00",
+        "input": "120.00",
+        "net": "15.00"
+      }
+    },
+    "bankReconciliation": {
+      "opening": "11380.00",
+      "movements": [
+        {
+          "date": "2026-11-02",
+          "amount": "920.00",
+          "direction": "credit",
+          "source": "October invoice A receipt"
+        },
+        {
+          "date": "2026-11-03",
+          "amount": "575.00",
+          "direction": "debit",
+          "source": "October bill final payment"
+        },
+        {
+          "date": "2026-11-05",
+          "amount": "575.00",
+          "direction": "credit",
+          "source": "Invoice C half receipt"
+        },
+        {
+          "date": "2026-11-08",
+          "amount": "230.00",
+          "direction": "debit",
+          "source": "November bill half payment"
+        },
+        {
+          "date": "2026-11-08",
+          "amount": "115.00",
+          "direction": "debit",
+          "source": "Paid November expense"
+        }
+      ],
+      "netMovement": "575.00",
+      "closing": "11955.00",
+      "matchCount": 5,
+      "unmatchedCount": 0,
+      "difference": "0.00"
+    },
+    "documentBalances": {
+      "octoberInvoiceA": "0.00",
+      "octoberInvoiceB": "0.00",
+      "novemberInvoiceC": "460.00",
+      "octoberBill": "0.00",
+      "novemberBill": "230.00",
+      "customerCreditUnallocated": "0.00"
+    }
+  },
+  "yearEnd": {
+    "period": {
+      "from": "2026-04-01",
+      "to": "2027-03-31",
+      "asOf": "2027-03-31"
+    },
+    "activityDecemberThroughMarch": [],
+    "closingTrialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "11955.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "460.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "3600.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "540.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1700.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "255.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "230.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "14370.00",
+      "totalCredits": "14370.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "accrual": {
+        "revenue": "3600.00",
+        "expenses": "1700.00",
+        "netIncome": "1900.00"
+      },
+      "cash": {
+        "revenue": "3200.00",
+        "expenses": "1500.00",
+        "netIncome": "1700.00"
+      }
+    },
+    "balanceSheet": {
+      "cash": "11955.00",
+      "receivables": "460.00",
+      "inputGstAsset": "255.00",
+      "assets": "12670.00",
+      "payables": "230.00",
+      "outputGstLiability": "540.00",
+      "liabilities": "770.00",
+      "capital": "10000.00",
+      "priorFinancialYearEarnings": "0.00",
+      "currentFinancialYearEarnings": "1900.00",
+      "accumulatedEarnings": "1900.00",
+      "equity": "11900.00",
+      "balanced": true
+    },
+    "receivablesAging": {
+      "total": "460.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "460.00",
+      "unallocatedControl": "0.00"
+    },
+    "payablesAging": {
+      "total": "230.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "230.00",
+      "unallocatedControl": "0.00"
+    },
+    "daysPastDueNovemberDocuments": 121,
+    "closeThrough": "2027-03-31",
+    "unpaidReceivablesDoNotPreventClose": true,
+    "unpaidPayablesDoNotPreventClose": true
+  },
+  "april": {
+    "period": {
+      "from": "2027-04-01",
+      "to": "2027-04-30",
+      "asOf": "2027-04-30"
+    },
+    "economicJournals": [
+      {
+        "date": "2027-04-01",
+        "reference": "Invoice D new financial year",
+        "debits": "230.00",
+        "credits": "230.00",
+        "lines": [
+          {
+            "accountRole": "receivables",
+            "debit": "230.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "sales",
+            "debit": "0.00",
+            "credit": "200.00"
+          },
+          {
+            "accountRole": "outputGst",
+            "debit": "0.00",
+            "credit": "30.00"
+          }
+        ]
+      },
+      {
+        "date": "2027-04-01",
+        "reference": "Full receipt invoice D",
+        "debits": "230.00",
+        "credits": "230.00",
+        "lines": [
+          {
+            "accountRole": "bank",
+            "debit": "230.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "receivables",
+            "debit": "0.00",
+            "credit": "230.00"
+          }
+        ]
+      },
+      {
+        "date": "2027-04-01",
+        "reference": "Receive April bill unpaid",
+        "debits": "115.00",
+        "credits": "115.00",
+        "lines": [
+          {
+            "accountRole": "operatingCosts",
+            "debit": "100.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "inputGst",
+            "debit": "15.00",
+            "credit": "0.00"
+          },
+          {
+            "accountRole": "payables",
+            "debit": "0.00",
+            "credit": "115.00"
+          }
+        ]
+      }
+    ],
+    "openingTrialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "11955.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "460.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "3600.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "540.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1700.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "255.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "230.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "14370.00",
+      "totalCredits": "14370.00",
+      "balanced": true
+    },
+    "closingTrialBalance": {
+      "rows": [
+        {
+          "accountRole": "bank",
+          "debit": "12185.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "capital",
+          "debit": "0.00",
+          "credit": "10000.00"
+        },
+        {
+          "accountRole": "receivables",
+          "debit": "460.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "sales",
+          "debit": "0.00",
+          "credit": "3800.00"
+        },
+        {
+          "accountRole": "outputGst",
+          "debit": "0.00",
+          "credit": "570.00"
+        },
+        {
+          "accountRole": "operatingCosts",
+          "debit": "1800.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "inputGst",
+          "debit": "270.00",
+          "credit": "0.00"
+        },
+        {
+          "accountRole": "payables",
+          "debit": "0.00",
+          "credit": "345.00"
+        },
+        {
+          "accountRole": "customerCredit",
+          "debit": "0.00",
+          "credit": "0.00"
+        }
+      ],
+      "totalDebits": "14715.00",
+      "totalCredits": "14715.00",
+      "balanced": true
+    },
+    "economicPeriodDebits": "575.00",
+    "economicPeriodCredits": "575.00",
+    "profitLoss": {
+      "accrual": {
+        "revenue": "200.00",
+        "expenses": "100.00",
+        "netIncome": "100.00"
+      },
+      "cash": {
+        "revenue": "200.00",
+        "expenses": "0.00",
+        "netIncome": "200.00"
+      }
+    },
+    "balanceSheet": {
+      "cash": "12185.00",
+      "receivables": "460.00",
+      "inputGstAsset": "270.00",
+      "assets": "12915.00",
+      "payables": "345.00",
+      "outputGstLiability": "570.00",
+      "liabilities": "915.00",
+      "capital": "10000.00",
+      "priorFinancialYearEarnings": "1900.00",
+      "currentFinancialYearEarnings": "100.00",
+      "accumulatedEarnings": "2000.00",
+      "equity": "12000.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "openingCash": "11955.00",
+      "inflows": "230.00",
+      "outflows": "0.00",
+      "netCashFlow": "230.00",
+      "closingCash": "12185.00"
+    },
+    "receivablesAging": {
+      "total": "460.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "460.00",
+      "unallocatedControl": "0.00"
+    },
+    "payablesAging": {
+      "total": "345.00",
+      "current": "115.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "230.00",
+      "unallocatedControl": "0.00"
+    },
+    "daysPastDueNovemberDocuments": 151,
+    "gst": {
+      "invoice": {
+        "salesGross": "230.00",
+        "purchaseGross": "115.00",
+        "output": "30.00",
+        "input": "15.00",
+        "net": "15.00"
+      },
+      "payments": {
+        "salesGross": "230.00",
+        "purchaseGross": "0.00",
+        "output": "30.00",
+        "input": "0.00",
+        "net": "30.00"
+      },
+      "hybrid": {
+        "salesGross": "230.00",
+        "purchaseGross": "0.00",
+        "output": "30.00",
+        "input": "0.00",
+        "net": "30.00"
+      }
+    }
+  },
+  "comparisons": {
+    "financialYears": [
+      {
+        "from": "2026-04-01",
+        "to": "2027-03-31",
+        "revenue": "3600.00",
+        "expenses": "1700.00",
+        "netIncome": "1900.00"
+      },
+      {
+        "from": "2027-04-01",
+        "to": "2028-03-31",
+        "revenue": "200.00",
+        "expenses": "100.00",
+        "netIncome": "100.00"
+      }
+    ],
+    "calendarQuarters": [
+      {
+        "from": "2026-10-01",
+        "to": "2026-12-31",
+        "revenue": "3600.00",
+        "expenses": "1700.00",
+        "netIncome": "1900.00"
+      },
+      {
+        "from": "2027-01-01",
+        "to": "2027-03-31",
+        "revenue": "0.00",
+        "expenses": "0.00",
+        "netIncome": "0.00"
+      },
+      {
+        "from": "2027-04-01",
+        "to": "2027-06-30",
+        "revenue": "200.00",
+        "expenses": "100.00",
+        "netIncome": "100.00"
+      }
+    ],
+    "months": [
+      {
+        "month": "2026-10",
+        "revenue": "2700.00",
+        "expenses": "1200.00",
+        "netIncome": "1500.00"
+      },
+      {
+        "month": "2026-11",
+        "revenue": "900.00",
+        "expenses": "500.00",
+        "netIncome": "400.00"
+      },
+      {
+        "month": "2026-12",
+        "revenue": "0.00",
+        "expenses": "0.00",
+        "netIncome": "0.00"
+      },
+      {
+        "month": "2027-01",
+        "revenue": "0.00",
+        "expenses": "0.00",
+        "netIncome": "0.00"
+      },
+      {
+        "month": "2027-02",
+        "revenue": "0.00",
+        "expenses": "0.00",
+        "netIncome": "0.00"
+      },
+      {
+        "month": "2027-03",
+        "revenue": "0.00",
+        "expenses": "0.00",
+        "netIncome": "0.00"
+      },
+      {
+        "month": "2027-04",
+        "revenue": "200.00",
+        "expenses": "100.00",
+        "netIncome": "100.00"
+      }
+    ]
+  },
+  "controls": {
+    "openingPolicy": "October closing balances carry forward automatically. Do not post another opening journal in November or April. No new capital contribution is prescribed.",
+    "yearEndPolicy": "Closing an accounting period records a cutoff/audit event, not a zeroing journal. Prior-year profit1900 and new-year profit100 must both remain in total equity2000, counted once. Separate retained/current earnings presentation or an accurately labelled single accumulated-earnings line is valid; silently discarding prior profit or carrying it into April P&L is not.",
+    "trialBalancePolicy": "Raw cumulative trial balance keeps nominal balances when no explicit year-end closing journal is posted. If a product deliberately exposes post-close nominal accounts, verify an explicit balanced and idempotent retained-earnings transfer rather than comparing that presentation to this raw-GL expectation. No such transfer is prescribed by this test.",
+    "historicalReports": "After November and April operations, October as-of reports/GST/reconciliation remain unchanged; November as-of reports remain unchanged after April. Historical aging must ignore receipts/credits after the selected as-of date.",
+    "bankMatchPolicy": "Match statement movements to existing sources. Technical import/reversal pairs may add turnover but must net to zero; do not force a reconciliation with adjustments or duplicate cash/income.",
+    "futureClock": "Current real date2026-11-08 precedes both closes. Use a controlled test-only clock2027-05-01 or appropriate stage date; do not weaken the production future-cutoff guard. Record actual UI chronology and any date limitations.",
+    "scope": "Prescribed fixed case covers partial settlements, unpaid credits and prior paid-invoice refund fromOctober. An overpayment or additional November refund scenario requires an independently frozen supplemental paper before execution."
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "baseCommit": "8f6bb68",
+  "dateClock": "2027-05-01T00:00:00.000Z",
+  "actualExecutionDate": "2026-11-08",
+  "purpose": "Synthetic future close and NZ fiscal-year boundary acceptance; production future-date guard unchanged",
+  "apiClockModule": "scripts/second-month-acceptance-clock.mjs",
+  "apiClockSha256": "c573faa19cd2ad6b5a17712d04ca2f66e6adedc7d0daf2292156cabae9639981",
+  "nodeApi": "24.22.1",
+  "nodeWeb": "22.23.4",
+  "nodeMobile": "20.20.2",
+  "database": "/tmp/ledgercraft-second-month-year-end.sqlite",
+  "providers": "unavailable; no live sends/filing",
+  "installedNativeQA": "pending; Expo web is actual verified platform",
+  "finalMainBase": "ff7d561",
+  "mainAdvance": "Only Stripe test date fixture changed during verification (#163); production source unchanged; targeted test rerun recorded."
+}

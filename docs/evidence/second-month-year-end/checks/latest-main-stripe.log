@@ -1,0 +1,366 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_0cae7538-1f09-4f73-98ba-27df994de163","route":"/api/auth/*","method":"POST","status":200,"durationMs":147}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_5a571b91-8b90-4682-a12f-0c01a11d6044","route":"/api/business-profile","method":"PUT","status":200,"durationMs":20}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_9e0af700-14ba-4d7c-b558-d8ef390d0f74","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_2818dfa1-3d16-4274-abaa-56809dc09cc4","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_00b70b42-8dcd-44a3-84a2-ce31f5174d08","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_8b580e22-9d2b-4a38-8d0e-61ae142d27c6","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_a6788489-0a58-4bcb-bf0c-d0d5cc795707","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_65d4182d-8a78-4553-987c-e4fd30d8c97e","route":"/api/auth/*","method":"POST","status":200,"durationMs":123}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_208b8fff-05ca-4718-8aae-f2cba729a8e1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_2da32dc6-c0ae-4a6f-8818-83dfec772963","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_42f2ce0c-ba31-4918-b5a6-2654efad9cf0","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_ee398cd1-0592-49a8-84d2-4f9f1019ad30","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_b5416ecb-6dd5-465c-aaa0-df043a3a60c4","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_8322983e-72a9-422f-8e0c-11856d00f202","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_2a2fca65-eb5d-433e-a9b5-674ef134b7ee","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_8b5ddd8b-c498-4204-8c94-4757146f5c81","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_7039c44b-1d02-4d06-bd61-1be8c95a096a","route":"/api/payments/:id/stripe/refund","method":"POST","status":202,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_2be7c2fd-e241-4566-937b-7c369015a3f2","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_e702c936-1c47-4679-9886-12369d75552e","route":"/api/auth/*","method":"POST","status":200,"durationMs":95}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_f211c688-73b7-4b47-8f22-4c97b208e1f0","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_946392a6-50eb-435d-9672-06781f08b941","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_8e2cca75-8e68-4966-931c-33c0435fae18","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_79ccd416-17c9-4303-bd02-31b24f59a385","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_c18b6f05-bad0-4f0b-9e8f-27e76a8bca29","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_a8198cc8-b7fa-4a3c-bf04-03e63707cde7","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_497431ee-5369-427a-94a6-883946146c2a","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_e5277a67-1b0d-4ea8-ba27-346643cb02bf","route":"/api/auth/*","method":"POST","status":200,"durationMs":111}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_a2caad38-d141-437b-a44f-c462d94cf218","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_0818eb0b-4b0b-4302-b01a-d354fe2f2d71","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_5d831e83-894c-4cc6-a9ae-aedaa4e59634","route":"/api/invoices","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_eb35a061-44b7-4553-ba64-217ffa0433a2","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_74d5851b-e157-4d5a-bc6d-b7cc35af0db6","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_b9091d1b-0adb-46e4-b5cc-4c030fc55c1f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_8e49b1cd-082c-4687-bfbf-4bf378342e0e","route":"/api/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_69375dd0-ecb0-4824-81d6-5a3451f4666c","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_13ed75db-a0f4-4360-976b-b1a7e2054f5d","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4bf919b8-0b6f-4f64-8729-d79c978d25ef","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4e3e929f-1fbd-47cc-b226-9cbb6d36fad4","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_60266205-d2f3-4ab2-9bba-74fc5783bf70","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_d1685121-d33d-436d-af17-94d2182ed14d","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_926a692f-7f5c-432d-8ed6-e7b7e7597d77","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_0d70706a-5724-4151-98ce-285d255ae009","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_6356aced-60e3-4dc2-8a2e-d33eba60f502","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_41c1f64d-9a72-42dc-8f61-0d03425c398a","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_016ccbb7-8da8-49c3-a481-dbcfb45e282b","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f0411987-b7d7-4c8d-826c-a8e6e461a441","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_fe848892-2841-47c1-9eeb-50a1be3fdf4d","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_2ccfc09c-5f01-4896-8b4b-55e497a9d708","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_84978743-c3e9-4c60-b872-981215f26565","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_05eb42be-40fe-47b6-9096-fb9d9e7efdb4","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_588f0482-22de-4585-a84b-f5c544ff7d27","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_d29abf4b-0ffa-4091-add2-6d64831a0453","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_98181e98-6568-4631-85f6-eb6621aaf735","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_c8f587db-9725-4836-bbca-9bb4c700da41","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_a0137c3d-02f9-4f17-b126-b2ea2e319831","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_eb53b2e8-35c0-4b94-98a0-0db8925f178d","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_c3643f5f-8327-4b4b-9ff3-a536a841541c","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_b4469f5e-9977-4fb4-b382-b418da76145f","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_1d3041fb-03ca-49ce-89a8-583b7c1a14af","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_727d7983-0319-4e20-8d2c-6fad6ea0aeef","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_8700ae1b-990c-4ba3-a46a-74dc5f3cbd58","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_742468ed-52cb-4b8b-b21d-a533f6706a23","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_7df321c7-7ca9-416b-ba83-8f05fb8fb0d9","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f0ded7c3-4268-491d-801d-d005c270d242","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_85aa2ddf-e380-46af-b259-3222f2b4d485","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_2d29f947-1743-44cc-866a-7928ccc0295f","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_0da3878d-6fd9-46c7-889f-4c33760f01a1","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_6f28658b-8784-4a5c-9436-9fcf4fef330e","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_53724630-f8ef-4c58-af1d-bc921c5c6b39","route":"/api/auth/*","method":"POST","status":200,"durationMs":85}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_1ae0824c-00dc-4f78-ad90-554214ab4992","route":"/api/payments/:id/stripe/verify","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_68c131d4-ba97-462e-a6a7-9566596eece2","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_a674f029-3b95-466c-9231-72570da9296e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_d65f74b1-8ec0-47f9-b98b-1776c87a725c","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_a9e91685-3844-4a91-8eaf-7684a12f086d","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_9f11be23-1164-4ce0-9318-7af93bde1d39","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_9de6c82f-89e8-41c4-b814-9f7ce73f0bdb","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_76fc64cf-c926-466d-b78f-e1d432f9c229","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_1a576950-89bf-48d8-b91b-1b9c64316548","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_64bc3e0b-68b9-4723-94e1-ee68ce758d7a","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_fcd76cde-f23f-435f-9383-2de60a83a544","route":"/api/payments/:id/stripe/refund","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_d01691a2-30b4-435e-9ff2-3362d0e27b12","route":"/api/auth/*","method":"POST","status":200,"durationMs":81}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_f10fab87-83ed-4c45-9b8b-3d62ba744487","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_8cb46154-d34c-44b9-b8a4-08a5621bc76a","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_bb22b95a-bd86-4bdc-8ca8-0e76ca28d526","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_774be904-a42a-4df4-9c20-32767956a85e","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_c770400c-c5a4-4df0-80bf-6ec169ea0f3d","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_fa71dccb-b1cb-4acd-8838-adf599713780","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_8180f8ba-54fb-45d2-8d7d-d4e3e3360e57","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_acadb8dd-e362-45bf-b383-11b8d598f8b5","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_4a5ae346-c72b-4619-9850-bd8f927614fb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_7c92b786-2cf4-413e-99fe-0ca7fb45a9da","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_1e5f3065-7ce9-49a0-aea2-8444624cd024","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_22294607-77ff-4e4e-8a98-97c8d402eb21","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_1dd28bc3-0f61-4512-921c-ca9c7b6f0baa","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_2ce93651-571b-4c3e-b923-850b2d5838bc","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_9a9c9a84-64b3-4c7e-836a-b31e7c0d9b9d","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_f1906ef9-1f65-447f-bf37-58af1eac886c","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_1a0c179a-001a-4f6a-9ae0-c6081fd34fe6","route":"/api/auth/*","method":"POST","status":200,"durationMs":94}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_0080d891-ed36-43be-86ae-18743dbb595e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_860e7f31-4fba-4d9a-b6cd-83880aff8a81","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_bcb2f98d-c220-4ffe-9e8f-64066e787e03","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_444a1b2e-012f-483d-8d39-b37fbd3df27c","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_5614df29-e2a6-456c-9942-65e3a9cf1a14","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_65405b2f-30a4-4da6-9f21-6a03eae6fe42","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_44dc7e63-687a-4f75-91ec-a44a27df91ef","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_ddcd9bf3-fd1e-47e0-ace1-412b3bd968b9","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_e1ffac57-a980-4972-b93c-40705e5ef18d","route":"/api/auth/*","method":"POST","status":200,"durationMs":95}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_e03ea892-2538-415b-8fbf-8747f61aeff9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_b4fa255b-52c9-4d77-8d4b-cb4e5866e0ed","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_285a5350-2c9f-41a1-9a22-eee0b90d59ce","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_ba83ef85-1559-4641-8807-618c16b65dd3","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_640eca20-5bf9-4ccf-a384-d076a83f2144","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_3201f54a-ea1f-4678-8ecc-647f66aebbb7","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_8ade8da6-e982-4f00-8d0e-38bc14b5af4b","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_3153a7dd-ed01-4484-ac41-25faf85a4cfd","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_f4d4c46e-769f-437a-b748-67d79b207798","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":3}
+
+ ✓ src/modules/stripe/stripe.operations.test.ts (10 tests) 10671ms
+   ✓ Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different  2266ms
+   ✓ Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation  1365ms
+   ✓ Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links  1153ms
+   ✓ Stripe finance operations > expires an open link after a manual payment changes its balance  1095ms
+   ✓ Stripe finance operations > requires owner/admin on every operational route and isolates another company  1043ms
+   ✓ Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation  754ms
+   ✓ Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once  710ms
+   ✓ Stripe finance operations > does not reverse a customer payment when only its application fee was returned  807ms
+   ✓ Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment  762ms
+   ✓ Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books  707ms
+
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+   Start at  09:08:37
+   Duration  21.61s (transform 4.88s, setup 91ms, collect 10.24s, tests 10.67s, environment 0ms, prepare 272ms)

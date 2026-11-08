@@ -1,0 +1,10 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ✓ src/report-export.test.ts (2 tests) 4ms
+ ✓ src/report-earnings.test.ts (2 tests) 5ms
+ ✓ src/report.test.ts (2 tests) 7ms
+
+ Test Files  3 passed (3)
+      Tests  6 passed (6)
+   Start at  08:57:40
+   Duration  361ms (transform 130ms, setup 0ms, collect 214ms, tests 17ms, environment 1ms, prepare 355ms)

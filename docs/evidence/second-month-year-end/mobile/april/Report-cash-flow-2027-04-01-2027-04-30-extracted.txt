@@ -1,0 +1,17 @@
+Kauri Second Month Mobile Limited - Cash flow
+2027-04-01 to 2027-04-30 / accrual / NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Account                                    Total
+
+BANK-AAEDBDAB Kauri Operating              230.00
+
+Opening cash                               11955.00
+
+Inflows                                    230.00
+
+Outflows                                   0.00
+
+Net cash flow                              230.00
+
+Closing cash                               12185.00

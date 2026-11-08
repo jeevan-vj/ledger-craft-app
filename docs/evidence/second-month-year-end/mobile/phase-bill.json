@@ -1,0 +1,11 @@
+{
+  "platform": "Expo web Chromium 390x844; no native device claim",
+  "phase": "bill",
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents"
+  ],
+  "expectedOnboardingDiagnostics": []
+}

@@ -13,14 +13,14 @@ export async function fullMonthCloseFixture() {
   expect(signup.status).toBe(200);
   const headers = { ...origin, Cookie: signup.headers.getSetCookie().map(row => row.split(';')[0]).join('; ') };
   const commands: Array<{ method: string; path: string; status: number }> = [];
-  async function request<T = { id: string }>(path: string, method = 'GET', body?: unknown, status = 200): Promise<T> {
-    const response = await app.request(path, { method, headers: { ...headers, ...(method === 'POST' ? { 'Idempotency-Key': crypto.randomUUID() } : {}) }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+  async function request<T = { id: string }>(path: string, method = 'GET', body?: unknown, status = 200, idempotencyKey?: string): Promise<T> {
+    const response = await app.request(path, { method, headers: { ...headers, ...(method === 'POST' ? { 'Idempotency-Key': idempotencyKey ?? crypto.randomUUID() } : {}) }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
     const text = await response.text();
     commands.push({ method, path, status: response.status });
     expect(response.status, `${method} ${path}: ${text}`).toBe(status);
     return JSON.parse(text) as T;
   }
-  const post = <T = { id: string }>(path: string, body: unknown, status = 201) => request<T>(path, 'POST', body, status);
+  const post = <T = { id: string }>(path: string, body: unknown, status = 201, idempotencyKey?: string) => request<T>(path, 'POST', body, status, idempotencyKey);
   await request('/api/business-profile', 'PUT', { name: 'Kauri October Services Limited', email: 'accounts@kauri.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-10-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 10 });
   const bank = await post('/api/bank-accounts', { accountName: 'Kauri operating bank', accountNumber: '12-0000-0000001-00', bankName: 'Synthetic Bank', accountType: 'checking', currency: 'NZD', openingBalance: '10000' });
   const bankNumber = `BANK-${bank.id.slice(0, 8).toUpperCase()}`;

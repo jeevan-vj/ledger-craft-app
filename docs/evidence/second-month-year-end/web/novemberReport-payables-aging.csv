@@ -1,0 +1,8 @@
+"Payables aging"
+"Period","2026-11-01","2026-11-30"
+"Basis","accrual"
+
+"Document","Party","Due date","Age","Outstanding"
+"BILL-0002","Rimu Subcontracting Limited","2026-11-30","current","230.00"
+"Total","","","","230.00"
+"Unallocated control","","","","0.00"

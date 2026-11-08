@@ -1,0 +1,170 @@
+> mobile@1.0.0 lint
+> eslint .
+
+
+/workspace/ledger-craft-app/mobile/shared/types/bankTransaction.ts
+  148:11  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  153:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/shared/types/index.ts
+  559:19  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/shared/types/payment.ts
+  186:16  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  250:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/components/dashboard/BalanceCard.tsx
+  23:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/expense/CategoryPicker.tsx
+  18:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/expense/SwipeableExpenseCard.tsx
+  72:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/CompactLineItem.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/InvoicePreviewWithTemplates.tsx
+  47:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/ProfileCompletenessBanner.tsx
+  23:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  23:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/ProgressIndicator.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/StatusPicker.tsx
+  35:28  warning  'type' is assigned a value but never used                                                                                      @typescript-eslint/no-unused-vars
+  72:6   warning  React Hook useEffect has missing dependencies: 'fadeAnim' and 'slideAnim'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/SwipeableInvoiceCard.tsx
+  48:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/invoice/TaxConfigCard.tsx
+  32:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  32:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/items/ItemPicker.tsx
+   41:10  warning  'categories' is assigned a value but never used              @typescript-eslint/no-unused-vars
+  179:22  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/components/sales/ReceiptQr.tsx
+  3:8  warning  Using exported name 'qrcode' as identifier for default import  import/no-named-as-default
+
+/workspace/ledger-craft-app/mobile/src/components/ui/ActionButton.tsx
+  29:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/AnimatedFilterButton.tsx
+   12:10  warning  'Text' is defined but never used                                                                             @typescript-eslint/no-unused-vars
+   85:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  104:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/components/ui/AnimatedPressable.tsx
+  76:16  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/AnimatedSwitch.tsx
+   18:3   warning  'withTiming' is defined but never used                                                                       @typescript-eslint/no-unused-vars
+   25:25  warning  'TIMING_CONFIG' is defined but never used                                                                    @typescript-eslint/no-unused-vars
+   25:55  warning  'EASING' is defined but never used                                                                           @typescript-eslint/no-unused-vars
+   94:16  warning  'error' is defined but never used                                                                            @typescript-eslint/no-unused-vars
+  110:6   warning  React Hook useEffect has a missing dependency: 'progress'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/components/ui/AnimatedTotal.tsx
+   8:3  warning  'interpolate' is defined but never used                                                                                         @typescript-eslint/no-unused-vars
+  40:6  warning  React Hook useEffect has missing dependencies: 'animatedValue' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/components/ui/ConfirmDialog.tsx
+  2:29  warning  'TouchableOpacity' is defined but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/EmptyState.tsx
+  18:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  18:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/FilterPills.tsx
+  22:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  22:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/FormInput.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/GroupedSection.tsx
+  15:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  15:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/IconWell.tsx
+  22:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/ModernButton.tsx
+  46:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/ModernInput.tsx
+  38:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/SelectionSheet.tsx
+   54:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  116:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/components/ui/SmartDatePicker.tsx
+  49:28  warning  'type' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/features/currency/currencyApi.ts
+  7:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/features/invoices/api/invoicesApi.ts
+  30:27  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  55:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+  67:13  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/features/quotes/quoteTotals.ts
+  25:10  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/navigation/index.tsx
+  58:6  warning  React Hook useEffect has missing dependencies: 'opacity' and 'scale'. Either include them or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/screens/accounting/AccountingToolsScreen.tsx
+  34:48  warning  Array type using 'Array<T>' is forbidden. Use 'T[]' instead  @typescript-eslint/array-type
+
+/workspace/ledger-craft-app/mobile/src/screens/auth/LoginScreen.tsx
+  26:19  warning  'palette' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  26:28  warning  'type' is assigned a value but never used     @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/screens/expenses/ExpenseCreateScreen.tsx
+  51:28  warning  'type' is assigned a value but never used         @typescript-eslint/no-unused-vars
+  70:20  warning  'setCurrency' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  74:19  warning  'setTaxRate' is assigned a value but never used   @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/screens/expenses/ExpenseEditScreen.tsx
+  25:15  warning  'Expense' is defined but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/screens/expenses/ExpenseListScreen.tsx
+   33:28  warning  'type' is assigned a value but never used                                                                              @typescript-eslint/no-unused-vars
+   63:8   warning  React Hook useCallback has a missing dependency: 'loadExpenses'. Either include it or remove the dependency array      react-hooks/exhaustive-deps
+  121:6   warning  React Hook useLayoutEffect has a missing dependency: 'handleSearch'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/screens/invoices/InvoiceCreateScreen.tsx
+   53:28  warning  'type' is assigned a value but never used                                                                           @typescript-eslint/no-unused-vars
+  106:6   warning  React Hook useEffect has a missing dependency: 'loadInitialData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/screens/invoices/InvoiceDetailScreen.tsx
+  111:6  warning  React Hook useEffect has a missing dependency: 'loadData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/screens/sales/SaleSuccessState.tsx
+  2:66  warning  'View' is defined but never used  @typescript-eslint/no-unused-vars
+
+/workspace/ledger-craft-app/mobile/src/screens/settings/BusinessSettingsScreen.tsx
+  50:28  warning  'type' is assigned a value but never used                                                                       @typescript-eslint/no-unused-vars
+  89:6   warning  React Hook useEffect has a missing dependency: 'loadProfile'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+/workspace/ledger-craft-app/mobile/src/services/expenseService.ts
+  4:66  warning  '/workspace/ledger-craft-app/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+  5:30  warning  'PaymentMethod' is defined but never used                                          @typescript-eslint/no-unused-vars
+  5:51  warning  '/workspace/ledger-craft-app/mobile/src/types/expense.ts' imported multiple times  import/no-duplicates
+
+/workspace/ledger-craft-app/mobile/src/services/storageService.ts
+  46:15  warning  'data' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 74 problems (0 errors, 74 warnings)
+  0 errors and 13 warnings potentially fixable with the `--fix` option.

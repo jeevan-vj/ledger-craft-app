@@ -1,0 +1,1486 @@
+> mobile@1.0.0 test
+> jest --runInBand src/screens/reports/ReportsScreen.test.tsx --testNamePattern=accumulated earnings
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/reports/ReportsScreen.test.tsx
+  ✕ shows server accumulated earnings 2000.00 as already included in equity (225 ms)
+  ✕ shows server accumulated earnings -500.00 as already included in equity (102 ms)
+  ✓ does not invent an earnings bridge when an older server omits accumulated earnings (107 ms)
+  ○ skipped shows unallocated posted receivables without inventing a customer aging balance
+  ○ skipped offers full report controls, exact account drill-down and native exports
+  ○ skipped passes explicit month columns and comparison dates through to the server
+  ○ skipped drills closing account balances through carried posted history, with no amount recomputation
+  ○ skipped shows permission failure distinctly and never presents a stale successful report as current
+  ○ skipped separates closing trial balances from period turnover
+  ○ skipped requires report and bank access for the close pack and exports the selected run period
+  mobile GST report
+    ○ skipped shows output, input, and a positive refundable amount using the server position
+    ○ skipped shows the payable GST position label
+    ○ skipped shows the nil GST position label
+    ○ skipped labels GST as invoice basis and shows foreign-currency warnings
+
+  ● shows server accumulated earnings 2000.00 as already included in equity
+
+    Unable to find an element with text: Accumulated earnings (included in equity)
+
+    <RCTScrollView>
+      <View>
+        <Text>
+          Financial reports
+        </Text>
+        <Text>
+          Server-calculated from posted journals
+        </Text>
+        <View>
+          <View>
+            <Text>
+              Report date preset
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="0"
+            >
+              <View>
+                <Text>
+                  Custom dates
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Report start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Report start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                value="2026-04-01"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Report end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Report end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                value="2026-11-08"
+              />
+            </View>
+          </View>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Accrual"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Accrual
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Cash"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Cash
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Total only"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Total only
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Monthly columns"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Monthly columns
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Quarterly columns"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Quarterly columns
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <View>
+            <Text>
+              Comparison start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Comparison start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                placeholder="Optional YYYY-MM-DD"
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Comparison end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Comparison end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                placeholder="Optional YYYY-MM-DD"
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Account filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="1"
+            >
+              <View>
+                <Text>
+                  All accounts
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Aging customer filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="2"
+            >
+              <View>
+                <Text>
+                  All customers
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Aging supplier filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="3"
+            >
+              <View>
+                <Text>
+                  All suppliers
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="4"
+          >
+            <View>
+              <Text>
+                Run financial report
+              </Text>
+            </View>
+          </View>
+          <Text>
+            2026-01-01
+             to
+            2026-12-31
+             ·
+            accrual
+             · NZD
+          </Text>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Profit & loss"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Profit & loss
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Balance sheet"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Balance sheet
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Trial balance"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Trial balance
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Cash flow"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Cash flow
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Receivables aging"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Receivables aging
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Payables aging"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Payables aging
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <Text
+            accessibilityRole="header"
+          >
+            Balance sheet
+          </Text>
+          <View>
+            <Text>
+              Assets
+            </Text>
+            <Text>
+              $12,915.00
+            </Text>
+          </View>
+          <View>
+            <Text>
+              Liabilities
+            </Text>
+            <Text>
+              $915.00
+            </Text>
+          </View>
+          <View>
+            <Text>
+              Equity
+            </Text>
+            <Text>
+              $12,000.00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="View Owner capital journal lines"
+            accessibilityRole="button"
+            accessible={true}
+          >
+            <View>
+              <Text>
+                3000
+
+                Owner capital
+              </Text>
+              <Text>
+                View posted journal lines
+              </Text>
+            </View>
+            <Text>
+              $10,000.00
+            </Text>
+          </View>
+          <Text>
+            The accountant close pack contains full-company accrual reports for the applied dates, the general ledger, bank reconciliation and GST evidence, plus preparation warnings. Current cash-basis and party filters do not narrow the archive. It does not file GST.
+          </Text>
+          <Text>
+            The close pack includes bank evidence and requires banking read access.
+          </Text>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="10"
+          >
+            <View>
+              <Text>
+                Share PDF
+              </Text>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="11"
+          >
+            <View>
+              <Text>
+                Share CSV
+              </Text>
+            </View>
+          </View>
+          <Text>
+            GST return (IRD)
+          </Text>
+          <Text>
+            Output GST (sales)
+          </Text>
+          <Text>
+            $30.00
+          </Text>
+          <Text>
+            Input GST (purchases & expenses)
+          </Text>
+          <Text>
+            $45.00
+          </Text>
+          <Text>
+            Net GST refundable from IRD
+          </Text>
+          <Text>
+            $15.00
+          </Text>
+          <Text
+            testID="gst-basis"
+          >
+            GST calculated on the invoice basis
+          </Text>
+          <Text>
+            Generated
+            2026-10-25T00:00:00.000Z
+             · Draft documents excluded.
+          </Text>
+        </View>
+        <View>
+          <Text>
+            Company income-tax preparation
+          </Text>
+          <Text>
+            NZ company worksheet using posted profit and your reviewed tax adjustments. Confirm the applicable rate and loss eligibility with your accountant. This does not complete or submit an IR4.
+          </Text>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="5"
+          >
+            <View>
+              <Text>
+                Load saved company tax drafts
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax period start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax period start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="2026-01-01"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax period end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax period end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="2026-11-08"
+              />
+            </View>
+          </View>
+          <Text>
+            This is a NZ company eligible for the 28% rate
+          </Text>
+          <RCTSwitch
+            accessibilityLabel="Confirm NZ company and 28% tax rate"
+            accessibilityRole="switch"
+            value={false}
+          />
+          <View>
+            <Text>
+              Tax losses brought forward
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Tax losses brought forward"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax credits
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax credits"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <Text>
+            Tax adjustments
+          </Text>
+          <View>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="6"
+            >
+              <View>
+                <Text>
+                  Add back
+                </Text>
+              </View>
+            </View>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="7"
+            >
+              <View>
+                <Text>
+                  Deduction
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax adjustment amount
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax adjustment amount"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax adjustment reason
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax adjustment reason"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax source reference
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax source reference"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value=""
+              />
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="8"
+          >
+            <View>
+              <Text>
+                Add company tax adjustment
+              </Text>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": true,
+              }
+            }
+            accessible={true}
+            nativeID="9"
+          >
+            <View>
+              <Text>
+                Prepare company income tax
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+
+      152 |   } });
+      153 |   const screen = renderScreen(); await screen.findByText('Share PDF'); fireEvent.press(screen.getByText('Balance sheet'));
+    > 154 |   expect(screen.getByText('Accumulated earnings (included in equity)')).toBeTruthy();
+          |                 ^
+      155 |   expect(screen.getByText(display)).toBeTruthy();
+      156 |   expect(screen.getByText('$10,000.00')).toBeTruthy();
+      157 |   expect(screen.getByText(equity === '12000.00' ? '$12,000.00' : '$9,500.00')).toBeTruthy();
+
+      at getByText (src/screens/reports/ReportsScreen.test.tsx:154:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● shows server accumulated earnings -500.00 as already included in equity
+
+    Unable to find an element with text: Accumulated earnings (included in equity)
+
+    <RCTScrollView>
+      <View>
+        <Text>
+          Financial reports
+        </Text>
+        <Text>
+          Server-calculated from posted journals
+        </Text>
+        <View>
+          <View>
+            <Text>
+              Report date preset
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="12"
+            >
+              <View>
+                <Text>
+                  Custom dates
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Report start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Report start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                value="2026-04-01"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Report end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Report end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                value="2026-11-08"
+              />
+            </View>
+          </View>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Accrual"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Accrual
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Cash"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Cash
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Total only"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Total only
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Monthly columns"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Monthly columns
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Quarterly columns"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Quarterly columns
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <View>
+            <Text>
+              Comparison start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Comparison start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                placeholder="Optional YYYY-MM-DD"
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Comparison end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Comparison end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                placeholder="Optional YYYY-MM-DD"
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Account filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="13"
+            >
+              <View>
+                <Text>
+                  All accounts
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Aging customer filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="14"
+            >
+              <View>
+                <Text>
+                  All customers
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Aging supplier filter
+            </Text>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="15"
+            >
+              <View>
+                <Text>
+                  All suppliers
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="16"
+          >
+            <View>
+              <Text>
+                Run financial report
+              </Text>
+            </View>
+          </View>
+          <Text>
+            2026-01-01
+             to
+            2026-12-31
+             ·
+            accrual
+             · NZD
+          </Text>
+          <RCTScrollView>
+            <View>
+              <View
+                accessibilityRole="tablist"
+              >
+                <View
+                  accessibilityLabel="Profit & loss"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Profit & loss
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Balance sheet"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": true,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Balance sheet
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Trial balance"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Trial balance
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Cash flow"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Cash flow
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Receivables aging"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Receivables aging
+                  </Text>
+                </View>
+                <View
+                  accessibilityLabel="Payables aging"
+                  accessibilityRole="tab"
+                  accessibilityState={
+                    {
+                      "selected": false,
+                    }
+                  }
+                  accessible={true}
+                >
+                  <Text>
+                    Payables aging
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </RCTScrollView>
+          <Text
+            accessibilityRole="header"
+          >
+            Balance sheet
+          </Text>
+          <View>
+            <Text>
+              Assets
+            </Text>
+            <Text>
+              $12,915.00
+            </Text>
+          </View>
+          <View>
+            <Text>
+              Liabilities
+            </Text>
+            <Text>
+              $915.00
+            </Text>
+          </View>
+          <View>
+            <Text>
+              Equity
+            </Text>
+            <Text>
+              $9,500.00
+            </Text>
+          </View>
+          <View
+            accessibilityLabel="View Owner capital journal lines"
+            accessibilityRole="button"
+            accessible={true}
+          >
+            <View>
+              <Text>
+                3000
+
+                Owner capital
+              </Text>
+              <Text>
+                View posted journal lines
+              </Text>
+            </View>
+            <Text>
+              $10,000.00
+            </Text>
+          </View>
+          <Text>
+            The accountant close pack contains full-company accrual reports for the applied dates, the general ledger, bank reconciliation and GST evidence, plus preparation warnings. Current cash-basis and party filters do not narrow the archive. It does not file GST.
+          </Text>
+          <Text>
+            The close pack includes bank evidence and requires banking read access.
+          </Text>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="22"
+          >
+            <View>
+              <Text>
+                Share PDF
+              </Text>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="23"
+          >
+            <View>
+              <Text>
+                Share CSV
+              </Text>
+            </View>
+          </View>
+          <Text>
+            GST return (IRD)
+          </Text>
+          <Text>
+            Output GST (sales)
+          </Text>
+          <Text>
+            $30.00
+          </Text>
+          <Text>
+            Input GST (purchases & expenses)
+          </Text>
+          <Text>
+            $45.00
+          </Text>
+          <Text>
+            Net GST refundable from IRD
+          </Text>
+          <Text>
+            $15.00
+          </Text>
+          <Text
+            testID="gst-basis"
+          >
+            GST calculated on the invoice basis
+          </Text>
+          <Text>
+            Generated
+            2026-10-25T00:00:00.000Z
+             · Draft documents excluded.
+          </Text>
+        </View>
+        <View>
+          <Text>
+            Company income-tax preparation
+          </Text>
+          <Text>
+            NZ company worksheet using posted profit and your reviewed tax adjustments. Confirm the applicable rate and loss eligibility with your accountant. This does not complete or submit an IR4.
+          </Text>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="17"
+          >
+            <View>
+              <Text>
+                Load saved company tax drafts
+              </Text>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax period start
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax period start"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="2026-01-01"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax period end
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax period end"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="2026-11-08"
+              />
+            </View>
+          </View>
+          <Text>
+            This is a NZ company eligible for the 28% rate
+          </Text>
+          <RCTSwitch
+            accessibilityLabel="Confirm NZ company and 28% tax rate"
+            accessibilityRole="switch"
+            value={false}
+          />
+          <View>
+            <Text>
+              Tax losses brought forward
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Tax losses brought forward"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax credits
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax credits"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <Text>
+            Tax adjustments
+          </Text>
+          <View>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="18"
+            >
+              <View>
+                <Text>
+                  Add back
+                </Text>
+              </View>
+            </View>
+            <View
+              accessibilityRole="button"
+              accessibilityState={
+                {
+                  "busy": false,
+                  "disabled": false,
+                }
+              }
+              accessible={true}
+              nativeID="19"
+            >
+              <View>
+                <Text>
+                  Deduction
+                </Text>
+              </View>
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax adjustment amount
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax adjustment amount"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value="0.00"
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax adjustment reason
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax adjustment reason"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value=""
+              />
+            </View>
+          </View>
+          <View>
+            <Text>
+              Company tax source reference
+            </Text>
+            <View>
+              <TextInput
+                accessibilityLabel="Company tax source reference"
+                accessibilityState={
+                  {
+                    "disabled": false,
+                  }
+                }
+                editable={true}
+                value=""
+              />
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": false,
+              }
+            }
+            accessible={true}
+            nativeID="20"
+          >
+            <View>
+              <Text>
+                Add company tax adjustment
+              </Text>
+            </View>
+          </View>
+          <View
+            accessibilityRole="button"
+            accessibilityState={
+              {
+                "busy": false,
+                "disabled": true,
+              }
+            }
+            accessible={true}
+            nativeID="21"
+          >
+            <View>
+              <Text>
+                Prepare company income tax
+              </Text>
+            </View>
+          </View>
+        </View>
+      </View>
+    </RCTScrollView>
+
+      152 |   } });
+      153 |   const screen = renderScreen(); await screen.findByText('Share PDF'); fireEvent.press(screen.getByText('Balance sheet'));
+    > 154 |   expect(screen.getByText('Accumulated earnings (included in equity)')).toBeTruthy();
+          |                 ^
+      155 |   expect(screen.getByText(display)).toBeTruthy();
+      156 |   expect(screen.getByText('$10,000.00')).toBeTruthy();
+      157 |   expect(screen.getByText(equity === '12000.00' ? '$12,000.00' : '$9,500.00')).toBeTruthy();
+
+      at getByText (src/screens/reports/ReportsScreen.test.tsx:154:17)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       2 failed, 11 skipped, 1 passed, 14 total
+Snapshots:   0 total
+Time:        2.227 s, estimated 4 s
+Ran all test suites matching src/screens/reports/ReportsScreen.test.tsx with tests matching "accumulated earnings".

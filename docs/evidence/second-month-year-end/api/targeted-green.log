@@ -1,0 +1,629 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_b6592d71-9b80-4f1b-9e4a-61521fbb8e3a","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_3a802264-d178-45c8-b9f1-4feffe3486bb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_42bc21ca-d5a4-444e-93c5-d868c2f6bea5","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_67b3f86f-0e6e-48ff-b3c1-dc6c684caea5","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_89461cc7-b52a-4363-bc0a-841ca1d5d78c","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_e299f5db-99fd-400a-af87-da9f6f7f9e8c","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_9be907a3-36c4-4c13-8805-f579c7361b54","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_a0429d7b-1618-4743-974a-a245bd268f5e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_e7a60c4e-03be-4bbe-9390-2eb487ec07d9","route":"/api/invoices","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_a85e37bd-911a-4fc0-a3dd-e1738b93c2eb","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_2cae83ef-3bea-4101-9452-6e18952cc61b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":21}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_d7843c49-5d20-4f61-814c-a62d79738db0","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_2c0e1018-c48c-4ce5-a14e-dacaaf2a2b10","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_135784c3-61b9-48f8-a2e2-bb1d33d451cc","route":"/api/fx-revaluations","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_4d146120-ec89-4722-8b84-2ad0bbe630ad","route":"/api/reports/financial","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_d818b877-03bc-4276-9c73-e84064a565c8","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_be6149dd-d5cb-4a67-874d-558a1d7492f8","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_dbb181f0-ca77-45d9-8c46-1ad419dff858","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_9701fd2f-accd-4e8c-af90-86fcbbb9c389","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_abb2eed4-8092-49ff-a761-e4cc8a2ee5c9","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_d8899f93-2548-44f4-87c1-06904de7bc04","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_8cf110e1-7652-4041-a693-5f866b1c8437","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing
+{"msg":"http_request","requestId":"req_ddf55e43-736e-41c2-83b9-3b167bace94f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_f769a758-3837-4cb0-8975-01b884e27fd4","route":"/api/auth/*","method":"POST","status":200,"durationMs":96}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_a4517461-0b24-42f2-9807-595d7df6c4c4","route":"/api/business-profile","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_929f8793-5457-4182-9a19-b79bfebc70ad","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_d5afe2cd-452f-471d-be75-9acc7f679853","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_6d37f63d-e245-499c-aa9b-7e10445bc00f","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_874cb097-b0ee-40e7-bcdc-c6c0d1086040","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_24b4f6c0-9b69-48e7-a5a1-d2bb6fdd2a68","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_bcfc64a3-0beb-41fa-afdd-3c3b493edb56","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_a8926bbb-0909-40a6-8c76-1f25cd0d6fad","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_04cf16d2-65e2-4b24-815c-d770f02b2c99","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_b78cec71-9db2-441d-bd9a-7e4cca60e02f","route":"/api/invoices","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_764bc2c6-db20-4ba6-a68d-74955d039f43","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":43}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_036dd1a1-b69b-4b66-b583-704973a143ab","route":"/api/payments","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_fce255c7-3e2b-481c-9707-6ad97cd49166","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt
+{"msg":"http_request","requestId":"req_f4548977-51ce-4aac-aebd-99a5eacb13c2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_acde7188-17dd-4f3c-9e05-e361df8b2afa","route":"/api/auth/*","method":"POST","status":200,"durationMs":108}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_7404cfda-cadc-4d65-9df4-e246f374fa97","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_81b1910a-985b-4e55-8773-27facb25e549","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_1965d01a-8685-4358-b32f-57cda2ff5e5a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_d550201f-d283-4c61-a2ef-d140db6fa84e","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_fbba6be9-9f62-4377-b266-045322319657","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_e022a748-19d1-4aac-8c75-24852601e721","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_a88a2c32-9653-457a-b5b9-c14e1d42f55c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_9175df69-61f1-4ebb-899e-c27a451b8a0d","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_6de70fc1-8ce3-431d-9e3d-3a3c78ed5bd7","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_1bd1f01f-eb2a-4535-93fc-a41aa8a95239","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":16}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_b728037a-088d-4dfa-99c1-ad5dbbf7d868","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_c4c88189-e7fb-4e50-a885-82beecd8fa17","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_db5c48ae-e575-4aee-98ea-66a04ef1f332","route":"/api/bills/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_e7fcb7ca-f46a-49ce-9ea9-2d3f1ed68ce3","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_738612e3-8a88-4113-93c5-3756127ce07e","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_bc5d4428-bbd4-4c3e-8fa8-a27cc58ac0c3","route":"/api/bills/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_3c2d36da-1c3b-4324-99b7-48d16bcf7809","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status
+{"msg":"http_request","requestId":"req_4ab1d39c-4cb9-4863-b927-f947104b1920","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_89120cbf-186d-4082-aca4-b7519ac1581c","route":"/api/auth/*","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_42d7164a-1c81-403c-9690-880d9e8fd9af","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_cd167a3c-88ad-4649-b552-4b971a5e614b","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_fac40183-4b7c-4ee9-947c-ed205796a774","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_102de362-807a-476e-9f26-46ed4b044436","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_9ea901a0-39e1-4c5a-9e0f-368fc05c3779","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_f21bcb78-e439-4ed6-854d-f1042133a7e2","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_b5947c0a-6b20-4e3e-8c64-010e92d8fc6f","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_1894dd44-122b-401e-9d45-e0392a7790f2","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_0a68601e-ab31-4260-a962-326171a4a158","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_889a83c0-c1d9-43c8-86b9-8e7410faf26b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_09b837aa-58e9-4904-8c6f-2cf24e47b5d8","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_951e504e-8d86-408c-85fd-6c4815e967cd","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_c7b10ee0-fe7a-4ed5-80b1-bb7147e12c5e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_534153c8-e2bb-4adc-9bd6-bbca5b5c03da","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_43639eb7-12af-464b-81d9-5f8318a0c968","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing
+{"msg":"http_request","requestId":"req_7210d5ba-7262-4d0d-8479-de69ad3a04ee","route":"/api/reports/financial","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_a7c41780-d599-4ecc-95fc-9ba74b0b0dc3","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_c5b4c4ed-da78-4e6b-9b59-2fc3cf1546c1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_dc55b9a1-a323-4714-835e-dd53bea2a4b6","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_a54190f7-2b62-4907-995c-08804c65d51d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_30b944f1-abb0-450a-b7bd-1c863e5c7485","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_fa77eb67-8e85-45b3-b5ca-d952a9523bee","route":"/api/accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_6d5f9fb6-46c8-4e8d-80c1-f8686eeff7fb","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_ab83f1d5-7ae1-4bcc-bf2c-c048c4db7384","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_68761717-3ff0-4753-acad-5393e2129ec5","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_e3f5d8f6-2cec-4272-ac5c-3ea00f16a801","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_561a42e0-558a-4ad4-affd-97cb0c8cdbb8","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_eecef046-f86d-40cd-b1d1-024b93232b60","route":"/api/invoices","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_2f370d5e-f3bc-4a9c-911d-fdea7a8460b6","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_09cad635-9bca-4342-88e5-f1696995740e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_ae4172a9-9bcd-4fc9-9598-fbc668293c43","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_579d59c2-394c-456a-adb8-965ddf3a9b45","route":"/api/bank-transactions","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_b974659e-9040-4165-a7d7-d16a8739951f","route":"/api/bank-transactions/:id/accept","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_1d06aa21-8ef8-431b-b31d-1eb0fd5a8255","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_55b47ad0-bf41-481f-af55-9d98eaa567d7","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_c38ce42c-5816-44b8-9a13-f04f6f8a6c83","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_bc4e485b-18c2-4c65-b6b6-ad27278d604b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_33f289f4-6643-4939-a200-f7197d7cb0f1","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports-aging-history.test.ts > historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo
+{"msg":"http_request","requestId":"req_674b0317-3779-4c5b-a8e7-a18e7d8e6dff","route":"/api/reports/financial","method":"GET","status":200,"durationMs":20}
+
+ ✓ src/modules/reports/reports-aging-history.test.ts (5 tests) 5174ms
+   ✓ historical base-currency receivables and payables ageing > retains foreign AR/AP170 at reviewed closing,160 after reversal, and0 after later settlement without rewriting prior ageing  973ms
+   ✓ historical base-currency receivables and payables ageing > keeps NZD invoice1150 in October ageing after its November receipt  1050ms
+   ✓ historical base-currency receivables and payables ageing > uses dated cancellation and restoration journals instead of current document status  1124ms
+   ✓ historical base-currency receivables and payables ageing > includes dated credit-note receivable movements and their reversals without rewriting older ageing  1008ms
+   ✓ historical base-currency receivables and payables ageing > preserves per-document allocation across a two-invoice bank acceptance and its later undo  1017ms
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_37454449-671d-4875-b3d9-aee721345480","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4a34e2a7-1650-43e5-99ba-5a682554dac5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1ea83bd3-1d5a-449d-b157-1b4c09abcb96","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9e631bd2-82ab-4b82-9d8f-a3f4dc60ae4e","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_df94d1a5-4186-43c5-be1a-94a30b7afca4","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_06e47272-98e4-4595-b5f7-37bf18e4eca0","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f12dddd4-aae1-4e6f-8c90-730d294fcc78","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_89bfc9ac-1fd5-4b1c-9c90-ea525c9e9c90","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4347129c-dc75-4fec-876c-a7858d081ac5","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_510936c9-b1d6-4548-a889-cb3f0a027472","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_137b7195-005a-41c0-a22a-cc1d11abef4f","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f60cdcee-3bfc-4fc8-8471-4e86d654027b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_076cdef4-031c-4296-b2fd-35787a1f1f5d","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c0e0b041-90bd-4e73-b8ab-cbb0c9426b3e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_23a29677-ccb4-4775-8e11-05483bff28d4","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8711247b-9823-4ee6-ad3f-add1f54edab2","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7adc9666-8185-43b2-b04c-082174b3c655","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4e032e2f-4db4-4a11-aec6-0a891d4a6682","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_200772f5-52f9-47f4-b1a4-fbed44880760","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_abd08076-1bcf-4e4d-a032-8cdc66217c8f","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e10fc397-49fa-4116-9a94-807f3b504852","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f25ffca5-58f5-46ee-a517-32a17958ab08","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b76eaeca-ab01-4fad-8d83-a7c7463bbaa6","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_17b9aea8-7fcf-4fa9-be6a-861431c130ae","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_204efdcd-999a-45c0-8575-ba49e822193c","route":"/api/currency-settings","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_830ad0fb-f9b2-43fa-b8fe-4a638cf5c959","route":"/api/book-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7478dec7-1411-4284-aae6-f4f34b7f9ee0","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a093b200-f671-4e1e-98da-bddebf5e5df3","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_fb254c59-6407-4e3f-956e-e8a472c1035a","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_bcaecfa1-4534-4fb0-a7d2-f84ee680df38","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_18f7e100-1b3a-4c79-8793-9a5929dfab33","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0dc21e20-3cc4-4afb-bfa5-8601ae6f7db9","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6cf97d23-69ba-44f9-abb3-2772358058e6","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2fb1c04a-89df-420d-824b-a115f81905b0","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ff3315fc-6492-47d6-b17b-54509b33d384","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_fa1e2a20-72e7-45de-ab5e-c208060a7b24","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_013447cb-06d9-4acc-b227-1832d6acd51e","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ded87dea-a64e-4f0a-9237-f5e54311e305","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_801343a6-8deb-420c-9528-044e585efb49","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1439a422-e559-48a9-89e6-3902a829bd5d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8aa8393f-2334-4599-b7cb-065b17fa985d","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_785c7551-bcbd-4138-997a-cbcc8e3270df","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b009866e-d7e3-470d-bd18-3bc992796814","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_884bf545-2770-4fbe-ab25-1f485c2f644b","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3a5b7eb4-976a-4ac1-b100-e581b338f763","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_aab982c9-ff71-4fd9-900a-e46628db546e","route":"/api/payments","method":"POST","status":400,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f0833518-b4df-4913-bc21-aab53938e254","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d3030463-6d4f-45ab-8af7-35e107d8d841","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b1c0ee3e-6557-4fad-b260-2376aa48fec8","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0ae8c7e2-7a6d-41b3-9433-bdc3efed1d34","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_756833f7-9f8e-4a5d-a442-7fb584bb21a0","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0398c23c-d659-4045-874d-75b2822c1e7c","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_de694c63-f227-4fdb-b4b5-1d75566024b5","route":"/api/payments","method":"POST","status":409,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8ccab429-d2d5-4912-a919-ac25206235cf","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_78218d0a-f204-4af7-b773-3f3f0541dec6","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_de759aab-dada-4e29-92e3-0b7731983607","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_480422e3-3c83-4056-98b0-89a36ce5c5e3","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d0eee034-71e3-4071-8b76-fecc9f905a9b","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e1cba4fa-2dab-40f9-b264-585ed6781d07","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8de32316-2681-4278-8957-eb9cca048bea","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_acfa09d1-fd8e-481f-be2e-db7f313eac2d","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2ff02130-b8e0-47f3-9194-404a002e2232","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_47b22266-ac9a-4bb6-b013-b1166e08d130","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b943b710-8b53-46ac-baa8-ba363cb786d2","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_86ebc508-5d04-4008-88c5-b4983734e16b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_dc1dc06f-241c-49bd-9795-bf35f7016980","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ab5bd931-d764-4d1d-b4c4-2e84325aaa14","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8f967f73-f98c-48b4-814f-fc6ef78f651b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0d84d677-fa9d-49c2-b4fa-fe095c23f0c4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_47acfc00-a1b2-42e7-a709-3ec43834abd4","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_295078c5-21f6-44b4-932f-b3a8c9d5eec1","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c35d648d-6427-46c4-b2ee-453ac1a33dce","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ff282e4d-d33d-48ec-9d63-fb2d5dd8c28c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6e4782ef-5f0a-46c0-8fa4-301bf45ad000","route":"/api/tax/gst-preparation","method":"GET","status":422,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_5cbac444-9432-4caf-ba58-108c6d35c167","route":"/api/tax-returns","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_aae538f0-5832-4fbb-bda0-f40c9f396d55","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8345201d-d433-4928-9c63-e9314842074e","route":"/api/journal-entries","method":"POST","status":409,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ef3bc8fa-c72f-4dcd-94fd-ed01a80bd1ca","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ef51268c-ca50-4857-80ec-6c42f09eff71","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c006c792-7f8e-4f57-be0c-2b4d437cbebd","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_5367bd13-7075-45c7-b4d9-aac0a4c18fdd","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d895fd8e-896e-4347-a358-90b8d2cef3bc","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8f421036-f78e-4933-9610-1076cd5d9247","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b656636d-edf6-440d-81d5-7d3e444251cc","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_79584fdf-70c8-45a2-b0c1-5a55a57499b4","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1c341b27-2d2a-4426-818f-03c7dd3f1366","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a948fa01-3fd8-49bf-8e4a-7650d0af24c3","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_fef38b80-4bec-4c6b-aead-40b0e156156c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6a2f8f8d-eb43-40aa-b217-e9577fca131e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_cbe8bab4-a739-4aff-8f89-f14258137c90","route":"/api/reports/options","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8ad68804-50d3-4103-9f78-95dc2af586f4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a77922b1-1a9d-404e-a8e9-ab78c4faa79e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_86c435c9-d42c-4c8b-b780-417a31f63ec4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_af5893a5-dc98-4b05-8fba-2b2fa62a55ed","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c60b3ce0-3a2c-4c8e-919e-19e9aff27c8d","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":0}
+
+ ✓ src/modules/reports/second-month-year-end.e2e.test.ts (1 test) 1982ms
+   ✓ second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings  1980ms
+stdout | src/modules/reports/report-columns.test.ts > posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget
+{"case":"10000-lines-12-columns","durationMs":374.9596819999997}
+
+ ✓ src/modules/reports/report-columns.test.ts (2 tests) 2844ms
+   ✓ posted-ledger report columns > matches each single month and full totals on accrual and cash basis, with quarter and clipped windows  912ms
+   ✓ posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget  1930ms
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_7c314853-bf67-41e8-b531-e75c284c52d6","route":"/api/auth/*","method":"POST","status":200,"durationMs":160}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_aea2e512-bd9f-41bb-bf50-643e26811c81","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_00565131-74a8-42b9-87d1-af2bda4c73b6","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_198ea98a-9df0-4b47-8a9a-ab86b1211a5d","route":"/api/invoices","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_1b3dc1d2-f1a4-48dd-8196-2d5fc58064c5","route":"/api/payments","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_4fa83af4-ceea-45a8-b751-4f6bf22d0d8c","route":"/api/expenses","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_fd496897-df96-438f-bf1e-ba07f5e5207f","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_02ef5a46-d4f1-40ea-b1eb-3a6899a98f2c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":21}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_22243f4b-0877-4408-b646-c545f1179ed7","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/cash-report-receipts.test.ts > recognises the GST-exclusive paid portion of a credit invoice in cash P&L
+{"msg":"http_request","requestId":"req_ebbe7422-cf09-430c-8b3e-cf30ae962c72","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":14}
+
+ ✓ src/modules/reports/cash-report-receipts.test.ts (1 test) 1055ms
+   ✓ recognises the GST-exclusive paid portion of a credit invoice in cash P&L  1054ms
+
+ Test Files  4 passed (4)
+      Tests  9 passed (9)
+   Start at  08:39:32
+   Duration  17.71s (transform 1.36s, setup 56ms, collect 5.71s, tests 11.05s, environment 1ms, prepare 270ms)
