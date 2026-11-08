@@ -31,3 +31,32 @@ test('network settling waits for an in-flight API read before navigating', async
   await waiting;
   assert.deepEqual(network.failures, []);
 });
+
+test('saved browser state requires a private explicit output directory', async () => {
+  const { mkdtemp, stat, rm } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { privateProofDirectory } = await import('./proof-runtime.mjs');
+  const root = await mkdtemp(join(tmpdir(), 'proof-output-test-'));
+  try {
+    await assert.rejects(() => privateProofDirectory(undefined), /explicit output directory/);
+    const output = await privateProofDirectory(join(root, 'private'));
+    assert.equal((await stat(output)).mode & 0o777, 0o700);
+    assert.equal(await privateProofDirectory(output), output);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});
+
+test('saved browser state refuses shared directories and symlink destinations', async () => {
+  const { mkdtemp, mkdir, chmod, symlink, rm } = await import('node:fs/promises');
+  const { tmpdir } = await import('node:os');
+  const { join } = await import('node:path');
+  const { privateProofDirectory } = await import('./proof-runtime.mjs');
+  const root = await mkdtemp(join(tmpdir(), 'proof-output-test-'));
+  try {
+    const shared = join(root, 'shared');
+    await mkdir(shared); await chmod(shared, 0o755);
+    await assert.rejects(() => privateProofDirectory(shared), /owner-only/);
+    await symlink(shared, join(root, 'linked'));
+    await assert.rejects(() => privateProofDirectory(join(root, 'linked')), /real directory/);
+  } finally { await rm(root, { recursive: true, force: true }); }
+});

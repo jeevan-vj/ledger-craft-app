@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: portable proof defaults use the Playwright-installed browser
+ok 1 - portable proof defaults use the Playwright-installed browser
+  ---
+  duration_ms: 3.454216
+  type: 'test'
+  ...
+# Subtest: an explicit Linux or custom browser remains supported
+ok 2 - an explicit Linux or custom browser remains supported
+  ---
+  duration_ms: 0.924971
+  type: 'test'
+  ...
+# Subtest: proof runs accept alternate loopback ports but refuse hosted targets
+ok 3 - proof runs accept alternate loopback ports but refuse hosted targets
+  ---
+  duration_ms: 2.57641
+  type: 'test'
+  ...
+# Subtest: network settling waits for an in-flight API read before navigating
+ok 4 - network settling waits for an in-flight API read before navigating
+  ---
+  duration_ms: 34.633309
+  type: 'test'
+  ...
+# Subtest: saved browser state requires a private explicit output directory
+not ok 5 - saved browser state requires a private explicit output directory
+  ---
+  duration_ms: 12.385998
+  type: 'test'
+  location: '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:35:1'
+  failureType: 'testCodeFailure'
+  error: 'privateProofDirectory is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:42:32
+    waitForActual (node:assert:630:21)
+    Function.rejects (node:assert:767:31)
+    TestContext.<anonymous> (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:42:18)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: saved browser state refuses shared directories and symlink destinations
+not ok 6 - saved browser state refuses shared directories and symlink destinations
+  ---
+  duration_ms: 25.363234
+  type: 'test'
+  location: '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:49:1'
+  failureType: 'testCodeFailure'
+  error: 'privateProofDirectory is not a function'
+  code: 'ERR_TEST_FAILURE'
+  name: 'TypeError'
+  stack: |-
+    file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:58:32
+    waitForActual (node:assert:630:21)
+    Function.rejects (node:assert:767:31)
+    TestContext.<anonymous> (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/proof-runtime.test.mjs:58:18)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 4
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 460.595538

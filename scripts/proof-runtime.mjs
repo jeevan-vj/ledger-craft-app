@@ -1,3 +1,6 @@
+import { mkdir, lstat } from 'node:fs/promises';
+import { resolve } from 'node:path';
+
 /** Shared runtime options for local acceptance drivers. */
 export function proofBrowserOptions(env = process.env) {
   return {
@@ -45,4 +48,17 @@ export function observeProofNetwork(page, { quietMs = 1000, timeoutMs = 120000 }
       }
     },
   };
+}
+
+/** Keep resumable local login state out of shared or symlinked directories. */
+export async function privateProofDirectory(output) {
+  if (!output?.trim()) throw new Error('Set an explicit output directory with CLOSE_OUTPUT for this proof run');
+  const directory = resolve(output);
+  await mkdir(directory, { recursive: true, mode: 0o700 });
+  const info = await lstat(directory);
+  if (!info.isDirectory() || info.isSymbolicLink()) throw new Error('Proof output must be a real directory, not a symlink');
+  if ((info.mode & 0o077) !== 0 || (process.getuid && info.uid !== process.getuid())) {
+    throw new Error('Proof output must be an owner-only directory (mode 0700) owned by the current user');
+  }
+  return directory;
 }
