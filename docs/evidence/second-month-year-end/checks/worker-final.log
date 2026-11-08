@@ -1,0 +1,17 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# Subtest: actual Worker Identity/Ledger handles self-service accounts, period audit and verified close-pack ZIP
+ok 1 - actual Worker Identity/Ledger handles self-service accounts, period audit and verified close-pack ZIP
+  ---
+  duration_ms: 11781.142478
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11929.928963

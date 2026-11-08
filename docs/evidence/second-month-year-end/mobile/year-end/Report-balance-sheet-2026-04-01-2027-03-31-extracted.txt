@@ -1,0 +1,27 @@
+Kauri Second Month Mobile Limited - Balance sheet
+2026-04-01 to 2027-03-31 / accrual / NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Account                                     Class       Debit      Credit     Balance
+
+1200 Accounts Receivable                    asset       4600.00    4140.00    460.00
+
+2100 Accounts Payable                       liability   1380.00    1610.00    230.00
+
+2150 GST Paid on Purchases                  asset       255.00     0.00       255.00
+
+2200 GST Collected on Sales                 liability   60.00      600.00     540.00
+
+2300 Customer Credits                       liability   115.00     115.00     0.00
+
+3000 Owner Capital                          equity      0.00       10000.00   10000.00
+
+BANK-AAEDBDAB Kauri Operating               asset       19430.00   7475.00    11955.00
+
+Assets                                                                        12670.00
+
+Liabilities                                                                   770.00
+
+Accumulated earnings (included in equity)                                     1900.00
+
+Equity (includes retained income)                                             11900.00

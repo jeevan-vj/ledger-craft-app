@@ -1,0 +1,148 @@
+TAP version 13
+# Subtest: budget waits through a multi-minute Durable Object cutover and still ends
+ok 1 - budget waits through a multi-minute Durable Object cutover and still ends
+  ---
+  duration_ms: 1.52247
+  type: 'test'
+  ...
+# Subtest: picks the lexicographically latest sql file and ignores metadata
+ok 2 - picks the lexicographically latest sql file and ignores metadata
+  ---
+  duration_ms: 0.644452
+  type: 'test'
+  ...
+# Subtest: accepts only healthz ok, the exact migration header, and /api/me 401
+ok 3 - accepts only healthz ok, the exact migration header, and /api/me 401
+  ---
+  duration_ms: 18.231845
+  type: 'test'
+  ...
+# Subtest: backoff grows and never sleeps past the remaining budget
+ok 4 - backoff grows and never sleeps past the remaining budget
+  ---
+  duration_ms: 0.792552
+  type: 'test'
+  ...
+# Subtest: passes on the first attempt when the new migration is already served
+ok 5 - passes on the first attempt when the new migration is already served
+  ---
+  duration_ms: 0.594369
+  type: 'test'
+  ...
+# Subtest: keeps polling after the old 74s window when the migration header is stale
+ok 6 - keeps polling after the old 74s window when the migration header is stale
+  ---
+  duration_ms: 0.861503
+  type: 'test'
+  ...
+# Subtest: fails once the budget is spent when the migration never arrives
+ok 7 - fails once the budget is spent when the migration never arrives
+  ---
+  duration_ms: 1.351127
+  type: 'test'
+  ...
+# Subtest: records a transport failure and retries within the budget
+ok 8 - records a transport failure and retries within the budget
+  ---
+  duration_ms: 0.316969
+  type: 'test'
+  ...
+# Subtest: ci.yml fails on a lint error rather than allowing an error budget
+ok 9 - ci.yml fails on a lint error rather than allowing an error budget
+  ---
+  duration_ms: 19.254992
+  type: 'test'
+  ...
+# Subtest: ci.yml fails independently on app and Node-config TypeScript errors
+ok 10 - ci.yml fails independently on app and Node-config TypeScript errors
+  ---
+  duration_ms: 15.483884
+  type: 'test'
+  ...
+# Subtest: release.yml fails on a lint error rather than allowing an error budget
+ok 11 - release.yml fails on a lint error rather than allowing an error budget
+  ---
+  duration_ms: 8.490037
+  type: 'test'
+  ...
+# Subtest: release.yml fails independently on app and Node-config TypeScript errors
+ok 12 - release.yml fails independently on app and Node-config TypeScript errors
+  ---
+  duration_ms: 13.68129
+  type: 'test'
+  ...
+# Subtest: skips source map upload when SENTRY_AUTH_TOKEN is absent
+ok 13 - skips source map upload when SENTRY_AUTH_TOKEN is absent
+  ---
+  duration_ms: 0.916504
+  type: 'test'
+  ...
+# Subtest: uploads ledgercraft-api for the git SHA when the token and org are set
+ok 14 - uploads ledgercraft-api for the git SHA when the token and org are set
+  ---
+  duration_ms: 0.620938
+  type: 'test'
+  ...
+# Subtest: prefers SENTRY_RELEASE and an explicit project slug
+ok 15 - prefers SENTRY_RELEASE and an explicit project slug
+  ---
+  duration_ms: 0.112186
+  type: 'test'
+  ...
+# Subtest: fails closed when the token is set without an org or release
+ok 16 - fails closed when the token is set without an org or release
+  ---
+  duration_ms: 0.212043
+  type: 'test'
+  ...
+# Subtest: the checked-in manifest covers every comparison row and references real evidence
+ok 17 - the checked-in manifest covers every comparison row and references real evidence
+  ---
+  duration_ms: 4.74977
+  type: 'test'
+  ...
+# Subtest: strict evaluation fails open required capabilities while report evaluation succeeds
+ok 18 - strict evaluation fails open required capabilities while report evaluation succeeds
+  ---
+  duration_ms: 2.484092
+  type: 'test'
+  ...
+# Subtest: completed required capabilities make strict mode pass
+ok 19 - completed required capabilities make strict mode pass
+  ---
+  duration_ms: 1.257458
+  type: 'test'
+  ...
+# Subtest: validator rejects a status-only promotion without applicable proof
+ok 20 - validator rejects a status-only promotion without applicable proof
+  ---
+  duration_ms: 1.101087
+  type: 'test'
+  ...
+# Subtest: validator rejects drift, duplicate ids, malformed baseline sha, and missing evidence paths
+ok 21 - validator rejects drift, duplicate ids, malformed baseline sha, and missing evidence paths
+  ---
+  duration_ms: 1.406008
+  type: 'test'
+  ...
+# Subtest: report output is deterministic and separates core blockers from extensions
+ok 22 - report output is deterministic and separates core blockers from extensions
+  ---
+  duration_ms: 1.29237
+  type: 'test'
+  ...
+# Subtest: manifest loader reports invalid json with its file path
+ok 23 - manifest loader reports invalid json with its file path
+  ---
+  duration_ms: 0.813733
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 135.158304

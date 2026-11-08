@@ -1,0 +1,38 @@
+[
+  {
+    "node": "20.20.2",
+    "command": "npm ci --cache /tmp/self-service-mobile-npm-cache",
+    "exitCode": 0,
+    "log": "npm-ci.log"
+  },
+  {
+    "node": "20.20.2",
+    "command": "npm run lint",
+    "exitCode": 0,
+    "log": "lint.log"
+  },
+  {
+    "node": "20.20.2",
+    "command": "npx tsc --noEmit --pretty false",
+    "exitCode": 0,
+    "log": "types.log"
+  },
+  {
+    "node": "20.20.2",
+    "command": "npm test -- --ci --watchAll=false",
+    "exitCode": 0,
+    "log": "all.log"
+  },
+  {
+    "node": "20.20.2",
+    "command": "EXPO_NO_TELEMETRY=1 SENTRY_DISABLE_AUTO_UPLOAD=true npx expo export --platform ios --output-dir /tmp/second-month-mobile-ios",
+    "exitCode": 0,
+    "log": "ios.log"
+  },
+  {
+    "node": "20.20.2",
+    "command": "EXPO_NO_TELEMETRY=1 SENTRY_DISABLE_AUTO_UPLOAD=true npx expo export --platform android --output-dir /tmp/second-month-mobile-android",
+    "exitCode": 0,
+    "log": "android.log"
+  }
+]

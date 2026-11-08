@@ -1,0 +1,517 @@
+$ vitest run
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/bank-account/__tests__/BankAccountDialog.test.tsx (11 tests) 2574ms
+   ✓ BankAccountDialog > should call onSaved when account is created successfully  453ms
+   ✓ BankAccountDialog > should show validation error when service validation fails  529ms
+   ✓ BankAccountDialog > should disable submit button while loading  360ms
+ ✓ src/components/tax/__tests__/TaxComponents.test.tsx (21 tests) 2664ms
+   ✓ Tax Components > ExpenseTaxInterface > should calculate GST automatically when amount is entered  384ms
+   ✓ Tax Components > ExpenseTaxInterface > should handle category selection and auto-set defaults  302ms
+   ✓ Tax Components > Integration Tests > should integrate ExpenseTaxInterface with real form submission  581ms
+ ✓ src/components/expense/__tests__/ExpenseFormDrawer.test.tsx (10 tests) 3246ms
+   ✓ ExpenseFormDrawer > renders the form when open  753ms
+   ✓ ExpenseFormDrawer > offers only active settlement accounts for paying an expense  691ms
+   ✓ ExpenseFormDrawer > submits form with correct data  391ms
+Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > uses the canonical GST-inclusive1000 boundary instead of adding GST twice in the preview
+🗑️ Auto-saved draft cleared
+
+ ✓ src/pages/__tests__/Bills.test.tsx (6 tests) 1225ms
+   ✓ requires a reviewed rate when paying a foreign bill from an NZD bank  432ms
+   ✓ retries an uncertain supplier payment with the same exact body and key  479ms
+ ✓ src/components/invoice/PaymentCaptureModal.test.tsx (7 tests) 1359ms
+   ✓ PaymentCaptureModal half amount > defaults to the remaining balance and never offers an invoice overpayment  419ms
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should include templateName in form submission for create mode
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should include templateName in form submission for edit mode
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should default to classic template when no template is specified
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > shows repeat settings and creates one source-linked template after save
+🗑️ Auto-saved draft cleared
+
+ ✓ src/components/invoice/__tests__/InvoiceForm.test.tsx (6 tests) 2069ms
+   ✓ InvoiceForm Template Saving > blocks saving a registered NZ tax invoice over1000 until the buyer has an identifier  535ms
+   ✓ InvoiceForm Template Saving > uses the canonical GST-inclusive1000 boundary instead of adding GST twice in the preview  382ms
+   ✓ InvoiceForm Template Saving > should include templateName in form submission for create mode  363ms
+   ✓ InvoiceForm Template Saving > should include templateName in form submission for edit mode  361ms
+stderr | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stdout | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Scan completed with: {
+  scanResult: {
+    merchantName: 'Supplier',
+    date: null,
+    total: '230.00',
+    tax: '30.00',
+    subtotal: '200.00',
+    items: [],
+    paymentMethod: 'card',
+    suggestedCategory: null,
+    confidence: 1,
+    notes: null
+  },
+  receiptUrl: 'https://example.test/scanned-receipt.jpg'
+}
+Setting receipt URL: https://example.test/scanned-receipt.jpg
+
+ ✓ src/components/accounting/TaxPreparationPanels.test.tsx (11 tests) 515ms
+ ✓ src/components/expense/__tests__/ReceiptUpload.test.tsx (14 tests) 1328ms
+   ✓ ReceiptUpload > validates file size limits  610ms
+ ✓ src/__tests__/template-persistence.test.tsx (14 tests) 1110ms
+   ✓ Template Persistence Tests > InvoiceForm Template Initialization > should default to classic template in create mode  408ms
+ ✓ src/components/accounting/InvoiceCreditNotesPanel.test.tsx (7 tests) 527ms
+ ✓ src/components/tax/GSTReturnWizard.test.tsx (6 tests) 1225ms
+   ✓ does not let a user bypass a reconciliation that is still loading  480ms
+ ✓ src/features/invoice-import/InvoiceImportReview.test.tsx (8 tests) 690ms
+ ✓ src/components/invoice/__tests__/InvoiceForm.quote.test.tsx (2 tests) 714ms
+   ✓ InvoiceForm documentKind > keeps invoice labels and payment terms by default  437ms
+ ✓ src/components/reporting/IRDReportingDashboard.test.tsx (2 tests) 721ms
+   ✓ IRD reporting filing flow > explains the myIR boundary and records the confirmation reference  681ms
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (12 tests) 1185ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances  322ms
+ ✓ src/components/invoice/__tests__/ShareInvoiceModal.test.tsx (10 tests) 917ms
+ ✓ src/components/payment/PaymentForm.test.tsx (4 tests) 715ms
+   ✓ PaymentForm half amount > sets half of 100.01 to 50.01 without exceeding the balance  345ms
+ ✓ src/components/expense/__tests__/ExpenseCategoryFormDrawer.test.tsx (10 tests) 658ms
+ ✓ src/pages/Recurring.test.tsx (2 tests) 416ms
+ ✓ src/components/payment/PaymentReversalDialog.test.tsx (1 test) 509ms
+   ✓ PaymentReversalDialog > requires a reason and submits an auditable reversal  507ms
+ ✓ src/__tests__/invoice-sharing.test.tsx (11 tests) 450ms
+stderr | src/pages/__tests__/Accounts.test.tsx > defaults a new NZ business account to NZD and does not offer an editable posted balance
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stderr | src/pages/__tests__/Accounts.test.tsx > saves an account through Hono instead of missing facade mutation methods
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stderr | src/pages/__tests__/Accounts.test.tsx > updates account details without overwriting its posted balance
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ ✓ src/pages/__tests__/Accounts.test.tsx (8 tests) 845ms
+ ✓ src/pages/__tests__/SharedQuote.test.tsx (6 tests) 648ms
+ ✓ src/pages/Settings.test.tsx (2 tests) 741ms
+   ✓ Settings Stripe capability > hides the Card payments tab when Stripe is unavailable  486ms
+ ✓ src/components/invoice/__tests__/AdditionalChargesManager.test.tsx (9 tests) 610ms
+ ✓ src/components/payment/PaymentForm.date.test.tsx (1 test) 588ms
+   ✓ submits the selected local calendar day without shifting an Auckland receipt into the previous day  586ms
+ ✓ src/components/accounting/AccountingPeriodsPanel.test.tsx (3 tests) 522ms
+   ✓ requires reviewed dates/reason, sends current revision and displays retained close history  498ms
+ ✓ src/components/invoice/preview/lineItemDisplay.test.tsx (19 tests) 464ms
+ ✓ src/components/reconciliation/AdjustmentDialog.test.tsx (3 tests) 420ms
+ ✓ src/pages/__tests__/Quotes.test.tsx (6 tests) 434ms
+stderr | src/pages/__tests__/JournalEntriesPage.test.tsx > shows compound GST lines and the balanced server totals instead of a partial two-account journal
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ ✓ src/features/recurring/components/RepeatSchedulePanel.test.tsx (2 tests) 567ms
+   ✓ RepeatSchedulePanel > requests and renders five preview dates including the selected day of month  364ms
+ ✓ src/pages/__tests__/JournalEntriesPage.test.tsx (2 tests) 518ms
+   ✓ shows compound GST lines and the balanced server totals instead of a partial two-account journal  413ms
+ ✓ src/components/accounting/FxRevaluationPanel.test.tsx (6 tests) 536ms
+ ✓ src/components/invoice/StripePaymentLinkDialog.test.tsx (2 tests) 366ms
+ ✓ src/components/invoice/preview/gstDocumentCompliance.test.tsx (19 tests) 399ms
+ ✓ src/components/transaction-import/__tests__/FileUploadZone.test.tsx (10 tests) 465ms
+ ✓ src/components/settings/StripeOperationsPanel.test.tsx (3 tests) 219ms
+ ✓ src/pages/__tests__/Vendors.test.tsx (1 test) 277ms
+ ✓ src/components/accounting/LedgerRecoveryPanels.test.tsx (3 tests) 379ms
+ ✓ src/features/tax/GstSavedReturn.test.tsx (6 tests) 337ms
+ ✓ src/pages/__tests__/IRDReportingPage.accounting.test.tsx (2 tests) 292ms
+ ✓ src/components/invoice/preview/BankPaymentDetails.test.tsx (14 tests) 319ms
+ ✓ src/components/errors/AppErrorFallback.test.tsx (3 tests) 312ms
+ ✓ src/features/customer-statements/ReminderSettingsPage.test.tsx (3 tests) 206ms
+ ✓ src/pages/__tests__/SharedInvoice.test.tsx (8 tests) 299ms
+ ✓ src/components/settings/AccountSecurityPanel.test.tsx (3 tests) 279ms
+ ✓ src/pages/__tests__/InvoiceViewPage.quote.test.tsx (3 tests) 271ms
+ ✓ src/components/tax/__tests__/GSTReconciliationPanel.test.tsx (2 tests) 188ms
+ ✓ src/components/invoice/preview/documentLabels.test.tsx (5 tests) 279ms
+ ✓ src/components/tax/__tests__/TaxOverviewComponents.test.tsx (11 tests) 176ms
+ ✓ src/pages/__tests__/Expenses.test.tsx (10 tests) 190ms
+ ✓ src/pages/__tests__/ExpenseCategories.test.tsx (9 tests) 231ms
+ ✓ src/components/accounting/BankLedgerSetup.test.tsx (3 tests) 234ms
+ ✓ src/pages/__tests__/GstSettingsPage.test.tsx (3 tests) 369ms
+ ✓ src/components/accounting/InvoicePaymentRecoveryPanel.test.tsx (3 tests) 165ms
+ ✓ src/components/expense/__tests__/ReceiptInbox.test.tsx (2 tests) 222ms
+ ✓ src/components/transaction-import/ImportPreview.test.tsx (1 test) 204ms
+ ✓ src/components/accounting/AccountingDashboard.posted.test.tsx (1 test) 261ms
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > shows a report failure and retry instead of an endless loading skeleton
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+All accounting data loaded successfully
+
+ ✓ src/pages/__tests__/AccountingDashboardPage.test.tsx (2 tests) 464ms
+   ✓ shows a report failure and retry instead of an endless loading skeleton  398ms
+ ✓ src/features/reports/ClosePackDownload.test.tsx (3 tests) 218ms
+ ✓ src/features/customer-statements/InvoiceReminders.test.tsx (3 tests) 194ms
+ ✓ src/components/onboarding/__tests__/WelcomeStep.test.tsx (3 tests) 397ms
+ ✓ src/pages/PasswordRecovery.test.tsx (3 tests) 298ms
+ ✓ src/components/settings/StripePaymentsPanel.test.tsx (4 tests) 191ms
+ ✓ src/components/settings/AccountDeletionPanel.test.tsx (2 tests) 170ms
+ ✓ src/features/tax/GstPeriodsOverview.test.tsx (2 tests) 151ms
+ ✓ src/__tests__/navigation-integration.test.tsx (15 tests) 146ms
+ ✓ src/features/bank-feeds/BankFeedsPanel.test.tsx (3 tests) 197ms
+ ✓ src/components/mobile/__tests__/MobileComponents.test.tsx (12 tests) 133ms
+ ✓ src/features/customer-statements/StatementDocument.test.tsx (1 test) 134ms
+ ✓ src/components/invoice/__tests__/ProfileCompletenessBanner.test.tsx (3 tests) 121ms
+ ✓ src/components/reconciliation/ReconciliationReport.test.tsx (1 test) 102ms
+ ✓ src/features/accounting-completion/invoicePaymentRecovery.test.ts (10 tests) 125ms
+ ✓ src/components/transaction-import/ImportSummary.test.tsx (1 test) 157ms
+ ✓ src/pages/__tests__/LegacyPageBoundaries.test.tsx (2 tests) 121ms
+ ✓ src/features/customer-statements/CustomerDocumentLinks.test.tsx (1 test) 158ms
+ ✓ src/lib/sentry/init.test.ts (2 tests) 186ms
+ ✓ src/features/invoice-import/InvoiceImportPage.test.tsx (1 test) 207ms
+ ✓ src/features/quotes/hooks/useQuotes.test.tsx (1 test) 81ms
+ ✓ src/pages/__tests__/UnallocatedAging.test.tsx (1 test) 81ms
+stderr | src/services/__tests__/aiService.test.ts
+OpenAI API key not found. AI conversation features will be disabled.
+
+ ✓ src/services/__tests__/aiService.test.ts (27 tests) 55ms
+ ✓ src/features/customers/hooks/useCustomers.test.tsx (1 test) 72ms
+ ✓ src/features/invoices/hooks/useInvoices.test.tsx (1 test) 71ms
+stdout | src/lib/store/__tests__/authSlice.test.ts > Auth Slice > Auth State Changes > should handle SIGNED_IN event
+Auth state change: SIGNED_IN
+
+stdout | src/lib/store/__tests__/authSlice.test.ts > Auth Slice > Auth State Changes > should handle SIGNED_OUT event
+Auth state change: SIGNED_OUT
+
+stdout | src/lib/store/__tests__/authSlice.test.ts > Auth Slice > Auth State Changes > should handle TOKEN_REFRESHED event
+Auth state change: TOKEN_REFRESHED
+
+ ✓ src/lib/store/__tests__/authSlice.test.ts (12 tests) 100ms
+ ✓ src/pages/__tests__/Expenses.receipts.test.tsx (1 test) 45ms
+ ✓ src/services/__tests__/conversationActionHandler.test.ts (21 tests) 240ms
+ ✓ src/utils/__tests__/pdfUtils.test.ts (4 tests) 230ms
+ ✓ src/components/expense/__tests__/ReceiptScanner.test.tsx (1 test) 123ms
+ ✓ src/services/__tests__/conversationService.test.ts (19 tests) 67ms
+ ✓ src/components/organisations/CompanySwitcher.test.tsx (1 test) 199ms
+ ✓ src/pages/__tests__/PayRedirectPage.test.tsx (1 test) 114ms
+ ✓ src/pages/LegalPage.test.tsx (1 test) 66ms
+stdout | src/__tests__/manual-template.test.tsx > Manual Template Test > should verify the exact logic used in InvoiceForm
+Create mode template: classic
+Edit mode template (modern): modern
+Edit mode template (corporate): corporate
+Edit mode template (undefined): classic
+Component create mode: classic
+Component edit mode (modern): modern
+Component edit mode (corporate): corporate
+
+stdout | src/__tests__/manual-template.test.tsx > Manual Template Test > should test the exact InvoiceViewPage logic
+InvoiceViewPage templates: {
+  modern: 'modern',
+  corporate: 'corporate',
+  default: 'classic',
+  null: 'classic'
+}
+
+ ✓ src/__tests__/manual-template.test.tsx (2 tests) 80ms
+ ✓ src/services/__tests__/paymentService.recovery.test.ts (3 tests) 44ms
+stderr | src/__tests__/gst-route-access.test.tsx
+OpenAI API key not found. AI conversation features will be disabled.
+
+ ✓ src/__tests__/gst-route-access.test.tsx (2 tests) 56ms
+stdout | src/__tests__/payment-workflow.test.ts > Payment Workflow E2E Tests > 4. Financial Reporting Integration > should track outstanding invoices correctly
+Raw invoices from database: [
+  {
+    id: 'test-invoice-1794128424895',
+    user_id: 'test-user',
+    customer_id: 'test-customer-1794128424895',
+    invoice_number: 'TEST-1794128424895',
+    total: 1150,
+    subtotal: 1000,
+    tax_amount: 150,
+    total_paid: 0,
+    payment_status: 'unpaid',
+    status: 'sent',
+    customers: {
+      id: 'test-customer-1794128424895',
+      name: 'Test Customer Ltd',
+      email: 'test@customer.co.nz'
+    },
+    line_items: []
+  }
+]
+Invoice TEST-1794128424895: total=1150, totalPaid=0, balanceDue=1150
+Invoice TEST-1794128424895: hasBalance=true, hasValidData=true
+Mapped invoices: [
+  {
+    id: 'test-invoice-1794128424895',
+    invoiceNumber: 'TEST-1794128424895',
+    customerId: 'test-customer-1794128424895',
+    customerName: 'Test Customer Ltd',
+    customer: {
+      id: 'test-customer-1794128424895',
+      name: 'Test Customer Ltd',
+      email: 'test@customer.co.nz',
+      phone: '',
+      address: '',
+      city: null,
+      state: null,
+      zip: null,
+      country: 'NZ',
+      createdAt: '2026-11-08T09:00:24.897Z',
+      updatedAt: '2026-11-08T09:00:24.897Z'
+    },
+    userId: 'test-user',
+    issueDate: undefined,
+    dueDate: undefined,
+    date: undefined,
+    status: 'sent',
+    paymentStatus: 'unpaid',
+    subtotal: 1000,
+    taxAmount: 150,
+    total: 1150,
+    totalPaid: 0,
+    balanceDue: 1150,
+    currency: '$',
+    notes: undefined,
+    templateName: undefined,
+    createdAt: undefined,
+    updatedAt: undefined,
+    items: [],
+    lineItems: [],
+    taxInclusive: false,
+    taxBreakdown: {
+      subtotal: 1000,
+      taxAmount: 150,
+      taxRate: 0.15,
+      taxName: 'Tax',
+      taxInclusive: false,
+      total: 1150
+    }
+  }
+]
+Filtered invoices with balance: [
+  {
+    id: 'test-invoice-1794128424895',
+    invoiceNumber: 'TEST-1794128424895',
+    customerId: 'test-customer-1794128424895',
+    customerName: 'Test Customer Ltd',
+    customer: {
+      id: 'test-customer-1794128424895',
+      name: 'Test Customer Ltd',
+      email: 'test@customer.co.nz',
+      phone: '',
+      address: '',
+      city: null,
+      state: null,
+      zip: null,
+      country: 'NZ',
+      createdAt: '2026-11-08T09:00:24.897Z',
+      updatedAt: '2026-11-08T09:00:24.897Z'
+    },
+    userId: 'test-user',
+    issueDate: undefined,
+    dueDate: undefined,
+    date: undefined,
+    status: 'sent',
+    paymentStatus: 'unpaid',
+    subtotal: 1000,
+    taxAmount: 150,
+    total: 1150,
+    totalPaid: 0,
+    balanceDue: 1150,
+    currency: '$',
+    notes: undefined,
+    templateName: undefined,
+    createdAt: undefined,
+    updatedAt: undefined,
+    items: [],
+    lineItems: [],
+    taxInclusive: false,
+    taxBreakdown: {
+      subtotal: 1000,
+      taxAmount: 150,
+      taxRate: 0.15,
+      taxName: 'Tax',
+      taxInclusive: false,
+      total: 1150
+    }
+  }
+]
+
+ ✓ src/__tests__/payment-workflow.test.ts (15 tests) 28ms
+ ✓ src/services/__tests__/irdComplianceTests.test.ts (15 tests) 45ms
+ ✓ src/features/reports/reportPdf.test.ts (2 tests) 51ms
+ ✓ src/services/__tests__/expenseService.test.ts (16 tests) 99ms
+ ✓ src/features/receipts/receiptPdf.test.ts (1 test) 17ms
+ ✓ src/services/__tests__/expenseCategoryService.test.ts (16 tests) 42ms
+ ✓ src/features/tax/export/gstReturnPdf.test.ts (4 tests) 57ms
+ ✓ src/services/__tests__/realDataIntegration.test.ts (14 tests) 36ms
+stderr | src/test/diagnostic.test.ts
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > AI Conversation System - Diagnostic Tests > 🤖 AI Service Validation > should create AI service instance
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > AI Conversation System - Diagnostic Tests > 🤖 AI Service Validation > should handle intent classification
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > AI Conversation System - Diagnostic Tests > 🤖 AI Service Validation > should handle API errors gracefully
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > AI Conversation System - Diagnostic Tests > ⚡ Performance & Error Handling > should handle concurrent operations
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > AI Conversation System - Diagnostic Tests > ⚡ Performance & Error Handling > should handle malformed API responses
+OpenAI API key not found. AI conversation features will be disabled.
+
+stderr | src/test/diagnostic.test.ts > 🎯 System Readiness Check > should validate all core components are testable
+OpenAI API key not found. AI conversation features will be disabled.
+
+ ✓ src/test/diagnostic.test.ts (15 tests) 27ms
+ ✓ src/services/__tests__/bankAccountService.test.ts (9 tests) 16ms
+ ✓ src/features/dashboard/api/dashboardApi.test.ts (1 test) 65ms
+ ✓ src/services/__tests__/storageService.test.ts (15 tests) 26ms
+ ✓ src/features/quotes/api/quotesApi.test.ts (6 tests) 35ms
+ ✓ src/features/purchases/api/purchasesApi.test.ts (3 tests) 14ms
+ ✓ src/features/payments/api/paymentsApi.test.ts (3 tests) 64ms
+ ✓ src/features/bank/api/bankApi.test.ts (3 tests) 52ms
+stderr | src/features/tax/gstPreparation.test.ts > live invoice-basis GST preparation > does not present a failed report read as a zero GST return
+API request failed {
+  status: 503,
+  code: undefined,
+  requestId: undefined,
+  message: 'Report unavailable'
+}
+
+ ✓ src/features/tax/gstPreparation.test.ts (5 tests) 20ms
+ ✓ src/services/__tests__/csvTransactionParser.test.ts (11 tests) 22ms
+ ✓ src/features/receipts/api/receiptsApi.test.ts (2 tests) 17ms
+ ✓ src/services/__tests__/reconciliationService.manual-match.test.ts (3 tests) 21ms
+ ✓ src/features/accounting-completion/pendingCreditOperation.test.ts (1 test) 14ms
+ ✓ src/features/payments/api/accountCreateRetry.test.ts (2 tests) 7ms
+ ✓ src/features/tax/api/taxApi.test.ts (2 tests) 31ms
+ ✓ src/features/invoices/api/invoicesApi.share.test.ts (2 tests) 22ms
+ ✓ src/services/__tests__/conversationService.simple.test.ts (4 tests) 14ms
+ ✓ src/features/invoices/api/invoiceTaxBasis.test.ts (2 tests) 9ms
+ ✓ src/features/reports/api/reportsApi.test.ts (1 test) 61ms
+ ✓ src/services/__tests__/accountingService.posted.test.ts (5 tests) 23ms
+ ✓ src/features/auth/api/authApi.test.ts (5 tests) 18ms
+ ✓ src/services/__tests__/transactionImportService.test.ts (10 tests) 25ms
+ ✓ src/features/invoices/api/invoicesApi.charges.test.ts (2 tests) 17ms
+ ✓ src/lib/sentry/scrub.test.ts (12 tests) 17ms
+ ✓ src/services/__tests__/reconciliationService.summary.test.ts (1 test) 12ms
+ ✓ src/components/invoice/gstPreviewParity.test.ts (3 tests) 11ms
+stdout | src/__tests__/database-template.test.tsx > Database Template Field Tests > should verify that template_name column exists in invoices table
+💡 This suggests the template_name column might not exist
+
+stdout | src/__tests__/database-template.test.tsx > Database Template Field Tests > should test creating an invoice with template field
+💡 Error details: { message: 'Hosted Supabase is removed. Use the Hono API.' }
+⚠️ Database schema may need template_name column added
+
+ ✓ src/__tests__/database-template.test.tsx (3 tests) 32ms
+ ✓ src/features/expenses/receiptInbox.test.ts (3 tests) 10ms
+ ✓ src/services/__tests__/taxCalculationService.test.ts (16 tests) 12ms
+ ✓ src/features/journals/api/journalsApi.test.ts (1 test) 9ms
+ ✓ src/services/__tests__/paymentService.test.ts (3 tests) 7ms
+stdout | src/__tests__/template-persistence-final.test.tsx > Template Persistence - Final Verification > InvoiceForm Template Persistence Logic > should simulate the complete InvoiceForm useState + useEffect flow
+✅ Create mode defaults to classic: classic
+✅ Edit mode with modern template: modern
+✅ Edit mode with corporate template: corporate
+✅ Edit mode with undefined template defaults to classic: classic
+
+stdout | src/__tests__/template-persistence-final.test.tsx > Template Persistence - Final Verification > InvoiceViewPage Template Logic > should verify template selection for viewing invoices
+✅ Invoice with templateName "modern" uses template: modern
+✅ Invoice with templateName "corporate" uses template: corporate
+✅ Invoice with templateName "minimal" uses template: minimal
+✅ Invoice with templateName "executive" uses template: executive
+✅ Invoice with templateName "modernPro" uses template: modernPro
+✅ Invoice with templateName "undefined" uses template: classic
+✅ Invoice with templateName "null" uses template: classic
+✅ Invoice with templateName "undefined" uses template: classic
+
+stdout | src/__tests__/template-persistence-final.test.tsx > Template Persistence - Final Verification > ShareInvoiceModal Default Template Logic > should verify default template selection in share modal
+✅ Share modal for invoice with templateName "modern" defaults to: modern
+✅ Share modal for invoice with templateName "corporate" defaults to: corporate
+✅ Share modal for invoice with templateName "undefined" defaults to: classic
+✅ Share modal for invoice with templateName "undefined" defaults to: classic
+
+stdout | src/__tests__/template-persistence-final.test.tsx > Template Persistence - Final Verification > Template Saving Logic Verification > should verify that InvoiceForm includes templateName in submission
+✅ Form submission includes template: corporate
+
+stdout | src/__tests__/template-persistence-final.test.tsx > Template Persistence - Final Verification > Complete Flow Simulation > should simulate the complete create -> edit -> view -> share flow
+📝 Step 1 - Create invoice with template: classic
+✏️ Step 2 - User changes template to: modern
+💾 Step 3 - Invoice saved with template: modern
+📝 Step 4 - Edit mode loads with template: modern
+👁️ Step 5 - View mode displays with template: modern
+🔗 Step 6 - Share modal defaults to template: modern
+✅ Complete flow verified: create -> edit -> view -> share all use correct template
+
+ ✓ src/__tests__/template-persistence-final.test.tsx (5 tests) 6ms
+ ✓ src/features/invoices/api/invoiceGstBuyer.test.ts (1 test) 11ms
+ ✓ src/features/accounting-completion/pendingBillPayment.test.ts (1 test) 7ms
+stdout | src/__tests__/template-debug.test.tsx > Template Field Investigation > should check if templateName field is being processed correctly
+✅ Template mapping test passed
+📝 Mapped template_name: modern
+✅ Reverse template mapping test passed
+📝 Final templateName: modern
+
+stdout | src/__tests__/template-debug.test.tsx > Template Field Investigation > should handle missing template gracefully
+✅ Default template handling test passed
+
+stdout | src/__tests__/template-debug.test.tsx > Template Field Investigation > should verify InvoiceForm template inclusion
+✅ InvoiceForm template inclusion test passed
+📝 Form values include template: corporate
+
+ ✓ src/__tests__/template-debug.test.tsx (3 tests) 8ms
+ ✓ src/features/recurring/invoiceTemplate.test.ts (2 tests) 27ms
+ ✓ src/utils/__tests__/gstReconciliation.test.ts (9 tests) 13ms
+stdout | src/services/__tests__/conversationManager.test.ts > uses the existing server-backed AI service rather than a nonexistent conversation method
+ConversationManager: Resetting conversations
+ConversationManager: New user, resetting conversations
+ConversationManager: Resetting conversations
+ConversationManager: Initializing conversations for user user-1
+
+stdout | src/services/__tests__/conversationManager.test.ts > ends a conversation through the existing status mutation
+ConversationManager: Resetting conversations
+ConversationManager: New user, resetting conversations
+ConversationManager: Resetting conversations
+ConversationManager: Initializing conversations for user user-1
+
+ ✓ src/services/__tests__/conversationManager.test.ts (2 tests) 11ms
+ ✓ src/features/tax/api/periodRows.test.ts (4 tests) 6ms
+ ✓ src/__tests__/app-links.test.ts (2 tests) 27ms
+ ✓ src/lib/api/readApiError.test.ts (3 tests) 5ms
+ ✓ src/features/quotes/filters.test.ts (4 tests) 5ms
+ ✓ src/features/accounting-completion/companyTaxPdf.test.ts (1 test) 3ms
+ ✓ src/lib/apiErrorCopy.test.ts (6 tests) 4ms
+ ✓ src/features/business-profile/api/businessProfileApi.bank.test.ts (2 tests) 8ms
+ ✓ src/utils/__tests__/invoiceLineDisplay.test.ts (4 tests) 3ms
+ ✓ src/utils/__tests__/profileCompleteness.test.ts (3 tests) 4ms
+ ✓ src/features/quotes/quoteTotals.test.ts (1 test) 8ms
+ ✓ src/utils/versionManager.test.ts (1 test) 4ms
+ ✓ src/features/customers/api/customersApi.test.ts (1 test) 4ms
+ ✓ src/features/items/model/itemCatalog.test.ts (3 tests) 5ms
+ ✓ src/utils/__tests__/countryTaxDefaults.test.ts (7 tests) 24ms
+ ✓ src/lib/store/__tests__/appDataPayments.test.ts (1 test) 4ms
+ ✓ src/__tests__/template-initialization.test.tsx (11 tests) 16ms
+ ✓ src/services/capabilitiesService.test.ts (1 test) 5ms
+ ✓ src/features/reconciliation/components/MatchPanel.test.tsx (4 tests) 4ms
+ ✓ src/__tests__/emailService.test.ts (2 tests) 8ms
+ ✓ src/features/accounting-completion/settlementLabel.test.ts (3 tests) 3ms
+ ✓ src/features/business-profile/logoChoice.test.ts (2 tests) 16ms
+ ✓ src/features/customer-statements/statementApi.test.ts (1 test) 9ms
+ ✓ src/lib/csv.test.ts (1 test) 2ms
+ ✓ src/features/quotes/timeline.test.ts (1 test) 3ms
+ ✓ src/features/quotes/actions.test.ts (3 tests) 2ms
+ ✓ src/features/invoices/paymentTerms.test.ts (3 tests) 4ms
+ ✓ src/features/tax/gstPeriod.test.ts (1 test) 6ms
+ ✓ src/features/conversations/api/conversationsApi.default.test.ts (1 test) 2ms
+ ✓ src/features/ledger/api/snapshot.test.ts (1 test) 3ms
+ ✓ src/utils/__tests__/invoiceDisplayTaxRate.test.ts (2 tests) 2ms
+
+ Test Files  171 passed (171)
+      Tests  885 passed (885)
+   Start at  08:59:21
+   Duration  100.80s (transform 9.02s, setup 20.89s, collect 56.21s, tests 45.63s, environment 108.80s, prepare 22.07s)

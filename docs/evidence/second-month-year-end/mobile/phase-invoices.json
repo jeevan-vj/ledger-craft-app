@@ -1,0 +1,31 @@
+{
+  "platform": "Expo web Chromium 390x844; no native device claim",
+  "phase": "invoices",
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "Animated: `useNativeDriver` is not supported because the native animated module is missing. Falling back to JS-based animation. To resolve this, add `RCTAnimation` module to this app, or remove `useNativeDriver`. Make sure to run `bundle exec pod install` first. Read more about autolinking: https://github.com/react-native-community/cli/blob/master/docs/autolinking.md"
+  ],
+  "expectedOnboardingDiagnostics": []
+}

@@ -1,0 +1,30 @@
+{
+  "reviewer": "Root cross-check from raw downloaded GL and frozen papers; no production totals helper",
+  "assertions": 27,
+  "archives": [
+    {
+      "file": "mobile/november/Close-pack-2026-11-01-2026-11-30.zip",
+      "period": "november",
+      "independentRawRoleAssertions": 9,
+      "memberHashesVerified": 13,
+      "earnings": "1900.00",
+      "equity": "11900.00"
+    },
+    {
+      "file": "mobile/year-end/Close-pack-2026-04-01-2027-03-31.zip",
+      "period": "yearEnd",
+      "independentRawRoleAssertions": 9,
+      "memberHashesVerified": 13,
+      "earnings": "1900.00",
+      "equity": "11900.00"
+    },
+    {
+      "file": "mobile/april/Close-pack-2027-04-01-2027-04-30.zip",
+      "period": "april",
+      "independentRawRoleAssertions": 9,
+      "memberHashesVerified": 13,
+      "earnings": "2000.00",
+      "equity": "12000.00"
+    }
+  ]
+}

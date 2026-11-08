@@ -1,0 +1,309 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_06b43fae-6ae7-4b9b-b2c7-11bd4ac92e83","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_fccfe6bb-ba1a-4a87-8cb5-a95a230965b5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3575e2c3-292c-4169-8b53-bdd6bdf21346","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_01e4cc2e-290f-4c73-87c8-20c622660866","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f9eb5bbf-cbfe-4655-95eb-d628aa74388e","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e7b13a77-fe0c-4b47-9c06-3724878af9d0","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_61e0f890-ddba-4953-9e95-de527f8fcb3d","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_520e95b3-64fe-44e5-9f3c-1a24f8e5c045","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_36b96b8b-0880-4a0e-ae76-f3df224e8085","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_094cb708-a794-4083-acc8-5f2ca49a5958","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7d6ada9f-f6f5-4b11-9749-f380ff1f9f7b","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_028f2362-2a05-4e96-9b76-38a2f12e0c7e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9a3887eb-6e42-4310-acd8-6e9901bd03a8","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_bebb205f-ec5c-473c-9ae4-cdd02bfdb8a8","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_8a2fcd7a-d51f-4210-8f60-8eb07023f059","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3bc09c7b-d830-4509-86d5-3a49072791a8","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_dae127d2-9707-44e4-9d63-b712c98b9141","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_04bed16c-6509-43e8-b7f5-82f7c03c821d","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d35bbda9-e254-4a8c-bef9-65307d35d7da","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_5d9a3b0a-1f66-434d-ab25-e83c251df201","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_038d4a4c-5be8-4202-90b4-108535c99c25","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e1a166bd-8541-422a-b0e8-f71e32633702","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_57387364-357d-43bf-bc7b-e54950eca9ec","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6199c4b3-8c16-4763-b844-42d8007bc954","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_83cd1d2d-ad46-4f40-9c7c-1cd20453ac08","route":"/api/currency-settings","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ee5dc555-244a-4745-9a03-c7ac43fac38f","route":"/api/book-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0abb7647-34d4-4c23-ada0-469c8628b826","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_77c50d9c-275b-46f5-9b48-4d4ad9d22b26","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7b4a365e-26de-41f7-b615-6d06ecdd2d1a","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_16dbd551-3564-49ab-815e-d7032fc628d2","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0c6f537b-a24d-437e-acc1-d2ff979644ed","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_70a427ae-b1c0-423a-94c9-257e1bce343b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b29770f8-26cf-4b9b-be8f-2bcabdaea893","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4f072b00-cbce-4014-bd4c-c762caabefec","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a892587c-1c52-40e8-b59c-2a9bf3c5bc33","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_035678ff-1793-41bf-8ae2-c8927ea58922","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_61f82623-fe87-4387-9aa8-e238dfe736b9","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7a589c1d-7793-4c81-b827-894aed5c25dd","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7ade203b-bc3a-419e-ade3-7baf42d73193","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_600d2027-71a2-4610-8d65-0328ba76f715","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6ac4aacd-a33b-43b7-a7c7-d72d58a52531","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_32a0bd33-be90-4cff-9b59-0bf609fe6557","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_92034537-f9df-4c8e-8ca2-1963ac79de42","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_33e96232-53df-407a-b597-c507744ce2df","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_16100251-b050-46de-b668-f02a05745b40","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_621c3738-1b8e-4823-a10a-4da486fb84d6","route":"/api/payments","method":"POST","status":400,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ff098959-c9f6-4869-a394-8b5f7f8730f1","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e29a891e-0658-4c79-8a01-2cadeb9620c9","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f6a2dda8-1fe0-491e-b379-80b425c62685","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0cd4be8c-5704-4f4c-8b87-f8256965d8c6","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_024b14fe-ecc7-4d0c-81a3-7edafc5c7372","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_09fa24d8-964e-425d-bad9-37f34d9544f7","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a8468417-bcf3-4600-9d57-ea6492d41514","route":"/api/payments","method":"POST","status":409,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e2dbac3a-8a7a-4ddd-967c-7795a1dde38c","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1cb86c75-fb80-4d5f-b7b3-afd861f50b39","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_5f9bc9ee-9f50-4229-bf3d-8a9e6d1a4f85","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6b485e8b-e633-4fec-90b5-8e4786bb7a34","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4faf2ff5-7e15-4ba1-a06f-3168df1608da","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_72a32050-5c9b-459c-89e0-fa953bde05cc","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7b8f8f62-8486-4063-9e3f-f9c6294cd048","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_49b8a4e0-25c9-4a64-ac17-edd3a8a11275","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ba75f2c0-b264-4f62-b728-c254ca49cf49","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1d43dd4e-7cc4-42ed-a73d-dfc13b12c633","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_03f0b956-dc4f-452e-89dc-fd5c095fdc0e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_971ad3ba-ec81-4c22-89f3-ea32f41d98f8","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_af61e054-a867-4f38-9857-87b772798770","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b815325b-30fa-44b4-91f2-50d5e792a5a6","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f0c04582-65d9-4fb0-8750-c422a24b3502","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+ ❯ src/modules/reports/second-month-year-end.e2e.test.ts (1 test | 1 failed) 1919ms
+   × second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings 1918ms
+     → expected { …(5) } to match object { accumulatedEarnings: '1900.00' }
+(5 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+AssertionError: expected { …(5) } to match object { accumulatedEarnings: '1900.00' }
+(5 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accumulatedEarnings": "1900.00",
++   "assets": "12670.00",
++   "balanced": true,
++   "equity": "11900.00",
++   "liabilities": "770.00",
++   "rows": [
++     {
++       "accountClass": "asset",
++       "accountId": "a9472fa9-ebe3-4fcf-9118-2044c51958a0",
++       "accountName": "Accounts Receivable",
++       "accountNumber": "1200",
++       "balance": "460.00",
++       "credit": "4140.00",
++       "debit": "4600.00",
++     },
++     {
++       "accountClass": "liability",
++       "accountId": "c0a7f844-f198-4d21-92b9-da11a4d7445f",
++       "accountName": "Accounts Payable",
++       "accountNumber": "2100",
++       "balance": "230.00",
++       "credit": "1610.00",
++       "debit": "1380.00",
++     },
++     {
++       "accountClass": "asset",
++       "accountId": "40fc1c1d-9014-4b98-a4c2-a77d56e07bd9",
++       "accountName": "GST Paid on Purchases",
++       "accountNumber": "2150",
++       "balance": "255.00",
++       "credit": "0.00",
++       "debit": "255.00",
++     },
++     {
++       "accountClass": "liability",
++       "accountId": "9447ba99-9fda-4237-9c39-924141f96e7f",
++       "accountName": "GST Collected on Sales",
++       "accountNumber": "2200",
++       "balance": "540.00",
++       "credit": "600.00",
++       "debit": "60.00",
++     },
++     {
++       "accountClass": "liability",
++       "accountId": "2e599d71-c432-474e-aa32-377914bb8fcc",
++       "accountName": "Customer Credits",
++       "accountNumber": "2300",
++       "balance": "0.00",
++       "credit": "115.00",
++       "debit": "115.00",
++     },
++     {
++       "accountClass": "equity",
++       "accountId": "c6f44ebf-8457-45ca-a540-45049d6e5e81",
++       "accountName": "Owner capital",
++       "accountNumber": "3000",
++       "balance": "10000.00",
++       "credit": "10000.00",
++       "debit": "0.00",
++     },
++     {
++       "accountClass": "asset",
++       "accountId": "841e256a-3470-4869-a7c9-f688bcf9414e",
++       "accountName": "Kauri operating bank",
++       "accountNumber": "BANK-8809C0B2",
++       "balance": "11955.00",
++       "credit": "7475.00",
++       "debit": "19430.00",
++     },
++   ],
+  }
+
+ ❯ src/modules/reports/second-month-year-end.e2e.test.ts:30:39
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+ ❯ src/modules/reports/second-month-year-end.e2e.test.ts:24:11
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  08:57:09
+   Duration  5.67s (transform 1.73s, setup 24ms, collect 3.45s, tests 1.92s, environment 0ms, prepare 106ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/reports/second-month-year-end.e2e.test.ts

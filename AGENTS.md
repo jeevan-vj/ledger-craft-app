@@ -1,5 +1,19 @@
 # AGENTS.md
 
+**Second-month / NZ year-end acceptance (verified locally, 2026-11-08):**
+Fresh web/Expo companies carry October balances into November, reconcile five
+settlements, retain four nil GST drafts, close March31 and start April without
+recounting prior earnings. November TB14,370/profit400/cash11,955/GST60;
+April TB14,715/profit100/cash12,185/equity12,000. Optional canonical
+`balanceSheet.accumulatedEarnings` now discloses the existing cumulative-income
+component already included in equity; web/mobile/shared PDF/CSV/ZIP show it
+without new client calculations, postings or migrations. Source calculations
+are unchanged. Test-only Date2027-05-01 exercises future cutoffs; production
+future-date guards remain active. Opening September30 history is imported,
+so do not claim a complete pre-October statutory FY cash-flow/bank history.
+Evidence: `docs/evidence/second-month-year-end/README.md`. Installed native QA
+and actual filing remain pending; #114 stays parked.
+
 **Self-service close controls (implemented locally, 2026-11-08):** Web and
 Expo provide chart-account creation/classification, bank-ledger linking by bank
 name, reviewed accounting close/reopen with revisioned audit history, and an

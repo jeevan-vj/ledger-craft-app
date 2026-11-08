@@ -1,0 +1,17 @@
+Kauri Two Period Web Limited · Payables aging
+2027-04-01 to 2027-04-30 · accrual · NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Document                                   Party            Due date     Age       Outstanding
+
+BILL-0002                                  Rimu             2026-11-30   90+       230.00
+                                           Subcontracting
+                                           Limited
+
+BILL-0003                                  Rimu             2027-04-30   current   115.00
+                                           Subcontracting
+                                           Limited
+
+Total                                                                              345.00
+
+Unallocated control                                                                0.00

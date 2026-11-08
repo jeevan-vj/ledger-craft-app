@@ -1,0 +1,43 @@
+{
+  "command": "pnpm --filter @ledgercraft/api exec vitest run src/modules/reports/second-month-year-end.e2e.test.ts src/modules/reports/reports-aging-history.test.ts src/modules/reports/cash-report-receipts.test.ts src/modules/reports/report-columns.test.ts",
+  "node": "24.22.1",
+  "exitCode": 0,
+  "files": 4,
+  "tests": 9,
+  "durationSeconds": 17.71,
+  "productionChanges": true,
+  "expectedSha256": "44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e",
+  "types": {
+    "command": "pnpm type-check:api",
+    "exitCode": 0
+  },
+  "clock": "Date-only Vitest fake clock 2027-05-01T00:00:00Z; real SQLite/HTTP and actual async timers",
+  "earningsDisclosure": {
+    "shape": "balanceSheet.accumulatedEarnings?:string",
+    "calculation": "Existing cumulativeIncome; no new formula or journal",
+    "expected": {
+      "november": "1900.00",
+      "march": "1900.00",
+      "april": "2000.00"
+    },
+    "red": {
+      "contractsAndExports": 2,
+      "realApi": 1
+    },
+    "green": {
+      "contracts": {
+        "files": 3,
+        "tests": 6,
+        "exitCode": 0
+      },
+      "apiReportArchive": {
+        "files": 4,
+        "tests": 10,
+        "exitCode": 0
+      },
+      "types": {
+        "exitCode": 0
+      }
+    }
+  }
+}

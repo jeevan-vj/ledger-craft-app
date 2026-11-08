@@ -1,0 +1,153 @@
+{
+  "version": "second-month-year-end-supplement-v1",
+  "frozenAt": "2026-11-08",
+  "method": "Independent Python Decimal derived only from the unchanged frozen prescribed journals and approved synthetic statement plan. No current production code, API results or actual year-end report read.",
+  "parentPaper": {
+    "path": "expected.json",
+    "sha256": "44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e"
+  },
+  "yearEndCashFlow": {
+    "from": "2026-04-01",
+    "to": "2027-03-31",
+    "currency": "NZD",
+    "ledgerOpeningCash": "0.00",
+    "initialEquityOpeningJournal": "10000.00",
+    "customerReceipts": "3795.00",
+    "supplierPayments": "1380.00",
+    "paidExpenses": "345.00",
+    "customerRefunds": "115.00",
+    "operatingInflows": "3795.00",
+    "operatingOutflows": "1840.00",
+    "operatingNet": "1955.00",
+    "investingNet": "0.00",
+    "initialEquityLedgerComponent": "10000.00",
+    "inflows": "13795.00",
+    "outflows": "1840.00",
+    "netCashFlow": "11955.00",
+    "closingCash": "11955.00",
+    "economicQualification": "The ledger begins with a September30 bank/capital opening entry. Its10000 is an initial-equity ledger movement, not independent evidence of a real capital cash contribution during the financial year. A statutory economic cash-flow statement for April-September requires pre-opening history. If this synthetic scenario explicitly treats the initial entry as new owner funding, it is financing inflow10000; otherwise present it as opening-ledger funding and keep that qualification."
+  },
+  "operatingPeriodWithCompletePrescribedCashHistory": {
+    "from": "2026-10-01",
+    "to": "2027-03-31",
+    "openingCash": "10000.00",
+    "customerReceipts": "3795.00",
+    "supplierPayments": "1380.00",
+    "paidExpenses": "345.00",
+    "customerRefunds": "115.00",
+    "inflows": "3795.00",
+    "outflows": "1840.00",
+    "netCashFlow": "1955.00",
+    "closingCash": "11955.00",
+    "financingInflow": "0.00"
+  },
+  "bankContinuity": {
+    "november": {
+      "opening": "11380.00",
+      "movements": [
+        {
+          "date": "2026-11-02",
+          "amount": "920.00",
+          "direction": "credit",
+          "source": "October invoice A receipt"
+        },
+        {
+          "date": "2026-11-03",
+          "amount": "575.00",
+          "direction": "debit",
+          "source": "October bill final payment"
+        },
+        {
+          "date": "2026-11-05",
+          "amount": "575.00",
+          "direction": "credit",
+          "source": "Invoice C half receipt"
+        },
+        {
+          "date": "2026-11-08",
+          "amount": "230.00",
+          "direction": "debit",
+          "source": "November bill half payment"
+        },
+        {
+          "date": "2026-11-08",
+          "amount": "115.00",
+          "direction": "debit",
+          "source": "Paid November expense"
+        }
+      ],
+      "netMovement": "575.00",
+      "closing": "11955.00",
+      "matchCount": 5,
+      "unmatchedCount": 0,
+      "difference": "0.00"
+    },
+    "decemberThroughMarch": {
+      "statementStartDate": "2026-12-01",
+      "statementEndDate": "2027-03-31",
+      "opening": "11955.00",
+      "closing": "11955.00",
+      "movements": [],
+      "matchCount": 0,
+      "bookMovements": 0,
+      "unmatchedBankCount": 0,
+      "unmatchedBookCount": 0,
+      "difference": "0.00",
+      "newEconomicJournals": 0,
+      "newTechnicalJournals": 0
+    },
+    "april": {
+      "statementStartDate": "2027-04-01",
+      "statementEndDate": "2027-04-30",
+      "opening": "11955.00",
+      "closing": "12185.00",
+      "movements": [
+        {
+          "date": "2027-04-01",
+          "amount": "230.00",
+          "direction": "credit",
+          "source": "Full receipt invoice D"
+        }
+      ],
+      "matchCount": 1,
+      "unmatchedBankCount": 0,
+      "unmatchedBookCount": 0,
+      "difference": "0.00",
+      "economicCashNet": "230.00",
+      "technicalCashNet": "0.00"
+    }
+  },
+  "aprilRawTurnover": {
+    "economicDebits": "575.00",
+    "economicCredits": "575.00",
+    "technicalImportMatchDebits": "460.00",
+    "technicalImportMatchCredits": "460.00",
+    "totalPeriodDebits": "1035.00",
+    "totalPeriodCredits": "1035.00",
+    "closingTrialBalanceDebits": "14715.00",
+    "closingTrialBalanceCredits": "14715.00",
+    "bankPeriodDebits": "460.00",
+    "bankPeriodCredits": "230.00",
+    "bankPeriodNet": "230.00",
+    "otherIncomeTechnicalDebits": "230.00",
+    "otherIncomeTechnicalCredits": "230.00",
+    "otherIncomeTechnicalNet": "0.00",
+    "condition": "Applies when existing import and matching retain both230 technical legs. The receipt already supplies the230 economic bank debit. Import and matching must not add230 again to economic cash inflows or revenue."
+  },
+  "yearEndRawTurnoverWithRetainedTechnicalLegs": {
+    "economicDebits": "22305.00",
+    "economicCredits": "22305.00",
+    "technicalDebits": "11270.00",
+    "technicalCredits": "11270.00",
+    "totalDebits": "33575.00",
+    "totalCredits": "33575.00"
+  },
+  "controls": {
+    "originalPaperUnchanged": true,
+    "statementPlanChangesEconomicExpectations": false,
+    "zeroActivityStatementMustNotCreateJournal": true,
+    "aprilTechnicalEntriesNetToZero": true,
+    "retainedClosedStatementsAreContiguous": "October31, November30, March31, April30, with no missing or overlapping date range",
+    "supportingDocumentTreatment": "A completed statement evidences matching/book balance for the range. It is not itself a fiscal close or IRD filing."
+  }
+}

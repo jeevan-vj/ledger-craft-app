@@ -174,3 +174,16 @@ it('shows net account cash movement rather than journal turnover as cash flow',a
  report.cashFlow={openingCash:'10000.00',inflows:'2300.00',outflows:'920.00',netCashFlow:'1380.00',closingCash:'11380.00',rows:[{...account('1110','Bank','asset','1380.00'),debit:'5520.00',credit:'4140.00'}]};renderPage(report);await user.click(await screen.findByRole('tab',{name:'Cash flow'}));
  const panel=screen.getByRole('tabpanel');expect(within(panel).getByRole('columnheader',{name:'Net cash movement'})).toBeInTheDocument();expect(within(panel).queryByText('$5,520.00')).not.toBeInTheDocument();expect(within(panel).getByText('$1,380.00')).toBeInTheDocument();
 });
+
+it.each([['2000.00','$2,000.00'],['-2000.00','-$2,000.00'],['0.00','$0.00']])('shows canonical accumulated earnings %s within equity, independently of selected-period profit',async(value,display)=>{
+ const user=userEvent.setup();const report=financialReport({collected:'0.00',paid:'0.00',netPayable:'0.00',outputGst:'0.00',inputGst:'0.00',netGst:'0.00',position:'nil',gstAccounts:[],keyAccounts:[]});
+ report.profitLoss.netIncome='100.00';report.balanceSheet.equity='12500.00';Object.assign(report.balanceSheet,{accumulatedEarnings:value});renderPage(report);
+ await user.click(await screen.findByRole('tab',{name:'Balance sheet'}));
+ expect(screen.getByText(/^Accumulated earnings \(included in equity\)/)).toHaveTextContent(display);
+ expect(within(screen.getByRole('tabpanel')).getByText('$12,500.00')).toBeInTheDocument();
+});
+
+it('does not invent an accumulated-earnings figure for an older report response',async()=>{
+ const user=userEvent.setup();const report=financialReport({collected:'0.00',paid:'0.00',netPayable:'0.00',outputGst:'0.00',inputGst:'0.00',netGst:'0.00',position:'nil',gstAccounts:[],keyAccounts:[]});renderPage(report);await user.click(await screen.findByRole('tab',{name:'Balance sheet'}));
+ expect(screen.queryByText(/^Accumulated earnings \(included in equity\)/)).not.toBeInTheDocument();
+});

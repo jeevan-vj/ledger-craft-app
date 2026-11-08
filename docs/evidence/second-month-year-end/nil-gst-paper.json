@@ -1,0 +1,102 @@
+{
+  "version": "second-month-year-end-nil-gst-v1",
+  "frozenAt": "2026-11-08",
+  "method": "Independent Decimal filtering of the previously frozen prescribed economic journals. No production code, API result, browser result or actual nil-return record inspected. The frozen year-end case expressly has no December-March activity.",
+  "sources": [
+    {
+      "path": "expected.json",
+      "sha256": "44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e"
+    },
+    {
+      "path": "supplemental-paper.json",
+      "sha256": "d56efc7db7d26a37b076f41f70b08a8a12827bd013a91b654ead1be66c2f6ca5"
+    }
+  ],
+  "registration": {
+    "registeredFrom": "2026-10-01",
+    "registeredStatus": "registered",
+    "gstAccountingBasis": "invoice",
+    "gstFilingFrequency": "monthly",
+    "gstPeriodAnchor": 10,
+    "currency": "NZD"
+  },
+  "periods": [
+    {
+      "from": "2026-12-01",
+      "to": "2026-12-31",
+      "basis": "invoice",
+      "baseCurrency": "NZD",
+      "totalSales": "0.00",
+      "totalPurchases": "0.00",
+      "gstOnSales": "0.00",
+      "gstOnPurchases": "0.00",
+      "netGstPosition": "0.00",
+      "retainedNetGst": "0.00",
+      "economicSourceCount": 0,
+      "adjustmentCount": 0,
+      "expectedRetainedStatus": "draft",
+      "filingConfirmation": null
+    },
+    {
+      "from": "2027-01-01",
+      "to": "2027-01-31",
+      "basis": "invoice",
+      "baseCurrency": "NZD",
+      "totalSales": "0.00",
+      "totalPurchases": "0.00",
+      "gstOnSales": "0.00",
+      "gstOnPurchases": "0.00",
+      "netGstPosition": "0.00",
+      "retainedNetGst": "0.00",
+      "economicSourceCount": 0,
+      "adjustmentCount": 0,
+      "expectedRetainedStatus": "draft",
+      "filingConfirmation": null
+    },
+    {
+      "from": "2027-02-01",
+      "to": "2027-02-28",
+      "basis": "invoice",
+      "baseCurrency": "NZD",
+      "totalSales": "0.00",
+      "totalPurchases": "0.00",
+      "gstOnSales": "0.00",
+      "gstOnPurchases": "0.00",
+      "netGstPosition": "0.00",
+      "retainedNetGst": "0.00",
+      "economicSourceCount": 0,
+      "adjustmentCount": 0,
+      "expectedRetainedStatus": "draft",
+      "filingConfirmation": null
+    },
+    {
+      "from": "2027-03-01",
+      "to": "2027-03-31",
+      "basis": "invoice",
+      "baseCurrency": "NZD",
+      "totalSales": "0.00",
+      "totalPurchases": "0.00",
+      "gstOnSales": "0.00",
+      "gstOnPurchases": "0.00",
+      "netGstPosition": "0.00",
+      "retainedNetGst": "0.00",
+      "economicSourceCount": 0,
+      "adjustmentCount": 0,
+      "expectedRetainedStatus": "draft",
+      "filingConfirmation": null
+    }
+  ],
+  "controls": {
+    "periodCount": 4,
+    "draftsRequiredForAllFourPeriods": true,
+    "noEconomicJournalMayBeCreated": true,
+    "originalExpectedAndSupplementUnchanged": true,
+    "nilIsNotNoReturn": "A registered company with monthly filing still prepares a nil return for each prescribed no-activity period. Retaining a draft does not submit that return to IRD.",
+    "retention": "Each exact period must retain its own draft and canonical calculation snapshot. Do not reuse another period, fabricate a filed confirmation or mutate a prior filed record.",
+    "webChronology": "After a March31 fiscal close, an owner reopens from December1 with a reviewed audit reason, prepares four nil drafts and recloses March31. Closing/reopening changes cutoff revision/audit only. Existing closed-date tax-draft guard remains intact.",
+    "mobileChronology": "Prepare all four nil drafts before the first March31 fiscal close. The difference in cutoff audit history does not change financial/GST expectations.",
+    "historicalFinance": "All seven financial sections, raw journal count and source journal amounts remain unchanged across nil-draft preparation and metadata-only close/reopen/reclose.",
+    "bankStatements": "Existing completed December1-March31 zero-activity bank statement is supporting evidence, not a GST filing. Reopening the fiscal cutoff does not remove its independent cash cutoff.",
+    "clock": "Controlled test date May1,2027 permits all four completed calendar periods; no production future-date policy change."
+  }
+}

@@ -1,0 +1,86 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ❯ src/report-earnings.test.ts (2 tests | 2 failed) 17ms
+   × canonical accumulated-earnings disclosure > retains optional exact server earnings, including loss, while accepting older reports 13ms
+     → expected { rows: [], assets: '12915.00', …(3) } to match object { Object (accumulatedEarnings, equity) }
+(4 matching properties omitted from actual)
+   × canonical accumulated-earnings disclosure > copies the canonical earnings bridge into the shared CSV and PDF rows without calculating it 3ms
+     → expected [ [ 'Account', 'Class', …(3) ], …(3) ] to deep equally contain [ …(5) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/report-earnings.test.ts > canonical accumulated-earnings disclosure > retains optional exact server earnings, including loss, while accepting older reports
+AssertionError: expected { rows: [], assets: '12915.00', …(3) } to match object { Object (accumulatedEarnings, equity) }
+(4 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "accumulatedEarnings": "2000.00",
+    "equity": "12000.00",
+  }
+
+ ❯ src/report-earnings.test.ts:9:76
+      7|   it('retains optional exact server earnings, including loss, while ac…
+      8|     const schema = financialReportResponseSchema.shape.balanceSheet;
+      9|     expect(schema.parse({ ...statement, accumulatedEarnings: '2000.00'…
+       |                                                                            ^
+     10|     expect(schema.parse({ ...statement, accumulatedEarnings: '-0.01' }…
+     11|     expect(schema.safeParse({ ...statement, accumulatedEarnings: 2000 …
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/report-earnings.test.ts > canonical accumulated-earnings disclosure > copies the canonical earnings bridge into the shared CSV and PDF rows without calculating it
+AssertionError: expected [ [ 'Account', 'Class', …(3) ], …(3) ] to deep equally contain [ …(5) ]
+
+- Expected
++ Received
+
+  [
+-   "Accumulated earnings (included in equity)",
++   [
++     "Account",
++     "Class",
++     "Debit",
++     "Credit",
++     "Balance",
++   ],
++   [
++     "Assets",
++     "",
++     "",
++     "",
++     "12915.00",
++   ],
++   [
++     "Liabilities",
++     "",
++     "",
++     "",
++     "915.00",
++   ],
++   [
++     "Equity (includes retained income)",
+      "",
+      "",
+      "",
+-   "9007199254740993.01",
++     "12000.00",
++   ],
+  ]
+
+ ❯ src/report-earnings.test.ts:17:58
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  08:57:07
+   Duration  462ms (transform 71ms, setup 0ms, collect 91ms, tests 17ms, environment 0ms, prepare 112ms)
+
+undefined
+/workspace/ledger-craft-app/packages/contracts:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/report-earnings.test.ts

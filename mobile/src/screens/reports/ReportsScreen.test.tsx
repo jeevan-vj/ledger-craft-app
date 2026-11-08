@@ -141,3 +141,24 @@ it('requires report and bank access for the close pack and exports the selected 
  const previous=useStore.getState().permissions;useStore.setState({permissions:['reports.read']});const screen=renderScreen();await screen.findByText('Share PDF');expect(screen.queryByText('Export accountant close pack')).toBeNull();expect(screen.getByText('The close pack includes bank evidence and requires banking read access.')).toBeTruthy();
  await act(async()=>useStore.setState({permissions:['reports.read','banking.read']}));fireEvent.changeText(screen.getByLabelText('Report start'),'2026-10-01');fireEvent.changeText(screen.getByLabelText('Report end'),'2026-10-31');fireEvent.press(screen.getByText('Run financial report'));await waitFor(()=>expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({from:'2026-10-01',to:'2026-10-31'})));fireEvent.press(await screen.findByText('Export accountant close pack'));await screen.findByText('Accountant close pack ready.');expect(shareClosePack).toHaveBeenCalledWith('2026-10-01','2026-10-31');await act(async()=>useStore.setState({permissions:previous}));
 });
+
+it.each([
+  ['2000.00', '$2,000.00', '12000.00'],
+  ['-500.00', '-$500.00', '9500.00'],
+])('shows server accumulated earnings %s as already included in equity', async (accumulatedEarnings, display, equity) => {
+  (reportsApi.financial as jest.Mock).mockResolvedValue({ ...report, balanceSheet: {
+    ...report.balanceSheet, assets: '12915.00', liabilities: '915.00', equity, accumulatedEarnings,
+    rows: [{ ...accountRow, accountNumber: '3000', accountName: 'Owner capital', accountClass: 'equity', balance: '10000.00' }],
+  } });
+  const screen = renderScreen(); await screen.findByText('Share PDF'); fireEvent.press(screen.getByText('Balance sheet'));
+  expect(screen.getByText('Accumulated earnings (included in equity)')).toBeTruthy();
+  expect(screen.getByText(display)).toBeTruthy();
+  expect(screen.getByText('$10,000.00')).toBeTruthy();
+  expect(screen.getByText(equity === '12000.00' ? '$12,000.00' : '$9,500.00')).toBeTruthy();
+});
+
+it('does not invent an earnings bridge when an older server omits accumulated earnings', async () => {
+  (reportsApi.financial as jest.Mock).mockResolvedValue(report);
+  const screen = renderScreen(); await screen.findByText('Share PDF'); fireEvent.press(screen.getByText('Balance sheet'));
+  expect(screen.queryByText('Accumulated earnings (included in equity)')).toBeNull();
+});

@@ -1,0 +1,12 @@
+Kauri Two Period Web Limited · Receivables aging
+2026-11-01 to 2026-11-30 · accrual · NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Document                                   Party              Due date     Age       Outstanding
+
+INV-2026-0003                              Pohutukawa         2026-11-30   current   460.00
+                                           November Limited
+
+Total                                                                                460.00
+
+Unallocated control                                                                  0.00

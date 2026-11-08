@@ -1,0 +1,114 @@
+[
+  {
+    "command": "pnpm lint",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-lint-final.log",
+    "unmodifiedOutputSha256": "9bea5b3a48b921bedd7c6f37d98bbed247a9f5d5771a13e437c08a5f8df421a3"
+  },
+  {
+    "command": "pnpm type-check",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-types-final.log",
+    "unmodifiedOutputSha256": "48c1bbaa889c026335c3945506b1c30f963fe0092355ce57636a77162e2be0a9"
+  },
+  {
+    "command": "pnpm test:run",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-all-final.log",
+    "unmodifiedOutputSha256": "c58c023a528322f0c04435445e9a7a99b5592fe187d32f77b64db64084bc44a0"
+  },
+  {
+    "command": "NODE_ENV=production pnpm build",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-build-final.log",
+    "unmodifiedOutputSha256": "9e992a383d2043768968908275b6488973abfda946955652d34cab7b1e65b9e8"
+  },
+  {
+    "command": "pnpm test:api",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "api-all-final.log.gz",
+    "unmodifiedOutputSha256": "9c7fafa3935d8ddf5740cf6e822ab68892bed425095da4d131bb857bf77e19b9"
+  },
+  {
+    "command": "pnpm test:contracts",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "contracts-final.log",
+    "unmodifiedOutputSha256": "86de2da5e4e703324e58036a2a5fbfd92fbfeecedf83953d4ef0be299a12d474"
+  },
+  {
+    "command": "pnpm type-check:api",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "api-types-final.log",
+    "unmodifiedOutputSha256": "26797778123762ff9a257b4a482f8f74b9c4822bd4f2cdc4c29c094dd34c61f9"
+  },
+  {
+    "command": "node --test scripts/self-service-worker-close.test.mjs",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "worker-final.log",
+    "unmodifiedOutputSha256": "d8e13788aa7d0eb0fb89b5fc15c0f8bbc0376976909547613daaa5a9773ddaea"
+  },
+  {
+    "command": "wrangler deploy --dry-run --config deploy/api/wrangler.jsonc --outdir /tmp/rollover-worker-final-bundle",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "worker-dryrun-final.log",
+    "unmodifiedOutputSha256": "2255f2994b3e77731381ca01ee3077b487d4ec76d17d3179d4a7cbed9ae7dc9c"
+  },
+  {
+    "command": "tsc --noEmit -p deploy/api/tsconfig.json",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "worker-types-final.log",
+    "unmodifiedOutputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  {
+    "command": "vitest run src/modules/stripe/stripe.operations.test.ts",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "latest-main-stripe.log",
+    "unmodifiedOutputSha256": "ef717b52093f904170e7a0ea69bade8283b20d201bc2f8e5238a583aef2e8f74"
+  },
+  {
+    "command": "pnpm install --frozen-lockfile --store-dir /workspace/.pnpm-store",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "install.log",
+    "unmodifiedOutputSha256": "019a58244e0b0a6cce5d1d65087ba9c396f05f4bad2e7701adb0106d77d2d5d1"
+  },
+  {
+    "command": "node api/sqlite-migrations/verify.mjs",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "migrations.log",
+    "unmodifiedOutputSha256": "5650cf87214cd04a0149908a811b5b30e3ddc2089cf1a68f05f579eb0cec8901"
+  },
+  {
+    "command": "node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/verify-web-quality-gates.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "readiness.log",
+    "unmodifiedOutputSha256": "08ad208cb544f375e425984156f5deb1e0a25e5c0e778b3c04f09dd2e182e216"
+  },
+  {
+    "command": "node --test scripts/upload-web-sourcemaps.test.mjs",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "sourcemaps.log",
+    "unmodifiedOutputSha256": "49a73871095089416a29f79192a8df4c71c70b6774b242f4b2ab7d01f5c70df8"
+  },
+  {
+    "command": "node scripts/verify-akaunting-core.mjs --report",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "parity.log",
+    "unmodifiedOutputSha256": "d8111f4d7f96b7f8e9930231bebbb7eac85719125363160a4f601ea38fc68dd0"
+  }
+]

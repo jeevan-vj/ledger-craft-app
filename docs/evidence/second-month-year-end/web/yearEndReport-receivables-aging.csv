@@ -1,0 +1,8 @@
+"Receivables aging"
+"Period","2026-04-01","2027-03-31"
+"Basis","accrual"
+
+"Document","Party","Due date","Age","Outstanding"
+"INV-2026-0003","Pohutukawa November Limited","2026-11-30","90+","460.00"
+"Total","","","","460.00"
+"Unallocated control","","","","0.00"
