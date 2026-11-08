@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/cloudflare/storage-migrations.test.ts (2 tests) 167ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  07:41:35
+   Duration  493ms (transform 48ms, setup 28ms, collect 27ms, tests 167ms, environment 0ms, prepare 129ms)

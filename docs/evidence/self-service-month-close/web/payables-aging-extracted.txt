@@ -1,0 +1,13 @@
+Kauri Self-Service October Web Limited · Payables aging
+2026-10-01 to 2026-10-31 · accrual · NZD
+Generated 2026-11-08T07:37:09.290Z
+
+Document                                   Party            Due date     Age       Outstanding
+
+BILL-0001                                  Rimu             2026-10-31   current   575.00
+                                           Subcontracting
+                                           Limited
+
+Total                                                                              575.00
+
+Unallocated control                                                                0.00

@@ -1,0 +1,24 @@
+{
+  "platform": "Expo web Chromium 390x844; no native device claim",
+  "phase": "locks",
+  "errors": [],
+  "consoleErrors": [],
+  "warnings": [
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents",
+    "\"shadow*\" style props are deprecated. Use \"boxShadow\".",
+    "props.pointerEvents is deprecated. Use style.pointerEvents"
+  ],
+  "expectedOnboardingDiagnostics": [
+    {
+      "message": "Failed to load resource: the server responded with a status of 409 (Conflict)",
+      "location": {
+        "url": "http://127.0.0.1:3001/api/journal-entries",
+        "lineNumber": 0,
+        "columnNumber": 0
+      }
+    }
+  ]
+}

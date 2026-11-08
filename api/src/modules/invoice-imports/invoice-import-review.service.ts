@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import {
   invoiceImportCommitResponseSchema,
   invoiceImportDraftResponseSchema,
@@ -128,6 +129,7 @@ export async function commitInvoiceImportForUser(db: Database, userId: string, i
     if (warnings.length && !input.acknowledgeDuplicates) throw apiError(409, 'DUPLICATE_WARNING', 'Review and acknowledge duplicate warnings before commit');
     if (!row.contactId) throw apiError(422, 'CONTACT_REQUIRED', 'Choose a customer or vendor before commit');
     const issueDate = draft.issueDate!;
+    await assertAccountingDateOpen(tx, ctx.organisationId, issueDate);
     const dueDate = draft.dueDate ?? issueDate;
     let recordType: 'invoice' | 'bill';
     let recordId: string;

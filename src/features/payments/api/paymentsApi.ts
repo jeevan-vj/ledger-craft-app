@@ -144,10 +144,11 @@ export const accountsApi = {
     return body.accounts.map(toAccount);
   },
 
-  async create(input: CreateAccountRequest): Promise<Account> {
+  async create(input: CreateAccountRequest, idempotencyKey?: string, expectedOrganisationId?: string): Promise<Account> {
     return toAccount(
       await request<AccountDto>('/api/accounts', {
         method: 'POST',
+        headers: { ...(idempotencyKey ? { 'Idempotency-Key': idempotencyKey } : {}), ...(expectedOrganisationId ? { 'X-Expected-Organisation-ID': expectedOrganisationId } : {}) },
         body: JSON.stringify(input),
       }),
     );

@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ✓ src/close-pack.test.ts (2 tests) 9ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  06:57:16
+   Duration  382ms (transform 51ms, setup 0ms, collect 69ms, tests 9ms, environment 0ms, prepare 111ms)

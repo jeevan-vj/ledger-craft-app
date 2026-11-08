@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { defaultBankAccount } from '../bank/bank-workspace.repository';
 import {
   paymentListResponseSchema,
@@ -81,6 +82,7 @@ export async function createPaymentInTx(
     }
   }
 
+  await assertAccountingDateOpen(tx, ctx.organisationId, input.paymentDate);
   const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, input.invoiceId);
   if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
   if (input.paymentDate < invoice.date) throw apiError(400, 'PAYMENT_PRECEDES_INVOICE', 'Record a customer advance as a liability; an invoice payment cannot precede its invoice date');
@@ -160,6 +162,7 @@ export async function reversePaymentInTx(
 ): Promise<PaymentDto> {
     const payment = await repo.getPayment(tx, ctx.organisationId, id);
     if (!payment) throw new HTTPException(404, { message: 'Payment not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, payment.paymentDate, input.reversalDate);
     if (payment.status === 'refunded') {
       throw apiError(409, 'PAYMENT_ALREADY_REVERSED', 'Payment has already been reversed');
     }

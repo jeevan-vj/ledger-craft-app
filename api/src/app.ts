@@ -84,8 +84,8 @@ export function createApp(deps: AppDependencies = {}) {
     cors({
       origin: getBetterAuthTrustedOrigins(),
       credentials: true,
-      allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key'],
-      exposeHeaders: ['set-auth-token'],
+      allowHeaders: ['Content-Type', 'Authorization', 'Idempotency-Key', 'X-Expected-Organisation-ID'],
+      exposeHeaders: ['set-auth-token', 'Content-Disposition'],
       allowMethods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     }),
   );
@@ -122,6 +122,8 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', bankWorkspaceRoutes());
   app.route('/', bankRoutes());
   app.route('/', reconciliationRoutes());
+  // Static financial endpoints must precede tax's generic /reports/:type.
+  app.route('/', reportRoutes());
   app.route('/', taxRoutes());
   app.route('/', objectRoutes());
   app.route('/', receiptRoutes());
@@ -134,8 +136,6 @@ export function createApp(deps: AppDependencies = {}) {
   app.route('/', currencyRoutes());
   app.route('/', invoiceImportRoutes());
   app.route('/', stripeRoutes());
-  // Financial statements are registered before /reports/:type widget runs.
-  app.route('/', reportRoutes());
   app.route('/', dashboardRoutes());
 
   if (process.env.NODE_ENV === 'test') {

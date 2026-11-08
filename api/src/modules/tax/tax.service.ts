@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen, assertAccountingSettingsOpen } from '../accounting/period-lock';
 import {
   taxReturnListResponseSchema,
   taxReturnSchema,
@@ -49,7 +50,7 @@ export async function upsertTaxConfigurationForUser(
   userId: string,
   input: UpsertTaxConfigurationRequest,
 ): Promise<TaxConfigurationDto> {
-  return withOrganisationTx(db, userId, async (tx, ctx) => repo.upsertConfig(tx, ctx, input));
+  return withOrganisationTx(db, userId, async (tx, ctx) => { await assertAccountingSettingsOpen(tx, ctx.organisationId); return repo.upsertConfig(tx, ctx, input); });
 }
 
 export async function listTaxReturnsForUser(db: Database, userId: string): Promise<TaxReturnListResponse> {
@@ -77,6 +78,7 @@ export async function createTaxReturnForUser(
       const replay = await getIdempotencyRecord(tx, ctx, scope);
       if (replay) { assertReplayMatches(replay.requestHash, scope.requestHash); return taxReturnSchema.parse(replay.responseBody); }
     }
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.periodStart, input.periodEnd);
     if ((input.returnType ?? 'GST') === 'GST') await assertNoFiledGstOverlap(tx, ctx.organisationId, input.periodStart, input.periodEnd);
     const canonical = (input.returnType ?? 'GST') === 'GST' ? await canonicalGstReturnInput(tx, ctx, input) : input;
     const created = await repo.insertReturn(tx, ctx, { ...canonical, returnData: bindPreparationAudit(canonical.returnData, ctx.userId) });
@@ -94,6 +96,7 @@ export async function updateTaxReturnForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const existing = await repo.getReturn(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, existing.periodStart, existing.periodEnd);
     if (existing.status !== 'draft') throw new HTTPException(409, { message: 'Filed tax records are immutable; prepare a separate correction instead' });
     if (existing.returnType === 'GST' && input.returnType && input.returnType !== 'GST') throw apiError(422, 'GST_RETURN_TYPE_IMMUTABLE', 'A GST return cannot be converted to another tax type.');
     if (existing.returnType === 'GST' && !existing.returnData?.gstCalculation) throw apiError(409, 'GST_SNAPSHOT_IMMUTABLE', 'This legacy GST draft has no authoritative snapshot. Prepare a new draft; the original record is retained.');
@@ -156,6 +159,7 @@ export async function deleteTaxReturnForUser(db: Database, userId: string, id: s
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const existing = await repo.getReturn(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Tax return not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, existing.periodStart, existing.periodEnd);
     if (existing.status !== 'draft') throw new HTTPException(409, { message: 'Filed tax records cannot be deleted; retain the filing history and record a correction separately' });
     if (existing.returnType === 'GST' && existing.returnData?.gstCalculation) throw apiError(409, 'GST_SNAPSHOT_IMMUTABLE', 'Saved GST calculation snapshots are retained for audit. Prepare a new draft or correction instead of deleting the original calculation.');
     const deleted = await repo.deleteReturn(tx, ctx.organisationId, id);

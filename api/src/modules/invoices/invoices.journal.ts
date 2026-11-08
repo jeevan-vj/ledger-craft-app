@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { decimal } from './money';
 import { and, asc, eq } from 'drizzle-orm';
 import { nextJournalEntryNumber } from '../accounting/entry-number';
@@ -63,6 +64,7 @@ export async function postInvoiceJournal(
       eq(journalEntries.referenceId, input.invoiceId),
     ));
   if (existing) return;
+  await assertAccountingDateOpen(tx, ctx.organisationId, input.date);
 
   // Journals are in the company base currency; document amounts stay foreign.
   const [source] = await tx.select().from(invoices).where(and(eq(invoices.organisationId, ctx.organisationId), eq(invoices.id, input.invoiceId)));
@@ -138,6 +140,7 @@ export async function postInvoiceReversalJournal(
     eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.referenceType, 'invoice'), eq(journalEntries.referenceId, input.invoiceId),
   ));
   if (!original) return;
+  await assertAccountingDateOpen(tx, ctx.organisationId, original.entryDate, input.date);
   const sourceLines = await tx.select().from(journalEntryLines).where(and(
     eq(journalEntryLines.organisationId, ctx.organisationId), eq(journalEntryLines.journalEntryId, original.id),
   )).orderBy(asc(journalEntryLines.lineOrder));
@@ -190,6 +193,7 @@ export async function postInvoiceRestoreJournal(
   if (cancellations.length <= restores.length) return false;
   const cancellation = cancellations[restores.length];
   if (!cancellation) throw new HTTPException(409, { message: 'Invoice cancellation journal is missing' });
+  await assertAccountingDateOpen(tx, ctx.organisationId, input.date);
   const cancellationLines = await tx.select().from(journalEntryLines).where(and(
     eq(journalEntryLines.organisationId, ctx.organisationId),
     eq(journalEntryLines.journalEntryId, cancellation.id),

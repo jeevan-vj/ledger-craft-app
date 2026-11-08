@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import type {
   CreateInvoiceRequest,
   InvoiceDto,
@@ -73,6 +74,7 @@ export async function createInvoiceInTx(
   ctx: { organisationId: string; userId: string },
   input: CreateInvoiceRequest,
 ): Promise<InvoiceDto> {
+  await assertAccountingDateOpen(tx, ctx.organisationId, input.date);
   const customer = await customersRepo.getCustomer(tx, ctx.organisationId, input.customerId);
   if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
 
@@ -173,6 +175,7 @@ export async function updateInvoiceInTx(
 ): Promise<InvoiceDto> {
     const existing = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Invoice not found' });
+    if (Object.keys(input).some(key=>!['notes','terms','expectedUpdatedAt'].includes(key))) await assertAccountingDateOpen(tx, ctx.organisationId, existing.date, input.date ?? existing.date);
     if (await hasActiveCreditNotes(tx, ctx.organisationId, id) && Object.keys(input).some(key => !['notes', 'terms', 'dueDate', 'paymentTermDays', 'expectedUpdatedAt'].includes(key))) {
       throw apiError(409, 'INVOICE_HAS_CREDIT_NOTES', 'Reverse active credit notes and customer refunds before changing invoice amounts or status');
     }
@@ -277,6 +280,7 @@ export async function updateInvoiceInTx(
 export async function prepareInvoiceDeliveryInTx(tx: Database, ctx: { organisationId: string; userId: string }, id: string, input: SendInvoiceRequest) {
     const invoice = await invoicesRepo.getInvoice(tx, ctx.organisationId, id);
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
+    if (invoice.status === 'draft') await assertAccountingDateOpen(tx, ctx.organisationId, invoice.date);
     const customer = await customersRepo.getCustomer(tx, ctx.organisationId, invoice.customerId);
     if (!customer) throw new HTTPException(400, { message: 'Customer not found' });
 
@@ -301,7 +305,8 @@ export async function completeInvoiceDeliveryInTx(tx: Database, ctx: { organisat
   if (JSON.stringify({ ...current, effectiveStatus: undefined }) !== JSON.stringify({ ...prepared, effectiveStatus: undefined })) {
     throw apiError(409, 'INVOICE_CHANGED_AFTER_DELIVERY', 'Email was accepted for the earlier invoice snapshot. The invoice changed during delivery and has not been marked sent. Review its current state before sending again.');
   }
-    if (prepared.status === 'sent') {
+    // Resending a posted or cancelled document must not rewrite its financial status.
+    if (prepared.status !== 'draft') {
       return prepared;
     }
     const sent = await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, id, 'sent');

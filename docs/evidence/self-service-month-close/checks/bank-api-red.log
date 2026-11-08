@@ -1,0 +1,49 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_2ec2b6f3-78ef-4144-ac9e-34e17dbfe089","route":"/api/auth/*","method":"POST","status":200,"durationMs":112}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_e14a3ab0-d3e3-4204-a8ca-3fa450e0d70a","route":"/api/auth/*","method":"POST","status":200,"durationMs":92}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_c110a447-211e-462a-95d3-6bd834b9477a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_99a418f0-0808-4deb-bd1e-8f569eee67d2","route":"/api/accounts/bank-ledger","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > requires authentication
+{"msg":"http_request","requestId":"req_323ed4cc-a842-4171-a143-68b4cbe08211","route":"/api/accounts/bank-ledger","method":"POST","status":401,"durationMs":1}
+
+ ❯ src/modules/accounts/bank-ledger.test.ts (2 tests | 1 failed) 1047ms
+   × self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies 1041ms
+     → expected 404 to be 200 // Object.is equality
+   ✓ self-service bank ledger preparation > requires authentication 4ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+AssertionError: expected 404 to be 200 // Object.is equality
+
+- Expected
++ Received
+
+- 200
++ 404
+
+ ❯ src/modules/accounts/bank-ledger.test.ts:19:58
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  06:57:13
+   Duration  4.36s (transform 1.53s, setup 27ms, collect 3.03s, tests 1.05s, environment 0ms, prepare 103ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounts/bank-ledger.test.ts

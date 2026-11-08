@@ -1,0 +1,98 @@
+{
+  "version": "ledgercraft-close-pack-v1",
+  "organisationName": "Worker supplementary October close",
+  "period": {
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+  },
+  "basis": "accrual",
+  "baseCurrency": "NZD",
+  "generatedAt": "2026-11-08T07:42:38.867Z",
+  "periodLock": {
+    "closedThrough": "2026-10-31",
+    "revision": 3
+  },
+  "warnings": [
+    "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+  ],
+  "members": [
+    {
+      "name": "trial-balance.csv",
+      "mediaType": "text/csv",
+      "bytes": 629,
+      "sha256": "16f42f4270999bcf49b1ed86fba6ab2a305d346b9ebb7978bdef3004f7971758"
+    },
+    {
+      "name": "balance-sheet.csv",
+      "mediaType": "text/csv",
+      "bytes": 419,
+      "sha256": "2c083f95a7a658aa4b435d5adb8b3cbf75c2d1aee96ec1dc1b1eb1be5c9e23a4"
+    },
+    {
+      "name": "profit-loss.csv",
+      "mediaType": "text/csv",
+      "bytes": 181,
+      "sha256": "9751a7a4f3133469249d6e66973e26318142e9ac3b9d3d2debe649b227e7c2b4"
+    },
+    {
+      "name": "cash-flow.csv",
+      "mediaType": "text/csv",
+      "bytes": 240,
+      "sha256": "e03fbf1cfe4cb8e64ad5dcf1633e9e209306bc5d86eaa4f1b09af2b5012e11c2"
+    },
+    {
+      "name": "receivables.csv",
+      "mediaType": "text/csv",
+      "bytes": 185,
+      "sha256": "4321f1c6b06c6e58e9fc08a75fc5569a700f3f19d04e5cc5132d7ea93d397a57"
+    },
+    {
+      "name": "payables.csv",
+      "mediaType": "text/csv",
+      "bytes": 182,
+      "sha256": "3c4d878a5deb1cf010831add8fe0ab3e24f0ea99c6c4e7bf3f1c9f4341bddd25"
+    },
+    {
+      "name": "reports.json",
+      "mediaType": "application/json",
+      "bytes": 12603,
+      "sha256": "e794b6e587bae0ae92967128ffa6447a2b0a5897a95c8f4fdfba55cb86dc4965"
+    },
+    {
+      "name": "general-ledger.csv",
+      "mediaType": "text/csv",
+      "bytes": 1941,
+      "sha256": "3692f38f24801047b2ca0cb4dbca03008bd1cd61ce76381b0cde1384baf86cb8"
+    },
+    {
+      "name": "bank-reconciliations.json",
+      "mediaType": "application/json",
+      "bytes": 1427,
+      "sha256": "306fca931ec20d37a717549bcbdf5a51bfdda7911640d16a4bf3aaab741cab81"
+    },
+    {
+      "name": "bank-reconciliations.csv",
+      "mediaType": "text/csv",
+      "bytes": 300,
+      "sha256": "b65d2bb1e463724b36b50d56207067b6b7151aa313a14f99251d7e6d9ddead92"
+    },
+    {
+      "name": "gst.json",
+      "mediaType": "application/json",
+      "bytes": 10664,
+      "sha256": "6d5086c2746957be620600fabe670a9ae9d5aa798d53478539f6457e74e728c6"
+    },
+    {
+      "name": "accounting-period.json",
+      "mediaType": "application/json",
+      "bytes": 53,
+      "sha256": "d6219f194f7ef68c9d230a33c2ca4a5b91a67ba3f194673b64103964d993c7c5"
+    },
+    {
+      "name": "readme.txt",
+      "mediaType": "text/plain",
+      "bytes": 523,
+      "sha256": "6a2905e150ec6ce2a5d446c9b198ce9477f555ea520f71b1aefc25c748eaee57"
+    }
+  ]
+}

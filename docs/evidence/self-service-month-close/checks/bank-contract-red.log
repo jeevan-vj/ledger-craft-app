@@ -1,0 +1,32 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ❯ src/bank-ledger.test.ts (1 test | 1 failed) 6ms
+   × accepts only a bank identity, never ownership or opening money 5ms
+     → expected undefined to be true // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/bank-ledger.test.ts > accepts only a bank identity, never ownership or opening money
+AssertionError: expected undefined to be true // Object.is equality
+
+- Expected:
+true
+
++ Received:
+undefined
+
+ ❯ src/bank-ledger.test.ts:5:92
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  06:56:33
+   Duration  295ms (transform 30ms, setup 0ms, collect 24ms, tests 6ms, environment 0ms, prepare 104ms)
+
+undefined
+/workspace/ledger-craft-app/packages/contracts:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/bank-ledger.test.ts
