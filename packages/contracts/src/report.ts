@@ -113,7 +113,7 @@ export const financialReportResponseSchema = z.object({
   meta: reportMetaSchema,
   trialBalance: z.object({ rows: z.array(trialBalanceRowSchema), totalDebits: money, totalCredits: money, closingDebits: money.optional(), closingCredits: money.optional(), balanced: z.boolean() }),
   profitLoss: statementSchema.extend({ revenue: money, expenses: money, netIncome: money }),
-  balanceSheet: statementSchema.extend({ assets: money, liabilities: money, equity: money, balanced: z.boolean() }),
+  balanceSheet: statementSchema.extend({ assets: money, liabilities: money, equity: money, accumulatedEarnings: money.optional(), balanced: z.boolean() }),
   cashFlow: statementSchema.extend({ openingCash: money, inflows: money, outflows: money, netCashFlow: money, closingCash: money }),
   receivablesAging: agingSchema,
   payablesAging: agingSchema,

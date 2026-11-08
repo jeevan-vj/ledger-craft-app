@@ -1,0 +1,586 @@
+RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_42285f4b-3ca5-416b-bd2c-6bd5248f36bc","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2a3d9412-9a04-47e5-9f8a-afe484983277","route":"/api/business-profile","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_92a6453a-7e84-4871-a383-68f52e0bb478","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_57c664b1-3707-44fe-af82-ecdfab86b865","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6709009d-fbd9-4692-826a-9b7e0f2b78e0","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f8201834-44de-43e2-8eeb-f5165e11b643","route":"/api/accounts","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4384a753-837a-4c90-a313-61f8b0ea6c04","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_12e7d403-ef20-4c84-bb83-006ceabeff98","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f6f8119e-ebd7-4160-b53b-8c7114e1312d","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_77ad9aff-c33b-4cfe-90e1-9f18d3f54f7d","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7be7881b-6361-4246-aaf4-d7266e82ddf5","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2a691056-411a-46d2-8ff9-6e0f91a6baa2","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2ddd4894-b550-4a48-87e5-a769f2a1f8ef","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_f47a18d8-7338-400f-ba0a-3f5158858ba6","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1eecbd40-1050-4de8-912a-4ed5734cc57d","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_207589c6-4df5-4041-aa48-4e55bb59bc37","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b298747f-fcf4-447f-be40-6fca6b206c72","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_884ae0ca-3d3e-48b9-b272-f471cab88440","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_62e7ecc3-6428-4088-83b0-c64937616221","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_362d2031-43c0-4f04-9aea-2a28cb7640f7","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_70053090-76db-404e-a5bc-640f18be9928","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a07f317c-1573-4a52-8d13-b1b19a822d40","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ac8768a5-f036-461a-9020-c2f2699f9025","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d765fcdd-1970-4223-90d3-d857906e7dca","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b2b93979-a6a3-49ca-951c-a2c1383b2501","route":"/api/currency-settings","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_56c5fcec-771b-435f-a2bd-f7f99d44415d","route":"/api/book-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_909fe191-4315-4316-b7ab-7649edb184ba","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_056a57cb-fadb-44e6-8e26-94fd2c7dad3a","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b2650dbd-25ad-48a4-b3d5-405154a47885","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_e1675649-7fb6-4d03-8970-fd1237a9f716","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_69b07e4d-f8d6-41dd-a2e6-f1332f173b73","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_73655306-8b11-48ae-bad8-9c6d781c874b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9df7f276-c5f6-4eb7-ab72-6b5578c655f7","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3aad28c2-2634-436c-b9f3-a4c8a00bcb99","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_51369c3a-fc9d-42ed-ab51-c0237d135df2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3a96eaf4-5aa4-4d6a-bb34-2ae9bc6eec5c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9ef8c269-be9e-4d6c-91ee-d7e7fca913a0","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6e09e7e3-c0b7-462b-aeb7-3fe021dd4079","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_11e44600-5533-4e5b-b083-48c8fa334d3f","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4a0c8076-25d9-4128-9f16-40f36e6f3524","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_72b77666-d08c-4f47-a586-c9bfd33e863a","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ddc8dc73-02bd-4edd-a448-a11dda13c2fd","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_903c829b-e837-4b2d-847a-9b749832ff74","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_bcd44dbe-b26e-4d29-a5a0-72a278316b50","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9cb6fe4c-df13-4f50-97a8-2ab885821470","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6dfea3bd-73e6-4bc1-9283-132ed0d03f67","route":"/api/payments","method":"POST","status":400,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0e4a6974-e381-48a2-b18d-df49e1e8afe3","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a1fcfd41-1b6a-4441-8b66-655c4e40af14","route":"/api/payments","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_dcfd26f7-b5b9-47d2-8434-47f2b2f67823","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d800d214-8ad9-4bb8-b667-a75574572460","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_65c2b252-080a-4f8e-8b9a-cc01cd5721e3","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b4188547-902e-490d-acc9-3c1b7bb3b59a","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_b0e071f1-9761-4592-ade8-85b59771faf3","route":"/api/payments","method":"POST","status":409,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_52f4904c-8998-4d48-ab43-c04a10af9592","route":"/api/credit-notes","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1ae6e83a-dad2-43dc-94df-5275f9c9dc4c","route":"/api/vendors","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7833c2e6-da2b-4533-bc06-faff3484d024","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c9fbd607-4147-474b-bba3-284c3a940d37","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_2795a80e-a371-4c9c-b985-224daeef7e5e","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_feeacd97-148f-4817-9b4d-280d783c4d66","route":"/api/expenses","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_11efac03-0d9a-4656-8356-a07823f87097","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_19143650-1e9f-4a82-a9e5-5f0b08f0a622","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_4951ee18-8a24-4e53-9a5c-e249e60d3f1a","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1a9664ba-dd28-4903-8eb2-9d75b06be4ee","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_9efcc8a5-cccc-490c-b5d5-4050e5ce1d15","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a9dbfbba-f9ce-4082-aed9-112d0cdf24fd","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_658c9d4b-33d4-474c-827d-396be7302e92","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_cec77fdb-6f86-4184-8b2d-2703dfb99bed","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_95516da0-5d7e-4b8f-95e0-f28e449ecccf","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a6cc933a-8a26-44cf-b0db-72e443c76b3f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1b5ca997-83a6-4825-8104-b5368cdb04ad","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d6b0d199-fbef-4a23-a776-dae8635f585e","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_6faf9f77-a104-41e2-8ee6-d965d83fb6a7","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_a5ba40c4-0fe3-4b82-ba39-b63ed123f054","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0fcd62e8-fcf4-48c3-ba0a-d65ff8b2d9a2","route":"/api/tax/gst-preparation","method":"GET","status":422,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1ddff692-9a47-4325-b15e-6fd987328692","route":"/api/tax-returns","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_175a8b37-dd7d-4e04-b620-996c87f523e2","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ffb69743-94a5-46b8-9983-985a3183a4b4","route":"/api/journal-entries","method":"POST","status":409,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_c81b5e46-26e2-4e60-a18a-20d8cc1ef53f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_738bafc6-0cb1-477b-9cfb-207cd562b345","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0b618c47-1ca5-4e71-b9b6-7f22cebb3cbf","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3c011479-8deb-403a-9e9e-d0488fa1b01a","route":"/api/journal-entries","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_983bcf04-f21f-4fb9-889b-afd922014c9e","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_732503ef-adae-40f5-acda-079d7c7d5e52","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_157746d5-6af6-4e7d-bc6a-0da3e9bacc90","route":"/api/payments","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_0dab6651-7029-41fc-808d-43bb26cf6889","route":"/api/bills","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_df1f8eb0-04f2-483e-a16e-b2a52a41896c","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_10971ae8-fe25-4fef-851c-8a9b15428a4f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3d4f6abc-4f62-4998-9f7e-82d60e17db75","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_ac53e785-f413-4342-83e3-1207c443ddfe","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_15eb9751-7353-45a9-ac7e-8b54a3a57a9b","route":"/api/reports/options","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_1cdd357d-746e-45af-9eea-eb374ca9c07d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_3c56b71a-e227-4301-9cdd-b28263b32ea5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_39331259-1c1f-41b1-a6db-99d720ec95bc","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_d7464f06-5eea-4125-9c49-406b24263349","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/reports/second-month-year-end.e2e.test.ts > second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings
+{"msg":"http_request","requestId":"req_7ed8113b-5675-4ca9-b259-b1374ad83366","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":0}
+
+ ✓ src/modules/reports/second-month-year-end.e2e.test.ts (1 test) 1686ms
+   ✓ second month and NZ financial-year rollover through real HTTP/SQLite > carries October into November and April without rewriting closed statements, old aging or prior-year earnings  1685ms
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_cb05cc33-91bf-4744-86eb-aaf4c6fa993f","route":"/api/auth/*","method":"POST","status":200,"durationMs":127}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_64bea896-9b34-42c6-9683-7de8b395ea53","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_c413effa-c4f6-491d-9668-b282694b086e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_3312ae4a-85c9-42da-9fb1-2590e1139e86","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_2fa9054f-825b-4dad-8497-e708db9bb38b","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_dce6e98a-ccf6-499f-a050-93421f7bd118","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a1d09ea5-11f9-44eb-9e88-228112cdbc1b","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_474d7b05-2a30-4a63-a3d1-9ec9f2a2d338","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_5a75ac18-29d3-423a-8c3b-331b1329002b","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9adab80a-8639-4992-b70e-878db617540b","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_f935f790-fcfe-4f56-863e-5577b6ac517f","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a6078c04-f086-49a5-8c4a-05fb3b5d2c71","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_622d3baf-392c-49bb-8132-f72defa07563","route":"/api/invoices","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_ff64210c-97c9-4d03-9232-99969722b424","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_e0d12cd5-9b77-4f73-be3c-dc241a6fe028","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_d609d69c-21d5-479a-8d64-dc803a1196f5","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_20968506-ca4d-4225-b581-1cca40ffe34b","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_4ed6787d-2f45-49fb-b3de-1cb12abcd632","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_5d74c77a-6ff0-40bd-b181-70557fb1291b","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_da3c650f-4591-434d-9eab-63d2b24bf901","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_ad244c3c-b9e5-49de-8e4a-e2ae7e5c5d63","route":"/api/expenses","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_5d827ba9-31cd-4d3b-bc03-7af61e38d2ae","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9fe9857a-c7b7-4139-b850-7796844886ee","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_600e3b2e-82af-4e7c-b12e-b4616f175310","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_c201e6a4-1d14-4066-a9b2-c83dbdeb1708","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_3daa91a5-f758-40a1-a6b3-436f827a7602","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_d9ba63f1-4312-44ad-8cdc-82c46f4cfdc3","route":"/api/book-entries","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_06df8980-b467-4a45-b9d7-2b71d46c3240","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9f1c5263-c344-4ea3-ba1c-5f881a06523e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_55d867b3-ef14-4961-82cf-c1cf135f6d86","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a665a2ec-99fc-4430-9422-d954639d12b5","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9fb75016-aa32-4b5f-9cef-e2ff19ec278d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9bc964c8-1001-438c-8050-c4220cbcd4eb","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_55272a2f-5f99-488c-8885-e8ab9293599c","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":23}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_2dcdaaa4-8b6c-4ccc-9c28-81654cf47392","route":"/api/tax-returns","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_7f424e1a-78f3-4402-b153-0e9dd4c10b69","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_f24b8a49-9ab6-4696-b1d0-c07598e5883c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a87d4470-ff13-43b2-ae0b-dc21cb4d15c6","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":47}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_20247d98-3a6e-45cc-b204-ceab3b3844b2","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_18875db4-ce0e-4e3b-aa08-80f4109be463","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_46cfc75b-37e9-48c8-a98b-129bd8c81031","route":"/api/accounting-periods/reopen","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_ea18989d-2285-48df-b5cc-936fbd6bd7d3","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_8561d835-1ef5-4ef6-8ed9-66f25e90cf9e","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_5853784e-2d98-4cbe-8547-a438a7144909","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_8ba5e09a-6ce7-4160-b6bd-aad75bec2952","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":28}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_09c2bb1f-fb3c-48d6-b869-0c4151db7890","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_1ce32709-feee-4d11-b7ec-3481c495c5b2","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_931c1069-756d-4201-ad9b-baeba212575a","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_efd529d3-0b77-464a-bb74-712afd9b7c6d","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_2f4d5d83-fbcf-4fa7-befe-63a799114501","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_e9b356fb-f953-4f9c-aa1e-376c88f0fc70","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_d9bd79a9-18c1-4cd8-b4d6-c21f26a69361","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_7dab1918-7808-4816-939c-1d09fd931679","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_6fa59410-a588-4bc7-9f03-741149cae0b6","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_210bf414-93e0-46a9-91f7-9822c6cc8367","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_7259e5e7-87ba-4119-adc7-63f28a4b964c","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_7e61dd2d-4c75-4ce8-be7f-b4ae49f59e97","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_83c272ea-ec2c-465a-85da-931858dfe974","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_fb9a6b5f-f958-4a5e-81e4-749922aee63a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_03764178-329f-4f1e-b73d-8edb52ef42c0","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_c393920c-9ece-486d-9e3d-be44d5d47a60","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_fffea7d0-4de4-4567-b3d4-253914a1b6ec","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_b7d027d5-4a71-40c1-99ec-24192e110e3d","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_774e993f-6a82-4571-92be-3484c7831baf","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_a05aae1b-0bd3-4dee-8dcd-81bf3e61f67b","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_afdd042b-04dc-42d5-8e4a-c0773493ac15","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_44d02cab-a10f-44bf-b989-dfc57604d259","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_ef6a4f50-ab8b-472f-8e12-19a59d861cd2","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_783109b9-4813-4f1c-9cd3-637c303af09a","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_677b6836-fcf6-4f09-9fec-9ba9bd7d6551","route":"/api/reports/close-pack","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_bc5eac80-2e52-45bf-aaee-61461aabc8b2","route":"/api/reports/close-pack","method":"GET","status":400,"durationMs":2}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_fd81e922-d92b-47d5-a381-c5b9ee3a8e7c","route":"/api/reports/close-pack","method":"GET","status":400,"durationMs":2}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_a4a966d1-cb25-4fac-bc22-c7d54c7b5e8a","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_6e8099db-29b9-45f5-af3c-80adda8cdc7a","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":27}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_31d1b36c-f384-4786-8c16-22ef17862945","route":"/api/auth/*","method":"POST","status":200,"durationMs":83}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_bf58cdef-9738-4079-ba11-32c601ff94f2","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_66d0d53d-88cd-4d4d-a64b-77e2cbb88929","route":"/api/me","method":"GET","status":200,"durationMs":1}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_7f126411-a67f-4f4f-89e2-72471b2c59fd","route":"/api/reports/close-pack","method":"GET","status":403,"durationMs":2}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_baf561cc-ae0c-4953-9a8c-29a15bc608e1","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":26}
+
+ ✓ src/modules/reports/close-pack.test.ts (2 tests) 2473ms
+   ✓ accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books  1383ms
+   ✓ accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated  1089ms
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_a587cbda-c359-47a0-b87e-851e6b7150bb","route":"/api/reports/financial","method":"GET","status":401,"durationMs":5}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_706d62c5-9042-4f70-8fad-a47adddd2d70","route":"/api/reports/financial","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_59dc89ca-fa10-454a-9430-5b4c3bd0e644","route":"/api/auth/*","method":"POST","status":200,"durationMs":141}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_f1f03c9b-77a3-41b9-951b-6485304f6491","route":"/api/auth/*","method":"POST","status":200,"durationMs":94}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_f50ef5e0-54d1-47ae-8218-4279c95d1f90","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_fa950846-0ed5-4649-a0f2-20f71a06df34","route":"/api/journal-entries","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_d20db417-6ceb-4f3f-ba15-a1e494786e2d","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_ec7bff24-2986-4824-b39b-e564ae6e5f6c","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_3cf8ede0-4134-4032-a9c0-50c85ae3d3b2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_9ea2a557-23eb-4f19-aa8b-53afbb3b1ad0","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_5e2d6e4e-7681-4b68-ba6d-1802fa11a581","route":"/api/auth/*","method":"POST","status":200,"durationMs":160}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_f3725ea2-958b-4b98-b082-ed57a424e1de","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_0aa7cb3f-d5ab-45df-a270-61a18f53a728","route":"/api/journal-entries","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_2862483d-ba9d-4fec-8a1b-f1e81ec6c789","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":25}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_508bc38d-f2d4-4e79-acef-1d7e568688de","route":"/api/journal-entries/:id","method":"PATCH","status":409,"durationMs":16}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_ca26a688-d03f-43e3-8ac8-542636382f4a","route":"/api/journal-entries/:id","method":"DELETE","status":409,"durationMs":22}
+
+ ✓ src/modules/reports/reports.test.ts (5 tests) 2701ms
+   ✓ server-authoritative reports > derives balanced reports from posted journals and isolates organisations  1302ms
+   ✓ server-authoritative reports > rejects mutation or deletion of posted journals  1352ms
+ ✓ src/modules/reports/trial-balance-signs.test.ts (2 tests) 17ms
+
+ Test Files  4 passed (4)
+      Tests  10 passed (10)
+   Start at  08:57:42
+   Duration  12.76s (transform 1.26s, setup 58ms, collect 4.98s, tests 6.88s, environment 1ms, prepare 253ms)

@@ -1,0 +1,1053 @@
+{
+  "businessOperationBuild": "fa674d007c69",
+  "finalReportBuild": "758b05c50483",
+  "sourceMapContentsMatch": [
+    "api/src/http-error.ts",
+    "api/src/modules/invoices/money.ts",
+    "api/src/modules/invoices/totals.ts",
+    "packages/contracts/src/accounting-periods.ts",
+    "packages/contracts/src/accounting-recovery.ts",
+    "packages/contracts/src/ai.ts",
+    "packages/contracts/src/bank-feeds.ts",
+    "packages/contracts/src/bank-ledger.ts",
+    "packages/contracts/src/bank-workspace.ts",
+    "packages/contracts/src/bank.ts",
+    "packages/contracts/src/business-profile.ts",
+    "packages/contracts/src/close-pack.ts",
+    "packages/contracts/src/conversation.ts",
+    "packages/contracts/src/credit-note.ts",
+    "packages/contracts/src/currency.ts",
+    "packages/contracts/src/customer-statements.ts",
+    "packages/contracts/src/customer.ts",
+    "packages/contracts/src/dashboard.ts",
+    "packages/contracts/src/error.ts",
+    "packages/contracts/src/expense.ts",
+    "packages/contracts/src/formatting.ts",
+    "packages/contracts/src/fx-revaluation.ts",
+    "packages/contracts/src/gst-calculation.ts",
+    "packages/contracts/src/gst-preparation.ts",
+    "packages/contracts/src/gst-settings.ts",
+    "packages/contracts/src/health.ts",
+    "packages/contracts/src/invoice-import.ts",
+    "packages/contracts/src/invoice.ts",
+    "packages/contracts/src/item.ts",
+    "packages/contracts/src/journal.ts",
+    "packages/contracts/src/object.ts",
+    "packages/contracts/src/organisation.ts",
+    "packages/contracts/src/payment-reminders.ts",
+    "packages/contracts/src/payment.ts",
+    "packages/contracts/src/positive-amount.ts",
+    "packages/contracts/src/purchase.ts",
+    "packages/contracts/src/quote.ts",
+    "packages/contracts/src/receipt.ts",
+    "packages/contracts/src/reconciliation.ts",
+    "packages/contracts/src/recurring.ts",
+    "packages/contracts/src/report-dates.ts",
+    "packages/contracts/src/report-export.ts",
+    "packages/contracts/src/report.ts",
+    "packages/contracts/src/sale.ts",
+    "packages/contracts/src/session.ts",
+    "packages/contracts/src/stripe.ts",
+    "packages/contracts/src/tax.ts",
+    "src/App.tsx",
+    "src/components/accounting/AccountingDashboard.tsx",
+    "src/components/accounting/AccountingPeriodsPanel.tsx",
+    "src/components/accounting/BankLedgerSetup.tsx",
+    "src/components/accounting/CompanyTaxPreparationPanel.tsx",
+    "src/components/accounting/FxRevaluationPanel.tsx",
+    "src/components/accounting/GstPreparationPanel.tsx",
+    "src/components/accounting/InvoiceCreditNotesPanel.tsx",
+    "src/components/accounting/InvoicePaymentRecoveryPanel.tsx",
+    "src/components/accounting/LedgerAuditPanel.tsx",
+    "src/components/accounting/OpeningBalancesPanel.tsx",
+    "src/components/accounting/PreparationFields.tsx",
+    "src/components/accounting/SettlementRatePicker.tsx",
+    "src/components/auth/PermissionGuard.tsx",
+    "src/components/auth/ProtectedRoute.tsx",
+    "src/components/auth/modern/ModernAuthLayout.tsx",
+    "src/components/auth/modern/ModernButton.tsx",
+    "src/components/auth/modern/ModernInput.tsx",
+    "src/components/bank-account/BankAccountDialog.tsx",
+    "src/components/bank-account/BankTransactionDetails.tsx",
+    "src/components/bank-account/BankingActions.tsx",
+    "src/components/business/ThemePicker.tsx",
+    "src/components/category/CategoriesTable.tsx",
+    "src/components/category/CategoryDrawer.tsx",
+    "src/components/category/CategoryForm.tsx",
+    "src/components/common/AddToHomeScreenPrompt.tsx",
+    "src/components/common/AppVersion.tsx",
+    "src/components/common/BreadcrumbNavigation.tsx",
+    "src/components/common/DeveloperTools.tsx",
+    "src/components/common/PwaUpdatePrompt.tsx",
+    "src/components/customer/CustomerFormDrawer.tsx",
+    "src/components/errors/AppErrorBoundary.tsx",
+    "src/components/errors/AppErrorFallback.tsx",
+    "src/components/expense/ExpenseCategoryFormDrawer.tsx",
+    "src/components/expense/ExpenseCategoryTable.tsx",
+    "src/components/expense/ExpenseFormDrawer.tsx",
+    "src/components/expense/ExpenseTable.tsx",
+    "src/components/expense/ReceiptInbox.tsx",
+    "src/components/expense/ReceiptScanner.tsx",
+    "src/components/expense/ReceiptUpload.tsx",
+    "src/components/invoice/AdditionalChargesManager.tsx",
+    "src/components/invoice/InvoiceForm.tsx",
+    "src/components/invoice/ItemSelector.tsx",
+    "src/components/invoice/PaymentCaptureModal.tsx",
+    "src/components/invoice/PaymentReminderModal.tsx",
+    "src/components/invoice/ProfileCompletenessBanner.tsx",
+    "src/components/invoice/ShareInvoiceModal.tsx",
+    "src/components/invoice/StripePaymentLinkDialog.tsx",
+    "src/components/invoice/gstBuyerInformation.ts",
+    "src/components/invoice/preview/BankPaymentDetails.tsx",
+    "src/components/invoice/preview/DocumentGstIdentity.tsx",
+    "src/components/invoice/preview/InvoicePreview.tsx",
+    "src/components/invoice/preview/documentLabels.ts",
+    "src/components/invoice/preview/gstDocumentIdentity.ts",
+    "src/components/invoice/preview/templates/ClassicTemplate.tsx",
+    "src/components/invoice/preview/templates/CorporateTemplate.tsx",
+    "src/components/invoice/preview/templates/ExecutiveTemplate.tsx",
+    "src/components/invoice/preview/templates/MinimalTemplate.tsx",
+    "src/components/invoice/preview/templates/ModernInvoiceTemplate.tsx",
+    "src/components/invoice/preview/templates/ModernTemplate.tsx",
+    "src/components/invoice/templates/InvoiceTemplates.ts",
+    "src/components/invoice/templates/TemplateSelector.tsx",
+    "src/components/item/ItemDrawer.tsx",
+    "src/components/item/ItemForm.tsx",
+    "src/components/item/ItemsTable.tsx",
+    "src/components/journals/JournalPostingLines.tsx",
+    "src/components/layout/AppLayout.tsx",
+    "src/components/layout/Header.tsx",
+    "src/components/layout/PageHeader.tsx",
+    "src/components/layout/Sidebar.tsx",
+    "src/components/onboarding/OnboardingLayout.tsx",
+    "src/components/onboarding/WelcomeStep.tsx",
+    "src/components/organisations/CompanySwitcher.tsx",
+    "src/components/organisations/CompanyTeamPanel.tsx",
+    "src/components/payment/PaymentForm.tsx",
+    "src/components/payment/PaymentHistory.tsx",
+    "src/components/payment/PaymentReversalDialog.tsx",
+    "src/components/receipt/ReceiptViewer.tsx",
+    "src/components/reconciliation/AdjustmentDialog.tsx",
+    "src/components/reconciliation/ReconciliationReport.tsx",
+    "src/components/reconciliation/ReconciliationSetupDialog.tsx",
+    "src/components/reconciliation/ReconciliationWarnings.tsx",
+    "src/components/reconciliation/ReconciliationWorkspace.tsx",
+    "src/components/settings/AccountDeletionPanel.tsx",
+    "src/components/settings/AccountSecurityPanel.tsx",
+    "src/components/settings/CurrencyLocalizationSettings.tsx",
+    "src/components/settings/StripeOperationsPanel.tsx",
+    "src/components/settings/StripePaymentsPanel.tsx",
+    "src/components/transaction-import/FileUploadZone.tsx",
+    "src/components/transaction-import/ImportConfiguration.tsx",
+    "src/components/transaction-import/ImportPreview.tsx",
+    "src/components/transaction-import/ImportSummary.tsx",
+    "src/components/ui/ActionRow.tsx",
+    "src/components/ui/ContentPanel.tsx",
+    "src/components/ui/DrawerFooterSticky.tsx",
+    "src/components/ui/DrawerFormLayout.tsx",
+    "src/components/ui/EmptyState.tsx",
+    "src/components/ui/SegmentedControl.tsx",
+    "src/components/ui/alert-dialog.tsx",
+    "src/components/ui/alert.tsx",
+    "src/components/ui/badge.tsx",
+    "src/components/ui/breadcrumb.tsx",
+    "src/components/ui/button.tsx",
+    "src/components/ui/calendar.tsx",
+    "src/components/ui/card.tsx",
+    "src/components/ui/checkbox.tsx",
+    "src/components/ui/collapsible.tsx",
+    "src/components/ui/command.tsx",
+    "src/components/ui/customer-combobox.tsx",
+    "src/components/ui/dialog.tsx",
+    "src/components/ui/drawer.tsx",
+    "src/components/ui/dropdown-menu.tsx",
+    "src/components/ui/form.tsx",
+    "src/components/ui/input.tsx",
+    "src/components/ui/label.tsx",
+    "src/components/ui/popover.tsx",
+    "src/components/ui/progress.tsx",
+    "src/components/ui/radio-group.tsx",
+    "src/components/ui/scroll-area.tsx",
+    "src/components/ui/select.tsx",
+    "src/components/ui/separator.tsx",
+    "src/components/ui/sheet.tsx",
+    "src/components/ui/skeleton.tsx",
+    "src/components/ui/sonner.tsx",
+    "src/components/ui/spinner.tsx",
+    "src/components/ui/switch.tsx",
+    "src/components/ui/table.tsx",
+    "src/components/ui/tabs.tsx",
+    "src/components/ui/textarea.tsx",
+    "src/components/ui/theme-toggle.tsx",
+    "src/components/ui/toast.tsx",
+    "src/components/ui/toaster.tsx",
+    "src/components/ui/tooltip.tsx",
+    "src/context/StableAppContext.tsx",
+    "src/context/StableAuthContext.tsx",
+    "src/context/ThemeContext.tsx",
+    "src/features/accounting-completion/accountingPeriodsApi.ts",
+    "src/features/accounting-completion/api.ts",
+    "src/features/accounting-completion/bankLedgerApi.ts",
+    "src/features/accounting-completion/companyTaxPdf.ts",
+    "src/features/accounting-completion/creditNotesApi.ts",
+    "src/features/accounting-completion/invoicePaymentRecovery.ts",
+    "src/features/accounting-completion/pendingBillPayment.ts",
+    "src/features/accounting-completion/pendingCreditOperation.ts",
+    "src/features/accounting-completion/preparationError.ts",
+    "src/features/accounting-completion/settlementLabel.ts",
+    "src/features/accounting-completion/usePreparedDraft.ts",
+    "src/features/ai/api/receiptScanApi.ts",
+    "src/features/app-data/useLedgerQueries.ts",
+    "src/features/auth/api/authApi.ts",
+    "src/features/bank-feeds/BankFeedsPanel.tsx",
+    "src/features/bank-feeds/bankFeedsApi.ts",
+    "src/features/bank/api/bankApi.ts",
+    "src/features/business-profile/api/businessProfileApi.ts",
+    "src/features/business-profile/logoChoice.ts",
+    "src/features/conversations/api/conversationsApi.ts",
+    "src/features/currency/api/currencyApi.ts",
+    "src/features/customer-statements/CustomerDocumentLinks.tsx",
+    "src/features/customer-statements/CustomerStatementPage.tsx",
+    "src/features/customer-statements/InvoiceReminders.tsx",
+    "src/features/customer-statements/ReminderSettingsPage.tsx",
+    "src/features/customer-statements/SharedStatementPage.tsx",
+    "src/features/customer-statements/StatementDocument.tsx",
+    "src/features/customer-statements/statementApi.ts",
+    "src/features/customer-statements/statementPdf.ts",
+    "src/features/customers/api/customersApi.ts",
+    "src/features/customers/hooks/useCustomerDirectory.ts",
+    "src/features/customers/hooks/useCustomers.ts",
+    "src/features/dashboard/api/dashboardApi.ts",
+    "src/features/expenses/api/expensesApi.ts",
+    "src/features/expenses/receiptInbox.ts",
+    "src/features/invoice-import/InvoiceImportDropzone.tsx",
+    "src/features/invoice-import/InvoiceImportPage.tsx",
+    "src/features/invoice-import/InvoiceImportReview.tsx",
+    "src/features/invoice-import/api/invoiceImportApi.ts",
+    "src/features/invoice-import/invoiceImportFile.ts",
+    "src/features/invoices/api/invoicesApi.ts",
+    "src/features/invoices/paymentTerms.ts",
+    "src/features/items/api/itemsApi.ts",
+    "src/features/items/model/itemCatalog.ts",
+    "src/features/journals/api/journalsApi.ts",
+    "src/features/journals/journalPresentation.ts",
+    "src/features/ledger/api/ledgerSnapshot.ts",
+    "src/features/organisations/api.ts",
+    "src/features/payments/api/paymentsApi.ts",
+    "src/features/payments/halfPaymentAmount.ts",
+    "src/features/purchases/api/purchasesApi.ts",
+    "src/features/quotes/actions.ts",
+    "src/features/quotes/api/quotesApi.ts",
+    "src/features/quotes/components/QuoteStatusBadge.tsx",
+    "src/features/quotes/components/QuoteTimeline.tsx",
+    "src/features/quotes/filters.ts",
+    "src/features/quotes/hooks/useQuotes.ts",
+    "src/features/quotes/preview.ts",
+    "src/features/quotes/quoteTotals.ts",
+    "src/features/quotes/timeline.ts",
+    "src/features/quotes/types.ts",
+    "src/features/receipts/api/receiptsApi.ts",
+    "src/features/receipts/receiptPdf.ts",
+    "src/features/reconciliation/api/bankReconciliationApi.ts",
+    "src/features/reconciliation/api/reconciliationApi.ts",
+    "src/features/reconciliation/components/MatchPanel.tsx",
+    "src/features/reconciliation/components/MatchingRules.tsx",
+    "src/features/reconciliation/components/TransactionFeed.tsx",
+    "src/features/reconciliation/components/reconciliationMath.ts",
+    "src/features/recurring/api.ts",
+    "src/features/recurring/components/RepeatSchedulePanel.tsx",
+    "src/features/recurring/invoiceTemplate.ts",
+    "src/features/reports/ClosePackDownload.tsx",
+    "src/features/reports/PeriodColumnTable.tsx",
+    "src/features/reports/api/reportsApi.ts",
+    "src/features/reports/closePackDownload.ts",
+    "src/features/reports/reportPdf.ts",
+    "src/features/storage/api/objectsApi.ts",
+    "src/features/stripe/api/stripeApi.ts",
+    "src/features/tax/GstPeriodsOverview.tsx",
+    "src/features/tax/GstSavedReturn.tsx",
+    "src/features/tax/GstSettingsForm.tsx",
+    "src/features/tax/api/periodRows.ts",
+    "src/features/tax/api/taxApi.ts",
+    "src/features/tax/export/gstReturnPdf.ts",
+    "src/features/tax/gstPreparation.ts",
+    "src/features/tax/gstSettingsApi.ts",
+    "src/hooks/use-auto-save.ts",
+    "src/hooks/use-mobile.tsx",
+    "src/hooks/use-toast.tsx",
+    "src/hooks/useAppData.ts",
+    "src/hooks/useBreadcrumbs.ts",
+    "src/hooks/useDeveloperTools.ts",
+    "src/hooks/usePermissions.ts",
+    "src/hooks/usePwaUpdatePrompt.tsx",
+    "src/hooks/useReceiptScanning.ts",
+    "src/integrations/supabase/client.ts",
+    "src/lib/api/readApiError.ts",
+    "src/lib/apiErrorCopy.ts",
+    "src/lib/csv.ts",
+    "src/lib/referrerPolicy.ts",
+    "src/lib/sentry/buffer.ts",
+    "src/lib/sentry/init.ts",
+    "src/lib/sentry/requestId.ts",
+    "src/lib/store/index.ts",
+    "src/lib/store/slices/appDataSlice.ts",
+    "src/lib/store/slices/authSlice.ts",
+    "src/lib/store/slices/uiSlice.ts",
+    "src/lib/utils.ts",
+    "src/main.tsx",
+    "src/pages/AccountingDashboardPage.tsx",
+    "src/pages/Accounts.tsx",
+    "src/pages/AuthCallback.tsx",
+    "src/pages/BankAccounts.tsx",
+    "src/pages/BillForm.tsx",
+    "src/pages/Bills.tsx",
+    "src/pages/Categories.tsx",
+    "src/pages/CreateInvoice.tsx",
+    "src/pages/CreateQuote.tsx",
+    "src/pages/Customers.tsx",
+    "src/pages/Dashboard.tsx",
+    "src/pages/EditInvoice.tsx",
+    "src/pages/EditQuote.tsx",
+    "src/pages/EmailConfirmation.tsx",
+    "src/pages/ExpenseCategories.tsx",
+    "src/pages/Expenses.tsx",
+    "src/pages/FinancialReportsPage.tsx",
+    "src/pages/IRDReportingPage.tsx",
+    "src/pages/InvoiceViewPage.tsx",
+    "src/pages/Invoices.tsx",
+    "src/pages/Items.tsx",
+    "src/pages/JournalEntriesPage.tsx",
+    "src/pages/LegalPage.tsx",
+    "src/pages/Login.tsx",
+    "src/pages/ModernLogin.tsx",
+    "src/pages/ModernSignup.tsx",
+    "src/pages/NotFound.tsx",
+    "src/pages/Onboarding.tsx",
+    "src/pages/PasswordRecovery.tsx",
+    "src/pages/PayRedirectPage.tsx",
+    "src/pages/PaymentDetailPage.tsx",
+    "src/pages/PaymentsPage.tsx",
+    "src/pages/PublicInvoice.tsx",
+    "src/pages/QuoteViewPage.tsx",
+    "src/pages/Quotes.tsx",
+    "src/pages/ReceiptViewPage.tsx",
+    "src/pages/ReceiptsPage.tsx",
+    "src/pages/ReconciliationPage.tsx",
+    "src/pages/Recurring.tsx",
+    "src/pages/Settings.tsx",
+    "src/pages/SharedInvoice.tsx",
+    "src/pages/SharedQuote.tsx",
+    "src/pages/Signup.tsx",
+    "src/pages/TaxConfigurationPage.tsx",
+    "src/pages/TaxOverviewPage.tsx",
+    "src/pages/TransactionImport.tsx",
+    "src/pages/Vendors.tsx",
+    "src/routes.tsx",
+    "src/routes/quotePages.ts",
+    "src/services/DataManagerSOLID.ts",
+    "src/services/ServiceContainer.ts",
+    "src/services/accountingService.ts",
+    "src/services/aiService.ts",
+    "src/services/bankAccountService.ts",
+    "src/services/capabilitiesService.ts",
+    "src/services/conversationManager.ts",
+    "src/services/conversationService.ts",
+    "src/services/csvTransactionParser.ts",
+    "src/services/invoiceTemplateRenderer.tsx",
+    "src/services/openaiReceiptService.ts",
+    "src/services/paymentReminderService.ts",
+    "src/services/paymentService.ts",
+    "src/services/reconciliationService.ts",
+    "src/services/storageService.ts",
+    "src/services/supabaseDataService.ts",
+    "src/services/supabaseService.ts",
+    "src/services/transactionImportService.ts",
+    "src/types/index.ts",
+    "src/utils/countryTaxDefaults.ts",
+    "src/utils/invoiceLineDisplay.ts",
+    "src/utils/invoiceUtils.ts",
+    "src/utils/pdfUtils.ts",
+    "src/utils/profileCompleteness.ts",
+    "src/utils/unitConversion.ts",
+    "src/utils/versionManager.ts"
+  ],
+  "finalAssets": [
+    {
+      "file": "dist/assets/CreateQuote-BiroAYoD.js",
+      "sha256": "8e41e1ea897cd91ee6aacda69d3a11750383a3b6d8e6c74a00b1556b40d2f85a"
+    },
+    {
+      "file": "dist/assets/tabs-bQnK8wAz.js",
+      "sha256": "e7e2dfe545d55302964ba580cbaea5e98f646d3a198c466b14681b03f38e094d"
+    },
+    {
+      "file": "dist/assets/useLedgerQueries-CcNSAuHZ.js",
+      "sha256": "3f478ad3a5ef1e0610fac56da1733f93b814f6fe38e294a950f502aec2b475e3"
+    },
+    {
+      "file": "dist/assets/PasswordRecovery-3pBUQOPV.js",
+      "sha256": "fba17ac703b1d37e35f66ef9d334fa2144896313857185dd36ec757df825f8f8"
+    },
+    {
+      "file": "dist/assets/QuoteStatusBadge-CEPJ-jDa.js",
+      "sha256": "5b0f13e83ebe1c38a94a7fdaa4b30238c46372cfd80ceb54ba06d13ff7f7a271"
+    },
+    {
+      "file": "dist/assets/clock-Bw1dBNFf.js",
+      "sha256": "78a79000f4e83eb778df256c6fe7ab9f1a2e5bb6d6e6865166fce42c6a23105d"
+    },
+    {
+      "file": "dist/assets/quotesApi-BhWfosZC.js",
+      "sha256": "7216ed2df2e85027b9560f2c92df2f1d4e140728c5afdb86b1d16ad613ab06d0"
+    },
+    {
+      "file": "dist/assets/circle-check-EW2l72jr.js",
+      "sha256": "904df7f93a42811e55f7c34e634f8d44fa7ba2356f3994d23fd878d1442d7e10"
+    },
+    {
+      "file": "dist/assets/SharedStatementPage-CUUscdro.js",
+      "sha256": "a8573df2c532df0b0d6fa17bd09ca76c52c529a120db6f318844250a9c8fa707"
+    },
+    {
+      "file": "dist/assets/archive-D2zIP4W_.js",
+      "sha256": "cc8bfcdcb7c2a9a802ad6b676c996f613cdac8f94e1b649c54b7dc5758ac8220"
+    },
+    {
+      "file": "dist/assets/PaymentDetailPage-ORgRm5G0.js",
+      "sha256": "3bab716c6cb6e79ef37bc2172c10e16ebf7237d20cc10d8f7338b8cdcee9435f"
+    },
+    {
+      "file": "dist/assets/CreateInvoice-DUv6RDu2.js",
+      "sha256": "4f16d008e0005f0c96355727499cb6b9e6a43b57c45c2647c3f0d5d1ab2a8e8f"
+    },
+    {
+      "file": "dist/assets/textarea-CZlqD1Gg.js",
+      "sha256": "29f81e71eded291e8455798cbf9434c35aba8a53b41495d37648d996458f2b8d"
+    },
+    {
+      "file": "dist/assets/useCustomerDirectory-LSUOk27w.js",
+      "sha256": "2b6ac61096cfa70f3591c68376d84ae65c8a70b44341f7b83f349e9dc1f237d5"
+    },
+    {
+      "file": "dist/assets/actions-DV8enVKJ.js",
+      "sha256": "d3b26b38387f4a4bbcb7cd1ee72857f678ad30653223865142542b4acc458377"
+    },
+    {
+      "file": "dist/assets/startOfMonth-BdbawdEB.js",
+      "sha256": "3e008b14b8dad9bbd6064169ad6d7b1b0ca1cbdc6f251100d28631d23815a699"
+    },
+    {
+      "file": "dist/assets/subDays-Cj8ahJer.js",
+      "sha256": "1b35c4c0476678c656759f35dc7d1682819f6a63d9865575d40b1bd449bd3ee7"
+    },
+    {
+      "file": "dist/assets/PageHeader-D-BOpc2Z.js",
+      "sha256": "c4ee6dc4e1dd1f8ca8fca128340503caba18511fe06211ff1b0e1eaedcb13f2f"
+    },
+    {
+      "file": "dist/assets/PreparationFields-byi0a8fn.js",
+      "sha256": "9a28f9f8604cd3ea3952622879debf42aa4613904da00db64d9de7b1e4428841"
+    },
+    {
+      "file": "dist/assets/SharedInvoice-C32zInUw.js",
+      "sha256": "b51f027f51cec376e84fec88c0205931b0070f486fb272baac7fc5375ef6fbce"
+    },
+    {
+      "file": "dist/assets/collapsible-CVReblPH.js",
+      "sha256": "a88e7dd2552509b17c159dddb2ee0af78f71daa6f49adfeadeac38dbdd94e282"
+    },
+    {
+      "file": "dist/assets/Quotes-DpfwilI2.js",
+      "sha256": "46c51afd86a194d633d52e88b6036f43391d3cb743f64cd1a3b94bbbd451b910"
+    },
+    {
+      "file": "dist/assets/separator-DJfQkG-7.js",
+      "sha256": "c030585c24b1604d81733fa72a21989cf65a40363346f4fd87cb5b90edd6d3cf"
+    },
+    {
+      "file": "dist/assets/ModernInput-nCr_vI7n.js",
+      "sha256": "64369da00805ff86f79b8780a262cfa92f87d5a27995903e1d6c1d24ffeb0947"
+    },
+    {
+      "file": "dist/assets/ModernButton-BgsvpQbZ.js",
+      "sha256": "2a7e2aafedde4a60023d499214029da3cfe4cc26d411446fd4ad77c6847da2cb"
+    },
+    {
+      "file": "dist/assets/TransactionImport-D48cH-43.js",
+      "sha256": "a6a078232c571dddf6d74ba323364d8fb755da0c1300670245261be26127621f"
+    },
+    {
+      "file": "dist/assets/RepeatSchedulePanel-C3Ncz1CB.js",
+      "sha256": "6cd2382dc49b2665f608a0feb4720c6ce5018665f2cb0d6d9bd3fbd99b74a8fa"
+    },
+    {
+      "file": "dist/assets/reportsApi-5cltevPx.js",
+      "sha256": "64e3d9232684b37f0baf8d96135bdbd1ce864ad54fc436c76fe52f9e3252a628"
+    },
+    {
+      "file": "dist/assets/input-vs-Bfufs.js",
+      "sha256": "11523339d59450c9b4e966e79b08cad55fdbf6b578aeb762545fd22c23007790"
+    },
+    {
+      "file": "dist/assets/preview-DGjEp5nu.js",
+      "sha256": "80db6121e0c06548caffaddaf4f92fbbd57bb4931f7916c74e67ba99d06a7a8a"
+    },
+    {
+      "file": "dist/assets/SharedQuote-Be3RyfV2.js",
+      "sha256": "6da846016398ee7ee8cde29dc481c76bf56153587186eb3410c0f837dbb48dda"
+    },
+    {
+      "file": "dist/assets/JournalEntriesPage-CcTpeiYU.js",
+      "sha256": "41571a54338f32f292f70f80679c99816515d2a20ab4d503748e3da23bea8382"
+    },
+    {
+      "file": "dist/assets/itemCatalog-DtF65b-E.js",
+      "sha256": "3af22c559dd112c29a9562fd7c8ef79923424d8cc12d1bfc75faf020696f4b5d"
+    },
+    {
+      "file": "dist/assets/invoiceUtils-DBK77Ewd.js",
+      "sha256": "03cbcd9d2aa372360f2d0af05e56459286700deedbf363f31af23152656375d9"
+    },
+    {
+      "file": "dist/assets/switch-WEQYL7Qq.js",
+      "sha256": "9e5ba82fb2c54c9b8028a4c968aeaf2286cf091395b78fb71402e32ced9c7d33"
+    },
+    {
+      "file": "dist/assets/table-uX1UCloy.js",
+      "sha256": "392046beac39432e5600d77ada4c8da4c5ecab65872fa43dc8205f7c6d5cdb39"
+    },
+    {
+      "file": "dist/assets/workbox-window.prod.es5-B9K5rw8f.js",
+      "sha256": "9a3611574014578c297dc9f141ce5f47c5b83d44814bbcfd65a06151517874f4"
+    },
+    {
+      "file": "dist/assets/theme-toggle-795pldRx.js",
+      "sha256": "e5797baaf57ccf29a8f5cc4773f44feab8eb1cce8c77eb390c963bc2cae511dd"
+    },
+    {
+      "file": "dist/assets/Recurring-LIIJCd39.js",
+      "sha256": "1f8328c11ee2c75ccaba8b750edd2c4d357ea8eda3452784a9f7547eba39e29d"
+    },
+    {
+      "file": "dist/assets/ContentPanel-BSElX8gh.js",
+      "sha256": "552f7d467b3282c4cb316e303a01876f6eff49830413499b0bff221499b14cd5"
+    },
+    {
+      "file": "dist/assets/Dashboard-CXazWKvf.js",
+      "sha256": "476f412f2ec5abe5fa47c2ca85d3f18806547e1787cccf26137bfd34080a2742"
+    },
+    {
+      "file": "dist/assets/jspdf.es.min-C3qkoD6w.js",
+      "sha256": "a6af836b1b335548a09363dc6fec9b77b408fcce31c827de0f32e72611229426"
+    },
+    {
+      "file": "dist/assets/PublicInvoice-CfvSAnR8.js",
+      "sha256": "84ef95a75ddf8e6b4fece370e1ab57ba5bed10d3860bcbd5a3cc8fc934da8c66"
+    },
+    {
+      "file": "dist/assets/TaxOverviewPage-djjIOVXn.js",
+      "sha256": "bd24d5441db3a33f5f8a2d4018f411b0995e03f7bb363a83d9db65a732fccdf0"
+    },
+    {
+      "file": "dist/assets/ModernSignup-COBincId.js",
+      "sha256": "69e44dc34ac87ec38ad92f84b17f5dfefe870679e88a79136360934562ea3d7d"
+    },
+    {
+      "file": "dist/assets/banknote-_K3Ie_Fo.js",
+      "sha256": "fb1ebd9ebce465628c0f322dc83bc0ef4293b2127f31b0e86def823c57cc0a2e"
+    },
+    {
+      "file": "dist/assets/download-BP3W_Lse.js",
+      "sha256": "97aa9f3e50ab7b0c56f2f87ef62d53357bd23c630a35be08820f78d77d1ec145"
+    },
+    {
+      "file": "dist/assets/progress-C1e-RJmv.js",
+      "sha256": "5d5c6fd5a9db4ca5b4eee69452e705c5500b83dcdd9dc53336b20d2ac006bd5e"
+    },
+    {
+      "file": "dist/assets/ItemDrawer-DyfzUTse.js",
+      "sha256": "58ff5543df8fbb77c694c18232db5247f853db0f5d4404d31c564f63e7a582d9"
+    },
+    {
+      "file": "dist/assets/capabilitiesService-DHLVCewe.js",
+      "sha256": "5180da6dc9fed5ebab0a3260adb2c48e8aaa6de7fa8b22561c25cb5bccc4b2b8"
+    },
+    {
+      "file": "dist/assets/ellipsis-RfskPdOe.js",
+      "sha256": "902a3210bb544d2e7ff6b94a457caad8cd583a47367251d3a30d8f0399f46b94"
+    },
+    {
+      "file": "dist/assets/InvoiceViewPage-COB4M0B9.js",
+      "sha256": "d208061d70ab598a33984dab84ac0f6ce9157f0b55c8fea4a065b19189991071"
+    },
+    {
+      "file": "dist/assets/link-2-DbbR_K_A.js",
+      "sha256": "c9eab3531fcc765c47a5b04a18514731e4554af9602853707ca084eea1f36400"
+    },
+    {
+      "file": "dist/assets/paymentTerms-YwslBDmx.js",
+      "sha256": "ba95cd4abedb5d333164a2d7c8f7163a04bd69541e2ced178a9f35e55b879ece"
+    },
+    {
+      "file": "dist/assets/Login-CeesWd1x.js",
+      "sha256": "439552cf268c8692e8f4150340fe013c2bd2fd6553175455f0565de554437a76"
+    },
+    {
+      "file": "dist/assets/LegalPage-BVG9NcUj.js",
+      "sha256": "0e961e7bf51edc9e3b37fa36a8c8b9831ba9fd45309297cdd582fd561e62ce68"
+    },
+    {
+      "file": "dist/assets/index.es-CTZKAy8G.js",
+      "sha256": "0d37ecb40d9ad9f7af03e32b6dfca1570b2d69001d852e47cd7a6aebee6b85f7"
+    },
+    {
+      "file": "dist/assets/rotate-ccw-2I4q8yH3.js",
+      "sha256": "0702343591b99279da423320b8e70078ff985332f0cd85ba5cac7726624a400a"
+    },
+    {
+      "file": "dist/assets/DrawerFormLayout-Cn6fBEc4.js",
+      "sha256": "53f911d8ae4f8c085e4a9d0806628daf64a7f5cbbf297629513c77bf4e1151e4"
+    },
+    {
+      "file": "dist/assets/NotFound-CfqwfFyF.js",
+      "sha256": "e814b5da895cbfd9b07ca33a18a4c73dc3af6bfc7d704eed0c6131899a60555b"
+    },
+    {
+      "file": "dist/assets/api-pHd0CNX9.js",
+      "sha256": "1ce77cc197295e8275897750c5d7421737ad9ef8b847d2053cc8f4382c83cc5d"
+    },
+    {
+      "file": "dist/assets/referrerPolicy-BLjxOSte.js",
+      "sha256": "419a7744e8ea7c77cf6faf6b820804f37ca4718d4a5753a37a637bb70273a5b2"
+    },
+    {
+      "file": "dist/assets/Expenses-BNKDEsId.js",
+      "sha256": "ec9fc224dfd24d799ad8e6b7490b7f017e88a890ad64189b1e10d111393edf42"
+    },
+    {
+      "file": "dist/assets/EmptyState-DkDLBVCp.js",
+      "sha256": "f7f195423a6a293fd81d4b883d2d4fb5b861df95cd433ed2757530af67c881ce"
+    },
+    {
+      "file": "dist/assets/alert-dialog-9uBV9uGy.js",
+      "sha256": "f706d66625d5c3b874e0a735ad1da434597e7e5bc843f561a79f464be6048ce4"
+    },
+    {
+      "file": "dist/assets/currencyApi-DIxDyN6i.js",
+      "sha256": "589d6929b579f65ea85e3b3edae1577fa7e6a418d60fb102e1a859b8950458db"
+    },
+    {
+      "file": "dist/assets/EmailConfirmation-0Bh3T17e.js",
+      "sha256": "f5b378df0ee154a3918f561b185e66586706b149c7a252845ec3a6d5f92bef2f"
+    },
+    {
+      "file": "dist/assets/scroll-area-CAZNw2IV.js",
+      "sha256": "0cc07c1a88666133f47286a67370c49465479f371a973b614bd8e2349d81362c"
+    },
+    {
+      "file": "dist/assets/EditQuote-BLsvCiCD.js",
+      "sha256": "511445d2f19864a6c9fe32b86bb8bebb377985a680da3bd535b7be7bf121fa69"
+    },
+    {
+      "file": "dist/assets/sparkles-JSA6No8W.js",
+      "sha256": "b6c6ea23387217a6da30464a326cfdc71f0b8b25873d74fe39238111f4235c17"
+    },
+    {
+      "file": "dist/assets/Bills-A47CBuwe.js",
+      "sha256": "b4c13eeceb25ee426d273bc28765a17d3bbd38136a722ac29185ebbcb7c5daff"
+    },
+    {
+      "file": "dist/assets/circle-check-big-BSTSVnw1.js",
+      "sha256": "3abb10f6acdec59d1cd49b241223d9314867010c2f16dd4c8315d9df828babd8"
+    },
+    {
+      "file": "dist/assets/csv-a16R1qhg.js",
+      "sha256": "0dd5c9196203d4f006e474df7d0bf603486241cac25a75674355f4eda5a192b6"
+    },
+    {
+      "file": "dist/assets/bankApi-B5Fqeiq6.js",
+      "sha256": "cd5182e78fff90465321cd9f292a12a4f9a33b8ff92894b618e8804d3577aeaa"
+    },
+    {
+      "file": "dist/assets/FinancialReportsPage-9UnzGgbL.js",
+      "sha256": "5e45cad0c819428b0dfd6f28aa934de81bdd8b7d4ab7359276a89f6b488f5eb9"
+    },
+    {
+      "file": "dist/assets/ReconciliationPage-DIJCKgAr.js",
+      "sha256": "0ea00c2c8b6201959fb91d064bd421fbfc85c832b12f05f3da3acc39a3f1cdb8"
+    },
+    {
+      "file": "dist/assets/square-pen-L_VC_T4z.js",
+      "sha256": "40fe475e95d549d6ac608c1a636de0be9bde33a9ecb41b53ab0b87baeb489835"
+    },
+    {
+      "file": "dist/assets/bankAccountService-CvtScnkJ.js",
+      "sha256": "65388d1a6f4ac471042d4e755771b1e80c330e24ee85f18a3fe53535a4c54a6e"
+    },
+    {
+      "file": "dist/assets/types-B22vuC2v.js",
+      "sha256": "f45093798962a63392f06ae0fa45128b15ff0fccddfd321369fff248beb940d2"
+    },
+    {
+      "file": "dist/assets/ReceiptViewPage-BF33W4qW.js",
+      "sha256": "89ca84e43b1e8dc9f81325370bc8173e17be82aec49092bd4ca9bcfa72dd436b"
+    },
+    {
+      "file": "dist/assets/useQuotes-DCtrlT6b.js",
+      "sha256": "2d06cfe7ddeb98d0312e1efd355cd8b3cb2752d4f0819e560c464c5650656e91"
+    },
+    {
+      "file": "dist/assets/subMonths-Dq2QKTxV.js",
+      "sha256": "7be6d8fb340985d227fc6d2f0ce4c0dfa257ed2af887f259baa8a9e200b0f7fd"
+    },
+    {
+      "file": "dist/assets/circle-alert-DK05GojH.js",
+      "sha256": "c3d1d2bc14f1f904283ba2865b17233a50393c27660185cf37de84ffd7e573c1"
+    },
+    {
+      "file": "dist/assets/Categories-Z7uIZpjj.js",
+      "sha256": "85a768ca602d426e30b76feaa6b5c2b6dcd31cc5efa16e1032e685e330a6f501"
+    },
+    {
+      "file": "dist/assets/external-link-79QwnM2R.js",
+      "sha256": "afc4652cd56b301c8a0f286d4e8420e6bf77d570c76a2445eaf379cb911c080c"
+    },
+    {
+      "file": "dist/assets/ReminderSettingsPage-DjR0yYqN.js",
+      "sha256": "dc65c45c031ae64b6178bf6d651ecdcbf24cec6c8fe6ecf1e6f03bc2c20932d4"
+    },
+    {
+      "file": "dist/assets/CustomerFormDrawer-DZEa14t5.js",
+      "sha256": "d0eea3138326f39cb4ff7a886a0d11c363cfa736a426418b1cce48590fee73b8"
+    },
+    {
+      "file": "dist/assets/eye-CNuHHMJU.js",
+      "sha256": "d99f77846233e7be92b56852793f17884c38c25e499562b76ba9fca9b27191c5"
+    },
+    {
+      "file": "dist/assets/filter-CPjvG8Ta.js",
+      "sha256": "07b0d0ac9d5d05cb61de543d019da6814613fbd190750452298775723db85383"
+    },
+    {
+      "file": "dist/assets/index-Dv81Ej3B.js",
+      "sha256": "c370f295061d9bea03e231c501b71417f598bd76f3f9003125ed8ef0888bf55b"
+    },
+    {
+      "file": "dist/assets/form-DR-DCRmz.js",
+      "sha256": "effbeea6515a9d085af7d3b627a99381911b65d85490dd1d864cf8cb4130f38d"
+    },
+    {
+      "file": "dist/assets/Signup-Bl7xx_EY.js",
+      "sha256": "c3a807f632514203b9394a7be0a7d3c778ec43d8d02014e0cce2e47cf4665abd"
+    },
+    {
+      "file": "dist/assets/stripeApi-DxGVA9qb.js",
+      "sha256": "75668604ef9cefa78fadc1d0932acc15ae11fd75577df3f9967e764273a18152"
+    },
+    {
+      "file": "dist/assets/money-BxORQGgP.js",
+      "sha256": "0f71822557a10852a8c06edb9bfbee8694d35663fd29cd782cea6df36cb47fad"
+    },
+    {
+      "file": "dist/assets/Vendors-DD8fA1qt.js",
+      "sha256": "291f278fa84c162bc17fca5183b17b73488c79c58894689d2469f164a5cd39d3"
+    },
+    {
+      "file": "dist/assets/settlementLabel-Bc_Pc23h.js",
+      "sha256": "da38197ca7db8a207a9158daf437bc8a72fa1f3b9eb45ed6c08c7c287f3e9fb8"
+    },
+    {
+      "file": "dist/assets/AuthCallback-CL29Ej6R.js",
+      "sha256": "4df3727f9fdaa5f3b38d3936a36da7f5330512e4f1b486e32b1137508d79f5a9"
+    },
+    {
+      "file": "dist/assets/file-up-CXWrwoip.js",
+      "sha256": "0c168c47e357ac667f6117457998b71ab781bb13597cdd95621f6f3dd61e0ca3"
+    },
+    {
+      "file": "dist/assets/BillForm-C_0K1Hjk.js",
+      "sha256": "ae75f950ceec3634539543132b58726b827c3c7d4bf17f59672436ae87640f98"
+    },
+    {
+      "file": "dist/assets/BreadcrumbNavigation-VNuS0tcS.js",
+      "sha256": "f306f68155cdbd13f86f6f5f165fad579ff1e5312cdf6ddc345e1af419f5f91a"
+    },
+    {
+      "file": "dist/assets/popover-BGQrttVh.js",
+      "sha256": "04eb4ba11122219014cb4c72455f03c7de343fd2acd5569f8bcc9ad3e0b33f7b"
+    },
+    {
+      "file": "dist/assets/PaymentsPage-CEv2QRrM.js",
+      "sha256": "b9c9579e30c1f517c74636f73eacfbadf2fc63a8a0b12a9f11e5b5029a500d29"
+    },
+    {
+      "file": "dist/assets/plus-BiEPL2Pw.js",
+      "sha256": "ceffd70e5a6c48467d3c5d577e8a4fe7a00f1f205490658852a201eaf8abbb18"
+    },
+    {
+      "file": "dist/assets/building-nYe7xX-q.js",
+      "sha256": "a5d25a54317d4b65c01fe4648d7b5f9d8d7850c65a09d031155785f21b916af6"
+    },
+    {
+      "file": "dist/assets/purchasesApi-Bd7FZ1d8.js",
+      "sha256": "0e6de0f79019e5ad6bd77e478d354f9449e55a2264e7f55dadaadc70fa7a363d"
+    },
+    {
+      "file": "dist/assets/printer-CdNtn_r8.js",
+      "sha256": "b76a835e6efb2bff49194a8883b41c7e213c114e26fba622342ac28a6417a561"
+    },
+    {
+      "file": "dist/assets/mail-Bz_2L_6S.js",
+      "sha256": "96e068800c0bc06416400f6c68d04068909b9ff877346e116f29d334c5a78f44"
+    },
+    {
+      "file": "dist/assets/arrow-right-JQqXdPN7.js",
+      "sha256": "b88832a01af7c409dd4cb4b56e987e991188f2c0ba705431c90e8dea25612068"
+    },
+    {
+      "file": "dist/assets/checkbox-D7Pktj37.js",
+      "sha256": "556c5fa173adbc24531cb20e2e6a48835fa84dd2855c29a2ca5786cf2563c2bb"
+    },
+    {
+      "file": "dist/assets/InvoiceForm-BfHz46ac.js",
+      "sha256": "557db9a3ea549c0297b089a157c655ca13b260586583124b5395104478edc398"
+    },
+    {
+      "file": "dist/assets/ReceiptsPage-wLcWF4N8.js",
+      "sha256": "68a3b12a659c6673a0ee37bdb245435dcabcb9fe99a5fa85f8530bdb079b4d0b"
+    },
+    {
+      "file": "dist/assets/BankAccounts-nN64EkJR.js",
+      "sha256": "40cdfc8d8980aea205f3f79d06c5292b037f4f8176035002d76c4bb995be5951"
+    },
+    {
+      "file": "dist/assets/copy-CMZP0bH_.js",
+      "sha256": "dab01b058e1c8e63d304b25eec7d2ca27c0435bba5fdda33fc065c0e502f08cb"
+    },
+    {
+      "file": "dist/assets/QuoteViewPage-BJMqUFPR.js",
+      "sha256": "fadb91c28adf5cb4cc6ebca342959593204efe993032585738c1d7597abe71c2"
+    },
+    {
+      "file": "dist/assets/halfPaymentAmount-P06btLG3.js",
+      "sha256": "cd4888316eaac020fef40aa9354255412489bee649bd5c7824401c61cabdefbd"
+    },
+    {
+      "file": "dist/assets/useAppData-CSskfRuU.js",
+      "sha256": "332f79fca0bde65d2d15b6fc94f8f4357bda8bcccf72fc6203f733086ffe3797"
+    },
+    {
+      "file": "dist/assets/TaxConfigurationPage-CzSbf0kM.js",
+      "sha256": "40bf207042931ced5b3f97284f6fb9427f04645d1bb44251f192ea505152fcbd"
+    },
+    {
+      "file": "dist/assets/InvoiceImportPage-D-iza71-.js",
+      "sha256": "c706f2264237579238b9881a5532683320471a18e622943bb3f81e607c9a4d40"
+    },
+    {
+      "file": "dist/assets/ModernLogin-CDJIajQv.js",
+      "sha256": "542e6df797e37a12e3eacd5ad53ec07f1c6772da50bb905471366969b33cbded"
+    },
+    {
+      "file": "dist/assets/ExpenseCategories-D8xrgLC3.js",
+      "sha256": "89b183e1f274fcd70a550995ff44764c5180b21df50cefb416051b1f9d582f6b"
+    },
+    {
+      "file": "dist/assets/format-BEMO4FpZ.js",
+      "sha256": "f12141f75422cbccc0b8898649bc4db8cd917b39ec8bd6c93f191753d220eea7"
+    },
+    {
+      "file": "dist/assets/StatementDocument-BEtJYOEc.js",
+      "sha256": "2a647abbd782d1223d7bb0ed6033a79eceb298d4c519621908172dadcba4784e"
+    },
+    {
+      "file": "dist/assets/statementApi-BDdhVScz.js",
+      "sha256": "bd04749adcae462bbf22a541b4aadffc10937c01a11100f3cef1433ed239da03"
+    },
+    {
+      "file": "dist/assets/calendar-BEuxmBy-.js",
+      "sha256": "366ddb5bf54113bfff6e05094d774fc8e5283b11971bc39923a4295becc20956"
+    },
+    {
+      "file": "dist/assets/IRDReportingPage-CjAfAeDS.js",
+      "sha256": "4b89fed5371743c9ad1b7d2df1ee82b33bb13d4c98da27b16a7c8afd50959f99"
+    },
+    {
+      "file": "dist/assets/Items-CLO3_lXJ.js",
+      "sha256": "f65bd4645b5a92053bd5b3c5d12e7e615c955aa501dbad18177de0d9e5db2b79"
+    },
+    {
+      "file": "dist/assets/shield-check-BxDuUU1_.js",
+      "sha256": "d1cd5581b6893e9491c346ea84dda97eb0f2b120c781fa53d4f6cc515fe941a0"
+    },
+    {
+      "file": "dist/assets/gstSettingsApi-imr_bSN0.js",
+      "sha256": "01347be3e178f88478b303b8f9660998665e8a35792700249ed7243a9f86f7e4"
+    },
+    {
+      "file": "dist/assets/zod-BV_LszN0.js",
+      "sha256": "744180a2ccc4e928c7cd5c82ff5b14b45a706326e9f3b449c83b54b4704fb04d"
+    },
+    {
+      "file": "dist/assets/radio-group-CfKyF3YB.js",
+      "sha256": "cf74646457f3821ca782810f728a3360192dddd6b2d2028f153945b743e9ebf5"
+    },
+    {
+      "file": "dist/assets/ShareInvoiceModal-B4GiisH3.js",
+      "sha256": "e714afe71ef1b3d0b35e85b1e2a045988a412fc11af30a64c1bef2ad154ef7c8"
+    },
+    {
+      "file": "dist/assets/select-BzfysLnk.js",
+      "sha256": "cfa1728f845bc3ff825a8412179c337e9a0d38c9c171c7c5478260a9a43aead3"
+    },
+    {
+      "file": "dist/assets/loader-circle-BorzMw88.js",
+      "sha256": "19ce3149eb50259008848c77d2017c406434f84037bde424718f8c90050065e5"
+    },
+    {
+      "file": "dist/assets/pencil-Cf0WxE1R.js",
+      "sha256": "ac2b21f1dd2002f4cdd7933526eca9593acd0c3c39c93697d99be7d4c9b534fb"
+    },
+    {
+      "file": "dist/assets/AccountingDashboardPage-qCDmLvly.js",
+      "sha256": "5502f0bc2eca68ebfba46809d513dbe5ca9fb5f50932556235d58acebf9e06d6"
+    },
+    {
+      "file": "dist/assets/Customers-DqaSCSco.js",
+      "sha256": "5aa0e650ef14a1fbafabadec45f600ef32abebf20455f0c48e44e385a71b08ab"
+    },
+    {
+      "file": "dist/assets/trash-d1QzPn7l.js",
+      "sha256": "39605d44948ffc72a8f9d2f09e3d1df0d557dfebc946a007227fadc08aa1712e"
+    },
+    {
+      "file": "dist/assets/Invoices-wBKdMzwJ.js",
+      "sha256": "2f38fa58da42f4fe85a1e3f2869734be6e5116130bb8f234becf5c083902f9aa"
+    },
+    {
+      "file": "dist/assets/EditInvoice-BJ_xfMyV.js",
+      "sha256": "f7e482bcc0ee6aab23483233aab37653bacb9fa6422e2293d53062dc31f72559"
+    },
+    {
+      "file": "dist/assets/Accounts-Dp0QgksA.js",
+      "sha256": "9110a788e6440f75617744454880919939a4fd0adfbba6b3524d00e57ad8110d"
+    },
+    {
+      "file": "dist/assets/ProfileCompletenessBanner-CrTsOJfK.js",
+      "sha256": "499eb0d77c2b751e6a800ed4637d36201a808f3d5df22df801bfdc605b59bf88"
+    },
+    {
+      "file": "dist/assets/save-Cfhcwdnw.js",
+      "sha256": "7c25cac528206cc14620828010d09677460201692ec68a5c906af6040bcac7a7"
+    },
+    {
+      "file": "dist/assets/Onboarding-BihvfPOo.js",
+      "sha256": "2ddd9b812a664e7eed99945ccc52e173d2d6eb4cdc1160523a55676f7934ef59"
+    },
+    {
+      "file": "dist/assets/label-C8z35u7u.js",
+      "sha256": "675412a50ee2147b0f6b12f2fab16eeb8eb799d4ecf38ef3bdca1225701574ed"
+    },
+    {
+      "file": "dist/assets/skeleton-CVFpSk5k.js",
+      "sha256": "a71d4a02afb4fb748cbbd6986b1d0e6f18c48a5225876af1067475032e25c19f"
+    },
+    {
+      "file": "dist/assets/SettlementRatePicker-BHTq7L7w.js",
+      "sha256": "13da00486dd39e3e4fe730256c6c0d1a4c0092a3146dccff69289a4a68dc8d32"
+    },
+    {
+      "file": "dist/assets/dialog-BSd6marp.js",
+      "sha256": "dfe5d1bdba8950a8087e4f5a13511ae6c42817e46ef1a49b182336e0605044f4"
+    },
+    {
+      "file": "dist/assets/arrow-up-right-Rs0sqKtf.js",
+      "sha256": "447a15671c839fc002b65898b0a0483dbe98e5e4fad7b9bda4c8e7cad194f058"
+    },
+    {
+      "file": "dist/assets/calendar-CPHbBCSR.js",
+      "sha256": "0dbad4524b3a1e8819529916979091569dec23752faabc466b7460627d94758c"
+    },
+    {
+      "file": "dist/assets/pdfUtils-rvQ7Gr89.js",
+      "sha256": "4927cc2945f6575cbecb08d7a475557eeb37435a1b3723b18c24a2164c0d205a"
+    },
+    {
+      "file": "dist/assets/file-down-DW5jki7r.js",
+      "sha256": "9efbbf6aaf9d1c177a1bda33456a0a841b20127563b5be8ae3bcf068f4e8d1c5"
+    },
+    {
+      "file": "dist/assets/receiptPdf-DaUeFfNe.js",
+      "sha256": "029d52fe5b7db12a1530394bea29eec144c6260634e1b8bc89194d070feb84c1"
+    },
+    {
+      "file": "dist/assets/trending-up-CVn5YzZM.js",
+      "sha256": "fbcdd35583d7bdaad1aa17994d1e5146c2304fdffd2dd7f67595b6cc4a1240b1"
+    },
+    {
+      "file": "dist/assets/useMutation-mG9uBCLN.js",
+      "sha256": "ed7de168e18bdd28e9fa55c19ba0c22f253bf588a4549018dd9cf89dd68b8636"
+    },
+    {
+      "file": "dist/assets/CustomerStatementPage-ZKe8eEjd.js",
+      "sha256": "12a907da92d04adeb757852cb0359bd0450babec2919afbe4393bac3dd43e6f9"
+    },
+    {
+      "file": "dist/assets/index-Bc3w27L3.js",
+      "sha256": "c0413980c06c6b6c523c7ed93b9a23b0af93760554f877d84a58e56956ade7d9"
+    },
+    {
+      "file": "dist/assets/refresh-cw-zHn-HDhQ.js",
+      "sha256": "69b584b29de70504216ba3621115de40fac9e48bb81d83482c1f2f3d961a3810"
+    },
+    {
+      "file": "dist/assets/PayRedirectPage-u065hkd0.js",
+      "sha256": "01b21b223c95a30aaa3022626c3d80e309fbf9ac443e42113d7b54d1b8939d2f"
+    },
+    {
+      "file": "dist/assets/lock-1YReC-UN.js",
+      "sha256": "2057941c94452b278eb11e177cf8446b16c7561060f889103f27c555473e4f11"
+    },
+    {
+      "file": "dist/assets/purify.es-CF4_YkFU.js",
+      "sha256": "14d472478e765d98b4a087bb4436587de89ec8f1dd28019cf070e29b675b744f"
+    },
+    {
+      "file": "dist/assets/objectsApi-Eowz0LwE.js",
+      "sha256": "949fbd3b23f77be9a41bd0b460ef9029275318e000fc355a21e010aa97c2d615"
+    },
+    {
+      "file": "dist/assets/share-2-ITtLY2BN.js",
+      "sha256": "0731e757ef2a99a3bb5d02e76cc03ed34cdb5e0e4254f83f256db1018a7d4450"
+    },
+    {
+      "file": "dist/assets/useQuery-Cq3gyTh0.js",
+      "sha256": "04b3e45abb24df0de7dd1f85eb665f8a6283ae7de80115b0a49a2f31feae1957"
+    },
+    {
+      "file": "dist/assets/Settings-BhRImris.js",
+      "sha256": "0ef49ed6ab628c8d5ade8cbcd82c0267ab78648916a0f9a64cd5937713c9388c"
+    },
+    {
+      "file": "dist/assets/InvoicePreview-Bck9yzoU.js",
+      "sha256": "62bc624c947456e5723b65fc37715344ed96903be1045ce784493e71f43f9ce5"
+    },
+    {
+      "file": "dist/assets/html2canvas.esm-CBrSDip1.js",
+      "sha256": "b4f3add809a6d59f46260e8fd56cab240f3153def977386b230a839e8cb0b281"
+    },
+    {
+      "file": "dist/assets/invoiceTemplateRenderer-BH9jB-nw.js",
+      "sha256": "91c3c647d2611cd0b2b70dafea4eec2e563fd2b924eb50f0d2fdf20733386406"
+    },
+    {
+      "file": "dist/assets/chevron-left-CsKhQUeO.js",
+      "sha256": "832575f139427f9c71b8b19e344939b4f59913f1f0fc03c5a74c6b3d308f2793"
+    },
+    {
+      "file": "dist/assets/circle-x-0iia_T6_.js",
+      "sha256": "a40c14f7b2f016573af7504d9dd50ca72e3f8c8a28d021c87622d5bceaab1acc"
+    }
+  ],
+  "change": "Only canonical accumulated earnings display added; all original financial fields reread unchanged; no business transaction replay needed."
+}

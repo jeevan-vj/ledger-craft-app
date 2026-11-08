@@ -1,0 +1,26 @@
+{
+  "source": "Canonical optional server field, not derived in mobile UI",
+  "displayOnly": true,
+  "noJournalChanges": true,
+  "historicalSnapshotNormalization": "The newly added optional accumulatedEarnings field is checked separately. All preexisting fields remain strictly unchanged.",
+  "refreshed": [
+    {
+      "label": "november",
+      "accumulatedEarnings": "1900.00",
+      "equity": "11900.00",
+      "allPreexistingFinancialFieldsUnchanged": true
+    },
+    {
+      "label": "year-end",
+      "accumulatedEarnings": "1900.00",
+      "equity": "11900.00",
+      "allPreexistingFinancialFieldsUnchanged": true
+    },
+    {
+      "label": "april",
+      "accumulatedEarnings": "2000.00",
+      "equity": "12000.00",
+      "allPreexistingFinancialFieldsUnchanged": true
+    }
+  ]
+}

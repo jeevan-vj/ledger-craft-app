@@ -1,0 +1,556 @@
+RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx (12 tests | 3 failed) 1037ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances 238ms
+   ✓ Financial reports GST return > labels a refund from IRD and displays its magnitude without a negative sign 69ms
+   ✓ Financial reports GST return > shows a nil GST position without implying a payment or refund 79ms
+   ✓ Financial reports GST return > labels GST as invoice basis on a cash-basis report and surfaces foreign-currency warnings 68ms
+   ✓ honours the accounting report link period and basis before exporting 55ms
+   ✓ offers NZ presets, server columns and PDF export without computing browser totals 131ms
+   ✓ shows trial-balance closing sides and server closing totals distinctly from period movement 84ms
+   ✓ shows net account cash movement rather than journal turnover as cash flow 67ms
+   × shows canonical accumulated earnings 2000.00 within equity, independently of selected-period profit 69ms
+     → Unable to find an element with the text: /^Accumulated earnings \(included in equity\)/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+   × shows canonical accumulated earnings -2000.00 within equity, independently of selected-period profit 60ms
+     → Unable to find an element with the text: /^Accumulated earnings \(included in equity\)/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+   × shows canonical accumulated earnings 0.00 within equity, independently of selected-period profit 63ms
+     → Unable to find an element with the text: /^Accumulated earnings \(included in equity\)/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+   ✓ does not invent an accumulated-earnings figure for an older report response 52ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/FinancialReportsPage.test.tsx > shows canonical accumulated earnings 2000.00 within equity, independently of selected-period profit
+ FAIL  src/pages/__tests__/FinancialReportsPage.test.tsx > shows canonical accumulated earnings -2000.00 within equity, independently of selected-period profit
+ FAIL  src/pages/__tests__/FinancialReportsPage.test.tsx > shows canonical accumulated earnings 0.00 within equity, independently of selected-period profit
+TestingLibraryElementError: Unable to find an element with the text: /^Accumulated earnings \(included in equity\)/. This could be because the text is broken up by multiple elements. In this case, you can provide a function for your text matcher to make your matcher more flexible.
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ getByText node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx:182:16
+    180|  report.profitLoss.netIncome='100.00';report.balanceSheet.equity='1250…
+    181|  await user.click(await screen.findByRole('tab',{name:'Balance sheet'}…
+    182|  expect(screen.getByText(/^Accumulated earnings \(included in equity\)…
+       |                ^
+    183|  expect(within(screen.getByRole('tabpanel')).getByText('$12,500.00')).…
+    184| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed | 9 passed (12)
+   Start at  08:57:11
+   Duration  2.92s (transform 477ms, setup 115ms, collect 990ms, tests 1.04s, environment 373ms, prepare 195ms)

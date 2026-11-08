@@ -1,0 +1,26 @@
+> mobile@1.0.0 test
+> jest --runInBand src/screens/reports/ReportsScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/reports/ReportsScreen.test.tsx
+  ✓ shows unallocated posted receivables without inventing a customer aging balance (78 ms)
+  ✓ offers full report controls, exact account drill-down and native exports (84 ms)
+  ✓ passes explicit month columns and comparison dates through to the server (169 ms)
+  ✓ drills closing account balances through carried posted history, with no amount recomputation (170 ms)
+  ✓ shows permission failure distinctly and never presents a stale successful report as current (82 ms)
+  ✓ separates closing trial balances from period turnover (114 ms)
+  ✓ requires report and bank access for the close pack and exports the selected run period (282 ms)
+  ✓ shows server accumulated earnings 2000.00 as already included in equity (98 ms)
+  ✓ shows server accumulated earnings -500.00 as already included in equity (109 ms)
+  ✓ does not invent an earnings bridge when an older server omits accumulated earnings (96 ms)
+  mobile GST report
+    ✓ shows output, input, and a positive refundable amount using the server position (203 ms)
+    ✓ shows the payable GST position label (80 ms)
+    ✓ shows the nil GST position label (81 ms)
+    ✓ labels GST as invoice basis and shows foreign-currency warnings (80 ms)
+
+Test Suites: 1 passed, 1 total
+Tests:       14 passed, 14 total
+Snapshots:   0 total
+Time:        4.333 s
+Ran all test suites matching src/screens/reports/ReportsScreen.test.tsx.

@@ -20,7 +20,7 @@ export function financialReportRows(report: FinancialReportResponse, section: Re
  ];
  const statement=report.balanceSheet;
  const rows=[['Account','Class','Debit','Credit','Balance'],...statement.rows.map(row=>[`${row.accountNumber??''} ${row.accountName}`.trim(),row.accountClass,row.debit,row.credit,row.balance])];
- return [...rows,['Assets','','','',report.balanceSheet.assets],['Liabilities','','','',report.balanceSheet.liabilities],['Equity (includes retained income)','','','',report.balanceSheet.equity]];
+ return [...rows,['Assets','','','',report.balanceSheet.assets],['Liabilities','','','',report.balanceSheet.liabilities],...(statement.accumulatedEarnings !== undefined ? [['Accumulated earnings (included in equity)','','','',statement.accumulatedEarnings]] : []),['Equity (includes retained income)','','','',report.balanceSheet.equity]];
 }
 export function reportCsvCell(value:string){const safe=/^[\s]*[=+@\t\r]/.test(value)||/^\s*-(?!\d+(?:\.\d+)?\s*$)/.test(value)?`'${value}`:value;return `"${safe.replace(/"/g,'""')}"`;}
 export function financialReportCsv(report: FinancialReportResponse,section: ReportSection){return [[reportSectionLabels[section]],['Period',report.meta.from,report.meta.to],['Basis',report.meta.basis],...(report.meta.cashRecognition?[['Cash recognition','Settled posted-source components; original journals unchanged']]:[]),...(report.meta.warnings?.map(warning=>['Review warning',warning])??[]),[],...financialReportRows(report,section)].map(row=>row.map(reportCsvCell).join(',')).join('\n');}

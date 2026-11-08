@@ -1,0 +1,17 @@
+Kauri Second Month Mobile Limited - Profit & loss
+2026-04-01 to 2027-03-31 / accrual / NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Account                                    Total
+
+4000 Sales Revenue                         3600.00
+
+4900 Other Income                          0.00
+
+5000 Operating Expenses                    1700.00
+
+Revenue                                    3600.00
+
+Expenses                                   1700.00
+
+Net income                                 1900.00

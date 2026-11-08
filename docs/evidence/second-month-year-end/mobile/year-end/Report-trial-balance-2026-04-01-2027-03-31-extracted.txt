@@ -1,0 +1,29 @@
+Kauri Second Month Mobile Limited - Trial balance
+2026-04-01 to 2027-03-31 / accrual / NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Account                                    Class       Opening debit   Opening credit   Period debit   Period credit   Closing debit   Closing credit
+
+BANK-AAEDBDAB Kauri Operating              asset       0.00            0.00             19430.00       7475.00         11955.00        0.00
+
+3000 Owner Capital                         equity      0.00            0.00             0.00           10000.00        0.00            10000.00
+
+1200 Accounts Receivable                   asset       0.00            0.00             4600.00        4140.00         460.00          0.00
+
+4000 Sales Revenue                         revenue     0.00            0.00             400.00         4000.00         0.00            3600.00
+
+2200 GST Collected on Sales                liability   0.00            0.00             60.00          600.00          0.00            540.00
+
+5000 Operating Expenses                    expense     0.00            0.00             3540.00        1840.00         1700.00         0.00
+
+2150 GST Paid on Purchases                 asset       0.00            0.00             255.00         0.00            255.00          0.00
+
+2100 Accounts Payable                      liability   0.00            0.00             1380.00        1610.00         0.00            230.00
+
+4900 Other Income                          revenue     0.00            0.00             3795.00        3795.00         0.00            0.00
+
+2300 Customer Credits                      liability   0.00            0.00             115.00         115.00          0.00            0.00
+
+Period totals                                                                           33575.00       33575.00
+
+Closing totals                                                                                                         14370.00        14370.00

@@ -1,0 +1,295 @@
+{
+  "archives": [
+    {
+      "label": "november",
+      "file": "november/Close-pack-2026-11-01-2026-11-30.zip",
+      "sha256": "e65e94750e8b7d1b5925ab7df30c668bc234e35c4f918cd31d0030b3cbeb4045",
+      "members": 14,
+      "verifiedMemberHashes": 13,
+      "canonicalFinancialFiguresMatch": true,
+      "accumulatedEarnings": "1900.00",
+      "periodLock": {
+        "closedThrough": "2027-03-31",
+        "revision": 5
+      },
+      "warnings": [
+        "This period includes cancellation, credit-note or expense reversal movements. Review the signed totals and GST adjustments before filing.",
+        "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+      ]
+    },
+    {
+      "label": "year-end",
+      "file": "year-end/Close-pack-2026-04-01-2027-03-31.zip",
+      "sha256": "35fc4e4cdb6fe61c8987a3c662357ba7c15e410ec8ad2f680198d2d0bbf8d729",
+      "members": 14,
+      "verifiedMemberHashes": 13,
+      "canonicalFinancialFiguresMatch": true,
+      "accumulatedEarnings": "1900.00",
+      "periodLock": {
+        "closedThrough": "2027-03-31",
+        "revision": 5
+      },
+      "warnings": [
+        "No completed bank statement covers the full reporting period for Kauri Operating.",
+        "Movements before the confirmed GST registration date are excluded. Review any separate pre-registration adjustments with your accountant.",
+        "This period includes cancellation, credit-note or expense reversal movements. Review the signed totals and GST adjustments before filing.",
+        "Reporting dates do not identify one registered GST taxable period; the GST preparation is a working paper, not a filing period.",
+        "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+      ]
+    },
+    {
+      "label": "april",
+      "file": "april/Close-pack-2027-04-01-2027-04-30.zip",
+      "sha256": "aad5f2945e233dfd376cb2a049f51800fd02eee9af7824f9893db0d00e5e2db6",
+      "members": 14,
+      "verifiedMemberHashes": 13,
+      "canonicalFinancialFiguresMatch": true,
+      "accumulatedEarnings": "2000.00",
+      "periodLock": {
+        "closedThrough": "2027-03-31",
+        "revision": 5
+      },
+      "warnings": [
+        "Accounting period is not closed through the report end date; this is a working close pack.",
+        "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+      ]
+    }
+  ],
+  "pdfs": [
+    {
+      "file": "november/Report-profit-loss-2026-11-01-2026-11-30.pdf",
+      "sha256": "6063e9a0ff8444ed30efd07a37fe681241a761cbc082e844fb9a62f65a4804d8",
+      "expectedFigures": [
+        "900.00",
+        "500.00",
+        "400.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-profit-loss-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "november/Report-balance-sheet-2026-11-01-2026-11-30.pdf",
+      "sha256": "937ed57f0ebb439c278b8edd969bd970d2cfdd8c1c6faad540e7486bdde52224",
+      "expectedFigures": [
+        "12670.00",
+        "770.00",
+        "11900.00",
+        "1900.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-balance-sheet-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "november/Report-trial-balance-2026-11-01-2026-11-30.pdf",
+      "sha256": "0b1d57ad07cd5085c68314248314739c7e5f59a9ccb7ceafe8ddf8781307e531",
+      "expectedFigures": [
+        "14370.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-trial-balance-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "november/Report-cash-flow-2026-11-01-2026-11-30.pdf",
+      "sha256": "8ae2a222870748d39bdf8ad2423ab17368fb859ba51c8a6c77d9ca6e0491ad5d",
+      "expectedFigures": [
+        "1495.00",
+        "920.00",
+        "575.00",
+        "11955.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-cash-flow-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "november/Report-receivables-2026-11-01-2026-11-30.pdf",
+      "sha256": "9a3f812b0126829c3faf339e78c22b66b692f18bfbf383d5c7e6d9aaa92da949",
+      "expectedFigures": [
+        "460.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-receivables-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "november/Report-payables-2026-11-01-2026-11-30.pdf",
+      "sha256": "26fcba723fedf55ef21b0889c8b417a9a2924a12d113906cd49d357711fd994b",
+      "expectedFigures": [
+        "230.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "november/Report-payables-2026-11-01-2026-11-30.csv"
+    },
+    {
+      "file": "year-end/Report-profit-loss-2026-04-01-2027-03-31.pdf",
+      "sha256": "8b18fa68aea610ef3991776221f21e75f8b46ee32ad07f7b6971ddafc9a9a82d",
+      "expectedFigures": [
+        "3600.00",
+        "1700.00",
+        "1900.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-profit-loss-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "year-end/Report-balance-sheet-2026-04-01-2027-03-31.pdf",
+      "sha256": "074f3e4119143dbecff34786f8709399508763c5ccf6de4ae88dbdad948a7e9a",
+      "expectedFigures": [
+        "12670.00",
+        "770.00",
+        "11900.00",
+        "1900.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-balance-sheet-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "year-end/Report-trial-balance-2026-04-01-2027-03-31.pdf",
+      "sha256": "309dcda6a560c3aa87c104e16d31a47dc20f2ba9b4f9dfe1fe0237aacdc1d675",
+      "expectedFigures": [
+        "14370.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-trial-balance-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "year-end/Report-cash-flow-2026-04-01-2027-03-31.pdf",
+      "sha256": "d91408e3ae3aeb5e1b7fb63cf448cb0bd760b96d69d390576d109bfda8c77d16",
+      "expectedFigures": [
+        "13795.00",
+        "1840.00",
+        "11955.00",
+        "11955.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-cash-flow-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "year-end/Report-receivables-2026-04-01-2027-03-31.pdf",
+      "sha256": "a03e9b047648e454de1c67294fccee29bbcd0c47dec031fb30a759640b3787c2",
+      "expectedFigures": [
+        "460.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-receivables-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "year-end/Report-payables-2026-04-01-2027-03-31.pdf",
+      "sha256": "a5a14d28dd4a3b979a96f1ae3278d5e0b45e455a619da6b090c29ffebc0f217b",
+      "expectedFigures": [
+        "230.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "year-end/Report-payables-2026-04-01-2027-03-31.csv"
+    },
+    {
+      "file": "april/Report-profit-loss-2027-04-01-2027-04-30.pdf",
+      "sha256": "79adf565443b19a292bc8a8f652d970906ef95e733f2acb66b8ae5ad599b7f93",
+      "expectedFigures": [
+        "200.00",
+        "100.00",
+        "100.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-profit-loss-2027-04-01-2027-04-30.csv"
+    },
+    {
+      "file": "april/Report-balance-sheet-2027-04-01-2027-04-30.pdf",
+      "sha256": "369e1fae0bd5e2960aeb9e34898a7a595c01369dee1337093eca80444b251dc7",
+      "expectedFigures": [
+        "12915.00",
+        "915.00",
+        "12000.00",
+        "2000.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-balance-sheet-2027-04-01-2027-04-30.csv"
+    },
+    {
+      "file": "april/Report-trial-balance-2027-04-01-2027-04-30.pdf",
+      "sha256": "44c55cc54643513bc914212a9925948b706d361b743a172b26ec1345e4d484db",
+      "expectedFigures": [
+        "14715.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-trial-balance-2027-04-01-2027-04-30.csv"
+    },
+    {
+      "file": "april/Report-cash-flow-2027-04-01-2027-04-30.pdf",
+      "sha256": "953211d1836179c3452a0efd1ef247627b39ae18813ca6e508afd5ca9d40a6d0",
+      "expectedFigures": [
+        "230.00",
+        "0.00",
+        "230.00",
+        "12185.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-cash-flow-2027-04-01-2027-04-30.csv"
+    },
+    {
+      "file": "april/Report-receivables-2027-04-01-2027-04-30.pdf",
+      "sha256": "18a6165bf9655e405eb6b673ed9be282f3aec006bb94a94f5541a7921a7621e8",
+      "expectedFigures": [
+        "460.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-receivables-2027-04-01-2027-04-30.csv"
+    },
+    {
+      "file": "april/Report-payables-2027-04-01-2027-04-30.pdf",
+      "sha256": "8fc693bb36a70b8f643f37a0086ac7d3730e6e54fc3aadce918242dc25bcbd64",
+      "expectedFigures": [
+        "345.00"
+      ],
+      "textExtracted": true,
+      "matchingCsvVerified": "april/Report-payables-2027-04-01-2027-04-30.csv"
+    }
+  ],
+  "octoberBaselineArchive": {
+    "file": "Close-pack-2026-10-01-2026-10-31.zip",
+    "sha256": "a0b7af0bf756d29c63130ab5bfbaf51bd3403cf28ea6ad9e8f4a7fee1583ed8e",
+    "members": 14,
+    "verifiedMemberHashes": 13,
+    "capturedBeforeAdditiveEarningsReadout": true,
+    "canonicalFinancialFiguresMatch": true,
+    "periodLock": {
+      "closedThrough": "2026-10-31",
+      "revision": 3
+    }
+  },
+  "octoberBaselineExports": [
+    {
+      "file": "exports/GST-2026-10-01-2026-10-31-draft.pdf",
+      "sha256": "bf7f117902296d51bb2e92b74b23257cb949cf49b86cc2d6e14c2b0c9f4b50e2",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-payables-2026-10-01-2026-10-31.pdf",
+      "sha256": "b3dc3e0d803caa8b711a74516a8478927a4dd117c13f293b0d0ef93911d4ab05",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-profit-loss-2026-10-01-2026-10-31.pdf",
+      "sha256": "78f1f062651ff9b0bedabe76b3612268357ecee18c4d409c046ac2c323c8eda1",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-trial-balance-2026-10-01-2026-10-31.pdf",
+      "sha256": "79bdac7bd18a8cdf25ed758ac4d0d4bb1dcc0899cf7c0bc1be1bb8762be7b206",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-cash-flow-2026-10-01-2026-10-31.pdf",
+      "sha256": "f2db13e6989a2b31eb7e97fda3a32993bf72b691f9b0007dd60f66a601607323",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-receivables-2026-10-01-2026-10-31.pdf",
+      "sha256": "09d0b7fd23ba0db7d60f061777317172231e50d46acb30db84de070d58bb5707",
+      "textExtracted": true
+    },
+    {
+      "file": "exports/Report-balance-sheet-2026-10-01-2026-10-31.pdf",
+      "sha256": "84208ec6391da6a18369c1c26b2f37b029d2439658ed4a3a57cf85170535f2d8",
+      "textExtracted": true
+    }
+  ]
+}

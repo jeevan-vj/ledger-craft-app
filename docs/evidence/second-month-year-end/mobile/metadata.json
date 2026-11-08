@@ -1,0 +1,90 @@
+{
+  "baseCommit": "8f6bb68",
+  "branch": "codex/second-month-year-end",
+  "verifiedAt": "2026-11-08T09:09:35.694829+00:00",
+  "platform": "Actual Expo web UI in Chromium390x844, dark theme, Pacific/Auckland",
+  "business": "Kauri Second Month Mobile Limited",
+  "simulatedCalendar": "2027-05-01; browser Date advances using offset while real timers/performance/pointer clocks remain intact; local API uses controlled acceptance Date",
+  "actualExecutionDate": "2026-11-08",
+  "phaseCount": 27,
+  "phasesInExecutionOrder": [
+    "signup",
+    "setup",
+    "invoices",
+    "bill",
+    "credits",
+    "expense",
+    "bank",
+    "gst-settings",
+    "reports",
+    "audit",
+    "exports",
+    "locks",
+    "pack",
+    "november",
+    "november-bank",
+    "november-reports",
+    "november-close",
+    "year-end-bank",
+    "nil-gst",
+    "year-end",
+    "april",
+    "april-bank",
+    "april-reports",
+    "comparatives",
+    "earnings-refresh",
+    "final-audit",
+    "april-cash"
+  ],
+  "unexpectedBrowserErrors": 0,
+  "setupApiSeedWrites": false,
+  "accountantPapersSha256": {
+    "expected.json": "44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e",
+    "supplemental-paper.json": "d56efc7db7d26a37b076f41f70b08a8a12827bd013a91b654ead1be66c2f6ca5",
+    "nil-gst-paper.json": "5516099a1b4e051f31face0842dc615a328fc9301be69864fed5e206f68b4012"
+  },
+  "sourceSha256": {
+    "scripts/second-month-mobile-close-proof.mjs": "8d7d1e20cc0a3cbb92bdd93427937c2bc920eebf158f1f3f8e502c7d4e6930e2",
+    "mobile/src/components/reports/FinancialReportWorkspace.tsx": "6638e9e9d90a030c772dbcb0ca52090057c2367b33ae8455d89d446761a6a66d",
+    "mobile/src/screens/reports/ReportsScreen.test.tsx": "41e99c91ac631d9d3786b97c46779b01b0749519cea388ccee192aa7e9505cc1",
+    "packages/contracts/src/report.ts": "ee073966de8314f0fd23c510a43f274b0ba877b50006b167fdee8cfc426d278e",
+    "packages/contracts/src/report-export.ts": "d81309d546fe322420a10adaa25b69162c19ca471c8c8af4229ab0a953020b92",
+    "api/src/modules/reports/reports.engine.ts": "c0babce2b3beaff8ceb0e3327b930094ab085c56b86d60251f02a7f946498ef9"
+  },
+  "checks": {
+    "node": "20.20.2",
+    "npmCiExitCode": 0,
+    "lintExitCode": 0,
+    "lintErrors": 0,
+    "lintWarnings": 74,
+    "typescriptExitCode": 0,
+    "jestExitCode": 0,
+    "jestSuites": 150,
+    "jestTests": 677,
+    "iosExportExitCode": 0,
+    "androidExportExitCode": 0,
+    "knownJestWarning": "A worker process has failed to exit gracefully; the same warning exists in the prior merged full run. Full test command exits0."
+  },
+  "nativeBundleHashes": {
+    "ios": [
+      {
+        "file": "_expo/static/js/ios/index-4a4bf97c0efdc6e049d9c70eaf5056d6.hbc",
+        "bytes": 7911553,
+        "sha256": "f13d2ab32a25f22d4b808a706b71d5f272c0f3ecdc9c9e6e25176a62c269c296"
+      }
+    ],
+    "android": [
+      {
+        "file": "_expo/static/js/android/index-5f01235611237380d66dbb3105437095.hbc",
+        "bytes": 7934804,
+        "sha256": "721fd8956238a149b6416223744ea25e7388bf0b52eede27e31566b2ba9842de"
+      }
+    ]
+  },
+  "deviceChecksPending": [
+    "Installed Android share-sheet/cancellation/lifecycle/keyboard/date-picker and complete month/year rollover",
+    "Installed iOS share-sheet/cancellation/lifecycle/keyboard/date-picker and complete month/year rollover"
+  ],
+  "scope": "No provider send, real filing, native publishing or production deployment.",
+  "metroRestart": "After npmci, Metro was restarted with --clear before the final read-only April cash-basis screenshot; company state and production source unchanged."
+}

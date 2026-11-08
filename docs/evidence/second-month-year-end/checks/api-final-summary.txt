@@ -1,0 +1,6 @@
+✓ src/modules/stripe/stripe.fees.test.ts (3 tests) 5ms
+
+ Test Files  144 passed (144)
+      Tests  626 passed (626)
+   Start at  08:58:55
+   Duration  596.37s (transform 5.20s, setup 1.92s, collect 134.76s, tests 422.69s, environment 26ms, prepare 10.52s)

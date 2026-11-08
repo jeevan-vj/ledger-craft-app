@@ -1,0 +1,5 @@
+adb: unavailable
+emulator: unavailable
+xcrun: unavailable
+xcodebuild: unavailable
+/dev/kvm: unavailable

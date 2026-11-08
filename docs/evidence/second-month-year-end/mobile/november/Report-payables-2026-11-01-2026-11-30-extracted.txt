@@ -1,0 +1,11 @@
+Kauri Second Month Mobile Limited - Payables aging
+2026-11-01 to 2026-11-30 / accrual / NZD
+Generated 2027-05-01T00:00:00.000Z
+
+Document                                   Party                   Due date     Age       Outstanding
+
+BILL-0002                                  Kauri Office Supplier   2026-11-30   current   230.00
+
+Total                                                                                     230.00
+
+Unallocated control                                                                       0.00
