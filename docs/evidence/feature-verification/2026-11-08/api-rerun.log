@@ -1,0 +1,1064 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_df597530-b153-49ff-86d8-9ff86981a28d","route":"/api/auth/*","method":"POST","status":200,"durationMs":684}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_e41bba3e-19d7-4c19-bda4-d1867bb16fab","route":"/api/business-profile","method":"PUT","status":200,"durationMs":56}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_9b1d0838-b491-4dc2-a732-fe987902df8b","route":"/api/customers","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_9fb7d826-fc2c-4654-9bff-1620ad01ee44","route":"/api/accounts","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_6dc40a46-6b2f-4825-acc5-34eb281c1f79","route":"/api/vendors","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_20156849-9464-4b0c-bc60-c521a1b85d92","route":"/api/invoices","method":"POST","status":201,"durationMs":101}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_4e6b3c71-e429-416e-816e-01b7ff980846","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":57}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_f9507ab6-f945-4a33-a92c-fb2f3b2d0255","route":"/api/credit-notes","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_ade90848-179a-4ed3-b111-8e08a6f79041","route":"/api/reports/financial","method":"GET","status":200,"durationMs":33}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_393b8365-dc55-48fb-9921-78607fa7affa","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_d613c7d6-3548-4aaf-98f9-874b4c48edd6","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_6fd5d511-380e-495a-9d64-976098f016fe","route":"/api/reports/financial","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice
+{"msg":"http_request","requestId":"req_cc764ac1-1e46-4492-9467-a9da3d16bbfd","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_9bc6b564-7caa-41e7-96dd-30fe352695f0","route":"/api/auth/*","method":"POST","status":200,"durationMs":268}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_abd76fc1-3a9d-4328-9fca-7da19e3d5536","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_8be3ee48-1995-4035-9daa-e4862ecb8c88","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_21ad358b-04ff-4992-96ad-711d2b458ba8","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_20b5f382-3f02-4ba7-aef6-fc296bf9acdd","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_84e6624c-4cae-4ec7-898f-baf0442413ee","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_cece7d72-3cef-4170-9cc9-8646ad0edb75","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":57}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_d85e4bea-7c88-4226-bde5-ab451e1c7b71","route":"/api/reports/financial","method":"GET","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_9e001c29-6b72-41ee-9046-9f1d87b7f171","route":"/api/payments","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_addc338f-bd30-4daf-8d88-a72b48c06b9c","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_5f1bc4ba-e2bb-4715-a364-f9a20769257a","route":"/api/bills","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_1e00a416-938c-43cf-9578-83c48e25c1d8","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":38}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_29bf9dfb-0de6-4083-9e63-43512ce0811c","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_e537c6fb-4133-426c-93f7-3626909e14b9","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_b54d2591-a84e-423a-8b73-0dd5d970547c","route":"/api/journal-entries","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_e7ae5bc6-452f-443f-8073-529d029a630a","route":"/api/reports/financial","method":"GET","status":200,"durationMs":22}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_67acf136-3ce6-4315-98c0-e784fa35f4b9","route":"/api/expenses","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_7af982ac-0c31-4c98-8aa0-9d02222a8661","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_f3390633-2085-42d3-bf7a-85edf9c5d71a","route":"/api/reports/financial","method":"GET","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_f923dd90-e9d1-4698-92fb-ecb063f53123","route":"/api/invoices","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_9173a1cd-a5ad-449e-b0b7-677ba9bcd388","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":54}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_362bb568-4b33-4d7e-a1c5-ffaa17d68f24","route":"/api/invoices","method":"POST","status":201,"durationMs":51}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_6e13a89e-0438-4bfd-9193-fe7ad89aeb56","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":46}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_1b677b86-c601-4111-9fc5-e3bf3776fad1","route":"/api/invoices","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_d200f879-91d3-409b-93a3-fc9912e4ac3d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":46}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_f3513045-a698-43cb-b5ec-9a37d88afd78","route":"/api/reports/financial","method":"GET","status":200,"durationMs":24}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_824531d1-6e65-487d-b72d-1754fa9d8a28","route":"/api/auth/*","method":"POST","status":200,"durationMs":291}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_cb6c7a32-ee7c-4d8a-9a76-0737336390b1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_db91b6af-6852-44e5-bb92-02519e2141ac","route":"/api/customers","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_aa39bf44-044b-44f0-9db1-caf8b7c71f4d","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_bb5669c9-3eb6-42c6-9397-8b8cd20aef79","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_cdfa0ce0-d824-4ac4-b164-9bca3e421d46","route":"/api/invoices","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_ecd7e90a-3dc8-47ab-9230-5477276bcb6c","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":59}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_9b8525b4-7251-48d5-bb60-47ec5c74c35e","route":"/api/bills","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_9b340685-2c5d-4809-988f-cae5a40e85e7","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":33}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_53594a0c-339d-4c15-992b-7e1bacac5d3d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_eb1b21e3-36be-48f8-93f2-df728c660db0","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_3a966326-ed13-4a72-a963-dca88a53bb5f","route":"/api/bills/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_8ce74daa-d1f3-4efa-8c69-61fddd28d4e0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_a66c2caf-0d3f-4c5b-aa8e-069056d306e2","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_2e9867d8-96da-455f-b021-9ecfcb97111e","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_83624ee3-7379-44a1-abe6-3b951fd5c8c3","route":"/api/bills/:id/restore","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_3cc352ed-c64c-48c7-a016-0747d3d8a81b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":21}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger
+{"msg":"http_request","requestId":"req_2dad0dc7-ba99-465c-b4c9-84c76b06de39","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_8a31aba1-24e3-498b-ad43-6f60d054f583","route":"/api/auth/*","method":"POST","status":200,"durationMs":239}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_838becc9-56b6-45c4-ab79-d755b411f79f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_64c14299-a8cc-4dbb-84d2-3ac45063fd7c","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_093fe0d7-076e-4bb4-877e-1d70bd4b743d","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_97a502bc-3281-4c9a-86a5-7131a813a7fa","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_f1437b17-5295-4b0c-b108-f136bcdcc4a0","route":"/api/invoices","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_5d912202-f357-4ac7-860e-92b728561a87","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":50}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_435589f1-81b1-4ee7-a6e7-9db158916437","route":"/api/bills","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_6dddb5e1-2b00-41e8-aff0-626291e68c41","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":34}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_4a67b138-4c3b-460e-9eec-110a37bbc8d3","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_5c3e623a-50ae-4e7c-bb4d-311c4260a649","route":"/api/reports/financial","method":"GET","status":200,"durationMs":29}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_86e0c9c9-05b9-4c31-b3f8-a2bd633c5d6b","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_f5a4f18f-4453-43d3-8810-23c24afdee26","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_b3a25fd2-e910-4976-bbed-bb9f3ef87322","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_6314ec18-6b29-4a52-91a1-8b251b37e514","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":26}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_3261e24f-b57a-46c4-bc34-be13066be715","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_23200ab8-0e5a-4c5e-9700-e5b6853596f9","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_f347b0bc-f6a2-4c22-a021-9447b40457bf","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":22}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_e4cd181f-ac65-4946-99ae-e9675eaa3581","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_95a35d4b-9705-44d0-9585-64b40dcf83e9","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_613fb2ee-b8d3-4e30-9753-a5ddf2206cb9","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_7e790a7b-f500-4b5e-af45-1920856c3c44","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":22}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_99f8a1e6-d651-4b5e-ae67-2e3b5c589566","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_ee5e1e20-08a3-4bba-b81f-add6d2db3d02","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_e4e84799-b6e2-4a54-a989-69709011d571","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_27477975-abd5-47be-a212-f2990479c171","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":34}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_4ef43bb8-3ccc-408d-99ce-2b066f044050","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":41}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_610f0c4d-aff3-4dc4-9da5-b801a83f01f2","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":48}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_687b09b1-f173-4752-b29f-34ef53e152b5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_fffddca4-92f7-4761-a995-432a3c450a08","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles
+{"msg":"http_request","requestId":"req_47f5972f-a2e0-482d-858c-199a09a5415f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":61}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_afb70112-d255-4e82-ba7b-58a009993581","route":"/api/auth/*","method":"POST","status":200,"durationMs":367}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_4c4884bf-9203-4329-89e6-60fb76cad991","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_34fbc59a-65e9-410a-95a4-4feaeb2b6dc3","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_29f5ca21-24a6-4ff6-93e7-14e340227990","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_871ded3c-5b85-437b-b396-6d44c6c816c1","route":"/api/vendors","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_cf27dc62-ce3b-43b8-bd5b-20870aa5dd58","route":"/api/invoices","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_ef803d95-2d3f-4c42-8cea-a35e8089dd47","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":60}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_397d52d1-236d-4ced-ab1a-60cc979f61b9","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_31064464-4c57-4601-8c9b-f9e35370f4ad","route":"/api/invoices","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_66058c83-1baa-46da-9b9c-6a06f31c7977","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":54}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction
+{"msg":"http_request","requestId":"req_5360ecbf-e8b6-4aa3-8e35-1b4bc5f8c407","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_39621ff6-371a-4989-b6ed-d78cde8d0b9f","route":"/api/auth/*","method":"POST","status":200,"durationMs":275}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_668d0bce-4e6e-4b08-9226-8aab65404a6a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_be44836b-a9ce-4432-9c41-b95894447d62","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_dabcc676-c3b7-48bc-90d9-5f5f90b16851","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_5807e6d7-a8a6-480d-aa5e-8457d6c25fe9","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_8b1ee75b-4401-43d4-ac53-185757c2b192","route":"/api/invoices","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_0c6129a0-28b8-4b02-8061-c4f17531d317","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":119}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_6cad6ef1-8e73-4d80-bd2c-9831a72eac04","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_df7ed23a-33a1-4e45-84dc-c1645da45007","route":"/api/reports/financial","method":"GET","status":200,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports
+{"msg":"http_request","requestId":"req_6ae56d85-1b60-4905-9868-ed63104e3b1d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_f14370a3-c3c6-4954-bdb3-ae370095745c","route":"/api/auth/*","method":"POST","status":200,"durationMs":201}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_816f6f2b-c392-443d-aadd-3f00c47a4753","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_94cc43ed-4888-4256-bd94-f3a45336c2a1","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_b99e0fbd-f1f3-494c-818d-f658c5a41591","route":"/api/accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_43e08173-87b3-4434-bb0c-f40fefef4832","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_55d7ba76-161a-42b2-8b3a-d5b7f94ef3da","route":"/api/invoices","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_bd53c37c-ec1c-4005-9bec-78beb51389ac","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":68}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_5eb3686e-7184-4387-ad9a-94e66d7b6f2d","route":"/api/bills","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_72ffa411-d31c-4e19-adad-f51b18b8cb96","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":30}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_47d9f36c-86f0-4372-943f-5919dcd207c4","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_3a174bd1-6c99-4b21-812b-b218a7b5cf3a","route":"/api/bills/:id/cancel","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_99520460-63b6-4c04-b5a2-927aadf7ea0c","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_18f46f0d-a32b-44bd-8822-8744cd967c62","route":"/api/reports/financial","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter
+{"msg":"http_request","requestId":"req_9bf9c275-54ef-42b0-9c1d-b7da9e690b2d","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_a7f96cf7-e646-4087-8834-deb401a3e5b7","route":"/api/auth/*","method":"POST","status":200,"durationMs":206}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_fef570fa-95b5-42be-8528-86437bc556a6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":39}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_bd6ed1e3-e37e-4584-a565-4f7b6c4da845","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_e84ab8bd-eb04-484d-bb9e-118b2ba21e60","route":"/api/accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_f01d9c7b-55b9-4c1b-93f5-39eaec961c10","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_8f53bbaf-0709-4a19-bbb3-a6f5c0add675","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_114b1966-1072-4817-8355-6a4a6ff73b13","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":64}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_7fd9d4d5-de3c-4427-8929-617b72fe804a","route":"/api/payments","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_91b80bea-5b63-44c6-983e-68fbc88e26e2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":20}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_77d05520-700c-45ae-8be5-102adab3ebaa","route":"/api/invoices/:id/cancel","method":"POST","status":409,"durationMs":24}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice
+{"msg":"http_request","requestId":"req_82afa047-e621-403e-ae19-b40ae43fc415","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_ecd76c07-4ecd-4cbd-bc73-492dd8631a47","route":"/api/auth/*","method":"POST","status":200,"durationMs":220}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_fd50ab8c-2b04-4ffc-a67e-39563b9f11fe","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_de9b1a56-b42c-4231-b013-e539b58008eb","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_81115e47-c6d6-4fc5-9864-ec3a1f64af83","route":"/api/accounts","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_25022eaa-b0f4-4713-8b29-58f4d9c57bfa","route":"/api/vendors","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_abb20da0-4833-47ee-8875-b01c2c8446e6","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_6d4e3437-c3d1-46fd-b44d-31e690541b57","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":49}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_d5c4a095-0f0d-4587-aba9-d9e7054b82e7","route":"/api/reports/financial","method":"GET","status":200,"durationMs":27}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_877cc86f-7b82-4174-bf1d-3ec0c518663f","route":"/api/auth/*","method":"POST","status":200,"durationMs":226}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_34c47e6f-aa57-4728-af78-0ab581296049","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_fe7e867f-dace-4ad0-95f6-687dcd21db24","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_cff8acfb-8b76-4a72-849d-9c340e1892ef","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_dcfa2f05-0c61-4cb1-a1c8-767e70cbb8e4","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_dc9aba48-02e4-446c-9961-00077fef66b1","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_28c8a5a4-fe77-4406-90f6-6c8652c23004","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":47}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_d3b702a4-b199-49f9-b67b-fff0f99cd094","route":"/api/bills","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_aae03394-b013-4cf2-9ae8-23104f388861","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/tax/gst-ird-scenario.e2e.test.ts > NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST
+{"msg":"http_request","requestId":"req_0021be48-038e-4d90-b07a-96e76288edd4","route":"/api/reports/financial","method":"GET","status":200,"durationMs":16}
+
+ ✓ src/modules/tax/gst-ird-scenario.e2e.test.ts (8 tests) 22435ms
+   ✓ NZ GST journals and IRD reporting scenario > posts a real credit-note GST adjustment and reverses it without rewriting the source invoice  3616ms
+   ✓ NZ GST journals and IRD reporting scenario > posts exact 15% NZD journals and derives the selected-period GST position from the ledger  3631ms
+   ✓ NZ GST journals and IRD reporting scenario > keeps an active invoice in the ledger across repeated and concurrent cancel/restore cycles  2912ms
+   ✓ NZ GST journals and IRD reporting scenario > excludes legacy unconverted foreign postings from NZD GST and flags them for correction  2613ms
+   ✓ NZ GST journals and IRD reporting scenario > reports GST on the invoice basis for cash-basis and account-filtered reports  2563ms
+   ✓ NZ GST journals and IRD reporting scenario > dates cancel/void journals in NZ time so a 00:30 NZST 1 July cancellation lands in the next GST quarter  2340ms
+   ✓ NZ GST journals and IRD reporting scenario > keeps invoice-basis GST through partial payment and blocks voiding a paid invoice  2184ms
+   ✓ NZ GST journals and IRD reporting scenario > reports zero-rated sales alone as a nil return and excludes exempt purchases from input GST  2571ms
+stdout | src/modules/sales/sales.test.ts > sale routes > unauthenticated POST /api/sales returns 401
+{"msg":"http_request","requestId":"req_be301eff-c80b-442b-a024-536266cd091e","route":"/api/sales","method":"POST","status":401,"durationMs":39}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_8bcba298-58c1-4b34-865b-79ca7351717e","route":"/api/auth/*","method":"POST","status":200,"durationMs":375}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_44a02a8d-097c-4bc8-94a2-ce277a5fa3a9","route":"/api/auth/*","method":"POST","status":200,"durationMs":236}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_26bd5535-3b8b-436d-b4eb-166a8b31ca18","route":"/api/business-profile","method":"PUT","status":200,"durationMs":33}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_bf598f48-05ac-47f5-b717-93514db1520e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_c8e68a62-9fcc-42ae-8f82-ae07a19ac700","route":"/api/sales","method":"POST","status":400,"durationMs":10}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_e5cd63af-a275-4f34-81dc-52c251849428","route":"/api/sales","method":"POST","status":400,"durationMs":9}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_8e5f7572-4245-4616-8101-4954027801c0","route":"/api/sales","method":"POST","status":201,"durationMs":155}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_ddba76bf-bf7b-4126-8108-064bf97a04e7","route":"/api/sales","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_e954470f-6170-42e5-98dc-24637dc1984d","route":"/api/invoices","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_a8e1778b-a531-484f-82be-dd0ff8aa104c","route":"/api/payments","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_0e464b58-fd8c-4095-bd02-5ca209ef2072","route":"/api/receipts","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_bf767dba-77e6-4e72-8a85-2641517e16cd","route":"/api/sales","method":"POST","status":409,"durationMs":11}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_b0a71606-d241-4797-9072-3af53f260877","route":"/api/invoices","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > requires an Idempotency-Key and replays or conflicts on that key
+{"msg":"http_request","requestId":"req_6ddc48f2-bd3b-45d6-8e25-3ec4f010e942","route":"/api/sales","method":"POST","status":201,"durationMs":102}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_0982c3ef-005c-4bc9-af63-b390a23ea755","route":"/api/auth/*","method":"POST","status":200,"durationMs":262}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_b0bfbe2d-8482-404d-bd19-1a5f334a55e4","route":"/api/auth/*","method":"POST","status":200,"durationMs":222}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_d7713813-12c9-4f79-b82f-d8e04a297eb2","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_f7341289-0cf0-4309-b235-5e08cc8e7390","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_4881cb86-373c-4902-ac8b-55cc8c16218f","route":"/api/items","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_8fb2ac87-5369-4f05-b779-52f19df0a116","route":"/api/sales","method":"POST","status":201,"durationMs":91}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_a69a09bf-afc3-42ee-a9c4-6c47575ff96d","route":"/api/receipts","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_8d3f28ac-e252-4068-870f-12a7d852c365","route":"/api/customers","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_be61129d-0b48-4403-a209-77370d7283b0","route":"/api/sales","method":"POST","status":201,"durationMs":84}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_22cd1728-c15e-4331-a0e1-71e8cd509dff","route":"/api/customers","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_ce2b5d73-3e7c-4d71-b952-226651e745ba","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":31}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_32ff2b52-1261-4b92-877f-420008c26e26","route":"/api/sales","method":"POST","status":201,"durationMs":97}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_11db1bbb-b83a-45d3-bd60-5524b7feb566","route":"/api/customers","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_71d000a3-9a45-4183-9cad-7758c5d3f753","route":"/api/sales","method":"POST","status":201,"durationMs":144}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_df279777-9ad8-4914-8c60-70fd8332c162","route":"/api/customers","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals
+{"msg":"http_request","requestId":"req_fbae6a20-742d-4ba9-8391-57776f6775e1","route":"/api/invoices/:id","method":"GET","status":404,"durationMs":11}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_96bd06f7-a8e1-47e3-bf97-fffb332edb57","route":"/api/auth/*","method":"POST","status":200,"durationMs":291}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_5ab630df-420d-49f8-b1b0-fd9e7e828a95","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_86144943-0d5f-434b-8d72-9c1759db6966","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_858b685b-b4e4-4eef-a76e-ea7b00c2d920","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_61fa9190-36bb-450e-a502-ad0ed7c8c56a","route":"/api/sales","method":"POST","status":201,"durationMs":103}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_a87d5bf6-1204-4b9c-ac7a-b08020b077f7","route":"/api/sales","method":"POST","status":201,"durationMs":193}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_afd43c1e-4106-4563-824f-7d4a1069c707","route":"/api/customers","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > uses the named customer and that customer email, including an empty email
+{"msg":"http_request","requestId":"req_4abdf9e0-5571-43eb-872a-364064d5cb17","route":"/api/sales","method":"POST","status":400,"durationMs":39}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_8bd7d6fa-6592-4954-a23e-24f05f36625e","route":"/api/auth/*","method":"POST","status":200,"durationMs":275}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_2dd1345c-579a-4d4e-94ae-81f5abc78376","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_6ff7d4dd-dc92-4754-a520-81ad19697dd7","route":"/api/items","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_910ab28f-dab8-44d7-9d01-410ef56b6a4e","route":"/api/items","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_02adb29a-e927-447f-a639-35f12ceaedaa","route":"/api/items","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_2cd5995b-82e0-4970-9ec8-3d4a0ad7fb6f","route":"/api/sales","method":"POST","status":201,"durationMs":268}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_a2be233f-0565-48fa-90d5-b47c644a33e6","route":"/api/sales","method":"POST","status":201,"durationMs":107}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_dcd519ca-75ab-4046-977d-5cc7a3703049","route":"/api/sales","method":"POST","status":201,"durationMs":122}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_08f15c9f-d017-4fa5-9910-3c793930f41f","route":"/api/sales","method":"POST","status":201,"durationMs":99}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_ca4f0b46-ef36-4069-be6f-fa9d3b137cbb","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_75c5a4dd-88e3-46e6-bf77-f36500817a68","route":"/api/sales","method":"POST","status":201,"durationMs":138}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_72694da2-c9ca-4f1b-8ce0-d5d4aac7f438","route":"/api/business-profile","method":"PUT","status":200,"durationMs":25}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_4f9487a4-d37d-450a-b6f9-4ff13dd18f44","route":"/api/sales","method":"POST","status":201,"durationMs":144}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_7cefc23e-a633-488f-973c-2a5f7acae205","route":"/api/sales","method":"POST","status":201,"durationMs":185}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_2a8d5718-949d-43da-813a-2c733c75bc6e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate
+{"msg":"http_request","requestId":"req_1e2b0be7-e696-48e5-a6ee-37f8319c6720","route":"/api/sales","method":"POST","status":201,"durationMs":120}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > dates the invoice today in the business timezone
+{"msg":"http_request","requestId":"req_76928d76-8b25-4085-a376-52ad9b48588c","route":"/api/auth/*","method":"POST","status":200,"durationMs":297}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > dates the invoice today in the business timezone
+{"msg":"http_request","requestId":"req_9c7a51b4-f894-413a-87d6-db148c9ce537","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > dates the invoice today in the business timezone
+{"msg":"http_request","requestId":"req_d7f5dd6c-87b0-4d14-8492-8eceea9115d3","route":"/api/currency-settings","method":"PATCH","status":200,"durationMs":31}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > dates the invoice today in the business timezone
+{"msg":"http_request","requestId":"req_67bf4cad-1d89-4a3c-906b-a52daa0eb621","route":"/api/sales","method":"POST","status":201,"durationMs":90}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > gives two quick sales in one organisation distinct receipt numbers
+{"msg":"http_request","requestId":"req_09b31362-36ee-465f-95b8-129172c799ae","route":"/api/auth/*","method":"POST","status":200,"durationMs":282}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > gives two quick sales in one organisation distinct receipt numbers
+{"msg":"http_request","requestId":"req_cb0717cd-10f5-4f1e-9e38-f5c7c5c16c1b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > gives two quick sales in one organisation distinct receipt numbers
+{"msg":"http_request","requestId":"req_a267b9e0-cc59-410a-8ce6-4552edd2fdb9","route":"/api/sales","method":"POST","status":201,"durationMs":109}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > gives two quick sales in one organisation distinct receipt numbers
+{"msg":"http_request","requestId":"req_1c374fb0-dd59-4e56-abbc-392bd0333fb6","route":"/api/sales","method":"POST","status":201,"durationMs":195}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > gives two quick sales in one organisation distinct receipt numbers
+{"msg":"http_request","requestId":"req_295a9e25-8dea-4c6a-af9c-46713c3cb708","route":"/api/receipts","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_ee691f10-034e-4020-b16c-0919fed8ffa8","route":"/api/auth/*","method":"POST","status":200,"durationMs":215}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_affe1c7d-01af-423c-ae6b-cac4bfc779c4","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_f41e6644-e114-407f-966d-900d6a0ef1a4","route":"/api/sales","method":"POST","status":201,"durationMs":93}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_fec705dd-d92b-4880-9599-c34b3c9f6e74","route":"/api/sales","method":"POST","status":201,"durationMs":98}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_3f31c9bc-344b-4086-860c-13f104fab214","route":"/api/invoices","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_08d5f980-4585-4846-add3-116885f0d9c6","route":"/api/payments","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > concurrent identical requests create one invoice, payment, and receipt
+{"msg":"http_request","requestId":"req_4e3dd4ad-2c35-483b-a859-2cbf3b006725","route":"/api/receipts","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_fb130695-6281-4ee8-b3e4-c698638d7acf","route":"/api/auth/*","method":"POST","status":200,"durationMs":269}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_c44aa658-79ea-4eeb-8926-6c83241a1e2c","route":"/api/auth/*","method":"POST","status":200,"durationMs":253}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_ed6960c7-e38f-4b69-b26c-a1ac5ce68215","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_0ee4297d-4380-4931-8157-2b04af6bd39f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_316341e6-e00c-43a2-b0da-9685cb909ec0","route":"/api/items","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_b906c744-13e9-49d7-a896-89bb6c40038e","route":"/api/items","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_a8d86eac-98b3-4a59-aec1-49b37770b068","route":"/api/items/:id","method":"PATCH","status":200,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_7c652884-3e89-4bbb-9883-b664c53b8d68","route":"/api/sales","method":"POST","status":400,"durationMs":27}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_f88d4fca-be71-459e-bd01-ac7d9e28c0f8","route":"/api/sales","method":"POST","status":400,"durationMs":19}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_f120e7a4-aece-4aa4-9e5e-3cc97a7c9d1b","route":"/api/sales","method":"POST","status":400,"durationMs":19}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_4c67f404-6fe9-4217-bccc-9f84d5ab7163","route":"/api/sales","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rejects an inactive, missing, or foreign item and a non-positive cart
+{"msg":"http_request","requestId":"req_9eecfb8d-330f-4976-a67e-59c0cbc64ffc","route":"/api/invoices","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_4401cd17-afe3-432c-b878-a83479b7aa81","route":"/api/auth/*","method":"POST","status":200,"durationMs":265}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_85423da5-ef21-4bbb-9ad8-e3cbc6650f1e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stderr | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"unhandled_error","source":"hono","requestId":"req_f6cfe78f-3351-49a1-b3ed-24dc6bef0990","route":"/api/sales","name":"Error","errorMessage":"Failed query: insert into \"receipts\" (\"id\", \"organisation_id\", \"user_id\", \"payment_id\", \"receipt_number\", \"generated_at\", \"email_sent_at\", \"is_emailed\", \"receipt_data\", \"created_at\") values (     (unixepoch() * 1000), null,   (unixepoch() * 1000)) returning \"id\", \"organisation_id\", \"user_id\", \"payment_id\", \"receipt_number\", \"generated_at\", \"email_sent_at\", \"is_emailed\", \"receipt_data\", \"created_at\"\nparams: 97e7244a-9a6c-4537-ba26-0cf22d2e19a0,a5ea3e04-c52e-452b-9f50-eca985e9858a,b7340d4a-4c5d-4521-9575-69ac26faf4a4,a0961b91-a132-405e-91a0-c8616509d6d3,REC-202611-0001,0,{\"paymentId\":\"a0961b91-a132-405e-91a0-c8616509d6d3\",\"invoiceId\":\"8f428447-5f1b-42fa-a6ee-5c660dbcf52d\",\"invoiceNumber\":\"INV-2026-0001\",\"customerName\":\"Walk-in customer\",\"customerEmail\":null,\"amountPaid\":\"4.50\",\"paymentDate\":\"2026-11-08\",\"invoiceDate\":\"2026-11-08\",\"invoiceDueDate\":\"2026-11-08\",\"paymentMethod\":\"cash\",\"currency\":\"NZD\",\"invoiceTotal\":\"4.50\",\"totalPaid\":\"4.50\",\"balanceDue\":\"0.00\"}","stack":"Error: Failed query: insert into \"receipts\" (\"id\", \"organisation_id\", \"user_id\", \"payment_id\", \"receipt_number\", \"generated_at\", \"email_sent_at\", \"is_emailed\", \"receipt_data\", \"created_at\") values (     (unixepoch() * 1000), null,   (unixepoch() * 1000)) returning \"id\", \"organisation_id\", \"user_id\", \"payment_id\", \"receipt_number\", \"generated_at\", \"email_sent_at\", \"is_emailed\", \"receipt_data\", \"created_at\"\nparams: 97e7244a-9a6c-4537-ba26-0cf22d2e19a0,a5ea3e04-c52e-452b-9f50-eca985e9858a,b7340d4a-4c5d-4521-9575-69ac26faf4a4,a0961b91-a132-405e-91a0-c8616509d6d3,REC-202611-0001,0,{\"paymentId\":\"a0961b91-a132-405e-91a0-c8616509d6d3\",\"invoiceId\":\"8f428447-5f1b-42fa-a6ee-5c660dbcf52d\",\"invoiceNumber\":\"INV-2026-0001\",\"customerName\":\"Walk-in customer\",\"customerEmail\":null,\"amountPaid\":\"4.50\",\"paymentDate\":\"2026-11-08\",\"invoiceDate\":\"2026-11-08\",\"invoiceDueDate\":\"2026-11-08\",\"paymentMethod\":\"cash\",\"currency\":\"NZD\",\"invoiceTotal\":\"4.50\",\"totalPaid\":\"4.50\",\"balanceDue\":\"0.00\"}\n    at RemotePreparedQuery.queryWithCache (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/session.ts:80:11)\n    at RemotePreparedQuery.all (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-proxy/session.ts:213:20)\n    at Module.insertReceipt (/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api/src/modules/receipts/receipts.repository.ts:93:17)\n    at /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api/src/modules/sales/sales.service.ts:140:21\n    at /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api/src/db/local.ts:79:24"}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_f6cfe78f-3351-49a1-b3ed-24dc6bef0990","route":"/api/sales","method":"POST","status":500,"durationMs":123}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_bda0d01f-a6f2-4acf-972a-64f3e21bc569","route":"/api/invoices","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_17602912-66e5-4566-9f7b-7321636df4cb","route":"/api/payments","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_8ff152f8-67ca-4fa5-944d-7358d08deb9f","route":"/api/receipts","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_6ea5dc66-5227-4970-a84e-a46df2a6118b","route":"/api/customers","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/sales/sales.test.ts > sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails
+{"msg":"http_request","requestId":"req_5318a881-4f27-46b3-b96c-756f26d31ffc","route":"/api/sales","method":"POST","status":201,"durationMs":119}
+
+ ✓ src/modules/sales/sales.test.ts (11 tests) 25822ms
+   ✓ sale routes > requires an Idempotency-Key and replays or conflicts on that key  2820ms
+   ✓ sale routes > rings up the walk-in customer once per organisation and posts one balanced pair of journals  3405ms
+   ✓ sale routes > uses the named customer and that customer email, including an empty email  2779ms
+   ✓ sale routes > applies the 15 percent GST fixtures, item rates, and a zero rate  3748ms
+   ✓ sale routes > dates the invoice today in the business timezone  2654ms
+   ✓ sale routes > gives two quick sales in one organisation distinct receipt numbers  2752ms
+   ✓ sale routes > concurrent identical requests create one invoice, payment, and receipt  2334ms
+   ✓ sale routes > rejects an inactive, missing, or foreign item and a non-positive cart  2608ms
+   ✓ sale routes > rolls back the invoice, payment, receipt, and journals when the receipt insert fails  2544ms
+stdout | src/modules/reports/report-columns.test.ts > posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget
+{"case":"10000-lines-12-columns","durationMs":2693.332955}
+
+ ✓ src/modules/reports/report-columns.test.ts (2 tests) 14850ms
+   ✓ posted-ledger report columns > matches each single month and full totals on accrual and cash basis, with quarter and clipped windows  3244ms
+   ✓ posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget  11598ms
+stdout | src/modules/quotes/quotes.test.ts > quote routes > unauthenticated GET /api/quotes returns 401
+{"msg":"http_request","requestId":"req_40ffe118-4459-4fb9-89c2-0f07bb9674df","route":"/api/quotes","method":"GET","status":401,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_78d49f9d-2740-43b3-b1b5-21056fc385e2","route":"/api/auth/*","method":"POST","status":200,"durationMs":510}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_df8b7628-994d-4fb8-8000-fd0a04c36554","route":"/api/auth/*","method":"POST","status":200,"durationMs":353}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_10311402-ac1d-4e75-a17d-eb6309266ebc","route":"/api/business-profile","method":"PUT","status":200,"durationMs":40}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_1a225050-31d2-400c-b612-7198702f315b","route":"/api/customers","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_471c4ada-4b31-4519-80a3-767dca4b1886","route":"/api/quotes/next-number","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_c0ff1476-6c2b-49cc-ba47-c4a1a976e882","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_e70e2a3f-379e-488f-a365-285d3b15d869","route":"/api/quotes","method":"POST","status":400,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_98210bba-7ffe-4f20-8326-68f36a6df129","route":"/api/quotes","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_4a31def1-0d41-48df-95a5-cb6af1443c18","route":"/api/quotes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_cf755fa6-dde5-43df-acaf-5d03fa4720f7","route":"/api/invoices","method":"POST","status":201,"durationMs":125}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_dd2eedac-dbd8-47cc-9c60-fa9b7bedd3dc","route":"/api/quotes","method":"POST","status":201,"durationMs":55}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_8a0aa1a2-6341-4fae-b6fa-ea4cc8535c08","route":"/api/invoices","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_f65de4d3-4db3-4d02-b4ac-0e59c26d9369","route":"/api/quotes/next-number","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_04380a6a-9040-4321-95c7-261cac898a43","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_90d9ba37-d7a3-461d-8002-8e958abc6ace","route":"/api/quotes/:id","method":"GET","status":404,"durationMs":12}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_9f9f45a2-773c-45a3-b4c2-9bd0e1c58c6c","route":"/api/invoices","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_f1889034-1cc2-4dc0-8501-e83f1ad964f1","route":"/api/tax-returns","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_4e8168a9-a273-41d1-936c-fe68cc044bb8","route":"/api/auth/*","method":"POST","status":200,"durationMs":278}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_4810ef41-f744-4882-b25e-7e949d1d0c9e","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_003f92c0-4d63-4a77-a4cd-bb5d45898f24","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_2c5761f6-f731-4274-8bde-73e47ccffed9","route":"/api/quotes","method":"POST","status":400,"durationMs":10}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_98125ef3-da09-4320-9755-98e33ccac17d","route":"/api/quotes","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_54239161-3ef8-4c50-8479-e1b791d56ff8","route":"/api/quotes","method":"POST","status":400,"durationMs":10}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_22216aad-0319-4c50-8cb8-2621b63f7c7b","route":"/api/quotes","method":"POST","status":400,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_bd488061-bd8b-4846-9e82-ea2aae736888","route":"/api/quotes","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_3fd81691-ec2d-4935-b8eb-2e02dbc88d9b","route":"/api/quotes/:id","method":"PATCH","status":200,"durationMs":27}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_9f9e7aeb-522e-474a-9363-60526ecfbe90","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_d2e85360-58d7-4bd3-9dc6-9cf0961a7562","route":"/api/quotes/:id","method":"PATCH","status":409,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_053dfc2a-92e0-41fc-87c8-76284f988afe","route":"/api/quotes/:id","method":"DELETE","status":409,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_abb582f0-8770-4cda-9c30-9447323e294d","route":"/api/auth/*","method":"POST","status":200,"durationMs":297}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_9d1d2542-8c03-4d41-b5f9-71434032082d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_a7f6ff5a-7c14-4f04-9b25-f93c7219dc42","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_4b8c4a4d-7993-4031-80c2-a3f2e8b12a4a","route":"/api/quotes","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_9bb2d721-3ff4-4c99-ba3a-cbd72e937b66","route":"/api/quotes/:id/status","method":"POST","status":409,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_099a4b0d-27e3-4e32-a514-1b46b533c535","route":"/api/quotes/:id/send","method":"POST","status":503,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_2fb0b244-828d-40e4-a762-dedae1f2ced5","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_37d0285b-445c-4362-a084-2b404ead5fa5","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_94d94572-e42e-4a63-bb8c-75be9dff33da","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_51c43984-2b03-44e1-ab24-e8a040543f14","route":"/api/public/quotes/:token","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_601edb35-b973-41c7-815f-0d56ef1522ee","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_022a7137-bbc6-4867-bba2-4eee75dc9a0f","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":39}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_e373909f-34a1-4d12-b07b-eda16958b847","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":1}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_3a8b1219-17a6-429e-b782-9ceaf628712d","route":"/api/public/quotes/:token/respond","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_2e4adeb8-1e0d-4705-965a-a8f08ec1ff49","route":"/api/public/quotes/:token/respond","method":"POST","status":409,"durationMs":9}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_83e3060b-bb46-424e-b0ae-3c7249d1588a","route":"/api/quotes","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_205c6d7c-6ecf-4179-8896-57d545e0081e","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":40}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_d753f10f-2a15-49fb-b2f4-492b3e0ab647","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_9583ab86-f3c0-40ba-8f8e-0a7a6bea155a","route":"/api/public/quotes/:token","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_759af4ed-90ad-4b76-bf89-a672cb3e776c","route":"/api/public/quotes/:token/respond","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_716c1ac0-4d1e-47b9-a00a-a836df84efda","route":"/api/quotes/:id/revise","method":"POST","status":200,"durationMs":23}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_5960fce1-638c-4096-a349-411b2e13a313","route":"/api/public/quotes/:token/respond","method":"POST","status":410,"durationMs":5}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_a6e63da6-5252-4bc0-a536-fc6c3902031e","route":"/api/public/quotes/:token","method":"GET","status":410,"durationMs":5}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_b0279811-adc6-4da6-9b71-c1b54e4ddf47","route":"/api/quotes","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_f22b9ae2-9304-4df3-af4e-3e949ef7d43b","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":21}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_5c770ad3-a1aa-4f7e-ade9-7b405d425aca","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_8619b3dc-09b4-4b4d-bec4-9b4fd26524b3","route":"/api/quotes","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_c08aa64c-70e0-4ce3-bb65-707c64f21456","route":"/api/quotes/:id/status","method":"POST","status":409,"durationMs":11}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_bc456adb-727b-4757-bc2f-57fa79f0ea9f","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_89ff0760-8438-4f30-92c1-816aa03c8aba","route":"/api/public/quotes/:token/respond","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_33861334-77b2-4b59-b8d1-04a3b1a40a2a","route":"/api/public/quotes/:token","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_713f63cf-983c-4191-b4e9-944dc631d28d","route":"/api/quotes/:id/duplicate","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_85ada8d2-d43e-40a5-a310-cbbf8ed07b35","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":1}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_c4d8dd73-bd8e-4eb2-b62c-fb0557ea919c","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":1}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_c9c5550b-7c15-4035-ad4a-374812973d5f","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_b12f55df-29d0-4c77-8f4c-92fe42b56d3f","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":1}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_43353680-b42c-44ff-bfee-3d0f74f18c93","route":"/api/auth/*","method":"POST","status":200,"durationMs":280}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_ea2f723d-5073-4729-8048-47d98d4dc535","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_558d3664-2a91-48c2-8a3c-bf086428fdf6","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_4240a7f4-6988-4ec1-921c-e0a04b7df840","route":"/api/quotes","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_78a8950d-da30-488c-b0b2-fa1ab99aa906","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_f9a30060-6d3e-417e-8feb-e00742630f10","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_fe23cbb0-f368-4e9f-8826-76fb4a637ba3","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_cf634a49-297d-4aa4-bcb1-e1d04c8510cf","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":42}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_37121763-ae20-4a24-b79a-98b7d5a424c6","route":"/api/auth/*","method":"POST","status":200,"durationMs":374}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_f838083b-173a-44af-912a-a42c12863d64","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_60f6b031-f64d-4bd7-9e70-daeb2d74003c","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_a3068560-6a24-483e-9af2-fc636107cad3","route":"/api/quotes","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_78ad6750-80f0-4373-9a11-36f6a4467574","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_fbda1ee7-9033-4314-98ff-3772707fa74a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_b6b08d92-10ff-4b05-bf32-a771b07a33ce","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":55}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_83bb46db-0721-4aeb-a3a6-16a5ed507bbb","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_ddbcc7dd-dbf1-4a8b-80fa-de94cc7310ef","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":50}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4bb1f960-fe1d-4e5c-b944-3f86fa5d969b","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_19664b0e-d3bd-4442-b9c5-215e08bbb9fe","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_30bfbd3b-3823-4d49-a827-00d17e61c7a9","route":"/api/invoices","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4312f04f-3395-47a7-8373-710f6a37ad35","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_bab1e66a-a86c-473d-b4bd-0cf69199553f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_2920ebf8-f736-49ae-bb32-30acdd5051f5","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":65}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4646d86d-1336-4706-a7c8-d3b8a369a7c8","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":40}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_1cb88333-6b00-4318-8d81-8f97396db95e","route":"/api/quotes","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_1b2e9900-25ce-470f-ab59-c8e5ce14859d","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_145d24ec-3bc8-489f-b767-8e1216dd57ce","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_9e337aa8-76aa-4221-884b-7e7c8a7471ac","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":13}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4f14e50a-0629-48c6-ab3a-aca3785e6ddd","route":"/api/quotes","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_e06823a7-eda2-422a-9e25-cf9aa2012db3","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":43}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_82d3b8d9-6e2f-4024-83df-55dc99c77327","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":15}
+
+ ✓ src/modules/quotes/quotes.test.ts (7 tests) 15339ms
+   ✓ quote routes > keeps quote numbering independent and matches invoice totals  3699ms
+   ✓ quote routes > rejects invalid quotes and edits only drafts  2628ms
+   ✓ quote routes > follows the status table, expires on read, and lets a client respond once  3166ms
+   ✓ quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places  2593ms
+   ✓ quote routes > converts an accepted quote once into a draft invoice with the same totals  3120ms
+
+ Test Files  4 passed (4)
+      Tests  28 passed (28)
+   Start at  20:57:10
+   Duration  107.11s (transform 4.95s, setup 112ms, collect 23.90s, tests 78.45s, environment 2ms, prepare 1.32s)
+
+JSON report written to /tmp/ledgercraft-api-rerun-results.json

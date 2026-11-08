@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -6,12 +7,13 @@ import { chromium } from '@playwright/test';
 // Run against local Hono + Expo web. It creates isolated test data, never a real payment.
 const mobileUrl = process.env.QUICK_SALE_MOBILE_URL ?? 'http://127.0.0.1:8081';
 const apiUrl = process.env.QUICK_SALE_API_URL ?? 'http://127.0.0.1:3001';
+const buyerUrl = process.env.QUICK_SALE_BUYER_URL ?? 'http://127.0.0.1:8080';
 const output = process.env.QUICK_SALE_OUTPUT_DIR ?? '/tmp/ledgercraft-quick-sale';
-for (const url of [mobileUrl, apiUrl]) {
+for (const url of [mobileUrl, apiUrl, buyerUrl]) {
   assert.ok(['localhost', '127.0.0.1'].includes(new URL(url).hostname), 'Use local development services only');
 }
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROMIUM_PATH ?? '/usr/bin/chromium', args: ['--no-sandbox'] });
+const browser = await chromium.launch(proofBrowserOptions({ ...process.env, PROOF_BROWSER_PATH: process.env.PROOF_BROWSER_PATH ?? process.env.CHROMIUM_PATH }));
 const context = await browser.newContext({ viewport: { width: 390, height: 844 }, colorScheme: 'dark' });
 const page = await context.newPage();
 const errors = [];
@@ -24,7 +26,7 @@ async function api(route, { method = 'GET', body, expected = 200 } = {}) {
 async function shot(name) { await page.screenshot({ path: path.join(output, name), animations: 'disabled' }); }
 try {
   await api('/api/auth/sign-up/email', { method: 'POST', body: { name: 'Market seller', email: `market-${Date.now()}@example.test`, password: `Local-${crypto.randomUUID()}` } });
-  await api('/api/business-profile', { method: 'PUT', body: { name: 'Market bakery', email: 'market@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered' } });
+  await api('/api/business-profile', { method: 'PUT', body: { name: 'Market bakery', email: 'market@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-01-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 10 } });
   await api('/api/items', { method: 'POST', expected: 201, body: { name: 'Pie', type: 'product', unit: 'ea', salePrice: '4.50', isActive: true } });
   await api('/api/items', { method: 'POST', expected: 201, body: { name: 'Roll', type: 'product', unit: 'ea', salePrice: '9.00', isActive: true } });
   await page.goto(mobileUrl, { waitUntil: 'networkidle', timeout: 120_000 });
@@ -77,7 +79,7 @@ try {
   assert.equal(snapshot.invoice.status, 'paid');
   assert.equal(snapshot.invoice.totalPaid, '13.50');
   const buyerPage = await buyer.newPage();
-  await buyerPage.goto(`http://127.0.0.1:8080/shared/invoice/${share.shareToken}`, { waitUntil: 'networkidle' });
+  await buyerPage.goto(`${buyerUrl}/shared/invoice/${share.shareToken}`, { waitUntil: 'networkidle' });
   await buyerPage.getByText(/paid/i).first().waitFor();
   await buyerPage.screenshot({ path: path.join(output, '04-buyer-paid-invoice.png') });
   await buyerPage.setViewportSize({ width: 1440, height: 900 });

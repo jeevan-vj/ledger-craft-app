@@ -1,0 +1,1 @@
+PASS: persisted cart/favourite → cash charge → receipt QR → anonymous paid invoice → day summary → empty past day → invoice detail → offline guard → card response lost → idempotent retry

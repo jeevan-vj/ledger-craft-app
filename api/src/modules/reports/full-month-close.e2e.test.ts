@@ -1,10 +1,17 @@
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { join, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { getDatabaseUrl } from '../../env';
 import { financialReportResponseSchema, gstPreparationResponseSchema, creditNoteSchema } from '@ledgercraft/contracts';
 import { withTestDb } from '../../test/harness';
 import { decimal, roundMoney } from '../invoices/money';
 import { journalEntries, journalEntryLines } from '../../db/schema/accounts';
 import { fullMonthCloseFixture } from './full-month-close.test-helper';
+
+const historicalEvidencePath = new URL('../../../../docs/evidence/full-month-close/api/results.json', import.meta.url);
+let historicalEvidenceBefore: string;
+beforeAll(async () => { historicalEvidenceBefore = await readFile(historicalEvidencePath, 'utf8'); });
 
 // Monetary expectations are frozen in the independently prepared working paper.
 describe('full October close through real authenticated HTTP and SQLite', () => {
@@ -93,8 +100,11 @@ describe('full October close through real authenticated HTTP and SQLite', () => 
       expect(stableGst(gstPreparationResponseSchema.parse(await f.request('/api/tax/gst-preparation?from=2026-10-01&to=2026-10-31')))).toEqual(stableGst(gst));
       const historical = financialReportResponseSchema.parse(await f.request(reportPath));
       for (const section of ['profitLoss', 'balanceSheet', 'cashFlow', 'trialBalance', 'taxSummary', 'receivablesAging', 'payablesAging'] as const) expect(historical[section]).toEqual(after[section]);
-      const dir = new URL('../../../../docs/evidence/full-month-close/api/', import.meta.url); await mkdir(dir, { recursive: true });
-      await writeFile(new URL('results.json', dir), JSON.stringify({ scope: 'Real Hono/SQLite API acceptance; not UI acceptance', expectedPaper: expected, before, after, completed, gst, alternateGst, retainedDraft: retained, historical, commands: f.commands }, null, 2));
+      const dir = process.env.LEDGERCRAFT_MONTH_CLOSE_EVIDENCE_DIR
+        ? resolve(process.env.LEDGERCRAFT_MONTH_CLOSE_EVIDENCE_DIR)
+        : fileURLToPath(new URL('./month-close-evidence/', getDatabaseUrl()));
+      await mkdir(dir, { recursive: true });
+      await writeFile(join(dir, 'results.json'), JSON.stringify({ scope: 'Real Hono/SQLite API acceptance; not UI acceptance', expectedPaper: expected, before, after, completed, gst, alternateGst, retainedDraft: retained, historical, commands: f.commands }, null, 2), { flag: 'wx' });
       expect(after.cashFlow).toMatchObject({ openingCash: expected.cashFlow.openingCash, inflows: '2300.00', outflows: '920.00', netCashFlow: expected.cashFlow.netCashFlow, closingCash: expected.cashFlow.closingCash });
     } finally { await f.sql.end(); }
   }));
@@ -126,5 +136,9 @@ describe('full October close through real authenticated HTTP and SQLite', () => 
       expect(isolated.status).toBe(404);
     } finally { await f.sql.end(); }
   }));
+
+  it('preserves the historical acceptance evidence when the suite runs', async () => {
+    expect(await readFile(historicalEvidencePath, 'utf8')).toBe(historicalEvidenceBefore);
+  });
 
 });

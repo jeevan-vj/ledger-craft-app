@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { execFileSync } from 'node:child_process';
@@ -5,7 +6,7 @@ import { chromium } from '@playwright/test';
 const origin=process.env.COLLECTIONS_ORIGIN??'http://127.0.0.1:8080';
 const output=process.env.COLLECTIONS_OUTPUT??'/tmp/ledgercraft-remaining-statements';
 assert.ok(['127.0.0.1','localhost'].includes(new URL(origin).hostname));await mkdir(output,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});
+const browser=await chromium.launch(proofBrowserOptions());
 let activePage;
 const result={platform:'Chromium responsive web with real local Hono/SQLite and synthetic registered companies; no real mail delivery',expected:{opening:'230.00',closing:'690.00',current:'460.00',days31To60:'230.00',afterLateReceipt:'575.00'},errors:[],cases:{}};
 try { for(const [name,viewport] of [['desktop',{width:1440,height:900}],['phone',{width:390,height:844}]]) {

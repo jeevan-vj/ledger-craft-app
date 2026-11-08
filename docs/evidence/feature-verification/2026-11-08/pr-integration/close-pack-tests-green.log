@@ -1,0 +1,18 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (8 tests) 7075ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances  3251ms
+   ✓ Financial reports GST return > labels a refund from IRD and displays its magnitude without a negative sign  509ms
+   ✓ Financial reports GST return > shows a nil GST position without implying a payment or refund  614ms
+   ✓ Financial reports GST return > labels GST as invoice basis on a cash-basis report and surfaces foreign-currency warnings  803ms
+   ✓ offers NZ presets, server columns and PDF export without computing browser totals  555ms
+   ✓ shows trial-balance closing sides and server closing totals distinctly from period movement  421ms
+   ✓ shows net account cash movement rather than journal turnover as cash flow  615ms
+ ✓ src/features/reports/ClosePackDownload.test.tsx (3 tests) 588ms
+   ✓ downloads one full-company pack for the applied dates  506ms
+
+ Test Files  2 passed (2)
+      Tests  11 passed (11)
+   Start at  22:05:17
+   Duration  30.20s (transform 2.32s, setup 1.72s, collect 8.09s, tests 7.66s, environment 7.12s, prepare 1.25s)

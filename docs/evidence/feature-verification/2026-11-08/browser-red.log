@@ -1,0 +1,10 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+browserType.launch: Failed to launch chromium because executable doesn't exist at /usr/bin/chromium
+    at /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/scripts/full-month-close-web-proof.mjs:8:30 {
+  name: 'Error'
+}
+
+Node.js v24.22.1

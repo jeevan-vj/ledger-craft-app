@@ -1,5 +1,7 @@
 # LedgerCraft target architecture
 
+**Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
+
 **Second-month / NZ year-end acceptance (verified locally, 2026-11-08):**
 Fresh web/Expo companies carry October balances into November, reconcile five
 settlements, retain four nil GST drafts, close March31 and start April without
@@ -1511,3 +1513,7 @@ For the final database move:
 - [Better Auth: Expo integration](https://www.better-auth.com/docs/integrations/expo)
 - [Better Auth: session management](https://www.better-auth.com/docs/concepts/session-management)
 - [OWASP: Session Management Cheat Sheet](https://cheatsheetseries.owasp.org/cheatsheets/Session_Management_Cheat_Sheet.html)
+
+Quote conversion retains an unposted invoice draft. Conversion/replay cannot recognise receivables, revenue or GST; the normal invoice issue transition posts once. Previously recorded journals remain immutable and require reviewed corrections rather than automatic rewriting (issue #167).
+
+Selected accounting report dates remain calendar dates when anchoring browser charts; UTC-noon conversion must not move a month-end to the next local day (issue #168).

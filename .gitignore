@@ -68,3 +68,6 @@ deploy/*.local.env
 
 # Local GST scenario verification artifacts
 .gst-evidence/
+
+# Isolated synthetic verification database, sessions, and raw evidence
+/.tmp/feature-verification/

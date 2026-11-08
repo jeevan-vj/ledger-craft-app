@@ -1,0 +1,107 @@
+{
+  "sourceSha": "0a35c75f75d9013d28b44f1ba7354a8c72b55df2",
+  "runtime": "Node 24.22.1; Vite development web; Playwright Chromium",
+  "timestamp": "2026-11-08T07:17:57.084156+00:00",
+  "layers": {
+    "businessOperations": "real UI",
+    "persistence": "real local Hono/SQLite read-back",
+    "nativeDevice": "NOT_RUN",
+    "liveProviders": "NOT_RUN"
+  },
+  "actual": {
+    "trialBalanceDebits": "13680.00",
+    "trialBalanceCredits": "13680.00",
+    "assets": "12480.00",
+    "liabilities": "980.00",
+    "equity": "11500.00",
+    "profit": "1500.00",
+    "cash": "11380.00",
+    "receivables": "920.00",
+    "payables": "575.00",
+    "gst": "225.00",
+    "matchedCount": 5
+  },
+  "stageChecks": {
+    "signup": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [
+        {
+          "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+          "url": "http://127.0.0.1:8080/api/me"
+        },
+        {
+          "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:8080/api/business-profile"
+        },
+        {
+          "message": "API request failed {status: 404, code: NOT_FOUND, requestId: req_80fdfd7c-75dc-4f04-9082-3eb5a393a1fc, message: Business profile not found}",
+          "url": "http://127.0.0.1:8080/src/lib/api/readApiError.ts"
+        }
+      ],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}."
+      ]
+    },
+    "invoices": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "purchases": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "credits": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "bank": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "reports": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "gst": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    }
+  },
+  "limitations": [
+    "Initial invoice cold-load timeout; retry completed.",
+    "Receipt writes and amounts succeeded; initial strict console check failed because navigation interrupted the refresh. Driver now waits for dialog completion; fresh receipt regression pending.",
+    "This is a fresh development-server run, not the prior built artifact or production acceptance."
+  ]
+}

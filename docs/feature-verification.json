@@ -1,0 +1,579 @@
+{
+  "schemaVersion": 1,
+  "features": [
+    {
+      "id": "identity",
+      "title": "Account access and recovery",
+      "module": "auth",
+      "route": "/settings",
+      "skill": ".cursor/skills/ledgercraft-check-identity/SKILL.md",
+      "flow": "Sign up, sign in, inspect sessions, request reset, reject expired/reused reset, revoke another session.",
+      "expectation": "Reset revokes old cookie and bearer sessions; neutral unknown-email response; do not expose tokens in screenshots.",
+      "apiTests": [
+        "api/src/modules/auth/account-deletion.integration.test.ts",
+        "api/src/modules/auth/account-deletion.service.test.ts",
+        "api/src/modules/auth/account-security.integration.test.ts",
+        "api/src/modules/auth/auth-email.test.ts",
+        "api/src/modules/auth/authorize-request.test.ts",
+        "api/src/modules/auth/permissions.test.ts",
+        "api/src/modules/auth/protected-route-permissions.test.ts",
+        "api/src/modules/auth/remaining-access.test.ts",
+        "api/src/modules/auth/session.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "signup"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "companies",
+      "title": "Companies and permissions",
+      "module": "organisations",
+      "route": "/settings",
+      "skill": ".cursor/skills/ledgercraft-check-companies/SKILL.md",
+      "flow": "Create two synthetic companies, switch, invite a read-only member, attempt a forbidden write and cross-company read.",
+      "expectation": "Each company retains separate books; revoked membership immediately loses access; invitations do not imply email delivery.",
+      "apiTests": [
+        "api/src/modules/organisations/organisations.test.ts"
+      ],
+      "uiDrivers": []
+    },
+    {
+      "id": "profile",
+      "title": "Business settings and branding",
+      "module": "business-profile",
+      "route": "/settings",
+      "skill": ".cursor/skills/ledgercraft-check-profile/SKILL.md",
+      "flow": "Save business identity, valid logo and invoice palette, reload, preview an invoice; reject malformed and oversized logos.",
+      "expectation": "Printed seller identity matches effective GST registration; failed photo reads must not save a broken profile.",
+      "apiTests": [
+        "api/src/modules/business-profile/business-profile.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "signup"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "customers",
+      "title": "Customers and collections",
+      "module": "customers",
+      "route": "/customers",
+      "skill": ".cursor/skills/ledgercraft-check-customers/SKILL.md",
+      "flow": "Create and edit a customer, create an invoice, view balance, archive and check historical documents.",
+      "expectation": "Customer history remains intact; current outstanding amount agrees with invoice balances, not gross sales.",
+      "apiTests": [
+        "api/src/modules/customers/customers.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "invoices"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "catalogue",
+      "title": "Products and services",
+      "module": "items",
+      "route": "/items",
+      "skill": ".cursor/skills/ledgercraft-check-catalogue/SKILL.md",
+      "flow": "Create an active priced service, edit price, use it on a draft, deactivate, inspect an existing invoice.",
+      "expectation": "Historical invoice values remain unchanged; new selection respects active state and exact quantity/price.",
+      "apiTests": [
+        "api/src/modules/items/items.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/catalogue-quote-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "quotes",
+      "title": "Quotes and estimates",
+      "module": "quotes",
+      "route": "/quotes",
+      "skill": ".cursor/skills/ledgercraft-check-quotes/SKILL.md",
+      "flow": "Create, revise, share, accept and convert a quote; retry conversion; decline another quote.",
+      "expectation": "Quote alone posts no journal; conversion creates one invoice; revoked/expired public links cannot act.",
+      "apiTests": [
+        "api/src/modules/quotes/quotes.test.ts",
+        "api/src/modules/quotes/quotes.transitions.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/catalogue-quote-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "invoices",
+      "title": "Invoice lifecycle",
+      "module": "invoices",
+      "route": "/invoices",
+      "skill": ".cursor/skills/ledgercraft-check-invoices/SKILL.md",
+      "flow": "Create a draft with discounts and multiple taxes, reload, issue, duplicate, cancel and restore; inspect audit history.",
+      "expectation": "Server totals win; drafts do not post; cancellation/restoration is balanced and immutable; explicit exempt taxes remain empty.",
+      "apiTests": [
+        "api/src/modules/invoices/email-delivery.e2e.test.ts",
+        "api/src/modules/invoices/invoice-delivery-current-state.test.ts",
+        "api/src/modules/invoices/invoice-gst-compliance.test.ts",
+        "api/src/modules/invoices/invoice-lifecycle.test.ts",
+        "api/src/modules/invoices/invoices.remind.test.ts",
+        "api/src/modules/invoices/invoices.test.ts",
+        "api/src/modules/invoices/mailer.test.ts",
+        "api/src/modules/invoices/money.test.ts",
+        "api/src/modules/invoices/overdue.test.ts",
+        "api/src/modules/invoices/resend.test.ts",
+        "api/src/modules/invoices/restore-repair.test.ts",
+        "api/src/modules/invoices/share.test.ts",
+        "api/src/modules/invoices/totals.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "invoices"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        },
+        {
+          "path": "tests/e2e/invoice-sharing-controls-local.spec.ts",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Payments and receipts",
+      "module": "payments",
+      "route": "/payments",
+      "skill": ".cursor/skills/ledgercraft-check-payments/SKILL.md",
+      "flow": "Part-pay an issued invoice, retry the same key, attempt overpayment, settle, inspect receipt, reverse with a dated reason.",
+      "expectation": "Exactly one receipt/journal per accepted payment; balance cannot go negative; reversal preserves original payment and receipt.",
+      "apiTests": [
+        "api/src/modules/payments/payment-credit-state.test.ts",
+        "api/src/modules/payments/payments.test.ts",
+        "api/src/modules/receipts/receipts.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "receipts"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        },
+        {
+          "path": "scripts/payment-refresh-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "credit-notes",
+      "title": "Customer credits and refunds",
+      "module": "credit-notes",
+      "route": "/invoices",
+      "skill": ".cursor/skills/ledgercraft-check-credit-notes/SKILL.md",
+      "flow": "Credit an unpaid invoice, allocate credit, credit a paid invoice and refund the correct receipt; attempt excess refund.",
+      "expectation": "Credits and refunds have distinct source identities; remaining refundable value is checked live; originals remain visible.",
+      "apiTests": [
+        "api/src/modules/credit-notes/credit-notes.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "credits"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "purchases",
+      "title": "Vendors and bills",
+      "module": "purchases",
+      "route": "/bills",
+      "skill": ".cursor/skills/ledgercraft-check-purchases/SKILL.md",
+      "flow": "Create vendor and draft bill, receive, split-pay, retry, cancel/restore where permitted; export vendors.",
+      "expectation": "Draft bill posts nothing; AP equals unpaid received bills; duplicate payment cannot reduce AP twice; CSV neutralises formulas.",
+      "apiTests": [
+        "api/src/modules/purchases/bill-payment-idempotency.test.ts",
+        "api/src/modules/purchases/purchases.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "purchases"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "expenses",
+      "title": "Expenses and receipt capture",
+      "module": "expenses",
+      "route": "/expenses",
+      "skill": ".cursor/skills/ledgercraft-check-expenses/SKILL.md",
+      "flow": "Create an expense with tax on/off, approve/pay, attach receipt, reload; review duplicate receipt and failed scan.",
+      "expectation": "GST follows reviewed exact amount; failed AI must leave a reviewable draft, never silently post; retained source stays private.",
+      "apiTests": [
+        "api/src/modules/expenses/expenses.test.ts",
+        "api/src/modules/expenses/receipt-hash.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "purchases"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "banking",
+      "title": "Bank accounts and transactions",
+      "module": "bank",
+      "route": "/bank-accounts",
+      "skill": ".cursor/skills/ledgercraft-check-banking/SKILL.md",
+      "flow": "Create a bank account, record transfer, import a mapped CSV twice, review balances and saved statement. Prepare a bank ledger by selecting its bank name; preserve linked financial identity and retry without duplicate accounts.",
+      "expectation": "Import changes displayed balance once; transfers net to zero across own accounts; foreign bank statements fail closed.",
+      "apiTests": [
+        "api/src/modules/accounts/bank-ledger.test.ts",
+        "api/src/modules/accounts/closed-identity.test.ts",
+        "api/src/modules/bank/bank-import-balances.test.ts",
+        "api/src/modules/bank/bank-workspace.test.ts",
+        "api/src/modules/bank/bank.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "bank"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "reconciliation",
+      "title": "Bank reconciliation",
+      "module": "reconciliation",
+      "route": "/reconciliation",
+      "skill": ".cursor/skills/ledgercraft-check-reconciliation/SKILL.md",
+      "flow": "Match bank lines to existing invoice receipts, supplier payment, paid expense and customer refund; undo/rematch and complete.",
+      "expectation": "No second income/GST/cash posting; completed cutoff and linked account identity are protected; difference is zero.",
+      "apiTests": [
+        "api/src/modules/reconciliation/bank-reconciliation-phase1.test.ts",
+        "api/src/modules/reconciliation/foreign-bank-guard.test.ts",
+        "api/src/modules/reconciliation/reconciliation-summary.test.ts",
+        "api/src/modules/reconciliation/reconciliation.test.ts",
+        "api/src/modules/reconciliation/statement-adjustments.test.ts",
+        "api/src/modules/reconciliation/statement-idempotency.test.ts",
+        "api/src/modules/reconciliation/suggestion-scoring.test.ts",
+        "api/src/modules/reconciliation/supplier-payment-match.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "bank"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "journals",
+      "title": "Chart of accounts and journals",
+      "module": "journals",
+      "route": "/journal-entries",
+      "skill": ".cursor/skills/ledgercraft-check-journals/SKILL.md",
+      "flow": "Create accounts, post reviewed opening balances and multiline journal, retry, inspect/export every line; reject imbalance. Create chart accounts through UI; close a reviewed period, reject backdated mutations, reopen as owner/admin, and retain actor audit identity.",
+      "expectation": "Debits equal credits exactly; posted entries immutable; opening and period turnover are distinct from closing balance.",
+      "apiTests": [
+        "api/src/modules/accounting/period-actor-retention.test.ts",
+        "api/src/modules/accounting/period-lock.test.ts",
+        "api/src/modules/accounts/account-create-retry.test.ts",
+        "api/src/modules/accounts/accounts.test.ts",
+        "api/src/modules/journals/journal-idempotency.test.ts",
+        "api/src/modules/journals/journals.test.ts",
+        "api/src/modules/journals/multi-line-journals.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "signup"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "reports",
+      "title": "Financial reports and dashboards",
+      "module": "reports",
+      "route": "/financial-reports",
+      "skill": ".cursor/skills/ledgercraft-check-reports/SKILL.md",
+      "flow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month. Download an authenticated accountant ZIP; verify report membership, SHA-256 checksums and reports/banking permission boundaries. Reconcile the next month and financial-year rollover; distinguish period profit from accumulated earnings and retain earlier close evidence.",
+      "expectation": "Use frozen Decimal working paper: TB 13680 each side, assets 12480 = liabilities 980 + equity 11500, profit 1500, cash 11380, AR 920, AP 575. Cash profit 1200; later settlement does not alter historical close.",
+      "apiTests": [
+        "api/src/modules/reports/account-statement-opening.test.ts",
+        "api/src/modules/reports/accountant-month-close.e2e.test.ts",
+        "api/src/modules/reports/cash-flow-reconciliation.test.ts",
+        "api/src/modules/reports/cash-recognition-history.test.ts",
+        "api/src/modules/reports/cash-recognition-invalid-source.test.ts",
+        "api/src/modules/reports/cash-report-receipts.test.ts",
+        "api/src/modules/reports/close-pack.test.ts",
+        "api/src/modules/reports/full-month-close.e2e.test.ts",
+        "api/src/modules/reports/report-columns.test.ts",
+        "api/src/modules/reports/report-options.test.ts",
+        "api/src/modules/reports/reports-aging-history.test.ts",
+        "api/src/modules/reports/reports.test.ts",
+        "api/src/modules/reports/second-month-year-end.e2e.test.ts",
+        "api/src/modules/reports/trial-balance-signs.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "reports"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "gst",
+      "title": "GST settings and returns",
+      "module": "tax",
+      "route": "/ird-reports",
+      "skill": ".cursor/skills/ledgercraft-check-gst/SKILL.md",
+      "flow": "Confirm registration date/basis/frequency, prepare each supported basis, retain/revise draft, record synthetic external-filing reference, inspect immutable snapshot.",
+      "expectation": "October working paper gives invoice 225, payments 180, hybrid 300. Pre-registration sources stay excluded; unknown mappings block filing. This is preparation and recording, not IRD submission.",
+      "apiTests": [
+        "api/src/modules/tax/bank-reconciled-business.e2e.test.ts",
+        "api/src/modules/tax/business-accounting.e2e.test.ts",
+        "api/src/modules/tax/gst-calculation.test.ts",
+        "api/src/modules/tax/gst-classification.test.ts",
+        "api/src/modules/tax/gst-ird-scenario.e2e.test.ts",
+        "api/src/modules/tax/gst-payments.test.ts",
+        "api/src/modules/tax/gst-preparation.test.ts",
+        "api/src/modules/tax/gst-registered-calculation.test.ts",
+        "api/src/modules/tax/gst-registration-reversals.test.ts",
+        "api/src/modules/tax/gst-self-filing.e2e.test.ts",
+        "api/src/modules/tax/gst-settings.test.ts",
+        "api/src/modules/tax/tax-completion.e2e.test.ts",
+        "api/src/modules/tax/tax.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/full-month-close-web-proof.mjs",
+          "stages": [
+            "gst"
+          ],
+          "scope": "real business UI; shared sequential month-close scenario"
+        }
+      ]
+    },
+    {
+      "id": "currency",
+      "title": "Currency and reviewed FX",
+      "module": "currency",
+      "route": "/settings",
+      "skill": ".cursor/skills/ledgercraft-check-currency/SKILL.md",
+      "flow": "Set base currency/dated rate, create foreign source, review carrying settlement, post period-end revaluation and next-day reversal.",
+      "expectation": "Used rates/snapshots immutable; report base restrictions remain explicit; unsupported foreign bank matching is rejected.",
+      "apiTests": [
+        "api/src/modules/currency/currency.test.ts",
+        "api/src/modules/currency/revaluation.test.ts",
+        "api/src/modules/currency/settlements.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/accounting-completion-fx-web-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "recurring",
+      "title": "Recurring documents",
+      "module": "recurring",
+      "route": "/recurring",
+      "skill": ".cursor/skills/ledgercraft-check-recurring/SKILL.md",
+      "flow": "Create invoice/bill templates, preview occurrence, pause/resume/end; exercise duplicate/catch-up and revoked permission.",
+      "expectation": "One document per occurrence across retries/restarts; owning-company context and current permissions govern jobs; unavailable mail is not sent.",
+      "apiTests": [
+        "api/src/modules/recurring/recurring-delivery-scope.test.ts",
+        "api/src/modules/recurring/recurring-organisation-scope.test.ts",
+        "api/src/modules/recurring/recurring.delivery.test.ts",
+        "api/src/modules/recurring/recurring.idempotency.test.ts",
+        "api/src/modules/recurring/recurring.test.ts",
+        "api/src/modules/recurring/schedule.test.ts"
+      ],
+      "uiDrivers": []
+    },
+    {
+      "id": "statements",
+      "title": "Statements and reminders",
+      "module": "customer-statements",
+      "route": "/customer-statements",
+      "skill": ".cursor/skills/ledgercraft-check-statements/SKILL.md",
+      "flow": "Generate a dated customer statement, retain/share snapshot, download PDF, change source, inspect original snapshot, opt out and run reminder contract.",
+      "expectation": "Snapshot remains unchanged; opt-out is respected; transport acceptance and live delivery are separate evidence.",
+      "apiTests": [
+        "api/src/modules/customer-statements/collections-mailer.test.ts",
+        "api/src/modules/customer-statements/customer-statements.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/issue115-statements-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "imports",
+      "title": "Invoice and document imports",
+      "module": "invoice-imports",
+      "route": "/invoices/import",
+      "skill": ".cursor/skills/ledgercraft-check-imports/SKILL.md",
+      "flow": "Import PDF/photo, review extracted lines/contact/duplicate, choose sales or purchase, commit draft, inspect locked original; reject over-limit and malicious input.",
+      "expectation": "Only reviewed drafts are committed; no send/pay/post side effect; exact cents and document prompt boundaries hold; unavailable provider is visible.",
+      "apiTests": [
+        "api/src/modules/invoice-imports/draft-validation.test.ts",
+        "api/src/modules/invoice-imports/extraction/extraction.test.ts",
+        "api/src/modules/invoice-imports/invoice-import-validation.test.ts",
+        "api/src/modules/invoice-imports/invoice-imports-accounting.e2e.test.ts",
+        "api/src/modules/invoice-imports/invoice-imports-phase2.test.ts",
+        "api/src/modules/invoice-imports/invoice-imports.test.ts",
+        "api/src/modules/storage/file-storage.test.ts",
+        "api/src/modules/storage/keys.test.ts",
+        "api/src/modules/storage/objects.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/issue115-receipts-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "quick-sale",
+      "title": "Quick sale",
+      "module": "sales",
+      "route": "/invoices",
+      "skill": ".cursor/skills/ledgercraft-check-quick-sale/SKILL.md",
+      "flow": "On Expo enable Sell, arrange tiles, charge cart, double-tap/retry, view/share receipt, inspect day summary and offline error.",
+      "expectation": "One invoice/full payment/receipt per persisted cart key; daily gross equals method totals; once-rounded cart total; named customer sale remains in day summary.",
+      "apiTests": [
+        "api/src/modules/sales/sales-flow.test.ts",
+        "api/src/modules/sales/sales-summary.test.ts",
+        "api/src/modules/sales/sales.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/quick-sale-mobile-screens.mjs",
+          "scope": "Expo web quick sale, cart persistence, receipt and daily summary; native sharing remains separate"
+        }
+      ]
+    },
+    {
+      "id": "stripe",
+      "title": "Stripe payment operations",
+      "module": "stripe",
+      "route": "/settings",
+      "skill": ".cursor/skills/ledgercraft-check-stripe/SKILL.md",
+      "flow": "Use local mock onboarding/Checkout, deliver signed duplicate events, inspect settlement/refund and read-only daily verification; test unavailable capability.",
+      "expectation": "Verified event creates one payment/clearing posting; paid capture is not bank payout; payout/dispute/excess-capture gaps remain explicit.",
+      "apiTests": [
+        "api/src/modules/stripe/stripe.fees.test.ts",
+        "api/src/modules/stripe/stripe.guardrails.test.ts",
+        "api/src/modules/stripe/stripe.integration.test.ts",
+        "api/src/modules/stripe/stripe.mock-gateway.test.ts",
+        "api/src/modules/stripe/stripe.operations.test.ts",
+        "api/src/modules/stripe/stripe.real-gateway.test.ts",
+        "api/src/modules/stripe/stripe.signature.test.ts"
+      ],
+      "uiDrivers": []
+    },
+    {
+      "id": "bank-feeds",
+      "title": "Bank feed connections",
+      "module": "bank-feeds",
+      "route": "/bank-accounts",
+      "skill": ".cursor/skills/ledgercraft-check-bank-feeds/SKILL.md",
+      "flow": "Test disabled capability, internal Personal App gate, mocked import retry and disconnect; verify tenant scoping.",
+      "expectation": "Never claim Full App OAuth/accreditation or live bank proof from mocks; credentials remain server-only.",
+      "apiTests": [
+        "api/src/modules/bank-feeds/akahu.gateway.test.ts",
+        "api/src/modules/bank-feeds/bank-feeds.http.test.ts",
+        "api/src/modules/bank-feeds/bank-feeds.migration.test.ts",
+        "api/src/modules/bank-feeds/bank-feeds.service.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/issue115-bankfeeds-proof.mjs",
+          "scope": "read driver setup and evidence boundaries before running"
+        }
+      ]
+    },
+    {
+      "id": "assistant",
+      "title": "Assistant and scanned documents",
+      "module": "ai",
+      "route": "/expenses",
+      "skill": ".cursor/skills/ledgercraft-check-assistant/SKILL.md",
+      "flow": "Test unavailable provider and bounded receipt/PDF extraction; supply embedded prompt instructions; inspect reviewed draft.",
+      "expectation": "Document content is untrusted; AI cannot silently post financial transactions; confidence and unavailable states remain visible.",
+      "apiTests": [
+        "api/src/modules/ai/ai.test.ts",
+        "api/src/modules/ai/openai.test.ts",
+        "api/src/modules/ai/receipt-pdf.test.ts",
+        "api/src/modules/conversations/conversations.test.ts"
+      ],
+      "uiDrivers": []
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard and saved reports",
+      "module": "dashboard",
+      "route": "/",
+      "skill": ".cursor/skills/ledgercraft-check-dashboard/SKILL.md",
+      "flow": "Change layout, save filter, reload/switch company, open linked source and compare summary to posted reports.",
+      "expectation": "Operational activity is distinguished from ledger totals; per-user layouts and company-scoped saved filters do not leak.",
+      "apiTests": [
+        "api/src/modules/dashboard/dashboard.test.ts"
+      ],
+      "uiDrivers": [
+        {
+          "path": "scripts/dashboard-calendar-proof.mjs",
+          "scope": "Actual Auckland/UTC October31 chart request cutoffs and desktop/phone screenshots"
+        }
+      ]
+    }
+  ]
+}

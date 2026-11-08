@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
@@ -5,7 +6,7 @@ import { jsPDF } from 'jspdf';
 const origin=process.env.RECEIPTS_ORIGIN||'http://127.0.0.1:8080';
 const output=process.env.RECEIPTS_OUTPUT||'/tmp/ledgercraft-receipts-proof';
 assert.ok(['127.0.0.1','localhost'].includes(new URL(origin).hostname));await mkdir(output,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});const errors=[];const results={platform:'Chromium responsive web with real local Hono and SQLite; AI-unavailable fallback',errors,cases:{}};
+const browser=await chromium.launch(proofBrowserOptions());const errors=[];const results={platform:'Chromium responsive web with real local Hono and SQLite; AI-unavailable fallback',errors,cases:{}};
 const png=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+aNicAAAAASUVORK5CYII=','base64');
 const pdf=new jsPDF({compress:false});pdf.text('Harbour Supplies receipt total115.00 GST15.00',15,15);const pdfBytes=Buffer.from(pdf.output('arraybuffer'));
 try{for(const [name,viewport] of Object.entries({desktop:{width:1440,height:900},phone:{width:390,height:844}})){

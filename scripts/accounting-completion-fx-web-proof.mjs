@@ -1,3 +1,4 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import path from 'node:path';
@@ -9,7 +10,7 @@ const origin = process.env.BUSINESS_WEB_URL ?? 'http://127.0.0.1:8080';
 const output = process.env.COMPLETION_FX_OUTPUT ?? '/tmp/ledgercraft-accounting-completion-fx-web';
 assert.ok(['127.0.0.1', 'localhost'].includes(new URL(origin).hostname));
 await mkdir(output, { recursive: true });
-const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', headless: true, args: ['--no-sandbox'] });
+const browser = await chromium.launch(proofBrowserOptions());
 const errors = [];
 const results = { platform: 'Chromium production-preview web, 1440x900 and 390x844', seed: 'Real HTTP signup/source documents/reviewed rates; actual web revaluation and invoice/bill settlements', expected: { receivable: { carrying: '160.00', closing: '170.00', unrealizedGain: '10.00', nextDay: '160.00', settledCash: '165.00', realizedGain: '5.00', remaining: '0.00' }, payable: { carrying: '160.00', closing: '170.00', unrealizedLoss: '10.00', nextDay: '160.00', cashOutflow: '165.00', closingCash: '-165.00', realizedLoss: '5.00', remaining: '0.00' } }, errors };
 async function fixture(kind) {

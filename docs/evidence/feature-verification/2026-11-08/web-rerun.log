@@ -1,0 +1,89 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+ ✓ src/__tests__/template-persistence.test.tsx (14 tests) 5842ms
+   ✓ Template Persistence Tests > InvoiceForm Template Initialization > should default to classic template in create mode  2131ms
+   ✓ Template Persistence Tests > InvoiceForm Template Initialization > should use saved template in edit mode - modern template  1066ms
+   ✓ Template Persistence Tests > InvoiceForm Template Initialization > should use saved template in edit mode - corporate template  830ms
+   ✓ Template Persistence Tests > InvoiceForm Template Initialization > should default to classic when templateName is undefined in edit mode  1165ms
+ ✓ src/components/accounting/TaxPreparationPanels.test.tsx (11 tests) 2446ms
+   ✓ exact tax preparation > loads payments-basis GST 180 minus 39 equals 141 and preserves basis in a reloaded draft  794ms
+   ✓ exact tax preparation > requires explicit company-rate confirmation and displays authoritative tax 198.40  307ms
+Browserslist: browsers data (caniuse-lite) is 18 months old. Please run:
+  npx update-browserslist-db@latest
+  Why you should do it regularly: https://github.com/browserslist/update-db#readme
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > uses the canonical GST-inclusive1000 boundary instead of adding GST twice in the preview
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should include templateName in form submission for create mode
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should include templateName in form submission for edit mode
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > should default to classic template when no template is specified
+🗑️ Auto-saved draft cleared
+
+stdout | src/components/invoice/__tests__/InvoiceForm.test.tsx > InvoiceForm Template Saving > shows repeat settings and creates one source-linked template after save
+🗑️ Auto-saved draft cleared
+
+ ✓ src/components/invoice/__tests__/InvoiceForm.test.tsx (6 tests) 5874ms
+   ✓ InvoiceForm Template Saving > blocks saving a registered NZ tax invoice over1000 until the buyer has an identifier  1586ms
+   ✓ InvoiceForm Template Saving > uses the canonical GST-inclusive1000 boundary instead of adding GST twice in the preview  728ms
+   ✓ InvoiceForm Template Saving > should include templateName in form submission for create mode  1268ms
+   ✓ InvoiceForm Template Saving > should include templateName in form submission for edit mode  1109ms
+   ✓ InvoiceForm Template Saving > should default to classic template when no template is specified  465ms
+   ✓ InvoiceForm Template Saving > shows repeat settings and creates one source-linked template after save  714ms
+stderr | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stdout | src/components/expense/__tests__/ReceiptUpload.test.tsx > ReceiptUpload > attaches a completed AI scan without a missing state setter
+Scan completed with: {
+  scanResult: {
+    merchantName: 'Supplier',
+    date: null,
+    total: '230.00',
+    tax: '30.00',
+    subtotal: '200.00',
+    items: [],
+    paymentMethod: 'card',
+    suggestedCategory: null,
+    confidence: 1,
+    notes: null
+  },
+  receiptUrl: 'https://example.test/scanned-receipt.jpg'
+}
+Setting receipt URL: https://example.test/scanned-receipt.jpg
+
+ ✓ src/components/expense/__tests__/ReceiptUpload.test.tsx (14 tests) 4413ms
+   ✓ ReceiptUpload > renders upload interface by default  442ms
+   ✓ ReceiptUpload > attaches a completed AI scan without a missing state setter  545ms
+   ✓ ReceiptUpload > validates file size limits  2223ms
+ ✓ src/components/item/ItemForm.test.tsx (1 test) 1416ms
+   ✓ catalogue price accessibility > names both price inputs for assistive technology  1411ms
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > shows a report failure and retry instead of an endless loading skeleton
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+All accounting data loaded successfully
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+All accounting data loaded successfully
+
+ ✓ src/pages/__tests__/AccountingDashboardPage.test.tsx (3 tests) 802ms
+   ✓ shows a report failure and retry instead of an endless loading skeleton  422ms
+   ✓ opens the real report export rather than simulating a successful download  321ms
+ ✓ src/services/__tests__/accountingService.posted.test.ts (5 tests) 32ms
+
+ Test Files  7 passed (7)
+      Tests  54 passed (54)
+   Start at  21:01:45
+   Duration  68.80s (transform 6.58s, setup 2.69s, collect 21.98s, tests 20.82s, environment 13.68s, prepare 2.38s)
+
+JSON report written to /tmp/ledgercraft-web-rerun-results.json

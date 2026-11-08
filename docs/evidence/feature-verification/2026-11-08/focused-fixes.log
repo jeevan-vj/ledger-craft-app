@@ -1,0 +1,648 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_0907d1e8-9af3-4634-8d58-8aaea3cbb54f","route":"/api/auth/*","method":"POST","status":200,"durationMs":1282}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_2ced9cdd-c2c0-48ce-8bf6-9f75d1204da3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":66}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_1bffe5e6-6ff3-4708-8476-3a8a1e144c6b","route":"/api/customers","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_e2fcf085-49fc-4d1f-8404-eda39c3253d3","route":"/api/invoices","method":"POST","status":201,"durationMs":721}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_a68e6f92-edf6-4c53-933b-d259679ee813","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":197}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_b72dd146-cc6f-4366-828f-33f7d48cd3ca","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":99}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different
+{"msg":"http_request","requestId":"req_c8c2238b-064d-43c7-89dd-3c25487d6f5f","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":258}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_5731c3f1-c1c3-4e58-a2b3-4f99211077b6","route":"/api/auth/*","method":"POST","status":200,"durationMs":1339}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_d9701071-74aa-4558-88fe-0c71f196e15a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":29}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_db927c30-e041-41ef-b246-0cc3b3990cb2","route":"/api/customers","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_97ec3afc-f8ac-4418-ae8c-aa770a6f5e01","route":"/api/invoices","method":"POST","status":201,"durationMs":351}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_14f06cc7-7536-4acd-98ab-090fa343bb5a","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":227}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_e0ef91c5-3b6d-4eb6-bd54-cfe8946689a6","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":205}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_3150d351-788e-48dd-9820-aac254c678f6","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_1fe4f7de-2ed1-4093-921c-463200cb87ae","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":51}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_7b9c921a-8040-414f-942f-aa62273dde20","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":59}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_571cea43-a9d4-4686-93d3-aaca2fb1438a","route":"/api/payments/:id/stripe/refund","method":"POST","status":202,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation
+{"msg":"http_request","requestId":"req_1ea8fb73-72bc-4a27-a5fe-28639a1d8118","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":96}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_d3fa03a6-f021-4795-9812-b0adb6a70875","route":"/api/auth/*","method":"POST","status":200,"durationMs":480}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_c7203c64-26a4-421c-8e87-0b5571507aa7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_7be8cc66-4fb2-4dfa-89ab-85300fac732f","route":"/api/customers","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_83a37b5d-4bd6-41a1-a98c-5b6ff92dfdea","route":"/api/invoices","method":"POST","status":201,"durationMs":195}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_6b57bc2a-261f-4239-8bec-792b0dc16510","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":70}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_2764a7e7-494a-4c93-8677-39f5e75c5a3d","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":31}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_8ed0387c-fc91-4dce-9060-7205b158bdad","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":63}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links
+{"msg":"http_request","requestId":"req_580d9051-f9ae-445e-8c44-1e71a4b50540","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_6c915d13-d4de-4e07-a017-ff6a9b463a84","route":"/api/auth/*","method":"POST","status":200,"durationMs":466}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_53efb7fc-7f86-4e34-9315-9466f1edf8c7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":83}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_d71811c1-4b11-4314-a851-e76e0bc6bec4","route":"/api/customers","method":"POST","status":201,"durationMs":48}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_67766930-ac24-4a66-8fda-7b9498b175a4","route":"/api/invoices","method":"POST","status":201,"durationMs":76}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_2e7fc88f-eba8-44a0-ac9b-4476b25ca789","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":134}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_eeeb8d89-71f9-4dd1-9f49-15bc5c1be781","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":67}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_1d16cd2e-8c94-4f46-86dd-aac843e2d5f9","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":133}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_e95595e2-5510-43a1-9908-929e418a19b6","route":"/api/payments","method":"POST","status":201,"durationMs":260}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > expires an open link after a manual payment changes its balance
+{"msg":"http_request","requestId":"req_58ab2c72-944c-4c82-9fcb-229a5898076c","route":"/api/public/pay/:token","method":"GET","status":410,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_95980d82-f1bd-41a9-8ca4-6e9cef589460","route":"/api/auth/*","method":"POST","status":200,"durationMs":387}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_5331611d-02c4-44b8-a90f-0e972ca0d415","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_0c108269-e5f8-4f06-84c9-e8b19c208e89","route":"/api/customers","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4706370c-8d8f-4b21-b14b-6e57c8a2cb09","route":"/api/invoices","method":"POST","status":201,"durationMs":142}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_c6b4d710-514f-4978-a867-479b7046b9c8","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_455dce6c-eecf-4268-874e-c9f5a4705422","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_19a32327-e409-4d01-a767-c6a8c49dc636","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":86}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_5c3b4959-dfd8-4d0a-85fc-f2fa04794127","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":29}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_2ab55d9d-f2c1-4e6b-a2b8-87c38295e67a","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":33}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_a75e5b42-4c82-4505-a848-8d71eb996a93","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":38}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_42108991-3774-491d-8347-c73f090b9d67","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_d56790cc-4ab2-4a79-8426-53359a1076f7","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_5d4ecbd4-2db6-40df-83c5-f7e9cdf09474","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4ccdb0a9-c338-4144-9a99-6295f093ba5a","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_7d2e9de0-3022-4ab7-bcc1-16527ddff98e","route":"/api/payments/stripe/operations","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_200ea1bd-07e9-4c39-84b8-33ffe0bf0dcf","route":"/api/payments/stripe/settlements","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_14bffd2a-a08c-44f1-9dc6-bb8b63ec8c44","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_23817ef3-78f7-4607-9ec9-ffff90440002","route":"/api/payments/:id/stripe/refund","method":"POST","status":400,"durationMs":34}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f5637185-d161-46e4-b34f-cf11da7816b3","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_4a22e31b-0555-4327-9822-8b602ae5f3ca","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_3323c61f-eb8a-4777-8ba6-11208718705b","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_9750a837-41f7-4ee5-92b4-bb01189c313a","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":26}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_6fb99c14-b653-4ebf-8436-698045a4bce3","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_d4e40721-c907-4f22-94c3-40f0145ad4ae","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_0134c332-b563-45d4-b1ac-a479288b8875","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_33a93d9d-94dd-4494-a226-153e1105fd88","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_c58c6140-3e44-439e-9d50-17e363fb3a67","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_304da700-398d-46bc-a0f0-a9a44c67f222","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_29206cf2-fc2d-463b-b070-63b2fc797723","route":"/api/payments/stripe/balance","method":"GET","status":403,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_2e663df3-9555-446c-a131-e92876f03e3a","route":"/api/payments/stripe/operations","method":"GET","status":403,"durationMs":7}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_f3c6d77a-ada0-4db5-8b76-aa75f375a816","route":"/api/payments/stripe/settlements","method":"GET","status":403,"durationMs":8}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_ecefbda8-5d55-4f52-9473-9c5934fafbe7","route":"/api/payments/:id/stripe/verify","method":"POST","status":403,"durationMs":6}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_552d54c5-4945-431d-9728-a2d6dc5cdaad","route":"/api/payments/:id/stripe/refund","method":"POST","status":403,"durationMs":5}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_6d02712e-ae7f-49ec-adc3-777959e96395","route":"/api/auth/*","method":"POST","status":200,"durationMs":404}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > requires owner/admin on every operational route and isolates another company
+{"msg":"http_request","requestId":"req_5ea80a2e-6168-4357-9aa7-0b97d13d6ad2","route":"/api/payments/:id/stripe/verify","method":"POST","status":404,"durationMs":11}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_cfc43059-154a-4d8a-afcf-00d89988b630","route":"/api/auth/*","method":"POST","status":200,"durationMs":413}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_9268e5af-d2b3-49f6-8a56-b82e3830c3e1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_e89d1d42-86d7-401b-ab77-467b83f5c9b3","route":"/api/customers","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_90fb39ee-d6bd-4daa-a2b6-773fe8e1c5e3","route":"/api/invoices","method":"POST","status":201,"durationMs":37}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_9815ea12-655f-4f65-a3ae-bc81be1868c0","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_4de7519e-1b8c-49d9-8f4d-20d17483bcfc","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_e0c88ce8-81dc-4a7d-a34a-897ef78bbfbb","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_60698f82-58d0-4fab-9e35-65bd93163a71","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_38777abb-7c50-4439-be58-4160840bc7ee","route":"/api/credit-notes","method":"POST","status":201,"durationMs":118}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation
+{"msg":"http_request","requestId":"req_4973fb55-74f8-46e1-889e-9a35e4815f0e","route":"/api/payments/:id/stripe/refund","method":"POST","status":409,"durationMs":23}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_09262d59-39f9-40cd-aea9-dcec5a32f2b6","route":"/api/auth/*","method":"POST","status":200,"durationMs":446}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_f5a9e24a-eca0-48b6-96da-2f4d3e5679e8","route":"/api/business-profile","method":"PUT","status":200,"durationMs":19}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_8f7b731b-2ae2-48d5-957e-95a451a2ac38","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_2f1eee16-8894-4eee-97ef-eb55fe1c9eca","route":"/api/invoices","method":"POST","status":201,"durationMs":56}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_ea5f6f01-63cc-4ec2-b68d-ec905fa9fec9","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_f3c6f95c-ca7c-4635-9538-4698804dafa6","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_0b07651d-54bb-45a5-95af-17251323529c","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":52}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once
+{"msg":"http_request","requestId":"req_8a6f2426-dc2e-41a5-90c4-c69d011dff02","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":37}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_0d22edc4-806c-43d6-9740-699f52497f86","route":"/api/auth/*","method":"POST","status":200,"durationMs":1051}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_72d17a2a-37fe-4d9a-a9e9-39ecc6489c48","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_d62eb7c7-3274-4507-ae0d-5940c7878966","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_a39619b0-d8be-4d4c-b960-014370ead60a","route":"/api/invoices","method":"POST","status":201,"durationMs":63}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_fb426158-d1ea-4439-a1ee-3600885f91df","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_b87b1284-8768-46cd-942b-bbbc66bd9e79","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":21}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_6b47e797-3189-4052-86eb-a1d391896107","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_82033496-a9ae-47a9-a0c7-d68df83f70ef","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > does not reverse a customer payment when only its application fee was returned
+{"msg":"http_request","requestId":"req_66e69ed2-3c2f-4890-a72b-df3bc8ba3265","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_3111b6b6-34c0-45e2-bf70-a24eda24a5ca","route":"/api/auth/*","method":"POST","status":200,"durationMs":496}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_e02631e3-169c-4d25-84c3-5ae9ee227574","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_86c3a32b-abd2-41c6-8754-5eaaa094c2bf","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_530272cd-1d8e-4b5e-ad8c-aa7cfbbea8dc","route":"/api/invoices","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_f3be80d6-6f27-4171-8e3d-2f1aee41cbc8","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_efe26b60-b471-45dc-bf63-4948fa655b56","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_970302e2-b29e-4f2b-94f8-6c192f19b9f0","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_ea205839-5d26-4368-bfd5-9cc92a72dd69","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment
+{"msg":"http_request","requestId":"req_62ee83c3-9f7c-45d9-86b7-285f86ab5ba7","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_3026d36b-cad7-4d28-a53a-0d0a566ba39a","route":"/api/auth/*","method":"POST","status":200,"durationMs":404}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_57373252-3340-4f2d-9e36-7392510ea9df","route":"/api/business-profile","method":"PUT","status":200,"durationMs":26}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_bf34fa90-a33b-4395-b4e0-d30939e23098","route":"/api/customers","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_8ac99274-0978-4125-b8cf-51e50c90919f","route":"/api/invoices","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_c6ff0859-269c-4e96-ac49-779fad38fb4a","route":"/api/payments/stripe/account","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_3bb1ed85-45a1-42fb-b19c-c8598baa188d","route":"/api/payments/stripe/account/refresh","method":"POST","status":200,"durationMs":18}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_222aa232-003d-4ee7-81bb-2f263ad7d855","route":"/api/invoices/:id/payment-links","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_9ae57058-6f13-4e4d-85b4-6847a1bf6ebe","route":"/api/invoices/:id/payment-links/:linkId","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_90a89ad4-509f-4681-abca-31c77c3a2eed","route":"/api/payments/stripe/balance","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/stripe/stripe.operations.test.ts > Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books
+{"msg":"http_request","requestId":"req_9d48e1a7-7505-40e1-b442-185b35df64f9","route":"/api/payments/:id/stripe/verify","method":"POST","status":200,"durationMs":18}
+
+ ✓ src/modules/stripe/stripe.operations.test.ts (10 tests) 73153ms
+   ✓ Stripe finance operations > re-retrieves authoritative payment and rejects a signed event when remote destination is different  12524ms
+   ✓ Stripe finance operations > verifies exact payment without changing money; full refund reverses payment and fee once after remote confirmation  14295ms
+   ✓ Stripe finance operations > ignores duplicate success through different event types and stops paid invoice links  7586ms
+   ✓ Stripe finance operations > expires an open link after a manual payment changes its balance  6360ms
+   ✓ Stripe finance operations > requires owner/admin on every operational route and isolates another company  6961ms
+   ✓ Stripe finance operations > rejects a refund before contacting Stripe when an active credit requires reviewed allocation  4871ms
+   ✓ Stripe finance operations > resolves a genuine application fee event through its charge and reverses the returned fee exactly once  5146ms
+   ✓ Stripe finance operations > does not reverse a customer payment when only its application fee was returned  5763ms
+   ✓ Stripe finance operations > reports an externally partial refund as a mismatch rather than a matching completed payment  4181ms
+   ✓ Stripe finance operations > returns connected balances and records provider mismatches without silently correcting books  5451ms
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e5ccce3b-0a20-4fbb-b9c7-a88991f520f7","route":"/api/auth/*","method":"POST","status":200,"durationMs":677}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_23a75b06-d66d-4eb9-ad8b-e73beab7ee18","route":"/api/business-profile","method":"PUT","status":200,"durationMs":58}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_03ff0edc-ea61-4810-abdd-cc26e5b0b239","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c6674aa3-4e6d-4919-a747-3fd341d66f38","route":"/api/accounts","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_09b744e8-c50f-443b-adae-df93e5363c7e","route":"/api/accounts","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b182f280-ad46-405a-acdd-da6921cc1756","route":"/api/accounts","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0c039222-bbae-4f36-8881-cf613e863e61","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e63c8833-56aa-4be7-aa1e-00674069df74","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":66}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8f8ba48b-bd6e-47f5-90e5-89bbb609529d","route":"/api/customers","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0545d6bb-0750-4c29-9bf8-c8bc5b1046bf","route":"/api/customers","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_51432f21-b831-4d74-8e68-61c5ff296d8d","route":"/api/invoices","method":"POST","status":201,"durationMs":130}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_567deec1-6f5d-41df-bea4-a9005c7bb700","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":126}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_15d436b3-e23c-4adc-9849-e6aac008c904","route":"/api/invoices","method":"POST","status":201,"durationMs":89}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b8065e9a-816d-4802-9b33-4403846c5b15","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":87}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4ceb058a-36cc-46d5-b36f-0190d7dd0608","route":"/api/payments","method":"POST","status":201,"durationMs":65}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_6b1a5987-a490-43f2-92f4-6e692326b1ad","route":"/api/payments","method":"POST","status":201,"durationMs":73}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0394531e-cdac-4568-a1bc-25a7490f2e3a","route":"/api/vendors","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c951a669-a28c-4880-9c0c-9eaddd426713","route":"/api/bills","method":"POST","status":201,"durationMs":73}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_13f0d474-2e16-4380-9428-60ee750be4f6","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":80}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_732883ae-deda-41aa-be41-a57f0702851d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":64}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_20609dec-31b8-406e-b9f6-3773a22d0a48","route":"/api/expenses","method":"POST","status":201,"durationMs":65}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_120ddfa2-e8a8-43c8-a296-326a65aa3b61","route":"/api/credit-notes","method":"POST","status":201,"durationMs":88}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bff0c2dc-7b43-443a-91df-d4589d456ae8","route":"/api/credit-notes","method":"POST","status":201,"durationMs":68}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_50fc27f3-df8c-40a7-b9c7-4caf818d38a2","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_61ae490b-ad6e-4174-b33d-2a540f80b7f5","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a1e51ea9-8478-4b84-aed4-15dbd803caae","route":"/api/reports/financial","method":"GET","status":200,"durationMs":43}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_37c64a7c-bce6-438b-870a-3e699c8e909f","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":187}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_61aa4fb1-be5a-4ff2-9c03-be914ca72cc9","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_32be8112-1882-45ec-ac36-b0231e61a8df","route":"/api/book-entries","method":"GET","status":200,"durationMs":30}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b620fa4f-671c-4152-97ba-3e0edc200218","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_253af9f7-e1a1-461b-b265-b14f5ac052af","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":52}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_283d87eb-95b0-4ef9-9bf6-a4144a39e620","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_56e28364-a569-4212-88e5-e0bb0a9422de","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":44}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5119a6bb-8a5c-4fd7-ba28-a96dd510bd01","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":85}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a8e82111-20a4-41c1-9f52-47cc68d79dba","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_1cead7a6-e25b-4a63-a30f-f774c6fbeaf6","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":33}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_fd81f33c-8d79-45f7-95f4-17a0fdd4bd8e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_dd41db10-1e2f-4b23-8166-bb9ddc6f31b2","route":"/api/reports/financial","method":"GET","status":200,"durationMs":48}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_baf3bd81-0f93-4c66-bc05-2d22121b6426","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":52}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5e55ec0b-693d-4633-b6ff-3c6751fde823","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":149}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4a93c022-65c6-470d-9d18-c4229a26ff36","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":199}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_60e6bc03-0ded-41eb-b2c7-b412a08c8942","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":93}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a1510662-9ba3-41ab-8730-be0231c69baf","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":25}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_134f5c1c-a91c-4185-bdbb-1b261440c04f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":155}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_64a4753c-56e9-4860-839b-e1b152a44bbd","route":"/api/tax-returns","method":"POST","status":201,"durationMs":192}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_ec2fc432-189d-4256-a6fc-4fd29cc963b6","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_54dcd5c1-c170-4f59-82a4-86055b8e9a7c","route":"/api/payments","method":"POST","status":201,"durationMs":61}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_06c6909b-79df-4722-8994-93000c9947f4","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":52}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8a9123d6-9390-41db-ab09-1fc70af1a83c","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_14bc66c9-13ca-474e-8aeb-00e326f6e0c3","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":53}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_c84f55d4-9a87-4be9-82f3-762b1d9bb2aa","route":"/api/reports/financial","method":"GET","status":200,"durationMs":50}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0d501ebb-dda9-46fe-86dd-974dffd6c412","route":"/api/auth/*","method":"POST","status":200,"durationMs":463}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_2b0c2764-e0db-43ff-9781-d5ea93241fc5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9cf4c687-5033-4120-8300-438294c5cf83","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_595e2ffc-612b-4387-8bdb-d5f11f300146","route":"/api/accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_ff061c47-1e55-4ae5-b03f-f538ddb6a52f","route":"/api/accounts","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_17c50dce-60f6-4ebc-85f1-d9d941bc8fed","route":"/api/accounts","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0641f2e6-5ab7-4837-8a08-8138ecd51503","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_1c0ff269-0c1e-4a04-8c2d-b990a0869c32","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_5e010ad7-50d1-4b14-b898-1cbeb90b6c1c","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_bc9d5c82-f6f3-43bc-8f54-8f9cdd130738","route":"/api/customers","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_336d2150-e168-4ef7-a5e7-7e04ac2f44d6","route":"/api/invoices","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_f28474b9-dcce-4f68-b1ee-5d48d93d706e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":69}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9cb8f5aa-5da4-441e-b9b0-c27834eb9b31","route":"/api/invoices","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_faafec1b-8bbf-462f-8a1a-cbd17f37e701","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":52}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e9d846b7-d506-446c-b88d-1de58b7e24ea","route":"/api/payments","method":"POST","status":201,"durationMs":44}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c79ef770-7cf4-4868-ae64-971db2efe253","route":"/api/payments","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_657024ac-4f84-4d4b-8d40-0558b7160d54","route":"/api/vendors","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_d8fc17e3-34fa-47eb-ad16-07d8afeacec5","route":"/api/bills","method":"POST","status":201,"durationMs":43}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_ddb75aa1-d7f5-4c94-b955-e9398ebc3c1a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":90}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_5391a5b2-cd80-4ad6-bd9b-a9ee0a09aeda","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_d6f130e6-f5a8-4def-952a-041c0e882e12","route":"/api/expenses","method":"POST","status":201,"durationMs":63}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_ea8e6dd5-7be3-44a4-85f5-e4c2f3f87414","route":"/api/credit-notes","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_32b6e9cf-aea1-48e0-ace5-44c243f02402","route":"/api/credit-notes","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_2c56a870-d8c8-4dfc-843b-050c92128794","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_140e0fde-e62d-4cc8-97a1-93a601f38c8e","route":"/api/book-entries","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c652cde3-f598-4c28-be3f-3bb418f9b402","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_ad32e4bd-7f4a-4575-a840-475e2011cbed","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":53}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_28dbb372-e337-44c2-a272-5798aa615106","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":31}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_80cc9814-084b-4bde-8947-b82e1fe93b31","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_769acef7-26d1-4584-ba1a-616ec6404328","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":103}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_3a08466e-042a-4738-a280-cc79b1f03c92","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":33}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_cf69f683-625f-4370-b3a7-d6d1ca18c8ec","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_075329fc-b54a-403f-ba96-0ec0079566ec","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":80}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c9d2176f-c69e-4666-8ae3-a2222e741563","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_a2d05a82-0ac0-4201-9c00-9f6d21109472","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e794de10-3c3c-4885-8de2-58e0c9a7bad3","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":56}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9c20886a-f9c7-44c5-a682-1a52227fea74","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":121}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_dbf08aa2-de41-468e-bc07-ff96b236994d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_608c2dd4-74e5-4e46-8aeb-d3f6b6002c4f","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_f5787cc1-1262-4e23-9bef-a6af01af8682","route":"/api/auth/*","method":"POST","status":200,"durationMs":415}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_a2466edc-e4c0-4779-8201-b901e981918e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":404,"durationMs":15}
+
+ ✓ src/modules/reports/full-month-close.e2e.test.ts (3 tests) 12745ms
+   ✓ full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft  7339ms
+   ✓ full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund  5380ms
+
+ Test Files  2 passed (2)
+      Tests  13 passed (13)
+   Start at  20:53:21
+   Duration  130.06s (transform 10.39s, setup 179ms, collect 36.46s, tests 85.90s, environment 2ms, prepare 2.59s)
+
+JSON report written to /tmp/ledgercraft-focused-fixes-results.json

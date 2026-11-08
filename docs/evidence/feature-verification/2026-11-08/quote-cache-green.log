@@ -1,0 +1,13 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+ ✓ src/pages/__tests__/QuoteViewPage.test.tsx (2 tests) 530ms
+   ✓ refreshes saved invoices before navigating from a accepted quote  312ms
+ ✓ src/pages/__tests__/InvoiceViewPage.quote.test.tsx (3 tests) 500ms
+
+ Test Files  2 passed (2)
+      Tests  5 passed (5)
+   Start at  21:08:49
+   Duration  7.85s (transform 1.09s, setup 478ms, collect 2.79s, tests 1.03s, environment 2.04s, prepare 332ms)
+
+JSON report written to /tmp/ledgercraft-quote-cache-results.json

@@ -1,0 +1,5 @@
+
+/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/pages/AccountingDashboardPage.tsx
+  91:6  warning  React Hook useEffect has a missing dependency: 'fetchAccountingData'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+✖ 1 problem (0 errors, 1 warning)

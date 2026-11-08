@@ -1,0 +1,287 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3d43da4a-0c22-4bdf-bf1e-ae89a17b98be","route":"/api/auth/*","method":"POST","status":200,"durationMs":610}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7f79393b-962b-4d0a-a7dc-87c8e650b6e9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":47}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_19806ce0-2dfc-43d4-80d2-95a860c22ec8","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_62727b21-a96a-40e5-ac1b-38bc483e9fdc","route":"/api/accounts","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_fa1f31e2-92c9-419b-be54-3c32f33a4aba","route":"/api/accounts","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d5128645-ec4b-458a-944c-dca9352a4812","route":"/api/accounts","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3885b5e9-0e13-498d-a714-c626b6a7ab5a","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":27}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8f294eeb-d1da-418f-81e6-4e7bae26d867","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":90}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a9a91f07-4d0e-4f8a-a3a3-d972486f42f9","route":"/api/customers","method":"POST","status":201,"durationMs":83}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7c15e23c-371a-4f24-87fc-64129d06c818","route":"/api/customers","method":"POST","status":201,"durationMs":94}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_132d04f6-e070-4cf9-ac8f-4fc75482aeff","route":"/api/invoices","method":"POST","status":201,"durationMs":128}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3aaa18df-98ed-4b26-ac61-1b8c81ecf80b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":113}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0be35a0a-7404-47fd-b5d4-0ff63498b4fa","route":"/api/invoices","method":"POST","status":201,"durationMs":67}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_171076e0-ab5e-4f8a-ac29-dc88035a2707","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":165}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5297223f-46c0-4fc5-9605-98b626f73796","route":"/api/payments","method":"POST","status":201,"durationMs":142}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_272d647d-18a0-40ee-bef5-90f9f7360131","route":"/api/payments","method":"POST","status":201,"durationMs":83}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_cf432cea-e9e3-4221-bae0-652352229fd8","route":"/api/vendors","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_21bc0172-803c-4dae-8579-a17617461204","route":"/api/bills","method":"POST","status":201,"durationMs":50}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d62f267b-977c-46a8-bdbd-9aa726ba3feb","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":70}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_50d0c4eb-d5ae-49e7-bb1b-61842f2ac7aa","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":117}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_95d2b1dd-5c5a-4b2f-9bf2-d46827c8eed9","route":"/api/expenses","method":"POST","status":201,"durationMs":53}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_787444fd-e2dc-41af-b257-97629129600b","route":"/api/credit-notes","method":"POST","status":201,"durationMs":77}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0f364e62-5b84-4679-b837-3a1bb2bf6ec0","route":"/api/credit-notes","method":"POST","status":201,"durationMs":43}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_1bdfd5cd-a4b5-4335-ac7a-ad5954f033d0","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_02a00663-e3ff-49e7-8e7f-2963fd8511eb","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_2eb04ec3-307c-4c5d-b1e0-c620862c021f","route":"/api/reports/financial","method":"GET","status":200,"durationMs":99}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a00f7c0d-88eb-4b03-911e-74d53db2a314","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":206}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_10655ebf-8330-42da-8967-185ac0229957","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e35e7dda-1f67-456d-9e8c-73048490ca8c","route":"/api/book-entries","method":"GET","status":200,"durationMs":31}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a62934e0-8dd0-4467-a2ef-b3a5ec755cca","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":106}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_35b1a544-a215-4536-b302-86e022747ad5","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b6d2e919-517f-40f3-8e2d-64b76b77fa59","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":37}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_aa3c74f6-c0d2-4e64-9c72-32b95ddc6190","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":61}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_03f3d752-8abe-47e8-8559-b4e0529d8e2a","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3e673904-5aa8-41a7-a46f-c3f63f9ae335","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_6776b32e-2fa4-4627-8cce-c713fdba10c8","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":47}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4cc3a259-a9c9-4842-8241-a2cb3ce7e665","route":"/api/reports/financial","method":"GET","status":200,"durationMs":41}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3ccadaa2-7c59-476f-b32e-0c3a547e44ae","route":"/api/reports/financial","method":"GET","status":200,"durationMs":84}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_6c8ea655-9bfe-4c54-a42f-e2cbd16c4f97","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a8781427-06b5-492d-8bd9-26ac6541b281","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":144}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_9d4763f9-0bcd-47af-b875-09511e1fc4f2","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":21}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_13269188-e7d6-40f6-9b22-0e5be6b9ae3d","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":106}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d6986517-70ba-4c1a-98b5-6cda29036707","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_b4955a59-8bd6-4d3c-85ed-57c4165227be","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":76}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e4e2b8f1-6293-4176-8265-b54155130054","route":"/api/tax-returns","method":"POST","status":201,"durationMs":128}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_46fd0bc5-b087-4399-acb9-8b9d783b6018","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":48}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3b243923-a680-47d5-8076-da9e492d5563","route":"/api/payments","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_62edaf10-aed6-49f0-ba12-dc64ad308866","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4bc4af56-2c7c-46fb-968d-cf25aa91e0bd","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bec58ab7-3807-4746-bb57-c3915ad271b3","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":125}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_91e98556-cc2b-43df-92bd-a8fb34d56068","route":"/api/reports/financial","method":"GET","status":200,"durationMs":161}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_700157fe-3107-475c-9143-c1ebd149425b","route":"/api/auth/*","method":"POST","status":200,"durationMs":377}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_4e5f2112-3481-4efc-8154-efd1b2dafdb9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_6132855f-8be3-467b-8520-4029570d09ae","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0476fc20-25e0-4fdd-9167-9cf0d12751ca","route":"/api/accounts","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_b0693b1a-4eb5-4e5a-9914-c061e8227fb9","route":"/api/accounts","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_113cb4f9-e1ba-4df6-acc8-b1b5608076c3","route":"/api/accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_198805f7-7459-4113-92ac-26f4c039cfd3","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_46de6640-cda8-43d4-8639-79e5313f423d","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_40a19c16-0522-4f72-a663-afb9928484c7","route":"/api/customers","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_10657047-9b2f-46ce-acc3-a43e55b6ec0b","route":"/api/customers","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9c51e6a2-afcd-4540-a3d4-39e483e477a7","route":"/api/invoices","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_03557f49-861f-47fd-8b25-03e7d7b8111a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":59}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_5a98cb7f-a7f3-4688-a2ec-604d2c9c769d","route":"/api/invoices","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_284d6264-8ac2-40bb-9fc7-31707bb17073","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":241}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9f1322fe-49f4-466f-8764-9b3ed794a623","route":"/api/payments","method":"POST","status":201,"durationMs":94}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_5b4ca55e-3356-4710-bb5a-5e9a0cb75ea3","route":"/api/payments","method":"POST","status":201,"durationMs":125}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e99d2947-522a-4aac-b5db-080a95f03597","route":"/api/vendors","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_b9c45c71-d60a-4430-af9e-b6730fc38aed","route":"/api/bills","method":"POST","status":201,"durationMs":55}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_7c495391-81e2-4c43-86ee-01aa1cd224dd","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":75}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_4e99f4f0-62fc-4816-9316-dc58ac1913bd","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":98}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e32119f1-165c-4105-bb6b-76d14104a27e","route":"/api/expenses","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_8c9d94e6-dbb8-4f67-9501-805a97f78002","route":"/api/credit-notes","method":"POST","status":201,"durationMs":52}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_512e62dc-3652-4bed-8e48-62093bf6b67d","route":"/api/credit-notes","method":"POST","status":201,"durationMs":88}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_26d6dfaa-cd9b-4e4c-ae2a-305e1dc80f39","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_883628ac-4f5d-4d12-8c36-74ae0d88087a","route":"/api/book-entries","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_3c1fe30d-c520-467c-bbb6-d329cb401bcf","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9de2eb5f-0baa-4aac-9c7b-1474d7d099f6","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":50}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_9310f5b0-9dd3-4c1c-903d-b5181746acb2","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":26}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_0607f479-ef91-4cad-a19e-189b9152fde3","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":19}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_12b769cc-36ce-430a-9159-41155b466ec9","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":37}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_87a62315-1f8c-4c08-80ad-70d0094cdf1d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":409,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_e856e74f-e8cd-4385-b1c3-6fa8a8b23f21","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_73f80512-bcf2-421b-806b-d253e7b5aadf","route":"/api/bank-transactions/:id/undo","method":"POST","status":200,"durationMs":67}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_6738756b-3090-435c-9462-3339c39a6979","route":"/api/credit-notes/:id","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_7d83a8fb-1cb8-444c-b532-1d054a08c2e9","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_283ef637-dbbd-482d-92aa-8c317aff5cef","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_664a7c2f-648b-4798-8893-8689dade14cd","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":65}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_85c80a17-8197-49a5-a7b8-24103d623ae5","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":400,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_7805f571-b39b-437f-bc19-bf71e5c9a52f","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_5f31627d-cb3c-4d48-864b-ce0eaa8fe321","route":"/api/auth/*","method":"POST","status":200,"durationMs":548}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund
+{"msg":"http_request","requestId":"req_c89eb8ba-c400-4838-a727-f0cd9326f809","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":404,"durationMs":13}
+
+ ✓ src/modules/reports/full-month-close.e2e.test.ts (3 tests) 13372ms
+   ✓ full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft  7459ms
+   ✓ full October close through real authenticated HTTP and SQLite > refuses wrong-direction, other-bank and reused refund matches; undo preserves original refund  5880ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  20:30:09
+   Duration  41.14s (transform 9.85s, setup 176ms, collect 20.44s, tests 13.37s, environment 35ms, prepare 3.41s)

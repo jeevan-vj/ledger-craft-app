@@ -1,0 +1,91 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_aa660f0c-69c7-4118-bcd8-cf47b4d903b9","route":"/api/auth/*","method":"POST","status":200,"durationMs":542}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_6cb03f56-5604-4d86-8534-56ed1ca14653","route":"/api/business-profile","method":"PUT","status":200,"durationMs":42}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_1da5dc44-934d-42ff-9b8f-3d3484119fd8","route":"/api/customers","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_b4ca8770-66fb-4c84-ae5d-c22c7eb04a55","route":"/api/quotes","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4016939d-8984-4d8b-8099-dfe758e99466","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":89}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_c118d128-7c94-4c1f-b701-dd6fff8d03b0","route":"/api/business-profile","method":"PUT","status":200,"durationMs":32}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_c58c0472-bff8-47a1-81aa-a7f73cdd8b8a","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":44}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_23d09bb1-9c47-4431-a988-2d3b3f3c5927","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":119}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_6490588b-8806-4ef3-adf9-69221055530f","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":199}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_a0f3848b-c629-47d7-a6e5-0da1f91adec1","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_65cfa2e9-14ad-4081-a148-cc4c799636b7","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":23}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_b55fb5ec-8002-4bf7-a00f-66dcdac3faa9","route":"/api/invoices","method":"GET","status":200,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_c190dfc4-702f-411a-87b9-40099085cd90","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":18}
+
+ ❯ src/modules/quotes/quotes.test.ts (7 tests | 1 failed | 6 skipped) 6405ms
+   ↓ quote routes > unauthenticated GET /api/quotes returns 401
+   ↓ quote routes > keeps quote numbering independent and matches invoice totals
+   ↓ quote routes > rejects invalid quotes and edits only drafts
+   ↓ quote routes > follows the status table, expires on read, and lets a client respond once
+   ↓ quote routes > rejects an oversized public response by byte length
+   ↓ quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+   × quote routes > converts an accepted quote once into a draft invoice with the same totals 6400ms
+     → expected [ { reference_type: 'invoice', …(3) } ] to deeply equal []
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+AssertionError: expected [ { reference_type: 'invoice', …(3) } ] to deeply equal []
+
+- Expected
++ Received
+
+- []
++ [
++   {
++     "description": "Invoice INV-2026-0001",
++     "n": 3,
++     "reference_id": "d9ae5ca1-74c4-4ca3-a177-5eb8ea87eec0",
++     "reference_type": "invoice",
++   },
++ ]
+
+ ❯ src/modules/quotes/quotes.test.ts:563:39
+    561|         expect(listed.invoices).toHaveLength(1);
+    562|         expect(invoiceSchema.parse(await (await app.request(`/api/invo…
+    563|         expect(await journalRows(db)).toEqual([]);
+       |                                       ^
+    564|
+    565|         const registered = await app.request('/api/business-profile', {
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+ ❯ src/modules/quotes/quotes.test.ts:497:5
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 skipped (7)
+   Start at  20:50:43
+   Duration  25.65s (transform 6.88s, setup 90ms, collect 16.85s, tests 6.41s, environment 1ms, prepare 1.15s)
+
+undefined
+/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/quotes/quotes.test.ts -t 'converts an accepted quote once' '--maxWorkers=1'

@@ -40,6 +40,7 @@ import { useQuoteQuery, useRefreshQuotes } from '@/features/quotes/hooks/useQuot
 import { quoteAsInvoicePreview } from '@/features/quotes/preview';
 import { quoteNoun } from '@/features/quotes/types';
 import { useToast } from '@/hooks/use-toast';
+import { useAppData } from '@/hooks/useAppData';
 import { formatCurrency } from '@/utils/invoiceUtils';
 
 const REVISE_WARNING = 'Existing share links will stop working. The client will need a new link after you save the revision.';
@@ -49,6 +50,7 @@ const QuoteViewPage = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const refresh = useRefreshQuotes();
+  const { refreshInvoices } = useAppData();
   const quoteQuery = useQuoteQuery(id);
   const quote = quoteQuery.data;
   const [pending, setPending] = useState<string | null>(null);
@@ -106,6 +108,7 @@ const QuoteViewPage = () => {
   const convert = () => run('convert', async () => {
     convertKey.current ??= crypto.randomUUID();
     const result = await quotesApi.convert(quote.id, convertKey.current);
+    await refreshInvoices();
     navigate(`/invoices/${result.invoice.id}`);
   });
 
@@ -126,6 +129,7 @@ const QuoteViewPage = () => {
         }
         convertKey.current ??= crypto.randomUUID();
         const result = await quotesApi.convert(quote.id, convertKey.current);
+        await refreshInvoices();
         navigate(`/invoices/${result.invoice.id}`);
         return;
       }

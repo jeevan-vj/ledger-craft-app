@@ -1,0 +1,8 @@
+"Receivables aging"
+"Period","2026-10-01","2026-10-31"
+"Basis","accrual"
+
+"Document","Party","Due date","Age","Outstanding"
+"INV-2026-0001","Harbour Services Limited","2026-10-31","current","920.00"
+"Total","","","","920.00"
+"Unallocated control","","","","0.00"

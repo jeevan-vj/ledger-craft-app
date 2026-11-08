@@ -1,10 +1,11 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import {mkdir,readFile,writeFile} from 'node:fs/promises';
 import {chromium} from '@playwright/test';
 import {execFileSync} from 'node:child_process';
 const origin=process.env.ISSUE115_MOBILE_URL??'http://127.0.0.1:8081',apiOrigin=process.env.ISSUE115_API_URL??'http://127.0.0.1:3001',out=process.env.ISSUE115_MOBILE_COLLECTIONS_OUTPUT??'/tmp/ledgercraft-mobile-collections';
 for(const url of[origin,apiOrigin])assert.ok(['localhost','127.0.0.1'].includes(new URL(url).hostname));await mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});const context=await browser.newContext({viewport:{width:390,height:844},acceptDownloads:true,colorScheme:'dark',timezoneId:'Pacific/Auckland'});const page=await context.newPage();page.setDefaultTimeout(60_000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
+const browser=await chromium.launch(proofBrowserOptions());const context=await browser.newContext({viewport:{width:390,height:844},acceptDownloads:true,colorScheme:'dark',timezoneId:'Pacific/Auckland'});const page=await context.newPage();page.setDefaultTimeout(60_000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const result={platform:'Expo web / Chromium390x844 / real local Hono+SQLite',expected:{openingBalance:'1000.00',closingBalance:'600.00',payment:'400.00'},errors};
 async function api(route,method='GET',data,status=200){let response;for(let attempt=0;attempt<4;attempt++){response=await context.request.fetch(apiOrigin+route,{method,data,headers:{Origin:origin,...(method==='POST'?{'Idempotency-Key':crypto.randomUUID()}: {})}});if(response.status()!==429||route!=='/api/auth/sign-up/email'||attempt===3)break;await new Promise(resolve=>setTimeout(resolve,11_000));}assert.equal(response.status(),status,`${method} ${route}: ${await response.text()}`);return status===204?null:response.json();}
 async function shot(name,target){if(target)await target.evaluate(e=>e.scrollIntoView({block:'center'}));await page.screenshot({path:`${out}/${name}.png`,animations:'disabled'});}

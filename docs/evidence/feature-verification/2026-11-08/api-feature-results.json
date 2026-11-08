@@ -1,0 +1,2051 @@
+{
+  "recordedAt": "2026-11-08T08:09:26.280Z",
+  "sourceSha": "0a35c75f75d9013d28b44f1ba7354a8c72b55df2",
+  "worktreeDirty": true,
+  "trackedPatchSha256": "f4bb57eb2d3c57ea307ae00e67d7e6a255c60ba277e40ea9a79ce2c98728e4c2",
+  "node": "v26.7.0",
+  "inputs": [
+    "/tmp/ledgercraft-feature-api-results.json",
+    "/tmp/ledgercraft-focused-fixes-results.json",
+    "/tmp/ledgercraft-api-rerun-results.json"
+  ],
+  "scope": "API integration only; see separate UI evidence ledger",
+  "features": [
+    {
+      "id": "identity",
+      "title": "Account access and recovery",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/auth/account-deletion.integration.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/account-deletion.service.test.ts",
+          "status": "PASS",
+          "passed": 6,
+          "total": 6,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 6,
+              "total": 6
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/account-security.integration.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/auth-email.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/authorize-request.test.ts",
+          "status": "PASS",
+          "passed": 45,
+          "total": 45,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 45,
+              "total": 45
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/permissions.test.ts",
+          "status": "PASS",
+          "passed": 11,
+          "total": 11,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 11,
+              "total": 11
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/protected-route-permissions.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/remaining-access.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/auth/session.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "companies",
+      "title": "Companies and permissions",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/organisations/organisations.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "profile",
+      "title": "Business settings and branding",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/business-profile/business-profile.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "customers",
+      "title": "Customers and collections",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/customers/customers.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "catalogue",
+      "title": "Products and services",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/items/items.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "quotes",
+      "title": "Quotes and estimates",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/quotes/quotes.test.ts",
+          "status": "PASS",
+          "passed": 7,
+          "total": 7,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 7,
+              "total": 7
+            },
+            {
+              "report": "/tmp/ledgercraft-api-rerun-results.json",
+              "status": "passed",
+              "passed": 7,
+              "total": 7
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/quotes/quotes.transitions.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "invoices",
+      "title": "Invoice lifecycle",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/invoices/email-delivery.e2e.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/invoice-delivery-current-state.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/invoice-gst-compliance.test.ts",
+          "status": "PASS",
+          "passed": 8,
+          "total": 8,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 8,
+              "total": 8
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/invoice-lifecycle.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/invoices.remind.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/invoices.test.ts",
+          "status": "PASS",
+          "passed": 12,
+          "total": 12,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 12,
+              "total": 12
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/mailer.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/money.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/overdue.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/resend.test.ts",
+          "status": "PASS",
+          "passed": 12,
+          "total": 12,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 12,
+              "total": 12
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/restore-repair.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/share.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoices/totals.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "payments",
+      "title": "Payments and receipts",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/payments/payment-credit-state.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/payments/payments.test.ts",
+          "status": "PASS",
+          "passed": 6,
+          "total": 6,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 6,
+              "total": 6
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/receipts/receipts.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "credit-notes",
+      "title": "Customer credits and refunds",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/credit-notes/credit-notes.test.ts",
+          "status": "PASS",
+          "passed": 7,
+          "total": 7,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 7,
+              "total": 7
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "purchases",
+      "title": "Vendors and bills",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/purchases/bill-payment-idempotency.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/purchases/purchases.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "expenses",
+      "title": "Expenses and receipt capture",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/expenses/expenses.test.ts",
+          "status": "PASS",
+          "passed": 9,
+          "total": 9,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 9,
+              "total": 9
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/expenses/receipt-hash.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "banking",
+      "title": "Bank accounts and transactions",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/bank/bank-import-balances.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/bank/bank-workspace.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/bank/bank.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "reconciliation",
+      "title": "Bank reconciliation",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/reconciliation/bank-reconciliation-phase1.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/foreign-bank-guard.test.ts",
+          "status": "PASS",
+          "passed": 7,
+          "total": 7,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 7,
+              "total": 7
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/reconciliation-summary.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/reconciliation.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/statement-adjustments.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/statement-idempotency.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/suggestion-scoring.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reconciliation/supplier-payment-match.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "journals",
+      "title": "Chart of accounts and journals",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/journals/journal-idempotency.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/journals/journals.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/journals/multi-line-journals.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/accounts/accounts.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "reports",
+      "title": "Financial reports and dashboards",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/reports/account-statement-opening.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/accountant-month-close.e2e.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/cash-flow-reconciliation.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/cash-recognition-history.test.ts",
+          "status": "PASS",
+          "passed": 6,
+          "total": 6,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 6,
+              "total": 6
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/cash-recognition-invalid-source.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/cash-report-receipts.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/full-month-close.e2e.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            },
+            {
+              "report": "/tmp/ledgercraft-focused-fixes-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/report-columns.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "failed",
+              "passed": 1,
+              "total": 2
+            },
+            {
+              "report": "/tmp/ledgercraft-api-rerun-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/report-options.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/reports-aging-history.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/reports.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/reports/trial-balance-signs.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "gst",
+      "title": "GST settings and returns",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/tax/bank-reconciled-business.e2e.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/business-accounting.e2e.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-calculation.test.ts",
+          "status": "PASS",
+          "passed": 10,
+          "total": 10,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 10,
+              "total": 10
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-classification.test.ts",
+          "status": "PASS",
+          "passed": 10,
+          "total": 10,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 10,
+              "total": 10
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-ird-scenario.e2e.test.ts",
+          "status": "PASS",
+          "passed": 8,
+          "total": 8,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "failed",
+              "passed": 6,
+              "total": 8
+            },
+            {
+              "report": "/tmp/ledgercraft-api-rerun-results.json",
+              "status": "passed",
+              "passed": 8,
+              "total": 8
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-payments.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-preparation.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-registered-calculation.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-registration-reversals.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-self-filing.e2e.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/gst-settings.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/tax-completion.e2e.test.ts",
+          "status": "PASS",
+          "passed": 6,
+          "total": 6,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 6,
+              "total": 6
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/tax/tax.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "currency",
+      "title": "Currency and reviewed FX",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/currency/currency.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/currency/revaluation.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/currency/settlements.test.ts",
+          "status": "PASS",
+          "passed": 10,
+          "total": 10,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 10,
+              "total": 10
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "recurring",
+      "title": "Recurring documents",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/recurring/recurring-delivery-scope.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/recurring/recurring-organisation-scope.test.ts",
+          "status": "PASS",
+          "passed": 7,
+          "total": 7,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 7,
+              "total": 7
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/recurring/recurring.delivery.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/recurring/recurring.idempotency.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/recurring/recurring.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/recurring/schedule.test.ts",
+          "status": "PASS",
+          "passed": 6,
+          "total": 6,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 6,
+              "total": 6
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "statements",
+      "title": "Statements and reminders",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/customer-statements/collections-mailer.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/customer-statements/customer-statements.test.ts",
+          "status": "PASS",
+          "passed": 10,
+          "total": 10,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 10,
+              "total": 10
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "imports",
+      "title": "Invoice and document imports",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/invoice-imports/draft-validation.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoice-imports/extraction/extraction.test.ts",
+          "status": "PASS",
+          "passed": 23,
+          "total": 23,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 23,
+              "total": 23
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoice-imports/invoice-import-validation.test.ts",
+          "status": "PASS",
+          "passed": 12,
+          "total": 12,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 12,
+              "total": 12
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoice-imports/invoice-imports-accounting.e2e.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoice-imports/invoice-imports-phase2.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/invoice-imports/invoice-imports.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/storage/file-storage.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/storage/keys.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/storage/objects.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "quick-sale",
+      "title": "Quick sale",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/sales/sales-flow.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/sales/sales-summary.test.ts",
+          "status": "PASS",
+          "passed": 9,
+          "total": 9,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 9,
+              "total": 9
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/sales/sales.test.ts",
+          "status": "PASS",
+          "passed": 11,
+          "total": 11,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "failed",
+              "passed": 9,
+              "total": 11
+            },
+            {
+              "report": "/tmp/ledgercraft-api-rerun-results.json",
+              "status": "passed",
+              "passed": 11,
+              "total": 11
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "stripe",
+      "title": "Stripe payment operations",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/stripe/stripe.fees.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.guardrails.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.integration.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.mock-gateway.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.operations.test.ts",
+          "status": "PASS",
+          "passed": 10,
+          "total": 10,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "failed",
+              "passed": 9,
+              "total": 10
+            },
+            {
+              "report": "/tmp/ledgercraft-focused-fixes-results.json",
+              "status": "passed",
+              "passed": 10,
+              "total": 10
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.real-gateway.test.ts",
+          "status": "PASS",
+          "passed": 16,
+          "total": 16,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 16,
+              "total": 16
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/stripe/stripe.signature.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "bank-feeds",
+      "title": "Bank feed connections",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/bank-feeds/akahu.gateway.test.ts",
+          "status": "PASS",
+          "passed": 5,
+          "total": 5,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 5,
+              "total": 5
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/bank-feeds/bank-feeds.http.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/bank-feeds/bank-feeds.migration.test.ts",
+          "status": "PASS",
+          "passed": 1,
+          "total": 1,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 1,
+              "total": 1
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/bank-feeds/bank-feeds.service.test.ts",
+          "status": "PASS",
+          "passed": 11,
+          "total": 11,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 11,
+              "total": 11
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "assistant",
+      "title": "Assistant and scanned documents",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/ai/ai.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/ai/openai.test.ts",
+          "status": "PASS",
+          "passed": 4,
+          "total": 4,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 4,
+              "total": 4
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/ai/receipt-pdf.test.ts",
+          "status": "PASS",
+          "passed": 3,
+          "total": 3,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 3,
+              "total": 3
+            }
+          ],
+          "failures": []
+        },
+        {
+          "path": "api/src/modules/conversations/conversations.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard and saved reports",
+      "api": "PASS",
+      "webUI": "NOT_RUN",
+      "expoUI": "NOT_RUN",
+      "nativeDevice": "NOT_RUN",
+      "liveProvider": "NOT_RUN",
+      "suites": [
+        {
+          "path": "api/src/modules/dashboard/dashboard.test.ts",
+          "status": "PASS",
+          "passed": 2,
+          "total": 2,
+          "attempts": [
+            {
+              "report": "/tmp/ledgercraft-feature-api-results.json",
+              "status": "passed",
+              "passed": 2,
+              "total": 2
+            }
+          ],
+          "failures": []
+        }
+      ]
+    }
+  ]
+}

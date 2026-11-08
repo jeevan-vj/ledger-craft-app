@@ -36,9 +36,9 @@ describe('accounting dashboard posted ledger source', () => {
     const service = new AccountingService();
     await service.getAccountBalances({ startDate: '2026-04-01', endDate: '2026-04-30' });
     expect(reportsApi.financial).toHaveBeenLastCalledWith({ from: '2026-04-01', to: '2026-04-30', basis: 'accrual', baseCurrency: 'NZD' });
-    await service.getRevenueExpenseData(1, new Date('2026-04-30T12:00:00Z'));
+    await service.getRevenueExpenseData(1, new Date('2026-04-30T12:00:00'));
     expect(reportsApi.financial).toHaveBeenLastCalledWith({ from: '2026-04-01', to: '2026-04-30', basis: 'accrual', baseCurrency: 'NZD' });
-    await service.getCashFlowData(1, new Date('2026-04-30T12:00:00Z'));
+    await service.getCashFlowData(1, new Date('2026-04-30T12:00:00'));
     expect(reportsApi.financial).toHaveBeenLastCalledWith({ from: '2026-04-30', to: '2026-04-30', basis: 'accrual', baseCurrency: 'NZD' });
   });
 

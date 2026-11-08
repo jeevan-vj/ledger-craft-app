@@ -1,0 +1,305 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/api
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > unauthenticated GET /api/quotes returns 401
+{"msg":"http_request","requestId":"req_6dd24d99-cf66-491e-991b-ed2eb31ce629","route":"/api/quotes","method":"GET","status":401,"durationMs":36}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_3c31182a-7863-4ed4-bd32-6bc8bec32bac","route":"/api/auth/*","method":"POST","status":200,"durationMs":1752}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_4b77ffed-60d9-48f0-9753-bb1a882a0ed2","route":"/api/auth/*","method":"POST","status":200,"durationMs":700}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_cf3f8d55-4f00-4271-b36c-8a423b7f4769","route":"/api/business-profile","method":"PUT","status":200,"durationMs":57}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_f7c8df6a-f783-4f78-b310-b54984029309","route":"/api/customers","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_3fbfb405-506c-40d2-b100-963ffc3b5b9d","route":"/api/quotes/next-number","method":"GET","status":200,"durationMs":53}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_686eed49-b2cd-4757-b0b9-884414709a6e","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_6521beec-6c8b-4b54-9dcf-6dae6f8a9664","route":"/api/quotes","method":"POST","status":400,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_478361ab-3826-4c69-8b15-9fd85d5fba6c","route":"/api/quotes","method":"POST","status":201,"durationMs":91}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_c185f8f5-00a8-4551-9605-7d0b634d4210","route":"/api/quotes","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_1cda87d3-7f17-4ea2-a101-db3c34e45770","route":"/api/invoices","method":"POST","status":201,"durationMs":220}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_d8f4088c-026c-4e98-b1be-c8875fa5b59e","route":"/api/quotes","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_69ecf5b2-d451-4b6c-a06b-fa3fcc00dc84","route":"/api/invoices","method":"POST","status":201,"durationMs":50}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_249146c2-c6db-40e0-a601-2657b79261c6","route":"/api/quotes/next-number","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_faa851cd-7411-4613-86b2-7739fc619c8e","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_a2a9de01-3680-49ad-9fae-abe8e2bc2060","route":"/api/quotes/:id","method":"GET","status":404,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_e49a287a-fb1c-4f7e-be45-f346e08cc8c9","route":"/api/invoices","method":"GET","status":200,"durationMs":95}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > keeps quote numbering independent and matches invoice totals
+{"msg":"http_request","requestId":"req_5f8e874e-e134-4b81-a9ff-031d53a63963","route":"/api/tax-returns","method":"GET","status":200,"durationMs":22}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_97bc66ee-2bc2-44a0-a511-6ad10def54fb","route":"/api/auth/*","method":"POST","status":200,"durationMs":462}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_5dccad39-6f6c-4f31-850a-160d0a98693f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":18}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_329c21c9-a82f-4862-a4f9-7fce460164eb","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_d045a900-72c5-4088-bdc4-df29689d99c9","route":"/api/quotes","method":"POST","status":400,"durationMs":9}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_e2a2e106-15a4-463e-92f4-ce2124300893","route":"/api/quotes","method":"POST","status":400,"durationMs":10}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_f6582430-bdca-4bdf-806c-03e439a21dfc","route":"/api/quotes","method":"POST","status":400,"durationMs":9}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_17ccd612-9363-4e82-9620-8288bf9f7d92","route":"/api/quotes","method":"POST","status":400,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_69a8271b-4211-41c8-be89-04317b73994a","route":"/api/quotes","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_8bcc5f75-e3ab-4dea-aa5e-1ffad36906de","route":"/api/quotes/:id","method":"PATCH","status":200,"durationMs":53}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_6f678eeb-6292-4fe6-906e-7509d4c7d5ae","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":115}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_0353ea46-5ca9-40ad-abc0-198a94bf514d","route":"/api/quotes/:id","method":"PATCH","status":409,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects invalid quotes and edits only drafts
+{"msg":"http_request","requestId":"req_9bd8fc5a-35c7-470e-8454-f9282531e0b7","route":"/api/quotes/:id","method":"DELETE","status":409,"durationMs":33}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_50fc54c7-28e6-4ea2-aaa5-189c4cf61cd9","route":"/api/auth/*","method":"POST","status":200,"durationMs":338}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_dabd13fe-42dd-4922-a671-c319a27ca13b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_59e832c8-c24d-40e6-ab8f-9be78239cb47","route":"/api/customers","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_01005124-7734-4bc4-80d5-111f04bdac7b","route":"/api/quotes","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_3bfa9a27-da7e-42e4-95a1-7a6ceb2ca5ac","route":"/api/quotes/:id/status","method":"POST","status":409,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_a2237213-d07b-4fa6-8022-2ccf4b553ef2","route":"/api/quotes/:id/send","method":"POST","status":503,"durationMs":35}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_402d3d2e-c3d9-4061-a686-0abce2f17f93","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_cf5d5d66-14a0-4946-957d-65745f44bdaf","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_e12b10d7-9f2b-43e5-9818-39a0493bc3db","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":48}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_2aa311c8-1c4b-4307-a4db-72f79717cff7","route":"/api/public/quotes/:token","method":"GET","status":200,"durationMs":21}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_039ba879-eb8a-4ac4-8527-7b9e8d285dbf","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_1176680e-c754-420d-ad47-76c9e1bc1d55","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":26}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_d6b017d9-3ec4-42f2-aabc-b2036b23c83e","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_1667f4b7-7f0d-4614-ba9d-120605bd6405","route":"/api/public/quotes/:token/respond","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_deffcc3f-491b-4831-8aed-dde64e0ca5fa","route":"/api/public/quotes/:token/respond","method":"POST","status":409,"durationMs":11}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_78218b1e-f291-4cd3-ac83-8e7007fbe4f2","route":"/api/quotes","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_99a08d30-c08e-42d4-b864-f867d726a09b","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":40}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_92f5f7e9-a469-4eec-9f65-816a97de62b8","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":56}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_0dc11571-3e37-4aef-9f17-995938cc6938","route":"/api/public/quotes/:token","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_f58a0144-1c1a-4142-83c8-a0d63b262dd7","route":"/api/public/quotes/:token/respond","method":"POST","status":200,"durationMs":32}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_91054b4f-75c1-4c4e-a3e4-9106530a09c3","route":"/api/quotes/:id/revise","method":"POST","status":200,"durationMs":46}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_93d46cd6-0587-425b-983d-5dd09d8be3ed","route":"/api/public/quotes/:token/respond","method":"POST","status":410,"durationMs":9}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_1c19b322-bbfa-45c1-94ed-cb13c936d1d1","route":"/api/public/quotes/:token","method":"GET","status":410,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_3008ed6c-abb2-4812-b9ca-2ceb4eef86d5","route":"/api/quotes","method":"POST","status":201,"durationMs":68}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_6daa9c02-ed13-4403-9111-7fa098f03093","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":63}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_56b62b75-ad05-48ff-8748-7e3e67621e68","route":"/api/quotes/:id","method":"GET","status":200,"durationMs":35}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_2c80365a-6558-432d-9e79-2bffef9895e1","route":"/api/quotes","method":"GET","status":200,"durationMs":25}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_53ac04f0-7cd7-47d2-803d-b5eda0e3b426","route":"/api/quotes/:id/status","method":"POST","status":409,"durationMs":28}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_039d345a-96d6-4fca-b262-8d49782c30af","route":"/api/quotes/:id/share","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_e83e3645-0867-463d-8a47-dc05ea1184df","route":"/api/public/quotes/:token/respond","method":"POST","status":409,"durationMs":7}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_5719defa-68bf-4c62-aeef-9f898cefec5e","route":"/api/public/quotes/:token","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > follows the status table, expires on read, and lets a client respond once
+{"msg":"http_request","requestId":"req_5f9ede69-257a-43f7-bec7-84ac4976776c","route":"/api/quotes/:id/duplicate","method":"POST","status":201,"durationMs":46}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_49f73f44-0da0-4208-adf5-60ec47bc669e","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":1}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_bcd0a670-cea0-4cf2-a7d3-24ca2a05a6e7","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":4}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_148488e4-2e64-4a20-a964-7e739616b3c9","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > rejects an oversized public response by byte length
+{"msg":"http_request","requestId":"req_36d91e02-9ce3-4c30-9c29-cd0f5117692d","route":"/api/public/quotes/:token/respond","method":"POST","status":400,"durationMs":3}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_d793b43b-eeb2-497e-aea1-82065486a69f","route":"/api/auth/*","method":"POST","status":200,"durationMs":374}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_55d715ad-cccf-4496-b35f-a59b75775573","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_f3a998e7-527c-4242-83b1-ca990e49f36d","route":"/api/customers","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_930bd7da-960e-4e10-8e6a-637c84b9400a","route":"/api/quotes","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_cdc500bd-4e50-4439-b312-a8d6d6b5d6d7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_92588f01-95d0-4bbf-8379-4f2e544288ea","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_f45ba07d-4ec3-41fb-8f14-1c8873339f06","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places
+{"msg":"http_request","requestId":"req_214139b6-6367-431e-a289-a16486d9499c","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":55}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_360f8c43-8bce-47ad-a55e-80c952e30228","route":"/api/auth/*","method":"POST","status":200,"durationMs":360}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_75ec090f-b4ea-41af-be46-0572dcf63a97","route":"/api/business-profile","method":"PUT","status":200,"durationMs":18}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_4a5e337c-0788-4cfb-8d48-2376626822de","route":"/api/customers","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_faabf252-7af4-4ffe-b5ef-4afa64a54947","route":"/api/quotes","method":"POST","status":201,"durationMs":86}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_f1529290-bdcc-4cde-ab64-76a781595d6d","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_0921ef0c-d3af-4eec-a757-6e621ce9de92","route":"/api/business-profile","method":"PUT","status":200,"durationMs":20}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_60d19929-7e88-4ab9-90a3-dc7d9660ed64","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":29}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_07bd7d4b-7175-417c-9ee9-752069583b54","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":33}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_5276877d-5393-44cf-96e4-7b016e351e48","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":107}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_56c62670-9dde-45a6-8fe5-1c8c8f104527","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_3c45bc44-ef02-426f-a00b-f9cb77830361","route":"/api/quotes/:id/convert","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_6e1242ef-d18b-4955-b014-e08245898da1","route":"/api/invoices","method":"GET","status":200,"durationMs":15}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_5b4d8d05-d798-438b-8758-b6ae761217d7","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_9b70618f-d505-480f-af0d-11d15277d473","route":"/api/business-profile","method":"PUT","status":200,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_a5ee9123-821e-4d8a-8f3a-8c1c0d416f45","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":104}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_aa75d6d9-70fa-4963-97e9-d875a97523ce","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":60}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_43037ce6-6bf4-4589-96fe-e46a02ce7ed5","route":"/api/quotes","method":"POST","status":201,"durationMs":57}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_1d43ccdd-9ebd-42aa-a12a-54dac3750832","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":36}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_6ae122c2-dfc4-4d73-bfd0-1495b0309f9b","route":"/api/quotes/:id/status","method":"POST","status":200,"durationMs":34}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_5b576286-ee18-4223-a59d-3fa440914e1e","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":17}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_78af408d-fd89-4579-8d62-fc81d56bb37e","route":"/api/quotes","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_1de0529f-d6ee-4e7e-9340-7caadd529ec1","route":"/api/quotes/:id/mark-sent","method":"POST","status":200,"durationMs":24}
+
+stdout | src/modules/quotes/quotes.test.ts > quote routes > converts an accepted quote once into a draft invoice with the same totals
+{"msg":"http_request","requestId":"req_924b4224-2e64-4dbb-b48d-eb3fff1d210b","route":"/api/quotes/:id/convert","method":"POST","status":409,"durationMs":14}
+
+ ✓ src/modules/quotes/quotes.test.ts (7 tests) 26006ms
+   ✓ quote routes > keeps quote numbering independent and matches invoice totals  7941ms
+   ✓ quote routes > rejects invalid quotes and edits only drafts  4687ms
+   ✓ quote routes > follows the status table, expires on read, and lets a client respond once  4738ms
+   ✓ quote routes > converts a quote priced from a tax rate and percent discount that are not already at 2 decimal places  3901ms
+   ✓ quote routes > converts an accepted quote once into a draft invoice with the same totals  4386ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  20:51:41
+   Duration  55.55s (transform 10.80s, setup 96ms, collect 26.54s, tests 26.01s, environment 1ms, prepare 1.17s)

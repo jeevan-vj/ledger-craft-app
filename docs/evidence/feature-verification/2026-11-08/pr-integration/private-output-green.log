@@ -1,0 +1,46 @@
+TAP version 13
+# Subtest: portable proof defaults use the Playwright-installed browser
+ok 1 - portable proof defaults use the Playwright-installed browser
+  ---
+  duration_ms: 3.529678
+  type: 'test'
+  ...
+# Subtest: an explicit Linux or custom browser remains supported
+ok 2 - an explicit Linux or custom browser remains supported
+  ---
+  duration_ms: 2.203205
+  type: 'test'
+  ...
+# Subtest: proof runs accept alternate loopback ports but refuse hosted targets
+ok 3 - proof runs accept alternate loopback ports but refuse hosted targets
+  ---
+  duration_ms: 2.578759
+  type: 'test'
+  ...
+# Subtest: network settling waits for an in-flight API read before navigating
+ok 4 - network settling waits for an in-flight API read before navigating
+  ---
+  duration_ms: 33.595063
+  type: 'test'
+  ...
+# Subtest: saved browser state requires a private explicit output directory
+ok 5 - saved browser state requires a private explicit output directory
+  ---
+  duration_ms: 20.154061
+  type: 'test'
+  ...
+# Subtest: saved browser state refuses shared directories and symlink destinations
+ok 6 - saved browser state refuses shared directories and symlink destinations
+  ---
+  duration_ms: 10.377383
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 536.150736

@@ -1,0 +1,14 @@
+
+> mobile@1.0.0 test
+> jest --ci --watchAll=false --runInBand src/screens/sales/SellScreen.test.tsx src/components/invoice/InvoiceShareActions.test.tsx src/screens/settings/BusinessSettingsScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/screens/sales/SellScreen.test.tsx (10.362 s)
+PASS src/screens/settings/BusinessSettingsScreen.test.tsx (9.431 s)
+PASS src/components/invoice/InvoiceShareActions.test.tsx (5.111 s)
+
+Test Suites: 3 passed, 3 total
+Tests:       37 passed, 37 total
+Snapshots:   0 total
+Time:        25.43 s, estimated 602 s
+Ran all test suites matching src/screens/sales/SellScreen.test.tsx|src/components/invoice/InvoiceShareActions.test.tsx|src/screens/settings/BusinessSettingsScreen.test.tsx.

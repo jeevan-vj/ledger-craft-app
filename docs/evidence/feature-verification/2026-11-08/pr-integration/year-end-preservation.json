@@ -1,0 +1,40 @@
+{
+  "main": "fa64e43",
+  "merge": "1578d5d",
+  "historicalFile": "docs/evidence/second-month-year-end/api/results.json",
+  "committedSha256": "f75c96a2f16f371cd45b811836e551286a30c16da062548c31a149f9c4ea80a8",
+  "afterRunSha256": "f75c96a2f16f371cd45b811836e551286a30c16da062548c31a149f9c4ea80a8",
+  "unchanged": true,
+  "apiTests": {
+    "files": 3,
+    "passed": 12,
+    "exitCode": 0
+  },
+  "webTests": {
+    "files": 3,
+    "passed": 17,
+    "exitCode": 0
+  },
+  "redRegression": {
+    "passed": 1,
+    "failed": 1,
+    "exitCode": 1
+  },
+  "scope": "Local API and web tests after merging main; not fresh second-month browser/device proof",
+  "contractTests": {
+    "files": 1,
+    "passed": 2,
+    "exitCode": 0
+  },
+  "webAppTypecheck": {
+    "exitCode": 0
+  },
+  "apiTypecheck": {
+    "command": "node ../node_modules/typescript/bin/tsc --noEmit",
+    "cwd": "api",
+    "node": "24.22.1",
+    "exitCode": 0
+  },
+  "sourceSha": "1578d5dfd8cacbe544b4db9ba3d42dc92407706f",
+  "testedSourceFileSha256": "78646721d87af9cbd8ee80d89069bb443c77e26716f1ac3cac7c86c3ef5d9cb6"
+}

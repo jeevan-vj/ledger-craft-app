@@ -1,9 +1,10 @@
+import { proofBrowserOptions } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { chromium } from '@playwright/test';
 const origin=process.env.RECEIPTS_MOBILE_ORIGIN||'http://127.0.0.1:8081';const apiOrigin=process.env.RECEIPTS_API_ORIGIN||'http://127.0.0.1:3001';const out=process.env.RECEIPTS_MOBILE_OUTPUT||'/tmp/ledgercraft-mobile-receipts-proof';
 for(const value of [origin,apiOrigin])assert.ok(['127.0.0.1','localhost'].includes(new URL(value).hostname));await mkdir(out,{recursive:true});
-const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});const errors=[];let page;
+const browser=await chromium.launch(proofBrowserOptions());const errors=[];let page;
 try{
  const fixture=await browser.newPage({viewport:{width:600,height:800}});await fixture.setContent('<main style="font:24px monospace;padding:36px;background:white;color:black"><h1>HARBOUR SUPPLIES</h1><p>SYNTHETIC TEST RECEIPT</p><hr><p>Office supplies</p><p>Net NZ$100.00</p><p>GST NZ$15.00</p><hr><h2>Total NZ$115.00</h2><p>7 November 2026</p></main>');const bytes=await fixture.screenshot();await fixture.close();
  const context=await browser.newContext({viewport:{width:390,height:844},colorScheme:'dark',timezoneId:'Pacific/Auckland'});page=await context.newPage();page.setDefaultTimeout(45000);page.on('pageerror',error=>errors.push(error.message));

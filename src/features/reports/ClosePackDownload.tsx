@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useAuth } from '@/context/StableAuthContext';
 import { Button } from '@/components/ui/button';
-import { downloadClosePack } from './closePackDownload';
+import { downloadClosePack } from './downloadClosePackArchive';
 export function ClosePackDownload({from,to}:{from:string;to:string}){
  const {me}=useAuth();const download=useMutation({mutationFn:()=>downloadClosePack(from,to)});
  if(!me?.permissions.includes('reports.read')||!me.permissions.includes('banking.read'))return null;

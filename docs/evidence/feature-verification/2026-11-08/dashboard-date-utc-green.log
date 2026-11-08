@@ -1,0 +1,26 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > shows a report failure and retry instead of an endless loading skeleton
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > opens the real report export rather than simulating a successful download
+All accounting data loaded successfully
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+Fetching posted accounting reports...
+
+stdout | src/pages/__tests__/AccountingDashboardPage.test.tsx > keeps the selected calendar cutoff for charts in the browser timezone
+All accounting data loaded successfully
+
+ ✓ src/pages/__tests__/AccountingDashboardPage.test.tsx (3 tests) 810ms
+   ✓ shows a report failure and retry instead of an endless loading skeleton  548ms
+ ✓ src/services/__tests__/accountingService.posted.test.ts (5 tests) 58ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  07:59:39
+   Duration  15.08s (transform 1.76s, setup 1.30s, collect 3.31s, tests 868ms, environment 5.13s, prepare 1.02s)
