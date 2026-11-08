@@ -53,3 +53,13 @@ Use statuses `PASS`, `FAIL`, `BLOCKED`, `NOT_RUN` separately for API, web UI, Ex
 - `scripts/full-month-close-web-proof.mjs` — stages reports. real business UI; shared sequential month-close scenario.
 
 Follow prerequisite stages and use a fresh isolated output directory. Driver availability is not a recorded pass.
+
+## Main integration: self-service close controls
+
+Download an authenticated accountant ZIP; verify report membership, SHA-256 checksums and reports/banking permission boundaries.
+
+Run these additional integration files as part of this domain:
+
+- `api/src/modules/reports/close-pack.test.ts`
+
+The feature entered main at `8f6bb6866c27a5fed5f9a1aa1caa728e16a94d4f`. Prior screenshot evidence is in `docs/evidence/self-service-month-close/README.md`; it is historical evidence, not a new run of this skill. Record fresh UI results separately.

@@ -257,9 +257,11 @@
       "module": "bank",
       "route": "/bank-accounts",
       "skill": ".cursor/skills/ledgercraft-check-banking/SKILL.md",
-      "flow": "Create a bank account, record transfer, import a mapped CSV twice, review balances and saved statement.",
+      "flow": "Create a bank account, record transfer, import a mapped CSV twice, review balances and saved statement. Prepare a bank ledger by selecting its bank name; preserve linked financial identity and retry without duplicate accounts.",
       "expectation": "Import changes displayed balance once; transfers net to zero across own accounts; foreign bank statements fail closed.",
       "apiTests": [
+        "api/src/modules/accounts/bank-ledger.test.ts",
+        "api/src/modules/accounts/closed-identity.test.ts",
         "api/src/modules/bank/bank-import-balances.test.ts",
         "api/src/modules/bank/bank-workspace.test.ts",
         "api/src/modules/bank/bank.test.ts"
@@ -308,13 +310,16 @@
       "module": "journals",
       "route": "/journal-entries",
       "skill": ".cursor/skills/ledgercraft-check-journals/SKILL.md",
-      "flow": "Create accounts, post reviewed opening balances and multiline journal, retry, inspect/export every line; reject imbalance.",
+      "flow": "Create accounts, post reviewed opening balances and multiline journal, retry, inspect/export every line; reject imbalance. Create chart accounts through UI; close a reviewed period, reject backdated mutations, reopen as owner/admin, and retain actor audit identity.",
       "expectation": "Debits equal credits exactly; posted entries immutable; opening and period turnover are distinct from closing balance.",
       "apiTests": [
+        "api/src/modules/accounting/period-actor-retention.test.ts",
+        "api/src/modules/accounting/period-lock.test.ts",
+        "api/src/modules/accounts/account-create-retry.test.ts",
+        "api/src/modules/accounts/accounts.test.ts",
         "api/src/modules/journals/journal-idempotency.test.ts",
         "api/src/modules/journals/journals.test.ts",
-        "api/src/modules/journals/multi-line-journals.test.ts",
-        "api/src/modules/accounts/accounts.test.ts"
+        "api/src/modules/journals/multi-line-journals.test.ts"
       ],
       "uiDrivers": [
         {
@@ -332,7 +337,7 @@
       "module": "reports",
       "route": "/financial-reports",
       "skill": ".cursor/skills/ledgercraft-check-reports/SKILL.md",
-      "flow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month.",
+      "flow": "Run accrual/cash P&L, balance sheet, trial balance, cash flow, aging and monthly/quarterly columns; export PDF/CSV; settle next month and rerun prior month. Download an authenticated accountant ZIP; verify report membership, SHA-256 checksums and reports/banking permission boundaries.",
       "expectation": "Use frozen Decimal working paper: TB 13680 each side, assets 12480 = liabilities 980 + equity 11500, profit 1500, cash 11380, AR 920, AP 575. Cash profit 1200; later settlement does not alter historical close.",
       "apiTests": [
         "api/src/modules/reports/account-statement-opening.test.ts",
@@ -341,6 +346,7 @@
         "api/src/modules/reports/cash-recognition-history.test.ts",
         "api/src/modules/reports/cash-recognition-invalid-source.test.ts",
         "api/src/modules/reports/cash-report-receipts.test.ts",
+        "api/src/modules/reports/close-pack.test.ts",
         "api/src/modules/reports/full-month-close.e2e.test.ts",
         "api/src/modules/reports/report-columns.test.ts",
         "api/src/modules/reports/report-options.test.ts",

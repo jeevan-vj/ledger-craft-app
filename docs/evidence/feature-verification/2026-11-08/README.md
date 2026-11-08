@@ -85,3 +85,7 @@ All seven logged issues have local fixes and rerun evidence. They remain open be
 The final rebuilt catalogue/quote walkthrough passes with the converted invoice visibly rendered before reload, price125 retained, total115/draft status confirmed and trial balance unchanged. Final complete build: [web-build-complete.json](web-build-complete.json); [build log](feature-build-complete.log).
 
 Final app and Node-project typechecks pass after correcting a test-only Testing Library option; [final log](web-typecheck-verified.log). Latest combined web coverage is874 passing assertions across169 files, including both quote-cache regressions. All test, screenshot and provider boundaries above still apply.
+
+## PR integration baseline
+
+Before PR creation, authoritative main advanced to `8f6bb6866c27a5fed5f9a1aa1caa728e16a94d4f` (self-service close controls, PR #170). This branch merges that commit and preserves both sets of documentation. The Stripe fixture uses the actual stored settlement date, avoiding a midnight boundary between settlement and credit creation. Existing screenshots and aggregate counts above remain evidence for their recorded pre-merge source; combined-head checks are recorded separately. Journals, banking and reports skills now include account setup, period locks and accountant ZIP acceptance. The upstream UI evidence remains separately attributed, not claimed as a fresh run here.
