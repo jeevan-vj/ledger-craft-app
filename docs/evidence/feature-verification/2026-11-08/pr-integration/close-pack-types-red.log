@@ -1,0 +1,16 @@
+$ tsc --noEmit -p tsconfig.app.json --pretty false && tsc --noEmit -p tsconfig.node.json --pretty false
+src/features/reports/ClosePackDownload.test.tsx(5,10): error TS2305: Module '"./ClosePackDownload"' has no exported member 'ClosePackDownload'.
+src/features/reports/ClosePackDownload.test.tsx(6,35): error TS1149: File name '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/closePackDownload.ts' differs from already included file name '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.ts' only in casing.
+  The file is in the program because:
+    Imported via '@/features/reports/ClosePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/pages/FinancialReportsPage.tsx'
+    Imported via './ClosePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.test.tsx'
+    Imported via './closePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.test.tsx'
+    Matched by include pattern 'src' in 'tsconfig.app.json'
+src/pages/FinancialReportsPage.tsx(17,10): error TS2305: Module '"@/features/reports/ClosePackDownload"' has no exported member 'ClosePackDownload'.
+src/pages/FinancialReportsPage.tsx(17,35): error TS1261: Already included file name '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.ts' differs from file name '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/closePackDownload.ts' only in casing.
+  The file is in the program because:
+    Imported via '@/features/reports/ClosePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/pages/FinancialReportsPage.tsx'
+    Imported via './ClosePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.test.tsx'
+    Imported via './closePackDownload' from file '/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-750be7a6/src/features/reports/ClosePackDownload.test.tsx'
+    Matched by include pattern 'src' in 'tsconfig.app.json'
+[ELIFECYCLE] Command failed with exit code 2.
