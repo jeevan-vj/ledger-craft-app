@@ -1,0 +1,29 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/features/payments/api/accountCreateRetry.test.ts (2 tests | 1 failed) 11ms
+   ✓ retains the caller account-creation key across a safe retry 4ms
+   × binds new account setup to the company reviewed by the user 6ms
+     → expected null to be 'reviewed-company' // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/features/payments/api/accountCreateRetry.test.ts > binds new account setup to the company reviewed by the user
+AssertionError: expected null to be 'reviewed-company' // Object.is equality
+
+- Expected:
+"reviewed-company"
+
++ Received:
+null
+
+ ❯ src/features/payments/api/accountCreateRetry.test.ts:11:173
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  07:24:36
+   Duration  1.54s (transform 298ms, setup 88ms, collect 446ms, tests 11ms, environment 470ms, prepare 92ms)

@@ -1,0 +1,943 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_404462bf-1124-4b0f-a1e5-f71776c8672d","route":"/api/auth/*","method":"POST","status":200,"durationMs":121}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_904ee212-2790-4029-807e-c5aa2d28b693","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_a7799591-a885-4c6d-b0a0-8ebe1f44a8c5","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_58fe5728-6fd2-4aa0-a3cb-69687e4b3639","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_23935677-d529-401b-95d6-45c0fc1a6d4f","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_636bfadc-cd4c-4deb-abd5-3be1350e3d7b","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_e467b4e7-db5b-4592-a7b2-adb32dc63fb9","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_e87346e6-9a27-4a29-889b-c2a4484a6f3a","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_439a6545-d8cd-4f45-923f-63e2347365c8","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_23693d54-e742-4718-bbcd-af150dd6c857","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_c12e972d-ebe4-4815-92ed-0025e2d845d5","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_90dfbb59-2cad-4097-aa19-03adb31afe11","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":21}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_1c9b4261-9f59-4428-a19d-1b2532aad3a4","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_3f36e1d7-87aa-49cc-b5e0-cf9091d44027","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_1e8ac961-42d0-4d84-9802-a0df8ecc048a","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_daf38aea-d6dd-4a72-8766-fdaf6f5262ff","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_d95b9b18-d0af-4db0-871c-2d29e50cc9d3","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_246304c8-ffb2-4b82-b39f-57145399b461","route":"/api/bills","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_8219c3ea-7a24-4bb4-b62b-a8f2de3df56d","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_c5a6826b-9956-4b5f-ba22-956b5d702006","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_8cdc0d0d-9afe-4caf-befb-450d33efdbe4","route":"/api/expenses","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_84bad1ac-aea2-4f2c-84e2-1d8bff67cc61","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_ac2eeb9e-ce6b-4017-a19d-50de9c958445","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_135f8067-4801-4949-97bc-36e33c432102","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_6013e712-29d6-4b75-be1c-20e395e2cb28","route":"/api/reports/financial","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_246f895e-227a-4173-803a-dceacaa748d4","route":"/api/accounting-periods","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_ee068c7c-fc4f-41d1-a4e3-3fedb22e3791","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_384f7ed6-587a-4035-8211-cb71f2fefdd0","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_d392640a-0c61-4585-bb95-1a440b4985cb","route":"/api/accounting-periods/close","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_7006ec59-22c8-4e9e-b586-cd488095b0ea","route":"/api/expenses","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_06285cfb-5af0-4788-a966-1fdf316f0455","route":"/api/invoices","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_ae4f52fc-e89b-4e38-a5f5-8217cc24a9b6","route":"/api/payments","method":"POST","status":409,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_cf4d9681-5c81-4f6b-9fa4-42f6063d55de","route":"/api/bills/:id/payments","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_0dfb958a-df91-4c7e-80a5-abe3fc05be18","route":"/api/expenses/:id","method":"DELETE","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_ef7741d3-0615-4f44-b9a3-7e7d8bcee19e","route":"/api/invoices/:id","method":"PATCH","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_9ff7e659-eef2-4ddf-8efd-0353129459b7","route":"/api/invoices/:id/cancel","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_fc28c48b-cf10-4028-924b-e9186233a817","route":"/api/tax/gst-settings","method":"PUT","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_d2d15ecc-8226-4aec-9950-79552f8852f5","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_c803bcc6-5822-42b1-b676-3424808d304a","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_01329bec-36a1-4827-a8fa-6302973d34e0","route":"/api/credit-notes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_0ee5985b-fc24-43b2-baf8-082e2e4634cb","route":"/api/reports/financial","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_4ed5903f-6350-443b-8081-b90839a7e121","route":"/api/accounting-periods/reopen","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_d1b01052-84e7-4cbb-b0ef-d1e0d982d003","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_a03b42db-c3e9-49cc-8644-ad56ea8ccf7e","route":"/api/auth/*","method":"POST","status":200,"durationMs":110}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_f33da13e-2566-4df7-b97a-3ac5b9ee016c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_a926a5b4-530b-442f-80f9-5eed0ba0c493","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_caaacd2b-08cc-4a71-91d3-ded0024dc861","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_82ab04ba-07de-4f8d-9c23-5d05d8991d23","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_84b85020-3415-4c7d-9d18-c81a2d660e0f","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_4d8644c5-ad3d-4ae2-a6b5-ea7dcea51aee","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_aca0a7ea-6386-4b54-bbba-805697f8813e","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_881b8668-c88e-4222-9119-e92c5910c9f7","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e020f740-1c82-40b7-8800-436473603930","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_4e96cd2b-4c3b-4c1f-8dcc-e8fd7dcda5cf","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_ca339035-e4d9-4012-848b-91a1999ef952","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_077a7926-990a-4221-ad94-388771632f2a","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_58d23096-fc5a-4e01-a119-9dd43c99e236","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_5939b44a-89ed-48d5-bbfd-a0836306e42a","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_0d170e20-2113-48d5-b9a1-5173d58b4a95","route":"/api/payments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_3b2b4966-682a-4812-bfb6-d14472634a0e","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_caa21da9-9eb7-49c0-ba9c-95ad11326308","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_cc9be28e-4ad3-4745-a609-27e14bea960f","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_8c8d30bd-f655-4906-a96c-dc366da89b77","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_bab36bf8-d058-4ca7-b7d0-4dec51bcf290","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_aaf07f84-e292-4084-9ca4-dc0abe59193d","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_c5b061d6-5d73-4986-a626-a17e548eacb1","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_208cbfaf-cf59-4130-a12d-83c7329f2307","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_d6e7ab6f-f0a8-4337-b84a-fb4d892e3852","route":"/api/accounting-periods/close","method":"POST","status":403,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_46d7e9e0-457b-40a6-b726-fd035fbd254f","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_05b8bc9e-c819-45b9-89ea-f831cd585be8","route":"/api/accounting-periods/reopen","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_a600544d-4a07-4158-8c75-70e9cd66ad0a","route":"/api/auth/*","method":"POST","status":200,"durationMs":84}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_7187af77-483b-46d2-8f3d-b167a4c97073","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_5478b07f-16ac-4554-a317-6a85b0f95198","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_ad7c9e34-de98-4903-94d9-b0303089c3f1","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_c7e6474b-1269-476c-83bc-b81b74c7c485","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_640c6778-cc17-4f0b-a6c4-53c478521904","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_12ffc301-903d-4170-a94e-8e5e5854bed9","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_ffe7d3ae-4e58-4ad6-8897-bed243a8edab","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_ed23587f-2c63-4754-85d9-a5fe11328ba0","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_daf8a6fc-8128-4949-837c-af64a46fe58b","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_b29b1797-864a-4e86-9e91-9d802bbf615a","route":"/api/invoices","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_3420c23b-24c7-4379-8dcd-ef9b265d534f","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_8632c663-9f1f-4234-ad49-d3abcecdacff","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_d2be2a41-a2ea-4785-b8bf-5254860c9cb4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_9152a78f-ebbc-4ea7-bab0-f6c1d3ad6cdf","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_b34da18e-90b1-4399-9ad4-0b7054034bd9","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_76a02ca3-4b1d-4702-baba-3e8bc1f06875","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_c866d157-6058-4706-acca-1c9599ed7150","route":"/api/bills","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_ca50cffd-fac2-4115-8f16-5fa610830d2a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":20}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_1af1a4c9-49cf-4cd4-88f8-cbb95229e25d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_27f7dbaa-145e-415a-b1fd-6a45d689d7cb","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_7a639504-31b4-421e-a035-85a1f6b6bab7","route":"/api/credit-notes","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_a4b2dd19-9923-404b-96fe-78320d3869c0","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_2880c857-e145-4f24-9aea-6b97a1a9559e","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_bd6f55d0-7f54-4c2b-b1e2-89c20885cfbf","route":"/api/journal-entries","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_70e4d79e-d310-4c35-881e-a8ceebefea33","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_4f8b4ff4-539e-42b4-8437-888e57a5ebe5","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_f8728354-600d-41a0-8ee2-c72517dfa8a0","route":"/api/tax-returns","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_8af810f1-df34-4952-8306-4a57d7c99912","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_b25cfd20-afe4-435b-9ec9-4d3cd7cc8fbc","route":"/api/invoices/:id/send","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_ccde6fb0-3bfb-4e01-b12f-81bb8e14b03d","route":"/api/credit-notes","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_4d376b30-0fbb-4f2c-83a2-6b5926c8136e","route":"/api/credit-notes/:id/reverse","method":"POST","status":409,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_85cb0983-fafa-484a-aa0a-b7b5921dc161","route":"/api/credit-notes/:id/refunds","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_de72dcd9-3504-4841-9dad-bef5d064dcd4","route":"/api/payments/:id/reverse","method":"POST","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_4b43a626-db28-40bb-9781-6fb7e9f7d0cf","route":"/api/journal-entries","method":"POST","status":409,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_951c71d6-aace-410d-986e-dcaafc84ce8c","route":"/api/journal-entries/:id","method":"PATCH","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_d724d2b8-f188-436d-8af3-a249cbfffa07","route":"/api/journal-entries/:id","method":"DELETE","status":409,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_1e307ee5-3712-484b-83f7-9ec3b00515b6","route":"/api/bank-transactions","method":"POST","status":409,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_0f64de77-768a-4564-a51e-04ccfa3b3197","route":"/api/bank-accounts/:id","method":"PATCH","status":409,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_fe09f610-8fc1-44e1-8a07-bfe2656a10c2","route":"/api/tax-returns","method":"POST","status":409,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_0eb1068b-564b-469e-aa2d-88a5fc3c0667","route":"/api/tax-returns/:id","method":"PATCH","status":409,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_69f37b7e-d914-44fa-9e4e-678939a15247","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+{"msg":"http_request","requestId":"req_5878fd2e-2323-4066-98fc-0fe9fd1f8264","route":"/api/tax-returns/:id/file","method":"POST","status":200,"durationMs":27}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_e9b96308-85b3-4219-8171-6bfeb0affbb9","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_f93bf526-1b66-485c-af38-28df4fd76360","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_3f8125a9-71e9-49d7-bc1a-1ecf58e26d7b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_6f13d4e2-e621-4596-83a0-628c471b8846","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_524415cd-7aec-4b69-aa00-5cf97447e9f6","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_6cf40f00-374a-4a44-a088-6e667d68e8bf","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_8a0e56f1-6710-4917-b372-36784543766d","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_e3166c48-ccca-4a31-a033-a0aa71150bb1","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_ebcd00f0-137b-4622-b79b-6383dda9aa6a","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_e7384488-ce6c-4f6c-aa77-b1ffdadb33f5","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_068ecbc0-cb8b-4af4-82cc-c93c239943cd","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_6d6c7d42-2a57-4fc4-a2f2-78ab51fe9716","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_e6ed3a6c-326d-4332-8ac5-18c99e4b3db8","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_056b19b3-651b-474d-bcc9-14d729eb17e4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_7eba456c-4187-4eaf-8bfc-9bbdd8e1b228","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_c3fbefc1-ab4b-4f1d-8d33-5d82e5f77d1c","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_8f214ca5-2ade-47e1-889f-8aad9dab2d36","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_a610f2d9-ae39-4f12-9dc3-ee136891f231","route":"/api/bills","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_b73fbdf3-f5f6-435f-b868-f69ad332272a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_990911a9-ea46-489e-ae56-0cbbf22fa3ed","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_2d399e13-6222-4fb2-b348-40fe94d70ff3","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_8a282350-8942-45c0-8000-7d57879a807d","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_a19d3a9f-c37b-43ed-859f-1e09f340f35e","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_d8023649-bf88-40af-bafd-ca4242ab58c1","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_5c041bb3-12b1-4519-9db3-275dfb4b3b69","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_c3a8a6ec-a4d9-4f5f-adf6-fac21426760e","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_8343778c-891c-4374-9e61-2c932280a850","route":"/api/accounting-periods","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_76f7c881-e23d-40c9-a8f7-c161cc7537be","route":"/api/accounting-periods/close","method":"POST","status":409,"durationMs":1}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_2817a6b6-5f6a-49ab-9aa0-cfc77b006ea9","route":"/api/accounting-periods","method":"GET","status":200,"durationMs":1}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+{"msg":"http_request","requestId":"req_8386e773-44bb-47c8-92c3-916c18e00794","route":"/api/accounting-periods","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_bd67a1ec-86c8-47aa-a119-2e6da1895a40","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_76a5d42a-311f-48c0-9aef-b1ac14cc0276","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_0842b861-8058-45e7-8029-0eb068a585eb","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_cafc8047-b6d7-411d-9d47-fd24b11c2d39","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_f957df1f-179e-4e56-a2ed-58d6e04185db","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_954495c6-ac8c-4703-9daa-3d67ac1cd185","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_e6121484-c009-4801-a366-1f979ad90d33","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_2bd2c1e3-f0a9-4623-bead-dd71a314639d","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_9d7613e8-e4ed-485c-8909-059cf2a5e056","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_cf5309d6-34eb-4461-b001-67b429d6e001","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_9a7162c7-f272-41d2-a2d8-432669db6559","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_b4a6aac4-4120-4837-b3a5-ca2accb830b5","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":20}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_6a1501a1-e180-4b23-a345-958ace7cc180","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_e48d87d0-330e-4970-b82c-3102639eeef9","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_0d76dc87-4d49-4a61-b093-4d7786454e22","route":"/api/payments","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_d184a131-136d-4fbf-ad81-d442860d71c6","route":"/api/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_1676da95-d551-402a-ad84-7f1aca2fab2e","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_3f4e8fc9-99a6-4265-b5f6-039feeba16e6","route":"/api/bills","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_3afbfb4b-3052-4b25-961d-1c1fedc14899","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_abbf3a56-690c-411d-9183-18006a5ebe82","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_9720e372-c798-46dd-bcc7-743cf333ded3","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_d619f7f8-a531-4b12-a94b-c1ca4e628bca","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_0427cbd7-a2fa-4873-a9f9-8b62d238ce9b","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_843b3081-f411-43b7-860a-5e77f0a2387c","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_6956a342-ddf8-4fbe-9b86-3dce9bbc4a4c","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_1a181566-5aa4-437a-9ee9-ac3fc20ad704","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+{"msg":"http_request","requestId":"req_1347cf7e-67e9-407d-bbf0-731e550cff68","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_98782ae2-c198-4095-8de9-f51d620c4a58","route":"/api/auth/*","method":"POST","status":200,"durationMs":122}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_d417f0a8-e308-4c09-8757-a01b632731ac","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_bb5c9d3d-a1d4-4dad-8487-5160800c6c14","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_237fca4b-2a82-4fc4-aecf-b557079ab176","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_168a9441-fe3b-4a1a-9267-fc86762cb354","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_29672b3f-fd3c-4754-b05f-ce1fa71a814a","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_114716d8-7af5-4c86-b792-2535744601c2","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_2dff67ff-0c14-47b0-b1b5-998205ec935a","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_6884af6c-df58-432b-9955-1f16351de910","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_a0727137-a67a-47e4-a7e9-66b0f637c55a","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_ba0d7728-c20d-4ba8-8900-63e46e609ea2","route":"/api/invoices","method":"POST","status":201,"durationMs":34}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_6b6d89fb-3848-42c5-b242-9f32b1e24337","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":26}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_b0de29cd-2aeb-4aad-9714-1e6498fa892d","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_ae32aec3-6aef-4a4e-8655-163126113603","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_e93c5b54-aca6-4bbf-9972-0b2c08c06c56","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_95ac1e15-10ed-43f1-b05f-03c6b3181035","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_85b2792a-d4b8-4f1a-b776-36eee0a5136d","route":"/api/vendors","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_5ef52c1e-9711-4862-9f2b-7278503f39d7","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_5e2ff72a-7677-426d-889b-ae587d8129f0","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_fdad7509-d849-4baa-ad51-acdd0afb175b","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_015e177c-0bc3-4cc7-8cd9-ff717f77d28f","route":"/api/expenses","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_1ff8807d-33c1-43cf-9c05-495f8b7619ef","route":"/api/credit-notes","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_615d324b-e413-4552-ae6c-68cabee9e2f0","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_92306830-157c-4808-839c-f843e5dd82e6","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_6c09a5b3-e167-4812-b63a-f297a9bc645b","route":"/api/invoices","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_f3423f4c-9172-4028-847d-1bc94d00a457","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":31}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_c63ad581-82af-4032-a1d7-5fe205edc8bc","route":"/api/payments","method":"POST","status":409,"durationMs":20}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+{"msg":"http_request","requestId":"req_b8e1a034-da8b-4cf7-8341-3fbd9e26781e","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_aa424370-08a0-439c-847a-90595fadf3ae","route":"/api/auth/*","method":"POST","status":200,"durationMs":101}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_33ecad0a-84f9-48c6-af8a-c7b50caa970c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_085fe119-8d13-4818-9077-ade6d27ad8cb","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_5b3dac52-3239-41dc-8786-2539efd62553","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_3a093a00-8731-4661-a7e3-30a5872da1b3","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_f7797a9b-106d-4845-a3ba-f6ac9700d8ca","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_cbcfe684-8557-4420-87f9-f06a393f3479","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_5953e0cd-2dcb-4572-bd84-35ce291fc7a9","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_eb07bdec-fdbc-461b-bb6c-d71a7a6c00f0","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_b68bfedb-63a9-4eb5-b48a-63664c7ce6c1","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_84389499-d46a-4497-95c1-3ffeaaf61d9f","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_c7fd6cf4-8d3e-4c99-9331-807c17bd167c","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_fda76355-0778-4e13-bf3d-61185876f58a","route":"/api/invoices","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_858ff882-8e79-4590-943b-25b72c28e38b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_914654e9-66e7-4f35-a9d0-d865896ab78a","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_6e0af019-b934-4c42-962c-e5583b6fce46","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_4f917c78-cb06-4d52-9982-f2ac600e80d5","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_39686fb1-1951-4342-9ee8-8185bb86d914","route":"/api/bills","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_17a1d72f-d434-419a-b36d-86d5fdf03b62","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":19}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_b3fe4138-9103-4a37-a3b4-b9a9c7cd01b6","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_ded357b4-9360-4c53-b8d1-dae1ade65015","route":"/api/expenses","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_4057b34e-f70a-400b-8247-51515e6b7b35","route":"/api/credit-notes","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_eb24d3aa-c385-4f1e-8306-94799c72b162","route":"/api/credit-notes","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_b78abae5-4009-4373-b4d3-5e33b3946f24","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_49a8569c-f1f7-4e08-9212-ca91acf67664","route":"/api/invoices","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_b8ece5be-855d-47df-ab2d-9a641b11b0af","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+{"msg":"http_request","requestId":"req_d3995be4-e3f9-4679-91eb-b88011328cb6","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_b9322c45-4b8c-459b-b8ab-35a598cdcc48","route":"/api/auth/*","method":"POST","status":200,"durationMs":102}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_d556d8e5-f246-4f94-af8d-024a545033b2","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_9c5dc24e-0e51-4d4d-b6db-a82b7229b018","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_b33d6026-c393-44a5-92e0-152aba6de852","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_e3735c96-bfcf-4415-b8fb-4a8f066e0611","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_071404e6-5f74-4a27-8512-7c8159979b66","route":"/api/accounts","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_f6e978c2-bfe1-4bec-982a-93e4445ef1f8","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_ece64479-f663-42ab-8c97-1d7fe3f71dd3","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_6015ae41-ed45-419d-8922-00aa6b005973","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_e9ecef38-7d5a-469a-b767-adf801df5d2a","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_1e89eaa6-da27-44e6-9fa3-32bd192752d4","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_252e3056-6d9b-4443-b404-51a2359090ae","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":24}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_86967a1f-c98f-4a5a-b0e0-5cead5990440","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_79794c1a-1689-4d56-b07c-c67f46624687","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_94fbc69d-f0b3-4a1f-92cd-5985fc0e2674","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_594b7a5d-dd4b-4949-8813-6f9df5af1ca2","route":"/api/payments","method":"POST","status":201,"durationMs":48}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_5c55a62f-a5d4-4d24-89af-4861d02c16ab","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_7bfb79c9-d8a6-4343-bbb8-789b1ad7841a","route":"/api/bills","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_7ce34745-2289-486d-b3d8-3a9f7a0138ac","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_60ecabdb-c08e-4eac-8284-fa9e3b5034ac","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_4593ddc3-f8b4-4977-b7a0-70be530e63de","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_494f762b-2c55-483b-86ef-12bcd8ed018e","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_ebf063e1-0ad4-4388-9a55-48d49e97faaa","route":"/api/credit-notes","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_50ebb4b1-5fd9-4a09-9778-de6146e732a8","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_edf1eef2-68bf-4458-8e3e-7f26615b69b5","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_63204f17-6d9b-45b5-bd2f-0c6d6137a0d5","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_26adb276-d347-457f-a273-d65aaeb23ad2","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_1e84f764-1fb0-439f-af63-c16c6c5508e8","route":"/api/bank-transactions/:id/details","method":"PUT","status":409,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+{"msg":"http_request","requestId":"req_f01b6ebe-f303-4ece-afee-284f43b617e8","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":3}
+
+ ✓ src/modules/accounting/period-lock.test.ts (8 tests) 10425ms
+   ✓ reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit  1326ms
+   ✓ reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped  1115ms
+   ✓ reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable  1143ms
+   ✓ reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history  1207ms
+   ✓ reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period  1151ms
+   ✓ reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change  1558ms
+   ✓ reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change  1516ms
+   ✓ reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path  1407ms
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_957b5d3f-d144-4680-b9a7-0aecfc9633ea","route":"/api/auth/*","method":"POST","status":200,"durationMs":109}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_eb3dba94-e655-47a4-ad97-6f764349a0b3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_cfac2d93-f3cb-4016-b7e1-8bcd2cb39457","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_a22198ff-5701-4e1f-a896-02ffb04e40f2","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_de21af4e-4b32-4eec-91be-a323a9679fed","route":"/api/invoice-imports","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_b248a5df-7aa8-4362-8a2b-4f13467569a6","route":"/api/invoice-imports/:id/extract","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_106ce8cb-b065-4c5d-9b64-2747e5835800","route":"/api/invoice-imports/:id/commit","method":"POST","status":422,"durationMs":3}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_7be20aad-ee58-41cd-81e7-4573392f7866","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":200,"durationMs":6}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_13fd0fdc-172e-4b17-a45b-2bf35b868583","route":"/api/invoice-imports/:id/commit","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_7e9d068b-632d-48b6-804a-716c4ff15a84","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_f23cc55b-dd24-4825-9a90-f7cf6e098d82","route":"/api/invoice-imports/:id","method":"DELETE","status":409,"durationMs":18}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_969676fe-d4e8-4e64-a5b6-092575def3da","route":"/api/invoices/:id/attachments/:attachmentId","method":"DELETE","status":409,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice
+{"msg":"http_request","requestId":"req_0e93ec07-08d8-45b5-a556-f766d8100923","route":"/api/invoice-imports/:id/commit","method":"POST","status":409,"durationMs":6}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_92a23ee8-1034-451d-a497-fb25998647d8","route":"/api/auth/*","method":"POST","status":200,"durationMs":83}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_b8d76f71-587e-4bf1-8528-f65be1daf0a4","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_1b960172-469e-4809-8cd5-d5c3929a5e3f","route":"/api/customers","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_7592123c-3b1e-4d6d-8d53-5edc911218f3","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_6d6e8ff4-f96a-41d2-a525-7a01f576b4d4","route":"/api/invoice-imports","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_a285c8c7-b4f1-4aea-8178-7076bb6c261d","route":"/api/invoice-imports/:id/extract","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_8dd10883-6d01-4cc1-8a3d-daf15e588af5","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":200,"durationMs":6}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_547e8f5a-5216-4571-aaad-d70e1cd2398b","route":"/api/invoice-imports/:id/commit","method":"POST","status":422,"durationMs":3}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_5d181421-86b0-48c6-9baf-c24f8e32769c","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_9e7445a9-e768-49d9-9b1f-9eb83d4b3e60","route":"/api/invoice-imports/:id/commit","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill
+{"msg":"http_request","requestId":"req_8eb787d9-852f-4aec-8eec-e4242006731d","route":"/api/bills/:id","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_54162f38-8138-4fd0-a50c-9e599edb149d","route":"/api/auth/*","method":"POST","status":200,"durationMs":86}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_8ea93416-af2c-4d9c-8673-af27526c4bfc","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_d4adfc4c-de6a-42ef-a321-122a6cd0816a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_7a80dc67-3581-4a92-b3bc-5d212fc3a301","route":"/api/customers","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_978580eb-2f26-44ab-89e1-ef022fb902b7","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_36362239-6894-4a5f-881f-99156f4ea56f","route":"/api/invoice-imports","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_f383d00e-7e21-4e93-b592-55fa0e03cefa","route":"/api/invoice-imports","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_f827adc1-79f3-480b-89f5-1ecf751d3718","route":"/api/invoice-imports/:id/extract","method":"POST","status":200,"durationMs":6}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_47e71c35-1c0d-47c0-b333-19111c500e41","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_cec9a9b2-b916-4cd6-927b-5a19166d8043","route":"/api/invoice-imports/:id/commit","method":"POST","status":409,"durationMs":2}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_dbfeca16-b7c2-4e00-bc75-e4d647c3e739","route":"/api/invoice-imports/:id/commit","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_f8ce18c6-4b00-423f-9d74-7110785b8fd2","route":"/api/invoice-imports/:id/extract","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_f862bb30-a1f8-4076-9042-e36fcb10b21d","route":"/api/invoice-imports/:id/draft","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_86a6286a-052c-44f5-ad83-842c2ace60e6","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":404,"durationMs":2}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_b22d103b-5096-40a6-85c5-eed4a4547794","route":"/api/invoice-imports/:id/commit","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_11e9b9b0-1ece-42d4-aee4-74423588e3bc","route":"/api/invoice-imports/:id/draft","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_a978e289-86cb-47dc-af08-09105883e5bf","route":"/api/invoice-imports/:id/extract","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_9e3151ff-b33f-4c56-81e3-d49df971823e","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":403,"durationMs":1}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_7a1a372e-f7ae-435e-94f5-f67a1293076c","route":"/api/invoice-imports/:id/commit","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route
+{"msg":"http_request","requestId":"req_817f16b2-ef7c-48b3-a093-44764bb2d08d","route":"/api/invoice-imports/:id/extract","method":"POST","status":403,"durationMs":1}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_66d77629-aa70-49e1-9082-7c4c6563c137","route":"/api/auth/*","method":"POST","status":200,"durationMs":80}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_47a1af2d-9379-469f-b6e2-0676e376a34b","route":"/api/business-profile","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_126c66d6-2ca0-4b4b-83a3-54b1bc1cfcd7","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_15e59199-31eb-4f42-b9c7-93e119d565ef","route":"/api/vendors","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_2d9cd628-8c34-4782-b91e-90b8ccbd04f5","route":"/api/invoice-imports","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_a39029da-b5ba-4d33-9ea0-5085f03fc293","route":"/api/invoice-imports/:id/extract","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_8a49ec64-6952-4001-a108-69072d9ea202","route":"/api/invoice-imports/:id/draft","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_56438630-fe7f-4d3c-bace-d42863686283","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/invoice-imports/invoice-imports-phase2.test.ts > invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period
+{"msg":"http_request","requestId":"req_342d515b-09b1-4a94-a1c5-6798432ddfd2","route":"/api/invoice-imports/:id/commit","method":"POST","status":409,"durationMs":3}
+
+ ✓ src/modules/invoice-imports/invoice-imports-phase2.test.ts (4 tests) 3499ms
+   ✓ invoice import Phase 2 review and commit > extracts and commits the Cleancorp buyer-created document as a linked draft sales invoice  1021ms
+   ✓ invoice import Phase 2 review and commit > blocks injection totals, permits a reviewed correction, and commits a draft purchase bill  768ms
+   ✓ invoice import Phase 2 review and commit > requires duplicate acknowledgement and enforces read-only and organisation isolation on every Phase 2 route  942ms
+   ✓ invoice import Phase 2 review and commit > refuses a reviewed purchase import dated in a closed accounting period  766ms
+
+ Test Files  2 passed (2)
+      Tests  12 passed (12)
+   Start at  07:13:51
+   Duration  18.59s (transform 1.42s, setup 33ms, collect 4.18s, tests 13.92s, environment 0ms, prepare 139ms)

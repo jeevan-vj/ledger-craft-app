@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from './period-lock';
 import { and, eq } from 'drizzle-orm';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -14,6 +15,7 @@ export async function assertOpenBankPostingDate(tx: Database, organisationId: st
   if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || Number.isNaN(parsed.getTime()) || parsed.toISOString().slice(0, 10) !== date) {
     throw apiError(422, 'INVALID_POSTING_DATE', 'Choose a valid posting date in YYYY-MM-DD format.');
   }
+  await assertAccountingDateOpen(tx, organisationId, date);
   if (await postingTouchesClosedBank(tx, organisationId, date, accountIds)) {
     throw apiError(409, 'BANK_STATEMENT_CLOSED', 'This posting would change a completed bank statement. Use a date after the completed statement cutoff.');
   }
@@ -65,6 +67,7 @@ export async function postBalancedEntry(tx: Database, ctx: PostingContext, input
 export async function reversePosting(tx: Database, ctx: PostingContext, input: { referenceType: string; referenceId: string; reversalType: string; date: string; description: string }) {
   const [source] = await tx.select().from(journalEntries).where(and(eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.referenceType, input.referenceType), eq(journalEntries.referenceId, input.referenceId), eq(journalEntries.status, 'posted')));
   if (!source) return;
+  await assertAccountingDateOpen(tx, ctx.organisationId, source.entryDate, input.date);
   const lines = await tx.select().from(journalEntryLines).where(and(eq(journalEntryLines.organisationId, ctx.organisationId), eq(journalEntryLines.journalEntryId, source.id)));
   await postBalancedEntry(tx, ctx, { date: input.date, description: input.description, referenceType: input.reversalType, referenceId: source.id, lines: lines.map((line) => ({ accountId: line.accountId, description: input.description, debit: line.creditAmount, credit: line.debitAmount })) });
   await tx.update(journalEntries).set({ status: 'reversed', updatedAt: new Date() }).where(and(eq(journalEntries.organisationId, ctx.organisationId), eq(journalEntries.id, source.id)));

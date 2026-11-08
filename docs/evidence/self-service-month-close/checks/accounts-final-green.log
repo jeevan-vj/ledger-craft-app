@@ -1,0 +1,165 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_04c5e4d1-7b02-41d3-a658-8fb14c1967a3","route":"/api/auth/*","method":"POST","status":200,"durationMs":142}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_434b69aa-fe1e-4eaa-a41c-19590b10f8b1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":19}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_6333fbfd-345d-4fd7-ba60-b6b14bdff0ac","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_9a54de8e-60ca-4de6-b830-adc86f23de3f","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_615e323f-1811-404c-934a-ece5aaa3e55f","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_3b4e9234-4146-4c9b-87b3-73a9e8961809","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_9ced1a50-a0b2-425b-8554-2b183f198414","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":8}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_8b63eb56-ccc2-400c-a8f8-ce0c8bc6d50b","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_b468fb9e-4e46-435c-8a5b-8734b787e42b","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_056bb002-db25-4c90-b5a5-0ba66bd62e8a","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_7068bae6-f540-4238-b326-063db97928fc","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_0f8cde3e-2df1-4985-8f93-b3f1bfcaf417","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":21}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_af7873a2-8a94-41ed-9418-2efaefe930a3","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_03f7884b-e598-4656-a7e7-4c84eaaca70b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_57cc218d-9e85-479d-832a-b3b97041f0e0","route":"/api/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_1cc48615-aae0-490d-b21f-c77fd84ec6da","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_4f775702-f59e-4754-a3d3-da845230609d","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_0b29a0bd-d7a5-4ff6-8a9d-039bbab4174f","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_e1f741db-050d-4556-ab94-7ae94cde08cc","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_ba28026b-c816-4698-ad7c-b8b83aec0dfc","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_5bda4db0-d99c-4682-bd13-1ebd3cf787da","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_daf93271-3b4a-48db-8c4f-c6b1babc2208","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_d7345b15-6598-4b59-a2e4-bf9c0865e128","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_42818360-4cab-4aeb-91f7-5f4ba03c1dc8","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_4bdb886a-9f3d-4638-8579-e32139f86d05","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_041429f4-76ca-4d9a-83bf-e503545e47da","route":"/api/accounts/:id","method":"PATCH","status":409,"durationMs":5}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_b519b4ce-f591-45c1-84b0-e99d6bd3421c","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+ ✓ src/modules/accounts/closed-identity.test.ts (1 test) 1266ms
+   ✓ keeps a closed period account classification immutable while allowing a new future account  1265ms
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_13c637bc-0278-46f9-bdd8-15d12e332753","route":"/api/auth/*","method":"POST","status":200,"durationMs":133}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_5824fcf0-2f2c-4b28-8ba2-d10de603bdf2","route":"/api/auth/*","method":"POST","status":200,"durationMs":115}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_7fcdfc6b-f3fb-4eba-b090-cd035ec55fa7","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_4231fd27-b7b3-431a-a58f-be2becbbfeee","route":"/api/accounts/bank-ledger","method":"POST","status":409,"durationMs":9}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_e576053b-e57b-488e-a2f9-8f719f88ed8e","route":"/api/accounts","method":"POST","status":409,"durationMs":4}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_08c5271c-7f0c-44f9-8977-47d6b0b7c35e","route":"/api/accounts/bank-ledger","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_b9923ff2-6c24-4732-951c-6b5fcd3ec6d4","route":"/api/accounts/bank-ledger","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_30987889-8d5b-4dbf-9b34-3ff5a8f78038","route":"/api/accounts/bank-ledger","method":"POST","status":404,"durationMs":2}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_dca683fe-9855-4864-a37d-c1ffa7a3139c","route":"/api/accounts/bank-ledger","method":"POST","status":404,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_ad0ad69a-bb65-4416-8495-0156bf8a9753","route":"/api/journal-entries","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_37fb45eb-0f19-42ca-8443-21945620a6fc","route":"/api/accounts","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_cf469b7b-ed65-4b88-a926-0426c3d72ef6","route":"/api/accounts/:id","method":"PATCH","status":200,"durationMs":5}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_e32dde2c-e563-49e5-90d0-f28dfe2d42fd","route":"/api/accounts/bank-ledger","method":"POST","status":409,"durationMs":2}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_97b1814b-6389-4614-a610-e8db6a5f6e3f","route":"/api/me","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_5ff99005-8b0f-4180-aa0d-0b4d5da1fa24","route":"/api/accounts/bank-ledger","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > requires authentication
+{"msg":"http_request","requestId":"req_76da735c-c30e-4d6f-8d99-d988f618cba5","route":"/api/accounts/bank-ledger","method":"POST","status":401,"durationMs":1}
+
+ ✓ src/modules/accounts/bank-ledger.test.ts (2 tests) 1021ms
+   ✓ self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies  1015ms
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_3c9080f8-fd1c-4e9b-9790-cafcbeee25c2","route":"/api/auth/*","method":"POST","status":200,"durationMs":204}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_54dd7418-7f63-445b-9f99-a29fda8c790f","route":"/api/accounts","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_42e8a640-1643-4fdd-9356-0ad67f3bd0e9","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_d3beb6c2-c4ae-4d58-b3d7-31fcfc6a7563","route":"/api/accounts","method":"POST","status":409,"durationMs":6}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_525d7c10-4f10-4836-839d-b856affa8668","route":"/api/auth/*","method":"POST","status":200,"durationMs":235}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_932c63d8-f256-4159-a856-454ff9948e4b","route":"/api/accounts","method":"POST","status":201,"durationMs":44}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_6376219c-caa9-4400-ad73-f0e80774150d","route":"/api/accounts","method":"POST","status":409,"durationMs":46}
+
+ ✓ src/modules/accounts/account-create-retry.test.ts (2 tests) 3090ms
+   ✓ replays a lost account-creation response and rejects a changed request with the same key  1243ms
+   ✓ rejects duplicate chart codes atomically even without an idempotency key  1846ms
+
+ Test Files  3 passed (3)
+      Tests  5 passed (5)
+   Start at  07:16:45
+   Duration  10.98s (transform 1.23s, setup 51ms, collect 4.90s, tests 5.38s, environment 0ms, prepare 193ms)

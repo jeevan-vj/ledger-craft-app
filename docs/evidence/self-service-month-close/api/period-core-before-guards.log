@@ -1,0 +1,208 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_c1d53c75-8ab3-4d3d-ae67-41eec690b7aa","route":"/api/auth/*","method":"POST","status":200,"durationMs":130}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_5a1893da-d8d2-445a-abe5-914528e3f8aa","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_9275bbd6-a3aa-46b1-8d77-1d46e5a29d37","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_daeef2ad-09a4-4a1c-b468-e22afd79482e","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_0f8e8fdf-8584-4525-8a71-450d4635df40","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_01d3712b-2fef-407c-a343-63802a6d2ae6","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_c779d774-0d82-4a6c-a6cc-73fff9530115","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_670f185e-8c37-4a33-91f2-5237814c830c","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_92d9e06c-753c-43c0-a542-8223300e77c7","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_1a517bd0-4414-454b-9c56-1829e1b3ac80","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_461857d2-eede-4106-b75a-a2ebfa3566e0","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_541cc73b-5093-4fb7-a3b3-183a447cbefe","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":53}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_da3d9cb3-cf4b-4099-9499-a8ac26b74277","route":"/api/invoices","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_b9864bb6-0406-4faf-a4bc-b3fd391a3ab8","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_749f5598-c76a-4c43-81f3-d904a4e28763","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_a445d9de-a906-4bdd-9500-832a8e78148b","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_0b1502f8-1025-45e7-b8cb-d0a6bd585d15","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_b021e779-546f-48f5-a036-3613d2092dd3","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_aa3d9c32-8d96-450f-8789-fdac97dcbfec","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_a223f7df-156b-466b-8579-f88e95b4fecf","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_b98322c1-97df-4d89-90d8-9dc01cf26cdc","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_dd3fe65c-83b6-4e6c-8ff0-d9215b3ba11f","route":"/api/credit-notes","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_8df0f0b9-0498-4012-8632-c115597d2525","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_73ffe2a3-0a85-4792-905f-3c4716ac2d69","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_5b7e1984-7b9e-4930-9b02-fa4bd5df8324","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_296770b7-893b-4e3f-a282-af08e4b495dc","route":"/api/accounting-periods","method":"GET","status":200,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_dd11f7d8-a594-4966-a480-a1252eb5c312","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_03f27cf1-4e4d-49c7-9081-90e3befb3aff","route":"/api/accounting-periods/close","method":"POST","status":409,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+{"msg":"http_request","requestId":"req_01f8d7ee-199b-4e8c-aa41-d186352ac5cf","route":"/api/expenses","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_90a5e27a-f3fc-4d51-84d7-f2407b4395c5","route":"/api/auth/*","method":"POST","status":200,"durationMs":87}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e27afbe1-b4d0-451c-8d39-3c94e911dd5a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e9455f80-7dfb-4cb0-b7c9-6215b79ddc8e","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_aa3a5586-95a7-4522-9921-b6901955ec60","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_164ac2e7-0416-4cd9-bc58-1d4a59eb5a84","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e71e9783-83c6-4a27-9b54-5981b80f19cc","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_7d5c1598-8dfe-4583-bb80-29b99f8b4a79","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_11c2f9b5-4b23-4d1a-836b-66767c0e2e18","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_77df0727-5c0a-42f4-aee0-5a58d9f9b459","route":"/api/customers","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_0df07117-583c-403b-839d-292345048f6b","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_94d65bdb-97ed-4d4e-8dac-c615f428ab42","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_08b44e30-31eb-429a-a119-812377050399","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_9948d225-8739-4df4-800b-53d1a679933c","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_56014732-0494-422f-b771-d8af175b7923","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_0215b9f8-440c-4b4e-a02b-77ccaa42d6f6","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_d09af364-2b6e-405e-9956-4dffd3fc4434","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_40d70dbd-d6c6-4b83-9911-8fd8024ccafa","route":"/api/vendors","method":"POST","status":201,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_ebf53bfe-bf66-42a7-a579-8d2bdab5dbcb","route":"/api/bills","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_12980918-7434-479a-88cb-0392737c8a4a","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_a375e08d-f930-4489-bc14-0b3c61925b54","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_3197bff5-eeaa-425a-8aa0-d5fe126009c6","route":"/api/expenses","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_205e2165-dcd1-41c7-8d5d-ee0b53bd263a","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_7417cd40-b9c3-448f-ab04-b7723fb693b6","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_f37eed66-9ab1-4013-af2b-a18bbe6396a9","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e4f18efd-01e8-4884-85c6-a8027c936126","route":"/api/accounting-periods/close","method":"POST","status":403,"durationMs":2}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_e25f9088-038b-4553-852b-6b74242f3574","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":3}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+{"msg":"http_request","requestId":"req_4daa7ab9-30e5-4b43-a581-8f902c832e3c","route":"/api/accounting-periods/reopen","method":"POST","status":403,"durationMs":2}
+
+ ❯ src/modules/accounting/period-lock.test.ts (2 tests | 1 failed) 2336ms
+   × reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit 1353ms
+     → POST /api/expenses: {"id":"98c0780a-79ff-47bc-8263-4be30a44ca36","description":"Backdated expense","amount":"115.00","taxAmount":"15.00","currency":"NZD","exchangeRate":"1","exchangeRateId":null,"baseCurrency":"NZD","baseAmount":"115.00","baseTaxAmount":"15.00","expenseDate":"2026-10-31","status":"approved","isBillable":false,"categoryId":null,"categoryName":null,"accountId":null,"accountName":null,"customerId":null,"customerName":null,"vendorName":null,"receiptUrl":null,"receiptHash":null,"paymentMethod":null,"notes":null,"gstTreatment":"standard","gstExemptionReason":"none","gstClaimablePercentage":100,"privateUsePercentage":0,"createdAt":"2026-11-08T06:58:49.000Z","updatedAt":"2026-11-08T06:58:49.000Z"}: expected 201 to be 409 // Object.is equality
+   ✓ reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped  981ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+AssertionError: POST /api/expenses: {"id":"98c0780a-79ff-47bc-8263-4be30a44ca36","description":"Backdated expense","amount":"115.00","taxAmount":"15.00","currency":"NZD","exchangeRate":"1","exchangeRateId":null,"baseCurrency":"NZD","baseAmount":"115.00","baseTaxAmount":"15.00","expenseDate":"2026-10-31","status":"approved","isBillable":false,"categoryId":null,"categoryName":null,"accountId":null,"accountName":null,"customerId":null,"customerName":null,"vendorName":null,"receiptUrl":null,"receiptHash":null,"paymentMethod":null,"notes":null,"gstTreatment":"standard","gstExemptionReason":"none","gstClaimablePercentage":100,"privateUsePercentage":0,"createdAt":"2026-11-08T06:58:49.000Z","updatedAt":"2026-11-08T06:58:49.000Z"}: expected 201 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 201
+
+ ❯ request src/modules/reports/full-month-close.test-helper.ts:20:59
+     18|     const text = await response.text();
+     19|     commands.push({ method, path, status: response.status });
+     20|     expect(response.status, `${method} ${path}: ${text}`).toBe(status);
+       |                                                           ^
+     21|     return JSON.parse(text) as T;
+     22|   }
+ ❯ src/modules/accounting/period-lock.test.ts:14:4
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  06:58:45
+   Duration  5.04s (transform 1.22s, setup 22ms, collect 2.46s, tests 2.34s, environment 0ms, prepare 85ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounting/period-lock.test.ts

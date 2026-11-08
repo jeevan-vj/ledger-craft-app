@@ -1,0 +1,52 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/features/reports/model/closePackShare.test.ts src/features/reports/model/closePackDownload.test.ts
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/features/reports/model/closePackShare.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './closePackShare' from 'src/features/reports/model/closePackShare.test.ts'
+
+    However, Jest was able to find:
+        './closePackShare.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { shareClosePack } from './closePackShare';
+        | ^
+      2 | import { fetchClosePack } from './closePackDownload';
+      3 | import * as Sharing from 'expo-sharing';
+      4 | import * as FileSystem from 'expo-file-system/legacy';
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/reports/model/closePackShare.test.ts:1:1)
+
+FAIL src/features/reports/model/closePackDownload.test.ts
+  ● Test suite failed to run
+
+    Cannot find module './closePackDownload' from 'src/features/reports/model/closePackDownload.test.ts'
+
+    However, Jest was able to find:
+        './closePackDownload.test.ts'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+    > 1 | import { fetchClosePack } from './closePackDownload';
+        | ^
+      2 | import { apiFetch, rejectFailedResponse } from '@/features/auth/api/http';
+      3 | jest.mock('@/features/auth/api/http',()=>({apiFetch:jest.fn(),rejectFailedResponse:jest.fn(async()=>{throw new Error('Banking read access required');})}));
+      4 | it('uses the existing authenticated API transport and exact report dates for a ZIP',async()=>{jest.mocked(apiFetch).mockResolvedValue({ok:true,headers:{get:()=> 'application/zip'},arrayBuffer:async()=>new Uint8Array([80,75,3,4]).buffer}as never);const result=await fetchClosePack('2026-10-01','2026-10-31');expect(apiFetch).toHaveBeenCalledWith('/api/reports/close-pack?from=2026-10-01&to=2026-10-31',{method:'GET'});expect(result.filename).toBe('Close-pack-2026-10-01-2026-10-31.zip');expect([...new Uint8Array(result.bytes)]).toEqual([80,75,3,4]);});
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/features/reports/model/closePackDownload.test.ts:1:1)
+
+Test Suites: 2 failed, 2 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.738 s
+Ran all test suites matching src/features/reports/model/closePackShare.test.ts|src/features/reports/model/closePackDownload.test.ts.

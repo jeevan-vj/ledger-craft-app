@@ -7,6 +7,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import FinancialReportsPage from '../FinancialReportsPage';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 
+vi.mock('@/context/StableAuthContext',()=>({useAuth:()=>({me:{permissions:['reports.read','banking.read']}})}));
 vi.mock('@/features/reports/api/reportsApi', () => ({
   reportsApi: { financial: vi.fn(), generalLedger: vi.fn(), options: vi.fn().mockResolvedValue({organisationName:'Test business',today:'2026-10-27',timezone:'Pacific/Auckland',financialYearStartMonth:4,financialYearStartDay:1,gstPeriod:null}) },
 }));

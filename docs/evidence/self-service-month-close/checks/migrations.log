@@ -1,0 +1,1 @@
+SQLite baseline: schema, expense GST constraints, exact decimals, uniqueness, tenant foreign keys, cascade checks passed

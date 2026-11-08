@@ -1,0 +1,11 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/reports/ClosePackDownload.test.tsx (3 tests) 144ms
+ ✓ src/components/accounting/AccountingPeriodsPanel.test.tsx (3 tests) 296ms
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (8 tests) 695ms
+
+ Test Files  3 passed (3)
+      Tests  14 passed (14)
+   Start at  07:06:36
+   Duration  2.39s (transform 594ms, setup 281ms, collect 1.91s, tests 1.13s, environment 1000ms, prepare 260ms)

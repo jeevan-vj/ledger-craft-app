@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import {
   billListResponseSchema,
   billPaymentBatchSchema,
@@ -121,6 +122,7 @@ export async function createBillInTx(
       }
     }
     await validateVendorAndAccounts(tx, ctx.organisationId, input);
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.issueDate);
     const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.issueDate);
     const bill = await repo.insertBill(tx, ctx, { ...input, currency: resolved.currency.code }, {
       precision: resolved.currency.precision, exchangeRate: resolved.rate, exchangeRateId: resolved.rateId,
@@ -137,6 +139,7 @@ export async function updateBillForUser(db: Database, userId: string, id: string
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const existing = await repo.getBill(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Bill not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, existing.issueDate, input.issueDate ?? existing.issueDate);
     if (existing.lifecycleStatus !== 'draft') throw new HTTPException(409, { message: 'Only draft bills can be edited' });
     if (existing.exchangeRateId && ((input.currency && input.currency !== existing.currency) || (input.issueDate && input.issueDate !== existing.issueDate))) {
       throw new HTTPException(409, { message: 'Bill currency and issue date are locked after a foreign exchange rate is attached' });
@@ -156,6 +159,7 @@ export async function deleteBillForUser(db: Database, userId: string, id: string
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, bill.issueDate);
     if (bill.lifecycleStatus !== 'draft') throw new HTTPException(409, { message: 'Only draft bills can be deleted' });
     await repo.deleteBill(tx, ctx.organisationId, id);
   });
@@ -166,6 +170,7 @@ export async function receiveBillForUser(db: Database, userId: string, id: strin
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
     if (bill.lifecycleStatus === 'received') return bill;
+    await assertAccountingDateOpen(tx, ctx.organisationId, bill.issueDate);
     if (bill.lifecycleStatus !== 'draft') throw new HTTPException(409, { message: 'Bill cannot be received' });
     if (bill.lines.some((line) => !line.accountId)) {
       throw new HTTPException(400, { message: 'Every bill line needs an account before receiving' });
@@ -182,6 +187,7 @@ export async function voidBillForUser(db: Database, userId: string, id: string) 
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
     if (bill.lifecycleStatus === 'void') return bill;
+    await assertAccountingDateOpen(tx, ctx.organisationId, bill.issueDate);
     if (bill.lifecycleStatus !== 'received' || decimal(bill.totalPaid).compare(0) > 0) {
       throw new HTTPException(409, { message: 'Only unpaid received bills can be voided' });
     }
@@ -196,6 +202,7 @@ export async function restoreBillForUser(db: Database, userId: string, id: strin
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, bill.issueDate);
     if (bill.lifecycleStatus !== 'void' || decimal(bill.totalPaid).compare(0) > 0) {
       throw new HTTPException(409, { message: 'Only an unpaid cancelled bill can be restored' });
     }
@@ -233,6 +240,7 @@ export async function recordBillPaymentInTx(
 ) {
     const bill = await repo.getBill(tx, ctx.organisationId, id);
     if (!bill) throw new HTTPException(404, { message: 'Bill not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.paymentDate);
     if (bill.lifecycleStatus !== 'received') throw new HTTPException(409, { message: 'Only received bills can be paid' });
     if (input.paymentDate < bill.issueDate) throw new HTTPException(400, { message: 'A bill payment cannot precede its bill issue date; record a supplier advance separately' });
     const allocations = input.allocations ?? [{ bankAccountId: input.bankAccountId!, amount: input.amount! }];
@@ -269,6 +277,7 @@ export async function reverseBillPaymentInTx(
 ) {
   const reversed = await repo.reversePayment(tx, ctx, paymentId, input);
   if (!reversed) throw new HTTPException(409, { message: 'Bill payment is not reversible' });
+  await assertAccountingDateOpen(tx, ctx.organisationId, reversed.paymentDate, input.reversalDate);
   const bill = await repo.getBill(tx, ctx.organisationId, reversed.billId);
   if (bill && bill.currency !== bill.baseCurrency) await assertOpenSettlementPeriod(tx, ctx.organisationId, 'bill', bill.id, input.reversalDate);
   await repo.recalculateBillPayments(tx, ctx.organisationId, reversed.billId);

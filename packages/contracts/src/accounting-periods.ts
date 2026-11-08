@@ -1,0 +1,10 @@
+import { z } from 'zod';
+const date = z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(value => value >= '0001-01-01' && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) && new Date(`${value}T00:00:00Z`).toISOString().slice(0,10) === value, 'Choose a real calendar date');
+const mutation = { reason:z.string().trim().min(8).max(500), reviewed:z.literal(true), expectedRevision:z.number().int().min(0) };
+export const closeAccountingPeriodRequestSchema=z.object({through:date,...mutation}).strict();
+export const reopenAccountingPeriodRequestSchema=z.object({from:date,...mutation}).strict();
+export const accountingPeriodEventSchema=z.object({id:z.string(),action:z.enum(['close','reopen']),previousClosedThrough:date.nullable(),newClosedThrough:date.nullable(),reason:z.string(),actorId:z.string(),createdAt:z.string().datetime(),revision:z.number().int().positive()}).strict();
+export const accountingPeriodStateSchema=z.object({closedThrough:date.nullable(),revision:z.number().int().min(0),canClose:z.boolean(),canReopen:z.boolean(),events:z.array(accountingPeriodEventSchema)}).strict();
+export type CloseAccountingPeriodRequest=z.infer<typeof closeAccountingPeriodRequestSchema>;
+export type ReopenAccountingPeriodRequest=z.infer<typeof reopenAccountingPeriodRequestSchema>;
+export type AccountingPeriodState=z.infer<typeof accountingPeriodStateSchema>;

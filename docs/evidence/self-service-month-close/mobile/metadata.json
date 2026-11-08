@@ -1,0 +1,40 @@
+{
+  "baseCommit": "0a35c75",
+  "branch": "codex/self-service-month-close",
+  "verifiedAt": "2026-11-08",
+  "company": "Kauri Self Service Mobile Limited",
+  "businessPeriod": {
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+  },
+  "runtime": "Node 20.20.2",
+  "actualPlatform": "Expo web in Chromium, 390x844, Pacific/Auckland, dark theme",
+  "nativeVerification": "iOS and Android JavaScript/Hermes bundle exports passed; installed device/simulator tests unavailable in this Linux environment. Native share-sheet lifecycle remains unverified.",
+  "tests": {
+    "jestSuites": 150,
+    "jestTests": 674,
+    "typescriptErrors": 0,
+    "lintErrors": 0,
+    "lintWarnings": 74
+  },
+  "uiPhases": 12,
+  "unexpectedBrowserErrors": 0,
+  "apiRestart": "Coordinated API restart after business operations, before period protection and ZIP; same database and authentication. All seven financial report sections unchanged afterward.",
+  "sourceSha256": {
+    "mobile/src/components/accounting/AccountingPeriodPanel.test.tsx": "f3e5ebec6816f2c6c2c6af9090751b7bc60174826f1d8d97bcd7a612c660cd67",
+    "mobile/src/components/accounting/AccountingPeriodPanel.tsx": "b289640da9f052a29cebddeae8f4de9298ee3646b9d2f1f180829c57cf7e1b67",
+    "mobile/src/components/accounting/ChartAccountsPanel.test.tsx": "b948ecb9fef993cfeb11c2150908e6c9e39925dd60bb432fa1d29d7a8a7bbfbe",
+    "mobile/src/components/accounting/ChartAccountsPanel.tsx": "91a5428b0e86ec53e07aac87fe44b5664c3ca0fd5266a392eee29d9219627970",
+    "mobile/src/components/reports/FinancialReportWorkspace.tsx": "a441d855529f719a4ae0d0a21b4d0a921b376c8a606e1ced0974b17867a7309f",
+    "mobile/src/features/accounting/accountingPeriodsApi.ts": "03f24d2a8abbe898c3198824d6ef5fa6540cff7fdc378569e41e248b9a4643b1",
+    "mobile/src/features/accounting/chartAccountsApi.ts": "29825adaa6ede7dde207088d89110990a8942729efb400695bda2ca67671dd27",
+    "mobile/src/features/reports/model/closePackDownload.test.ts": "570ef5bac508d0a1647cf32e6d154e4249593ef20f8465bd827dc9ae76b33cb0",
+    "mobile/src/features/reports/model/closePackDownload.ts": "02e8071ffcf6550899c8426628b2763a5272a84d25c217502767bc56225ada8d",
+    "mobile/src/features/reports/model/closePackShare.test.ts": "48044d79d0b5abb23b307d5da003847b1f1f17069213eedc4e145be15823ee3e",
+    "mobile/src/features/reports/model/closePackShare.ts": "03855a7ebfaee8539d8508b41ed79796a1d8a6a59e10bb47acb6d5f7d8ffb1f1",
+    "mobile/src/features/reports/model/closePackShare.web.ts": "dda7fc0730f8d95c2ea1ccac90030c9c821a0c902172a9b5014f0be1da7f7daf",
+    "mobile/src/screens/accounting/AccountingToolsScreen.tsx": "bc464de4f3c0bee2315dab4f17b77accb19b25445c0b7175986802a8b310012c",
+    "mobile/src/screens/reports/ReportsScreen.test.tsx": "120f7198480aea984058195490ae0a9c99c1cbc7ae2b7016446858b6f7f1c972",
+    "scripts/self-service-mobile-close-proof.mjs": "b5dcaae0c5bce4d44e871abd5bd1564faf76d532f6e271fca84ab434e3fe0274"
+  }
+}

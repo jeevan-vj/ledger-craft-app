@@ -1,6 +1,7 @@
 import { createDatabase, type SQLiteAdapter } from '../db/client';
 import type { ObjectStore } from '../modules/storage/object-store';
 import type { FileStorage } from '../modules/storage/file-storage';
+import { executableMigrationSql } from './migration-sql';
 import { migrations } from '../../../deploy/api/migrations.generated';
 
 export async function migrateStorage(storage: DurableObjectStorage) {
@@ -13,7 +14,7 @@ export async function migrateStorage(storage: DurableObjectStorage) {
       if (applied && applied.checksum !== migration.checksum) throw new Error('Applied migration was modified: ' + migration.name);
       if (applied) continue;
       storage.sql.exec('INSERT INTO _migration_recovery VALUES (?, ?)', migration.name, bookmark);
-      storage.sql.exec(migration.sql);
+      storage.sql.exec(executableMigrationSql(migration.sql));
       storage.sql.exec('INSERT INTO _migrations VALUES (?, ?, ?)', migration.name, migration.checksum, Date.now());
     }
     storage.sql.exec('CREATE TABLE IF NOT EXISTS _objects (key TEXT PRIMARY KEY, content_type TEXT NOT NULL, bytes BLOB NOT NULL CHECK(length(bytes) <= 1048576))');

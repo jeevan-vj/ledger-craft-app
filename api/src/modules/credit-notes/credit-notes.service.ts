@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { creditNoteSchema, type CreateCreditNoteRequest, type CreditNoteDto, type InvoiceDto, type ReverseCreditNoteRequest } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -36,6 +37,7 @@ export async function issueCreditNoteForUser(db: Database, userId: string, input
     const replay = await getIdempotencyRecord(tx, ctx, scope);
     if (replay) { assertReplayMatches(replay.requestHash, scope.requestHash); return creditNoteSchema.parse(replay.responseBody); }
     const invoice = required(await invoicesRepo.getInvoice(tx, ctx.organisationId, input.invoiceId), 'Invoice');
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.issueDate);
     if (['draft', 'cancelled'].includes(invoice.status)) throw new HTTPException(409, { message: 'Issue a credit note only against an active posted invoice' });
     if (input.issueDate < invoice.date) throw new HTTPException(400, { message: 'Credit note date cannot precede the invoice date' });
     if (invoice.currency !== invoice.baseCurrency) await assertOpenSettlementPeriod(tx, ctx.organisationId, 'invoice', invoice.id, input.issueDate);
@@ -94,6 +96,7 @@ export async function reverseCreditNoteForUser(db: Database, userId: string, id:
       if (credit.reversalDate !== input.date || credit.reversalReason !== input.reason) throw new HTTPException(409, { message: 'Credit note was already reversed with different details' });
       return credit;
     }
+    await assertAccountingDateOpen(tx, ctx.organisationId, credit.issueDate, input.date);
     if (input.date < credit.issueDate || credit.refunds.some(refund => (refund.reversalDate ?? refund.refundDate) > input.date)) throw new HTTPException(400, { message: 'Reversal date must follow the credit note and its refund reversals' });
     if (credit.refunds.some(refund => refund.status === 'completed')) throw new HTTPException(409, { message: 'Reverse customer refunds before reversing the credit note' });
     const invoice = required(await invoicesRepo.getInvoice(tx, ctx.organisationId, credit.invoiceId), 'Invoice');

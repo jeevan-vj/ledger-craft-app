@@ -1,0 +1,32 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/period-cors.test.ts > allows the reviewed company assertion on browser period mutations
+{"msg":"http_request","requestId":"req_5de8574b-e5c2-4ee9-a443-642bc286bf43","route":"/api/*","method":"OPTIONS","status":204,"durationMs":2}
+
+ ❯ src/period-cors.test.ts (1 test | 1 failed) 21ms
+   × allows the reviewed company assertion on browser period mutations 20ms
+     → expected 'content-type,authorization,idempotenc…' to contain 'x-expected-organisation-id'
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/period-cors.test.ts > allows the reviewed company assertion on browser period mutations
+AssertionError: expected 'content-type,authorization,idempotenc…' to contain 'x-expected-organisation-id'
+
+Expected: "x-expected-organisation-id"
+Received: "content-type,authorization,idempotency-key"
+
+ ❯ src/period-cors.test.ts:5:98
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:02:09
+   Duration  2.72s (transform 1.28s, setup 24ms, collect 2.45s, tests 21ms, environment 0ms, prepare 86ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/period-cors.test.ts

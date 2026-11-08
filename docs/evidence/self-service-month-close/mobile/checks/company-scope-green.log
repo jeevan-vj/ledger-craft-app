@@ -1,0 +1,13 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/accounting/ChartAccountsPanel.test.tsx src/components/accounting/AccountingPeriodPanel.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+PASS src/components/accounting/AccountingPeriodPanel.test.tsx
+PASS src/components/accounting/ChartAccountsPanel.test.tsx
+
+Test Suites: 2 passed, 2 total
+Tests:       8 passed, 8 total
+Snapshots:   0 total
+Time:        3.456 s
+Ran all test suites matching src/components/accounting/ChartAccountsPanel.test.tsx|src/components/accounting/AccountingPeriodPanel.test.tsx.

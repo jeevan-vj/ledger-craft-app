@@ -1,0 +1,55 @@
+Draft GST preparation - not filed
+
+Period: 2026-10-01 to 2026-10-31
+
+Registered basis: Invoice
+
+Saved total sales (including GST): $3,105.00
+
+Saved total purchases: $1,380.00
+
+Saved GST on sales: $405.00
+
+Saved GST on purchases: $180.00
+
+Saved net GST: $225.00
+
+GST No: 49-091-850
+
+GST registered from: 2026-10-01
+
+Due date: 2026-11-30
+
+myIR Box 5: $3,105.00
+
+myIR Box 6: $0.00
+
+myIR Box 7: $3,105.00
+
+myIR Box 8: $405.00
+
+myIR Box 9: $0.00
+
+myIR Box 10: $405.00
+
+myIR Box 11: $1,380.00
+
+myIR Box 12: $180.00
+
+myIR Box 13: $0.00
+
+myIR Box 14: $180.00
+
+myIR Box 15: $225.00
+
+Review warning: This period includes cancellation, credit-note or expense reversal movements. Review the signed
+totals and GST adjustments before filing.
+
+Calculation fingerprint: 643cfbcafdd3ca73db435b310e31add53307ede2299dbb800d015f54d428939e
+
+Calculated at: 2026-11-08T07:19:14.460Z
+
+
+
+EasyBizInvoice does not submit this return to IRD. File separately in myIR and retain supporting books. This is
+preparation, not filing acceptance.

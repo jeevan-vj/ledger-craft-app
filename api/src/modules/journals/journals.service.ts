@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import {
   journalEntryListResponseSchema,
   journalEntrySchema,
@@ -52,6 +53,7 @@ export async function createJournalEntryForUser(
     const credit = await repo.getOrgAccount(tx, ctx.organisationId, input.creditAccountId);
     if (!debit || !credit) throw new HTTPException(404, { message: 'Account not found' });
     const amount = input.amount;
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.entryDate);
     const entryNumber = await nextJournalEntryNumber(tx, ctx.organisationId, input.entryDate);
     const entry = await repo.insertJournalEntry(tx, ctx, { ...input, amount: roundMoney(amount) }, entryNumber);
     if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: entry });
@@ -68,6 +70,8 @@ export async function updateJournalEntryForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
     if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
+    if (input.status === undefined || input.status === current.status) return current;
+    await assertAccountingDateOpen(tx, ctx.organisationId, current.entryDate);
     if ((input.status as string | undefined) === 'reversed') {
       throw apiError(409, 'CONFLICT', 'Journal entries can only be reversed by posting a reversing entry');
     }
@@ -87,6 +91,7 @@ export async function deleteJournalEntryForUser(db: Database, userId: string, id
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getJournalEntry(tx, ctx.organisationId, id);
     if (!current) throw new HTTPException(404, { message: 'Journal entry not found' });
+    await assertAccountingDateOpen(tx, ctx.organisationId, current.entryDate);
     if (current.status !== 'draft') {
       throw apiError(409, 'CONFLICT', 'Posted journal entries are immutable; create a reversing entry instead');
     }

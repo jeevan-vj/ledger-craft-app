@@ -1,0 +1,306 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_5eccadbe-146b-4831-9246-b373b14f84b0","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_b61c6b3f-e801-462e-8fdd-01acbe5d998f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_42def038-d744-4a11-a4d7-f6a578a12786","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_f7b62c55-a8e4-48cd-adbb-5ccab3de57f4","route":"/api/accounts","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_41f76d75-265b-4795-be6d-8dd9a321518b","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_43fa4a8b-f156-413b-822c-94a123c3ea07","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_c7706482-7e16-4b11-95dc-e5ed34125414","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":27}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_b33b66b2-59e1-4255-a662-6fb14183c723","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_f2c8ce1c-ef78-41d7-9ee6-afef579bf803","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_167f6462-252a-4df3-8d59-f63f3b4af5f7","route":"/api/customers","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_129c7326-de35-408e-871b-f6cdf4d11596","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_cc57bdfe-01fa-4afc-9dc8-cad800e8745a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":40}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_bb416d92-32b0-43b6-ae8d-138111160074","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_c7a9e43b-6429-477a-bd74-2d1512dd003b","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_7498f3f6-09cc-4140-83dc-dc23e51a2f6e","route":"/api/payments","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_84eae822-f9fa-49d1-beef-bb8ff0b13a4c","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_710b2db9-e9ac-4d7a-b0ba-5bfa9a805b15","route":"/api/vendors","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_f5650eec-e6e3-45d3-9295-aae5f30f6203","route":"/api/bills","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_4e79bd44-d7a6-4fac-a544-4388d7c945bf","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":34}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a6f99cab-797f-4f5c-b7cf-9095648fb12b","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_e419eb56-29e8-4049-b1fa-139f2010bc5a","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_55360727-b963-4af7-91d4-8d5aaa87a9a3","route":"/api/credit-notes","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_37c6c77c-9e17-4638-b417-5bae90055edf","route":"/api/credit-notes","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_c6211920-ad35-48dd-9e09-42248c8a5612","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_fc865193-a8a0-4d26-85c9-33edd3a06a57","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_65b8c764-7188-4e8c-91aa-4d21bfb6e514","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a127564c-fd88-4570-82d6-b7a66ccbc3d1","route":"/api/book-entries","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_4b3a881f-baf2-41b7-96cf-4ec39d128a81","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9fc90c29-02a4-4cc8-9b56-a61766354dfd","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_50798d18-b06a-4f25-996b-be3c679fff60","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_65cc1aea-3ca3-4513-a9e6-a01df6ecb8c6","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_b72d82bb-c753-4362-ae94-52683c24654f","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_6f8bfa9c-fb8b-41a5-96b7-e9465d7dd3f7","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_779afcf0-5eb3-4ed8-91ee-700be3aa1105","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":30}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_174c5162-0ce1-4dbf-ae2a-e6f5096ba713","route":"/api/tax-returns","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_9f7dd867-9618-4a03-a8e0-73434e69cd1d","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_510574c4-dc3b-42c9-8940-950082175807","route":"/api/reports/financial","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_95261a89-c59e-4495-99b7-c5bcf495b05e","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":79}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_16e16e87-bc0e-4189-8e7a-5226e05a65eb","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_00866fd1-0640-4bda-b9f1-9f34d2be6001","route":"/api/reports/financial","method":"GET","status":200,"durationMs":53}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_787b61a2-f667-4d18-a425-ab6d00a7da57","route":"/api/accounting-periods/reopen","method":"POST","status":200,"durationMs":17}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_3b09ec36-0b94-4b66-a6c1-1ee7a958794a","route":"/api/credit-notes","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_a8a63cec-7a8e-48c5-bd7d-bed4a7910d6d","route":"/api/credit-notes/:id/reverse","method":"POST","status":200,"durationMs":40}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_4aca89e9-af68-4d99-9972-b3647e2590d5","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":31}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books
+{"msg":"http_request","requestId":"req_63c05e35-2dda-4483-9b5c-c39963dabc1d","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":40}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_3fd95f38-9d03-4505-b19b-e7259b1e2822","route":"/api/auth/*","method":"POST","status":200,"durationMs":95}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_23b6790c-02ab-45d4-9852-c3156250bc56","route":"/api/business-profile","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_c9ac3756-c066-423d-aae4-da92e1451fa5","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_e503876d-834f-477a-a6ab-76c6bb88a015","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_f073928a-768e-4c98-8161-c30282e0649e","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_1cfcd883-9c66-440b-869d-ec3553241c84","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_648405cc-4e69-4379-82d4-e3b10fcfa2c6","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_0d6e4f96-c9df-4573-8e70-14bacdddb728","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_d12fc99f-2467-46cc-9453-b37da13e5ad9","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_9e7d21a4-647a-4630-886f-d8abdaefa80f","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_217a0a02-c69b-479e-bbe7-274a7a828c61","route":"/api/invoices","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_0869462a-d3e1-42c1-8e5f-420e5b6c7651","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_db473e1f-ebd0-431b-a003-3c2e0a5d4da8","route":"/api/invoices","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_2884e090-6b1b-44a3-bcc0-0d5db98ef5d5","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":19}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_14ac61f6-36f0-4864-992a-8a98811ba49d","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_ed5c3e2c-ad8b-4e41-a49e-1e7119414f82","route":"/api/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_f9f98817-d74f-4f78-a9f8-fbf536e99e53","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_bc01b4af-e52d-4b7c-8465-f140c1925dbb","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_f4efcbcc-042b-47cc-80ac-97f734922382","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_17482c75-6541-4ce3-8a9b-7cf614a7bbbf","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_1ac108a6-4d39-4da5-9a83-784c777ba1b3","route":"/api/expenses","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_c5954552-4f2b-42e1-a9ab-cdf1ece62a60","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_6b3cf1d0-d869-4d71-b945-c6cc3721e1ac","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_aad732ef-634b-4f44-b551-01f6fbf395b1","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_efbfe341-922d-4692-8922-ad970e011e37","route":"/api/reports/close-pack","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_9698d85f-ba8e-4af3-b8fe-7b111ca1ab7f","route":"/api/reports/close-pack","method":"GET","status":400,"durationMs":3}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_8102d1b1-76c4-4340-a78d-3735d9764d64","route":"/api/reports/close-pack","method":"GET","status":400,"durationMs":3}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_8b1524a2-027a-43bb-8ef9-6af0ea4f79ca","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":4}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_ecc02ef2-4981-4ed5-8e32-8135dc039128","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":32}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_e615aa01-a342-4440-bd67-64ac6b87873e","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_f3f0bafc-475c-4f4a-8ce0-0d71d6fec6bb","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_8f0500b5-46f0-4aef-814c-f0e361dd5b59","route":"/api/me","method":"GET","status":200,"durationMs":1}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_13392551-a1c6-4f5b-8bc0-dabbd789ca0f","route":"/api/reports/close-pack","method":"GET","status":403,"durationMs":3}
+
+stdout | src/modules/reports/close-pack.test.ts > accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated
+{"msg":"http_request","requestId":"req_0510e94b-c48a-446d-ab3b-34b4bcbca23d","route":"/api/reports/close-pack","method":"GET","status":200,"durationMs":22}
+
+ ✓ src/modules/reports/close-pack.test.ts (2 tests) 3736ms
+   ✓ accountant close pack > downloads one verified archive of canonical reports, bank close and retained GST without mutating books  2025ms
+   ✓ accountant close pack > rejects unauthenticated, invalid and filtered requests; missing preparation is explicit and another company stays isolated  1709ms
+stdout | src/modules/reports/report-columns.test.ts > posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget
+{"case":"10000-lines-12-columns","durationMs":441.254559}
+
+ ✓ src/modules/reports/report-columns.test.ts (2 tests) 3078ms
+   ✓ posted-ledger report columns > matches each single month and full totals on accrual and cash basis, with quarter and clipped windows  1142ms
+   ✓ posted-ledger report columns > builds twelve columns from 10,000 real SQLite journal lines within the 10 second request budget  1934ms
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_3de7f07c-9cd7-41e5-b681-311ff602a890","route":"/api/reports/financial","method":"GET","status":401,"durationMs":4}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > requires authentication and validates period boundaries
+{"msg":"http_request","requestId":"req_2a062d89-d77a-497c-aaa8-ffb4747391da","route":"/api/reports/financial","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_4d9e5a68-2675-4fae-8ab9-bddb134a9e8b","route":"/api/auth/*","method":"POST","status":200,"durationMs":141}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_75506b90-0fc5-4aae-a59b-911192667477","route":"/api/auth/*","method":"POST","status":200,"durationMs":88}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_dc54accb-9954-44ec-ada4-69d6323dbf56","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_8600618a-347a-4a7f-a261-a2e0f6f173d6","route":"/api/journal-entries","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_c7079330-0a8a-438f-8202-d910eea66ee3","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_186dceb4-3173-440d-bb7b-76100ed97ba0","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_cc1e5263-3038-4c60-860d-1c937896f932","route":"/api/reports/financial","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > derives balanced reports from posted journals and isolates organisations
+{"msg":"http_request","requestId":"req_63314144-71b3-4fcc-8758-283ac5643df5","route":"/api/reports/general-ledger","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_e8c9b858-48e8-4ec6-a64a-d258ae0e9980","route":"/api/auth/*","method":"POST","status":200,"durationMs":106}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_0184a9fe-80b8-47c9-9bbd-6343b68229ec","route":"/api/accounts/initialize","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_97b57b89-e964-4301-9529-656097a11678","route":"/api/journal-entries","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_6de85df0-9f45-4aa9-9182-98b26eda9ab5","route":"/api/journal-entries/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_9b938b6f-4787-4e56-8fcd-c2f112129e58","route":"/api/journal-entries/:id","method":"PATCH","status":409,"durationMs":4}
+
+stdout | src/modules/reports/reports.test.ts > server-authoritative reports > rejects mutation or deletion of posted journals
+{"msg":"http_request","requestId":"req_a4357d8d-4913-4c20-8224-d5799731acf6","route":"/api/journal-entries/:id","method":"DELETE","status":409,"durationMs":3}
+
+ ✓ src/modules/reports/reports.test.ts (5 tests) 2085ms
+   ✓ server-authoritative reports > derives balanced reports from posted journals and isolates organisations  1059ms
+   ✓ server-authoritative reports > rejects mutation or deletion of posted journals  980ms
+ ✓ src/modules/reports/cash-flow-reconciliation.test.ts (2 tests) 25ms
+
+ Test Files  4 passed (4)
+      Tests  11 passed (11)
+   Start at  07:10:08
+   Duration  14.40s (transform 1.33s, setup 74ms, collect 4.58s, tests 8.92s, environment 1ms, prepare 262ms)

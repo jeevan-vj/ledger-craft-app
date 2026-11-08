@@ -6,6 +6,7 @@ import AccountsPage from '../Accounts';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 import { accountsApi } from '@/features/payments/api/paymentsApi';
 
+vi.mock('@/context/StableAuthContext',()=>({useAuth:()=>({me:{organisation:{id:'company'},permissions:['banking.read','banking.write']}})}));
 const { createAccount, updateAccount, accountFixture } = vi.hoisted(() => ({ createAccount: vi.fn(), updateAccount: vi.fn(), accountFixture: { name: 'Sales Revenue', type: 'custom', currency: 'NZD', accountClass: 'revenue' } }));
 vi.mock('@/hooks/useAppData', () => ({ useAppData: () => ({
   accounts: [{ id: 'sales', ...accountFixture, openingBalance: 0, currentBalance: 0 }],
@@ -50,9 +51,9 @@ it('saves an account through Hono instead of missing facade mutation methods', a
   fireEvent.click(screen.getByRole('button', { name: 'Add Account' }));
   fireEvent.change(screen.getByLabelText('Name'), { target: { value: 'Owner capital' } });
   fireEvent.click(screen.getByRole('button', { name: 'Save' }));
-  await vi.waitFor(() => expect(accountsApi.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Owner capital', currency: 'NZD' })));
+  await vi.waitFor(() => expect(accountsApi.create).toHaveBeenCalledWith(expect.objectContaining({ name: 'Owner capital', currency: 'NZD' }),expect.stringMatching(/^[0-9a-f-]{36}$/),'company'));
   expect(createAccount).not.toHaveBeenCalled();
-  expect(accountsApi.create).toHaveBeenCalledWith(expect.not.objectContaining({ currentBalance: expect.anything() }));
+  expect(accountsApi.create).toHaveBeenCalledWith(expect.not.objectContaining({ currentBalance: expect.anything() }),expect.any(String),'company');
 });
 
 it('updates account details without overwriting its posted balance', async () => {

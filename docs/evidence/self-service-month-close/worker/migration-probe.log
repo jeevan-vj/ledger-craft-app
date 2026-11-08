@@ -1,0 +1,5 @@
+▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+
+
+{"mode":"original","ok":false,"count":35,"migration":"0035_accounting-period-cutoff.sql","message":"Error: SQL code did not contain a statement.","tail":"no action,\n\tCONSTRAINT \"accounting_period_locks_revision_check\" CHECK(\"accounting_period_locks\".\"revision\" >= 0)\n);\n--> statement-breakpoint"}
+{"mode":"strip","ok":true,"count":37}

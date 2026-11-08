@@ -1,0 +1,40 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_fbd1c816-cf4e-442d-b8e4-bfebad1580d8","route":"/api/auth/*","method":"POST","status":200,"durationMs":147}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_17a3f702-ba07-4e9a-8497-3bfe4ce157fc","route":"/api/auth/*","method":"POST","status":200,"durationMs":91}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_259bf8e7-2dc0-4e0b-b859-c8273e394d04","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_f2670658-5380-46c3-a9a1-35744053cb93","route":"/api/accounts/bank-ledger","method":"POST","status":200,"durationMs":7}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_48ea8985-1483-4ad6-855b-fb54b5f9512a","route":"/api/accounts/bank-ledger","method":"POST","status":200,"durationMs":4}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_ad59b9ae-b48a-4564-ada1-1406252b9c4c","route":"/api/accounts/bank-ledger","method":"POST","status":404,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_783c8a4b-a4c2-484d-85bf-c422763fc935","route":"/api/accounts/bank-ledger","method":"POST","status":404,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_dc2b56a0-22a5-4cdd-bc9d-af00a00483f2","route":"/api/journal-entries","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies
+{"msg":"http_request","requestId":"req_4089eb36-7c07-4bbe-a47c-728b5fe27be8","route":"/api/accounts","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/accounts/bank-ledger.test.ts > self-service bank ledger preparation > requires authentication
+{"msg":"http_request","requestId":"req_e72a1d67-8645-4299-8f82-c627f0180dde","route":"/api/accounts/bank-ledger","method":"POST","status":401,"durationMs":0}
+
+ ✓ src/modules/accounts/bank-ledger.test.ts (2 tests) 1309ms
+   ✓ self-service bank ledger preparation > creates one correctly classified linked account with no journal, retries safely and isolates companies  1304ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  07:01:41
+   Duration  5.03s (transform 1.74s, setup 25ms, collect 3.41s, tests 1.31s, environment 0ms, prepare 104ms)
