@@ -1,0 +1,36 @@
+TAP version 13
+# ▲ [WARNING] Proxy environment variables detected. We'll use your proxy for fetch requests.
+# ✘ [ERROR] {"msg":"unhandled_error","source":"worker","requestId":"req_7fe24517-0d54-4c1c-81ef-81de0127ba9e","route":"/api/auth/sign-up/email","name":"Error","errorMessage":"SQL code did not contain a statement.","stack":"Error: SQL code did not contain a statement.\\n    at async Object.fetch (file:///workspace/ledger-craft-app/.wrangler/tmp/dev-3ZZkRm/worker.js:126082:44)\\n    at async file:///workspace/ledger-craft-app/.wrangler/tmp/dev-3ZZkRm/worker.js:60226:19\\n    at async jsonError (file:///workspace/ledger-craft-app/.wrangler/tmp/dev-3ZZkRm/worker.js:126123:12)\\n    at async drainBody (file:///workspace/ledger-craft-app/.wrangler/tmp/dev-3ZZkRm/worker.js:126095:12)"}
+# Subtest: actual Worker Identity/Ledger handles self-service accounts, period audit and verified close-pack ZIP
+not ok 1 - actual Worker Identity/Ledger handles self-service accounts, period audit and verified close-pack ZIP
+  ---
+  duration_ms: 3286.064163
+  type: 'test'
+  location: '/workspace/ledger-craft-app/scripts/self-service-worker-close.test.mjs:12:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    POST /api/auth/sign-up/email: {"error":{"code":"SERVICE_UNAVAILABLE","message":"Service temporarily unavailable. Please try again later.","requestId":"req_7fe24517-0d54-4c1c-81ef-81de0127ba9e"}}
+
+    503 !== 200
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 200
+  actual: 503
+  operator: 'strictEqual'
+  stack: |-
+    request (file:///workspace/ledger-craft-app/scripts/self-service-worker-close.test.mjs:22:43)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (file:///workspace/ledger-craft-app/scripts/self-service-worker-close.test.mjs:25:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3388.395481

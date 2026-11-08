@@ -12,9 +12,13 @@ import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { formatMoney } from '@/utils/money';
 import { useTheme, space } from '@/theme';
 import { FxRevaluationPanel } from '@/components/accounting/FxRevaluationPanel';
+import { AccountingPeriodPanel } from '@/components/accounting/AccountingPeriodPanel';
+import { ChartAccountsPanel } from '@/components/accounting/ChartAccountsPanel';
 import { LedgerAuditPanel } from '@/components/accounting/LedgerAuditPanel';
 
 export default function AccountingToolsScreen() {
+  const [periodOpen, setPeriodOpen] = useState(false);
+  const [chartOpen, setChartOpen] = useState(false);
   const [scope, setScope] = useState<{ ownerId: string; organisationId: string }>();
   const [pendingManual, setPendingManual] = useState<PendingMutation<CreateJournalEntryRequest> | null>(null);
   const theme = useTheme(); const { bottomPadding } = useTabScreenInsets();
@@ -57,7 +61,11 @@ export default function AccountingToolsScreen() {
   return <ScrollView contentInsetAdjustmentBehavior="automatic" keyboardShouldPersistTaps="handled" style={{ backgroundColor: theme.colors.background }} contentContainerStyle={{ padding: space.screen, paddingBottom: bottomPadding, gap: space.lg }}>
     <Text style={theme.type.title}>Accounting tools</Text>
     <Text style={theme.type.subhead}>Opening balances and manual journals post to your ledger. Account opening metadata alone does not create a journal. Review account classification before posting; ask your accountant when unsure.</Text>
-    {loading ? <ActivityIndicator /> : loadError ? <><Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{loadError}</Text><ModernButton onPress={() => void load()}>Retry accounts</ModernButton></> : !accounts.length ? <Text style={theme.type.body}>No active NZD accounts. Create your chart of accounts on web first.</Text> : <>
+    <ModernButton variant="secondary" onPress={() => setChartOpen(!chartOpen)}>{chartOpen ? 'Hide chart accounts' : 'Manage chart accounts'}</ModernButton>
+    {chartOpen ? <ChartAccountsPanel onChanged={() => void load()} /> : null}
+    <ModernButton variant="secondary" onPress={() => setPeriodOpen(!periodOpen)}>{periodOpen ? 'Hide period protection' : 'Accounting period protection'}</ModernButton>
+    {periodOpen ? <AccountingPeriodPanel /> : null}
+    {loading ? <ActivityIndicator /> : loadError ? <><Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{loadError}</Text><ModernButton onPress={() => void load()}>Retry accounts</ModernButton></> : !accounts.length ? <Text style={theme.type.body}>No active NZD accounts. Open Manage chart accounts to create and classify accounts here.</Text> : <>
       <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: space.sm }}>{(['opening', 'journal'] as const).map((value) => <ModernButton key={value} disabled={busy || Boolean(pendingJournalId) || Boolean(pendingManual)} variant={mode === value ? 'primary' : 'secondary'} onPress={() => { setMode(value); setReviewed(false); setSuccess(''); }}>{value === 'opening' ? 'Opening balances' : 'Manual journal'}</ModernButton>)}</View>
       <ModernInput label="Journal date" value={date} editable={!busy && !pendingJournalId && !pendingManual} onChangeText={(value) => change(setDate, value)} />
       <ModernInput label="Journal reference" value={reference} editable={!busy && !pendingJournalId && !pendingManual} onChangeText={(value) => change(setReference, value)} />

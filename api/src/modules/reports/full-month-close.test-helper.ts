@@ -45,5 +45,6 @@ export async function fullMonthCloseFixture() {
   const credits = [];
   for (const [index, rate] of ['200', '100'].entries()) credits.push(await post('/api/credit-notes', { invoiceId: invoices[index].id, issueDate: `2026-10-${index + 10}`, reason: 'Reviewed service reduction agreed with client', taxInclusive: false, taxRate: '15', items: [{ description: 'Service reduction', quantity: '1', rate }] }));
   const refund = await post(`/api/credit-notes/${credits[1].id}/refunds`, { amount: '115', refundDate: '2026-10-12', bankAccountId: bank.id });
-  return { db, sql, app, request, post, commands, bank, bankNumber, cash, capital, cost, customers, invoices, receipts, bill, supplier: supplier.payments[0], expense, credits, refund };
+  const rawRequest = (path: string) => app.request(path, { headers });
+  return { db, sql, app, request, rawRequest, post, commands, bank, bankNumber, cash, capital, cost, customers, invoices, receipts, bill, supplier: supplier.payments[0], expense, credits, refund };
 }

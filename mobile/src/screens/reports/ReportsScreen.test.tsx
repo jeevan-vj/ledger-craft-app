@@ -1,9 +1,12 @@
 import React from 'react';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import ReportsScreen from './ReportsScreen';
+import { useStore } from '@/store';
+import { shareClosePack } from '@/features/reports/model/closePackShare';
 import { reportsApi, type FinancialReport } from '@/features/reports/api/reportsApi';
 
+jest.mock('@/features/reports/model/closePackShare',()=>({shareClosePack:jest.fn().mockResolvedValue(undefined)}));
 jest.mock('@/components/reports/GstWorkspacePanel', () => ({ GstWorkspacePanel: () => null }));
 
 jest.mock('@/features/reports/api/reportsApi', () => ({
@@ -132,4 +135,9 @@ it('separates closing trial balances from period turnover', async () => {
   expect(screen.getByText('Period debits')).toBeTruthy(); expect(screen.getByText('Period credits')).toBeTruthy();
   expect(screen.getByText('Closing debits')).toBeTruthy(); expect(screen.getByText('Closing credits')).toBeTruthy();
   expect(screen.getAllByText('$13,680.00')).toHaveLength(2); expect(screen.getAllByText('$14,605.00')).toHaveLength(2);
+});
+
+it('requires report and bank access for the close pack and exports the selected run period',async()=>{
+ const previous=useStore.getState().permissions;useStore.setState({permissions:['reports.read']});const screen=renderScreen();await screen.findByText('Share PDF');expect(screen.queryByText('Export accountant close pack')).toBeNull();expect(screen.getByText('The close pack includes bank evidence and requires banking read access.')).toBeTruthy();
+ await act(async()=>useStore.setState({permissions:['reports.read','banking.read']}));fireEvent.changeText(screen.getByLabelText('Report start'),'2026-10-01');fireEvent.changeText(screen.getByLabelText('Report end'),'2026-10-31');fireEvent.press(screen.getByText('Run financial report'));await waitFor(()=>expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({from:'2026-10-01',to:'2026-10-31'})));fireEvent.press(await screen.findByText('Export accountant close pack'));await screen.findByText('Accountant close pack ready.');expect(shareClosePack).toHaveBeenCalledWith('2026-10-01','2026-10-31');await act(async()=>useStore.setState({permissions:previous}));
 });

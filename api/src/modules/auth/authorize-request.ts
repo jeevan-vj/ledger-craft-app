@@ -32,6 +32,7 @@ function isReadMethod(method: string): boolean {
 }
 
 export function permissionForRequest(method: string, path: string): OrganisationPermission | null {
+  if (/^\/(?:api\/)?accounting-periods(?:\/|$)/.test(path)) return isReadMethod(method) ? 'reports.read' : 'banking.write';
   if (['POST', 'DELETE'].includes(method) && /^\/(?:api\/)?objects\/receipts$/.test(path)) return 'bills.write';
   if (!isReadMethod(method) && /^\/(?:api\/)?customers\/[^/]+\/statement(?:\/|$)/.test(path)) return 'banking.write';
   if (/^\/(?:api\/)?customer-statements(?:\/|$)/.test(path)) return isReadMethod(method) ? 'customers.read' : 'banking.write';

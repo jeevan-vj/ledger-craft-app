@@ -1,0 +1,3 @@
+$ pnpm --filter @ledgercraft/api type-check && pnpm --filter @ledgercraft/contracts type-check
+$ tsc --noEmit
+$ tsc --noEmit

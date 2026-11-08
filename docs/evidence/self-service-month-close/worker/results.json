@@ -1,0 +1,771 @@
+{
+  "scope": "Actual local Cloudflare Worker / Identity + company Ledger Durable Objects; supplementary minimal fixture, not the canonical full walkthrough",
+  "node": "v22.23.4",
+  "expected": {
+    "openingCash": "10000.00",
+    "expenseGross": "230.00",
+    "expenseNet": "200.00",
+    "inputGst": "30.00",
+    "netGst": "-30.00",
+    "profit": "-200.00",
+    "closingCash": "9770.00",
+    "closingTrialBalance": "10000.00"
+  },
+  "report": {
+    "meta": {
+      "from": "2026-10-01",
+      "to": "2026-10-31",
+      "basis": "accrual",
+      "baseCurrency": "NZD",
+      "generatedAt": "2026-11-08T07:42:38.819Z"
+    },
+    "trialBalance": {
+      "rows": [
+        {
+          "accountId": "de395b0b-618c-4732-a195-a63768f385ac",
+          "accountNumber": "BANK-FB16246A",
+          "accountName": "Worker operating",
+          "accountClass": "asset",
+          "debit": "230.00",
+          "credit": "460.00",
+          "balance": "9770.00",
+          "openingDebit": "10000.00",
+          "openingCredit": "0.00",
+          "closingDebit": "9770.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "28283a6d-83e4-461c-93a5-9f798f151cc7",
+          "accountNumber": "5000",
+          "accountName": "Operating expense",
+          "accountClass": "expense",
+          "debit": "530.00",
+          "credit": "330.00",
+          "balance": "200.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "200.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "20e4d690-36e9-4add-914c-8aacc2c2f273",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "30.00",
+          "credit": "0.00",
+          "balance": "30.00",
+          "openingDebit": "0.00",
+          "openingCredit": "0.00",
+          "closingDebit": "30.00",
+          "closingCredit": "0.00"
+        },
+        {
+          "accountId": "05aa9a54-afd2-45de-9697-0123faa14d2a",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "100.00",
+          "credit": "100.00",
+          "balance": "10000.00",
+          "openingDebit": "0.00",
+          "openingCredit": "10000.00",
+          "closingDebit": "0.00",
+          "closingCredit": "10000.00"
+        }
+      ],
+      "totalDebits": "890.00",
+      "totalCredits": "890.00",
+      "closingDebits": "10000.00",
+      "closingCredits": "10000.00",
+      "balanced": true
+    },
+    "profitLoss": {
+      "rows": [
+        {
+          "accountId": "28283a6d-83e4-461c-93a5-9f798f151cc7",
+          "accountNumber": "5000",
+          "accountName": "Operating expense",
+          "accountClass": "expense",
+          "debit": "530.00",
+          "credit": "330.00",
+          "balance": "200.00"
+        }
+      ],
+      "revenue": "0.00",
+      "expenses": "200.00",
+      "netIncome": "-200.00"
+    },
+    "balanceSheet": {
+      "rows": [
+        {
+          "accountId": "20e4d690-36e9-4add-914c-8aacc2c2f273",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "30.00",
+          "credit": "0.00",
+          "balance": "30.00"
+        },
+        {
+          "accountId": "05aa9a54-afd2-45de-9697-0123faa14d2a",
+          "accountNumber": "3000",
+          "accountName": "Owner capital",
+          "accountClass": "equity",
+          "debit": "100.00",
+          "credit": "10100.00",
+          "balance": "10000.00"
+        },
+        {
+          "accountId": "de395b0b-618c-4732-a195-a63768f385ac",
+          "accountNumber": "BANK-FB16246A",
+          "accountName": "Worker operating",
+          "accountClass": "asset",
+          "debit": "10230.00",
+          "credit": "460.00",
+          "balance": "9770.00"
+        }
+      ],
+      "assets": "9800.00",
+      "liabilities": "0.00",
+      "equity": "9800.00",
+      "balanced": true
+    },
+    "cashFlow": {
+      "rows": [
+        {
+          "accountId": "de395b0b-618c-4732-a195-a63768f385ac",
+          "accountNumber": "BANK-FB16246A",
+          "accountName": "Worker operating",
+          "accountClass": "asset",
+          "debit": "230.00",
+          "credit": "460.00",
+          "balance": "-230.00"
+        }
+      ],
+      "openingCash": "10000.00",
+      "inflows": "0.00",
+      "outflows": "230.00",
+      "netCashFlow": "-230.00",
+      "closingCash": "9770.00"
+    },
+    "receivablesAging": {
+      "total": "0.00",
+      "unallocatedControl": "0.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": []
+    },
+    "payablesAging": {
+      "total": "0.00",
+      "unallocatedControl": "0.00",
+      "current": "0.00",
+      "days1To30": "0.00",
+      "days31To60": "0.00",
+      "days61To90": "0.00",
+      "over90": "0.00",
+      "items": []
+    },
+    "salesSummary": {
+      "subtotal": "0.00",
+      "tax": "0.00",
+      "total": "0.00",
+      "paid": "0.00",
+      "outstanding": "0.00"
+    },
+    "purchaseSummary": {
+      "subtotal": "0.00",
+      "tax": "0.00",
+      "total": "0.00",
+      "paid": "0.00",
+      "outstanding": "0.00"
+    },
+    "taxSummary": {
+      "collected": "0.00",
+      "paid": "30.00",
+      "netPayable": "-30.00",
+      "outputGst": "0.00",
+      "inputGst": "30.00",
+      "netGst": "-30.00",
+      "position": "refundable",
+      "gstAccounts": [
+        {
+          "accountId": "20e4d690-36e9-4add-914c-8aacc2c2f273",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "30.00",
+          "credit": "0.00",
+          "balance": "30.00"
+        }
+      ],
+      "keyAccounts": [
+        {
+          "accountId": "20e4d690-36e9-4add-914c-8aacc2c2f273",
+          "accountNumber": "2150",
+          "accountName": "GST Paid on Purchases",
+          "accountClass": "asset",
+          "debit": "30.00",
+          "credit": "0.00",
+          "balance": "30.00"
+        },
+        {
+          "accountId": "28283a6d-83e4-461c-93a5-9f798f151cc7",
+          "accountNumber": "5000",
+          "accountName": "Operating expense",
+          "accountClass": "expense",
+          "debit": "530.00",
+          "credit": "330.00",
+          "balance": "200.00"
+        },
+        {
+          "accountId": "de395b0b-618c-4732-a195-a63768f385ac",
+          "accountNumber": "BANK-FB16246A",
+          "accountName": "Worker operating",
+          "accountClass": "asset",
+          "debit": "230.00",
+          "credit": "460.00",
+          "balance": "-230.00"
+        }
+      ],
+      "basis": "invoice",
+      "foreignCurrencyDocumentsExcluded": 0,
+      "warnings": []
+    },
+    "comparison": null
+  },
+  "gst": {
+    "basis": "invoice",
+    "from": "2026-10-01",
+    "to": "2026-10-31",
+    "baseCurrency": "NZD",
+    "totalSales": "0.00",
+    "totalPurchases": "230.00",
+    "zeroRatedSales": "0.00",
+    "exemptSales": "0.00",
+    "unclassifiedSales": "0.00",
+    "claimablePurchases": "230.00",
+    "salesClassificationSupported": true,
+    "gstOnSales": "0.00",
+    "gstOnPurchases": "30.00",
+    "netGstPosition": "-30.00",
+    "warnings": [],
+    "calculation": {
+      "version": "gst-ledger-v2",
+      "fingerprint": "c623a4e0047e3110d4f59be8ade363314d3fc771fb6ece355147ae0f5bcfa094",
+      "calculatedAt": "2026-11-08T07:42:38.394Z",
+      "period": {
+        "from": "2026-10-01",
+        "to": "2026-10-31",
+        "basis": "invoice"
+      },
+      "settings": {
+        "gstRegistrationStatus": "registered",
+        "taxId": "49091850",
+        "gstRegisteredFrom": "2026-10-01",
+        "gstAccountingBasis": "invoice",
+        "gstFilingFrequency": "monthly",
+        "gstPeriodAnchor": 10,
+        "configured": true,
+        "reviewRequired": false,
+        "warnings": []
+      },
+      "figures": {
+        "totalSales": "0.00",
+        "totalPurchases": "230.00",
+        "gstOnSales": "0.00",
+        "gstOnPurchases": "30.00",
+        "netGst": "-30.00"
+      },
+      "sources": [
+        {
+          "type": "expenses",
+          "id": "4cf11945-acd8-4794-8cd3-797b363a5bcc",
+          "date": "2026-10-09",
+          "values": {
+            "amount": "230.00",
+            "taxAmount": "30.00",
+            "currency": "NZD",
+            "baseAmount": "230.00",
+            "baseTaxAmount": "30.00",
+            "exchangeRate": "1",
+            "gstTreatment": "standard",
+            "claimablePercentage": 100,
+            "privateUsePercentage": 0
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "11e85268-1e19-4893-8375-8de9a7fad048",
+          "date": "2026-10-09",
+          "values": {
+            "journalId": "fc8cf2f9-252f-4a01-b83a-60a52325b8c3",
+            "accountId": "20e4d690-36e9-4add-914c-8aacc2c2f273",
+            "accountNumber": "2150",
+            "accountClass": "asset",
+            "debit": "30.00",
+            "credit": "0.00",
+            "lineOrder": 2
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "75434b0f-924e-48c3-a8b3-7b0ff0614c11",
+          "date": "2026-10-09",
+          "values": {
+            "journalId": "fc8cf2f9-252f-4a01-b83a-60a52325b8c3",
+            "accountId": "28283a6d-83e4-461c-93a5-9f798f151cc7",
+            "accountNumber": "5000",
+            "accountClass": "expense",
+            "debit": "200.00",
+            "credit": "0.00",
+            "lineOrder": 1
+          }
+        },
+        {
+          "type": "journalLines",
+          "id": "c6729b49-898d-4dd0-9a0c-60f95417ec45",
+          "date": "2026-10-09",
+          "values": {
+            "journalId": "fc8cf2f9-252f-4a01-b83a-60a52325b8c3",
+            "accountId": "de395b0b-618c-4732-a195-a63768f385ac",
+            "accountNumber": "BANK-FB16246A",
+            "accountClass": "asset",
+            "debit": "0.00",
+            "credit": "230.00",
+            "lineOrder": 3
+          }
+        },
+        {
+          "type": "journals",
+          "id": "fc8cf2f9-252f-4a01-b83a-60a52325b8c3",
+          "date": "2026-10-09",
+          "values": {
+            "referenceType": "expense",
+            "referenceId": "4cf11945-acd8-4794-8cd3-797b363a5bcc",
+            "total": "230.00"
+          }
+        }
+      ],
+      "sourceIds": {
+        "journals": [
+          "fc8cf2f9-252f-4a01-b83a-60a52325b8c3"
+        ],
+        "journalLines": [
+          "11e85268-1e19-4893-8375-8de9a7fad048",
+          "75434b0f-924e-48c3-a8b3-7b0ff0614c11",
+          "c6729b49-898d-4dd0-9a0c-60f95417ec45"
+        ],
+        "invoices": [],
+        "bills": [],
+        "expenses": [
+          "4cf11945-acd8-4794-8cd3-797b363a5bcc"
+        ],
+        "payments": [],
+        "billPayments": [],
+        "creditNotes": [],
+        "creditNoteRefunds": []
+      },
+      "sourceCounts": {
+        "journals": 1,
+        "journalLines": 3,
+        "invoices": 0,
+        "bills": 0,
+        "expenses": 1,
+        "payments": 0,
+        "billPayments": 0,
+        "creditNotes": 0,
+        "creditNoteRefunds": 0
+      },
+      "myIrBoxes": {
+        "5": "0.00",
+        "6": "0.00",
+        "7": "0.00",
+        "8": "0.00",
+        "9": "0.00",
+        "10": "0.00",
+        "11": "230.00",
+        "12": "30.00",
+        "13": "0.00",
+        "14": "30.00",
+        "15": "-30.00"
+      },
+      "mappingStatus": "supported",
+      "warnings": [],
+      "requiresReview": false,
+      "result": "refund"
+    }
+  },
+  "completed": {
+    "id": "744096c4-b3d5-49c8-9faf-94c5489b24cc",
+    "bankAccountId": "fb16246a-acce-453f-8e81-ce3d41338df4",
+    "statementStartDate": "2026-10-01",
+    "statementEndDate": "2026-10-31",
+    "statementOpeningBalance": "10000.00",
+    "statementClosingBalance": "9770.00",
+    "bookOpeningBalance": "10000.00",
+    "bookClosingBalance": "9770.00",
+    "totalDeposits": "0.00",
+    "totalWithdrawals": "0.00",
+    "status": "completed",
+    "reconciledAt": "2026-11-08T07:42:38.349Z",
+    "matchedCount": 1,
+    "unmatchedBankCount": 0,
+    "unmatchedBookCount": 0,
+    "adjustmentCount": 0,
+    "difference": "0.00",
+    "notes": null,
+    "createdAt": "2026-11-08T07:42:38.000Z",
+    "updatedAt": "2026-11-08T07:42:38.349Z"
+  },
+  "periodAudit": {
+    "closedThrough": "2026-10-31",
+    "revision": 3,
+    "canClose": true,
+    "canReopen": true,
+    "events": [
+      {
+        "id": "c0c9f559-4251-41ca-b1ac-8c1ed284190d",
+        "action": "close",
+        "previousClosedThrough": "2026-09-30",
+        "newClosedThrough": "2026-10-31",
+        "reason": "Worker October reviewed and reclosed",
+        "actorId": "44b9ff2c-35dc-4251-af39-35207ca2b248",
+        "createdAt": "2026-11-08T07:42:38.000Z",
+        "revision": 3
+      },
+      {
+        "id": "332dbeda-15c3-45d1-9d7a-166950a1b53d",
+        "action": "reopen",
+        "previousClosedThrough": "2026-10-31",
+        "newClosedThrough": "2026-09-30",
+        "reason": "Owner reviews nonbank October adjustment",
+        "actorId": "44b9ff2c-35dc-4251-af39-35207ca2b248",
+        "createdAt": "2026-11-08T07:42:38.000Z",
+        "revision": 2
+      },
+      {
+        "id": "a57b8ed7-f141-403e-9dcf-411621a2ad5f",
+        "action": "close",
+        "previousClosedThrough": null,
+        "newClosedThrough": "2026-10-31",
+        "reason": "Worker October books reconciled",
+        "actorId": "44b9ff2c-35dc-4251-af39-35207ca2b248",
+        "createdAt": "2026-11-08T07:42:38.000Z",
+        "revision": 1
+      }
+    ]
+  },
+  "manifest": {
+    "version": "ledgercraft-close-pack-v1",
+    "organisationName": "Worker supplementary October close",
+    "period": {
+      "from": "2026-10-01",
+      "to": "2026-10-31"
+    },
+    "basis": "accrual",
+    "baseCurrency": "NZD",
+    "generatedAt": "2026-11-08T07:42:38.867Z",
+    "periodLock": {
+      "closedThrough": "2026-10-31",
+      "revision": 3
+    },
+    "warnings": [
+      "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+    ],
+    "members": [
+      {
+        "name": "trial-balance.csv",
+        "mediaType": "text/csv",
+        "bytes": 629,
+        "sha256": "16f42f4270999bcf49b1ed86fba6ab2a305d346b9ebb7978bdef3004f7971758"
+      },
+      {
+        "name": "balance-sheet.csv",
+        "mediaType": "text/csv",
+        "bytes": 419,
+        "sha256": "2c083f95a7a658aa4b435d5adb8b3cbf75c2d1aee96ec1dc1b1eb1be5c9e23a4"
+      },
+      {
+        "name": "profit-loss.csv",
+        "mediaType": "text/csv",
+        "bytes": 181,
+        "sha256": "9751a7a4f3133469249d6e66973e26318142e9ac3b9d3d2debe649b227e7c2b4"
+      },
+      {
+        "name": "cash-flow.csv",
+        "mediaType": "text/csv",
+        "bytes": 240,
+        "sha256": "e03fbf1cfe4cb8e64ad5dcf1633e9e209306bc5d86eaa4f1b09af2b5012e11c2"
+      },
+      {
+        "name": "receivables.csv",
+        "mediaType": "text/csv",
+        "bytes": 185,
+        "sha256": "4321f1c6b06c6e58e9fc08a75fc5569a700f3f19d04e5cc5132d7ea93d397a57"
+      },
+      {
+        "name": "payables.csv",
+        "mediaType": "text/csv",
+        "bytes": 182,
+        "sha256": "3c4d878a5deb1cf010831add8fe0ab3e24f0ea99c6c4e7bf3f1c9f4341bddd25"
+      },
+      {
+        "name": "reports.json",
+        "mediaType": "application/json",
+        "bytes": 12603,
+        "sha256": "e794b6e587bae0ae92967128ffa6447a2b0a5897a95c8f4fdfba55cb86dc4965"
+      },
+      {
+        "name": "general-ledger.csv",
+        "mediaType": "text/csv",
+        "bytes": 1941,
+        "sha256": "3692f38f24801047b2ca0cb4dbca03008bd1cd61ce76381b0cde1384baf86cb8"
+      },
+      {
+        "name": "bank-reconciliations.json",
+        "mediaType": "application/json",
+        "bytes": 1427,
+        "sha256": "306fca931ec20d37a717549bcbdf5a51bfdda7911640d16a4bf3aaab741cab81"
+      },
+      {
+        "name": "bank-reconciliations.csv",
+        "mediaType": "text/csv",
+        "bytes": 300,
+        "sha256": "b65d2bb1e463724b36b50d56207067b6b7151aa313a14f99251d7e6d9ddead92"
+      },
+      {
+        "name": "gst.json",
+        "mediaType": "application/json",
+        "bytes": 10664,
+        "sha256": "6d5086c2746957be620600fabe670a9ae9d5aa798d53478539f6457e74e728c6"
+      },
+      {
+        "name": "accounting-period.json",
+        "mediaType": "application/json",
+        "bytes": 53,
+        "sha256": "d6219f194f7ef68c9d230a33c2ca4a5b91a67ba3f194673b64103964d993c7c5"
+      },
+      {
+        "name": "readme.txt",
+        "mediaType": "text/plain",
+        "bytes": 523,
+        "sha256": "6a2905e150ec6ce2a5d446c9b198ce9477f555ea520f71b1aefc25c748eaee57"
+      }
+    ]
+  },
+  "isolatedCompany": {
+    "periodLock": {
+      "closedThrough": null,
+      "revision": 0
+    },
+    "organisationName": "Worker isolated close company"
+  },
+  "commands": [
+    {
+      "method": "POST",
+      "path": "/api/auth/sign-up/email",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "status": 200
+    },
+    {
+      "method": "PUT",
+      "path": "/api/business-profile",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/bank-accounts",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounts/bank-ledger",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounts/bank-ledger",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/journal-entries",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounts",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounts",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/journal-entries/opening-balances",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/expenses",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/bank-transactions/import",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/reconciliation-sessions",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/reconciliation-sessions/744096c4-b3d5-49c8-9faf-94c5489b24cc/matches",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/reconciliation-sessions/744096c4-b3d5-49c8-9faf-94c5489b24cc/complete",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/tax/gst-preparation?from=2026-10-01&to=2026-10-31",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/tax-returns",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounting-periods/close",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/expenses",
+      "status": 409,
+      "errorCode": "ACCOUNTING_PERIOD_CLOSED"
+    },
+    {
+      "method": "GET",
+      "path": "/api/expenses",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/journal-entries",
+      "status": 409,
+      "errorCode": "ACCOUNTING_PERIOD_CLOSED"
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounting-periods/reopen",
+      "status": 409,
+      "errorCode": "ORGANISATION_CHANGED"
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounting-periods/reopen",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/journal-entries",
+      "status": 201
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/journal-entries/ab7630fd-a250-40ec-a3e2-aeb05e1ec9f9",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/journal-entries",
+      "status": 201
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/journal-entries/d0c4014f-4b81-4b5e-ab83-8a986602843e",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounting-periods/close",
+      "status": 200
+    },
+    {
+      "method": "POST",
+      "path": "/api/accounting-periods/close",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/financial?from=2026-10-01&to=2026-10-31&basis=accrual",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/close-pack?from=2026-10-01&to=2026-10-31",
+      "status": 200,
+      "zipMembers": 14,
+      "verifiedChecksums": 13
+    },
+    {
+      "method": "POST",
+      "path": "/api/organisations",
+      "status": 201
+    },
+    {
+      "method": "POST",
+      "path": "/api/organisations/210d9d3e-5096-4dc9-8a31-ac47eb17d60d/switch",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/accounting-periods",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/reports/close-pack?from=2026-10-01&to=2026-10-31",
+      "status": 200,
+      "zipMembers": 14,
+      "verifiedChecksums": 13
+    },
+    {
+      "method": "POST",
+      "path": "/api/organisations/cf6a9a80-6f05-4de2-b376-00e7a7cc1feb/switch",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/me",
+      "status": 200
+    },
+    {
+      "method": "GET",
+      "path": "/api/accounting-periods",
+      "status": 200
+    }
+  ]
+}

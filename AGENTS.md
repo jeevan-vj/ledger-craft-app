@@ -7,6 +7,21 @@
 
 **Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
 
+**Self-service close controls (implemented locally, 2026-11-08):** Web and
+Expo provide chart-account creation/classification, bank-ledger linking by bank
+name, reviewed accounting close/reopen with revisioned audit history, and an
+authenticated accountant ZIP. Period locks guard posting and source changes
+company-wide; reopening requires owner/admin and does not remove a completed
+bank statement cutoff. Account creation supports scoped idempotent retries.
+The ZIP reuses canonical financial/GL/GST reports, includes bank and cutoff
+state plus SHA-256 member checksums, and requires reports and banking access.
+Additive SQLite migrations0035/0036 retain audit actor identifiers after user
+deletion. The Worker runner strips Drizzle separator metadata at execution
+time while preserving migration bytes/checksums. Mobile chart setup is now entirely UI-driven, superseding the setup
+exception in the November7 evidence below. Evidence and current verification:
+`docs/evidence/self-service-month-close/README.md`. Installed Android/iOS QA and
+actual IRD filing remain outstanding; #114 remains parked.
+
 **Full month-close acceptance (verified locally, 2026-11-07):** Independent
 Decimal working papers reconcile an October NZ services case through real web and
 Expo business operations: closing TB13,680 each side, assets12,480 = liabilities980

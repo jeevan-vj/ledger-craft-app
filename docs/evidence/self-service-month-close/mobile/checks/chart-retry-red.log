@@ -1,0 +1,179 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/accounting/ChartAccountsPanel.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/components/accounting/ChartAccountsPanel.test.tsx
+  ✕ creates a classified zero-opening ledger account before reviewed opening balances (206 ms)
+  ✓ links an existing business bank without requiring an internal ledger code or posting money (133 ms)
+  ✓ keeps read-only members out of account writes (54 ms)
+  ✓ shows a retryable load failure without creating an account (104 ms)
+  ✕ retries an uncertain create with exactly the original body and key (138 ms)
+  ✕ restores the saved account request after reopening instead of creating a new intent (1007 ms)
+
+  ● creates a classified zero-opening ledger account before reviewed opening balances
+
+    expect(jest.fn()).toHaveBeenCalledWith(...expected)
+
+    - Expected
+    + Received
+
+      {"accountClass": "equity", "accountNumber": "3000", "currency": "NZD", "isActive": true, "name": "Owner Capital", "openingBalance": "0.00", "type": "custom"},
+      "company-a",
+    - Any<String>,
+
+    Number of calls: 1
+
+       9 | function view(onChanged=jest.fn()){const client=new QueryClient({defaultOptions:{queries:{retry:false,gcTime:Infinity},mutations:{retry:false,gcTime:Infinity}}});return {screen:render(<QueryClientProvider client={client}><ChartAccountsPanel onChanged={onChanged}/></QueryClientProvider>),onChanged};}
+      10 | beforeEach(()=>{jest.clearAllMocks();jest.mocked(chartAccountsApi.list).mockResolvedValue([]);jest.mocked(chartAccountsApi.access).mockResolvedValue({user:{id:'owner-a'},organisation:{id:'company-a'},permissions:['banking.write']});jest.mocked(chartAccountsApi.banks).mockResolvedValue([{id:'bank-1',accountName:'Operating',currency:'NZD',isActive:true}] as never);jest.mocked(chartAccountsApi.create).mockResolvedValue({id:'capital',name:'Owner Capital',accountClass:'equity',currency:'NZD',isActive:true} as never);jest.mocked(chartAccountsApi.linkBank).mockResolvedValue({id:'bank-ledger',name:'Operating',accountClass:'asset',currency:'NZD',isActive:true} as never);});
+    > 11 | it('creates a classified zero-opening ledger account before reviewed opening balances',async()=>{const {screen,onChanged}=view();await screen.findByText('No ledger accounts yet.');fireEvent.changeText(screen.getByLabelText('Ledger account name'),'Owner Capital');fireEvent.changeText(screen.getByLabelText('Ledger account code'),'3000');fireEvent.press(screen.getByText('Expense'));fireEvent.press(screen.getByText('Equity'));fireEvent.press(screen.getByText('Create ledger account'));await screen.findByText('Ledger account created: Owner Capital');expect(chartAccountsApi.create).toHaveBeenCalledWith({name:'Owner Capital',accountNumber:'3000',accountClass:'equity',type:'custom',currency:'NZD',openingBalance:'0.00',isActive:true},'company-a',expect.any(String));expect(onChanged).toHaveBeenCalled();});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ^
+      12 | it('links an existing business bank without requiring an internal ledger code or posting money',async()=>{const {screen}=view();await screen.findByText('No ledger accounts yet.');fireEvent.press(screen.getByText('Link a bank account'));fireEvent.press(screen.getByText('Choose'));fireEvent.press(screen.getByText('Operating'));fireEvent.press(screen.getByText('Prepare bank ledger'));await screen.findByText('Bank ledger ready: Operating');expect(chartAccountsApi.linkBank).toHaveBeenCalledWith('bank-1','company-a');expect(chartAccountsApi.create).not.toHaveBeenCalled();});
+      13 | it('keeps read-only members out of account writes',async()=>{jest.mocked(chartAccountsApi.access).mockResolvedValue({user:{id:'owner-a'},organisation:{id:'company-a'},permissions:['banking.read']});const {screen}=view();await screen.findByText('Account changes require banking write access.');expect(screen.queryByText('Create ledger account')).toBeNull();expect(screen.queryByText('Link a bank account')).toBeNull();});
+      14 | it('shows a retryable load failure without creating an account',async()=>{jest.mocked(chartAccountsApi.list).mockRejectedValueOnce(new Error('Chart unavailable'));const {screen}=view();await screen.findByText('Chart unavailable');fireEvent.press(screen.getByText('Retry chart accounts'));await screen.findByText('No ledger accounts yet.');expect(chartAccountsApi.create).not.toHaveBeenCalled();});
+
+      at Object.toHaveBeenCalledWith (src/components/accounting/ChartAccountsPanel.test.tsx:11:583)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● retries an uncertain create with exactly the original body and key
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: false
+    Received: true
+
+      14 | it('shows a retryable load failure without creating an account',async()=>{jest.mocked(chartAccountsApi.list).mockRejectedValueOnce(new Error('Chart unavailable'));const {screen}=view();await screen.findByText('Chart unavailable');fireEvent.press(screen.getByText('Retry chart accounts'));await screen.findByText('No ledger accounts yet.');expect(chartAccountsApi.create).not.toHaveBeenCalled();});
+      15 |
+    > 16 | it('retries an uncertain create with exactly the original body and key',async()=>{jest.mocked(chartAccountsApi.create).mockRejectedValueOnce(new AuthApiError('Connection lost after submitting account',0));const {screen}=view();await screen.findByText('No ledger accounts yet.');fireEvent.changeText(screen.getByLabelText('Ledger account name'),'Owner Capital');fireEvent.changeText(screen.getByLabelText('Ledger account code'),'3000');fireEvent.press(screen.getByText('Expense'));fireEvent.press(screen.getByText('Equity'));fireEvent.press(screen.getByText('Create ledger account'));await screen.findByText('Connection lost after submitting account');expect(screen.getByLabelText('Ledger account name').props.editable).toBe(false);fireEvent.press(screen.getByText('Retry saved ledger account'));await screen.findByText('Ledger account created: Owner Capital');expect(chartAccountsApi.create).toHaveBeenCalledTimes(2);expect(jest.mocked(chartAccountsApi.create).mock.calls[1]).toEqual(jest.mocked(chartAccountsApi.create).mock.calls[0]);});
+         |                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ^
+      17 | it('restores the saved account request after reopening instead of creating a new intent',async()=>{const input={name:'Owner Capital',accountNumber:'3000',accountClass:'equity',type:'custom',currency:'NZD',openingBalance:'0.00',isActive:true};const restore=jest.spyOn(pendingMutation,'load').mockResolvedValueOnce({input,key:'saved-account-key',uncertain:true});const {screen}=view();await screen.findByText('Retry saved ledger account');expect(screen.getByLabelText('Ledger account name').props.value).toBe('Owner Capital');fireEvent.press(screen.getByText('Retry saved ledger account'));await screen.findByText('Ledger account created: Owner Capital');expect(chartAccountsApi.create).toHaveBeenCalledWith(input,'company-a','saved-account-key');restore.mockRestore();});
+      18 |
+
+      at Object.toBe (src/components/accounting/ChartAccountsPanel.test.tsx:16:720)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+  ● restores the saved account request after reopening instead of creating a new intent
+
+    Unable to find an element with text: Retry saved ledger account
+
+    <View>
+      <Text>
+        Chart of accounts
+      </Text>
+      <Text>
+        Create and classify your ledger accounts here. New accounts start at zero; enter brought-forward amounts through reviewed opening balances.
+      </Text>
+      <Text>
+        No ledger accounts yet.
+      </Text>
+      <View
+        accessibilityRole="button"
+        accessibilityState={
+          {
+            "busy": false,
+            "disabled": false,
+          }
+        }
+        accessible={true}
+        nativeID="15"
+      >
+        <View>
+          <Text>
+            Link a bank account
+          </Text>
+        </View>
+      </View>
+      <View>
+        <Text>
+          Ledger account name
+        </Text>
+        <View>
+          <TextInput
+            accessibilityLabel="Ledger account name"
+            accessibilityState={
+              {
+                "disabled": false,
+              }
+            }
+            editable={true}
+            value=""
+          />
+        </View>
+      </View>
+      <View>
+        <Text>
+          Ledger account code
+        </Text>
+        <View>
+          <TextInput
+            accessibilityLabel="Ledger account code"
+            accessibilityState={
+              {
+                "disabled": false,
+              }
+            }
+            editable={true}
+            value=""
+          />
+        </View>
+      </View>
+      <View>
+        <Text>
+          Account classification
+        </Text>
+        <View
+          accessibilityRole="button"
+          accessibilityState={
+            {
+              "busy": false,
+              "disabled": false,
+            }
+          }
+          accessible={true}
+          nativeID="16"
+        >
+          <View>
+            <Text>
+              Expense
+            </Text>
+          </View>
+        </View>
+      </View>
+      <View
+        accessibilityRole="button"
+        accessibilityState={
+          {
+            "busy": false,
+            "disabled": true,
+          }
+        }
+        accessible={true}
+        nativeID="17"
+      >
+        <View>
+          <Text>
+            Create ledger account
+          </Text>
+        </View>
+      </View>
+    </View>
+
+      15 |
+      16 | it('retries an uncertain create with exactly the original body and key',async()=>{jest.mocked(chartAccountsApi.create).mockRejectedValueOnce(new AuthApiError('Connection lost after submitting account',0));const {screen}=view();await screen.findByText('No ledger accounts yet.');fireEvent.changeText(screen.getByLabelText('Ledger account name'),'Owner Capital');fireEvent.changeText(screen.getByLabelText('Ledger account code'),'3000');fireEvent.press(screen.getByText('Expense'));fireEvent.press(screen.getByText('Equity'));fireEvent.press(screen.getByText('Create ledger account'));await screen.findByText('Connection lost after submitting account');expect(screen.getByLabelText('Ledger account name').props.editable).toBe(false);fireEvent.press(screen.getByText('Retry saved ledger account'));await screen.findByText('Ledger account created: Owner Capital');expect(chartAccountsApi.create).toHaveBeenCalledTimes(2);expect(jest.mocked(chartAccountsApi.create).mock.calls[1]).toEqual(jest.mocked(chartAccountsApi.create).mock.calls[0]);});
+    > 17 | it('restores the saved account request after reopening instead of creating a new intent',async()=>{const input={name:'Owner Capital',accountNumber:'3000',accountClass:'equity',type:'custom',currency:'NZD',openingBalance:'0.00',isActive:true};const restore=jest.spyOn(pendingMutation,'load').mockResolvedValueOnce({input,key:'saved-account-key',uncertain:true});const {screen}=view();await screen.findByText('Retry saved ledger account');expect(screen.getByLabelText('Ledger account name').props.value).toBe('Owner Capital');fireEvent.press(screen.getByText('Retry saved ledger account'));await screen.findByText('Ledger account created: Owner Capital');expect(chartAccountsApi.create).toHaveBeenCalledWith(input,'company-a','saved-account-key');restore.mockRestore();});
+         |                                                                                                                                                                                                                                                                                                                                                                                                             ^
+      18 |
+
+      at Object.findByText (src/components/accounting/ChartAccountsPanel.test.tsx:17:397)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+      at node_modules/@babel/runtime/helpers/asyncToGenerator.js:22:7
+      at Object.<anonymous> (node_modules/@babel/runtime/helpers/asyncToGenerator.js:14:12)
+
+Test Suites: 1 failed, 1 total
+Tests:       3 failed, 3 passed, 6 total
+Snapshots:   0 total
+Time:        3.323 s
+Ran all test suites matching src/components/accounting/ChartAccountsPanel.test.tsx.

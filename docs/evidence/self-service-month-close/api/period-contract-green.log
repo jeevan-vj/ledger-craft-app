@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ✓ src/accounting-periods.test.ts (2 tests) 5ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  06:58:44
+   Duration  277ms (transform 35ms, setup 0ms, collect 37ms, tests 5ms, environment 0ms, prepare 89ms)

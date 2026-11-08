@@ -1,0 +1,168 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_ad58b80a-a561-4c13-953b-b3f0114c1f92","route":"/api/auth/*","method":"POST","status":200,"durationMs":122}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_d2f2f323-c3a1-49a0-bf02-7d2653a4c874","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_bed09bfb-2fc2-42e6-a84b-bbf633227b5b","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_09055562-3d6f-447d-ae1d-bdd8cdd93091","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_84eb30e1-cea0-4425-a7ee-56961f50cd41","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_c4f00c81-9e9b-40d4-9623-07e1c1796512","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_3ee591ea-2dfe-4320-8a84-7fdac702034b","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_c4e97115-7aaf-4cd7-a88b-f81dddc6cabc","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_237913fc-8761-4f30-9d07-836f66dd2ab3","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_49d54521-b8e1-47ef-b03d-8bdca300be6e","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_2c956a33-20a1-4972-a6bd-0e6c533462f7","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_de1259d4-7f22-4da8-8bda-f22d1592ef5e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":23}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_46eb5648-92fe-4d09-8a21-4e945ff1ed6a","route":"/api/invoices","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_3b4a2bca-c63e-4594-a6ef-91fce7fcac9d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":15}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_13e0ee82-af68-4f2f-b42e-b31ff2b3aab5","route":"/api/payments","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_515456bf-e216-4ffe-a8e2-9325dd8382df","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_120a836b-bc36-44d4-8553-75b30731d20b","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_d462117b-4564-4fd1-8f6c-83ebb33265f8","route":"/api/bills","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_c1d93469-9342-4a99-a4a4-9e58a42885e3","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_feaf42a3-2430-432f-b472-a838d20e66c1","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_862cde13-0452-4bbb-80a8-6a392ae066c9","route":"/api/expenses","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_00c9fe96-2aaa-4e40-b5c8-dbd6a42dfab4","route":"/api/credit-notes","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_b4c798d5-1abf-4017-99e3-a780c7e56979","route":"/api/credit-notes","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_fe36137e-141b-4ddb-959a-6ba301ebe12a","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+{"msg":"http_request","requestId":"req_0f99b27a-9908-4e8f-b416-bb5f5542faf7","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":6}
+
+ ❯ src/modules/accounting/period-lock.test.ts (12 tests | 1 failed | 11 skipped) 1279ms
+   ↓ reviewed company-wide accounting cutoff > locks October financial changes atomically, permits November, and retains a reasoned reopen audit
+   ↓ reviewed company-wide accounting cutoff > limits closing to financial roles and reopening to owner/admin; history stays company scoped
+   ↓ reviewed company-wide accounting cutoff > blocks credit/refund/journal/bank writes and keeps the closed GST snapshot readable and fileable
+   ↓ reviewed company-wide accounting cutoff > isolates companies and rejects a stale active-company assertion without appending history
+   ↓ reviewed company-wide accounting cutoff > recovers an existing idempotent receipt after close without posting into the locked period
+   ↓ reviewed company-wide accounting cutoff > refuses first posting of an old draft through later receipt and rolls back every source change
+   ↓ reviewed company-wide accounting cutoff > refuses first posting of an old draft through later delivery and rolls back every source change
+   ↓ reviewed company-wide accounting cutoff > does not allocate a closed bank source through the legacy document-details path
+   ↓ reviewed company-wide accounting cutoff > recovers an already accepted credit reversal after close without another journal
+   ↓ reviewed company-wide accounting cutoff > recovers an already accepted refund reversal after close without another journal
+   ↓ reviewed company-wide accounting cutoff > permits already-completed no-op lifecycle requests after close without changing posted journal metadata
+   × reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status 1278ms
+     → expected { …(46) } to deeply equal { …(46) }
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounting/period-lock.test.ts > reviewed company-wide accounting cutoff > resending a paid closed invoice does not rewrite its posted financial status
+AssertionError: expected { …(46) } to deeply equal { …(46) }
+
+- Expected
++ Received
+
+@@ -1,11 +1,11 @@
+  {
+    "additionalCharges": null,
+    "additionalChargesList": undefined,
+    "additionalChargesTotal": "0.00",
+    "archivedAt": null,
+-   "balanceDue": "0.00",
++   "balanceDue": "1150.00",
+    "baseCredited": "115.00",
+    "baseCurrency": "NZD",
+    "baseSubtotal": "1000.00",
+    "baseTaxAmount": "150.00",
+    "baseTaxCredited": "15.00",
+@@ -28,11 +28,11 @@
+    "date": "2026-10-03",
+    "discount": null,
+    "discountPercent": null,
+    "discountType": "fixed",
+    "dueDate": "2026-10-31",
+-   "effectiveStatus": "paid",
++   "effectiveStatus": "overdue",
+    "exchangeRate": "1",
+    "exchangeRateId": null,
+    "externalId": null,
+    "externalIssuerName": null,
+    "externalNumber": null,
+@@ -59,20 +59,20 @@
+        "total": "1000.00",
+        "unit": "ea",
+      },
+    ],
+    "notes": null,
+-   "paymentStatus": "paid",
++   "paymentStatus": "unpaid",
+    "paymentTermDays": 30,
+    "sourceImportDocumentId": null,
+-   "status": "paid",
++   "status": "sent",
+    "subtotal": "1000.00",
+    "taxAmount": "150.00",
+    "taxCredited": "15.00",
+    "taxInclusive": false,
+    "terms": null,
+    "thirdPartyIssued": false,
+    "total": "1150.00",
+    "totalCredited": "115.00",
+-   "totalPaid": "1150.00",
+-   "updatedAt": "2026-11-08T07:22:30.374Z",
++   "totalPaid": "0.00",
++   "updatedAt": "2026-11-08T07:22:30.399Z",
+  }
+
+ ❯ src/modules/accounting/period-lock.test.ts:149:150
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 11 skipped (12)
+   Start at  07:22:25
+   Duration  4.80s (transform 1.66s, setup 26ms, collect 3.22s, tests 1.28s, environment 0ms, prepare 105ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounting/period-lock.test.ts -t 'resending a paid closed invoice'

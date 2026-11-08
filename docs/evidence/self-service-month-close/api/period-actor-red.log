@@ -1,0 +1,53 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/accounting/period-actor-retention.test.ts (1 test | 1 failed) 838ms
+   × retained close audit actors > allows an accountant to delete their account while preserving another company’s immutable audit 837ms
+     → promise rejected "Error: Failed query: delete from "users" … { …(2) }" instead of resolving
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounting/period-actor-retention.test.ts > retained close audit actors > allows an accountant to delete their account while preserving another company’s immutable audit
+AssertionError: promise rejected "Error: Failed query: delete from "users" … { …(2) }" instead of resolving
+ ❯ src/modules/accounting/period-actor-retention.test.ts:18:92
+     16|   const before=await db.select().from(accountingPeriodEvents);
+     17|   const deletion=new AccountDeletionService({hooks:[],purgeOrganisatio…
+     18|   await expect(deletion.delete(db,{id:actorId,name:'Accountant',email:…
+       |                                                                                            ^
+     19|   expect(await db.select().from(users).where(eq(users.id,actorId))).to…
+     20|   expect(await db.select().from(accountingPeriodEvents)).toEqual(befor…
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+Caused by: Error: Failed query: delete from "users" where "users"."id" = ?
+params: bf9992c2-4219-4b47-b86d-0cc19415233b
+ ❯ RemotePreparedQuery.queryWithCache ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/session.ts:80:11
+ ❯ RemotePreparedQuery.run ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-proxy/session.ts:180:10
+ ❯ src/modules/auth/account-deletion.service.ts:115:5
+ ❯ src/db/local.ts:79:24
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { query: 'delete from "users" where "users"."id" = ?', params: [ 'bf9992c2-4219-4b47-b86d-0cc19415233b' ] }
+Caused by: Error: FOREIGN KEY constraint failed
+ ❯ src/db/local.ts:69:19
+ ❯ locked src/db/local.ts:52:42
+ ❯ Object.query src/db/local.ts:65:39
+ ❯ ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-proxy/session.ts:181:23
+ ❯ RemotePreparedQuery.queryWithCache ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/session.ts:78:18
+ ❯ RemotePreparedQuery.run ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-proxy/session.ts:180:21
+ ❯ RemotePreparedQuery.execute ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/session.ts:183:34
+ ❯ QueryPromise.execute ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/query-builders/delete.ts:301:26
+ ❯ QueryPromise.then ../node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/query-promise.ts:31:15
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯
+Serialized Error: { code: 'ERR_SQLITE_ERROR', errcode: 787, errstr: 'constraint failed' }
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:28:25
+   Duration  2.46s (transform 507ms, setup 29ms, collect 1.30s, tests 838ms, environment 0ms, prepare 85ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounting/period-actor-retention.test.ts

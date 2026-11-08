@@ -1,2 +1,5 @@
 docs/evidence/full-month-close/**/*.pdf binary
 docs/evidence/full-month-close/**/*.gz binary
+docs/evidence/self-service-month-close/**/*.pdf binary
+docs/evidence/self-service-month-close/**/*.gz binary
+docs/evidence/feature-verification/**/*.pdf binary

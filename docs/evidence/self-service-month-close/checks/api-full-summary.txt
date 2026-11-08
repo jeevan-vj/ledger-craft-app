@@ -1,0 +1,6 @@
+ ✓ src/cloudflare/public-routes.test.ts (2 tests) 2ms
+
+ Test Files  142 passed (142)
+      Tests  623 passed (623)
+   Start at  07:35:01
+   Duration  476.75s (transform 3.18s, setup 1.30s, collect 115.22s, tests 333.56s, environment 21ms, prepare 7.95s)

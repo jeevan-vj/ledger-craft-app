@@ -1,0 +1,43 @@
+{
+  "verifiedAt": "2026-11-08T07:41:54.669Z",
+  "migration": "0036_accounting-period-retained-actor.sql",
+  "sevenFinancialSectionsUnchanged": true,
+  "period": {
+    "closedThrough": "2026-10-31",
+    "revision": 3,
+    "canClose": true,
+    "canReopen": true,
+    "events": [
+      {
+        "id": "e29956fd-bc55-473f-b401-581e4fade306",
+        "action": "close",
+        "previousClosedThrough": "2026-09-30",
+        "newClosedThrough": "2026-10-31",
+        "reason": "October re-reviewed with no financial changes and closed again",
+        "actorId": "41e2bed5-ba57-47f5-ac8c-227f07651ee4",
+        "createdAt": "2026-11-08T07:22:13.000Z",
+        "revision": 3
+      },
+      {
+        "id": "16cc51d1-5a02-4d0d-81d1-f40eb71c460c",
+        "action": "reopen",
+        "previousClosedThrough": "2026-10-31",
+        "newClosedThrough": "2026-09-30",
+        "reason": "Owner reviewed request to reopen October for controlled corrections",
+        "actorId": "41e2bed5-ba57-47f5-ac8c-227f07651ee4",
+        "createdAt": "2026-11-08T07:22:13.000Z",
+        "revision": 2
+      },
+      {
+        "id": "e9f1214d-bf09-47c6-a439-1ba0c5b201fc",
+        "action": "close",
+        "previousClosedThrough": null,
+        "newClosedThrough": "2026-10-31",
+        "reason": "October trial balance, bank reconciliation and GST reviewed",
+        "actorId": "41e2bed5-ba57-47f5-ac8c-227f07651ee4",
+        "createdAt": "2026-11-08T07:22:09.000Z",
+        "revision": 1
+      }
+    ]
+  }
+}

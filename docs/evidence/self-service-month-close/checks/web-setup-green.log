@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/features/reports/ClosePackDownload.test.tsx (3 tests) 188ms
+ ✓ src/components/accounting/BankLedgerSetup.test.tsx (3 tests) 220ms
+ ✓ src/components/accounting/AccountingPeriodsPanel.test.tsx (3 tests) 334ms
+   ✓ requires reviewed dates/reason, sends current revision and displays retained close history  312ms
+
+ Test Files  3 passed (3)
+      Tests  9 passed (9)
+   Start at  07:10:12
+   Duration  2.18s (transform 564ms, setup 342ms, collect 1.52s, tests 743ms, environment 1.47s, prepare 297ms)

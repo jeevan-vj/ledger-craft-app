@@ -1,0 +1,29 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+
+⎯⎯⎯⎯⎯⎯ Failed Suites 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/accounting-periods.test.ts [ src/accounting-periods.test.ts ]
+Error: Cannot find module './accounting-periods' imported from '/workspace/ledger-craft-app/packages/contracts/src/accounting-periods.test.ts'
+ ❯ src/accounting-periods.test.ts:2:31
+      1| import { describe, expect, it } from 'vitest';
+      2| import { closeAccountingPeriodRequestSchema, reopenAccountingPeriodReq…
+       |                               ^
+      3| describe('reviewed accounting-period cutoff mutations',()=>{
+      4|  it('requires a real date, review, reason and optimistic revision with…
+
+Caused by: Error: Failed to load url ./accounting-periods (resolved id: ./accounting-periods) in /workspace/ledger-craft-app/packages/contracts/src/accounting-periods.test.ts. Does the file exist?
+ ❯ loadAndTransform ../../node_modules/.pnpm/vite@5.4.10_@types+node@22.7.9_terser@5.43.1/node_modules/vite/dist/node/chunks/dep-BWSbWtLw.js:51920:17
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  no tests
+   Start at  06:56:05
+   Duration  467ms (transform 40ms, setup 0ms, collect 0ms, tests 0ms, environment 0ms, prepare 284ms)
+
+undefined
+/workspace/ledger-craft-app/packages/contracts:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/accounting-periods.test.ts

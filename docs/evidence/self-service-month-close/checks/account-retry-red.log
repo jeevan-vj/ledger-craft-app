@@ -1,0 +1,75 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_df9952f9-1e78-4c34-bf15-557919921a9f","route":"/api/auth/*","method":"POST","status":200,"durationMs":147}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_e72d9689-ba57-4f3d-a391-236cb833c744","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+{"msg":"http_request","requestId":"req_5e90c760-eb24-43be-959c-48f6555022c9","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_931ab19c-2913-442c-bc59-cd7026e1d4c8","route":"/api/auth/*","method":"POST","status":200,"durationMs":103}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_1f562ef4-1821-476f-9554-bfc3d756edf4","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+{"msg":"http_request","requestId":"req_681b4ae1-4c5a-4b41-b62d-dd1846c3b50d","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+ ❯ src/modules/accounts/account-create-retry.test.ts (2 tests | 2 failed) 2077ms
+   × replays a lost account-creation response and rejects a changed request with the same key 1101ms
+     → expected 'feff051e-0be3-4ddb-ab14-9c3b45882d36' to be '83f0a6f9-c428-4977-b2f9-11eedfb6d1aa' // Object.is equality
+   × rejects duplicate chart codes atomically even without an idempotency key 974ms
+     → expected [ 201, 201 ] to deeply equal [ 201, 409 ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounts/account-create-retry.test.ts > replays a lost account-creation response and rejects a changed request with the same key
+AssertionError: expected 'feff051e-0be3-4ddb-ab14-9c3b45882d36' to be '83f0a6f9-c428-4977-b2f9-11eedfb6d1aa' // Object.is equality
+
+Expected: "83f0a6f9-c428-4977-b2f9-11eedfb6d1aa"
+Received: "feff051e-0be3-4ddb-ab14-9c3b45882d36"
+
+ ❯ src/modules/accounts/account-create-retry.test.ts:10:249
+
+ ❯ src/modules/accounts/account-create-retry.test.ts:7:617
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/accounts/account-create-retry.test.ts > rejects duplicate chart codes atomically even without an idempotency key
+AssertionError: expected [ 201, 201 ] to deeply equal [ 201, 409 ]
+
+- Expected
++ Received
+
+  [
+    201,
+-   409,
++   201,
+  ]
+
+ ❯ src/modules/accounts/account-create-retry.test.ts:13:157
+     11| }));
+     12| it('rejects duplicate chart codes atomically even without an idempoten…
+     13|  const results=await Promise.all([post(input),post({...input,name:'Acc…
+       |                                                                                                                                                             ^
+     14| }));
+     15|
+ ❯ src/modules/accounts/account-create-retry.test.ts:7:617
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  07:14:00
+   Duration  6.39s (transform 1.93s, setup 30ms, collect 3.97s, tests 2.08s, environment 0ms, prepare 142ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounts/account-create-retry.test.ts

@@ -1,0 +1,42 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/screens/reports/ReportsScreen.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/screens/reports/ReportsScreen.test.tsx (5.287 s)
+  ✓ shows unallocated posted receivables without inventing a customer aging balance (80 ms)
+  ✓ offers full report controls, exact account drill-down and native exports (86 ms)
+  ✓ passes explicit month columns and comparison dates through to the server (206 ms)
+  ✓ drills closing account balances through carried posted history, with no amount recomputation (170 ms)
+  ✓ shows permission failure distinctly and never presents a stale successful report as current (85 ms)
+  ✓ separates closing trial balances from period turnover (105 ms)
+  ✕ requires report and bank access for the close pack and exports the selected run period (2226 ms)
+  mobile GST report
+    ✓ shows output, input, and a positive refundable amount using the server position (198 ms)
+    ✓ shows the payable GST position label (90 ms)
+    ✓ shows the nil GST position label (82 ms)
+    ✓ labels GST as invoice basis and shows foreign-currency warnings (84 ms)
+
+  ● requires report and bank access for the close pack and exports the selected run period
+
+    expect(received).toBeNull()
+
+    Received: {"_fiber": {"_debugHookTypes": null, "_debugInfo": null, "_debugNeedsRemount": false, "_debugOwner": [FiberNode], "_debugStack": [Error: react-stack-top-frame], "_debugTask": null, "actualDuration": 0, "actualStartTime": 1794121973634, "alternate": null, "child": [FiberNode], "childLanes": 0, "deletions": null, "dependencies": null, "elementType": "Text", "flags": 0, "index": 0, "key": null, "lanes": 0, "memoizedProps": [Object], "memoizedState": null, "mode": 3, "pendingProps": [Object], "ref": null, "refCleanup": null, "return": [FiberNode], "selfBaseDuration": 0, "sibling": null, "stateNode": [Object], "subtreeFlags": 0, "tag": 5, "treeBaseDuration": 0, "type": "Text", "updateQueue": null}}
+
+      139 |
+      140 | it('requires report and bank access for the close pack and exports the selected run period',async()=>{
+    > 141 |  const previous=useStore.getState().permissions;useStore.setState({permissions:['reports.read']});const screen=renderScreen();await screen.findByText('Share PDF');expect(screen.queryByText('Export accountant close pack')).toBeNull();expect(screen.getByText('The close pack includes bank evidence and requires banking read access.')).toBeTruthy();
+          |                                                                                                                                                                                                                               ^
+      142 |  await act(async()=>useStore.setState({permissions:['reports.read','banking.read']}));fireEvent.changeText(screen.getByLabelText('Report start'),'2026-10-01');fireEvent.changeText(screen.getByLabelText('Report end'),'2026-10-31');fireEvent.press(screen.getByText('Run financial report'));await waitFor(()=>expect(reportsApi.financial).toHaveBeenLastCalledWith(expect.objectContaining({from:'2026-10-01',to:'2026-10-31'})));fireEvent.press(screen.getByText('Export accountant close pack'));await screen.findByText('Accountant close pack ready.');expect(shareClosePack).toHaveBeenCalledWith('2026-10-01','2026-10-31');await act(async()=>useStore.setState({permissions:previous}));
+      143 | });
+      144 |
+
+      at Object.toBeNull (src/screens/reports/ReportsScreen.test.tsx:141:223)
+      at asyncGeneratorStep (node_modules/@babel/runtime/helpers/asyncToGenerator.js:3:17)
+      at _next (node_modules/@babel/runtime/helpers/asyncToGenerator.js:17:9)
+
+Test Suites: 1 failed, 1 total
+Tests:       1 failed, 10 passed, 11 total
+Snapshots:   0 total
+Time:        5.345 s
+Ran all test suites matching src/screens/reports/ReportsScreen.test.tsx.

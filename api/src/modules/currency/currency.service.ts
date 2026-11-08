@@ -1,3 +1,4 @@
+import { assertAccountingSettingsOpen } from '../accounting/period-lock';
 import { currencySettingsSchema, localizationSettingsSchema, type CreateExchangeRateRequest, type UpdateCurrencySettingsRequest, type UpsertCurrencyRequest } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -28,6 +29,7 @@ export async function updateSettingsForUser(db: Database, userId: string, input:
     if (input.timezone) assertTimezone(input.timezone);
     const current = await repo.getLocalization(tx, ctx.organisationId);
     localizationSettingsSchema.parse({ ...current, ...input });
+    if((['baseCurrency','timezone','financialYearStartMonth','financialYearStartDay'] as const).some(key=>input[key]!==undefined && input[key]!==current[key])) await assertAccountingSettingsOpen(tx, ctx.organisationId);
     if (input.baseCurrency && input.baseCurrency !== current.baseCurrency) {
       const currency = await repo.getCurrency(tx, ctx.organisationId, input.baseCurrency);
       if (!currency?.enabled) throw new HTTPException(400, { message: 'Base currency must be enabled in the catalogue' });

@@ -1,0 +1,75 @@
+{
+  "GST-2026-10-01-2026-10-31-draft.pdf": {
+    "bytes": 6074,
+    "sha256": "938eed92a0d904a3ad3987576fd798ff79fc61c4eea908913dbf9894fdc13fa3",
+    "pdfSignature": true,
+    "textCharacters": 1012,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-balance-sheet-2026-10-01-2026-10-31.csv": {
+    "bytes": 681,
+    "sha256": "768271ee90f8d9bdd2b6e77a25361b40adb39ab16ac45a516820f5342b3f022f"
+  },
+  "Report-balance-sheet-2026-10-01-2026-10-31.pdf": {
+    "bytes": 8933,
+    "sha256": "8052285fac26332fee0445f8084c8ed8bebeb964d9355fcec0c7aca1ba77a9b5",
+    "pdfSignature": true,
+    "textCharacters": 1069,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-cash-flow-2026-10-01-2026-10-31.csv": {
+    "bytes": 243,
+    "sha256": "439fbedb4fd57f0b3dc7d2d2ceb308e1152055dc02b818c328eff525175235a7"
+  },
+  "Report-cash-flow-2026-10-01-2026-10-31.pdf": {
+    "bytes": 4865,
+    "sha256": "b421db7dc143396e0c8cc36fe1cdda7dad955b12bbef55f589eba6eac04a30c4",
+    "pdfSignature": true,
+    "textCharacters": 486,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-payables-2026-10-01-2026-10-31.csv": {
+    "bytes": 252,
+    "sha256": "b2efb1fbc1d58d3c6b1a7c79a7d05b8bb6253180a062c23832341761306a4cab"
+  },
+  "Report-payables-2026-10-01-2026-10-31.pdf": {
+    "bytes": 5401,
+    "sha256": "38f579520a9749e34a46e7431959cb0e6617637ddcb31f84ae40e328448a3978",
+    "pdfSignature": true,
+    "textCharacters": 523,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-profit-loss-2026-10-01-2026-10-31.csv": {
+    "bytes": 245,
+    "sha256": "443d584192e0b5a22b5d6a04f6c23c8685d288aee49f1b507bb3f5ca69ce3a70"
+  },
+  "Report-profit-loss-2026-10-01-2026-10-31.pdf": {
+    "bytes": 4867,
+    "sha256": "b3897538ea9e1c913dc5430f662953856c6a4da0e1cf86b11a4d21b6d4bc49ab",
+    "pdfSignature": true,
+    "textCharacters": 486,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-receivables-2026-10-01-2026-10-31.csv": {
+    "bytes": 256,
+    "sha256": "660df9800475f3427e0e9bd023e0931ad857065d01b19f5e57e8bf3cdadb71d1"
+  },
+  "Report-receivables-2026-10-01-2026-10-31.pdf": {
+    "bytes": 5405,
+    "sha256": "43450678174ccde0bf4c0f137cf511422818950a0d7d888d245c0894dacbcb86",
+    "pdfSignature": true,
+    "textCharacters": 514,
+    "pageSize": "595.28 x 841.89 pts (A4)"
+  },
+  "Report-trial-balance-2026-10-01-2026-10-31.csv": {
+    "bytes": 1136,
+    "sha256": "59ffd11bdf2a2fceef6eee2186b7a86fe921d97f5c954f488d29b4cc6e2ee0c3"
+  },
+  "Report-trial-balance-2026-10-01-2026-10-31.pdf": {
+    "bytes": 13757,
+    "sha256": "5364c7cde392fbe9f9c08d768c61b1d62766533422f731ac4f82188ae0665a9d",
+    "pdfSignature": true,
+    "textCharacters": 1957,
+    "pageSize": "841.89 x 595.28 pts (A4)"
+  }
+}

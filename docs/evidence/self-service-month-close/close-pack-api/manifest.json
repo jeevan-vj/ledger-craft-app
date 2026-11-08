@@ -1,0 +1,99 @@
+{
+  "version": "ledgercraft-close-pack-v1",
+  "organisationName": "Kauri October Services Limited",
+  "period": {
+    "from": "2026-10-01",
+    "to": "2026-10-31"
+  },
+  "basis": "accrual",
+  "baseCurrency": "NZD",
+  "generatedAt": "2026-11-08T07:11:30.387Z",
+  "periodLock": {
+    "closedThrough": "2026-10-31",
+    "revision": 1
+  },
+  "warnings": [
+    "This period includes cancellation, credit-note or expense reversal movements. Review the signed totals and GST adjustments before filing.",
+    "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+  ],
+  "members": [
+    {
+      "name": "trial-balance.csv",
+      "mediaType": "text/csv",
+      "bytes": 1141,
+      "sha256": "fb1d719f9666adfb0091f6346f786842dba7014e2ca22ccd6e227f4237356529"
+    },
+    {
+      "name": "balance-sheet.csv",
+      "mediaType": "text/csv",
+      "bytes": 686,
+      "sha256": "3e806fcefb05beaefa8ce99a81878c1fcd241b9ec5b9852c915bf62e6afda39c"
+    },
+    {
+      "name": "profit-loss.csv",
+      "mediaType": "text/csv",
+      "bytes": 245,
+      "sha256": "443d584192e0b5a22b5d6a04f6c23c8685d288aee49f1b507bb3f5ca69ce3a70"
+    },
+    {
+      "name": "cash-flow.csv",
+      "mediaType": "text/csv",
+      "bytes": 248,
+      "sha256": "fbc69239799c0f9cc17c3246e2fbdb3ecb51416ae5a354dd39d3e8f043069756"
+    },
+    {
+      "name": "receivables.csv",
+      "mediaType": "text/csv",
+      "bytes": 252,
+      "sha256": "daf9e4c5547b2e63e560e2eec208a2df681226b05d73141aee15193f516f5c9a"
+    },
+    {
+      "name": "payables.csv",
+      "mediaType": "text/csv",
+      "bytes": 250,
+      "sha256": "dbae7d3c5120995b320614cfd8a67897b4b6979b1764e1b5f192d27fc4f99b94"
+    },
+    {
+      "name": "reports.json",
+      "mediaType": "application/json",
+      "bytes": 38850,
+      "sha256": "11d705953a18eb0443e226dff9c7d427a59fa56ea18772a02c17acea92d6cfbb"
+    },
+    {
+      "name": "general-ledger.csv",
+      "mediaType": "text/csv",
+      "bytes": 8224,
+      "sha256": "ce0856a069efa7e7164b48cd14db087f7003d0179754765941242a0f167eaafd"
+    },
+    {
+      "name": "bank-reconciliations.json",
+      "mediaType": "application/json",
+      "bytes": 1437,
+      "sha256": "8a2810dfc44e1ff9981a26db31bff0150cd524b9b922653cc6694fa10916bd6f"
+    },
+    {
+      "name": "bank-reconciliations.csv",
+      "mediaType": "text/csv",
+      "bytes": 308,
+      "sha256": "da6f46948da4e3eb9b31ac51deb951713a1ef7e18f7ec2b9ca2cf07c6bc25907"
+    },
+    {
+      "name": "gst.json",
+      "mediaType": "application/json",
+      "bytes": 53260,
+      "sha256": "b68acd67b3a4b1c9fa9dd8861f641de13d74a1c82a5730c433acf26893a79ae8"
+    },
+    {
+      "name": "accounting-period.json",
+      "mediaType": "application/json",
+      "bytes": 53,
+      "sha256": "954a9bf2653d788ba36efe93c5ee03b199854b3a200bd9c9a6aa30c46f8c6671"
+    },
+    {
+      "name": "readme.txt",
+      "mediaType": "text/plain",
+      "bytes": 519,
+      "sha256": "55e840015f0de01474645ca0bc6e8d1a94f37431201a6a8b8c60e683a0b054ac"
+    }
+  ]
+}

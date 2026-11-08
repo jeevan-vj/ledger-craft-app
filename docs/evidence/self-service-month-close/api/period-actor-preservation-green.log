@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ✓ src/modules/accounting/period-actor-retention.test.ts (2 tests) 1001ms
+   ✓ retained close audit actors > allows an accountant to delete their account while preserving another company’s immutable audit  808ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  07:29:36
+   Duration  2.70s (transform 571ms, setup 30ms, collect 1.33s, tests 1.00s, environment 0ms, prepare 176ms)
