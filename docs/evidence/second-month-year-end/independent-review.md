@@ -1,45 +1,55 @@
 # Independent second-month and year-end review
 
-Provisional review against base `8f6bb68`; fixed implementation/evidence head is not yet recorded. No merge recommendation or hosted-CI claim. The reviewer did not write the source/tests/drivers or expected working paper and has not approved, pushed or merged anything.
+Verdict: **PASS**
 
-## Scope and evidence checked
+Blockers: none. Should-fixes: none. Nits: none.
 
-- Read the repository reviewer, verification and accounting-invariant instructions and `docs/PIPELINE.md`.
-- Confirmed frozen independent paper SHA-256 `44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e`.
-- Independently summed every prescribed November and April journal with Python Decimal, starting from the frozen October role balances. Every journal balances; all nine raw closing roles and TB totals reconcile. November economic turnover is4,140 each side, closing TB14,370; April economic turnover575, closing TB14,715. Import/match turnover is separate from economic activity and must net to zero.
-- Independently checked November assets12,670 = liabilities770 + equity11,900 and April assets12,915 = liabilities915 + equity12,000. November profit400, March financial-year profit1,900 and April profit100 follow the prescribed revenues/costs. Equity retains prior earnings1,900 exactly once plus April100; no synthetic nominal-account closing journal is necessary for this dated-report design.
-- Reviewed the real HTTP/SQLite scenario and helper: later October settlements, half-paid November invoice, unpaid-balance credit, partially paid bill, paid expense, actual imports/matches and period closes use application routes. The only shared helper change is an optional HTTP idempotency-key argument, preserving default behavior.
-- Overpayment400 is checked against complete unchanged payment/journal lists. An accepted receipt replay returns the original body and unchanged journal list; a changed-body retry rejects409. October sections/journal rows/GST fingerprint, November sections and prior-financial-year sections are compared after later events. Monthly/quarterly accrual and annual cash comparisons assert business figures.
-- Current API results agree with frozen November/April controls. Registered invoice-basis GST is tested; payments/hybrid analytical expectations are not misrepresented as registered-basis UI acceptance.
+Reviewed: `a40f5a34002639236640e2fc5d5d3e4a81348840` against latest main `ff7d561`.
 
-No production accounting defect or production/schema/contract change has been found in the reviewed diff. This is verification work, so no invented failing production test or unnecessary code patch is required.
+Auto-merge: **not eligible**. This changes production accounting-report output and its shared contract, so conservative `risk:high` and human review/merge apply. The diff contains494files/57,981text lines, chiefly retained verification artifacts. Hosted CI and PR-head identity are not independently established through GitHub in this environment. Installed native-device acceptance remains pending. This local fixed-head PASS is not a deployment, native-release clearance, GitHub approval or merge recommendation.
 
-## Pending final review gates
+## Independence and scope
 
-Actual web/mobile walkthroughs, downloaded PDFs/CSVs/ZIP member checks, the zero-activity year-end and April bank proofs, full command results, final docs/risk/diff size and immutable head remain to be checked before a final verdict. Installed Android/iOS share-sheet, lifecycle, keyboard and native date-picker acceptance remains a separate device gate; Expo web evidence does not establish installed-device behavior.
+The reviewer did not write the production changes, tests, drivers or frozen working papers. Only this review document is reviewer-owned. I read the repository reviewer, verification and invariant instructions and `docs/PIPELINE.md`; I did not push, approve, publish a GitHub review or merge.
 
-## Additional provisional checks
+The review covers the authorized continuation from closed October into November, March31 fiscal cutoff and April opening; independent accounting reconciliation; real web/Expo operations and downloads; and the narrowly scoped accumulated-earnings disclosure found during the walkthrough.
 
-The independent supplement (`d56efc7db7d26a37b076f41f70b08a8a12827bd013a91b654ead1be66c2f6ca5`) reconciles year-end ledger cash0 +13,795 −1,840 =11,955, with supported operating net1,955. Its September30 initial-equity10,000 is an imported opening component, not proof of an actual capital cash contribution during April–September. The complete prescribed cash history begins October1 with opening10,000. Fiscal-year cash-flow and bank-coverage limitations must remain explicit, including the archive warning for missing pre-October statements.
+## Accounting and source review
 
-The four nil-GST periods (`5516099a1b4e051f31face0842dc615a328fc9301be69864fed5e206f68b4012`) independently follow the express absence of December–March transactions. Draft preparation is not a filing. The web's reviewed owner reopen/reclose to prepare those drafts preserves the existing policy; mobile prepares them before its initial March close. Neither path may alter financial sections.
+- Confirmed the frozen paper hashes: main `44569ca2371a1e2495eb966f1f7a6f400dde48b805d865aa56aabca80b9f409e`, supplement `d56efc7db7d26a37b076f41f70b08a8a12827bd013a91b654ead1be66c2f6ca5`, nil-GST paper `5516099a1b4e051f31face0842dc615a328fc9301be69864fed5e206f68b4012`.
+- Independently Decimal-summed every prescribed November and April economic journal from the frozen October opening roles. All journals balance, all9role balances reconcile, and closing TB totals are14,370 and14,715. Economic turnover4,140/575 is distinct from net-zero import/match turnover. November assets12,670 = liabilities770 + equity11,900; April assets12,915 = liabilities915 + equity12,000.
+- November profit400, March FY profit1,900, April profit100 and cumulative April earnings2,000 follow the prescribed source activity. Equity counts capital10,000, prior1,900 and April100 once. Dated P&L resets without requiring a synthetic nominal-account closing journal.
+- Reviewed real authenticated HTTP/SQLite tests: no Drizzle mocks or direct economic row seeding; later October settlements; November partial receipt, unpaid-balance credit, received bill/part payment and paid expense; actual bank imports/matches; GST drafts; fiscal cutoffs; all9opening/closing roles; historical report/journal/GST preservation; monthly/quarterly and both-basis fiscal comparisons.
+- Overpayment returns400 `PAYMENT_EXCEEDS_BALANCE` with complete payment/journal lists unchanged. Exact accepted receipt retries return the same response and unchanged journals; changed bodies return409. No unsupported overpayment-wallet behavior is claimed.
+- The presentation defect is resolved canonically: optional exact-money `balanceSheet.accumulatedEarnings` preserves old responses, while the API serializes the **existing** cumulative-income amount already used in equity. The equity formula, stored postings, journal rows and totals are unchanged. Both clients display the server field directly and explicitly say `included in equity`. Shared PDF/CSV rows reuse it without float conversion, a fictitious ledger account or an unsupported prior/current split.
+- Test-first red logs fail on the absent contract/export row, absent real API disclosure and absent web/mobile display. Green assertions cover positive/negative earnings, legacy omission, zero on web and exact export text above JavaScript's safe-integer range. The optional idempotency-key test-helper argument preserves existing default behavior.
+- No migrations, auth policies, production date guards or provider integrations changed. The synthetic clock module is explicitly loaded for disposable acceptance services and is not imported by production source.
 
-Full API output now records144suites/626tests passing. Final command metadata/artifacts and immutable head remain pending.
+## Artifact and command review
 
-## Web artifact review
+I independently opened all3 final web and all3 final mobile archives: each has14members and all13member SHA-256/length checks pass (78checks). For both platforms I independently summed9role balances from each period's downloaded raw GL plus frozen opening sides (54role checks); technical Other Income nets to zero. November/March/April earnings1,900/1,900/2,000 and equity11,900/11,900/12,000 agree with the paper. Both FY packs retain4nil GST drafts at0, not filed confirmations.
 
-The actual web gallery and `web/verification.json` now record22UI phases. I independently opened all3 downloaded ZIPs: each has14members and all13member SHA-256/byte-length checks pass. November/March/April TB, profit and equity match the frozen paper. I independently summed all9account roles in each period from the downloaded raw GL plus prescribed opening balances (27role checks); technical Other Income nets to zero. The year-end archive includes all4retained nil-GST drafts, each still draft and net0. Its period cutoff is March31 revision7 after the audited reopen/reclose. The April archive correctly retains a working-pack warning because April's fiscal period is not closed, and all packs retain no-filed-confirmation warnings. The full-year missing pre-October bank history warning is preserved.
+I inspected actual April balance-sheet screenshots, extracted the bridge label/amounts from the3final mobile PDFs and CSVs, and rendered the mobile April PDF to check that the new row fits. Final web artifacts on build `758b05c50483` include the same canonical row. All6reports for each period were downloaded again after the display-only change without replaying economic operations. Evidence separates earlier business-operation build `fa674d007c69` from the final read-only report refresh; the source-map identity records368matching current source contents.
 
-I inspected the actual April balance-sheet screenshot and exported CSV. Equity12,000 is numerically correct, including capital10,000 plus retained/current cumulative profit2,000. The UI account table displays capital10,000 without an explicit accumulated-earnings bridge, while PDF/CSV label the aggregate total `Equity (includes retained income)`. This is a nonblocking presentation follow-up for the declared rollover-verification scope, not an arithmetic defect: the reports and raw ledger prove prior1,900 plus current100 exactly once. Evidence must not claim the UI provides a separate retained/current earnings breakdown or a fully footed equity presentation. A future enhancement should expose the bridge canonically from the server and reuse it across clients/exports, rather than add client-calculated money.
+Final retained local command evidence reports:
 
-## Equity bridge delta pending
+| Gate | Result |
+| --- | --- |
+| Web Node22 lint/types/build | exit0;0lint errors/120existing warnings; final build758b05c50483 |
+| Web tests |171suites/885tests pass |
+| API Node24 full suite |144suites/626tests pass |
+| Latest-main Stripe fixture delta |10tests pass separately; full API run began before this test-only base update, with production source unchanged |
+| Contracts/types |48suites/169tests pass; API/contracts types exit0 |
+| Mobile Node20 |150suites/677tests pass; types/lint exit0 with74existing warnings; npmci and both iOS/Android Hermes exports exit0 |
+| Readiness/source-map/parity |23+3tests pass; report command exits0 with deferred scope visible |
+| Actual local Worker/types/dry run |1integration test and both checks exit0; no deployment |
 
-The builder elected to address the presentation gap in this authorized scope. The proposed bridge exposes the existing canonical accumulated-income result as an optional contract field and labels it `Accumulated earnings (included in equity)` across clients/exports. The preceding nonblocking-follow-up assessment describes the pre-fix artifact; it is not the final implementation verdict. The delta still requires independent source/test-first review and regenerated report artifacts on the final production source. It must not create a fictitious posted account, a new money formula, a second addition to inclusive equity or an unsupported prior/current split.
+The compressed final API log independently records144/626 passing. Command/exit metadata, actual screenshots/downloads, paper hashes and `git diff --check` agree with the fixed-head evidence. Browser phases retain unexpected-error checks; the final earnings refresh preserves all preexisting financial fields and checks the new field separately.
 
-## Earnings bridge source and mobile reproof
+## Limits retained in the result
 
-The bridge delta is now implemented. I reviewed the actual diff: the response schema adds optional exact-money `balanceSheet.accumulatedEarnings`, so older reports remain accepted. The API serializes the **existing** cumulative-income value already included in equity; the equity formula, journals, posted amounts and account rows are unchanged. Both clients conditionally display that server value and explicitly say `included in equity`; neither subtracts, sums or derives money. The shared export rows carry the same canonical amount into PDF/CSV. No synthetic ledger account or unsupported prior/current split is introduced.
+The September30 bank/capital opening10,000 is an imported opening component, not proof of a real April–September capital cash contribution. Supported October–March cash flow is10,000 +3,795 receipts −1,840 payments/refund =11,955. Full-FY ledger footing is mechanically0 +13,795 −1,840 =11,955, but missing pre-October cash/bank history prevents claiming a complete statutory FY cash-flow statement. The archive's missing-history warning remains intact.
 
-Reviewed red evidence shows the contract dropping the absent field/export row (2failures) and the real HTTP/SQLite scenario missing the API disclosure (1failure) before implementation. Positive, negative and legacy-omission contract/UI assertions are meaningful; web also tests zero. Large exact decimal export coverage proves the shared row does not float-convert the canonical string.
+Completed statements cover October, November, zero-activity December–March and April with5/5/0/1matches. The April fiscal period remains open, so its archive correctly says working pack. Web's reviewed owner reopen/reclose for4nil GST drafts preserves financial sections and existing policy; mobile prepares them before first March close. Monthly drafts and the annual working paper are not IRD filings; no filed-confirmation warnings were suppressed.
 
-I independently re-opened the final mobile November/year-end/April archives: all39member checksums and lengths pass, and their canonical earnings are1,900/1,900/2,000 with unchanged equity11,900/11,900/12,000. The actual downloaded balance-sheet CSVs and text extracted from all3 PDFs carry the bridge label and exact amounts. The refreshed actual April Expo screenshot shows earnings2,000 explicitly within equity12,000. This resolves the pre-fix presentation gap described above. Final full gates, refreshed web artifacts and immutable-head review remain pending; the change should conservatively be classified as high risk because it affects production accounting-report output/contracts, even though its money calculation is reused unchanged.
+Expo web is the actual mobile platform exercised. Installed Android/iOS share-sheet success/cancellation, lifecycle, keyboard and native date-picker behavior remain **device-qa-pending**. Native bundles and local tests do not clear that gate. No real provider send, production deployment, tax submission or native publication occurred. #114 remains parked.
