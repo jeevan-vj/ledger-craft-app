@@ -1,5 +1,6 @@
-import { mkdir, lstat } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { mkdir, lstat, mkdtemp } from 'node:fs/promises';
+import { resolve, join } from 'node:path';
+import { tmpdir } from 'node:os';
 
 /** Shared runtime options for local acceptance drivers. */
 export function proofBrowserOptions(env = process.env) {
@@ -52,7 +53,7 @@ export function observeProofNetwork(page, { quietMs = 1000, timeoutMs = 120000 }
 
 /** Keep resumable local login state out of shared or symlinked directories. */
 export async function privateProofDirectory(output) {
-  if (!output?.trim()) throw new Error('Set an explicit output directory with CLOSE_OUTPUT for this proof run');
+  if (!output?.trim()) throw new Error('Set an explicit output directory for this proof run');
   const directory = resolve(output);
   await mkdir(directory, { recursive: true, mode: 0o700 });
   const info = await lstat(directory);
@@ -61,4 +62,9 @@ export async function privateProofDirectory(output) {
     throw new Error('Proof output must be an owner-only directory (mode 0700) owned by the current user');
   }
   return directory;
+}
+
+/** Standalone screenshots do not need a predictable resumable state path. */
+export async function freshProofDirectory(output) {
+  return privateProofDirectory(output ?? await mkdtemp(join(tmpdir(), 'ledgercraft-proof-')));
 }

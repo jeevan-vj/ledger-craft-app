@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { chromium, expect } from '@playwright/test';
-import { proofBrowserOptions, localProofOrigin, observeProofNetwork } from './proof-runtime.mjs';
+import { freshProofDirectory, proofBrowserOptions, localProofOrigin, observeProofNetwork } from './proof-runtime.mjs';
 const origin=localProofOrigin(process.env.CLOSE_WEB_URL??'http://127.0.0.1:8080');
-const out=process.env.PROOF_OUTPUT??'/tmp/ledgercraft-dashboard-calendar';
-assert.ok(process.env.PROOF_SESSION);await mkdir(out,{recursive:true});
+const out=await freshProofDirectory(process.env.PROOF_OUTPUT);console.log(`Proof output: ${out}`);
+assert.ok(process.env.PROOF_SESSION);
 const browser=await chromium.launch(proofBrowserOptions());const results=[];
 try {
  for(const timezoneId of ['Pacific/Auckland','UTC']) {
@@ -15,7 +15,7 @@ try {
   await page.goto(origin+'/accounting?from=2026-10-01&to=2026-10-31',{waitUntil:'networkidle'});
   await expect.poll(()=>requests.filter(r=>r.from===r.to).length,{timeout:120000}).toBe(28);
   await network.settle();assert.deepEqual(errors,[]);assert.deepEqual(network.failures,[]);assert.ok(requests.every(r=>r.status===200));
-  const actualDays=requests.filter(r=>r.from===r.to).map(r=>r.to).sort();
+  const actualDays=requests.filter(r=>r.from===r.to).map(r=>r.to).sort((left,right)=>left.localeCompare(right));
   const expectedDays=Array.from({length:28},(_,i)=>`2026-10-${String(i+4).padStart(2,'0')}`);assert.deepEqual(actualDays,expectedDays);
   for(const [month,end] of [['05','31'],['06','30'],['07','31'],['08','31'],['09','30'],['10','31']])assert.ok(requests.some(r=>r.from===`2026-${month}-01`&&r.to===`2026-${month}-${end}`),`Missing selected chart month ${month}`);
   await page.evaluate(()=>document.querySelector('[aria-label="Dismiss update prompt"]')?.click());

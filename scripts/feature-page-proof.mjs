@@ -1,15 +1,15 @@
 import assert from 'node:assert/strict';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { chromium, expect } from '@playwright/test';
-import { proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
+import { privateProofDirectory, proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
 
 const origin = localProofOrigin(process.env.CLOSE_WEB_URL ?? 'http://127.0.0.1:8080');
 const session = process.env.PROOF_SESSION;
 const output = process.env.PROOF_OUTPUT;
 assert.ok(session && output, 'Set PROOF_SESSION to a synthetic local session and PROOF_OUTPUT to a fresh evidence directory');
 const catalogue = JSON.parse(await readFile(new URL('../docs/feature-verification.json', import.meta.url), 'utf8'));
-await mkdir(output, { recursive: true });
+await privateProofDirectory(output);
 const browser = await chromium.launch(proofBrowserOptions());
 const context = await browser.newContext({ storageState: session, timezoneId: 'Pacific/Auckland' });
 const page = await context.newPage();

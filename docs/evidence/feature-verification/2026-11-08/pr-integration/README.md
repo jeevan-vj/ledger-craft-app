@@ -21,3 +21,7 @@ Contracts:47 files/167 tests passed, and API/contracts typechecks exit0 (Node24)
 All seven hosted repository CI jobs passed on `77f47024932e56133c0820a3c6ae17246723d420`: https://github.com/jeevan-vj/ledger-craft-app/actions/runs/42465933640. SonarCloud remained cancelled without a reported cause; its50 surfaced annotations were warnings, with no failure-level annotation after private output hardening.
 
 Hosted output for that exact head: web173 files/885 tests, API143 files/626 tests, contracts47 files/167 tests, mobile150 suites/674 tests; all exit0. Web lint0 errors/120 warnings; mobile lint0 errors/74 warnings. Web app/Node, API/contracts and mobile typechecks, web build with version verification, readiness checks and iOS export all passed.
+
+## Standalone proof artifact directories
+
+The catalogue/quote, calendar and payment drivers now create unique owner-only temporary directories by default, or validate explicitly chosen private outputs. Page rendering validates its explicit output, and both resumable close drivers require private explicit output. Seven runtime regressions pass after the new unique-directory test failed before implementation; all changed drivers pass Node22 syntax checks. Calendar sorting now states its ISO-string comparison explicitly; the chronological expectation is unchanged. See `fresh-output-red.log` and `fresh-output-green.log`.

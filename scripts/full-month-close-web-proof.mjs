@@ -1,11 +1,10 @@
-import { proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
+import { privateProofDirectory, proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
 import assert from 'node:assert/strict';
-import {mkdir,readFile,writeFile} from 'node:fs/promises';
+import {readFile,writeFile} from 'node:fs/promises';
 import {chromium,expect} from '@playwright/test';
 const origin=localProofOrigin(process.env.CLOSE_WEB_URL??'http://127.0.0.1:8080');
-const out=process.env.CLOSE_OUTPUT??'/tmp/full-month-close-web';
+const out=await privateProofDirectory(process.env.CLOSE_OUTPUT);
 const stage=process.env.CLOSE_STAGE??'signup';
-await mkdir(out,{recursive:true});
 const browser=await chromium.launch(proofBrowserOptions());
 const saved=stage==='signup'?{}:JSON.parse(await readFile(`${out}/state.json`,'utf8'));
 const context=await browser.newContext({viewport:{width:1440,height:900},timezoneId:'Pacific/Auckland',acceptDownloads:true,...(stage==='signup'?{}:{storageState:`${out}/session.json`})});

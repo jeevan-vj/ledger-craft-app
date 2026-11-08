@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { chromium, expect } from '@playwright/test';
-import { proofBrowserOptions, localProofOrigin, observeProofNetwork } from './proof-runtime.mjs';
+import { freshProofDirectory, proofBrowserOptions, localProofOrigin, observeProofNetwork } from './proof-runtime.mjs';
 const origin=localProofOrigin(process.env.CLOSE_WEB_URL??'http://localhost:8080');
-const out=process.env.PROOF_OUTPUT??'/tmp/ledgercraft-payment-refresh';
-await mkdir(out,{recursive:true});
+const out=await freshProofDirectory(process.env.PROOF_OUTPUT);console.log(`Proof output: ${out}`);
+
 const browser=await chromium.launch(proofBrowserOptions());
 const context=await browser.newContext({timezoneId:'Pacific/Auckland'});
 const page=await context.newPage();page.setDefaultTimeout(120000);

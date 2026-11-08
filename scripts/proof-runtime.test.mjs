@@ -60,3 +60,16 @@ test('saved browser state refuses shared directories and symlink destinations', 
     await assert.rejects(() => privateProofDirectory(join(root, 'linked')), /real directory/);
   } finally { await rm(root, { recursive: true, force: true }); }
 });
+
+test('standalone proofs use unique owner-only output directories by default', async () => {
+  const { stat, rm } = await import('node:fs/promises');
+  const { freshProofDirectory } = await import('./proof-runtime.mjs');
+  const first = await freshProofDirectory();
+  const second = await freshProofDirectory();
+  try {
+    assert.notEqual(first, second);
+    assert.equal((await stat(first)).mode & 0o777, 0o700);
+    assert.equal((await stat(second)).mode & 0o777, 0o700);
+    assert.equal(await freshProofDirectory(first), first);
+  } finally { await Promise.all([first, second].map(path => rm(path, { recursive: true, force: true }))); }
+});

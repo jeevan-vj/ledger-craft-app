@@ -1,10 +1,10 @@
 import assert from 'node:assert/strict';
-import { mkdir, writeFile } from 'node:fs/promises';
+import { writeFile } from 'node:fs/promises';
 import { chromium, expect } from '@playwright/test';
-import { proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
+import { freshProofDirectory, proofBrowserOptions, localProofOrigin } from './proof-runtime.mjs';
 const origin=localProofOrigin(process.env.CLOSE_WEB_URL??'http://127.0.0.1:8080');
-const out=process.env.PROOF_OUTPUT??'/tmp/ledgercraft-catalogue-quote';assert.ok(process.env.PROOF_SESSION);
-await mkdir(out,{recursive:true});const browser=await chromium.launch(proofBrowserOptions());
+const out=await freshProofDirectory(process.env.PROOF_OUTPUT);console.log(`Proof output: ${out}`);assert.ok(process.env.PROOF_SESSION);
+const browser=await chromium.launch(proofBrowserOptions());
 const context=await browser.newContext({storageState:process.env.PROOF_SESSION,viewport:{width:1440,height:900},timezoneId:'Pacific/Auckland'});
 const page=await context.newPage();page.setDefaultTimeout(120000);const errors=[];page.on('pageerror',e=>errors.push(e.message));
 const name=`Verification service ${Date.now()}`;
