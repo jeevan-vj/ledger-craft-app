@@ -29,7 +29,7 @@ const adjustmentType = z.enum([
   'nsf_check',
   'other',
 ]);
-export const bookItemType = z.enum(['invoice', 'bill', 'payment', 'bill_payment', 'expense']);
+export const bookItemType = z.enum(['invoice', 'bill', 'payment', 'bill_payment', 'expense', 'credit_refund']);
 export const bankSuggestionTypeSchema = z.enum(['invoice', 'bill', 'expense', 'matching_rule']);
 export const matchingRuleDirectionSchema = z.enum(['debit', 'credit', 'any']);
 

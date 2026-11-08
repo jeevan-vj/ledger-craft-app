@@ -3,7 +3,7 @@ import {jsPDF} from 'jspdf';
 export async function shareFinancialReport(report:FinancialReportResponse,section:ReportSection,business:string,format:'pdf'|'csv'){
  const filename=`Report-${section}-${report.meta.from}-${report.meta.to}.${format}`;
  if(format==='csv'){const url=URL.createObjectURL(new Blob([financialReportCsv(report,section)],{type:'text/csv'}));const link=document.createElement('a');link.href=url;link.download=filename;link.click();URL.revokeObjectURL(url);return;}
- const wide=Boolean(report.columns);const pdf=new jsPDF({orientation:wide?'landscape':'portrait'});let y=16;const width=wide?273:186;const limit=wide?194:280;
+ const wide=section==='trial-balance'||Boolean(report.columns);const pdf=new jsPDF({orientation:wide?'landscape':'portrait'});let y=16;const width=wide?273:186;const limit=wide?194:280;
  const title=()=>{pdf.setFontSize(13);pdf.text(`${business} - ${reportSectionLabels[section]}`,12,y);y+=7;pdf.setFontSize(8);pdf.text(`${report.meta.from} to ${report.meta.to} / ${report.meta.basis} / NZD`,12,y);y+=5;pdf.text(`Generated ${report.meta.generatedAt}`,12,y);y+=6;if(report.meta.cashRecognition){pdf.text('Cash recognition from settled sources; original journals unchanged.',12,y);y+=6;}for(const warning of report.meta.warnings??[]){const lines=pdf.splitTextToSize(warning,width);pdf.text(lines,12,y);y+=lines.length*4+3;}y+=2;};title();
  const data=financialReportRows(report,section);
  for(let start=1;start<data[0].length;start+=12){if(start>1){pdf.addPage();y=16;title();}const indices=Array.from({length:Math.min(12,data[0].length-start)},(_,i)=>start+i);const first=wide?54:60;const cellWidth=(width-first)/indices.length;

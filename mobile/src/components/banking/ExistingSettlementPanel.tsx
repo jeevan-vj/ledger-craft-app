@@ -21,7 +21,7 @@ export function ExistingSettlementPanel({ transaction, onMatched }: { transactio
     setBusy(true); setError(''); setEntries(undefined); setEntryId(''); setConfirmed(false);
     try {
       const [allEntries, allSessions] = await Promise.all([settlementMatchingApi.entries(from, to), settlementMatchingApi.sessions(transaction.bankAccountId)]);
-      setEntries(allEntries.filter((entry) => (transaction.type === 'credit' ? entry.type === 'payment' : entry.type === 'bill_payment' || entry.type === 'expense') && cents(entry.amount) === cents(transaction.amount)));
+      setEntries(allEntries.filter((entry) => (transaction.type === 'credit' ? entry.type === 'payment' : entry.type === 'bill_payment' || entry.type === 'expense' || entry.type === 'credit_refund') && cents(entry.amount) === cents(transaction.amount)));
       const openSessions = allSessions.filter((session) => session.status === 'in_progress' && session.statementStartDate <= transaction.transactionDate && session.statementEndDate >= transaction.transactionDate);
       setSessions(openSessions); setSessionId(openSessions[0]?.id ?? '');
     } catch (caught) { setError(caught instanceof Error ? caught.message : 'Recorded settlements unavailable.'); }
@@ -44,13 +44,13 @@ export function ExistingSettlementPanel({ transaction, onMatched }: { transactio
   }
   return <View style={{ gap: space.md }}>
     <Text style={theme.type.headline}>Match an existing settlement</Text>
-    <Text style={theme.type.subhead}>Use this when the payment or approved expense is already in the books. Matching preserves that entry and removes the duplicate import posting.</Text>
+    <Text style={theme.type.subhead}>Use this when the payment, customer refund or approved expense is already in the books. Matching preserves that entry and removes the duplicate import posting.</Text>
     <ModernInput label="Statement period start" value={from} editable={!busy} onChangeText={(value) => { setFrom(value); setEntries(undefined); setConfirmed(false); }} />
     <ModernInput label="Statement period end" value={to} editable={!busy} onChangeText={(value) => { setTo(value); setEntries(undefined); setConfirmed(false); }} />
     <ModernButton variant="secondary" disabled={busy} loading={busy} onPress={() => void load()}>Find recorded payments and expenses</ModernButton>
     {entries ? <>
       {!entries.length ? <Text style={theme.type.body}>No recorded settlement matches the full bank amount for these dates.</Text> : null}
-      {entries.map((entry) => <ModernButton key={entry.id} disabled={busy} variant={entryId === entry.id ? 'primary' : 'secondary'} onPress={() => { setEntryId(entry.id); setConfirmed(false); }}>{entry.description} · {formatMoney(entry.amount)}</ModernButton>)}
+      {entries.map((entry) => <ModernButton key={entry.id} disabled={busy} variant={entryId === entry.id ? 'primary' : 'secondary'} onPress={() => { setEntryId(entry.id); setConfirmed(false); }}>{`${entry.description} · ${formatMoney(entry.amount)} · ${entry.date}${entry.reference ? ` · ${entry.reference}` : ''}`}</ModernButton>)}
       {sessions.map((session) => <ModernButton key={session.id} disabled={busy} variant={sessionId === session.id ? 'primary' : 'secondary'} onPress={() => { setSessionId(session.id); setConfirmed(false); }}>Statement {session.statementStartDate} to {session.statementEndDate}</ModernButton>)}
       {!sessions.length ? <>
         <Text style={theme.type.subhead}>No open statement includes this transaction. Enter the actual bank statement balances to start one.</Text>

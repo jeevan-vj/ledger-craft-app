@@ -6,8 +6,9 @@ import ExpenseEditScreen from './ExpenseEditScreen';
 import { expenseService } from '@/services/expenseService';
 
 jest.mock('@/features/reports/api/reportsApi',()=>({reportsApi:{options:jest.fn()}}));
-const render=(element:React.ReactElement)=>testingRender(<QueryClientProvider client={new QueryClient({defaultOptions:{queries:{retry:false}}})}>{element}</QueryClientProvider>);
-afterEach(()=>jest.useRealTimers());
+const clients: QueryClient[]=[];
+const render=(element:React.ReactElement)=>{ const client=new QueryClient({defaultOptions:{queries:{retry:false}}}); clients.push(client); return testingRender(<QueryClientProvider client={client}>{element}</QueryClientProvider>); };
+afterEach(()=>{ for(const client of clients.splice(0))client.clear(); jest.useRealTimers(); });
 const mockBack = jest.fn();
 const mockNavigation = { goBack: mockBack };
 const mockRoute = { params: { expenseId: 'expense-1' } };
@@ -35,4 +36,13 @@ it('approves an expense without adding GST again to the already gross stored amo
   fireEvent.press(screen.getByText('Approved', { exact: true }));
   fireEvent.press(screen.getByText('Update Expense'));
   await waitFor(() => expect(expenseService.updateExpense).toHaveBeenCalledWith('expense-1', expect.objectContaining({ amount: 230, taxAmount: 30, status: 'approved' })));
+});
+
+it('uses standard NZ GST when explicitly enabling tax on an untaxed pending expense', async () => {
+  jest.mocked(expenseService.updateExpense).mockClear();
+  jest.mocked(expenseService.fetchExpenseById).mockResolvedValue({id:'expense-1',description:'Office supplies',amount:200,taxAmount:0,status:'pending',expenseDate:'2026-10-09',currency:'NZD'} as never);
+  const screen=render(<ExpenseEditScreen/>);await screen.findByDisplayValue('200.00');
+  fireEvent(screen.getAllByRole('switch')[0], 'valueChange', true);
+  fireEvent.press(screen.getByText('Approved',{exact:true}));fireEvent.press(screen.getByText('Update Expense'));
+  await waitFor(()=>expect(expenseService.updateExpense).toHaveBeenCalledWith('expense-1',expect.objectContaining({amount:230,taxAmount:30,status:'approved'})));
 });

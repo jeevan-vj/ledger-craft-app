@@ -1,0 +1,64 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/packages/contracts
+
+ ❯ src/report-export.test.ts (2 tests | 1 failed) 15ms
+   ✓ exports exact server columns and totals without converting decimal text 3ms
+   × exports closing trial-balance sides separately from period turnover 11ms
+     → expected [ [ 'Account', 'Class', …(3) ], …(3) ] to deep equally contain [ 'Closing totals', '', '', '', …(4) ]
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/report-export.test.ts > exports closing trial-balance sides separately from period turnover
+AssertionError: expected [ [ 'Account', 'Class', …(3) ], …(3) ] to deep equally contain [ 'Closing totals', '', '', '', …(4) ]
+
+- Expected
++ Received
+
+  [
+-   "Closing totals",
++   [
++     "Account",
++     "Class",
++     "Debit",
++     "Credit",
++     "Balance",
++   ],
++   [
++     "3000 Capital",
++     "equity",
++     "0.00",
++     "0.00",
++     "10000.00",
++   ],
++   [
++     "Total debits",
++     "",
+      "",
++     "8165.00",
+      "",
++   ],
++   [
++     "Total credits",
+      "",
+      "",
++     "8165.00",
+      "",
+-   "13680.00",
+-   "13680.00",
++   ],
+  ]
+
+ ❯ src/report-export.test.ts:11:52
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  04:22:33
+   Duration  603ms (transform 71ms, setup 0ms, collect 79ms, tests 15ms, environment 0ms, prepare 298ms)
+
+undefined
+/workspace/ledger-craft-app/packages/contracts:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/report-export.test.ts

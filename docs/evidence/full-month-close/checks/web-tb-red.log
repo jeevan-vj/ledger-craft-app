@@ -1,0 +1,1131 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx (7 tests | 1 failed) 764ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances 256ms
+   ✓ Financial reports GST return > labels a refund from IRD and displays its magnitude without a negative sign 66ms
+   ✓ Financial reports GST return > shows a nil GST position without implying a payment or refund 64ms
+   ✓ Financial reports GST return > labels GST as invoice basis on a cash-basis report and surfaces foreign-currency warnings 65ms
+   ✓ honours the accounting report link period and basis before exporting 42ms
+   ✓ offers NZ presets, server columns and PDF export without computing browser totals 99ms
+   × shows trial-balance closing sides and server closing totals distinctly from period movement 171ms
+     → Unable to find an accessible element with the role "columnheader" and name "Closing debit"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Financial reports":
+  <h1
+    class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+  />
+
+  Name "Trial balance":
+  <h3
+    class="text-2xl font-semibold leading-none tracking-tight"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm font-medium text-success"
+  />
+
+  Name "":
+  <p
+    class="text-xs text-muted-foreground"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Refresh":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+  />
+
+  Name "Export CSV":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+  />
+
+  Name "Download PDF":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+  />
+
+  Name "Run report":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 self-end"
+  />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Report date preset":
+  <select
+    aria-label="Report date preset"
+    class="h-11 w-full rounded-xl border border-input bg-background px-3"
+  />
+
+  Name "Report columns":
+  <select
+    aria-label="Report columns"
+    class="h-11 w-full rounded-xl border border-input bg-background px-3"
+  />
+
+  Name "Accounting basis":
+  <button
+    aria-autocomplete="none"
+    aria-controls="radix-:r2h:"
+    aria-expanded="false"
+    aria-label="Accounting basis"
+    class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+    data-state="closed"
+    dir="ltr"
+    role="combobox"
+    type="button"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "Custom dates":
+  <option
+    selected=""
+    value="custom"
+  />
+
+  Name "This month":
+  <option
+    value="this_month"
+  />
+
+  Name "Last month":
+  <option
+    value="last_month"
+  />
+
+  Name "This quarter":
+  <option
+    value="this_quarter"
+  />
+
+  Name "Last quarter":
+  <option
+    value="last_quarter"
+  />
+
+  Name "This financial year":
+  <option
+    value="this_financial_year"
+  />
+
+  Name "Last financial year":
+  <option
+    value="last_financial_year"
+  />
+
+  Name "Financial year to date":
+  <option
+    value="year_to_date"
+  />
+
+  Name "This GST period":
+  <option
+    disabled=""
+    value="this_gst_period"
+  />
+
+  Name "Total only":
+  <option
+    value="none"
+  />
+
+  Name "Monthly":
+  <option
+    value="month"
+  />
+
+  Name "Quarterly":
+  <option
+    value="quarter"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "":
+  <div
+    aria-orientation="horizontal"
+    class="inline-flex items-center rounded-md bg-muted p-1 text-muted-foreground h-auto w-full justify-start overflow-x-auto"
+    data-orientation="horizontal"
+    role="tablist"
+    style="outline: none;"
+    tabindex="0"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Profit & loss":
+  <button
+    aria-controls="radix-:r2k:-content-profit-loss"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-profit-loss"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Balance sheet":
+  <button
+    aria-controls="radix-:r2k:-content-balance-sheet"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-balance-sheet"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Trial balance":
+  <button
+    aria-controls="radix-:r2k:-content-trial-balance"
+    aria-selected="true"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="active"
+    id="radix-:r2k:-trigger-trial-balance"
+    role="tab"
+    tabindex="0"
+    type="button"
+  />
+
+  Name "General ledger":
+  <button
+    aria-controls="radix-:r2k:-content-general-ledger"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-general-ledger"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Cash flow":
+  <button
+    aria-controls="radix-:r2k:-content-cash-flow"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-cash-flow"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Receivables":
+  <button
+    aria-controls="radix-:r2k:-content-receivables"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-receivables"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Payables":
+  <button
+    aria-controls="radix-:r2k:-content-payables"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-payables"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Tax":
+  <button
+    aria-controls="radix-:r2k:-content-tax"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-tax"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tabpanel:
+
+  Name "Trial balance":
+  <div
+    aria-labelledby="radix-:r2k:-trigger-trial-balance"
+    class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    data-orientation="horizontal"
+    data-state="active"
+    id="radix-:r2k:-content-trial-balance"
+    role="tabpanel"
+    tabindex="0"
+  />
+
+  --------------------------------------------------
+  table:
+
+  Name "":
+  <table
+    class="w-full caption-bottom text-sm"
+  />
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  <thead
+    class="[&_tr]:border-b"
+  />
+
+  Name "":
+  <tbody
+    class="[&_tr:last-child]:border-0"
+  />
+
+  --------------------------------------------------
+  row:
+
+  Name "Account Class Debit Credit Balance":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  Name "1110 · Bank asset $5,520.00 $4,140.00 $11,380.00":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Account":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Class":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Debit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Credit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Balance":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  --------------------------------------------------
+  cell:
+
+  Name "1110 · Bank":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+  />
+
+  Name "asset":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+  />
+
+  Name "$5,520.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$4,140.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$11,380.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/pages/__tests__/FinancialReportsPage.test.tsx > shows trial-balance closing sides and server closing totals distinctly from period movement
+TestingLibraryElementError: Unable to find an accessible element with the role "columnheader" and name "Closing debit"
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Financial reports":
+  <h1
+    class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+  />
+
+  Name "Trial balance":
+  <h3
+    class="text-2xl font-semibold leading-none tracking-tight"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="mt-2 text-2xl font-bold tabular-nums"
+  />
+
+  Name "":
+  <p
+    class="text-sm font-medium text-success"
+  />
+
+  Name "":
+  <p
+    class="text-xs text-muted-foreground"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Refresh":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+  />
+
+  Name "Export CSV":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+  />
+
+  Name "Download PDF":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+  />
+
+  Name "Run report":
+  <button
+    class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2 self-end"
+  />
+
+  --------------------------------------------------
+  combobox:
+
+  Name "Report date preset":
+  <select
+    aria-label="Report date preset"
+    class="h-11 w-full rounded-xl border border-input bg-background px-3"
+  />
+
+  Name "Report columns":
+  <select
+    aria-label="Report columns"
+    class="h-11 w-full rounded-xl border border-input bg-background px-3"
+  />
+
+  Name "Accounting basis":
+  <button
+    aria-autocomplete="none"
+    aria-controls="radix-:r2h:"
+    aria-expanded="false"
+    aria-label="Accounting basis"
+    class="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"
+    data-state="closed"
+    dir="ltr"
+    role="combobox"
+    type="button"
+  />
+
+  --------------------------------------------------
+  option:
+
+  Name "Custom dates":
+  <option
+    selected=""
+    value="custom"
+  />
+
+  Name "This month":
+  <option
+    value="this_month"
+  />
+
+  Name "Last month":
+  <option
+    value="last_month"
+  />
+
+  Name "This quarter":
+  <option
+    value="this_quarter"
+  />
+
+  Name "Last quarter":
+  <option
+    value="last_quarter"
+  />
+
+  Name "This financial year":
+  <option
+    value="this_financial_year"
+  />
+
+  Name "Last financial year":
+  <option
+    value="last_financial_year"
+  />
+
+  Name "Financial year to date":
+  <option
+    value="year_to_date"
+  />
+
+  Name "This GST period":
+  <option
+    disabled=""
+    value="this_gst_period"
+  />
+
+  Name "Total only":
+  <option
+    value="none"
+  />
+
+  Name "Monthly":
+  <option
+    value="month"
+  />
+
+  Name "Quarterly":
+  <option
+    value="quarter"
+  />
+
+  --------------------------------------------------
+  tablist:
+
+  Name "":
+  <div
+    aria-orientation="horizontal"
+    class="inline-flex items-center rounded-md bg-muted p-1 text-muted-foreground h-auto w-full justify-start overflow-x-auto"
+    data-orientation="horizontal"
+    role="tablist"
+    style="outline: none;"
+    tabindex="0"
+  />
+
+  --------------------------------------------------
+  tab:
+
+  Name "Profit & loss":
+  <button
+    aria-controls="radix-:r2k:-content-profit-loss"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-profit-loss"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Balance sheet":
+  <button
+    aria-controls="radix-:r2k:-content-balance-sheet"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-balance-sheet"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Trial balance":
+  <button
+    aria-controls="radix-:r2k:-content-trial-balance"
+    aria-selected="true"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="active"
+    id="radix-:r2k:-trigger-trial-balance"
+    role="tab"
+    tabindex="0"
+    type="button"
+  />
+
+  Name "General ledger":
+  <button
+    aria-controls="radix-:r2k:-content-general-ledger"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-general-ledger"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Cash flow":
+  <button
+    aria-controls="radix-:r2k:-content-cash-flow"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-cash-flow"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Receivables":
+  <button
+    aria-controls="radix-:r2k:-content-receivables"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-receivables"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Payables":
+  <button
+    aria-controls="radix-:r2k:-content-payables"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-payables"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  Name "Tax":
+  <button
+    aria-controls="radix-:r2k:-content-tax"
+    aria-selected="false"
+    class="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm"
+    data-orientation="horizontal"
+    data-radix-collection-item=""
+    data-state="inactive"
+    id="radix-:r2k:-trigger-tax"
+    role="tab"
+    tabindex="-1"
+    type="button"
+  />
+
+  --------------------------------------------------
+  tabpanel:
+
+  Name "Trial balance":
+  <div
+    aria-labelledby="radix-:r2k:-trigger-trial-balance"
+    class="mt-2 ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+    data-orientation="horizontal"
+    data-state="active"
+    id="radix-:r2k:-content-trial-balance"
+    role="tabpanel"
+    tabindex="0"
+  />
+
+  --------------------------------------------------
+  table:
+
+  Name "":
+  <table
+    class="w-full caption-bottom text-sm"
+  />
+
+  --------------------------------------------------
+  rowgroup:
+
+  Name "":
+  <thead
+    class="[&_tr]:border-b"
+  />
+
+  Name "":
+  <tbody
+    class="[&_tr:last-child]:border-0"
+  />
+
+  --------------------------------------------------
+  row:
+
+  Name "Account Class Debit Credit Balance":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  Name "1110 · Bank asset $5,520.00 $4,140.00 $11,380.00":
+  <tr
+    class="border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+  />
+
+  --------------------------------------------------
+  columnheader:
+
+  Name "Account":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Class":
+  <th
+    class="h-12 px-4 text-left align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0"
+  />
+
+  Name "Debit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Credit":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  Name "Balance":
+  <th
+    class="h-12 px-4 align-middle font-medium text-muted-foreground [&:has([role=checkbox])]:pr-0 text-right"
+  />
+
+  --------------------------------------------------
+  cell:
+
+  Name "1110 · Bank":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 font-medium"
+  />
+
+  Name "asset":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 capitalize text-muted-foreground"
+  />
+
+  Name "$5,520.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$4,140.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right tabular-nums"
+  />
+
+  Name "$11,380.00":
+  <td
+    class="p-4 align-middle [&:has([role=checkbox])]:pr-0 text-right font-medium tabular-nums"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="space-y-6"
+    >
+      <div
+        class="mb-8"
+      >
+        <div
+          class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between"
+        >
+          <div
+            class="min-w-0"
+          >
+            <h1
+              class="text-4xl font-bold tracking-tight text-pretty text-foreground"
+            >
+              Financial reports
+            </h1>
+            <p
+              class="mt-2 text-base text-muted-foreground max-w-[65ch]"
+            >
+              Auditable statements calculated by the server from posted journal entries.
+            </p>
+          </div>
+          <div
+            class="flex shrink-0 items-center gap-2"
+          >
+            <div
+              class="flex gap-2"
+            >
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-refresh-cw mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                  />
+                  <path
+                    d="M21 3v5h-5"
+                  />
+                  <path
+                    d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                  />
+                  <path
+                    d="M8 16H3v5"
+                  />
+                </svg>
+                Refresh
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90 hover:shadow-md h-10 px-5 py-2"
+              >
+                <svg
+                  class="lucide lucide-download mr-2 h-4 w-4"
+                  fill="none"
+                  height="24"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"
+                  />
+                  <polyline
+                    points="7 10 12 15 17 10"
+                  />
+                  <line
+                    x1="12"
+                    x2="12"
+                    y1="15"
+                    y2="3"
+                  />
+                </svg>
+                Export CSV
+              </button>
+              <button
+                class="inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-semibold ring-offset-background transition-[color,background-color,border-color,box-shadow,opacity,transform] duration-200 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-[0.45] active:scale-[0.98] [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border border-border bg-card text-foreground hover:border-primary/40 hover:bg-accent h-10 px-5 py-2"
+              >
+                Download PDF
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="rounded-2xl bg-card text-card-foreground shadow-surface"
+      >
+        <div
+          class="grid gap-4 p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_180px_auto]"
+        >
+          <label
+            class="space-y-2 text-sm font-medium"
+          >
+            Date preset
+            <select
+              aria-label="Report date preset"
+              class="h-11 w-full rounded-xl border border-input bg-background px-3"
+            >
+              <option
+                selected=""
+                value="custom"
+              >
+                Custom dates
+              </option>
+              <option
+                value="this_month"
+              >
+                This month
+              </option>
+...
+ ❯ Object.getElementError node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/config.js:37:19
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ❯ node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ❯ getByRole node_modules/.pnpm/@testing-library+dom@10.4.0/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ❯ src/pages/__tests__/FinancialReportsPage.test.tsx:168:16
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 6 passed (7)
+   Start at  04:24:49
+   Duration  2.54s (transform 397ms, setup 75ms, collect 943ms, tests 764ms, environment 328ms, prepare 220ms)

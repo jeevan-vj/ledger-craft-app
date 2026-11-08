@@ -125,3 +125,11 @@ it('drills closing account balances through carried posted history, with no amou
 it('shows permission failure distinctly and never presents a stale successful report as current',async()=>{
  (reportsApi.financial as jest.Mock).mockRejectedValue(Object.assign(new Error('Report permission denied'),{status:403}));const screen=renderScreen();expect(await screen.findByText('Report access required')).toBeTruthy();expect(screen.queryByText('Share PDF')).toBeNull();
 });
+
+it('separates closing trial balances from period turnover', async () => {
+  (reportsApi.financial as jest.Mock).mockResolvedValue({ ...report, trialBalance: { ...report.trialBalance, totalDebits: '14605.00', totalCredits: '14605.00', closingDebits: '13680.00', closingCredits: '13680.00' } });
+  const screen = renderScreen(); await screen.findByText('GST return (IRD)'); fireEvent.press(screen.getByText('Trial balance'));
+  expect(screen.getByText('Period debits')).toBeTruthy(); expect(screen.getByText('Period credits')).toBeTruthy();
+  expect(screen.getByText('Closing debits')).toBeTruthy(); expect(screen.getByText('Closing credits')).toBeTruthy();
+  expect(screen.getAllByText('$13,680.00')).toHaveLength(2); expect(screen.getAllByText('$14,605.00')).toHaveLength(2);
+});

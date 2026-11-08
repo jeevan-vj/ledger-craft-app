@@ -52,7 +52,7 @@ export default function BankStatementImportScreen() {
   return <ScrollView style={{ backgroundColor: theme.colors.background }} contentInsetAdjustmentBehavior="automatic" contentContainerStyle={[styles.content, { paddingBottom: bottomPadding }]}>
     <Text style={theme.type.title}>Import a bank statement</Text><Text style={theme.type.subhead}>Choose a CSV, map its columns and review each error or duplicate before applying. Nothing posts until you confirm.</Text>
     <ModernButton fullWidth variant="secondary" icon={<Feather name="file-text" size={18} color={theme.colors.text} />} disabled={apply.isPending} onPress={() => void choose()}>{fileName ? 'Choose another CSV' : 'Choose CSV file'}</ModernButton>
-    {error && <Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{error}</Text>}
+    {error ? <Text accessibilityRole="alert" style={{ color: theme.colors.danger }}>{error}</Text> : null}
     {fileName && preview ? <>
       <GroupedSection title="Statement"><ListRow label={fileName} subtitle={`Account ${bankAccountId}`} value={`${preview.valid.length} valid rows`} showChevron={false} /></GroupedSection>
       <Text style={theme.type.headline}>Column mapping</Text>

@@ -182,7 +182,7 @@ export function ReconciliationWorkspace({
       await reconciliationService.createMatch(
         session.id,
         selectedBankTx,
-        bookEntry.type as 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense',
+        bookEntry.type as 'invoice' | 'bill' | 'payment' | 'bill_payment' | 'expense' | 'credit_refund',
         selectedBookEntry
       );
 

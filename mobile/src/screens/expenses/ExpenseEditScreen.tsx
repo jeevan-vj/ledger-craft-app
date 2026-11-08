@@ -449,7 +449,7 @@ export default function ExpenseEditScreen() {
             </View>
             <Switch
               value={taxEnabled}
-              onValueChange={value => { setDuplicateAccepted(false); setReceiptAmounts(null); setTaxEnabled(value); }}
+              onValueChange={value => { setDuplicateAccepted(false); setReceiptAmounts(null); if (value && taxRate === 0) setTaxRate(15); setTaxEnabled(value); }}
               trackColor={{ false: palette.fill, true: palette.accent }}
               thumbColor={palette.text}
             />

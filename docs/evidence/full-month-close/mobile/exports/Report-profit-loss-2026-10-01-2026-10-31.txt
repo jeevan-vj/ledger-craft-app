@@ -1,0 +1,17 @@
+Kauri Mobile Services Limited - Profit & loss
+2026-10-01 to 2026-10-31 / accrual / NZD
+Generated 2026-11-07T04:47:15.510Z
+
+Account                                    Total
+
+4000 Sales Revenue                         2700.00
+
+4900 Other Income                          0.00
+
+5000 Operating Expenses                    1200.00
+
+Revenue                                    2700.00
+
+Expenses                                   1200.00
+
+Net income                                 1500.00

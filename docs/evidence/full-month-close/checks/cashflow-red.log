@@ -1,0 +1,62 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+ ❯ src/modules/reports/cash-flow-reconciliation.test.ts (2 tests | 2 failed) 32ms
+   × nets only statement import/reconciliation technical cash legs, retaining original receipts and gross refunds 29ms
+     → expected { rows: [ { …(7) } ], …(5) } to match object { inflows: '1150.00', …(2) }
+(3 matching properties omitted from actual)
+   × keeps unmatched imports and nets a later undo/rematch by statement identity, without erasing cutoff movements 3ms
+     → expected { rows: [ { …(7) } ], …(5) } to match object { inflows: '100.00', …(2) }
+(3 matching properties omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/reports/cash-flow-reconciliation.test.ts > nets only statement import/reconciliation technical cash legs, retaining original receipts and gross refunds
+AssertionError: expected { rows: [ { …(7) } ], …(5) } to match object { inflows: '1150.00', …(2) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+-   "inflows": "1150.00",
++   "inflows": "2300.00",
+    "netCashFlow": "1035.00",
+-   "outflows": "115.00",
++   "outflows": "1265.00",
+  }
+
+ ❯ src/modules/reports/cash-flow-reconciliation.test.ts:9:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  src/modules/reports/cash-flow-reconciliation.test.ts > keeps unmatched imports and nets a later undo/rematch by statement identity, without erasing cutoff movements
+AssertionError: expected { rows: [ { …(7) } ], …(5) } to match object { inflows: '100.00', …(2) }
+(3 matching properties omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "closingCash": "100.00",
+-   "inflows": "100.00",
+-   "outflows": "0.00",
++   "inflows": "200.00",
++   "outflows": "100.00",
+  }
+
+ ❯ src/modules/reports/cash-flow-reconciliation.test.ts:16:27
+
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed (2)
+   Start at  04:21:01
+   Duration  639ms (transform 236ms, setup 26ms, collect 328ms, tests 32ms, environment 0ms, prepare 95ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/reports/cash-flow-reconciliation.test.ts

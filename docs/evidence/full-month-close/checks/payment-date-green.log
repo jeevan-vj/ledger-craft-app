@@ -1,0 +1,10 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/payment/PaymentForm.date.test.tsx (1 test) 370ms
+   ✓ submits the selected local calendar day without shifting an Auckland receipt into the previous day  369ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  17:24:32
+   Duration  1.96s (transform 429ms, setup 72ms, collect 875ms, tests 370ms, environment 299ms, prepare 56ms)

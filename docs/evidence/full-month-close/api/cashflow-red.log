@@ -1,0 +1,189 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_daef2781-d980-4bbe-9e32-16a67333ffc2","route":"/api/auth/*","method":"POST","status":200,"durationMs":132}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_529a7718-8032-46ce-911d-6edb500a5988","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_eabec40b-b7b7-441c-b82a-e8266f08603f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_db4e922c-f0bc-4761-a07b-a5a1827178a6","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7e54a8ee-29f6-4a6f-a98b-44daf9a4c5d7","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d8e4fe79-50b8-497d-954a-c241098aa747","route":"/api/accounts","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_6c324a4a-e336-44b3-af63-54c06b215322","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0ad6c5f5-3ab3-4ebb-9573-096f21a4bc51","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5cee2c7a-75a3-42ee-ae83-0155dfb6df55","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_93fbced4-3735-4367-a727-59f334e7322d","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d279e563-0225-4ae1-9019-5e998ba47fb3","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_fd17fa7a-fc2f-4eed-9455-c84ca2bd0522","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":35}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a7d18b9c-fc1c-40ce-8a0e-ff1091af0aad","route":"/api/invoices","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8cc8d5e7-237c-45ea-8d70-c6ddfc9b450e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_96b46cd8-c7ba-4f21-aab9-e2fea1f44754","route":"/api/payments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e9ff8b15-596e-4d8b-91e3-173d9e107d57","route":"/api/payments","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7c60ca15-140d-487e-a1e9-b8ebfc2a7ad8","route":"/api/vendors","method":"POST","status":201,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3967505d-c4b9-4635-bee4-4e429f3caba6","route":"/api/bills","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_7c728760-bcf3-4c90-9710-7be84064902d","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e61bc61e-da43-4b3c-b6b6-98e6f3f2a6f6","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e24c2422-0064-4261-b742-164521316b4f","route":"/api/expenses","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_d722676c-33a2-4cb6-8481-5f9bafb26465","route":"/api/credit-notes","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8ed18c09-ae6a-49aa-8926-b933f7d5547e","route":"/api/credit-notes","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_9446b3e9-04fb-4472-aa72-cb26afb46fd3","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_f2c5bbd9-7bfc-4bc3-ac83-2150d19b08d7","route":"/api/reports/financial","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_ed87ee84-1062-4da2-8c92-19480364818d","route":"/api/bank-transactions/import","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_17d9bfc3-ca10-4a04-91b6-0999105d63ff","route":"/api/reconciliation-sessions","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bd7ffc82-3142-4eaa-8fde-d1680bc83e9d","route":"/api/book-entries","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_379da2ca-ed3e-477e-87f1-afd2180c982e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_01400608-74ba-49d4-8d22-914fccff775d","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_5fc77de1-1128-4eb1-99a1-a2891a17bfa1","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bcc7c88c-059a-4d43-a437-5736004a90ac","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_0b349c57-149a-4ac3-a0dd-6c78a5eb9b2b","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_a37e73e0-5dc8-4a22-a935-35845d93433e","route":"/api/reconciliation-sessions/:id/matches","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_85b22ef6-6f45-46b3-88cc-aaba8496ca92","route":"/api/reconciliation-sessions/:id/complete","method":"POST","status":200,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_39550eb7-f7ee-4e38-84ea-d3f05eba1ae1","route":"/api/reports/financial","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_9a964b4e-c802-43d7-b4c3-08b7d66b1cf9","route":"/api/reports/financial","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3f2b8540-82dd-4456-9cf6-c2a556f05cd0","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":7}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_4afa5f4d-b1f1-472a-befb-941ff569ea5f","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":19}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_bba72c76-9a1b-426e-9236-1c2325e8f0ec","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":6}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3966ae87-e748-475a-b8fc-6d1d8564b095","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_2a2a23c1-c506-4654-a7ce-ca62c773dc97","route":"/api/tax/gst-settings","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_ed0cf7f8-7041-421e-9ebe-d06258a492fb","route":"/api/tax/gst-preparation","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3c082591-9b55-4bb2-8a75-3845baa1e97c","route":"/api/tax-returns","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_f534db97-502f-40e2-b352-d9aa5607f6c6","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_dfc6ba9f-055f-4491-bbd6-2414df15b77c","route":"/api/payments","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_3449b353-497e-4f0f-b365-c0b45cfbb204","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_e7de3bc9-5045-48c9-9f62-a304737e7bac","route":"/api/tax-returns/:id","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+{"msg":"http_request","requestId":"req_8d0c99c6-cd2e-4433-9c80-3fa2ebf62800","route":"/api/reports/financial","method":"GET","status":200,"durationMs":6}
+
+ ❯ src/modules/reports/full-month-close.e2e.test.ts (1 test | 1 failed) 1487ms
+   × full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft 1486ms
+     → expected { rows: [ { …(7) } ], …(5) } to match object { openingCash: '10000.00', …(4) }
+(1 matching property omitted from actual)
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/reports/full-month-close.e2e.test.ts > full October close through real authenticated HTTP and SQLite > reconciles prescribed sources, five bank lines, all reports and a retained GST draft
+AssertionError: expected { rows: [ { …(7) } ], …(5) } to match object { openingCash: '10000.00', …(4) }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+    "closingCash": "11380.00",
+-   "inflows": "2300.00",
++   "inflows": "5520.00",
+    "netCashFlow": "1380.00",
+    "openingCash": "10000.00",
+-   "outflows": "920.00",
++   "outflows": "4140.00",
+  }
+
+ ❯ src/modules/reports/full-month-close.e2e.test.ts:69:30
+
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  04:19:41
+   Duration  4.44s (transform 1.21s, setup 48ms, collect 2.58s, tests 1.49s, environment 0ms, prepare 126ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/reports/full-month-close.e2e.test.ts

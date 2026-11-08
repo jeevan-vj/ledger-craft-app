@@ -1,0 +1,63 @@
+{
+  "profit-loss": {
+    "pdfBytes": 5548,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "2700.00",
+      "1200.00",
+      "1500.00"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  },
+  "trial-balance": {
+    "pdfBytes": 15162,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "13680.00",
+      "11380.00",
+      "920.00",
+      "575.00"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  },
+  "balance-sheet": {
+    "pdfBytes": 10046,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "12480.00",
+      "980.00",
+      "11500.00"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  },
+  "cash-flow": {
+    "pdfBytes": 5565,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "10000.00",
+      "2300.00",
+      "920.00",
+      "1380.00",
+      "11380.00"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  },
+  "receivables-aging": {
+    "pdfBytes": 5831,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "920.00",
+      "2026-10-31"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  },
+  "payables-aging": {
+    "pdfBytes": 5835,
+    "pdfSignature": true,
+    "pdfAndCsvValues": [
+      "575.00",
+      "2026-10-31"
+    ],
+    "dateRange": "2026-10-01 to 2026-10-31"
+  }
+}

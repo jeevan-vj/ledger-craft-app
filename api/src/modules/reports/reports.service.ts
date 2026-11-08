@@ -15,10 +15,10 @@ export async function financialReportForUser(db: Database, userId: string, query
 
 export async function financialReportInTx(tx: Database, organisationId: string, query: FinancialReportQuery, options?: { gstExcludedJournalIds?: ReadonlySet<string> }) {
     const cashHistory = query.basis === 'cash' ? await repo.cashLedgerHistory(tx,organisationId,query) : undefined;
-    const [periodRows, openingRows, receivables, payables] = await Promise.all([
+    const [periodRows, openingRows, receivables, payables, cashFlowGroups] = await Promise.all([
       cashHistory ? cashHistory.rows.filter(row=>row.date>=query.from&&row.date<=query.to) : repo.ledgerRows(tx, organisationId, query),
       cashHistory ? cashHistory.rows.filter(row=>row.date<query.from) : repo.ledgerRows(tx, organisationId, query, query.from),
-      repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query),
+      repo.receivables(tx, organisationId, query), repo.payables(tx, organisationId, query), repo.cashFlowGroups(tx, organisationId),
     ]);
     // GST is read from the journals that actually carry 2150/2200. Payment
     // journals do not allocate GST, so the report's cash filter is not a valid
@@ -39,7 +39,7 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
     if (query.comparisonFrom && query.comparisonTo) {
       comparison = { from: query.comparisonFrom, to: query.comparisonTo, rows: await repo.ledgerRows(tx, organisationId, { ...query, from: query.comparisonFrom, to: query.comparisonTo, comparisonFrom: undefined, comparisonTo: undefined }) };
     }
-    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, cashWarnings:cashHistory?.warnings, taxRows, foreignCurrencyGstDocuments: excludedDocuments.size, receivables, payables, comparison }));
+    return financialReportResponseSchema.parse(buildFinancialReport({ query, periodRows, openingRows, cashFlowGroups, cashWarnings:cashHistory?.warnings, taxRows, foreignCurrencyGstDocuments: excludedDocuments.size, receivables, payables, comparison }));
 }
 
 export async function generalLedgerForUser(db: Database, userId: string, query: FinancialReportQuery) {

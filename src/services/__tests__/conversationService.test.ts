@@ -46,6 +46,8 @@ describe('ConversationService', () => {
   let testMocks: ReturnType<typeof setupTest>;
 
   beforeEach(() => {
+    // Retain explicit legacy-flag coverage; the product default uses Hono.
+    vi.stubEnv('VITE_CONVERSATIONS_API', 'false');
     testMocks = setupTest();
     conversationService = new ConversationService();
     vi.clearAllMocks();
@@ -60,6 +62,7 @@ describe('ConversationService', () => {
   });
 
   afterEach(() => {
+    vi.unstubAllEnvs();
     cleanupTest(testMocks);
   });
 

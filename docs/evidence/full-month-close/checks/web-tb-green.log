@@ -1,0 +1,12 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/payment/PaymentForm.date.test.tsx (1 test) 484ms
+   ✓ submits the selected local calendar day without shifting an Auckland receipt into the previous day  482ms
+ ✓ src/pages/__tests__/FinancialReportsPage.test.tsx (7 tests) 836ms
+   ✓ Financial reports GST return > shows the ledger-derived GST payable and its underlying account balances  369ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  04:25:19
+   Duration  2.69s (transform 722ms, setup 150ms, collect 2.05s, tests 1.32s, environment 676ms, prepare 232ms)
