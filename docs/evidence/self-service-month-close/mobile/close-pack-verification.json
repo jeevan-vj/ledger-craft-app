@@ -1,0 +1,114 @@
+{
+  "filename": "Close-pack-2026-10-01-2026-10-31.zip",
+  "bytes": 16046,
+  "sha256": "8b32f3d02fcca343dab1c262ff9e3da549eeaccba09d1374df07143071c21bd5",
+  "memberCount": 14,
+  "allMemberSizesAndSha256Verified": true,
+  "independentExpectedClosingDebits": "13680.00",
+  "independentExpectedClosingCredits": "13680.00",
+  "independentExpectedProfit": "1500.00",
+  "independentExpectedClosingCash": "11380.00",
+  "independentExpectedGst": "225.00",
+  "archiveFinancialSectionsMatchIndependentPaper": true,
+  "canonicalCsvValuesMatch": true,
+  "manifest": {
+    "version": "ledgercraft-close-pack-v1",
+    "organisationName": "Kauri Self Service Mobile Limited",
+    "period": {
+      "from": "2026-10-01",
+      "to": "2026-10-31"
+    },
+    "basis": "accrual",
+    "baseCurrency": "NZD",
+    "generatedAt": "2026-11-08T07:22:17.873Z",
+    "periodLock": {
+      "closedThrough": "2026-10-31",
+      "revision": 3
+    },
+    "warnings": [
+      "This period includes cancellation, credit-note or expense reversal movements. Review the signed totals and GST adjustments before filing.",
+      "No retained filed GST confirmation exists for this exact period. Draft/preparation figures are not an IRD filing."
+    ],
+    "members": [
+      {
+        "name": "trial-balance.csv",
+        "mediaType": "text/csv",
+        "bytes": 1136,
+        "sha256": "59ffd11bdf2a2fceef6eee2186b7a86fe921d97f5c954f488d29b4cc6e2ee0c3"
+      },
+      {
+        "name": "balance-sheet.csv",
+        "mediaType": "text/csv",
+        "bytes": 681,
+        "sha256": "768271ee90f8d9bdd2b6e77a25361b40adb39ab16ac45a516820f5342b3f022f"
+      },
+      {
+        "name": "profit-loss.csv",
+        "mediaType": "text/csv",
+        "bytes": 245,
+        "sha256": "443d584192e0b5a22b5d6a04f6c23c8685d288aee49f1b507bb3f5ca69ce3a70"
+      },
+      {
+        "name": "cash-flow.csv",
+        "mediaType": "text/csv",
+        "bytes": 243,
+        "sha256": "439fbedb4fd57f0b3dc7d2d2ceb308e1152055dc02b818c328eff525175235a7"
+      },
+      {
+        "name": "receivables.csv",
+        "mediaType": "text/csv",
+        "bytes": 256,
+        "sha256": "660df9800475f3427e0e9bd023e0931ad857065d01b19f5e57e8bf3cdadb71d1"
+      },
+      {
+        "name": "payables.csv",
+        "mediaType": "text/csv",
+        "bytes": 252,
+        "sha256": "b2efb1fbc1d58d3c6b1a7c79a7d05b8bb6253180a062c23832341761306a4cab"
+      },
+      {
+        "name": "reports.json",
+        "mediaType": "application/json",
+        "bytes": 38760,
+        "sha256": "9c728ae3eb2e83279f93ce11fb2f23adb0e3191c05e82f4252eef51c5fe71835"
+      },
+      {
+        "name": "general-ledger.csv",
+        "mediaType": "text/csv",
+        "bytes": 8148,
+        "sha256": "cf48b71ff1a831dee05e21c427a35800e0ef35b0a80fb1edbd2688312f738008"
+      },
+      {
+        "name": "bank-reconciliations.json",
+        "mediaType": "application/json",
+        "bytes": 1432,
+        "sha256": "d968aa7b3831fa4aa6e85a5feb628787b18d25e3d02c5de151da9e0e7d4dede6"
+      },
+      {
+        "name": "bank-reconciliations.csv",
+        "mediaType": "text/csv",
+        "bytes": 303,
+        "sha256": "70be68945129becd03f792cc98bd703e9fa3e5dbce263abb42d206b0096a2986"
+      },
+      {
+        "name": "gst.json",
+        "mediaType": "application/json",
+        "bytes": 53260,
+        "sha256": "4f02b73a727ea5626edb195845f2db0b62244895cd94c256e822a48395a1d32e"
+      },
+      {
+        "name": "accounting-period.json",
+        "mediaType": "application/json",
+        "bytes": 53,
+        "sha256": "d6219f194f7ef68c9d230a33c2ca4a5b91a67ba3f194673b64103964d993c7c5"
+      },
+      {
+        "name": "readme.txt",
+        "mediaType": "text/plain",
+        "bytes": 522,
+        "sha256": "4c6f488081289e542dc7b9be61c06cc2c9f8d7040c3dbd72b3fc064e19d2a6aa"
+      }
+    ]
+  },
+  "allSevenFinancialSectionsUnchangedAfterLockAndExport": true
+}

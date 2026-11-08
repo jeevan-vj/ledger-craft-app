@@ -36,6 +36,20 @@
       "when": 1791010617358,
       "tag": "0004_purchases-payables",
       "breakpoints": true
+    },
+    {
+      "idx": 35,
+      "version": "6",
+      "when": 1794121049267,
+      "tag": "0035_accounting-period-cutoff",
+      "breakpoints": true
+    },
+    {
+      "idx": 36,
+      "version": "6",
+      "when": 1794122914633,
+      "tag": "0036_accounting-period-retained-actor",
+      "breakpoints": true
     }
   ]
 }

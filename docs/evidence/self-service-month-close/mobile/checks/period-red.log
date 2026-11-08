@@ -1,0 +1,33 @@
+
+> mobile@1.0.0 test
+> jest --runInBand --watchAll=false src/components/accounting/AccountingPeriodPanel.test.tsx
+
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/components/accounting/AccountingPeriodPanel.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module './AccountingPeriodPanel' from 'src/components/accounting/AccountingPeriodPanel.test.tsx'
+
+    However, Jest was able to find:
+        './AccountingPeriodPanel.test.tsx'
+
+    You might want to include a file extension in your import, or update your 'moduleFileExtensions', which is currently ['ts', 'tsx', 'js', 'jsx', 'json', 'node'].
+
+    See https://jestjs.io/docs/configuration#modulefileextensions-arraystring
+
+      2 | import { fireEvent, render } from '@testing-library/react-native';
+      3 | import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+    > 4 | import { AccountingPeriodPanel } from './AccountingPeriodPanel';
+        | ^
+      5 | import { accountingPeriodsApi } from '@/features/accounting/accountingPeriodsApi';
+      6 | jest.mock('@/features/accounting/accountingPeriodsApi',()=>({accountingPeriodsApi:{get:jest.fn(),close:jest.fn(),reopen:jest.fn()}}),{virtual:true});
+      7 | const open={closedThrough:null,revision:0,canClose:true,canReopen:true,events:[]};
+
+      at Resolver._throwModNotFoundError (node_modules/jest-resolve/build/index.js:863:11)
+      at Object.require (src/components/accounting/AccountingPeriodPanel.test.tsx:4:1)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        0.823 s
+Ran all test suites matching src/components/accounting/AccountingPeriodPanel.test.tsx.

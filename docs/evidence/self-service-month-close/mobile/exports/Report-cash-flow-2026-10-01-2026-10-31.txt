@@ -1,0 +1,17 @@
+Kauri Self Service Mobile Limited - Cash flow
+2026-10-01 to 2026-10-31 / accrual / NZD
+Generated 2026-11-08T07:19:22.422Z
+
+Account                                    Total
+
+BANK-460A42D6 Kauri Operating              1380.00
+
+Opening cash                               10000.00
+
+Inflows                                    2300.00
+
+Outflows                                   920.00
+
+Net cash flow                              1380.00
+
+Closing cash                               11380.00

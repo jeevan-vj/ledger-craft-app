@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { decimal, roundMoney } from '../invoices/money';
 import { assertReplayMatches, getIdempotencyRecord, insertIdempotencyRecord, type IdempotencyScope } from '../invoices/idempotency';
 import {
@@ -89,6 +90,7 @@ export async function createExpenseInTx(
     if (idempotency) { const existing = await getIdempotencyRecord(tx, ctx, idempotency); if (existing) { assertReplayMatches(existing.requestHash, idempotency.requestHash); return existing.responseBody as ExpenseDto; } }
     if (decimal(input.taxAmount ?? '0').compare(input.amount) > 0) throw apiError(422, 'INVALID_RECEIPT_AMOUNTS', 'Receipt GST cannot exceed the total amount. Review both amounts before saving.');
     await assertRefs(tx, ctx.organisationId, input);
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.expenseDate);
     const resolved = await resolveDocumentCurrency(tx, ctx.organisationId, input.currency, input.expenseDate);
     const amount = roundAt(input.amount, resolved.currency.precision);
     const taxAmount = roundAt(input.taxAmount ?? '0', resolved.currency.precision);
@@ -116,6 +118,7 @@ export async function updateExpenseForUser(
     await assertRefs(tx, ctx.organisationId, input);
     const existing = await repo.getExpense(tx, ctx.organisationId, id);
     if (!existing) throw new HTTPException(404, { message: 'Expense not found' });
+    if (Object.keys(input).some(key=>key!=='notes')) await assertAccountingDateOpen(tx, ctx.organisationId, existing.expenseDate, input.expenseDate ?? existing.expenseDate);
     if (decimal(input.taxAmount ?? existing.taxAmount).compare(input.amount ?? existing.amount) > 0) throw apiError(422, 'INVALID_RECEIPT_AMOUNTS', 'Receipt GST cannot exceed the total amount. Review both amounts before saving.');
     if (existing.status === 'approved' && Object.keys(input).some((key) => key !== 'notes')) {
       throw new HTTPException(409, { message: 'Approved expenses are immutable; reject and record a corrected expense' });
@@ -147,6 +150,7 @@ export async function updateExpenseForUser(
 export async function deleteExpenseForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getExpense(tx, ctx.organisationId, id);
+    if (current) await assertAccountingDateOpen(tx, ctx.organisationId, current.expenseDate);
     if (current?.status === 'approved') {
       await reversePosting(tx, ctx, { referenceType: 'expense', referenceId: id, reversalType: 'expense_reversal', date: new Date().toISOString().slice(0, 10), description: `Reverse expense ${current.description}` });
     }

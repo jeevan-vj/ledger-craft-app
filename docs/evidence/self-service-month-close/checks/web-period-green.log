@@ -1,0 +1,9 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/accounting/AccountingPeriodsPanel.test.tsx (3 tests) 278ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  07:00:59
+   Duration  1.57s (transform 274ms, setup 73ms, collect 611ms, tests 278ms, environment 310ms, prepare 54ms)

@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen } from '../accounting/period-lock';
 import { creditNoteSchema, type CreditNoteDto, type RefundCreditNoteRequest, type ReverseCreditNoteRequest } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
@@ -16,6 +17,7 @@ export async function refundCreditNoteForUser(db: Database, userId: string, id: 
     const replay = await getIdempotencyRecord(tx, ctx, scope);
     if (replay) { assertReplayMatches(replay.requestHash, scope.requestHash); return creditNoteSchema.parse(replay.responseBody); }
     const credit = required(await repo.note(tx, ctx.organisationId, id), 'Credit note');
+    await assertAccountingDateOpen(tx, ctx.organisationId, input.refundDate);
     if (credit.status !== 'issued') throw new HTTPException(409, { message: 'Only an issued credit note can be refunded' });
     if (input.refundDate < credit.issueDate || credit.refunds.some(refund => (refund.reversalDate ?? refund.refundDate) > input.refundDate)) throw new HTTPException(400, { message: 'Refund date must follow the credit note and earlier refund movements' });
     const amount = decimal(input.amount);
@@ -55,6 +57,7 @@ export async function reverseCreditNoteRefundForUser(db: Database, userId: strin
       if (refund.reversalDate !== input.date || refund.reversalReason !== input.reason) throw new HTTPException(409, { message: 'Refund was already reversed with different details' });
       return credit;
     }
+    await assertAccountingDateOpen(tx, ctx.organisationId, refund.refundDate, input.date);
     if (input.date < refund.refundDate) throw new HTTPException(400, { message: 'Reversal date cannot precede the refund date' });
     // The last surviving allocation is reversed first, preserving cumulative
     // carrying-value cents when another refund is recorded afterwards.

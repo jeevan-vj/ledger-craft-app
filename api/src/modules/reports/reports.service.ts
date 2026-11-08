@@ -43,9 +43,13 @@ export async function financialReportInTx(tx: Database, organisationId: string, 
 }
 
 export async function generalLedgerForUser(db: Database, userId: string, query: FinancialReportQuery) {
-  return withOrganisationTx(db, userId, async (tx, ctx) => {
-    const cashHistory=query.basis==='cash'?await repo.cashLedgerHistory(tx,ctx.organisationId,query):undefined;
-    const [rows, opening] = await Promise.all([cashHistory?cashHistory.rows.filter(row=>row.date>=query.from):repo.ledgerRows(tx, ctx.organisationId, query),cashHistory?cashHistory.rows.filter(row=>row.date<query.from):repo.ledgerRows(tx, ctx.organisationId, query, query.from)]);
+  return withOrganisationTx(db, userId, (tx, ctx) => generalLedgerInTx(tx, ctx.organisationId, query));
+}
+
+/** Canonical ledger DTO, reusable by a consistent multi-report transaction. */
+export async function generalLedgerInTx(tx: Database, organisationId: string, query: FinancialReportQuery) {
+    const cashHistory=query.basis==='cash'?await repo.cashLedgerHistory(tx,organisationId,query):undefined;
+    const [rows, opening] = await Promise.all([cashHistory?cashHistory.rows.filter(row=>row.date>=query.from):repo.ledgerRows(tx, organisationId, query),cashHistory?cashHistory.rows.filter(row=>row.date<query.from):repo.ledgerRows(tx, organisationId, query, query.from)]);
     const balances = new Map<string, ReturnType<typeof decimal>>();
     for (const row of opening) balances.set(row.accountId, (balances.get(row.accountId) ?? decimal(0)).add(row.debit).sub(row.credit));
     const lines = rows.map((row) => {
@@ -53,7 +57,6 @@ export async function generalLedgerForUser(db: Database, userId: string, query: 
       return { ...(row.sourceJournalEntryId?{sourceJournalEntryId:row.sourceJournalEntryId,sourceEntryNumber:row.sourceEntryNumber}:{}), journalEntryId: row.journalEntryId, entryNumber: row.entryNumber, date: row.date, description: row.description, referenceType: row.referenceType, referenceId: row.referenceId, accountId: row.accountId, accountNumber: row.accountNumber, accountName: row.accountName, debit: roundMoney(row.debit), credit: roundMoney(row.credit), runningBalance: roundMoney(running) };
     });
     return generalLedgerResponseSchema.parse({ meta: { from: query.from, to: query.to, basis: query.basis, baseCurrency: query.baseCurrency, generatedAt: new Date().toISOString(),...(query.basis==='cash'?{cashRecognition:'settled-source-components-v1',...(cashHistory?.warnings.length?{warnings:cashHistory.warnings}:{})}:{}) }, lines });
-  });
 }
 
 export async function accountStatementForUser(db: Database, userId: string, accountId: string, query: FinancialReportQuery) {

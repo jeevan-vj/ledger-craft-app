@@ -1,0 +1,371 @@
+{
+  "build": {
+    "version": "0.0.8",
+    "buildTime": 1794122934047,
+    "hash": "d5251ad28f70",
+    "environment": "production",
+    "timestamp": "2026-11-08T07:28:54.047Z"
+  },
+  "browserChecks": {
+    "signup": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [
+        {
+          "message": "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+          "url": "http://127.0.0.1:8080/api/me"
+        },
+        {
+          "message": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+          "url": "http://127.0.0.1:8080/api/business-profile"
+        },
+        {
+          "message": "API request failed {status: 404, code: NOT_FOUND, requestId: req_364d2733-e782-4c8a-84ae-227df7e92218, message: Business profile not found}",
+          "url": "http://127.0.0.1:8080/assets/index-CQEqvIKC.js"
+        }
+      ],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}."
+      ]
+    },
+    "invoices": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "receipts": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}."
+      ]
+    },
+    "purchases": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "credits": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "bank": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "reports": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "gst": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "locks": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    },
+    "pack": {
+      "unexpectedPageAndConsoleErrors": [],
+      "expectedOnboardingDiagnostics": [],
+      "warnings": [
+        "OpenAI API key not found. AI conversation features will be disabled.",
+        "OpenAI API key not found. AI conversation features will be disabled."
+      ]
+    }
+  },
+  "phases": [
+    "signup",
+    "invoices",
+    "receipts",
+    "purchases",
+    "credits",
+    "bank",
+    "reports",
+    "gst",
+    "locks",
+    "pack"
+  ],
+  "setupApiException": null,
+  "exportVerification": [
+    {
+      "file": "profit-loss.pdf",
+      "sha256": "06bdf37e522dae4519834f73105b961e249725148500ce384f8df496415ed4dc",
+      "extractedCharacters": 491
+    },
+    {
+      "file": "trial-balance.pdf",
+      "sha256": "ddf7123cac5a9b36eaf6fbc0680787a5946592f43b66f0f2a05053b7309b0d5b",
+      "extractedCharacters": 1757
+    },
+    {
+      "file": "cash-flow.pdf",
+      "sha256": "72d2214344856044e395edb8519baba7de3fc7a9c2767cc8b8557ca0c17b48d5",
+      "extractedCharacters": 491
+    },
+    {
+      "file": "balance-sheet.pdf",
+      "sha256": "f498ea2d36fd4b36b733be189e5a72e8f1964aec31749ea442952d16756118c5",
+      "extractedCharacters": 1074
+    },
+    {
+      "file": "receivables-aging.pdf",
+      "sha256": "ba144e8d8d96b2b5339ab52c9e732a957f7051904d5804e06cb5483d4bfbfa0f",
+      "extractedCharacters": 562
+    },
+    {
+      "file": "payables-aging.pdf",
+      "sha256": "abf5d5fbbeb6ec0bfb339786ed141e0d56f408023743dd5b36896d08246ffa42",
+      "extractedCharacters": 609
+    }
+  ],
+  "closed": {
+    "closedThrough": "2026-10-31",
+    "revision": 1,
+    "canClose": true,
+    "canReopen": true,
+    "events": [
+      {
+        "id": "56431b07-25f7-4c60-9c9c-89373d6af1aa",
+        "action": "close",
+        "previousClosedThrough": null,
+        "newClosedThrough": "2026-10-31",
+        "reason": "October independent reports and bank statement reviewed",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:18.000Z",
+        "revision": 1
+      }
+    ]
+  },
+  "reopened": {
+    "closedThrough": "2026-09-30",
+    "revision": 2,
+    "canClose": true,
+    "canReopen": true,
+    "events": [
+      {
+        "id": "08d77bf2-28d6-4459-8c32-22f8b02da121",
+        "action": "reopen",
+        "previousClosedThrough": "2026-10-31",
+        "newClosedThrough": "2026-09-30",
+        "reason": "Owner reviewed the controlled reopening procedure",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:19.000Z",
+        "revision": 2
+      },
+      {
+        "id": "56431b07-25f7-4c60-9c9c-89373d6af1aa",
+        "action": "close",
+        "previousClosedThrough": null,
+        "newClosedThrough": "2026-10-31",
+        "reason": "October independent reports and bank statement reviewed",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:18.000Z",
+        "revision": 1
+      }
+    ]
+  },
+  "reclosed": {
+    "closedThrough": "2026-10-31",
+    "revision": 3,
+    "canClose": true,
+    "canReopen": true,
+    "events": [
+      {
+        "id": "b0324f2b-5d6a-4d48-a898-db9441b4e694",
+        "action": "close",
+        "previousClosedThrough": "2026-09-30",
+        "newClosedThrough": "2026-10-31",
+        "reason": "No book changes; owner confirmed October close again",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:19.000Z",
+        "revision": 3
+      },
+      {
+        "id": "08d77bf2-28d6-4459-8c32-22f8b02da121",
+        "action": "reopen",
+        "previousClosedThrough": "2026-10-31",
+        "newClosedThrough": "2026-09-30",
+        "reason": "Owner reviewed the controlled reopening procedure",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:19.000Z",
+        "revision": 2
+      },
+      {
+        "id": "56431b07-25f7-4c60-9c9c-89373d6af1aa",
+        "action": "close",
+        "previousClosedThrough": null,
+        "newClosedThrough": "2026-10-31",
+        "reason": "October independent reports and bank statement reviewed",
+        "actorId": "39a6423b-ac5f-4e5d-b959-558b7933315a",
+        "createdAt": "2026-11-08T07:37:18.000Z",
+        "revision": 1
+      }
+    ]
+  },
+  "financialSectionsUnchangedAfterClose": true,
+  "sourceMatches": [
+    {
+      "id": "8ac5ff94-ad5e-4179-a5a0-b84a4abbb31e",
+      "reconciliationId": "6095133d-cf3b-4a87-9872-9b400437f318",
+      "bankTransactionId": "5d041435-be8c-4381-9bbf-06edf2bb90da",
+      "invoiceId": null,
+      "billId": null,
+      "paymentId": "e2863d0c-84da-4e1d-8899-de456e2f0cc7",
+      "billPaymentId": null,
+      "expenseId": null,
+      "journalEntryId": null,
+      "matchType": "manual",
+      "confidenceScore": 100,
+      "bankAmount": "1150.00",
+      "bookAmount": "1150.00",
+      "difference": "0.00",
+      "status": "confirmed",
+      "notes": null,
+      "matchedAt": "2026-11-08T07:36:58.000Z",
+      "createdAt": "2026-11-08T07:36:58.000Z"
+    },
+    {
+      "id": "10b29560-6fb8-46a6-8896-cc15fce0c1de",
+      "reconciliationId": "6095133d-cf3b-4a87-9872-9b400437f318",
+      "bankTransactionId": "690f108f-038d-4b4a-884c-0947a2f8f9d5",
+      "invoiceId": null,
+      "billId": null,
+      "paymentId": "3e115dd8-2184-4223-aec1-cbb2102028d9",
+      "billPaymentId": null,
+      "expenseId": null,
+      "journalEntryId": null,
+      "matchType": "manual",
+      "confidenceScore": 100,
+      "bankAmount": "1150.00",
+      "bookAmount": "1150.00",
+      "difference": "0.00",
+      "status": "confirmed",
+      "notes": null,
+      "matchedAt": "2026-11-08T07:36:59.000Z",
+      "createdAt": "2026-11-08T07:36:59.000Z"
+    },
+    {
+      "id": "5a1f97b3-edc3-4d2c-9a15-7805a13071db",
+      "reconciliationId": "6095133d-cf3b-4a87-9872-9b400437f318",
+      "bankTransactionId": "e186e7e6-2985-4aac-b21c-364ab595bec8",
+      "invoiceId": null,
+      "billId": null,
+      "paymentId": null,
+      "billPaymentId": "dd19a071-b628-4d5a-a4dd-0cd8edd2d865",
+      "expenseId": null,
+      "journalEntryId": null,
+      "matchType": "manual",
+      "confidenceScore": 100,
+      "bankAmount": "575.00",
+      "bookAmount": "575.00",
+      "difference": "0.00",
+      "status": "confirmed",
+      "notes": null,
+      "matchedAt": "2026-11-08T07:36:59.000Z",
+      "createdAt": "2026-11-08T07:36:59.000Z"
+    },
+    {
+      "id": "03b864b2-1fad-4e99-b3e6-4133469e2c14",
+      "reconciliationId": "6095133d-cf3b-4a87-9872-9b400437f318",
+      "bankTransactionId": "b24e6d1f-fc2a-4a45-bae5-a5cc23e2c01a",
+      "invoiceId": null,
+      "billId": null,
+      "paymentId": null,
+      "billPaymentId": null,
+      "expenseId": "b1b248ac-23f4-44d1-93f2-2bd101cd9d17",
+      "journalEntryId": null,
+      "matchType": "manual",
+      "confidenceScore": 100,
+      "bankAmount": "230.00",
+      "bookAmount": "230.00",
+      "difference": "0.00",
+      "status": "confirmed",
+      "notes": null,
+      "matchedAt": "2026-11-08T07:37:00.000Z",
+      "createdAt": "2026-11-08T07:37:00.000Z"
+    },
+    {
+      "id": "f2f8dfbf-b3d8-40fd-8c73-1c33e73909c5",
+      "reconciliationId": "6095133d-cf3b-4a87-9872-9b400437f318",
+      "bankTransactionId": "57039d6e-4bfb-4ba3-a92b-c1c151f1c944",
+      "invoiceId": null,
+      "billId": null,
+      "paymentId": null,
+      "billPaymentId": null,
+      "expenseId": null,
+      "journalEntryId": "cb46e523-ca64-4582-a881-f7129689dcc6",
+      "matchType": "manual",
+      "confidenceScore": 100,
+      "bankAmount": "115.00",
+      "bookAmount": "115.00",
+      "difference": "0.00",
+      "status": "confirmed",
+      "notes": null,
+      "matchedAt": "2026-11-08T07:37:00.000Z",
+      "createdAt": "2026-11-08T07:37:00.000Z"
+    }
+  ],
+  "expectedWorkingPaperSha256": "c581c7343a971e4844971a5885d601a4c70308fc66ed423e53f9e388a05b3739",
+  "pdfExpectedFiguresVerified": {
+    "profit-loss": [
+      "2700.00",
+      "1200.00",
+      "1500.00"
+    ],
+    "balance-sheet": [
+      "12480.00",
+      "980.00",
+      "11500.00"
+    ],
+    "trial-balance": [
+      "13680.00",
+      "14605.00"
+    ],
+    "cash-flow": [
+      "10000.00",
+      "1380.00",
+      "11380.00"
+    ],
+    "receivables-aging": [
+      "920.00"
+    ],
+    "payables-aging": [
+      "575.00"
+    ]
+  }
+}

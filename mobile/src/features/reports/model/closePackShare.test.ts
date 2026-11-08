@@ -1,0 +1,10 @@
+import { shareClosePack } from './closePackShare';
+import { fetchClosePack } from './closePackDownload';
+import * as Sharing from 'expo-sharing';
+import * as FileSystem from 'expo-file-system/legacy';
+jest.mock('./closePackDownload',()=>({fetchClosePack:jest.fn()}));
+jest.mock('expo-sharing',()=>({isAvailableAsync:jest.fn().mockResolvedValue(true),shareAsync:jest.fn().mockResolvedValue(undefined)}));
+jest.mock('expo-file-system/legacy',()=>({cacheDirectory:'file:///cache/',EncodingType:{Base64:'base64'},writeAsStringAsync:jest.fn().mockResolvedValue(undefined)}));
+beforeEach(()=>{jest.clearAllMocks();jest.mocked(fetchClosePack).mockResolvedValue({filename:'Close-pack-2026-10-01-2026-10-31.zip',bytes:new Uint8Array([80,75,3,4]).buffer});});
+it('writes the authenticated ZIP bytes and invokes native sharing with a ZIP file',async()=>{await shareClosePack('2026-10-01','2026-10-31');expect(fetchClosePack).toHaveBeenCalledWith('2026-10-01','2026-10-31');expect(FileSystem.writeAsStringAsync).toHaveBeenCalledWith('file:///cache/Close-pack-2026-10-01-2026-10-31.zip','UEsDBA==',{encoding:'base64'});expect(Sharing.shareAsync).toHaveBeenCalledWith('file:///cache/Close-pack-2026-10-01-2026-10-31.zip',expect.objectContaining({mimeType:'application/zip'}));});
+it('reports unavailable native sharing without requesting private financial data',async()=>{jest.mocked(Sharing.isAvailableAsync).mockResolvedValueOnce(false);await expect(shareClosePack('2026-10-01','2026-10-31')).rejects.toThrow('not available');expect(fetchClosePack).not.toHaveBeenCalled();});

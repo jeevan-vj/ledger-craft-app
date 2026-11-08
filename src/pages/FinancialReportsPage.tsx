@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { downloadFinancialReportPdf } from '@/features/reports/reportPdf';
+import { ClosePackDownload } from '@/features/reports/ClosePackDownload';
 import { PeriodColumnTable } from '@/features/reports/PeriodColumnTable';
 
 const initialTo = reportToday();
@@ -159,6 +160,7 @@ export default function FinancialReportsPage() {
       <label className="space-y-2 text-sm font-medium">Basis<Select value={draft.basis} onValueChange={(basis: 'accrual' | 'cash') => setDraft((value) => ({ ...value, basis }))}><SelectTrigger aria-label="Accounting basis"><SelectValue /></SelectTrigger><SelectContent><SelectItem value="accrual">Accrual</SelectItem><SelectItem value="cash">Cash</SelectItem></SelectContent></Select></label>
       <Button className="self-end" onClick={() => setQuery({ ...draft, baseCurrency: 'NZD' })} disabled={!draft.from || !draft.to || draft.from > draft.to}>Run report</Button>
     </CardContent></Card>
+    <ClosePackDownload from={query.from} to={query.to}/>
     {report.isLoading && <Card><CardContent className="p-12 text-center text-muted-foreground" role="status">Calculating reports from the ledger…</CardContent></Card>}
     {report.isError && <Card><CardContent className="space-y-3 p-8 text-center"><p className="font-semibold text-destructive">Reports could not be loaded.</p><p className="text-sm text-muted-foreground">{report.error instanceof Error ? report.error.message : 'Try again.'}</p><Button variant="outline" onClick={() => report.refetch()}>Try again</Button></CardContent></Card>}
     {data && <>{data.meta.cashRecognition&&<p className="text-sm text-muted-foreground">Cash basis recognises posted source income and costs as their receivables or payables are settled. GST remains separate; original journals are unchanged.</p>}{data.meta.warnings?.map(warning=><p key={warning} role="alert" className="text-sm text-destructive">{warning}</p>)}<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">{summary.map((item) => <Metric key={item.label} {...item} />)}</div>

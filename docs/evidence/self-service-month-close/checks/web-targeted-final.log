@@ -1,0 +1,23 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app
+
+ ✓ src/components/accounting/BankLedgerSetup.test.tsx (3 tests) 207ms
+ ✓ src/components/accounting/AccountingPeriodsPanel.test.tsx (3 tests) 380ms
+   ✓ requires reviewed dates/reason, sends current revision and displays retained close history  342ms
+stderr | src/pages/__tests__/Accounts.test.tsx > defaults a new NZ business account to NZD and does not offer an editable posted balance
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ ✓ src/features/reports/ClosePackDownload.test.tsx (3 tests) 151ms
+stderr | src/pages/__tests__/Accounts.test.tsx > saves an account through Hono instead of missing facade mutation methods
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+stderr | src/pages/__tests__/Accounts.test.tsx > updates account details without overwriting its posted balance
+Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+
+ ✓ src/pages/__tests__/Accounts.test.tsx (8 tests) 650ms
+ ✓ src/features/payments/api/accountCreateRetry.test.ts (2 tests) 8ms
+
+ Test Files  5 passed (5)
+      Tests  19 passed (19)
+   Start at  07:28:46
+   Duration  3.09s (transform 815ms, setup 429ms, collect 2.48s, tests 1.40s, environment 2.33s, prepare 717ms)

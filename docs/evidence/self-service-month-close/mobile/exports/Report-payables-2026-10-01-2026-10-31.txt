@@ -1,0 +1,11 @@
+Kauri Self Service Mobile Limited - Payables aging
+2026-10-01 to 2026-10-31 / accrual / NZD
+Generated 2026-11-08T07:19:22.422Z
+
+Document                                   Party                   Due date     Age       Outstanding
+
+BILL-0001                                  Kauri Office Supplier   2026-10-31   current   575.00
+
+Total                                                                                     575.00
+
+Unallocated control                                                                       0.00

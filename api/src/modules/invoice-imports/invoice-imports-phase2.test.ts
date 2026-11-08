@@ -197,4 +197,17 @@ describe('invoice import Phase 2 review and commit', () => {
       }
     });
   });
+  it('refuses a reviewed purchase import dated in a closed accounting period',async()=>withTestDb(async()=>{
+    const {db,sql}=createDb(getDatabaseUrl());try{
+      const app=createApp({auth:createAuth(db),db,fileStorage:createMemoryFileStorage()});
+      const owner=await signUp(app,'Closed purchase-import owner');const {vendorId}=await setupContacts(app,owner);
+      const document=await uploadFixture(app,owner,'sparkle-supplies-bill.pdf');
+      expect((await app.request(`/api/invoice-imports/${document.id}/extract`,{method:'POST',headers:{Cookie:owner}})).status).toBe(200);
+      const reviewed=await patchDraft(app,owner,document.id,{direction:'PURCHASE',contactId:vendorId,issueDate:'2026-10-05',dueDate:'2026-10-31'});expect(reviewed.status).toBe(200);
+      const closed=await app.request('/api/accounting-periods/close',{method:'POST',headers:{...jsonHeaders,Cookie:owner},body:JSON.stringify({through:'2026-10-31',reason:'October supplier records reconciled',reviewed:true,expectedRevision:0})});expect(closed.status).toBe(200);
+      const commit=await app.request(`/api/invoice-imports/${document.id}/commit`,{method:'POST',headers:{...jsonHeaders,Cookie:owner},body:'{}'});expect(commit.status).toBe(409);expect(await commit.json()).toMatchObject({error:{code:'ACCOUNTING_PERIOD_CLOSED'}});
+      expect(await sql.unsafe('SELECT id FROM bills WHERE import_document_id = ?',[document.id])).toHaveLength(0);
+    }finally{await sql.end();}
+  }));
+
 });

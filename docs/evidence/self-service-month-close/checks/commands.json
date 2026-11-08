@@ -1,0 +1,74 @@
+[
+  {
+    "command": "pnpm install --frozen-lockfile --store-dir /workspace/.pnpm-store",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "install.log"
+  },
+  {
+    "command": "pnpm lint",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-lint-final.log"
+  },
+  {
+    "command": "pnpm type-check",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-types.log"
+  },
+  {
+    "command": "pnpm test:run",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-all.log"
+  },
+  {
+    "command": "NODE_ENV=production pnpm build",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-build.log"
+  },
+  {
+    "command": "pnpm test:api",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "api-full.log.gz"
+  },
+  {
+    "command": "pnpm test:contracts",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "contracts.log"
+  },
+  {
+    "command": "pnpm type-check:api",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "api-types-final.log"
+  },
+  {
+    "command": "node api/sqlite-migrations/verify.mjs",
+    "node": "24.22.1",
+    "exitCode": 0,
+    "log": "migrations.log"
+  },
+  {
+    "command": "node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/verify-web-quality-gates.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "readiness.log"
+  },
+  {
+    "command": "node --test scripts/upload-web-sourcemaps.test.mjs",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "web-sourcemaps.log"
+  },
+  {
+    "command": "node scripts/verify-akaunting-core.mjs --report",
+    "node": "22.23.4",
+    "exitCode": 0,
+    "log": "parity.log"
+  }
+]

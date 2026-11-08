@@ -1,0 +1,117 @@
+
+ RUN  v3.2.4 /workspace/ledger-craft-app/api
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_1ec8bc4d-6301-4ad2-bde4-675e8cbe5e2c","route":"/api/auth/*","method":"POST","status":200,"durationMs":116}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_40dce313-73df-4782-ace7-2f0f2b0969e3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_14dc7d86-9c97-450e-b39f-4b05c89e4236","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_0f77a6a4-3724-45a2-9857-3024af258f4f","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_c05807b8-7700-4a1f-90dd-b7efa24c98a1","route":"/api/accounts","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_886e2004-c7da-48e4-928d-88d903349756","route":"/api/accounts","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_4c7d1291-3091-47d6-950f-1dfd169464ec","route":"/api/bank-default-account","method":"PUT","status":200,"durationMs":5}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_8a398b0f-c20d-41e5-822b-f155e4be5872","route":"/api/journal-entries/opening-balances","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_a491b602-0751-47ea-a8fb-2c2147c9ee53","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_dde29d37-7480-428d-af68-a4813d6d7456","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_06cab0c6-2598-4b0e-be07-359eee2659a5","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_f436cd34-f86e-448c-bf36-587e74879b5a","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":19}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_8a7b082a-f229-49f4-ae7b-e83aad81dc1d","route":"/api/invoices","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_e57b3bbb-f90a-42c5-b137-e6cc3a32b0ea","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_64f07075-c10f-4c9f-96e1-110f14244c73","route":"/api/payments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_b8a143c3-219a-4dc7-bac4-4c72c8e3e578","route":"/api/payments","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_79caf85d-b66f-4022-978b-e89fa8861814","route":"/api/vendors","method":"POST","status":201,"durationMs":4}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_aa772390-5017-4689-8ef1-510ef9f0a51d","route":"/api/bills","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_9697c5bc-2805-4f7b-ba3c-67002e36223e","route":"/api/bills/:id/receive","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_fe4ab413-c1c0-4992-8b04-339690723c3d","route":"/api/bills/:id/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_97ab1d0d-89a2-4b8f-a518-6c8bdd100dfa","route":"/api/expenses","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_ab6de8ce-4ca2-40eb-9dbb-d2b4dffb7e76","route":"/api/credit-notes","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_38d753a4-0532-4864-af95-f98b4893feb8","route":"/api/credit-notes","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_de0da8f3-2df1-4740-9c0c-de5db7011eb4","route":"/api/credit-notes/:id/refunds","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_a9d24059-d451-4ee0-a644-f0e64cb4377b","route":"/api/accounting-periods/close","method":"POST","status":200,"durationMs":5}
+
+stdout | src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+{"msg":"http_request","requestId":"req_d116a421-e865-4131-8782-8502a12f3a5b","route":"/api/accounts/:id","method":"PATCH","status":200,"durationMs":5}
+
+ ❯ src/modules/accounts/closed-identity.test.ts (1 test | 1 failed) 1091ms
+   × keeps a closed period account classification immutable while allowing a new future account 1090ms
+     → PATCH /api/accounts/b6e4e136-3fe0-487c-a01b-abd2cc72321f: {"id":"b6e4e136-3fe0-487c-a01b-abd2cc72321f","name":"Kauri operating bank","type":"bank","currency":"NZD","openingBalance":"0.00","currentBalance":"0.00","accountNumber":"BANK-51E0B557","accountClass":"liability","isActive":true}: expected 200 to be 409 // Object.is equality
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  src/modules/accounts/closed-identity.test.ts > keeps a closed period account classification immutable while allowing a new future account
+AssertionError: PATCH /api/accounts/b6e4e136-3fe0-487c-a01b-abd2cc72321f: {"id":"b6e4e136-3fe0-487c-a01b-abd2cc72321f","name":"Kauri operating bank","type":"bank","currency":"NZD","openingBalance":"0.00","currentBalance":"0.00","accountNumber":"BANK-51E0B557","accountClass":"liability","isActive":true}: expected 200 to be 409 // Object.is equality
+
+- Expected
++ Received
+
+- 409
++ 200
+
+ ❯ Object.request src/modules/reports/full-month-close.test-helper.ts:20:59
+     18|     const text = await response.text();
+     19|     commands.push({ method, path, status: response.status });
+     20|     expect(response.status, `${method} ${path}: ${text}`).toBe(status);
+       |                                                           ^
+     21|     return JSON.parse(text) as T;
+     22|   }
+ ❯ src/modules/accounts/closed-identity.test.ts:7:3
+ ❯ Module.withTestDb src/test/harness.ts:30:12
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Start at  07:03:25
+   Duration  3.87s (transform 1.20s, setup 32ms, collect 2.48s, tests 1.09s, environment 0ms, prepare 113ms)
+
+undefined
+/workspace/ledger-craft-app/api:
+[ERR_PNPM_RECURSIVE_EXEC_FIRST_FAIL] Command failed with exit code 1: vitest run src/modules/accounts/closed-identity.test.ts

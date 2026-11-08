@@ -1,8 +1,9 @@
-import { financialReportQuerySchema } from '@ledgercraft/contracts';
+import { closePackQuerySchema, financialReportQuerySchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import * as service from './reports.service';
+import { closePackForUser } from './close-pack.service';
 
 function queryInput(url: string) {
   const search = new URL(url).searchParams;
@@ -19,6 +20,12 @@ function queryInput(url: string) {
 export function reportRoutes() {
   const routes = new Hono<AppEnv>();
   for (const prefix of ['', '/api'] as const) {
+    routes.get(`${prefix}/reports/close-pack`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const query = closePackQuerySchema.parse(Object.fromEntries(new URL(c.req.url).searchParams));
+      const result = await closePackForUser(db, user.id, query);
+      return new Response(result.bytes, { headers: { 'Content-Type': 'application/zip', 'Content-Disposition': `attachment; filename="${result.filename}"`, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' } });
+    });
     routes.get(`${prefix}/reports/options`, async (c) => { const { db, user } = await requireSession(c); return c.json(await service.reportOptionsForUser(db,user.id)); });
     routes.get(`${prefix}/reports/financial`, async (c) => { const { db, user } = await requireSession(c); return c.json(await service.financialReportForUser(db, user.id, queryInput(c.req.url))); });
     routes.get(`${prefix}/reports/general-ledger`, async (c) => { const { db, user } = await requireSession(c); return c.json(await service.generalLedgerForUser(db, user.id, queryInput(c.req.url))); });

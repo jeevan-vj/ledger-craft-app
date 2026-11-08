@@ -1,3 +1,4 @@
+import { assertAccountingDateOpen, assertAccountingSettingsOpen } from '../accounting/period-lock';
 import {
   bankAccountListResponseSchema,
   bankTransactionListResponseSchema,
@@ -108,6 +109,7 @@ export async function updateBankAccountForUser(
     const financialChange = (input.currency !== undefined && input.currency !== current.currency)
       || (input.openingBalance !== undefined && decimal(input.openingBalance).compare(current.openingBalance) !== 0)
       || (input.currentBalance !== undefined && decimal(input.currentBalance).compare(current.currentBalance) !== 0);
+    if (financialChange) await assertAccountingSettingsOpen(tx, ctx.organisationId);
     if (financialChange && (await closedBankStatements(tx, ctx.organisationId)).some(row => row.bankAccountId === id)) {
       throw new HTTPException(409, { message: 'Completed bank statement balances and currency cannot be changed' });
     }
@@ -119,6 +121,7 @@ export async function updateBankAccountForUser(
 
 export async function deleteBankAccountForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    await assertAccountingSettingsOpen(tx, ctx.organisationId);
     if (await defaultBankAccount(tx, ctx.organisationId) === id) throw new HTTPException(409, { message: 'Choose another default payment account before deleting this account' });
     if ((await closedBankStatements(tx, ctx.organisationId)).some(row => row.bankAccountId === id)) {
       throw new HTTPException(409, { message: 'A bank account with completed statements cannot be deleted; deactivate it instead' });
@@ -271,6 +274,7 @@ export async function saveBankTransactionDetailsForUser(
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const transaction = await repo.getTransaction(tx, ctx.organisationId, id);
     if (!transaction) throw new HTTPException(404, { message: 'Bank transaction not found' });
+    if (input.documentConnections.length || input.splits.length) await assertAccountingDateOpen(tx, ctx.organisationId, transaction.transactionDate);
     if (transaction.source === 'transfer') throw new HTTPException(409, { message: 'Transfer legs cannot be split or connected to documents' });
     if (await detailsRepo.hasDetails(tx, ctx.organisationId, id)) {
       throw new HTTPException(409, { message: 'Transaction details have already been allocated' });

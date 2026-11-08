@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@/context/StableAuthContext';
 import { useAppData } from '@/hooks/useAppData';
 import { Account, AccountType } from '@/types';
 import { Table } from '@/components/ui/table';
@@ -12,6 +13,8 @@ import { toast } from '@/components/ui/use-toast';
 import { PageHeader } from '@/components/layout/PageHeader';
 import { accountsApi } from '@/features/payments/api/paymentsApi';
 import { reportsApi } from '@/features/reports/api/reportsApi';
+import { BankLedgerSetup } from '@/components/accounting/BankLedgerSetup';
+import { AccountingPeriodsPanel } from '@/components/accounting/AccountingPeriodsPanel';
 import { OpeningBalancesPanel } from '@/components/accounting/OpeningBalancesPanel';
 import { LedgerAuditPanel } from '@/components/accounting/LedgerAuditPanel';
 import { ledgerQueryKeys } from '@/features/app-data/useLedgerQueries';
@@ -30,6 +33,7 @@ const balanceText = (amount: string) => {
 };
 
 export default function AccountsPage() {
+  const {me}=useAuth();const organisationId=me?.organisation.id;
   const { accounts, isLoadingAccounts, businessProfile, refreshAccounts } = useAppData();
   const queryClient = useQueryClient();
   const balances = useQuery({
@@ -37,12 +41,16 @@ export default function AccountsPage() {
     queryFn: () => reportsApi.financial({ from: date.slice(0, 4) + '-01-01', to: date, basis: 'accrual', baseCurrency: 'NZD' }),
   });
   const posted = new Map(balances.data?.trialBalance.rows.map((row) => [row.accountId, row.balance]) ?? []);
+  const [bankLinkOpen,setBankLinkOpen] = useState(false);
+  const [periodsOpen, setPeriodsOpen] = useState(false);
   const [recoveryOpen, setRecoveryOpen] = useState(false);
   const [recoveryTab, setRecoveryTab] = useState<'opening' | 'audit'>('opening');
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Account | null>(null);
   const [form, setForm] = useState<AccountForm>(() => emptyAccount(businessProfile?.currency ?? 'NZD'));
   const [saving, setSaving] = useState(false);
+  const pendingCreate = useRef<{body:string;key:string}|null>(null);
+  useEffect(()=>{setDialogOpen(false);pendingCreate.current=null;},[organisationId]);
   function openCreate() { setEditing(null); setForm(emptyAccount(businessProfile?.currency ?? 'NZD')); setDialogOpen(true); }
   function openEdit(account: Account) {
     setEditing(account);
@@ -59,7 +67,12 @@ export default function AccountsPage() {
     try {
       const input = { ...form, currency: form.currency.toUpperCase(), accountNumber: form.accountNumber || null };
       if (editing) await accountsApi.update(editing.id, input);
-      else await accountsApi.create(input);
+      else {
+        const body = JSON.stringify(input);
+        if (pendingCreate.current?.body !== body) pendingCreate.current = {body,key:crypto.randomUUID()};
+        await accountsApi.create(input,pendingCreate.current.key,organisationId);
+        pendingCreate.current = null;
+      }
       setDialogOpen(false); await refresh();
       toast({ title: editing ? 'Account updated' : 'Account created' });
     } catch (error) { toast({ title: 'Could not save account', description: error instanceof Error ? error.message : 'Try again.', variant: 'destructive' }); }
@@ -87,6 +100,10 @@ export default function AccountsPage() {
     <div className="space-y-4"><Button variant="outline" aria-expanded={recoveryOpen} onClick={() => setRecoveryOpen((open) => !open)}>Opening balances and historical corrections</Button>
       {recoveryOpen && <div className="space-y-4"><div className="flex flex-wrap gap-2"><Button variant={recoveryTab === 'opening' ? 'default' : 'outline'} onClick={() => setRecoveryTab('opening')}>Opening balances</Button><Button variant={recoveryTab === 'audit' ? 'default' : 'outline'} onClick={() => setRecoveryTab('audit')}>Historical corrections</Button></div>{recoveryTab === 'opening' ? <OpeningBalancesPanel accounts={accounts} onPosted={() => void refresh()} /> : <LedgerAuditPanel accounts={accounts} onPosted={() => void refresh()} />}</div>}
     </div>
+    <Button variant="outline" aria-expanded={bankLinkOpen} onClick={()=>setBankLinkOpen(value=>!value)}>Link bank account to ledger</Button>
+    {bankLinkOpen?<BankLedgerSetup onPrepared={refresh}/>:null}
+    <Button variant="outline" aria-expanded={periodsOpen} onClick={()=>setPeriodsOpen(value=>!value)}>Accounting periods</Button>
+    {periodsOpen?<AccountingPeriodsPanel/>:null}
     <Dialog open={dialogOpen} onOpenChange={setDialogOpen}><DialogContent><DialogTitle>{editing ? 'Edit Account' : 'Add Account'}</DialogTitle>
       <form onSubmit={handleSave} className="space-y-4 mt-4">
         <div><label htmlFor="account-name">Name</label><Input id="account-name" value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} required /></div>
