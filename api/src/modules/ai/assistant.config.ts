@@ -6,6 +6,7 @@ export const ASSISTANT_DEFAULTS = {
   dailyCostUsd: '2.00',
   inputUsdPerMillion: '0.10',
   outputUsdPerMillion: '0.30',
+  callReserveUsd: '0.05',
   maxSteps: 6,
   timeoutMs: 8_000,
   retentionDays: 90,
@@ -17,6 +18,7 @@ export type AssistantLimits = {
   dailyCostUsd: string;
   inputUsdPerMillion: string;
   outputUsdPerMillion: string;
+  callReserveUsd: string;
 };
 
 export type AssistantToolDefinition = {
@@ -66,6 +68,7 @@ export function assistantLimitsFromEnv(env: NodeJS.ProcessEnv = process.env): As
     dailyCostUsd: env.ASSISTANT_DAILY_COST_USD || ASSISTANT_DEFAULTS.dailyCostUsd,
     inputUsdPerMillion: env.ASSISTANT_INPUT_USD_PER_MILLION || ASSISTANT_DEFAULTS.inputUsdPerMillion,
     outputUsdPerMillion: env.ASSISTANT_OUTPUT_USD_PER_MILLION || ASSISTANT_DEFAULTS.outputUsdPerMillion,
+    callReserveUsd: env.ASSISTANT_CALL_RESERVE_USD || ASSISTANT_DEFAULTS.callReserveUsd,
   };
 }
 
@@ -80,5 +83,5 @@ export function tokenCostUsd(inputTokens: number, outputTokens: number, limits: 
 }
 
 export function assistantEnabled(assistant: 'available' | 'unavailable' | undefined): boolean {
-  return assistant === 'available' || process.env.ASSISTANT_ENABLED === '1';
+  return assistant === 'available';
 }

@@ -57,7 +57,7 @@ describe('assistant eval suite', () => {
     steps?: AssistantModelTurn[];
     model?: AssistantModel;
     now?: Date;
-    limits?: { dailyMessages?: number; perMinute?: number; dailyCostUsd?: string };
+    limits?: { dailyMessages?: number; perMinute?: number; dailyCostUsd?: string; callReserveUsd?: string };
     timeoutMs?: number;
     assistant?: 'available' | 'unavailable';
     scanner?: ReceiptScanner;
@@ -168,23 +168,31 @@ describe('assistant eval suite', () => {
     expect((await tally(db)).expenses).toBe(0);
   }));
 
-  it('treats an injected customer name as data and refuses an unlisted tool', () => run({
-    steps: [
-      turn([{ name: 'search_customers', arguments: { query: 'Sarah' } }]),
-      turn([{ name: 'run_sql', arguments: { sql: 'DROP TABLE invoices' } }]),
-    ],
-  }, async ({ call, ask, db }) => {
-    const injected = "Sarah'); DROP TABLE invoices; --";
-    await call('/api/customers', 'POST', { name: injected, email: 'injected@example.test' }, 201);
-    const before = await tally(db);
-    const reply = await ask(prompt('injection-name'));
-    expect(reply.parts).toContainEqual({ type: 'link', href: '/invoices', label: 'Invoices' });
-    expect(await tally(db)).toEqual(before);
-    const events = await db.select().from(assistantEvents);
-    expect(JSON.stringify(events)).not.toContain('DROP TABLE');
-    expect(JSON.stringify(events)).not.toContain(prompt('injection-name'));
-    expect(await call('/api/invoices', 'GET')).toHaveProperty('invoices');
-  }));
+  it('treats an injected customer name as data and refuses an unlisted tool', () => {
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete({ messages }) {
+        seen.n += 1;
+        const tool = [...messages].reverse().find((message) => message.role === 'tool');
+        if (!tool) return turn([{ name: 'search_customers', arguments: { query: 'Sarah' } }]);
+        return turn([{ name: 'run_sql', arguments: { sql: tool.content } }]);
+      },
+    };
+    return run({ model }, async ({ call, ask, db }) => {
+      const injected = "Sarah'); DROP TABLE invoices; --";
+      await call('/api/customers', 'POST', { name: injected, email: 'injected@example.test' }, 201);
+      const before = await tally(db);
+      const reply = await ask(prompt('injection-name'));
+      expect(seen.n).toBeGreaterThan(1);
+      expect(reply.parts).toContainEqual({ type: 'link', href: '/invoices', label: 'Invoices' });
+      expect(JSON.stringify(reply)).not.toContain('DROP TABLE');
+      expect(await tally(db)).toEqual(before);
+      const events = await db.select().from(assistantEvents);
+      expect(JSON.stringify(events)).not.toContain('DROP TABLE');
+      expect(JSON.stringify(events)).not.toContain(prompt('injection-name'));
+      expect(await call('/api/invoices', 'GET')).toHaveProperty('invoices');
+    });
+  });
 
   it('does not return another business from search', () => run({
     steps: [turn([{ name: 'search_customers', arguments: { query: 'Secret' } }])],
@@ -221,7 +229,7 @@ describe('assistant eval suite', () => {
   }));
 
   it('stops provider calls when the daily cost ceiling is exhausted', () => run({
-    limits: { dailyCostUsd: '0.01' },
+    limits: { dailyCostUsd: '0.01', callReserveUsd: '0.001' },
     steps: [turn([{ name: 'list_outstanding', arguments: {} }], { inputTokens: 1_000_000, outputTokens: 1 })],
   }, async ({ ask, calls }) => {
     await ask(prompt('who-owes'));
@@ -230,6 +238,30 @@ describe('assistant eval suite', () => {
     expect(second.error?.code).toBe('ASSISTANT_LIMIT');
     expect(calls.n).toBe(seen);
   }));
+
+  it('stops a second overlapping turn when the reserved costs cross the ceiling', () => {
+    let release = () => {};
+    const entered = new Promise<void>((resolve) => { release = resolve; });
+    const seen = { n: 0 };
+    const model: AssistantModel = {
+      async complete() {
+        seen.n += 1;
+        if (seen.n === 1) {
+          release();
+          await new Promise((resolve) => setTimeout(resolve, 200));
+        }
+        return { text: 'Done.', toolCalls: [], inputTokens: 1, outputTokens: 1 };
+      },
+    };
+    return run({ model, limits: { dailyCostUsd: '0.10', callReserveUsd: '0.06' } }, async ({ ask }) => {
+      const first = ask(prompt('who-owes'));
+      await entered;
+      const second = await ask('Who owes me money?', 429);
+      expect(second.error?.code).toBe('ASSISTANT_LIMIT');
+      expect(seen.n).toBe(1);
+      expect((await first).parts.some((part) => part.type === 'text')).toBe(true);
+    });
+  });
 
   it('saves nothing when the provider times out', () => run({
     timeoutMs: 40,
@@ -241,6 +273,7 @@ describe('assistant eval suite', () => {
     expect((await tally(db)).invoices).toBe(0);
     const events = await db.select().from(assistantEvents);
     expect(events.map((event) => event.outcome)).toContain('timeout');
+    expect(events.find((event) => event.outcome === 'timeout')?.costUsd).toBe('0.050000');
     expect(JSON.stringify(events)).not.toContain(marker);
     const messages = await db.select().from(conversationMessages);
     expect(messages.map((message) => message.content).join(' ')).not.toContain(marker);
@@ -263,9 +296,16 @@ describe('assistant eval suite', () => {
     scanner: { async scan() { return { merchantName: 'Cafe', date: '2026-11-09', total: '10.00', tax: '1.30', subtotal: '8.70', items: [], paymentMethod: 'card', suggestedCategory: null, confidence: 0.5, notes: null }; } },
     steps: [turn([{ name: 'list_outstanding', arguments: {} }])],
   }, async ({ app, cookie, calls, ask }) => {
-    const denied = await ask(prompt('who-owes'), 403);
-    expect(denied.error?.code).toBe('ASSISTANT_DISABLED');
-    expect(calls.n).toBe(0);
+    const previous = process.env.ASSISTANT_ENABLED;
+    process.env.ASSISTANT_ENABLED = '1';
+    try {
+      const denied = await ask(prompt('who-owes'), 403);
+      expect(denied.error?.code).toBe('ASSISTANT_DISABLED');
+      expect(calls.n).toBe(0);
+    } finally {
+      if (previous === undefined) delete process.env.ASSISTANT_ENABLED;
+      else process.env.ASSISTANT_ENABLED = previous;
+    }
     const scan = await app.request('/api/ai/receipt-scan', { method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ imageBase64: 'abc', exactAmounts: true }) });
     expect(scan.status).toBe(200);
   }));
@@ -277,6 +317,8 @@ describe('assistant eval suite', () => {
     const first = await ask(marker);
     const old = new Date(MONDAY.getTime() - 91 * 86_400_000);
     await db.update(conversationMessages).set({ createdAt: old }).where(eq(conversationMessages.conversationId, first.conversationId));
+    const [stale] = await db.select().from(assistantEvents);
+    await db.update(assistantEvents).set({ createdAt: old }).where(eq(assistantEvents.id, stale.id));
     const kept = await app.request('/api/conversations', { method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ title: 'Notes' }) });
     const keptBody = await kept.json() as { id: string };
     await app.request(`/api/conversations/${keptBody.id}/messages`, { method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ role: 'user', content: 'keep-me' }) });
@@ -288,6 +330,7 @@ describe('assistant eval suite', () => {
     expect(contents).toContain('keep-me');
     expect(contents).toContain('fresh-marker-prompt');
     const events = await db.select().from(assistantEvents);
+    expect(events.some((event) => event.id === stale.id)).toBe(false);
     expect(JSON.stringify(events)).not.toContain(marker);
     expect(events.some((event) => event.action === 'turn')).toBe(true);
   }));

@@ -62,8 +62,16 @@ export function createWorkersAiAssistantModel(
 ): AssistantModel {
   return {
     async complete({ messages, tools, signal }) {
-      if (signal.aborted) throw apiError(504, 'ASSISTANT_TIMEOUT', 'The assistant took too long. Nothing was saved. Use Invoices to continue.');
-      const response = await ai.run(model, { messages, tools });
+      const timedOut = () => apiError(504, 'ASSISTANT_TIMEOUT', 'The assistant took too long. Nothing was saved. Use Invoices to continue.');
+      if (signal.aborted) throw timedOut();
+      const response = await new Promise<unknown>((resolve, reject) => {
+        const onAbort = () => reject(timedOut());
+        signal.addEventListener('abort', onAbort, { once: true });
+        Promise.resolve(ai.run(model, { messages, tools }, { signal })).then(
+          (value) => { signal.removeEventListener('abort', onAbort); resolve(value); },
+          (error) => { signal.removeEventListener('abort', onAbort); reject(signal.aborted ? timedOut() : error); },
+        );
+      });
       return parseWorkersAiAssistantTurn(response);
     },
   };

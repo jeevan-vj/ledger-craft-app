@@ -1,7 +1,7 @@
 import { apiError } from '../../http-error';
 
 export type WorkersAiBinding = {
-  run(model: string, input: unknown): Promise<unknown>;
+  run(model: string, input: unknown, options?: { signal?: AbortSignal }): Promise<unknown>;
   toMarkdown?(document: {
     name: string;
     blob: Blob;

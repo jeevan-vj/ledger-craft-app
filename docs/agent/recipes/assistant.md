@@ -22,9 +22,9 @@ Chat text is a conversation with `context.kind = assistant`. The user can delete
 
 ## Limits and the flag
 
-Per business, from the environment, defaulting to 100 messages/day, 20/minute, and USD 2.00/day (`ASSISTANT_DAILY_MESSAGES`, `ASSISTANT_PER_MINUTE`, `ASSISTANT_DAILY_COST_USD`, token prices `ASSISTANT_INPUT_USD_PER_MILLION` default `0.10` and `ASSISTANT_OUTPUT_USD_PER_MILLION` default `0.30`). A request over the cap returns `429 ASSISTANT_LIMIT` and does not call the model.
+Per business, from the environment, defaulting to 100 messages/day, 20/minute, and USD 2.00/day (`ASSISTANT_DAILY_MESSAGES`, `ASSISTANT_PER_MINUTE`, `ASSISTANT_DAILY_COST_USD`, token prices `ASSISTANT_INPUT_USD_PER_MILLION` default `0.10` and `ASSISTANT_OUTPUT_USD_PER_MILLION` default `0.30`). Each turn reserves `ASSISTANT_CALL_RESERVE_USD` (default `0.05`) before the provider call. A timeout keeps that reserve. A request that would cross the ceiling returns `429 ASSISTANT_LIMIT` and does not call the model.
 
-`/api/healthz` reports `capabilities.assistant`. It is `available` only when `ASSISTANT_ENABLED=1` (and, on the Worker, the AI binding is present). Generic `capabilities.ai` does not enable tools. Receipt scan keeps using its own scanner.
+`/api/healthz` reports `capabilities.assistant`. The route runs only when that capability is `available`. `ASSISTANT_ENABLED=1` does not override an unavailable capability. On the Worker the capability is available only when that variable is set and the AI binding is present. Generic `capabilities.ai` does not enable tools. Receipt scan keeps using its own scanner.
 
 ## Expenses
 

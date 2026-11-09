@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseWorkersAiAssistantTurn } from './assistant.workers';
+import { createWorkersAiAssistantModel, parseWorkersAiAssistantTurn } from './assistant.workers';
 
 describe('Workers AI assistant parser', () => {
   it('reads tool calls from a Workers AI result envelope', () => {
@@ -20,6 +20,21 @@ describe('Workers AI assistant parser', () => {
       choices: [{ message: { content: '', tool_calls: [{ id: 'a', function: { name: 'list_outstanding', arguments: '{}' } }] } }],
     });
     expect(turn.toolCalls).toEqual([{ id: 'a', name: 'list_outstanding', arguments: {} }]);
+  });
+
+  it('passes the abort signal into the provider call and stops when it fires', async () => {
+    const controller = new AbortController();
+    let seen: AbortSignal | undefined;
+    const model = createWorkersAiAssistantModel({
+      run: (_model, _input, options) => new Promise((_resolve, reject) => {
+        seen = options?.signal;
+        options?.signal?.addEventListener('abort', () => reject(new Error('aborted')));
+      }),
+    });
+    const pending = model.complete({ messages: [{ role: 'user', content: 'Hello' }], tools: [], signal: controller.signal });
+    controller.abort();
+    await expect(pending).rejects.toThrow(/too long/);
+    expect(seen?.aborted).toBe(true);
   });
 
   it('rejects a response with no text and no tools', () => {
