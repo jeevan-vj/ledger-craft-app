@@ -1,12 +1,14 @@
 import { invoiceImportExtractionDraftSchema, type InvoiceImportExtractionDraft } from '@ledgercraft/contracts';
 import { apiError } from '../../../http-error';
 import { documentContent } from './document-content';
+import { applyExtractionHeuristics } from './extraction-heuristics';
 import {
+  extractionContextText,
   INVOICE_IMPORT_SYSTEM_PROMPT,
   invoiceProviderResponseJsonSchema,
-  providerPayloadSchema,
   untrustedDocumentText,
 } from './invoice-prompt';
+import { normalizeProviderPayload } from './provider-output-normalization';
 import type { InvoiceImportExtractionProvider } from './types';
 
 export function createRemoteExtractionProvider(options: {
@@ -30,7 +32,7 @@ export function createRemoteExtractionProvider(options: {
           messages: [
             { role: 'system', content: INVOICE_IMPORT_SYSTEM_PROMPT },
             { role: 'user', content: [
-              { type: 'text', text: `Organisation: ${context.organisationName.slice(0, 200)}${context.gstNumber ? `; GST: ${context.gstNumber.slice(0, 40)}` : ''}` },
+              { type: 'text', text: extractionContextText(context) },
               documentPart,
             ] },
           ],
@@ -41,8 +43,12 @@ export function createRemoteExtractionProvider(options: {
       const raw = body.choices?.[0]?.message?.content;
       if (!raw) throw apiError(502, 'EXTRACTION_PROVIDER_ERROR', 'Invoice extraction provider returned no content');
       try {
-        const payload = providerPayloadSchema.parse(JSON.parse(raw));
-        return invoiceImportExtractionDraftSchema.parse({ ...payload, provider: options.provider, mock: false });
+        const normalized = normalizeProviderPayload(JSON.parse(raw));
+        if (!normalized.success) throw new Error('invalid provider payload');
+        const adjusted = applyExtractionHeuristics(normalized.data, context, {
+          lineGstRatesRewritten: normalized.lineGstRatesRewritten,
+        });
+        return invoiceImportExtractionDraftSchema.parse({ ...adjusted, provider: options.provider, mock: false });
       } catch {
         throw apiError(502, 'EXTRACTION_PROVIDER_ERROR', 'Invoice extraction provider returned invalid structured data');
       }

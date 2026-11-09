@@ -1,10 +1,11 @@
 import type { z } from 'zod';
+import { resolveImportedGstRates } from './gst-rate';
 import { providerPayloadSchema } from './invoice-prompt';
 
 type ProviderPayload = z.infer<typeof providerPayloadSchema>;
 
 type NormalizationResult =
-  | { success: true; data: ProviderPayload }
+  | { success: true; data: ProviderPayload; lineGstRatesRewritten: boolean[] }
   | { success: false; issues: string[] };
 
 function record(value: unknown): Record<string, unknown> | null {
@@ -16,6 +17,31 @@ function record(value: unknown): Record<string, unknown> | null {
 function normalizeNullableText(value: unknown): unknown {
   if (value === null) return null;
   return typeof value === 'string' ? value.trim() || null : value;
+}
+
+function formatNzGstNumber(value: string): string | null {
+  const digits = value.replace(/[\s-]/g, '');
+  if (!/^\d{8,9}$/.test(digits)) return null;
+  if (digits.length === 9) return `${digits.slice(0, 3)}-${digits.slice(3, 6)}-${digits.slice(6)}`;
+  return `${digits.slice(0, 2)}-${digits.slice(2, 5)}-${digits.slice(5)}`;
+}
+
+function normalizeGstNumber(value: unknown): unknown {
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  if (!trimmed) return null;
+  const withoutLabel = trimmed.replace(/^(?:gst|ird|tax)(?:\s*(?:registration|reg|number|no\.?|#|:))*\s*/i, '');
+  return formatNzGstNumber(withoutLabel) ?? (withoutLabel.trim() || null);
+}
+
+function extractIssuerGst(name: unknown, gstNumber: unknown): { name: unknown; gstNumber: unknown } {
+  if (typeof gstNumber === 'string' && gstNumber.trim()) return { name, gstNumber };
+  if (typeof name !== 'string') return { name, gstNumber };
+  const match = /(?:gst|ird)\s*(?:registration|reg|number|no\.?|#|:|\s)+\s*(?<!\d)(\d{2,3}(?:[ -]\d{3}){2}|\d{8,9})(?!\d)/i.exec(name);
+  const formatted = match ? formatNzGstNumber(match[1] ?? '') : null;
+  if (!match || !formatted) return { name, gstNumber };
+  const cleaned = name.replace(match[0], ' ').replace(/\s{2,}/g, ' ').trim();
+  return { name: cleaned || name, gstNumber: formatted };
 }
 
 function normalizeDecimal(value: unknown): unknown {
@@ -93,19 +119,25 @@ export function normalizeProviderPayload(value: unknown): NormalizationResult {
     ]),
   ) : source.confidence;
 
+  const issuer = extractIssuerGst(source.issuerName, source.issuerGstNumber);
+  const gst = normalizeDecimal(source.gst);
+  const normalizedLines = Array.isArray(source.lineItems) ? source.lineItems.map(normalizeLineItem) : source.lineItems;
+  const resolvedLines = Array.isArray(normalizedLines)
+    ? resolveImportedGstRates(normalizedLines, gst)
+    : { lines: normalizedLines, rewritten: [] as boolean[] };
   const normalized = {
     ...source,
-    issuerName: normalizeNullableText(source.issuerName),
-    issuerGstNumber: normalizeNullableText(source.issuerGstNumber),
+    issuerName: normalizeNullableText(issuer.name),
+    issuerGstNumber: normalizeGstNumber(issuer.gstNumber),
     recipientName: normalizeNullableText(source.recipientName),
-    recipientGstNumber: normalizeNullableText(source.recipientGstNumber),
+    recipientGstNumber: normalizeGstNumber(source.recipientGstNumber),
     documentNumber: normalizeNullableText(source.documentNumber),
     issueDate: normalizeDate(source.issueDate),
     dueDate: normalizeDate(source.dueDate),
     currency: typeof source.currency === 'string' ? source.currency.trim().toUpperCase() : source.currency,
-    lineItems: Array.isArray(source.lineItems) ? source.lineItems.map(normalizeLineItem) : source.lineItems,
+    lineItems: resolvedLines.lines,
     net: normalizeDecimal(source.net),
-    gst: normalizeDecimal(source.gst),
+    gst,
     total: normalizeDecimal(source.total),
     suggestedDirection: typeof source.suggestedDirection === 'string'
       ? source.suggestedDirection.trim().toUpperCase()
@@ -119,7 +151,7 @@ export function normalizeProviderPayload(value: unknown): NormalizationResult {
     confidence: normalizedConfidence,
   };
   const result = providerPayloadSchema.safeParse(normalized);
-  if (result.success) return { success: true, data: result.data };
+  if (result.success) return { success: true, data: result.data, lineGstRatesRewritten: resolvedLines.rewritten };
   return {
     success: false,
     issues: result.error.issues.slice(0, 8).map((issue) => `${issue.path.join('.') || 'response'}: ${issue.message}`),

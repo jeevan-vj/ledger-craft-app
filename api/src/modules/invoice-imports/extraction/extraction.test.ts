@@ -127,7 +127,7 @@ describe('invoice import extraction providers', () => {
     })).toThrow(expect.objectContaining({ status: 503 }));
   });
 
-  it('retries invalid Workers AI JSON once and caps every confidence value', async () => {
+  it('retries invalid Workers AI JSON once and keeps varied provider confidence', async () => {
     const payload = await providerPayload();
     const ai = {
       run: vi.fn()
@@ -141,8 +141,9 @@ describe('invoice import extraction providers', () => {
     expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('previous reply was not valid JSON for the schema');
     expect(JSON.stringify(ai.run.mock.calls[1]?.[1])).toContain('response: invalid JSON');
     expect(result.provider).toBe('workers-ai');
-    expect(result.confidence.total).toEqual({ value: 0.6, label: 'Check' });
-    expect(result.confidence.lineItems.every((item) => item.value <= 0.6 && item.label !== 'High')).toBe(true);
+    expect(result.confidence.total).toEqual({ value: 0.95, label: 'High' });
+    expect(result.confidence.lineItems).toEqual([{ value: 0.96, label: 'High' }]);
+    expect(result.confidence.recipientGstNumber).toEqual({ value: 0, label: 'Missing' });
   });
 
   it('returns 502 after two invalid Workers AI schema responses', async () => {
@@ -369,8 +370,8 @@ describe('invoice import extraction providers', () => {
       ],
     });
     expect(result.confidence.lineItems).toEqual([
-      { value: 0.6, label: 'Check' },
-      { value: 0.6, label: 'Check' },
+      { value: 0.92, label: 'High' },
+      { value: 1, label: 'High' },
     ]);
   });
 
