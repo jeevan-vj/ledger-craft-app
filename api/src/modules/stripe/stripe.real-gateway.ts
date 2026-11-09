@@ -23,9 +23,26 @@ function requireLocalMockUrl(appUrl: string): void {
   if (!['localhost', '127.0.0.1', '[::1]'].includes(hostname)) throw new Error('Stripe mock mode requires a local APP_URL');
 }
 
-function secretKeyMode(secretKey: string): 'test' | 'live' | undefined {
+function localAppUrl(appUrl: string | undefined): boolean {
+  try {
+    return ['localhost', '127.0.0.1', '[::1]'].includes(new URL(appUrl ?? '').hostname);
+  } catch {
+    return false;
+  }
+}
+
+function oakSandboxContext(secretKey: string, env: Record<string, string | undefined> | undefined): string | undefined {
+  // Stripe CLI sandbox sessions use an oak_ user token. The prefix can say oak_live_
+  // while the context is a sandbox, so this stays test mode and only on a local app.
+  if (!env || env.NODE_ENV === 'production' || !/^oak_(?:live|test)_/.test(secretKey) || !localAppUrl(env.APP_URL)) return undefined;
+  const context = env.STRIPE_CONTEXT?.trim();
+  return context && /^acct_[A-Za-z0-9]+$/.test(context) ? context : undefined;
+}
+
+function secretKeyMode(secretKey: string, env?: Record<string, string | undefined>): 'test' | 'live' | undefined {
   if (/^(?:sk|rk|rkcs)_test_/.test(secretKey)) return 'test';
   if (/^(?:sk|rk)_live_/.test(secretKey)) return 'live';
+  if (oakSandboxContext(secretKey, env)) return 'test';
   return undefined;
 }
 
@@ -41,7 +58,7 @@ function stripeAvailability(env: Record<string, string | undefined>): { capabili
     const secretKey = env.STRIPE_SECRET_KEY?.trim();
     const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
     const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
-    return { capability: secretKey && webhookSecret && connectWebhookSecret && secretKeyMode(secretKey) ? 'available' : 'unavailable' };
+    return { capability: secretKey && webhookSecret && connectWebhookSecret && secretKeyMode(secretKey, env) ? 'available' : 'unavailable' };
   } catch (error) {
     return { capability: 'unavailable', error: error instanceof Error ? error.message : 'Stripe configuration is invalid' };
   }
@@ -69,10 +86,21 @@ function remoteAccount(account: Stripe.V2.Core.Account): StripeRemoteAccount {
   };
 }
 
-export function createStripeGateway(secretKey: string): StripeGateway {
+function sandboxLivemodeClient(): Stripe.HttpClient {
+  // A CLI sandbox token is refused on Accounts v2 unless the request says the
+  // context is not live. Normal secret keys never take this client.
+  const client = Stripe.createFetchHttpClient();
+  const makeRequest = client.makeRequest.bind(client);
+  client.makeRequest = (host, port, path, method, headers, requestData, protocol, timeout) =>
+    makeRequest(host, port, path, method, { ...headers, 'Stripe-Livemode': 'false' }, requestData, protocol, timeout);
+  return client;
+}
+
+export function createStripeGateway(secretKey: string, stripeContext?: string): StripeGateway {
   const stripe = new Stripe(secretKey, {
     apiVersion: STRIPE_API_VERSION,
-    httpClient: Stripe.createFetchHttpClient(),
+    httpClient: stripeContext ? sandboxLivemodeClient() : Stripe.createFetchHttpClient(),
+    ...(stripeContext ? { stripeContext } : {}),
   });
   return {
     async createConnectedAccount(input) {
@@ -194,7 +222,7 @@ export function createStripeGateway(secretKey: string): StripeGateway {
 }
 
 export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): { gateway: StripeGateway; config: StripeConfig } | undefined {
-  const webhookOnly = env.STRIPE_MOCK_MODE !== 'true' && env.STRIPE_PAYMENTS_ENABLED !== 'true' && !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET && !!env.STRIPE_CONNECT_WEBHOOK_SECRET && !!secretKeyMode(env.STRIPE_SECRET_KEY);
+  const webhookOnly = env.STRIPE_MOCK_MODE !== 'true' && env.STRIPE_PAYMENTS_ENABLED !== 'true' && !!env.STRIPE_SECRET_KEY && !!env.STRIPE_WEBHOOK_SECRET && !!env.STRIPE_CONNECT_WEBHOOK_SECRET && !!secretKeyMode(env.STRIPE_SECRET_KEY, env);
   const availability = stripeAvailability(webhookOnly ? { ...env, STRIPE_PAYMENTS_ENABLED: 'true' } : env);
   if (availability.capability !== 'available') {
     if (env.STRIPE_MOCK_MODE === 'true' && availability.error) throw new Error(availability.error);
@@ -217,11 +245,11 @@ export function stripeRuntimeFromEnv(env: Record<string, string | undefined>): {
   const webhookSecret = env.STRIPE_WEBHOOK_SECRET?.trim();
   const connectWebhookSecret = env.STRIPE_CONNECT_WEBHOOK_SECRET?.trim();
   if (!secretKey || !webhookSecret || !connectWebhookSecret) return undefined;
-  const mode = secretKeyMode(secretKey);
+  const mode = secretKeyMode(secretKey, env);
   if (!mode) throw new Error('Stripe secret key must be a test or live secret key');
   const { basisPoints, fixedCents } = platformFees(env);
   return {
-    gateway: createStripeGateway(secretKey),
+    gateway: createStripeGateway(secretKey, oakSandboxContext(secretKey, env)),
     config: {
       enabled: env.STRIPE_PAYMENTS_ENABLED === 'true', mode,
       approvedOrganisationIds: (env.STRIPE_APPROVED_ORGANISATION_IDS ?? '').split(',').map(value => value.trim()).filter(Boolean),
