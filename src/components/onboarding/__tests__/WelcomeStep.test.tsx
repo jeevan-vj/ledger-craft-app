@@ -15,15 +15,33 @@ const baseData = {
 };
 
 describe('WelcomeStep', () => {
-  it('requires the NZ GST number and registration date without inventing IRD choices', async () => {
+  it('asks an NZ registered business for basis, frequency and period end, and does not save a suggested default', async () => {
+    const user = userEvent.setup();
     const onDataChange = vi.fn();
     const { rerender } = render(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'registered' }} onDataChange={onDataChange} onNext={vi.fn()} />);
     expect(screen.getByLabelText('NZ GST number')).toBeInTheDocument();
-    expect(screen.getByLabelText('GST registration date')).toHaveValue('');
+    expect(screen.getByLabelText('Accounting basis')).toHaveValue('');
+    expect(screen.getByLabelText('Filing frequency')).toHaveValue('');
+    expect(screen.getByLabelText('Period-ending month')).toHaveValue('');
+    expect(screen.getByText(/payments basis, two-monthly filing, and a period ending in March are common/i)).toBeInTheDocument();
+    expect(onDataChange).not.toHaveBeenCalled();
     expect(screen.getByTestId('onboarding-submit')).toBeDisabled();
     rerender(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'registered', taxId: '49098576', gstRegisteredFrom: '2026-04-01' }} onDataChange={onDataChange} onNext={vi.fn()} />);
+    expect(screen.getByTestId('onboarding-submit')).toBeDisabled();
+    await user.selectOptions(screen.getByLabelText('Accounting basis'), 'payments');
+    await user.selectOptions(screen.getByLabelText('Filing frequency'), 'two_monthly');
+    await user.selectOptions(screen.getByLabelText('Period-ending month'), '3');
+    expect(onDataChange).toHaveBeenCalledWith({ gstAccountingBasis: 'payments' });
+    expect(onDataChange).toHaveBeenCalledWith({ gstFilingFrequency: 'two_monthly' });
+    expect(onDataChange).toHaveBeenCalledWith({ gstPeriodAnchor: 3 });
+    rerender(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'registered', taxId: '49098576', gstRegisteredFrom: '2026-04-01', gstAccountingBasis: 'payments', gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 3 }} onDataChange={onDataChange} onNext={vi.fn()} />);
     expect(screen.getByTestId('onboarding-submit')).toBeEnabled();
-    expect(screen.getByText(/confirm.*IRD.*GST settings/i)).toBeInTheDocument();
+  });
+
+  it('skips IRD filing choices when the business is not GST registered', () => {
+    render(<WelcomeStep data={{ ...baseData, businessName: 'Kauri Studio', gstRegistrationStatus: 'not_registered' }} onDataChange={vi.fn()} onNext={vi.fn()} />);
+    expect(screen.queryByLabelText('Accounting basis')).not.toBeInTheDocument();
+    expect(screen.getByTestId('onboarding-submit')).toBeEnabled();
   });
   it('shows name, country, prefilled email, and no extra setup fields', () => {
     render(

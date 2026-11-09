@@ -22,6 +22,9 @@ import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { homeTaskStorage } from './homeTaskStorage';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
+import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
+import { GstFilingSettingsBanner } from '@/components/reports/GstFilingSettingsBanner';
+import { needsGstFilingSettings } from '@/features/reports/gstFilingSettings';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
@@ -159,6 +162,8 @@ export default function DashboardScreen() {
   const openInvoices = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceList' }));
   const openQuotes = () => navigation.navigate('Invoices', invoiceTabParams({ name: 'QuoteList' }));
   const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
+  const openGstSettings = () => navigation.navigate('More', moreTabParams({ name: 'Reports' }));
+  const profile = useQuery({ queryKey: ['business-profile'], queryFn: () => businessProfileApi.get() });
   const openFirstInvoice = useCallback(() => {
     navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
   }, [navigation]);
@@ -214,6 +219,8 @@ export default function DashboardScreen() {
       <View><Text style={theme.type.subhead}>Good to see you</Text><Text style={[theme.type.title, { marginTop: 2 }]}>{firstName}</Text></View>
       <View style={[styles.avatar, { backgroundColor: theme.colors.accent }]}><Text style={[styles.avatarText, { color: theme.colors.accentForeground }]}>{name.slice(0, 1).toUpperCase()}</Text></View>
     </View>
+
+    {needsGstFilingSettings(profile.data) ? <GstFilingSettingsBanner onOpen={openGstSettings} /> : null}
 
     {firstInvoice ? taskSection : null}
 

@@ -60,6 +60,7 @@ async function saveProfile(
       country: 'NZ',
       defaultTaxRate: '15',
       gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01',
+      gstAccountingBasis: 'payments', gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 3,
       ...extra,
     }),
   });

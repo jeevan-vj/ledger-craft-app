@@ -23,7 +23,7 @@ async function scenario(run: (app: App, headers: Record<string, string>, invoice
     const { db, sql } = createDb(getDatabaseUrl());
     try {
       const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true }); const headers = await signup(app);
-      await json(app, headers, '/api/business-profile', { name: 'Credit Reference Limited', email: 'owner@credit.example.test', country: 'NZ', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01', defaultTaxRate: '15' }, 200, 'PUT');
+      await json(app, headers, '/api/business-profile', { name: 'Credit Reference Limited', email: 'owner@credit.example.test', country: 'NZ', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01', gstAccountingBasis: 'payments', gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 3, defaultTaxRate: '15' }, 200, 'PUT');
       const customer = await json(app, headers, '/api/customers', { name: 'Harbour Cafe', email: 'accounts@harbour.example.test' });
       const invoice = invoiceSchema.parse(await json(app, headers, '/api/invoices', { customerId: customer.id, date: '2026-04-01', dueDate: '2026-04-30', taxInclusive: false, taxRate: '15', currency: 'NZD', items: [{ description: 'Consulting', quantity: '1', rate: '1000' }] }));
       await json(app, headers, `/api/invoices/${invoice.id}`, { status: 'sent' }, 200, 'PATCH');

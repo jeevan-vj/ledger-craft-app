@@ -24,7 +24,9 @@ import * as repo from './payments.repository';
 import { bankLedgerAccount, postBalancedEntry, reversePosting, systemAccount } from '../accounting/posting';
 import * as bankRepo from '../bank/bank.repository';
 import { hasActiveCreditNotes, latestActiveCreditNoteDate } from '../credit-notes/credit-notes.repository';
+import { assertGstSellerReady } from '../invoices/gst-compliance';
 import { postInvoiceJournal } from '../invoices/invoices.journal';
+import * as profileRepo from '../business-profile/business-profile.repository';
 import { assertOpenSettlementPeriod, exchangeDifferenceLine, settlementSnapshot } from '../currency/settlement.service';
 
 function paymentState(total: string, totalPaid: string, currentStatus: string) {
@@ -96,6 +98,8 @@ export async function createPaymentInTx(
   }
 
   if (invoice.status === 'draft') {
+    const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
+    assertGstSellerReady(profile, invoice.date, invoice.taxAmount);
     await postInvoiceJournal(tx, ctx, { invoiceId: invoice.id, invoiceNumber: invoice.invoiceNumber, date: invoice.date, subtotal: invoice.subtotal, taxAmount: invoice.taxAmount, total: invoice.total });
     await invoicesRepo.updateInvoiceStatus(tx, ctx.organisationId, invoice.id, 'sent');
   }

@@ -22,12 +22,16 @@ export function assertGstBuyerInformation(
   }
 }
 
-export function assertGstSellerReady(profile: (Pick<BusinessProfileDto, 'gstRegistrationStatus' | 'taxId' | 'country'> & { gstRegisteredFrom?: string | null }) | undefined, date: string, taxAmount: string) {
+export function assertGstSellerReady(profile: (Pick<BusinessProfileDto, 'gstRegistrationStatus' | 'taxId' | 'country' | 'gstAccountingBasis' | 'gstFilingFrequency' | 'gstPeriodAnchor'> & { gstRegisteredFrom?: string | null }) | undefined, date: string, taxAmount: string) {
   if (profile?.gstRegistrationStatus !== 'registered' || !isNzBusinessCountry(profile.country)) return;
   if (!profile.taxId || !normalizeNzGstNumber(profile.taxId) || !gstDateSchema.safeParse(profile.gstRegisteredFrom).success) {
     throw apiError(422, 'GST_REGISTRATION_REVIEW_REQUIRED', 'Complete GST settings with a valid seller GST number and registration date before issuing this tax invoice. You can keep preparing it as a draft.');
   }
   if (!gstDateSchema.safeParse(date).success || (profile.gstRegisteredFrom && date < profile.gstRegisteredFrom && decimal(taxAmount).compare(0) !== 0)) {
     throw apiError(422, 'GST_REGISTRATION_REVIEW_REQUIRED', 'This invoice predates GST registration or has an invalid issue date. Review its date and stored tax before issuing; original amounts have not been changed.');
+  }
+  if (profile.gstRegisteredFrom && date < profile.gstRegisteredFrom) return;
+  if (!profile.gstAccountingBasis || !profile.gstFilingFrequency || profile.gstPeriodAnchor == null) {
+    throw apiError(422, 'GST_FILING_SETTINGS_REQUIRED', 'Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice. Drafts can still be edited.');
   }
 }

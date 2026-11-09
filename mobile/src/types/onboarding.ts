@@ -11,6 +11,9 @@ export interface OnboardingData {
   gstRegistrationStatus: 'unknown' | 'registered' | 'not_registered';
   taxId?: string;
   gstRegisteredFrom?: string;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
   phone?: string;
   address?: string;
   city?: string;

@@ -34,12 +34,13 @@ describe('independent accountant month-close acceptance', () => {
         return JSON.parse(text) as T;
       }
       const post = <T = { id: string }>(path: string, body: unknown, status = 201) => request<T>(path, 'POST', body, status);
-      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' });
+      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'unknown' });
       const customer = await post('/api/customers', { name: 'October client', email: 'client@example.test' });
       const invoice = await post('/api/invoices', { customerId: customer.id, date: '2026-10-05', dueDate: '2026-10-31', taxInclusive: false, taxRate: '15', currency: 'NZD', items: [{ description: 'October services', quantity: '1', rate: '2000' }] });
       await request(`/api/invoices/${invoice.id}`, 'PATCH', { status: 'sent' });
       const zeroRated = await post('/api/invoices', { customerId: customer.id, date: '2026-10-06', dueDate: '2026-10-31', taxInclusive: false, taxRate: '0', currency: 'NZD', items: [{ description: 'Zero-rated services', quantity: '1', rate: '500' }] });
       await request(`/api/invoices/${zeroRated.id}`, 'PATCH', { status: 'sent' });
+      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' });
       await post('/api/payments', { invoiceId: invoice.id, amount: '1150', paymentDate: '2026-10-10', paymentMethod: 'bank_transfer' });
       await post('/api/expenses', { description: 'October paid operating receipt', amount: '230', taxAmount: '30', gstTreatment: 'standard', currency: 'NZD', expenseDate: '2026-10-15', status: 'approved' });
       const chart = await request<{ accounts: Array<{ id: string; accountNumber: string }> }>('/api/accounts');

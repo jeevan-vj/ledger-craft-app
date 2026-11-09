@@ -61,6 +61,7 @@ async function saveProfile(app: ReturnType<typeof createApp>, cookie: string) {
       country: 'NZ',
       defaultTaxRate: '15',
       gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01',
+      gstAccountingBasis: 'payments', gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 3,
     }),
   });
   expect(response.status).toBe(200);

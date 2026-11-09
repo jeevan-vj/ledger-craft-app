@@ -73,6 +73,9 @@ export default function OnboardingScreen() {
         gstRegistrationStatus: business?.gstRegistrationStatus || current.gstRegistrationStatus,
         taxId: business?.taxId || current.taxId,
         gstRegisteredFrom: business?.gstRegisteredFrom || current.gstRegisteredFrom,
+        gstAccountingBasis: business?.gstAccountingBasis ?? current.gstAccountingBasis,
+        gstFilingFrequency: business?.gstFilingFrequency ?? current.gstFilingFrequency,
+        gstPeriodAnchor: business?.gstPeriodAnchor ?? current.gstPeriodAnchor,
       }));
       if (business) setStep(Math.max(0, Math.min(2, business.step)));
     }).catch(() => undefined);
@@ -91,6 +94,9 @@ export default function OnboardingScreen() {
       gstRegistrationStatus: data.gstRegistrationStatus,
       taxId: data.taxId,
       gstRegisteredFrom: data.gstRegisteredFrom,
+      gstAccountingBasis: data.gstAccountingBasis,
+      gstFilingFrequency: data.gstFilingFrequency,
+      gstPeriodAnchor: data.gstPeriodAnchor,
     }).catch(() => undefined);
   };
 
@@ -118,6 +124,9 @@ export default function OnboardingScreen() {
     if (nzRegistered && (!normalizedGst || !gstDateSchema.safeParse(data.gstRegisteredFrom).success)) {
       setError('Enter a valid NZ GST number and registration date before finishing setup.'); return;
     }
+    if (nzRegistered && (!data.gstAccountingBasis || !data.gstFilingFrequency || data.gstPeriodAnchor == null)) {
+      setError('Choose the accounting basis, filing frequency and period-ending month IRD confirmed.'); return;
+    }
     const tax = businessTaxDefaults(data.country, data.gstRegistrationStatus);
     setIsLoading(true);
     try {
@@ -127,7 +136,7 @@ export default function OnboardingScreen() {
         businessEmail: data.businessEmail || user?.email || '',
         phone: data.phone?.trim() || undefined,
         ...tax,
-        ...(nzRegistered ? { taxId: normalizedGst!, gstRegisteredFrom: data.gstRegisteredFrom } : {}),
+        ...(nzRegistered ? { taxId: normalizedGst!, gstRegisteredFrom: data.gstRegisteredFrom, gstAccountingBasis: data.gstAccountingBasis, gstFilingFrequency: data.gstFilingFrequency, gstPeriodAnchor: data.gstPeriodAnchor } : {}),
       });
       await Promise.all([
         onboardingStorage.clearAccountDraft(),
@@ -163,7 +172,7 @@ export default function OnboardingScreen() {
 
   const selectGst = (status: GstRegistrationStatus) => {
     if (status !== data.gstRegistrationStatus) selectionHaptic();
-    update({ gstRegistrationStatus: status });
+    update(status === 'registered' ? { gstRegistrationStatus: status } : { gstRegistrationStatus: status, gstAccountingBasis: null, gstFilingFrequency: null, gstPeriodAnchor: null });
   };
 
   return (
@@ -220,7 +229,24 @@ export default function OnboardingScreen() {
               {data.gstRegistrationStatus === 'registered' && ['NZ', 'New Zealand'].includes(data.country) ? <>
                 <ModernInput label="NZ GST number" value={data.taxId ?? ''} onChangeText={taxId => update({ taxId })} placeholder="49091850" />
                 <ModernInput label="GST registered from" value={data.gstRegisteredFrom ?? ''} onChangeText={gstRegisteredFrom => update({ gstRegisteredFrom })} placeholder="YYYY-MM-DD" />
-                <Text style={styles.footerNote}>Confirm your filing basis and frequency in Reports → GST settings before saving a return.</Text>
+                <Text style={styles.footerNote}>Payments basis, two-monthly filing, and a period ending in March are common. Choose what IRD confirmed. Nothing is saved until you select it.</Text>
+                <Text style={styles.fieldLabel}>Accounting basis</Text>
+                <Choice selected={data.gstAccountingBasis === 'payments'} label="Payments basis" body="Follows money received and paid." onPress={() => update({ gstAccountingBasis: 'payments' })} />
+                <Choice selected={data.gstAccountingBasis === 'invoice'} label="Invoice basis" body="Follows the invoice or bill date." onPress={() => update({ gstAccountingBasis: 'invoice' })} />
+                <Choice selected={data.gstAccountingBasis === 'hybrid'} label="Hybrid basis" body="Invoice sales and payments purchases." onPress={() => update({ gstAccountingBasis: 'hybrid' })} />
+                <Text style={styles.fieldLabel}>Filing frequency</Text>
+                <Choice selected={data.gstFilingFrequency === 'monthly'} label="Monthly" body="File a GST return every month." onPress={() => update({ gstFilingFrequency: 'monthly' })} />
+                <Choice selected={data.gstFilingFrequency === 'two_monthly'} label="Two-monthly" body="A common IRD filing cycle." onPress={() => update({ gstFilingFrequency: 'two_monthly' })} />
+                <Choice selected={data.gstFilingFrequency === 'six_monthly'} label="Six-monthly" body="File twice a year." onPress={() => update({ gstFilingFrequency: 'six_monthly' })} />
+                <Text style={styles.fieldLabel}>Period-ending month</Text>
+                <Text style={styles.footerNote}>IRD assigns the month your GST period ends. March is a common ending month.</Text>
+                <View style={styles.months}>
+                  {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => (
+                    <Pressable key={month} accessibilityRole="radio" accessibilityLabel={`Period ending ${month}`} accessibilityState={{ selected: data.gstPeriodAnchor === index + 1 }} onPress={() => update({ gstPeriodAnchor: index + 1 })} style={[styles.month, data.gstPeriodAnchor === index + 1 && styles.optionSelected]}>
+                      <Text style={styles.optionBody}>{month}</Text>
+                    </Pressable>
+                  ))}
+                </View>
               </> : null}
               {error ? <Text style={styles.error}>{error}</Text> : null}
             </View>
@@ -242,6 +268,17 @@ export default function OnboardingScreen() {
           update({ country });
         }} onClose={() => setShowCountryPicker(false)} />
     </SafeAreaView>
+  );
+}
+
+function Choice({ selected, label, body, onPress }: { selected: boolean; label: string; body: string; onPress: () => void }) {
+  const theme = useTheme();
+  const styles = createStyles(theme);
+  return (
+    <Pressable onPress={onPress} accessibilityRole="radio" accessibilityLabel={label} accessibilityState={{ selected }} style={[styles.option, selected && styles.optionSelected]}>
+      <View style={[styles.radio, selected && styles.radioSelected]}>{selected ? <View style={styles.radioDot} /> : null}</View>
+      <View style={styles.optionCopy}><Text style={styles.optionTitle}>{label}</Text><Text style={styles.optionBody}>{body}</Text></View>
+    </Pressable>
   );
 }
 
@@ -292,4 +329,6 @@ const createStyles = (theme: ReturnType<typeof useTheme>) => StyleSheet.create({
   error: { ...theme.type.footnote, color: theme.colors.danger, marginTop: space.sm },
   footer: { paddingHorizontal: space.xxl, paddingBottom: space.lg },
   footerNote: { ...theme.type.footnote, textAlign: 'center', marginTop: space.md },
+  months: { flexDirection: 'row', flexWrap: 'wrap', gap: space.sm },
+  month: { minHeight: 44, minWidth: 96, paddingHorizontal: space.md, borderRadius: radius.md, borderWidth: 1, borderColor: theme.colors.border, alignItems: 'center', justifyContent: 'center', backgroundColor: theme.colors.fillMuted },
 });

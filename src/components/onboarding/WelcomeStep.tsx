@@ -27,7 +27,8 @@ export default function WelcomeStep({
   const gstStatus = data.gstRegistrationStatus ?? 'unknown';
   const tax = businessTaxDefaults(data.country, gstStatus);
   const needsNzRegistration = isNzBusinessCountry(data.country) && gstStatus === 'registered';
-  const registrationValid = !needsNzRegistration || (Boolean(normalizeNzGstNumber(data.taxId ?? '')) && gstDateSchema.safeParse(data.gstRegisteredFrom).success);
+  const filingChosen = Boolean(data.gstAccountingBasis && data.gstFilingFrequency && data.gstPeriodAnchor);
+  const registrationValid = !needsNzRegistration || (Boolean(normalizeNzGstNumber(data.taxId ?? '')) && gstDateSchema.safeParse(data.gstRegisteredFrom).success && filingChosen);
   const isValid = data.businessName.trim().length >= 2 && gstStatus !== 'unknown' && registrationValid;
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -95,7 +96,7 @@ export default function WelcomeStep({
           selected={gstStatus === 'not_registered'}
           title="No, I’m not registered"
           body="New transactions will not add GST by default."
-          onSelect={() => onDataChange({ gstRegistrationStatus: 'not_registered' })}
+          onSelect={() => onDataChange({ gstRegistrationStatus: 'not_registered', gstAccountingBasis: null, gstFilingFrequency: null, gstPeriodAnchor: null })}
         />
         {gstStatus === 'registered' && (
           <p className="text-sm text-muted-foreground">
@@ -110,8 +111,36 @@ export default function WelcomeStep({
       {needsNzRegistration ? <div className="space-y-3 rounded-xl border border-border bg-muted/30 p-4">
         <div><label htmlFor="onboarding-gst-number" className="mb-1 block text-sm font-medium">NZ GST number</label><input id="onboarding-gst-number" value={data.taxId ?? ''} onChange={event => onDataChange({ taxId: event.target.value })} inputMode="numeric" className="w-full rounded-lg border border-border bg-background px-3 py-2" placeholder="49-098-576" /></div>
         <div><label htmlFor="onboarding-gst-date" className="mb-1 block text-sm font-medium">GST registration date</label><input id="onboarding-gst-date" type="date" value={data.gstRegisteredFrom ?? ''} onChange={event => onDataChange({ gstRegisteredFrom: event.target.value })} className="w-full rounded-lg border border-border bg-background px-3 py-2" /></div>
-        {!registrationValid ? <p role="alert" className="text-sm text-amber-700">Enter a valid NZ IRD/GST number and the registration date confirmed by IRD.</p> : null}
-        <p className="text-sm text-muted-foreground">After setup, confirm your IRD accounting basis and filing frequency in GST settings. We do not choose these for you.</p>
+        <p className="text-sm text-muted-foreground">Payments basis, two-monthly filing, and a period ending in March are common. Choose the values IRD confirmed. Nothing is saved until you select it.</p>
+        <div>
+          <label htmlFor="onboarding-gst-basis" className="mb-1 block text-sm font-medium">Accounting basis</label>
+          <select id="onboarding-gst-basis" value={data.gstAccountingBasis ?? ''} onChange={event => onDataChange({ gstAccountingBasis: (event.target.value || null) as OnboardingStepProps['data']['gstAccountingBasis'] })} className="w-full rounded-lg border border-border bg-background px-3 py-2">
+            <option value="">Choose the basis IRD confirmed</option>
+            <option value="payments">Payments basis</option>
+            <option value="invoice">Invoice basis</option>
+            <option value="hybrid">Hybrid: invoice sales, payments purchases</option>
+          </select>
+          <p className="mt-1 text-sm text-muted-foreground">Payments basis follows money received and paid. Invoice basis follows the invoice date. Hybrid uses invoice sales and payments purchases.</p>
+        </div>
+        <div>
+          <label htmlFor="onboarding-gst-frequency" className="mb-1 block text-sm font-medium">Filing frequency</label>
+          <select id="onboarding-gst-frequency" value={data.gstFilingFrequency ?? ''} onChange={event => onDataChange({ gstFilingFrequency: (event.target.value || null) as OnboardingStepProps['data']['gstFilingFrequency'] })} className="w-full rounded-lg border border-border bg-background px-3 py-2">
+            <option value="">Choose how often you file</option>
+            <option value="monthly">Monthly</option>
+            <option value="two_monthly">Two-monthly</option>
+            <option value="six_monthly">Six-monthly</option>
+          </select>
+          <p className="mt-1 text-sm text-muted-foreground">This is how often you file a GST return with IRD.</p>
+        </div>
+        <div>
+          <label htmlFor="onboarding-gst-anchor" className="mb-1 block text-sm font-medium">Period-ending month</label>
+          <select id="onboarding-gst-anchor" value={data.gstPeriodAnchor ?? ''} onChange={event => onDataChange({ gstPeriodAnchor: event.target.value ? Number(event.target.value) : null })} className="w-full rounded-lg border border-border bg-background px-3 py-2">
+            <option value="">Choose the month your GST period ends</option>
+            {['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'].map((month, index) => <option key={month} value={index + 1}>{month}</option>)}
+          </select>
+          <p className="mt-1 text-sm text-muted-foreground">IRD assigns this month. March is a common ending month.</p>
+        </div>
+        {!registrationValid ? <p role="alert" className="text-sm text-amber-700">Enter a valid NZ IRD/GST number, the registration date, and the basis, frequency and period-ending month confirmed by IRD.</p> : null}
       </div> : null}
 
       {data.businessEmail && (
