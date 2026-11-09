@@ -6,6 +6,7 @@ import * as Clipboard from 'expo-clipboard';
 import { mockInvoice } from '@/__tests__/fixtures/invoice.fixtures';
 import { invoiceService } from '@/services/invoiceService';
 import { downloadInvoicePDF, shareInvoicePDF } from '@/utils/pdfUtils';
+import { AuthApiError } from '@/features/auth/api/http';
 import InvoiceShareActions from './InvoiceShareActions';
 
 jest.mock('@/services/invoiceService', () => ({ invoiceService: {
@@ -98,6 +99,27 @@ it('retains current link after revoke failure, allows retry, and never exposes r
   fireEvent.press(view.getByLabelText('Revoke all links'));
   await confirm('Revoke all links?');
   await view.findByText('Access revoked. Existing links no longer work.');
+});
+
+it('shows the GST filing message and settings action, and keeps other failures generic', async () => {
+  const onOpenGstSettings = jest.fn();
+  jest.mocked(invoiceService.listShareLinks).mockResolvedValue([]);
+  jest.mocked(invoiceService.createShareLink).mockRejectedValueOnce(new AuthApiError('Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice.', 422, 'GST_FILING_SETTINGS_REQUIRED'));
+  const filing = render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><InvoiceShareActions visible invoice={mockInvoice} onOpenGstSettings={onOpenGstSettings} onClose={jest.fn()} /></QueryClientProvider>);
+  await filing.findByText('No active link');
+  fireEvent.press(filing.getByLabelText('Share link'));
+  expect(await filing.findByText(/accounting basis, filing frequency and period-ending month/)).toBeTruthy();
+  expect(filing.queryByText(/shared\/invoice|shareToken/)).toBeNull();
+  fireEvent.press(filing.getByLabelText('Open GST settings'));
+  expect(onOpenGstSettings).toHaveBeenCalledTimes(1);
+
+  jest.mocked(invoiceService.createShareLink).mockRejectedValueOnce(new Error('https://site/shared/invoice/secret-token'));
+  const generic = render(<QueryClientProvider client={new QueryClient({ defaultOptions: { queries: { retry: false } } })}><InvoiceShareActions visible invoice={mockInvoice} onOpenGstSettings={onOpenGstSettings} onClose={jest.fn()} /></QueryClientProvider>);
+  await generic.findByText('No active link');
+  fireEvent.press(generic.getByLabelText('Share link'));
+  expect(await generic.findByText('Unable to complete action. Please try again.')).toBeTruthy();
+  expect(generic.queryByText(/secret-token/)).toBeNull();
+  expect(generic.queryByLabelText('Open GST settings')).toBeNull();
 });
 
 it('creates with no expiry by default and preserves PDF actions and export cancellation', async () => {

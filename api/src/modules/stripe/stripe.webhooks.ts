@@ -1,5 +1,6 @@
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
+import { errorCodeFromCause } from '../../http-error';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import { moneyToCents } from '../invoices/money';
 import { createPaymentInTx } from '../payments/payments.service';
@@ -31,11 +32,17 @@ async function recordPayment(db: Database, remote: StripeRemotePayment, event: S
     }
     const ctx = { organisationId: link.organisationId, userId: link.userId, role: 'owner' as const };
     const paymentDate = localDateIn(new Date(), 'Pacific/Auckland');
-    const payment = await createPaymentInTx(tx, ctx, { invoiceId: link.invoiceId, paymentMethod: 'online', amount: link.amount, paymentDate, referenceNumber: remote.id, notes: 'Paid through verified Stripe Checkout' }, undefined, { clearingAccountNumber: '1130' });
-    const receipt = await createReceiptInTx(tx, ctx, { paymentId: payment.id }, { provider: 'stripe', paymentIntentId: remote.id, checkoutSessionId: link.stripeCheckoutSessionId });
-    await ops.postFee(tx, ctx, link, paymentDate);
-    await repo.markLinkPaid(tx, link.organisationId, link.id, { paymentIntentId: remote.id, paymentId: payment.id, receiptId: receipt.id });
-    await repo.completeEvent(tx, event.id, 'processed');
+    try {
+      const payment = await createPaymentInTx(tx, ctx, { invoiceId: link.invoiceId, paymentMethod: 'online', amount: link.amount, paymentDate, referenceNumber: remote.id, notes: 'Paid through verified Stripe Checkout' }, undefined, { clearingAccountNumber: '1130' });
+      const receipt = await createReceiptInTx(tx, ctx, { paymentId: payment.id }, { provider: 'stripe', paymentIntentId: remote.id, checkoutSessionId: link.stripeCheckoutSessionId });
+      await ops.postFee(tx, ctx, link, paymentDate);
+      await repo.markLinkPaid(tx, link.organisationId, link.id, { paymentIntentId: remote.id, paymentId: payment.id, receiptId: receipt.id });
+      await repo.completeEvent(tx, event.id, 'processed');
+    } catch (error) {
+      if (!(error instanceof HTTPException) || errorCodeFromCause(error.cause, '') !== 'GST_FILING_SETTINGS_REQUIRED') throw error;
+      await audit.record(tx, { organisationId: link.organisationId, stripeObjectId: remote.id, kind: 'captured_payment', result: 'review_required', differences: ['gst_filing_settings_required'], details: { amount: link.amount, paymentLinkId: link.id, warning: 'Captured provider funds need saved GST filing settings before they can be applied to this draft. No ledger payment was created.' } });
+      await repo.completeEvent(tx, event.id, 'processed');
+    }
   });
 }
 export async function processVerifiedWebhook(db: Database, event: StripeWebhookEvent, gateway: StripeGateway, config: StripeConfig) {

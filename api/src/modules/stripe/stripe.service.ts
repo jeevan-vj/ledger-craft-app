@@ -5,6 +5,7 @@ import { withOrganisationTx, type OrganisationContext } from '../auth/bind-organ
 import { hasPermission } from '../auth/permissions';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
+import { assertGstSellerReady } from '../invoices/gst-compliance';
 import { moneyToCents } from '../invoices/money';
 import { calculatePlatformFeeCents } from './stripe.fees';
 import type { StripeConfig, StripeGateway } from './stripe.gateway';
@@ -85,6 +86,7 @@ export async function createPaymentLink(db: Database, userId: string, invoiceId:
     if (!invoice) throw new HTTPException(404, { message: 'Invoice not found' });
     const account = await repo.getConnectedAccount(tx, ctx.organisationId);
     if (account?.status !== 'active') throw new HTTPException(409, { message: 'Stripe onboarding must be active before accepting payments' });
+    if (invoice.status === 'draft') assertGstSellerReady(await profileRepo.getBusinessProfile(tx, ctx.organisationId), invoice.date, invoice.taxAmount);
     return { ctx, invoice, account };
   });
   if (!approved(config, data.ctx.organisationId)) throw new HTTPException(403, { message: 'Card payments for this company await beta approval. Contact the platform owner before creating a payment link.' });

@@ -646,4 +646,23 @@ describe('sale routes', () => {
       }
     });
   });
+
+  it('returns 422 when a GST-registered seller without filing settings records a quick sale', async () => {
+    await assertLocalDatabaseReachable();
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const app = createApp({ auth: createAuth(db), db, checkDatabase: async () => true });
+        const owner = await signUp(app, 'Sale GST gate');
+        const response = await app.request('/api/business-profile', {
+          method: 'PUT', headers: { ...originHeaders, Cookie: owner.cookie },
+          body: JSON.stringify({ name: 'Market Stall', email: 'stall@example.com', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' }),
+        });
+        expect(response.status).toBe(200);
+        const blocked = await postSale(app, owner.cookie, 'sale-gst-settings', { lines: [{ quantity: '1', price: '4.50' }], paymentMethod: 'cash' });
+        expect(blocked.status).toBe(422);
+        expect(errorEnvelopeSchema.parse(await blocked.json()).error.code).toBe('GST_FILING_SETTINGS_REQUIRED');
+      } finally { await sql.end({ timeout: 5 }); }
+    });
+  });
 });

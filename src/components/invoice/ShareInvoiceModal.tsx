@@ -198,8 +198,7 @@ function ShareInvoiceControls({ invoice, businessName }: ShareInvoiceModalProps)
         pending={mutation.isPending} busy={busy} actionLabel={actionLabel} setEnableExpiration={setEnableExpiration}
         setExpirationDays={setExpirationDays} onSubmit={() => current ? setConfirmReplace(true) : createLink()} />
     </ShareListState>
-    {actionError && <p role="alert" className="text-sm text-destructive">{actionError}</p>}
-    {filingSettings ? <GstFilingSettingsNotice message={actionError} /> : null}
+    {filingSettings ? <GstFilingSettingsNotice message={actionError} /> : actionError ? <p role="alert" className="text-sm text-destructive">{actionError}</p> : null}
     <p className="text-sm text-muted-foreground">Email delivery is unavailable. Copy or share a link instead.</p>
     <AlertDialog open={confirmReplace} onOpenChange={setConfirmReplace}>
       <AlertDialogContent>

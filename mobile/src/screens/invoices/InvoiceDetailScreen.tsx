@@ -677,6 +677,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
         invoice={invoice}
         businessProfile={businessProfile || undefined}
         canManageShares={canWrite}
+        onOpenGstSettings={() => { setShareActionsVisible(false); navigation.navigate('More', moreTabParams({ name: 'Reports' })); }}
         onClose={() => setShareActionsVisible(false)}
       />
     </View>

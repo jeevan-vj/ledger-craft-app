@@ -19,6 +19,7 @@ import { AppPressable } from '@/components/ui/AppPressable';
 import type { BusinessProfile, Invoice } from '@/types/invoice';
 import type { InvoiceTemplateId } from '@/types/invoiceTemplates';
 import { invoiceService } from '@/services/invoiceService';
+import { AuthApiError } from '@/features/auth/api/http';
 import {
   buildInvoiceShareMessage,
   buildPublicInvoiceUrl,
@@ -36,6 +37,7 @@ interface InvoiceShareActionsProps {
   readonly invoice: Invoice;
   readonly businessProfile?: BusinessProfile;
   readonly canManageShares?: boolean;
+  readonly onOpenGstSettings?: () => void;
   readonly onClose: () => void;
 }
 
@@ -48,6 +50,7 @@ function ShareActions({
   invoice,
   businessProfile,
   canManageShares = true,
+  onOpenGstSettings,
   onClose,
 }: InvoiceShareActionsProps) {
   const theme = useTheme();
@@ -70,6 +73,7 @@ function ShareActions({
     refetchOnReconnect: () => !lock.current,
   });
   const [error, setError] = useState<string | null>(null);
+  const [gstSettings, setGstSettings] = useState(false);
   const [revoked, setRevoked] = useState(false);
   const [now, setNow] = useState(Date.now());
   useEffect(() => {
@@ -86,12 +90,16 @@ function ShareActions({
     lock.current = true;
     setBusy(action);
     setError(null);
+    setGstSettings(false);
     try {
       if (action === 'link' || action === 'replace' || action === 'revoke') await queryClient.cancelQueries({ queryKey });
       await work();
-    } catch {
+    } catch (caught) {
       // API/native exceptions may contain the private link; never display or log them.
-      setError('Unable to complete action. Please try again.');
+      const filing = caught instanceof AuthApiError && caught.code === 'GST_FILING_SETTINGS_REQUIRED'
+        && caught.message.trim().length > 0 && !/https?:|shared\/invoice|shareToken/i.test(caught.message);
+      setGstSettings(filing);
+      setError(filing ? caught.message : 'Unable to complete action. Please try again.');
       // The server may have committed even if its response was lost. Reconcile
       // before another action; a failed refresh keeps link controls disabled.
       if (action === 'link' || action === 'replace' || action === 'revoke') {
@@ -237,6 +245,8 @@ function ShareActions({
           current={current}
           revoked={revoked}
           error={error}
+          gstSettings={gstSettings}
+          onOpenGstSettings={onOpenGstSettings}
           busy={busy}
           linkDisabled={linkDisabled}
           onReplace={replaceLink}
@@ -273,6 +283,8 @@ interface ShareStatusProps {
   readonly current: ShareInvoiceResponse | undefined;
   readonly revoked: boolean;
   readonly error: string | null;
+  readonly gstSettings: boolean;
+  readonly onOpenGstSettings?: () => void;
   readonly busy: Action;
   readonly linkDisabled: boolean;
   readonly onReplace: () => void;
@@ -280,7 +292,7 @@ interface ShareStatusProps {
   readonly canManageShares: boolean;
 }
 
-function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onReplace, onRevoke, canManageShares }: ShareStatusProps) {
+function ShareStatus({ links, current, revoked, error, gstSettings, onOpenGstSettings, busy, linkDisabled, onReplace, onRevoke, canManageShares }: ShareStatusProps) {
   const theme = useTheme();
   const styles = createStyles(theme);
   const palette = theme.colors;
@@ -306,6 +318,7 @@ function ShareStatus({ links, current, revoked, error, busy, linkDisabled, onRep
         ) : null}
       </> : null}
       {error ? <Text accessibilityRole="alert" style={styles.subtitle}>{error}</Text> : null}
+      {gstSettings && onOpenGstSettings ? <AppPressable accessibilityRole="button" accessibilityLabel="Open GST settings" onPress={onOpenGstSettings} style={{ minHeight: 44, justifyContent: 'center' }}><Text style={[styles.title, { color: palette.accentText }]}>Open GST settings</Text></AppPressable> : null}
       {busy === 'replace' || busy === 'revoke' ? <ActivityIndicator accessibilityLabel="Updating sharing access" color={palette.accentText} /> : null}
     </View>
   );

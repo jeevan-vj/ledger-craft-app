@@ -108,7 +108,7 @@ const EditInvoicePage = () => {
     } catch (e: unknown) {
       if (isGstFilingSettingsError(e)) {
         setFilingMessage(e.message);
-        return;
+        throw e;
       }
       setError(e instanceof Error ? e.message : "Error updating invoice");
       throw e;
