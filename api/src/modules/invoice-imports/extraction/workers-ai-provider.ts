@@ -1,8 +1,4 @@
-import {
-  invoiceImportExtractionDraftSchema,
-  type InvoiceImportConfidence,
-  type InvoiceImportExtractionDraft,
-} from '@ledgercraft/contracts';
+import { invoiceImportExtractionDraftSchema } from '@ledgercraft/contracts';
 import { apiError } from '../../../http-error';
 import {
   DEFAULT_WORKERS_AI_MODEL,
@@ -13,7 +9,9 @@ import {
 } from '../../ai/workers-ai';
 import { assertPdfWithinPageCap } from '../invoice-import-validation';
 import { documentContent } from './document-content';
+import { applyExtractionHeuristics } from './extraction-heuristics';
 import {
+  extractionContextText,
   INVOICE_IMPORT_SYSTEM_PROMPT,
   invoiceProviderResponseJsonSchema,
   untrustedDocumentText,
@@ -65,36 +63,6 @@ export async function workersAiDocumentContent(
   return text;
 }
 
-function capConfidence(confidence: InvoiceImportConfidence): InvoiceImportConfidence {
-  const value = Math.min(confidence.value, 0.6);
-  return { value, label: value === 0 ? 'Missing' : 'Check' };
-}
-
-function lowerConfidence(draft: Omit<InvoiceImportExtractionDraft, 'provider' | 'mock'>): InvoiceImportExtractionDraft {
-  const confidence = draft.confidence;
-  return invoiceImportExtractionDraftSchema.parse({
-    ...draft,
-    provider: 'workers-ai',
-    mock: false,
-    confidence: {
-      issuerName: capConfidence(confidence.issuerName),
-      issuerGstNumber: capConfidence(confidence.issuerGstNumber),
-      recipientName: capConfidence(confidence.recipientName),
-      recipientGstNumber: capConfidence(confidence.recipientGstNumber),
-      documentNumber: capConfidence(confidence.documentNumber),
-      issueDate: capConfidence(confidence.issueDate),
-      dueDate: capConfidence(confidence.dueDate),
-      currency: capConfidence(confidence.currency),
-      lineItems: confidence.lineItems.map(capConfidence),
-      net: capConfidence(confidence.net),
-      gst: capConfidence(confidence.gst),
-      total: capConfidence(confidence.total),
-      suggestedDirection: capConfidence(confidence.suggestedDirection),
-      thirdPartyIssued: capConfidence(confidence.thirdPartyIssued),
-    },
-  });
-}
-
 export function createWorkersAiExtractionProvider(options: {
   ai: WorkersAiBinding;
   model?: string;
@@ -106,7 +74,7 @@ export function createWorkersAiExtractionProvider(options: {
     async extractDocument(file, context) {
       const content = await workersAiDocumentContent(file, options.ai);
       const model = configuredModel || (typeof content === 'string' ? DEFAULT_WORKERS_AI_TEXT_MODEL : DEFAULT_WORKERS_AI_MODEL);
-      const organisation = `Organisation: ${context.organisationName.slice(0, 200)}${context.gstNumber ? `; GST: ${context.gstNumber.slice(0, 40)}` : ''}`;
+      const organisation = extractionContextText(context);
       let retryFeedback = '';
 
       for (let attempt = 0; attempt < 2; attempt += 1) {
@@ -142,7 +110,12 @@ export function createWorkersAiExtractionProvider(options: {
           continue;
         }
         const normalized = normalizeProviderPayload(parsed);
-        if (normalized.success) return lowerConfidence(normalized.data);
+        if (normalized.success) {
+          const adjusted = applyExtractionHeuristics(normalized.data, context, {
+            lineGstRatesRewritten: normalized.lineGstRatesRewritten,
+          });
+          return invoiceImportExtractionDraftSchema.parse({ ...adjusted, provider: 'workers-ai', mock: false });
+        }
         retryFeedback = normalized.issues.join('; ');
         if (attempt === 1) {
           throw apiError(502, 'EXTRACTION_PROVIDER_ERROR', 'Cloudflare Workers AI returned invalid structured data');

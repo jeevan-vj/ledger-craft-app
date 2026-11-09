@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm';
 import { assertAccountingDateOpen } from '../accounting/period-lock';
 import {
   invoiceImportCommitResponseSchema,
@@ -10,6 +11,7 @@ import {
   type InvoiceImportExtractionDraft,
 } from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
+import { users } from '../../db/schema/identity';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import * as profileRepo from '../business-profile/business-profile.repository';
@@ -68,14 +70,19 @@ export async function extractInvoiceImportForUser(
     if (!row) throw apiError(404, 'NOT_FOUND', 'Invoice import not found');
     if (row.status === 'committed' || row.status === 'discarded') throw apiError(409, 'IMPORT_NOT_REVIEWABLE', 'Invoice import cannot be extracted in its current state');
     const profile = await profileRepo.getBusinessProfile(tx, ctx.organisationId);
-    return { row, organisationId: ctx.organisationId, userId: ctx.userId, organisationName: profile?.name ?? 'Organisation', gstNumber: profile?.taxId ?? undefined };
+    const [account] = await tx.select({ name: users.name }).from(users).where(eq(users.id, ctx.userId));
+    return {
+      row, organisationId: ctx.organisationId, userId: ctx.userId,
+      organisationName: profile?.name ?? 'Organisation', gstNumber: profile?.taxId ?? undefined,
+      userName: account?.name,
+    };
   });
   enforceExtractionRateLimit(`${prepared.organisationId}:${prepared.userId}`);
   const file = await storage.get(prepared.row.storageKey);
   if (!file) throw apiError(404, 'NOT_FOUND', 'Invoice import file not found');
   const draft = await extractor.extractDocument({
     bytes: file.bytes, mimeType: prepared.row.mimeType, filename: prepared.row.originalFilename, sha256: prepared.row.sha256,
-  }, { organisationName: prepared.organisationName, gstNumber: prepared.gstNumber });
+  }, { organisationName: prepared.organisationName, gstNumber: prepared.gstNumber, userName: prepared.userName });
   const { issues } = recomputeAndValidateDraft(draft);
   return withOrganisationTx(db, userId, async (tx, ctx) => {
     const current = await repo.getDocumentRow(tx, ctx.organisationId, id);

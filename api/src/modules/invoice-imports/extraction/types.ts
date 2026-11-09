@@ -10,6 +10,7 @@ export type ExtractionFile = {
 export type ExtractionContext = {
   organisationName: string;
   gstNumber?: string;
+  userName?: string;
 };
 
 export interface InvoiceImportExtractionProvider {

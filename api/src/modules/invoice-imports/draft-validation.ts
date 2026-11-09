@@ -13,18 +13,18 @@ function roundHalfUp(numerator: bigint, denominator: bigint): bigint {
   return (numerator * 2n + denominator) / (denominator * 2n);
 }
 
-function moneyCents(value: string): bigint {
+export function moneyCents(value: string): bigint {
   const parsed = decimalRational(value);
   return roundHalfUp(parsed.numerator * 100n, parsed.denominator);
 }
 
-function multiplyMoney(quantity: string, unitPrice: string): bigint {
+export function multiplyMoney(quantity: string, unitPrice: string): bigint {
   const q = decimalRational(quantity);
   const price = decimalRational(unitPrice);
   return roundHalfUp(q.numerator * price.numerator * 100n, q.denominator * price.denominator);
 }
 
-function percentageCents(amountCents: bigint, rate: string): bigint {
+export function percentageCents(amountCents: bigint, rate: string): bigint {
   const parsed = decimalRational(rate);
   return roundHalfUp(amountCents * parsed.numerator, parsed.denominator * 100n);
 }
