@@ -60,6 +60,16 @@ describe('ExpenseFormDrawer', () => {
     onSubmit: mockOnSubmit,
   };
 
+  it('puts GST from a registered business inside a new receipt total', async () => {
+    vi.mocked(useAppData).mockReturnValue({
+      ...mockContextValue,
+      businessProfile: { gstRegistrationStatus: 'registered', defaultTaxRate: 15 },
+    } as ReturnType<typeof useAppData>);
+    render(<ExpenseFormDrawer {...defaultProps} />);
+    fireEvent.change(screen.getByLabelText(/^amount/i), { target: { value: '115' } });
+    expect(await screen.findByTestId('expense-gst-included')).toHaveTextContent('$15.00');
+  });
+
   it('renders the form when open', () => {
     render(<ExpenseFormDrawer {...defaultProps} />);
     

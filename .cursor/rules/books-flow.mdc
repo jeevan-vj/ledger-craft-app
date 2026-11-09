@@ -1,0 +1,16 @@
+---
+description: Run the bookkeeper Chromium flow only when an edit is on that path
+alwaysApply: true
+---
+
+# Books flow after an edit
+
+When you finish editing, run:
+
+```bash
+node scripts/books-flow-check.mjs --run
+```
+
+The script reads the files changed in git. Docs, mobile, quotes, reports, and reconciliation edits print `books-flow: skip` and do not open a browser. A signup, onboarding, invoice, payment, expense, or GST edit runs `tests/e2e/accountant-books.spec.ts` on Chromium. Fix a failure before you finish.
+
+Do not start that Playwright test yourself for an unrelated edit. The script is the decision. Pass file paths only when you need to check a list that is not the git diff.

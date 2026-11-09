@@ -15,6 +15,8 @@ A suggested checkpoint: after 20 read or search calls without an entry point fro
 
 Reproduce with the scoped command in `docs/agent/TEST_MATRIX.md`. Run that file again after the fix. Run the full CI jobs once per head you are ready to show, not between every comment. `ledgercraft-verify` is still the required set before a pull request. A scoped pass does not replace it.
 
+When the edit is finished, run `node scripts/books-flow-check.mjs --run`. That is the bookkeeper path from signup through a paid invoice and a GST receipt. It starts only when a changed file is on that path.
+
 Keep long command output in the log file. Record the command, Node version, exit code, file count, and log path.
 
 ## Review and follow-up

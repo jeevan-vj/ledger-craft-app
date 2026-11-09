@@ -296,19 +296,16 @@ export default function PaymentsPage() {
                 <h3 className="font-semibold">Select Invoice</h3>
                 <div className="grid gap-3">
                   {unpaidInvoices.map((invoice) => (
-                    <div
+                    <button
+                      type="button"
                       key={invoice.id}
-                      className={`p-4 border rounded-lg cursor-pointer transition-colors ${
+                      className={`w-full p-4 border rounded-lg text-left cursor-pointer transition-colors ${
                         selectedInvoice?.id === invoice.id
                           ? 'border-blue-500 bg-blue-50'
                           : 'border-gray-200 hover:border-gray-300'
                       }`}
-                      onClick={() => {
-                        console.log('Invoice clicked:', invoice);
-                        console.log('Setting selectedInvoice to:', invoice);
-                        setSelectedInvoice(invoice);
-                        console.log('selectedInvoice state should now be:', invoice);
-                      }}
+                      aria-label={`Select invoice ${invoice.invoiceNumber || invoice.id}`}
+                      onClick={() => setSelectedInvoice(invoice)}
                     >
                       <div className="flex items-center justify-between">
                         <div>
@@ -328,7 +325,7 @@ export default function PaymentsPage() {
                           </p>
                         </div>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </div>
               </div>

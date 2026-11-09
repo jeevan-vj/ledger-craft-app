@@ -146,6 +146,7 @@ export function CustomerCombobox({
           onClick={onAddCustomer}
           disabled={disabled || isLoading}
           title="Add new customer"
+          aria-label="Add new customer"
         >
           <UserPlus className="h-4 w-4" />
         </Button>
