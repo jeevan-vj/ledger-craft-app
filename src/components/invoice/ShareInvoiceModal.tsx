@@ -11,6 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/hooks/use-toast';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
+import { GstFilingSettingsNotice } from '@/features/tax/GstFilingSettingsNotice';
+import { isGstFilingSettingsError } from '@/features/tax/gstFilingSettings';
 import { Invoice, InvoiceTemplateName } from '@/types';
 import { businessProfileService } from '@/services/supabaseService';
 import { ProfileCompletenessBanner } from './ProfileCompletenessBanner';
@@ -108,6 +110,7 @@ function ShareInvoiceControls({ invoice, businessName }: ShareInvoiceModalProps)
   const [confirmReplace, setConfirmReplace] = useState(false);
   const [copied, setCopied] = useState(false);
   const [actionError, setActionError] = useState('');
+  const [filingSettings, setFilingSettings] = useState(false);
   const queryKey = ['invoice-shares', invoice.id];
   const days = Number(expirationDays);
   const validExpiry = !enableExpiration || (Number.isInteger(days) && days >= 1 && days <= 365);
@@ -126,8 +129,14 @@ function ShareInvoiceControls({ invoice, businessName }: ShareInvoiceModalProps)
       setActionError('');
       toast({ title: input.replace ? 'Share link replaced' : 'Share link ready', description: 'The link status below comes from the server.' });
     },
-    onError: () => {
-      setActionError('Could not update the share link. Check the current links and try again.');
+    onError: (error) => {
+      if (isGstFilingSettingsError(error)) {
+        setFilingSettings(true);
+        setActionError(error.message);
+      } else {
+        setFilingSettings(false);
+        setActionError('Could not update the share link. Check the current links and try again.');
+      }
       void queryClient.invalidateQueries({ queryKey });
     },
   });
@@ -189,7 +198,7 @@ function ShareInvoiceControls({ invoice, businessName }: ShareInvoiceModalProps)
         pending={mutation.isPending} busy={busy} actionLabel={actionLabel} setEnableExpiration={setEnableExpiration}
         setExpirationDays={setExpirationDays} onSubmit={() => current ? setConfirmReplace(true) : createLink()} />
     </ShareListState>
-    {actionError && <p role="alert" className="text-sm text-destructive">{actionError}</p>}
+    {filingSettings ? <GstFilingSettingsNotice message={actionError} /> : actionError ? <p role="alert" className="text-sm text-destructive">{actionError}</p> : null}
     <p className="text-sm text-muted-foreground">Email delivery is unavailable. Copy or share a link instead.</p>
     <AlertDialog open={confirmReplace} onOpenChange={setConfirmReplace}>
       <AlertDialogContent>

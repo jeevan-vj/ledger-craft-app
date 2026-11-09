@@ -49,7 +49,7 @@ export default function Onboarding() {
     }
     const nzRegistration = isNzBusinessCountry(data.country) && tax.gstRegistrationStatus === 'registered';
     const taxId = nzRegistration ? normalizeNzGstNumber(data.taxId ?? '') : null;
-    if (nzRegistration && (!taxId || !gstDateSchema.safeParse(data.gstRegisteredFrom).success)) return;
+    if (nzRegistration && (!taxId || !gstDateSchema.safeParse(data.gstRegisteredFrom).success || !data.gstAccountingBasis || !data.gstFilingFrequency || data.gstPeriodAnchor == null)) return;
 
     setIsLoading(true);
     try {
@@ -65,6 +65,7 @@ export default function Onboarding() {
         gstRegistrationStatus: tax.gstRegistrationStatus,
         taxId,
         gstRegisteredFrom: nzRegistration ? data.gstRegisteredFrom : null,
+        ...(nzRegistration ? { gstAccountingBasis: data.gstAccountingBasis, gstFilingFrequency: data.gstFilingFrequency, gstPeriodAnchor: data.gstPeriodAnchor } : {}),
         invoiceNumberFormat: data.invoiceNumberFormat || DEFAULT_INVOICE_NUMBER_FORMAT,
         invoiceNumberSequence: 1,
         theme: data.theme || DEFAULT_BUSINESS_THEME,

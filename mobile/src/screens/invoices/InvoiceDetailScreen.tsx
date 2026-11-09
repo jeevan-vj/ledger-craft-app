@@ -18,6 +18,7 @@ import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { NativeBottomTabNavigationProp } from '@bottom-tabs/react-navigation';
 import { Feather } from '@expo/vector-icons';
 import { InvoiceStackParamList, MainTabParamList, type RootStackParamList } from '@/navigation/types';
+import { moreTabParams } from '@/navigation/links';
 import { invoiceService } from '@/services/invoiceService';
 import { paymentService } from '@/services/paymentService';
 import type { BusinessProfile } from '@/types/invoice';
@@ -367,6 +368,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
               invoice={invoice}
               canSend={canWrite}
               onShareInstead={() => setShareActionsVisible(true)}
+              onOpenGstSettings={() => navigation.navigate('More', moreTabParams({ name: 'Reports' }))}
               onSent={() => { void refreshInvoice(); }}
             />
           </>
@@ -591,6 +593,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
             invoice={invoice}
             canSend={canWrite}
             onShareInstead={() => setShareActionsVisible(true)}
+            onOpenGstSettings={() => navigation.navigate('More', moreTabParams({ name: 'Reports' }))}
             onSent={() => { void refreshInvoice(); }}
           />
         )}
@@ -658,6 +661,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
         visible={paymentModalVisible}
         invoice={invoice}
         onSubmit={handlePaymentSubmit}
+        onOpenGstSettings={() => { setPaymentModalVisible(false); navigation.navigate('More', moreTabParams({ name: 'Reports' })); }}
         onClose={() => setPaymentModalVisible(false)}
       />
 
@@ -673,6 +677,7 @@ export default function InvoiceDetailScreen() { // NOSONAR -- legacy screen orch
         invoice={invoice}
         businessProfile={businessProfile || undefined}
         canManageShares={canWrite}
+        onOpenGstSettings={() => { setShareActionsVisible(false); navigation.navigate('More', moreTabParams({ name: 'Reports' })); }}
         onClose={() => setShareActionsVisible(false)}
       />
     </View>

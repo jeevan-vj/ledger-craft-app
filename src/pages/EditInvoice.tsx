@@ -11,6 +11,8 @@ import CustomerFormDrawer, { CustomerFormValues } from '@/components/customer/Cu
 import { useToast } from '@/hooks/use-toast';
 import { useCustomerDirectory } from '@/features/customers/hooks/useCustomerDirectory';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
+import { GstFilingSettingsNotice } from '@/features/tax/GstFilingSettingsNotice';
+import { isGstFilingSettingsError } from '@/features/tax/gstFilingSettings';
 
 const EditInvoicePage = () => {
   const { id } = useParams<{ id: string }>();
@@ -20,6 +22,7 @@ const EditInvoicePage = () => {
   const [invoice, setInvoice] = useState<Invoice | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filingMessage, setFilingMessage] = useState<string>();
   const [newlyAddedCustomer, setNewlyAddedCustomer] = useState<Customer | null>(null);
   const [isCustomerDrawerOpen, setIsCustomerDrawerOpen] = useState(false);
   const { toast } = useToast();
@@ -103,6 +106,10 @@ const EditInvoicePage = () => {
       navigate("/invoices");
       return saved;
     } catch (e: unknown) {
+      if (isGstFilingSettingsError(e)) {
+        setFilingMessage(e.message);
+        throw e;
+      }
       setError(e instanceof Error ? e.message : "Error updating invoice");
       throw e;
     }
@@ -165,6 +172,7 @@ const EditInvoicePage = () => {
 
   return (
     <>
+      {filingMessage ? <div className="mb-4"><GstFilingSettingsNotice message={filingMessage} /></div> : null}
       <InvoiceForm
         mode="edit"
         initialValues={invoice}

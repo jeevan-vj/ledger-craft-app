@@ -19,7 +19,9 @@ import { format } from 'date-fns';
 import { InvoicePaymentRecoveryPanel, type InvoiceRecoveryState } from '@/components/accounting/InvoicePaymentRecoveryPanel';
 import { SettlementRatePicker, foreignCurrency } from '@/components/accounting/SettlementRatePicker';
 import { halfPaymentAmount } from '@/features/payments/halfPaymentAmount';
+import { Link } from 'react-router-dom';
 import { CreatePaymentRequest, EnhancedInvoice } from '@/types/payment';
+import { isGstFilingSettingsError } from '@/features/tax/gstFilingSettings';
 
 const paymentSchema = (balanceDue: number) => z.object({
   paymentMethod: z.enum(['bank_transfer', 'cash', 'cheque', 'credit_card', 'online']),
@@ -55,6 +57,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoadin
   const [recoveryVersion, setRecoveryVersion] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [filingSettings, setFilingSettings] = useState(false);
   const balanceDue = invoice.balanceDue || 0;
   const schema = useMemo(() => paymentSchema(balanceDue), [balanceDue]);
   const [date, setDate] = useState<Date>(new Date());
@@ -84,8 +87,8 @@ export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoadin
       ...(isForeign ? { exchangeRateId } : {})
     };
     
-    setSubmitting(true); setSubmitError('');
-    try { await onSubmit(paymentRequest); } catch (caught) { setSubmitError(caught instanceof Error ? caught.message : 'Payment result is uncertain. Recover the original request before trying again.'); setRecoveryVersion((value) => value + 1); } finally { setSubmitting(false); }
+    setSubmitting(true); setSubmitError(''); setFilingSettings(false);
+    try { await onSubmit(paymentRequest); } catch (caught) { setSubmitError(caught instanceof Error ? caught.message : 'Payment result is uncertain. Recover the original request before trying again.'); setFilingSettings(isGstFilingSettingsError(caught)); setRecoveryVersion((value) => value + 1); } finally { setSubmitting(false); }
   };
 
   const watchedAmount = form.watch('amount') || 0;
@@ -93,7 +96,7 @@ export function PaymentForm({ invoice, onSubmit, onCancel, onRecovered, isLoadin
   const halfAmount = halfPaymentAmount(balanceDue);
 
   return (
-    <div className="space-y-4"><InvoicePaymentRecoveryPanel invoiceId={invoice.id} onStateChange={setRecovery} refreshVersion={recoveryVersion} onResolved={onRecovered ?? onCancel} />{submitError && <p role="alert" className="text-sm text-destructive">{submitError}</p>}{recovery.pending || recovery.blocked ? <Button type="button" variant="outline" onClick={onCancel}>Close payment form</Button> : <fieldset disabled={recovery.loading || submitting}>
+    <div className="space-y-4"><InvoicePaymentRecoveryPanel invoiceId={invoice.id} onStateChange={setRecovery} refreshVersion={recoveryVersion} onResolved={onRecovered ?? onCancel} />{submitError && <p role="alert" className="text-sm text-destructive">{submitError}</p>}{filingSettings ? <p className="text-sm"><Link to="/tax-config" className="font-medium text-primary underline">Open GST settings</Link></p> : null}{recovery.pending || recovery.blocked ? <Button type="button" variant="outline" onClick={onCancel}>Close payment form</Button> : <fieldset disabled={recovery.loading || submitting}>
     <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-6">
       {/* Invoice Summary */}
       <Card>

@@ -254,9 +254,29 @@ describe('recurring preview and invoice delivery', () => {
           ['invoice', failedRun.generatedId],
         ) as Array<{ count: number }>;
         expect(journal[0]?.count).toBe(1);
-      } finally {
-        await sql.end({ timeout: 5 });
-      }
+      } finally { await sql.end({ timeout: 5 }); }
+    });
+  });
+
+  it('returns the GST filing error and leaves the generated invoice a draft when auto-send has no filing settings', async () => {
+    await withTestDb(async () => {
+      const { db, sql } = createDb(getDatabaseUrl());
+      try {
+        const mailer: InvoiceMailer = { availability: 'available', sendInvoice: vi.fn().mockResolvedValue(undefined) };
+        const app = createApp({ auth: createAuth(db), db, invoiceMailer: mailer });
+        const owner = await signUp(app);
+        const customerId = await seedInvoiceContext(app, owner);
+        const authenticated = { ...headers, Cookie: owner };
+        await app.request('/api/business-profile', { method: 'PUT', headers: authenticated, body: JSON.stringify({ name: 'Recurring Studio', email: 'owner@example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2026-04-01' }) });
+        const template = recurringTemplateSchema.parse(await (await app.request('/api/recurring-templates', { method: 'POST', headers: authenticated, body: JSON.stringify(invoiceTemplate(customerId)) })).json());
+        const processed = await app.request('/api/recurring-runs/process', { method: 'POST', headers: authenticated, body: JSON.stringify({ now: '2027-01-31T20:00:00.000Z' }) });
+        expect(runRecurringDueResponseSchema.parse(await processed.json())).toMatchObject({ failed: 1 });
+        const run = recurringRunListResponseSchema.parse(await (await app.request(`/api/recurring-runs?templateId=${template.id}`, { headers: authenticated })).json()).runs[0];
+        expect(run.deliveryMessage).toMatch(/GST settings/);
+        const invoices = invoiceListResponseSchema.parse(await (await app.request('/api/invoices', { headers: authenticated })).json()).invoices;
+        expect(invoices).toMatchObject([{ id: run.generatedId, status: 'draft' }]);
+        expect(mailer.sendInvoice).not.toHaveBeenCalled();
+      } finally { await sql.end({ timeout: 5 }); }
     });
   });
 });

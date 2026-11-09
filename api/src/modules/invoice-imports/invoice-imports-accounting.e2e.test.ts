@@ -88,7 +88,7 @@ describe('invoice import accounting and GST end-to-end', () => {
           method: 'PUT', headers: ownerHeaders,
           body: JSON.stringify({
             name: 'Crystal Touch Cleaning', email: 'owner@crystal.example.test', country: 'NZ',
-            defaultTaxRate: '15', gstRegistrationStatus: 'registered', gstRegisteredFrom: '2020-01-01', taxId: '49091850',
+            defaultTaxRate: '15', gstRegistrationStatus: 'registered', gstRegisteredFrom: '2020-01-01', taxId: '49091850', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 3,
           }),
         }, 200);
         const me = await requestJson(app, '/api/me', { headers: ownerHeaders }, 200);

@@ -4,6 +4,7 @@ import { Header } from './Header';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
+import { GstFilingSettingsBanner } from '@/features/tax/GstFilingSettingsNotice';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -39,7 +40,7 @@ export function AppLayout({ children }: AppLayoutProps) {
         </Drawer>
 
         <main className="flex-1 overflow-auto px-4 py-6">
-          <div className="mx-auto w-full max-w-[1120px] overflow-x-hidden">{children}</div>
+          <div className="mx-auto w-full max-w-[1120px] overflow-x-hidden"><GstFilingSettingsBanner />{children}</div>
         </main>
       </div>
     );
@@ -56,7 +57,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       >
         <Header toggleSidebar={toggleSidebar} isMobile={false} />
         <main className="flex-1 overflow-auto px-8 py-8">
-          <div className="mx-auto w-full max-w-[1120px]">{children}</div>
+          <div className="mx-auto w-full max-w-[1120px]"><GstFilingSettingsBanner />{children}</div>
         </main>
       </div>
     </div>

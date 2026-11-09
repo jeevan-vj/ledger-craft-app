@@ -16,6 +16,7 @@ const USER_FACING_CODES = new Set([
   'FILE_TOO_LARGE',
   'EMAIL_UNAVAILABLE',
   'SHARE_INACTIVE',
+  'GST_FILING_SETTINGS_REQUIRED',
 ]);
 
 export const validationFailureCopy =

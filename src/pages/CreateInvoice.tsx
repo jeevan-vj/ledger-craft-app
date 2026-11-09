@@ -11,6 +11,8 @@ import { useForm } from 'react-hook-form';
 import { formatDate } from '@/utils/invoiceUtils';
 import { useCustomerDirectory } from '@/features/customers/hooks/useCustomerDirectory';
 import { invoicesApi } from '@/features/invoices/api/invoicesApi';
+import { GstFilingSettingsNotice } from '@/features/tax/GstFilingSettingsNotice';
+import { isGstFilingSettingsError } from '@/features/tax/gstFilingSettings';
 
 const CreateInvoice = () => {
   const { 
@@ -33,6 +35,7 @@ const CreateInvoice = () => {
 
   const [calculatedInvoiceNumber, setCalculatedInvoiceNumber] = useState<string | undefined>(undefined);
   const [isLoadingInvoiceNumber, setIsLoadingInvoiceNumber] = useState(true);
+  const [filingMessage, setFilingMessage] = useState<string>();
 
   const form = useForm<InvoiceFormValues>({
     defaultValues: {
@@ -148,6 +151,7 @@ const CreateInvoice = () => {
       return created;
     } catch (error) {
       console.error('Error creating invoice:', error);
+      if (isGstFilingSettingsError(error)) setFilingMessage(error.message);
       toast({
         title: "Error",
         description: error instanceof Error ? error.message : "Failed to create invoice. Please try again.",
@@ -193,6 +197,7 @@ const CreateInvoice = () => {
 
   return (
     <>
+      {filingMessage ? <div className="mb-4"><GstFilingSettingsNotice message={filingMessage} /></div> : null}
       <InvoiceForm
         mode="create"
         customers={customers}

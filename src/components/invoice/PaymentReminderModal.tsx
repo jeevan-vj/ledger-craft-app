@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { AlertTriangle, Clock, Mail, AlertCircle } from 'lucide-react';
+import { isGstFilingSettingsError } from '@/features/tax/gstFilingSettings';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -28,6 +30,7 @@ const PaymentReminderModal: React.FC<PaymentReminderModalProps> = ({
   invoice,
 }) => {
   const { toast } = useToast();
+  const [filingMessage, setFilingMessage] = useState<string>();
   const [isSending, setIsSending] = useState(false);
   
   const daysPastDue = paymentReminderService.calculateDaysPastDue(invoice.dueDate);
@@ -99,6 +102,7 @@ const PaymentReminderModal: React.FC<PaymentReminderModalProps> = ({
       onOpenChange(false);
     } catch (error) {
       console.error('Error sending payment reminder:', error);
+      setFilingMessage(isGstFilingSettingsError(error) ? error.message : undefined);
       toast({
         title: 'Failed to send reminder',
         description: error instanceof Error ? error.message : 'An error occurred while sending the payment reminder',
@@ -125,6 +129,7 @@ const PaymentReminderModal: React.FC<PaymentReminderModalProps> = ({
         </DialogHeader>
 
         <div className="space-y-4">
+          {filingMessage ? <p role="alert" className="text-sm text-destructive">{filingMessage} <Link to="/tax-config" className="font-medium text-primary underline">Open GST settings</Link></p> : null}
           {/* Invoice Status */}
           <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
             <div>

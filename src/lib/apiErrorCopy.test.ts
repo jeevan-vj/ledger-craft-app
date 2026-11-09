@@ -54,6 +54,15 @@ describe('friendly API copy', () => {
     })).toBe('This link is no longer active. Ref: req_share');
   });
 
+  it('keeps the GST filing-settings message so the sender can open settings', () => {
+    expect(friendlyApiText({
+      status: 422,
+      code: 'GST_FILING_SETTINGS_REQUIRED',
+      message: 'Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice. Drafts can still be edited.',
+      requestId: 'req_gst',
+    })).toBe('Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice. Drafts can still be edited. Ref: req_gst');
+  });
+
   it('keeps the actionable email-unavailable message', () => {
     expect(friendlyApiText({
       status: 503,

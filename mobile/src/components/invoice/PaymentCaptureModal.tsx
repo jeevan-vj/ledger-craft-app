@@ -43,6 +43,7 @@ interface PaymentCaptureModalProps {
   invoice: Invoice;
   onSubmit: (paymentData: CreatePaymentRequest, idempotencyKey: string) => Promise<void>;
   onClose: () => void;
+  onOpenGstSettings?: () => void;
   onPendingChange?: (pending: boolean) => void;
 }
 
@@ -52,7 +53,7 @@ function storedPayment(input: unknown, invoiceId: string): CreatePaymentRequest 
   return value;
 }
 
-export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmit, onClose, onPendingChange }: PaymentCaptureModalProps) {
+export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmit, onClose, onOpenGstSettings, onPendingChange }: PaymentCaptureModalProps) {
   const theme = useTheme();
   const { colors: palette } = theme;
   const styles = createStyles(theme);
@@ -68,6 +69,7 @@ export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmi
   const [exchangeRateId, setExchangeRateId] = useState<string>();
   const [amountError, setAmountError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
+  const [filingSettings, setFilingSettings] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [shownBalance, setShownBalance] = useState(initialBalance);
   const [savedPending, setSavedPending] = useState<PendingMutation<CreatePaymentRequest> | null>(null);
@@ -188,6 +190,7 @@ export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmi
         const nextBalance = error.invoice.balanceDueText?.trim() ?? '';
         setShownBalance(nextBalance); setAmountError(retained ? null : nextBalance ? paymentAmountError(amount, nextBalance) : null);
       }
+      setFilingSettings(error instanceof AuthApiError && error.code === 'GST_FILING_SETTINGS_REQUIRED');
       setFormError(failure.kind === 'offline' && retained ? 'You are offline. The payment outcome is unknown; it will not be sent later automatically. Reconnect, then resume this saved attempt.' : failure.message);
       if (error instanceof AuthApiError) console.error('Payment outcome needs review', { code: error.code, requestId: error.requestId, status: error.status });
     } finally { if (currentScope.current === operationScope) setSubmitting(false); }
@@ -293,6 +296,7 @@ export default function PaymentCaptureModal({ visible, ownerId, invoice, onSubmi
             style={[styles.input, styles.notes]}
           />
           {formError ? <Text style={styles.error}>{formError}</Text> : null}
+          {filingSettings && onOpenGstSettings ? <AppPressable accessibilityRole="button" accessibilityLabel="Open GST settings" onPress={onOpenGstSettings} style={{ minHeight: 44, justifyContent: 'center' }}><Text style={[theme.type.headline, { color: theme.colors.accentText }]}>Open GST settings</Text></AppPressable> : null}
         </ScrollView>
         <View style={[styles.footer, { paddingBottom: Math.max(insets.bottom, 16) }]}>
           <AppPressable

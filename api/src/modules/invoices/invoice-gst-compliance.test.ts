@@ -8,7 +8,7 @@ import { businessProfiles } from '../../db/schema/business-profiles';
 async function fixture() {
   const f = await settlementFixture();
   const profile = await f.request('/api/business-profile', 'GET');
-  await f.db.update(businessProfiles).set({ gstRegistrationStatus: 'registered', taxId: '49098576', gstRegisteredFrom: '2026-04-01' }).where(eq(businessProfiles.id, String(profile.id)));
+  await f.db.update(businessProfiles).set({ gstRegistrationStatus: 'registered', taxId: '49098576', gstRegisteredFrom: '2026-04-01', gstAccountingBasis: 'payments', gstFilingFrequency: 'two_monthly', gstPeriodAnchor: 3 }).where(eq(businessProfiles.id, String(profile.id)));
   const buyer = await f.request('/api/customers', 'POST', { name: 'Buyer without identifier', email: '' }, 201);
   const input = (total: string) => ({ customerId: buyer.id, date: '2026-10-15', dueDate: '2026-11-15', currency: 'NZD', taxInclusive: true, taxRate: '15', items: [{ description: 'Reviewed services', quantity: '1', rate: total }] });
   return { ...f, buyer, input };

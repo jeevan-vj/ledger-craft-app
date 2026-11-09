@@ -34,7 +34,7 @@ describe('independent accountant month-close acceptance', () => {
         return JSON.parse(text) as T;
       }
       const post = <T = { id: string }>(path: string, body: unknown, status = 201) => request<T>(path, 'POST', body, status);
-      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01' });
+      await request('/api/business-profile', 'PUT', { name: 'Kauri Month Close Limited', email: 'accounts@month-close.example.test', country: 'NZ', defaultTaxRate: '15', gstRegistrationStatus: 'registered', taxId: '49091850', gstRegisteredFrom: '2020-01-01', gstAccountingBasis: 'invoice', gstFilingFrequency: 'monthly', gstPeriodAnchor: 10 });
       const customer = await post('/api/customers', { name: 'October client', email: 'client@example.test' });
       const invoice = await post('/api/invoices', { customerId: customer.id, date: '2026-10-05', dueDate: '2026-10-31', taxInclusive: false, taxRate: '15', currency: 'NZD', items: [{ description: 'October services', quantity: '1', rate: '2000' }] });
       await request(`/api/invoices/${invoice.id}`, 'PATCH', { status: 'sent' });
@@ -67,8 +67,8 @@ describe('independent accountant month-close acceptance', () => {
       expect(october.trialBalance.balanced).toBe(true);
       const invoiceGst = await gst('2026-10-01', '2026-10-31');
       expect(invoiceGst).toMatchObject({ totalSales: '2570.00', totalPurchases: '1380.00', gstOnSales: '270.00', gstOnPurchases: '180.00', netGstPosition: '90.00' });
-      const cashGst = await gst('2026-10-01', '2026-10-31', 'payments');
-      expect(cashGst).toMatchObject(expected.cashGst);
+      const cashGst = await request<{ error: { code: string } }>('/api/tax/gst-preparation?from=2026-10-01&to=2026-10-31&basis=payments', 'GET', undefined, 422);
+      expect(cashGst.error.code).toBe('GST_BASIS_MISMATCH');
       const octoberJournalLines = await db.select().from(journalEntryLines);
       expect(await db.select().from(journalEntries)).toHaveLength(8);
       await post('/api/payments', { invoiceId: invoice.id, amount: '920', paymentDate: '2026-11-02', paymentMethod: 'bank_transfer' });
@@ -88,9 +88,9 @@ describe('independent accountant month-close acceptance', () => {
       // source fingerprint and all remaining audit fields must remain equal.
       const stableGst = (value: Awaited<ReturnType<typeof gst>>) => ({ ...value, ...(value.calculation ? { calculation: { ...value.calculation, calculatedAt: '<fresh calculation time>' } } : {}) });
       expect(stableGst(await gst('2026-10-01', '2026-10-31'))).toEqual(stableGst(invoiceGst));
-      expect(stableGst(await gst('2026-10-01', '2026-10-31', 'payments'))).toEqual(stableGst(cashGst));
-      const novemberCashGst = await gst('2026-11-01', '2026-11-30', 'payments');
-      expect(novemberCashGst).toMatchObject({ totalSales: '920.00', totalPurchases: '575.00', gstOnSales: '120.00', gstOnPurchases: '75.00', netGstPosition: '45.00' });
+      expect((await request<{ error: { code: string } }>('/api/tax/gst-preparation?from=2026-10-01&to=2026-10-31&basis=payments', 'GET', undefined, 422)).error.code).toBe('GST_BASIS_MISMATCH');
+      const novemberCashGst = await request<{ error: { code: string } }>('/api/tax/gst-preparation?from=2026-11-01&to=2026-11-30&basis=payments', 'GET', undefined, 422);
+      expect(novemberCashGst.error.code).toBe('GST_BASIS_MISMATCH');
       const entries = await db.select().from(journalEntries);
       const lines = await db.select().from(journalEntryLines);
       expect(entries).toHaveLength(13);

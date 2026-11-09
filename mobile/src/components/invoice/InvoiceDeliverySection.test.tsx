@@ -102,6 +102,25 @@ it('proactively offers a share link when email is unavailable', () => {
   expect(view.queryByLabelText('Send invoice')).toBeNull();
 });
 
+it('offers GST settings when a registered business has not saved its filing setup', async () => {
+  const onOpenGstSettings = jest.fn();
+  const onSent = jest.fn();
+  const message = 'Save the IRD accounting basis, filing frequency and period-ending month in GST settings before sending this tax invoice. Drafts can still be edited.';
+  jest.mocked(invoiceService.sendInvoice).mockRejectedValueOnce(new AuthApiError(message, 422, 'GST_FILING_SETTINGS_REQUIRED', 'req-gst'));
+  const view = render(
+    <InvoiceDeliverySection invoice={mockInvoice} canSend emailAvailable onShareInstead={jest.fn()} onOpenGstSettings={onOpenGstSettings} onSent={onSent} />,
+  );
+  fireEvent.press(view.getByLabelText('Send invoice'));
+  await waitFor(() => expect(Alert.alert).toHaveBeenCalledWith(
+    'GST settings needed',
+    message,
+    expect.arrayContaining([expect.objectContaining({ text: 'Open GST settings' })]),
+  ));
+  jest.mocked(Alert.alert).mock.calls[0][2]?.find((button) => button.text === 'Open GST settings')?.onPress?.();
+  expect(onOpenGstSettings).toHaveBeenCalledTimes(1);
+  expect(onSent).not.toHaveBeenCalled();
+});
+
 it('reports a successful send only after the server accepts it', async () => {
   jest.mocked(invoiceService.sendInvoice).mockResolvedValueOnce(mockInvoice);
   const view = renderSection();

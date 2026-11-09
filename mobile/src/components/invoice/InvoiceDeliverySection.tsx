@@ -14,6 +14,7 @@ interface InvoiceDeliverySectionProps {
   readonly invoice: Invoice;
   readonly canSend: boolean;
   readonly onShareInstead: () => void;
+  readonly onOpenGstSettings?: () => void;
   readonly onSent: () => void;
   readonly emailAvailable?: boolean;
 }
@@ -36,6 +37,7 @@ export function InvoiceDeliverySection({
   invoice,
   canSend,
   onShareInstead,
+  onOpenGstSettings,
   onSent,
   emailAvailable: emailAvailableOverride,
 }: InvoiceDeliverySectionProps) {
@@ -68,6 +70,13 @@ export function InvoiceDeliverySection({
         { text: 'Close', style: 'cancel' },
         { text: 'Share link instead', onPress: onShareInstead },
       ]);
+      return;
+    }
+    if (error instanceof AuthApiError && error.code === 'GST_FILING_SETTINGS_REQUIRED') {
+      Alert.alert('GST settings needed', error.message, onOpenGstSettings ? [
+        { text: 'Close', style: 'cancel' },
+        { text: 'Open GST settings', onPress: onOpenGstSettings },
+      ] : undefined);
       return;
     }
     Alert.alert('Email not sent', safeDeliveryMessage(error));

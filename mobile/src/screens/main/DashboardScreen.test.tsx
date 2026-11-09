@@ -8,6 +8,7 @@ import { invoiceService } from '@/services/invoiceService';
 import { useStore } from '@/store';
 import { darkPalette } from '@/theme/tokens';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
+import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 import { FIRST_INVOICE_PROMPT_KEY } from '@/features/onboarding/onboardingStorage';
 
@@ -40,6 +41,10 @@ jest.mock('@/features/quotes/api/quotesApi', () => ({
   quotesApi: {
     list: jest.fn().mockResolvedValue({ quotes: [], counts: {} }),
   },
+}));
+
+jest.mock('@/features/business-profile/api/businessProfileApi', () => ({
+  businessProfileApi: { get: jest.fn() },
 }));
 
 jest.mock('@/features/dashboard/api/dashboardApi', () => ({
@@ -93,6 +98,7 @@ describe('Home quick actions', () => {
     (invoiceService.fetchInvoices as jest.Mock).mockResolvedValue([]);
     (dashboardApi.getDashboard as jest.Mock).mockResolvedValue(dashboardPayload);
     (dashboardApi.listSavedReports as jest.Mock).mockResolvedValue([]);
+    (businessProfileApi.get as jest.Mock).mockResolvedValue({ country: 'NZ', gstRegistrationStatus: 'not_registered' });
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
     (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
     useStore.setState({
@@ -217,6 +223,15 @@ describe('Home quick actions', () => {
     expect(second.queryByText('Create your first invoice')).toBeNull();
     await waitFor(() => {
       expect(second.queryByRole('button', { name: 'Create invoice' })).toBeNull();
+    });
+  });
+
+  it('links a registered business without filing settings to GST reports', async () => {
+    (businessProfileApi.get as jest.Mock).mockResolvedValue({ country: 'New Zealand', gstRegistrationStatus: 'registered', gstAccountingBasis: null, gstFilingFrequency: null, gstPeriodAnchor: null });
+    const screen = renderHome();
+    fireEvent.press(await screen.findByLabelText('Open GST settings'));
+    expect(mockNavigate).toHaveBeenCalledWith('More', {
+      state: { index: 1, routes: [{ name: 'SettingsList' }, { name: 'Reports' }] },
     });
   });
 

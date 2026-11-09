@@ -15,6 +15,9 @@ export interface BusinessDraft {
   gstRegistrationStatus: GstRegistrationStatus;
   taxId?: string;
   gstRegisteredFrom?: string;
+  gstAccountingBasis?: 'invoice' | 'payments' | 'hybrid' | null;
+  gstFilingFrequency?: 'monthly' | 'two_monthly' | 'six_monthly' | null;
+  gstPeriodAnchor?: number | null;
 }
 
 async function read(key: string): Promise<string | null> {

@@ -145,6 +145,7 @@ type CustomerDestination =
 
 type MoreDestination =
   | { name: 'AccountingTools' }
+  | { name: 'Reports' }
   | { name: 'BusinessSettings' }
   | { name: 'CompanyTeam'; params?: { invite?: string } }
   | { name: 'RecurringSchedules' }
