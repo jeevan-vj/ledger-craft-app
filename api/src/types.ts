@@ -3,6 +3,7 @@ import type { BankFeedConfig } from './modules/bank-feeds/bank-feeds.service';
 import type { Database } from './db/client';
 import type { Auth } from './modules/auth/auth';
 import type { ChatCompleter } from './modules/ai/chat';
+import type { AssistantRuntime } from './modules/ai/assistant.config';
 import type { ReceiptScanner } from './modules/ai/scanner';
 import type { InvoiceMailer } from './modules/invoices/mailer';
 import type { ObjectStore } from './modules/storage/object-store';
@@ -16,6 +17,7 @@ export type AppCapabilities = {
   email: 'available' | 'unavailable';
   ai: 'available' | 'unavailable';
   stripe: 'available' | 'unavailable';
+  assistant?: 'available' | 'unavailable';
 };
 
 export type AppEnv = {
@@ -30,6 +32,7 @@ export type AppEnv = {
     fileStorage?: FileStorage;
     receiptScanner?: ReceiptScanner;
     chatCompleter?: ChatCompleter;
+    assistant?: AssistantRuntime;
     recurringExecutionAuthorizer?: RecurringExecutionAuthorizer;
     scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
     invoiceImportExtractor?: InvoiceImportExtractionProvider;
@@ -55,6 +58,7 @@ export type AppDependencies = {
   fileStorage?: FileStorage;
   receiptScanner?: ReceiptScanner;
   chatCompleter?: ChatCompleter;
+  assistant?: AssistantRuntime;
   recurringExecutionAuthorizer?: RecurringExecutionAuthorizer;
   scheduleRecurringAlarm?: (timestamp: number) => Promise<void>;
   invoiceImportExtractor?: InvoiceImportExtractionProvider;

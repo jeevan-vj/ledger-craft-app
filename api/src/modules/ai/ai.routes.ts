@@ -1,7 +1,9 @@
-import { chatCompletionRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
+import { assistantTurnRequestSchema, chatCompletionRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
+import { createWorkersAiAssistantModel } from './assistant.workers';
+import * as assistantService from './assistant.service';
 import * as chatService from './chat';
 import * as aiService from './scanner';
 
@@ -23,6 +25,18 @@ export function aiRoutes() {
       const input = chatCompletionRequestSchema.parse(await c.req.json());
       return c.json(await chatService.completeChatForUser(db, user.id, c.get('chatCompleter'), input));
     });
+
+    routes.post(`${prefix}/ai/assistant`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = assistantTurnRequestSchema.parse(await c.req.json());
+      const configured = c.get('assistant');
+      const workersAi = c.get('workersAi');
+      const model = configured?.model ?? (workersAi ? createWorkersAiAssistantModel(workersAi) : undefined);
+      return c.json(await assistantService.completeAssistantForUser(
+        db, user.id, input, { ...configured, model }, c.get('capabilities'), c.get('requestId'),
+      ));
+    });
+
   }
 
   return routes;

@@ -20,6 +20,7 @@ export type WorkersAiBinding = {
 
 export const DEFAULT_WORKERS_AI_MODEL = '@cf/meta/llama-4-scout-17b-16e-instruct';
 export const DEFAULT_WORKERS_AI_TEXT_MODEL = '@cf/meta/llama-3.3-70b-instruct-fp8-fast';
+export const ASSISTANT_WORKERS_AI_MODEL = '@cf/google/gemma-4-26b-a4b-it';
 
 const LIMIT_MESSAGE = 'Cloudflare Workers AI daily free limit reached (10,000 neurons/day). Try again after 00:00 UTC, upgrade to Workers Paid, or configure OPENAI_API_KEY.';
 

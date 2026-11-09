@@ -35,6 +35,7 @@ import { payments } from './schema/payments';
 import { reconciliationAdjustments, reconciliationMatches, reconciliationSessions, reconciliationSupplierPaymentLinks } from './schema/reconciliation';
 import { receipts } from './schema/receipts';
 import { conversationMessages, conversations } from './schema/conversations';
+import { assistantEvents } from './schema/assistant-events';
 import { taxConfigurations, taxReturns, taxAdjustments } from './schema/tax';
 import { idempotencyKeys } from './schema/idempotency';
 import { rlsProbe } from './schema/probe';
@@ -89,6 +90,7 @@ export const schema = {
   receipts,
   conversations,
   conversationMessages,
+  assistantEvents,
   bankAccounts,
   bankMatchingRules,
   bankReconciliationActions,

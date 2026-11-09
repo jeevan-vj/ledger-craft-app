@@ -14,19 +14,19 @@ describe('health routes', () => {
     expect(response.status).toBe(200);
     expect(healthzResponseSchema.parse(await response.json())).toEqual({
       status: 'ok',
-      capabilities: { email: 'unavailable', ai: 'unavailable', stripe: 'unavailable' },
+      capabilities: { email: 'unavailable', ai: 'unavailable', stripe: 'unavailable', assistant: 'unavailable' },
     });
     expect(response.headers.get('x-request-id')).toMatch(/^req_/);
   });
 
   it('GET /api/healthz matches the Vite proxy path', async () => {
     const response = await createApp({
-      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available' },
+      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available', assistant: 'unavailable' },
     }).request('/api/healthz');
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       status: 'ok',
-      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available' },
+      capabilities: { email: 'available', ai: 'unavailable', stripe: 'available', assistant: 'unavailable' },
     });
   });
 
@@ -37,7 +37,7 @@ describe('health routes', () => {
     expect(response.status).toBe(200);
     expect(await response.json()).toEqual({
       status: 'ok',
-      capabilities: { email: 'unavailable', ai: 'available', stripe: 'unavailable' },
+      capabilities: { email: 'unavailable', ai: 'available', stripe: 'unavailable', assistant: 'unavailable' },
     });
   });
 

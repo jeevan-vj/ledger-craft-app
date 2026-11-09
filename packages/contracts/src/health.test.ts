@@ -26,6 +26,15 @@ describe('health contracts', () => {
     });
   });
 
+  it('keeps assistant availability separate from generic ai', () => {
+    expect(healthzResponseSchema.parse({
+      status: 'ok',
+      capabilities: { email: 'unavailable', ai: 'available', stripe: 'unavailable', assistant: 'available' },
+    }).capabilities).toEqual({
+      email: 'unavailable', ai: 'available', stripe: 'unavailable', assistant: 'available',
+    });
+  });
+
   it('rejects unknown readiness status', () => {
     expect(readyzResponseSchema.safeParse({ status: 'degraded' }).success).toBe(false);
   });

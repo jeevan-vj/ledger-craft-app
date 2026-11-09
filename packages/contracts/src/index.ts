@@ -523,6 +523,22 @@ export {
 } from './ai';
 
 export {
+  assistantLinkSchema,
+  assistantPartSchema,
+  assistantProposalSchema,
+  assistantQuickPickSchema,
+  assistantTextSchema,
+  assistantTurnRequestSchema,
+  assistantTurnResponseSchema,
+  saveAssistantDraftRequestSchema,
+  type AssistantPart,
+  type AssistantProposal,
+  type AssistantTurnRequest,
+  type AssistantTurnResponse,
+  type SaveAssistantDraftRequest,
+} from './assistant';
+
+export {
   addConversationMessageRequestSchema,
   conversationListResponseSchema,
   conversationSchema,

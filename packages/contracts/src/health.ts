@@ -6,6 +6,7 @@ export const healthzResponseSchema = z.object({
     email: z.enum(['available', 'unavailable']),
     ai: z.enum(['available', 'unavailable']),
     stripe: z.enum(['available', 'unavailable']),
+    assistant: z.enum(['available', 'unavailable']).optional(),
   }),
 });
 
