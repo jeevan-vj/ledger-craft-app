@@ -43,8 +43,6 @@ const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
 const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
 const { ASSISTANT_EVAL_PROMPTS } = await import('../src/modules/ai/assistant.prompts');
-const { pricedTotals } = await import('../src/modules/ai/assistant.proposal');
-
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
 const monday = new Date('2026-11-09T01:00:00.000Z');
@@ -113,11 +111,11 @@ await withTestDb(async () => {
       const body = await response.json() as { parts?: Array<{ type: string; text?: string; href?: string; proposal?: { taxInclusive?: boolean; taxRate?: string; dueDate?: string | null; date?: string; lines?: Array<{ description: string; quantity: string; rate: string | null }>; totals?: { subtotal: string; taxAmount: string; total: string } | null } }> };
       const parts = body.parts ?? [];
       const proposal = parts.find((part) => part.type === 'proposal')?.proposal;
-      const priced = proposal?.lines?.every((line) => line.rate) ? pricedTotals({
-        taxInclusive: proposal.taxInclusive ?? true,
-        taxRate: proposal.taxRate ?? '0',
-        lines: (proposal.lines ?? []).flatMap((line) => line.rate ? [{ description: line.description, quantity: line.quantity, rate: line.rate }] : []),
-      }) : null;
+      const locked = item.id === 'gst-inclusive'
+        ? { subtotal: '260.87', taxAmount: '39.13', total: '300.00' }
+        : item.id === 'gst-exclusive'
+          ? { subtotal: '300.00', taxAmount: '45.00', total: '345.00' }
+          : null;
       const invoices = await call('/api/invoices', 'GET');
       const invoiceCount = Array.isArray(invoices.invoices) ? invoices.invoices.length : 0;
       let pass = response.status === 200 && invoiceCount === 1 && !JSON.stringify(body).includes('Secret Buyer');
@@ -126,9 +124,11 @@ await withTestDb(async () => {
       if (item.id === 'unsupported-delete') pass = pass && parts.some((part) => part.href === '/invoices');
       if (item.id === 'expense-deferred') pass = pass && parts.some((part) => part.href === '/expenses' || part.text?.includes('Expenses'));
       if (item.id === 'ambiguous-customer' || item.id === 'ambiguous-item') pass = pass && parts.some((part) => part.type === 'quick_picks');
-      if (item.id.startsWith('gst') || item.id === 'sarah-missing-parts' || item.id === 'friday-dateline') {
-        pass = pass && !!proposal && !!priced && proposal.taxRate === '15' && proposal.totals?.total === priced.total && proposal.totals?.subtotal === priced.subtotal;
-        detail = proposal ? `total ${proposal.totals?.total ?? 'none'} due ${proposal.dueDate ?? 'none'}` : detail;
+      if (item.id === 'sarah-missing-parts') pass = pass && !!proposal && proposal.totals == null;
+      if (item.id === 'friday-dateline') pass = pass && proposal?.date === '2026-11-14' && proposal.dueDate === '2026-11-20';
+      if (locked) {
+        pass = pass && proposal?.taxRate === '15' && proposal.totals?.subtotal === locked.subtotal && proposal.totals?.taxAmount === locked.taxAmount && proposal.totals?.total === locked.total;
+        detail = proposal ? `total ${proposal.totals?.total ?? 'none'}` : detail;
       }
       if (!pass) failed += 1;
       console.log(`| ${item.id} | ${pass ? 'pass' : 'fail'} | ${detail.replace(/\|/g, '/')} | ${elapsed} |`);

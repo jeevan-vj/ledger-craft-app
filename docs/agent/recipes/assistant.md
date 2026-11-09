@@ -8,7 +8,7 @@ P1 is the API in `api/src/modules/ai`. Web and mobile chat UI are later phases. 
 
 The turn is capped at 6 model steps and 8 seconds. Tool arguments are Zod-parsed. Allowed tools are `search_customers`, `search_catalogue`, `prepare_invoice_proposal`, and `list_outstanding`. Any other tool name is refused and answered with a link to Invoices or Expenses.
 
-`prepare_invoice_proposal` returns a signed proposal. It does not insert an invoice. Save checks that signature, applies any edits, and calls `createInvoiceInTx` with `status: 'draft'`. Totals are `computeInvoiceTotals`. The model does not send totals. A second save of the same proposal returns the original draft. The same `Idempotency-Key` with a different body is `409 IDEMPOTENCY_CONFLICT`.
+`prepare_invoice_proposal` returns a proposal and does not insert an invoice. The proposal row is stored in `assistant_proposals` (`0038_assistant-proposals.sql`), which the conversation API cannot write. Save reads that row, applies edits, and calls `createInvoiceInTx` with `status: 'draft'`. Totals stay null until every line has a rate and GST treatment is set. Totals use `computeInvoiceTotals` at the document currency's precision. An edited rate is kept. A second save of the same proposal returns the original draft. The same `Idempotency-Key` with a different body is `409 IDEMPOTENCY_CONFLICT`.
 
 ## What is sent to Workers AI
 
@@ -22,9 +22,9 @@ Chat text is a conversation with `context.kind = assistant`. The user can delete
 
 ## Limits and the flag
 
-Per business, from the environment, defaulting to 100 messages/day, 20/minute, and USD 2.00/day (`ASSISTANT_DAILY_MESSAGES`, `ASSISTANT_PER_MINUTE`, `ASSISTANT_DAILY_COST_USD`, token prices `ASSISTANT_INPUT_USD_PER_MILLION` default `0.10` and `ASSISTANT_OUTPUT_USD_PER_MILLION` default `0.30`). A request over the cap returns `429 ASSISTANT_LIMIT` and does not call the model.
+Per business, from the environment, defaulting to 100 messages/day, 20/minute, and USD 2.00/day (`ASSISTANT_DAILY_MESSAGES`, `ASSISTANT_PER_MINUTE`, `ASSISTANT_DAILY_COST_USD`, token prices `ASSISTANT_INPUT_USD_PER_MILLION` default `0.10` and `ASSISTANT_OUTPUT_USD_PER_MILLION` default `0.30`). Each turn reserves `ASSISTANT_CALL_RESERVE_USD` (default `0.05`) before the provider call. A timeout keeps that reserve. A request that would cross the ceiling returns `429 ASSISTANT_LIMIT` and does not call the model.
 
-`/api/healthz` reports `capabilities.assistant`. It is `available` only when `ASSISTANT_ENABLED=1` (and, on the Worker, the AI binding is present). Generic `capabilities.ai` does not enable tools. Receipt scan keeps using its own scanner.
+`/api/healthz` reports `capabilities.assistant`. The route runs only when that capability is `available`. `ASSISTANT_ENABLED=1` does not override an unavailable capability. On the Worker the capability is available only when that variable is set and the AI binding is present. Generic `capabilities.ai` does not enable tools. Receipt scan keeps using its own scanner.
 
 ## Expenses
 

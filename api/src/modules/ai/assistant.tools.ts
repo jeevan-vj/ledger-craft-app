@@ -9,6 +9,7 @@ import * as itemsRepo from '../items/items.repository';
 import * as invoicesRepo from '../invoices/invoices.repository';
 import * as profileRepo from '../business-profile/business-profile.repository';
 import { decimal, roundMoney } from '../invoices/money';
+import { resolveDocumentCurrency } from '../currency/currency.service';
 import type { AssistantToolCall, AssistantToolDefinition } from './assistant.config';
 import { resolveRelativeDate } from './assistant.dates';
 import { pricedTotals } from './assistant.proposal';
@@ -129,7 +130,7 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
   const { timeZone, today, currency } = await clock(tx, organisationId, now);
   const profile = await profileRepo.getBusinessProfile(tx, organisationId);
   const taxRate = profile?.defaultTaxRate && /^\d+(\.\d+)?$/.test(profile.defaultTaxRate) ? profile.defaultTaxRate : '0';
-  const taxInclusive = input.taxInclusive ?? true;
+  const taxSpecified = input.taxInclusive !== undefined;
   const customers = await customersRepo.listCustomers(tx, organisationId);
   const items = await itemsRepo.listItems(tx, organisationId);
   const parts: AssistantPart[] = [];
@@ -154,6 +155,7 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
   }
 
   const missing: string[] = [];
+  if (!taxSpecified) missing.push('taxInclusive');
   if (!customerId) missing.push('customer');
   const dueDate = input.dueDate ? resolveRelativeDate(input.dueDate, now, timeZone) : null;
   if (!dueDate || dueDate < today) missing.push('dueDate');
@@ -186,9 +188,18 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
     };
   });
 
-  const pricedLines = lines.flatMap((line) => line.rate ? [{ description: line.description, quantity: line.quantity, rate: line.rate }] : []);
-  const totals = pricedTotals({ taxInclusive, taxRate, lines: pricedLines });
   const status = missing.length === 0 ? 'ready' as const : 'needs_input' as const;
+  const precision = status === 'ready'
+    ? (await resolveDocumentCurrency(tx, organisationId, currency, today)).currency.precision
+    : 2;
+  const totals = status === 'ready' && taxSpecified
+    ? pricedTotals({
+      taxInclusive: input.taxInclusive === true,
+      taxRate,
+      precision,
+      lines: lines.flatMap((line) => line.rate ? [{ description: line.description, quantity: line.quantity, rate: line.rate }] : []),
+    })
+    : null;
   const proposal = assistantProposalSchema.parse({
     id: crypto.randomUUID(),
     kind: 'invoice',
@@ -197,7 +208,7 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
     customerName,
     date: today,
     dueDate: dueDate && dueDate >= today ? dueDate : null,
-    taxInclusive,
+    taxInclusive: taxSpecified ? input.taxInclusive === true : null,
     taxRate,
     currency,
     notes: input.notes?.trim() ? input.notes.trim() : null,
@@ -213,7 +224,7 @@ async function prepareProposal(tx: Database, organisationId: string, args: unkno
       status,
       customerId,
       dueDate: proposal.dueDate,
-      taxInclusive,
+      taxInclusive: proposal.taxInclusive,
       taxRate,
       currency,
       lines: lines.map((line) => ({ description: line.description, quantity: line.quantity, rate: line.rate, missing: line.missing })),

@@ -6,6 +6,7 @@ import { computeInvoiceTotals } from '../invoices/totals';
 export function pricedTotals(input: {
   taxInclusive: boolean;
   taxRate: string;
+  precision: number;
   lines: Array<{ description: string; quantity: string; rate: string }>;
 }): { subtotal: string; taxAmount: string; total: string } | null {
   if (!input.lines.length) return null;
@@ -17,7 +18,7 @@ export function pricedTotals(input: {
       quantity: line.quantity,
       rate: line.rate,
     })),
-  }, input.taxRate, 2);
+  }, input.taxRate, input.precision);
   return { subtotal: totals.subtotal, taxAmount: totals.taxAmount, total: totals.total };
 }
 

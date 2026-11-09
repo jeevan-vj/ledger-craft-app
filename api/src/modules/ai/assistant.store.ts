@@ -2,20 +2,13 @@ import { assistantProposalSchema, type AssistantPart, type AssistantProposal } f
 import { and, eq, gte, inArray, lt } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { assistantEvents } from '../../db/schema/assistant-events';
+import { assistantProposals } from '../../db/schema/assistant-proposals';
 import { conversationMessages, conversations } from '../../db/schema/conversations';
 import { decimal } from '../invoices/money';
 import { insertConversation, insertMessage } from '../conversations/conversations.repository';
 import { proposalSignatureMatches, signProposal } from './assistant.proposal';
 
 export type AssistantOutcome = 'reply' | 'proposal' | 'refused' | 'limit' | 'timeout' | 'invalid_output' | 'saved' | 'incomplete';
-
-type UsageMetadata = {
-  kind: 'assistant_proposal' | 'assistant_reply';
-  proposal?: AssistantProposal;
-  signature?: string;
-  savedInvoiceId?: string;
-  parts?: AssistantPart[];
-};
 
 export function publicToolNames(names: string[]): string {
   const clean = names.slice(0, 8).map((name) => name.replace(/[^a-z0-9_]/gi, '').slice(0, 64)).filter(Boolean);
@@ -132,33 +125,36 @@ export async function storeAssistantTurn(tx: Database, ctx: { organisationId: st
 }) {
   await insertMessage(tx, ctx, input.conversationId, { role: 'user', content: input.prompt });
   const reply = input.parts.filter((part) => part.type === 'text').map((part) => part.text).join(' ').slice(0, 1_000) || 'Assistant reply';
-  const metadata: UsageMetadata = input.proposal
-    ? { kind: 'assistant_proposal', proposal: input.proposal, signature: signProposal(ctx.organisationId, input.proposal), parts: input.parts }
-    : { kind: 'assistant_reply', parts: input.parts };
-  await insertMessage(tx, ctx, input.conversationId, { role: 'assistant', content: reply, metadata });
+  await insertMessage(tx, ctx, input.conversationId, {
+    role: 'assistant',
+    content: reply,
+    metadata: { kind: 'assistant_reply', parts: input.parts },
+  });
+  if (!input.proposal) return;
+  await tx.insert(assistantProposals).values({
+    id: input.proposal.id,
+    organisationId: ctx.organisationId,
+    conversationId: input.conversationId,
+    payload: JSON.stringify(input.proposal),
+    signature: signProposal(ctx.organisationId, input.proposal),
+  });
 }
 
 export async function findProposal(tx: Database, organisationId: string, proposalId: string, conversationId: string) {
-  const rows = await tx.select({
-    id: conversationMessages.id,
-    conversationId: conversationMessages.conversationId,
-    metadata: conversationMessages.metadata,
-  }).from(conversationMessages).where(and(
-    eq(conversationMessages.organisationId, organisationId),
-    eq(conversationMessages.conversationId, conversationId),
+  const [row] = await tx.select().from(assistantProposals).where(and(
+    eq(assistantProposals.id, proposalId),
+    eq(assistantProposals.organisationId, organisationId),
+    eq(assistantProposals.conversationId, conversationId),
   ));
-  for (const row of rows) {
-    const metadata = row.metadata as UsageMetadata | null;
-    if (metadata?.kind !== 'assistant_proposal' || metadata.proposal?.id !== proposalId || !metadata.signature) continue;
-    const parsed = assistantProposalSchema.safeParse(metadata.proposal);
-    if (!parsed.success || !proposalSignatureMatches(organisationId, parsed.data, metadata.signature)) return undefined;
-    return { messageId: row.id, proposal: parsed.data, savedInvoiceId: metadata.savedInvoiceId, metadata };
-  }
-  return undefined;
+  if (!row) return undefined;
+  const parsed = assistantProposalSchema.safeParse(JSON.parse(row.payload));
+  if (!parsed.success || !proposalSignatureMatches(organisationId, parsed.data, row.signature)) return undefined;
+  return { proposal: parsed.data, savedInvoiceId: row.savedInvoiceId };
 }
 
-export async function markProposalSaved(tx: Database, organisationId: string, messageId: string, metadata: UsageMetadata, invoiceId: string) {
-  await tx.update(conversationMessages).set({
-    metadata: { ...metadata, savedInvoiceId: invoiceId },
-  }).where(and(eq(conversationMessages.id, messageId), eq(conversationMessages.organisationId, organisationId)));
+export async function markProposalSaved(tx: Database, organisationId: string, proposalId: string, invoiceId: string) {
+  await tx.update(assistantProposals).set({ savedInvoiceId: invoiceId }).where(and(
+    eq(assistantProposals.id, proposalId),
+    eq(assistantProposals.organisationId, organisationId),
+  ));
 }

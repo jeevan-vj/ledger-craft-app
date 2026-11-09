@@ -41,7 +41,7 @@ export const assistantProposalSchema = z.object({
   customerName: z.string().min(1).max(200).nullable(),
   date: day,
   dueDate: day.nullable(),
-  taxInclusive: z.boolean(),
+  taxInclusive: z.boolean().nullable(),
   taxRate: z.string().regex(/^\d+(\.\d+)?$/),
   currency: z.string().regex(/^[A-Z]{3}$/),
   notes: z.string().max(1000).nullable(),

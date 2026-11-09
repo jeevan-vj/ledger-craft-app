@@ -9,6 +9,8 @@ import { getInvoice } from '../invoices/invoices.repository';
 import { getCustomer } from '../customers/customers.repository';
 import { getItem } from '../items/items.repository';
 import type { CreateInvoiceRequest } from '@ledgercraft/contracts';
+import { decimal } from '../invoices/money';
+import { resolveDocumentCurrency } from '../currency/currency.service';
 import { ASSISTANT_DEFAULTS, assistantEnabled, resolveLimits, tokenCostUsd, type AssistantRuntime } from './assistant.config';
 import { runAssistantLoop } from './assistant.loop';
 import { pricedTotals } from './assistant.proposal';
@@ -50,17 +52,14 @@ async function reprice(tx: Database, organisationId: string, proposal: Assistant
   if (source.some((line) => !line.rate)) return undefined;
   const lines = [];
   for (const line of source) {
-    let rate = line.rate;
-    if (line.itemId) {
-      const item = await getItem(tx, organisationId, line.itemId);
-      if (!item) return undefined;
-      if (item.salePrice) rate = item.salePrice;
-    }
-    if (!rate) return undefined;
-    lines.push({ description: line.description, quantity: line.quantity, rate, unit: line.unit ?? undefined });
+    if (line.itemId && !await getItem(tx, organisationId, line.itemId)) return undefined;
+    if (!line.rate) return undefined;
+    lines.push({ description: line.description, quantity: line.quantity, rate: line.rate, unit: line.unit ?? undefined });
   }
   const taxInclusive = edits?.taxInclusive ?? proposal.taxInclusive;
-  const totals = pricedTotals({ taxInclusive, taxRate: proposal.taxRate, lines });
+  if (taxInclusive == null) return undefined;
+  const resolved = await resolveDocumentCurrency(tx, organisationId, proposal.currency, proposal.date);
+  const totals = pricedTotals({ taxInclusive, taxRate: proposal.taxRate, precision: resolved.currency.precision, lines });
   if (!totals) return undefined;
   const notes = edits && 'notes' in edits ? (edits.notes ?? null) : proposal.notes;
   const request: CreateInvoiceRequest = {
@@ -98,14 +97,15 @@ export async function completeAssistantForUser(
   const gate = await withOrganisationTx(db, userId, async (tx, ctx) => {
     await purgeAssistantRetention(tx, ctx.organisationId, now, retentionDays);
     const usage = await usageSince(tx, ctx.organisationId, now);
-    if (usage.day >= limits.dailyMessages || usage.minute >= limits.perMinute || usage.cost.compare(limits.dailyCostUsd) >= 0) {
+    const reservedCost = decimal(limits.callReserveUsd).toFixed(6);
+    if (usage.day >= limits.dailyMessages || usage.minute >= limits.perMinute || usage.cost.add(reservedCost).compare(limits.dailyCostUsd) > 0) {
       await insertAssistantEvent(tx, { organisationId: ctx.organisationId, userId, requestId, action: 'turn', outcome: 'limit' });
       return { blocked: true as const };
     }
     const conversationId = await ensureAssistantConversation(tx, ctx, input.conversationId);
     if (!conversationId) return { blocked: false as const, missing: true as const };
-    const eventId = await insertAssistantEvent(tx, { organisationId: ctx.organisationId, userId, requestId, action: 'turn', outcome: 'reply' });
-    return { blocked: false as const, missing: false as const, organisationId: ctx.organisationId, conversationId, eventId };
+    const eventId = await insertAssistantEvent(tx, { organisationId: ctx.organisationId, userId, requestId, action: 'turn', outcome: 'reply', costUsd: reservedCost });
+    return { blocked: false as const, missing: false as const, organisationId: ctx.organisationId, conversationId, eventId, reservedCost };
   });
   if (gate.blocked) throw apiError(429, 'ASSISTANT_LIMIT', LIMITED);
   if (gate.missing) throw apiError(404, 'NOT_FOUND', 'Conversation not found');
@@ -117,7 +117,7 @@ export async function completeAssistantForUser(
       message: input.message,
       model: runtime.model,
       now,
-      maxSteps: Math.min(runtime.maxSteps ?? ASSISTANT_DEFAULTS.maxSteps, 8),
+      maxSteps: Math.min(runtime.maxSteps ?? ASSISTANT_DEFAULTS.maxSteps, ASSISTANT_DEFAULTS.maxSteps),
       timeoutMs: Math.min(runtime.timeoutMs ?? ASSISTANT_DEFAULTS.timeoutMs, 15_000),
     });
     const costUsd = tokenCostUsd(loop.inputTokens, loop.outputTokens, limits);
@@ -142,7 +142,7 @@ export async function completeAssistantForUser(
     const outcome = failureOutcome(error);
     if (outcome) {
       await withOrganisationTx(db, userId, (tx, ctx) => updateAssistantEvent(tx, ctx.organisationId, gate.eventId, {
-        outcome, toolNames: [], inputTokens: 0, outputTokens: 0, costUsd: '0.000000',
+        outcome, toolNames: [], inputTokens: 0, outputTokens: 0, costUsd: gate.reservedCost,
       }));
     }
     throw error;
@@ -188,7 +188,7 @@ export async function saveAssistantDraftForUser(
       return { kind: 'incomplete' as const };
     }
     const invoice = await createInvoiceInTx(tx, ctx, priced.request);
-    await markProposalSaved(tx, ctx.organisationId, stored.messageId, stored.metadata, invoice.id);
+    await markProposalSaved(tx, ctx.organisationId, stored.proposal.id, invoice.id);
     await insertAssistantEvent(tx, {
       organisationId: ctx.organisationId, userId, requestId, action: 'save_draft', outcome: 'saved',
       confirmed: true, draftId: invoice.id, toolNames: ['save_draft'],
