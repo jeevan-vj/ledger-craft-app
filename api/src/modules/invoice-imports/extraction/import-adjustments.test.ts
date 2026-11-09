@@ -111,6 +111,14 @@ describe('invoice import extraction adjustments', () => {
     if (!normalized.success) return;
     expect(normalized.data.issuerGstNumber).toBe('050-634-531');
     expect(normalized.data.issuerName).toBe('Northside Imaging');
+    const spaced = normalizeProviderPayload(radiologyModelPayload({
+      issuerName: 'Northside Imaging GST 050 634 531',
+      issuerGstNumber: null,
+    }));
+    expect(spaced.success).toBe(true);
+    if (!spaced.success) return;
+    expect(spaced.data.issuerGstNumber).toBe('050-634-531');
+    expect(spaced.data.issuerName).toBe('Northside Imaging');
   });
 
   it('does not take a GST number out of a longer digit run', () => {

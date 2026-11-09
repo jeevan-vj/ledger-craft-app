@@ -37,7 +37,7 @@ function normalizeGstNumber(value: unknown): unknown {
 function extractIssuerGst(name: unknown, gstNumber: unknown): { name: unknown; gstNumber: unknown } {
   if (typeof gstNumber === 'string' && gstNumber.trim()) return { name, gstNumber };
   if (typeof name !== 'string') return { name, gstNumber };
-  const match = /(?:gst|ird)\s*(?:registration|reg|number|no\.?|#|:|\s)+\s*(?<!\d)(\d{2,3}-\d{3}-\d{3}|\d{8,9})(?!\d)/i.exec(name);
+  const match = /(?:gst|ird)\s*(?:registration|reg|number|no\.?|#|:|\s)+\s*(?<!\d)(\d{2,3}(?:[ -]\d{3}){2}|\d{8,9})(?!\d)/i.exec(name);
   const formatted = match ? formatNzGstNumber(match[1] ?? '') : null;
   if (!match || !formatted) return { name, gstNumber };
   const cleaned = name.replace(match[0], ' ').replace(/\s{2,}/g, ' ').trim();
