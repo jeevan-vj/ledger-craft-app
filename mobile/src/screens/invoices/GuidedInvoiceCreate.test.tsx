@@ -1,4 +1,5 @@
 import React from 'react';
+import { KeyboardAvoidingView, Platform } from 'react-native';
 import { fireEvent, render, waitFor } from '@testing-library/react-native';
 import GuidedInvoiceCreate from './GuidedInvoiceCreate';
 import { businessProfileService } from '@/services/businessProfileService';
@@ -97,6 +98,20 @@ describe('GuidedInvoiceCreate', () => {
       country: 'Australia',
     });
     (businessProfileService.getBusinessProfile as jest.Mock).mockResolvedValue(profile);
+  });
+
+  it('lets Android resize the invoice form once when the keyboard opens', async () => {
+    const originalOS = Platform.OS;
+    Object.defineProperty(Platform, 'OS', { configurable: true, value: 'android' });
+    try {
+      const screen = renderCreate();
+      await screen.findByText('Who is this invoice for?');
+      // Android adjustResize already removes the keyboard height. Subtracting it
+      // again leaves the Amount field below a collapsed scroll viewport.
+      expect(screen.UNSAFE_getByType(KeyboardAvoidingView).props.behavior).toBeUndefined();
+    } finally {
+      Object.defineProperty(Platform, 'OS', { configurable: true, value: originalOS });
+    }
   });
 
   it('does not preselect a customer and keeps GST in the country currency', async () => {

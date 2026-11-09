@@ -277,7 +277,8 @@ export default function GuidedInvoiceCreate({ requestedCustomerId }: GuidedInvoi
   return (
     <KeyboardAvoidingView
       style={styles.screen}
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      // Android's adjustResize already reserves the keyboard height.
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 100 : 0}
     >
       <View style={styles.progress} accessibilityLabel={`Step ${step + 1} of ${stepCopy.length}`}>

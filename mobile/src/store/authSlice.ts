@@ -95,7 +95,9 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   error: null,
 
   signIn: async (email: string, password: string) => {
-    set({ loading: true, error: null });
+    // The form owns submission progress. Global loading unmounts navigation,
+    // discarding the entered credentials and the error on a failed request.
+    set({ error: null });
     try {
       await signInEmail({ email, password });
       const me = await getMe();
@@ -119,7 +121,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   },
 
   signUp: async (email: string, password: string, fullName?: string) => {
-    set({ loading: true, error: null });
+    set({ error: null });
     try {
       await signUpEmail({
         name: fullName?.trim() || email.split('@')[0] || 'Owner',
