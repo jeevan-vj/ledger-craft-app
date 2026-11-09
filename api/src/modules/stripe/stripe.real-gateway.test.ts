@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const stripeMocks = vi.hoisted(() => ({
+  constructed: vi.fn(),
+  fetchMakeRequest: vi.fn(),
   v1AccountCreate: vi.fn(),
   v2AccountCreate: vi.fn(),
   feeRetrieve: vi.fn(), chargeRetrieve: vi.fn(), intentRetrieve: vi.fn(), intentList: vi.fn(),
@@ -8,8 +10,9 @@ const stripeMocks = vi.hoisted(() => ({
 
 vi.mock('stripe', () => {
   class StripeMock {
-    static createFetchHttpClient = vi.fn(() => ({}));
+    static createFetchHttpClient = vi.fn(() => ({ makeRequest: stripeMocks.fetchMakeRequest }));
     static createSubtleCryptoProvider = vi.fn(() => ({}));
+    constructor(secretKey: string, config: unknown) { stripeMocks.constructed(secretKey, config); }
 
     accounts = { create: stripeMocks.v1AccountCreate };
     accountLinks = { create: vi.fn() };
@@ -80,6 +83,10 @@ describe('real Stripe gateway', () => {
     [{ STRIPE_PAYMENTS_ENABLED: 'true' }, 'unavailable'],
     [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform' }, 'unavailable'],
     [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect' }, 'available'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'oak_live_example', STRIPE_CONTEXT: 'acct_sandbox', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'http://localhost:8080' }, 'available'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'oak_live_example', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'http://localhost:8080' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'oak_live_example', STRIPE_CONTEXT: 'acct_sandbox', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'https://example.com' }, 'unavailable'],
+    [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'oak_live_example', STRIPE_CONTEXT: 'acct_sandbox', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'http://localhost:8080', NODE_ENV: 'production' }, 'unavailable'],
     [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'http://localhost:8080' }, 'available'],
     [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'https://example.com' }, 'unavailable'],
     [{ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_MOCK_MODE: 'true', APP_URL: 'http://localhost:8080', NODE_ENV: 'production' }, 'unavailable'],
@@ -124,6 +131,23 @@ it('reports incomplete provider discovery when Stripe pagination cannot establis
  expect(await createStripeGateway('sk_test_fixture').listRecentPayments!('org_target','acct_target',new Date())).toEqual({items:[],complete:false});
  expect(stripeMocks.intentList).toHaveBeenCalledTimes(1);
 });
+it('sends the sandbox context for a local CLI token and keeps the mode in test', async () => {
+  const env = { STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'oak_live_example', STRIPE_CONTEXT: 'acct_sandbox', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'http://localhost:8080' };
+  expect(stripeRuntimeFromEnv(env)?.config.mode).toBe('test');
+  expect(stripeMocks.constructed).toHaveBeenCalledWith('oak_live_example', expect.objectContaining({ stripeContext: 'acct_sandbox' }));
+  const config = stripeMocks.constructed.mock.calls.at(-1)?.[1] as { httpClient: { makeRequest: (...args: unknown[]) => unknown } };
+  await config.httpClient.makeRequest('api.stripe.com', '443', '/v2/core/accounts/acct_sandbox', 'GET', { Accept: 'application/json' }, '', 'https', 1000);
+  expect(stripeMocks.fetchMakeRequest).toHaveBeenCalledWith('api.stripe.com', '443', '/v2/core/accounts/acct_sandbox', 'GET', expect.objectContaining({ 'Stripe-Livemode': 'false' }), '', 'https', 1000);
+});
+
+it('does not scope a normal test secret key to a Stripe context', async () => {
+  stripeRuntimeFromEnv({ STRIPE_PAYMENTS_ENABLED: 'true', STRIPE_SECRET_KEY: 'sk_test_fixture', STRIPE_CONTEXT: 'acct_sandbox', STRIPE_WEBHOOK_SECRET: 'whsec_platform', STRIPE_CONNECT_WEBHOOK_SECRET: 'whsec_connect', APP_URL: 'http://localhost:8080' });
+  expect(stripeMocks.constructed).toHaveBeenCalledWith('sk_test_fixture', expect.not.objectContaining({ stripeContext: expect.any(String) }));
+  const config = stripeMocks.constructed.mock.calls.at(-1)?.[1] as { httpClient: { makeRequest: (...args: unknown[]) => unknown } };
+  await config.httpClient.makeRequest('api.stripe.com', '443', '/v1/account', 'GET', { Accept: 'application/json' }, '', 'https', 1000);
+  expect(stripeMocks.fetchMakeRequest).toHaveBeenCalledWith('api.stripe.com', '443', '/v1/account', 'GET', { Accept: 'application/json' }, '', 'https', 1000);
+});
+
 it('defaults real beta approval to empty and parses only explicit organisation IDs',()=>{
  const env={STRIPE_PAYMENTS_ENABLED:'true',STRIPE_SECRET_KEY:'sk_test_fixture',STRIPE_WEBHOOK_SECRET:'whsec_platform',STRIPE_CONNECT_WEBHOOK_SECRET:'whsec_connect'};
  expect(stripeRuntimeFromEnv(env)?.config.approvedOrganisationIds).toEqual([]);
