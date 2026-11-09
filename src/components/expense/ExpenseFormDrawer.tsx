@@ -28,6 +28,7 @@ import * as z from 'zod';
 import { Expense, PaymentMethod } from '@/types';
 import { DrawerFormLayout } from '@/components/ui/DrawerFormLayout';
 import { useAppData } from '@/hooks/useAppData';
+import { includedGst } from '@/components/expense/includedGst';
 import { 
   FileText, 
   DollarSign, 
@@ -103,7 +104,10 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
   initialValues,
   onSubmit,
 }) => {
-  const { expenseCategories, accounts, customers } = useAppData();
+  const { expenseCategories, accounts, customers, businessProfile } = useAppData();
+  const gstRate = Number(businessProfile?.defaultTaxRate ?? 0);
+  const gstRegistered = businessProfile?.gstRegistrationStatus === 'registered' && gstRate > 0;
+  const autoGst = !initialValues;
   const [, setReceiptFile] = useState<File | null>(null);
   const [receiptUrl, setReceiptUrl] = useState<string | null>(initialValues?.receiptUrl || null);
   const [showPaymentDetails, setShowPaymentDetails] = useState(false);
@@ -195,6 +199,20 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       setShowBillingDetails(false);
     }
   }, [initialValues, form]);
+
+  const receiptTotal = form.watch('amount');
+  const gstTreatment = form.watch('gstTreatment');
+  const taxOverridden = Boolean(form.formState.dirtyFields.taxAmount);
+
+  useEffect(() => {
+    if (!autoGst || !gstRegistered) return;
+    if (gstTreatment === 'exempt' || gstTreatment === 'zero_rated') {
+      form.setValue('taxAmount', 0);
+      return;
+    }
+    if (gstTreatment !== 'standard' || taxOverridden) return;
+    form.setValue('taxAmount', includedGst(Number(receiptTotal) || 0, gstRate));
+  }, [autoGst, form, gstRate, gstRegistered, gstTreatment, receiptTotal, taxOverridden]);
 
   const handleSubmit = (values: ExpenseFormValues) => {
     // Include the current receipt URL in the form values
@@ -367,6 +385,11 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
                           </FormControl>
                         </div>
                         <FormMessage />
+                        {autoGst && gstRegistered && gstTreatment === 'standard' && Number(receiptTotal) > 0 ? (
+                          <p className="text-sm text-muted-foreground" data-testid="expense-gst-included">
+                            GST included ${includedGst(Number(receiptTotal), gstRate).toFixed(2)}
+                          </p>
+                        ) : null}
                       </FormItem>
                     )}
                   />

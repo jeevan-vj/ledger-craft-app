@@ -12,10 +12,12 @@ import {
   DEFAULT_INVOICE_NUMBER_FORMAT,
   DEFAULT_ONBOARDING_COUNTRY,
 } from '@/utils/countryTaxDefaults';
+import { organisationsApi } from '@/features/organisations/api';
+import { organisationNameAfterOnboarding } from './onboardingOrganisation';
 
 export default function Onboarding() {
   const navigate = useNavigate();
-  const { user, markOnboardingComplete } = useAuth();
+  const { user, me, markOnboardingComplete } = useAuth();
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,6 +74,11 @@ export default function Onboarding() {
         logoUrl: null,
         userId: user.id,
       });
+
+      const companies = await organisationsApi.list();
+      const active = companies.organisations.find((company) => company.isActive);
+      const nextName = active ? organisationNameAfterOnboarding(active.name, me?.user.name ?? '', data.businessName) : null;
+      if (active && nextName) await organisationsApi.update(active.id, nextName);
 
       markOnboardingComplete();
 

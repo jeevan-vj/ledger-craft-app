@@ -57,6 +57,8 @@ cd mobile && npm test -- src/screens/sales/SellScreen.test.tsx
 
 `pnpm dev:api` is `127.0.0.1:3001`. `pnpm dev` is Vite `:8080`. Package manager is pnpm `11.19.0`. Mobile uses npm and `mobile/package-lock.json`.
 
+After an edit, run `node scripts/books-flow-check.mjs --run`. It skips the Chromium bookkeeper flow unless the diff touches signup, onboarding, invoices, payments, expenses, or GST. The rule is `.cursor/rules/books-flow.mdc`.
+
 ## Layout
 
 ```text

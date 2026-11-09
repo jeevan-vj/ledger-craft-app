@@ -16,7 +16,8 @@ This was checked with Vitest 3.2.4: `vitest run src/sale.test.ts` ran 1 file; `v
 | Full contracts suite | `pnpm test:contracts` | 24 | Whole `packages/contracts/src/**/*.test.ts` include |
 | Full web suite | `pnpm test:run` | 22 | Whole web include. This is the CI unit job |
 | Full mobile suite | `cd mobile && npm test -- --ci --watchAll=false` | 20 | CI form. No filename |
-| Tooling in this change | `node --test scripts/agent-efficiency.test.mjs scripts/agent-preflight.test.mjs scripts/targeted-test.test.mjs scripts/agent-docs.test.mjs` | 22 is enough | Node’s test runner. No pnpm install |
+| Tooling in this change | `node --test scripts/agent-efficiency.test.mjs scripts/agent-preflight.test.mjs scripts/targeted-test.test.mjs scripts/agent-docs.test.mjs scripts/books-flow-check.test.mjs` | 22 is enough | Node’s test runner. No pnpm install |
+| Bookkeeper flow, only when the diff touches it | `node scripts/books-flow-check.mjs --run` | 22 is enough | Chromium `tests/e2e/accountant-books.spec.ts` when the script prints `run`. A docs, mobile, quote, report, or reconciliation edit prints `skip` |
 
 Paths are relative to the package directory (`api/`, `packages/contracts/`, the repo root, or `mobile/`). A repo-relative path from the wrong directory matches nothing, and the wrapper then fails closed.
 
