@@ -29,13 +29,22 @@ function matchesParty(name: string | null, parties: string[]): boolean {
   return parties.some((party) => {
     const expected = partyTokens(party);
     if (expected.length === 0) return false;
-    const hits = expected.filter((token) => tokens.has(token)).length;
-    return hits * 2 >= expected.length;
+    return expected.every((token) => tokens.has(token));
   });
 }
 
 function applyDirection(draft: Draft, context: ExtractionContext): { draft: Draft; changed: boolean } {
-  if (draft.thirdPartyIssued) return { draft, changed: false };
+  if (draft.thirdPartyIssued) {
+    if (draft.suggestedDirection === 'SALES') return { draft, changed: false };
+    return {
+      changed: true,
+      draft: {
+        ...draft,
+        suggestedDirection: 'SALES',
+        suggestedDirectionReason: 'Buyer-created tax invoice. Suggested sales.',
+      },
+    };
+  }
   const parties = [context.organisationName, context.userName ?? ''].filter((value) => value.trim().length > 0);
   const recipientMatches = matchesParty(draft.recipientName, parties);
   const issuerIsDifferent = Boolean(draft.issuerName) && !matchesParty(draft.issuerName, parties);

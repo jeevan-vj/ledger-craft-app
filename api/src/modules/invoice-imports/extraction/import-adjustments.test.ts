@@ -63,6 +63,33 @@ describe('invoice import extraction adjustments', () => {
     expect(recomputeAndValidateDraft(draft).computed).toEqual({ net: '56.52', gst: '8.48', total: '65.00' });
   });
 
+  it('keeps a reconciling 10% rate, a zero rate, a mixed zero-rated line, and an inclusive 15% gross price', () => {
+    const zero = normalizeProviderPayload(radiologyModelPayload({
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '56.52', amount: '56.52', gstRate: '0' }],
+      net: '56.52', gst: '0.00', total: '56.52',
+    }));
+    const mixed = normalizeProviderPayload(radiologyModelPayload({
+      lineItems: [
+        { description: 'Zero rated', quantity: '1', unitPrice: '100.00', amount: '100.00', gstRate: '0' },
+        { description: 'Service', quantity: '1', unitPrice: '56.52', amount: '56.52', gstRate: '15' },
+      ],
+      net: '156.52', gst: '8.48', total: '165.00',
+      confidence: { ...uniformConfidence(0.6), lineItems: [confidence(0.6), confidence(0.6)] },
+    }));
+    const inclusive = normalizeProviderPayload(radiologyModelPayload({
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '65.00', amount: '65.00', gstRate: '15' }],
+      net: '65.00', gst: '8.48', total: '65.00',
+    }));
+    const hundred = normalizeProviderPayload(radiologyModelPayload({
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '100.00', amount: '100.00', gstRate: '8.48' }],
+      net: '100.00', gst: '8.48', total: '108.48',
+    }));
+    expect(zero.success && zero.data.lineItems.map((line) => line.gstRate)).toEqual(['0']);
+    expect(mixed.success && mixed.data.lineItems.map((line) => line.gstRate)).toEqual(['0', '15']);
+    expect(inclusive.success && inclusive.data.lineItems[0]?.gstRate).toBe('15');
+    expect(hundred.success && hundred.data.lineItems[0]?.gstRate).toBe('8.48');
+  });
+
   it('keeps a reconciling 10% rate and an already-correct 15% rate', () => {
     const ten = normalizeProviderPayload(radiologyModelPayload({
       lineItems: [{ description: 'Service', quantity: '1', unitPrice: '100.00', amount: '100.00', gstRate: '10' }],
@@ -86,6 +113,40 @@ describe('invoice import extraction adjustments', () => {
     expect(normalized.data.issuerName).toBe('Northside Imaging');
   });
 
+  it('does not take a GST number out of a longer digit run', () => {
+    for (const issuerName of [
+      'Northside Imaging GST 0800-123-456',
+      'Northside Imaging GST 0800123456',
+      'Northside Imaging GST 800-123-4567',
+    ]) {
+      const normalized = normalizeProviderPayload(radiologyModelPayload({ issuerName, issuerGstNumber: null }));
+      expect(normalized.success).toBe(true);
+      if (!normalized.success) return;
+      expect(normalized.data.issuerGstNumber).toBeNull();
+      expect(normalized.data.issuerName).toBe(issuerName);
+    }
+  });
+
+  it('does not treat a shared given name or surname as the organisation or user', async () => {
+    const sharedGiven = radiologyModelPayload({
+      issuerName: 'Northside Imaging',
+      recipientName: 'Alex Nguyen',
+      suggestedDirection: 'SALES',
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '56.52', amount: '56.52', gstRate: '15' }],
+    });
+    const sharedSurname = radiologyModelPayload({
+      issuerName: 'Carter Imaging',
+      recipientName: 'Alex Carter',
+      suggestedDirection: 'SALES',
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '56.52', amount: '56.52', gstRate: '15' }],
+    });
+    const providerFor = (payload: ReturnType<typeof radiologyModelPayload>) => createWorkersAiExtractionProvider({
+      ai: { run: async () => ({ response: payload }) },
+    });
+    expect((await providerFor(sharedGiven).extractDocument(file, orgContext)).suggestedDirection).toBe('SALES');
+    expect((await providerFor(sharedSurname).extractDocument(file, orgContext)).suggestedDirection).toBe('PURCHASE');
+  });
+
   it('suggests PURCHASE when the recipient is the organisation or user and the issuer is another business', async () => {
     const run = vi.fn(async (_model: string, _request: unknown) => ({ response: radiologyModelPayload() }));
     const provider = createWorkersAiExtractionProvider({ ai: { run } });
@@ -105,6 +166,21 @@ describe('invoice import extraction adjustments', () => {
     expect(positive.every((value) => value === 0.6)).toBe(false);
     expect(draft.confidence.lineItems[0]).toEqual({ value: 0.7, label: 'Check' });
     expect(draft.confidence.dueDate).toEqual({ value: 0, label: 'Missing' });
+  });
+
+  it('resolves a buyer-created tax invoice to SALES when the model returns PURCHASE', async () => {
+    const payload = radiologyModelPayload({
+      issuerName: 'Cleancorp Ltd',
+      recipientName: 'Alex Carter',
+      suggestedDirection: 'PURCHASE',
+      suggestedDirectionReason: 'The model treated the preparer as a supplier.',
+      thirdPartyIssued: true,
+      lineItems: [{ description: 'Service', quantity: '1', unitPrice: '56.52', amount: '56.52', gstRate: '15' }],
+    });
+    const provider = createWorkersAiExtractionProvider({ ai: { run: async () => ({ response: payload }) } });
+    const draft = await provider.extractDocument(file, orgContext);
+    expect(draft.thirdPartyIssued).toBe(true);
+    expect(draft.suggestedDirection).toBe('SALES');
   });
 
   it('keeps a buyer-created tax invoice as SALES and preserves varied provider confidence', async () => {
@@ -133,6 +209,7 @@ describe('invoice import extraction adjustments', () => {
   it('asks the model for a GST percentage and a registration number, not a dollar rate', () => {
     expect(INVOICE_IMPORT_SYSTEM_PROMPT).toContain('gstRate is a tax percentage');
     expect(INVOICE_IMPORT_SYSTEM_PROMPT).toContain('issuerGstNumber');
+    expect(INVOICE_IMPORT_SYSTEM_PROMPT).toContain('buyer-created tax invoice stays SALES');
     expect(INVOICE_IMPORT_SYSTEM_PROMPT).not.toContain('050-634-531');
   });
 
