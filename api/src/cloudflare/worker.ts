@@ -7,6 +7,7 @@ import type { CloudflareOptions } from '@sentry/cloudflare';
 import { and, eq, isNull, inArray } from 'drizzle-orm';
 import { createApp } from '../app';
 import { activeOrganisationSelections, organisationMemberships, organisations, users } from '../db/schema/identity';
+import { syncGoogleAuthEnv } from '../env';
 import { createAuth, type Auth } from '../modules/auth/auth';
 import { createAuthEmailSender } from '../modules/auth/auth-email';
 import { createInvoiceMailerFromEnv } from '../modules/invoices/resend';
@@ -71,8 +72,7 @@ export interface Env {
   DOCUMENTS?: R2Bucket;
 }
 function publishGoogleAuthEnv(env: Pick<Env, 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET'>): void {
-  if (env.GOOGLE_CLIENT_ID) process.env.GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
-  if (env.GOOGLE_CLIENT_SECRET) process.env.GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
+  syncGoogleAuthEnv(env);
 }
 
 type IdentityContext = {

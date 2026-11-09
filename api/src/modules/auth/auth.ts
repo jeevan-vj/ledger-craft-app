@@ -3,8 +3,9 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins';
 import type { Database } from '../../db/client';
 import { authAccounts, authRateLimits, sessions, users, verifications } from '../../db/schema/identity';
-import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl } from '../../env';
-import { googleAuthPlugins, googleSocialProviders, rejectUnverifiedGoogleAccount } from './google';
+import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl, getGoogleOAuthCredentials } from '../../env';
+import { googleAuthPlugins, googleSocialProviders, stripUnverifiedPasswordAccess } from './google';
+import { verifyGoogleIdToken } from './google-id-token';
 import { provisionOrganisationForUser } from './provision';
 import { scrubText } from '../../observability/scrub';
 
@@ -64,10 +65,9 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
       modelName: 'auth_accounts',
       accountLinking: {
         enabled: true,
-        // Google is trusted only for a verified email claim. Local password
-        // sign-up does not require email verification, so a verified Google
-        // assertion is what links that existing user. Unverified Google
-        // profiles are dropped before this rule can run.
+        // A verified Google email may link an existing password user. If that
+        // local email was never verified, the credential and its sessions are
+        // removed before the Google session is issued.
         trustedProviders: ['google'],
         requireLocalEmailVerified: false,
       },
@@ -102,7 +102,7 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
         '/reset-password': { window: 60, max: 5 },
         '/verify-email': { window: 60, max: 5 },
         '/sign-in/social': { window: 60, max: 10 },
-        '/expo-authorization-proxy': { window: 60, max: 20 },
+        '/google/browser': { window: 60, max: 20 },
       },
     },
     plugins: [bearer(), ...googleAuthPlugins()],
@@ -131,7 +131,17 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
       },
       account: {
         create: {
-          before: async (account) => rejectUnverifiedGoogleAccount(account),
+          before: async (account, context) => {
+            if (account.providerId !== 'google') return { data: account };
+            const credentials = getGoogleOAuthCredentials();
+            const claims = credentials && account.idToken
+              ? await verifyGoogleIdToken(account.idToken, credentials.clientId)
+              : null;
+            if (!claims || claims.email_verified !== true) return false;
+            const adapter = (context as { context?: { internalAdapter?: Parameters<typeof stripUnverifiedPasswordAccess>[1] } } | null)?.context?.internalAdapter;
+            await stripUnverifiedPasswordAccess(account, adapter);
+            return { data: account };
+          },
         },
       },
     },

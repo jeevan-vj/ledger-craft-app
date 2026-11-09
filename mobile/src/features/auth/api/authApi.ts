@@ -1,6 +1,16 @@
 import { z } from 'zod';
-import { googleCallbackKind, googleCallbackUrl, googleSignInErrorMessage, openGoogleBrowser, readGoogleCallback, splitSetCookieHeader } from '../googleSignIn';
-import { rememberSetCookie } from './cookieJar';
+import {
+  clearPendingGoogleSignIn,
+  googleCallbackKind,
+  googleCallbackUrl,
+  googleSignInErrorMessage,
+  loadPendingGoogleSignIn,
+  openGoogleBrowser,
+  randomGoogleSecret,
+  readExactGoogleReturn,
+  savePendingGoogleSignIn,
+  sha256Base64Url,
+} from '../googleSignIn';
 import { apiBase, apiFetch, apiRequest, AuthApiError, clearSessionCookies, parseError, rejectFailedResponse } from './http';
 
 export { AuthApiError };
@@ -126,41 +136,49 @@ export async function getAuthProviders(): Promise<{ google: boolean }> {
   return parsed.success ? parsed.data : { google: false };
 }
 
-export async function rememberGoogleCallback(url: string | null | undefined): Promise<boolean> {
+export async function settleGoogleReturn(url: string | null | undefined): Promise<boolean> {
   if (!url) return false;
-  const callback = readGoogleCallback(url);
-  const cookie = callback?.cookie;
-  if (!cookie) return false;
-  await rememberSetCookie({ getSetCookie: () => splitSetCookieHeader(cookie) });
-  return true;
-}
-
-export async function applyGoogleCallback(url: string): Promise<void> {
-  const callback = readGoogleCallback(url);
-  if (!callback) throw new GoogleSignInError('Google sign-in did not finish. Try again.', 'failed');
+  const callback = readExactGoogleReturn(url);
+  if (!callback) return false;
   const message = googleSignInErrorMessage(callback.error, callback.errorDescription);
   if (message) {
+    await clearPendingGoogleSignIn();
     throw new GoogleSignInError(message, googleCallbackKind(callback.error, callback.errorDescription) ?? 'failed');
   }
-  if (!(await rememberGoogleCallback(url))) {
-    throw new GoogleSignInError('Google sign-in did not finish. Try again.', 'failed');
+  const pending = await loadPendingGoogleSignIn();
+  if (!pending || !callback.code || callback.state !== pending.state) return false;
+  const response = await apiFetch('/api/auth/google/mobile-session', {
+    method: 'POST',
+    body: JSON.stringify({ code: callback.code, state: callback.state, verifier: pending.verifier }),
+  });
+  await clearPendingGoogleSignIn();
+  if (!response.ok) {
+    const parsed = await parseError(response);
+    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
   }
+  return true;
 }
 
 export async function signInWithGoogle(open: (url: string) => Promise<string | null> = openGoogleBrowser): Promise<void> {
   const providers = await getAuthProviders();
   if (!providers.google) throw new GoogleSignInError('Google sign-in is not available.', 'disabled');
+  const state = randomGoogleSecret();
+  const verifier = randomGoogleSecret();
+  await savePendingGoogleSignIn({ state, verifier });
+  const callbackURL = `${googleCallbackUrl}?state=${encodeURIComponent(state)}`;
   const response = await apiFetch('/api/auth/sign-in/social', {
     method: 'POST',
     body: JSON.stringify({
       provider: 'google',
-      callbackURL: googleCallbackUrl,
-      errorCallbackURL: googleCallbackUrl,
-      newUserCallbackURL: googleCallbackUrl,
+      callbackURL,
+      errorCallbackURL: callbackURL,
+      newUserCallbackURL: callbackURL,
       disableRedirect: true,
+      additionalData: { verifierHash: await sha256Base64Url(verifier) },
     }),
   });
   if (!response.ok) {
+    await clearPendingGoogleSignIn();
     const parsed = await parseError(response);
     if (parsed.code === 'GOOGLE_SIGN_IN_DISABLED') {
       throw new GoogleSignInError('Google sign-in is not available.', 'disabled');
@@ -168,10 +186,16 @@ export async function signInWithGoogle(open: (url: string) => Promise<string | n
     throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
   }
   const body = z.object({ url: z.string().url() }).parse(await response.json());
-  const proxy = `${apiBase()}/api/auth/expo-authorization-proxy?authorizationURL=${encodeURIComponent(body.url)}`;
+  const proxy = `${apiBase()}/api/auth/google/browser?authorizationURL=${encodeURIComponent(body.url)}`;
   const returned = await open(proxy);
-  if (!returned) throw new GoogleSignInError('Google sign-in was cancelled.', 'cancelled');
-  await applyGoogleCallback(returned);
+  if (!returned) {
+    await clearPendingGoogleSignIn();
+    throw new GoogleSignInError('Google sign-in was cancelled.', 'cancelled');
+  }
+  if (!(await settleGoogleReturn(returned))) {
+    await clearPendingGoogleSignIn();
+    throw new GoogleSignInError('Google sign-in did not finish. Try again.', 'failed');
+  }
 }
 
 export async function signInEmail(input: { email: string; password: string }): Promise<void> {

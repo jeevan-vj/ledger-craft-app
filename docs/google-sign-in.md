@@ -31,19 +31,21 @@ Local Node reads the same names from the environment. See `.env.example`.
 
 ## Account linking
 
-Google is a trusted provider only when the ID token says `email_verified: true`. A verified Google email links to an existing email/password user and does not create a second organisation. An unverified Google email does not link and does not create a user. New verified Google users go through the existing organisation hook and then normal onboarding.
+Google is a trusted provider only when the ID token signature checks out against Google's JWKS and `email_verified` is true. A verified Google email links to an existing password user and does not create a second organisation. An unverified Google email does not link and does not create a user. New verified Google users go through the existing organisation hook and then normal onboarding.
 
-Password sign-up does not require a local verification email. Linking therefore accepts Google's verified-email claim for that existing user. A person who registers a password for an email they do not control could receive that mailbox's later Google sign-in. Do not turn on linking for any provider that does not assert a verified email.
+If that existing password user has not verified the email, linking removes the password and every session that existed before Google proved the mailbox. The Google session is the only one left. A user whose email is already verified keeps the password.
+
+A Google-only account can set a password with the normal reset email, then delete the account with that password. A pending email change is not used as the Google link key.
 
 ## Mobile
 
-The app opens the system browser on Better Auth's `/api/auth/expo-authorization-proxy`, using the same Web client. Google returns to `easybizinvoice://auth/google`, and the app stores the session cookie it already uses for email sign-in. This uses `expo-linking`, which is already in the Expo SDK 54 binary. It does not add `expo-web-browser` or another native module, so a new EAS build is not required for this change.
+The app stores a random state and verifier, then opens the system browser on `/api/auth/google/browser`. That proxy accepts only a Google authorize URL whose redirect is this API's Google callback. Google returns to `easybizinvoice://auth/google` with a one-time code and the same state. The app checks the state, then exchanges the code and verifier over HTTPS and stores the session the same way email sign-in does. The return URL does not contain the session cookie. This uses `expo-linking`, which is already in the Expo SDK 54 binary. It does not add `expo-web-browser` or another native module, so a new EAS build is not required for this change.
 
 ## Rotation
 
 1. Create a new client secret in Google Cloud, or a new Web client with the same redirect URIs.
 2. Put the new values with `wrangler secret put` for `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET`.
-3. Redeploy the Worker so the Identity object reads the new secret.
+3. Redeploy the Worker, or restart the Identity object, so it reads the new secret. Removing either secret disables Google on the next Identity startup.
 4. Delete the old secret in Google Cloud after a sign-in succeeds.
 
 Leave either secret unset to disable the button without a schema change. No database migration is required. `auth_accounts` already stores provider accounts.

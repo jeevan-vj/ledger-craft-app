@@ -1,26 +1,59 @@
 import { AppState, Linking } from 'react-native';
+import * as SecureStore from 'expo-secure-store';
 
-const callbackPrefix = 'easybizinvoice://auth/google';
+export const googleCallbackUrl = 'easybizinvoice://auth/google';
+const pendingKey = 'ledgercraft.google.pending';
 
-export type GoogleCallback = {
-  cookie: string | null;
+export type GoogleReturn = {
+  code: string | null;
+  state: string | null;
   error: string | null;
   errorDescription: string | null;
 };
 
-export function readGoogleCallback(url: string): GoogleCallback | null {
-  if (!url.startsWith(callbackPrefix)) return null;
-  const queryIndex = url.indexOf('?');
-  const params = new URLSearchParams(queryIndex >= 0 ? url.slice(queryIndex + 1) : '');
+export type PendingGoogleSignIn = {
+  state: string;
+  verifier: string;
+};
+
+let pendingMemory: PendingGoogleSignIn | null = null;
+
+export function readExactGoogleReturn(url: string): GoogleReturn | null {
+  const withoutHash = url.split('#')[0] ?? '';
+  const queryIndex = withoutHash.indexOf('?');
+  const path = queryIndex === -1 ? withoutHash : withoutHash.slice(0, queryIndex);
+  if (path !== googleCallbackUrl) return null;
+  const params = new URLSearchParams(queryIndex === -1 ? '' : withoutHash.slice(queryIndex + 1));
   return {
-    cookie: params.get('cookie'),
+    code: params.get('code'),
+    state: params.get('state'),
     error: params.get('error'),
     errorDescription: params.get('error_description'),
   };
 }
 
-export function splitSetCookieHeader(header: string): string[] {
-  return header.split(/,(?=\s*[^;,\s]+=)/).map((part) => part.trim()).filter(Boolean);
+export async function savePendingGoogleSignIn(pending: PendingGoogleSignIn): Promise<void> {
+  pendingMemory = pending;
+  await SecureStore.setItemAsync(pendingKey, JSON.stringify(pending));
+}
+
+export async function loadPendingGoogleSignIn(): Promise<PendingGoogleSignIn | null> {
+  if (pendingMemory) return pendingMemory;
+  const stored = await SecureStore.getItemAsync(pendingKey);
+  if (!stored) return null;
+  try {
+    const parsed = JSON.parse(stored) as PendingGoogleSignIn;
+    if (!parsed.state || !parsed.verifier) return null;
+    pendingMemory = parsed;
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+export async function clearPendingGoogleSignIn(): Promise<void> {
+  pendingMemory = null;
+  await SecureStore.deleteItemAsync(pendingKey);
 }
 
 export function googleSignInErrorMessage(error: string | null, description?: string | null): string | null {
@@ -32,6 +65,7 @@ export function googleSignInErrorMessage(error: string | null, description?: str
   if (code === 'google_sign_in_disabled' || code === 'oauth_provider_not_found') return 'Google sign-in is not available.';
   if (code === 'unable_to_get_user_info' || code === 'email_not_verified') return 'Google did not confirm this email address.';
   if (code === 'account_not_linked' || code === 'unable_to_link_account') return 'This Google account could not be linked. Sign in with your email and password.';
+  if (code === 'state_mismatch' || code === 'state_not_found' || code === 'invalid_code') return 'Google sign-in did not finish. Try again.';
   return 'Google sign-in did not finish. Try again.';
 }
 
@@ -42,6 +76,23 @@ export function googleCallbackKind(error: string | null, description?: string | 
   if (message.includes('denied')) return 'denied';
   if (message.includes('not available')) return 'disabled';
   return 'failed';
+}
+
+function bytesToBase64Url(bytes: Uint8Array): string {
+  let binary = '';
+  for (const byte of bytes) binary += String.fromCharCode(byte);
+  return btoa(binary).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
+}
+
+export function randomGoogleSecret(): string {
+  const bytes = new Uint8Array(32);
+  crypto.getRandomValues(bytes);
+  return bytesToBase64Url(bytes);
+}
+
+export async function sha256Base64Url(value: string): Promise<string> {
+  const digest = new Uint8Array(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(value)));
+  return bytesToBase64Url(digest);
 }
 
 export function openGoogleBrowser(url: string): Promise<string | null> {
@@ -57,7 +108,7 @@ export function openGoogleBrowser(url: string): Promise<string | null> {
       resolve(value);
     };
     const subscription = Linking.addEventListener('url', (event) => {
-      if (event.url.startsWith(callbackPrefix)) finish(event.url);
+      if (readExactGoogleReturn(event.url)) finish(event.url);
     });
     const appState = AppState.addEventListener('change', (state) => {
       if (state !== 'active') return;
@@ -66,5 +117,3 @@ export function openGoogleBrowser(url: string): Promise<string | null> {
     Linking.openURL(url).catch(() => finish(null));
   });
 }
-
-export const googleCallbackUrl = callbackPrefix;

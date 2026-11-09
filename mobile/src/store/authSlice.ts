@@ -8,7 +8,7 @@ import {
   AuthApiError,
   getMe,
   GoogleSignInError,
-  rememberGoogleCallback,
+  settleGoogleReturn,
   signInEmail,
   signInWithGoogle as startGoogleSignIn,
   signOutSession,
@@ -240,7 +240,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   initialize: async () => {
     set({ loading: true, initializationError: false, error: null });
     try {
-      await rememberGoogleCallback(await Linking.getInitialURL());
+      await settleGoogleReturn(await Linking.getInitialURL()).catch(() => false);
       const me = await getMe();
       if (me) {
         const profile = await businessProfileApi.get();
