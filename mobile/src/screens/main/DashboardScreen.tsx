@@ -22,6 +22,7 @@ import { useTheme } from '@/theme';
 import { useTabScreenInsets } from '@/hooks/useTabScreenInsets';
 import { homeTaskStorage } from './homeTaskStorage';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
+import { reportsApi } from '@/features/reports/api/reportsApi';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
@@ -84,6 +85,7 @@ export default function DashboardScreen() {
   const navigation = useNavigation<DashboardNavigation>();
   const { user } = useAuth();
   const [dashboardFilters, setDashboardFilters] = useState<ReportFilters | undefined>();
+  const [periodError, setPeriodError] = useState<string | null>(null);
   const [tasksDismissed, setTasksDismissed] = useState<boolean | null>(null);
   const [balanceVisible, setBalanceVisible] = useState(true);
   const home = useQuery({
@@ -172,10 +174,19 @@ export default function DashboardScreen() {
     });
   };
   const retry = () => { void home.refetch(); };
-  const applyPeriod = (days?: number) => {
-    const to = new Date();
-    const from = days ? new Date(to.getTime() - (days - 1) * 86_400_000) : new Date(Date.UTC(to.getUTCFullYear(), 0, 1));
-    setDashboardFilters({ from: from.toISOString().slice(0, 10), to: to.toISOString().slice(0, 10), comparison: 'previous_period' });
+  const applyPeriod = async (days?: number) => {
+    setPeriodError(null);
+    try {
+      const { today } = await reportsApi.options();
+      // The server supplies the organisation's calendar day. UTC arithmetic on
+      // that date-only anchor counts calendar days without device timezone shifts.
+      const from = days
+        ? new Date(Date.parse(`${today}T00:00:00Z`) - (days - 1) * 86_400_000).toISOString().slice(0, 10)
+        : `${today.slice(0, 4)}-01-01`;
+      setDashboardFilters({ from, to: today, comparison: 'previous_period' });
+    } catch {
+      setPeriodError('Could not check your business date. Try the period again.');
+    }
   };
 
   if (loading) {
@@ -245,11 +256,13 @@ export default function DashboardScreen() {
       <Text style={theme.type.headline}>Business reports</Text>
       <Text selectable style={theme.type.footnote}>Posted ledger</Text>
     </View>
+    {dashboard ? <Text style={theme.type.footnote}>{dashboard.layout.filters.from} – {dashboard.layout.filters.to}</Text> : null}
     <View style={styles.periods}>
-      <PillButton label="30 days" variant="secondary" onPress={() => applyPeriod(30)} />
-      <PillButton label="90 days" variant="secondary" onPress={() => applyPeriod(90)} />
-      <PillButton label="Year" variant="secondary" onPress={() => applyPeriod()} />
+      <PillButton label="30 days" variant="secondary" onPress={() => { void applyPeriod(30); }} />
+      <PillButton label="90 days" variant="secondary" onPress={() => { void applyPeriod(90); }} />
+      <PillButton label="Year" variant="secondary" onPress={() => { void applyPeriod(); }} />
     </View>
+    {periodError ? <Text accessibilityRole="alert" style={[theme.type.footnote, { color: theme.colors.danger }]}>{periodError}</Text> : null}
     {savedReports.length > 0 ? <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.savedReports} accessibilityLabel="Saved report filters">
       {savedReports.map((report) => <PillButton key={report.id} label={report.name} variant={report.isPinned ? 'primary' : 'ghost'} onPress={() => setDashboardFilters(report.filters)} />)}
     </ScrollView> : null}

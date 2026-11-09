@@ -1,0 +1,36 @@
+{
+  "invoices": [
+    {
+      "invoice_number": "INV-2026-0001",
+      "status": "sent",
+      "total": "100.00",
+      "total_paid": "40.00",
+      "balance_due": "60.00"
+    },
+    {
+      "invoice_number": "INV-2026-0002",
+      "status": "draft",
+      "total": "25.00",
+      "total_paid": "0.00",
+      "balance_due": "25.00"
+    }
+  ],
+  "payments": [
+    {
+      "amount": "40.00",
+      "status": "completed"
+    }
+  ],
+  "journals": [
+    {
+      "reference_type": "invoice",
+      "status": "posted",
+      "total_amount": "100.00"
+    },
+    {
+      "reference_type": "invoice_payment",
+      "status": "posted",
+      "total_amount": "40.00"
+    }
+  ]
+}
