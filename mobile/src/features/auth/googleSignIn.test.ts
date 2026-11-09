@@ -1,4 +1,4 @@
-import { clearPendingGoogleSignIn, googleSignInErrorMessage, readExactGoogleReturn, savePendingGoogleSignIn } from './googleSignIn';
+import { clearPendingGoogleSignIn, googleSignInErrorMessage, loadPendingGoogleSignIn, readExactGoogleReturn, savePendingGoogleSignIn } from './googleSignIn';
 import { settleGoogleReturn } from './api/authApi';
 import { clearCookies, getCookieHeader } from './api/cookieJar';
 
@@ -30,5 +30,12 @@ describe('google callback parsing', () => {
     expect(global.fetch).not.toHaveBeenCalled();
     expect(await getCookieHeader()).toBeNull();
     await clearPendingGoogleSignIn();
+  });
+
+  it('drops a pending verifier only after its expiry', async () => {
+    await savePendingGoogleSignIn({ state: 'still-good', verifier: 'verifier', expiresAt: Date.now() + 60_000 });
+    expect((await loadPendingGoogleSignIn())?.state).toBe('still-good');
+    await savePendingGoogleSignIn({ state: 'stale', verifier: 'verifier', expiresAt: Date.now() - 1 });
+    expect(await loadPendingGoogleSignIn()).toBeNull();
   });
 });

@@ -14,6 +14,7 @@ export type GoogleReturn = {
 export type PendingGoogleSignIn = {
   state: string;
   verifier: string;
+  expiresAt?: number;
 };
 
 let pendingMemory: PendingGoogleSignIn | null = null;
@@ -32,23 +33,40 @@ export function readExactGoogleReturn(url: string): GoogleReturn | null {
   };
 }
 
-export async function savePendingGoogleSignIn(pending: PendingGoogleSignIn): Promise<void> {
-  pendingMemory = pending;
-  await SecureStore.setItemAsync(pendingKey, JSON.stringify(pending));
-}
+export const googlePendingTtlMs = 2 * 60 * 1000;
 
-export async function loadPendingGoogleSignIn(): Promise<PendingGoogleSignIn | null> {
-  if (pendingMemory) return pendingMemory;
-  const stored = await SecureStore.getItemAsync(pendingKey);
-  if (!stored) return null;
+type StoredPending = PendingGoogleSignIn & { expiresAt: number };
+
+function storedPending(value: string | null): StoredPending | null {
+  if (!value) return null;
   try {
-    const parsed = JSON.parse(stored) as PendingGoogleSignIn;
-    if (!parsed.state || !parsed.verifier) return null;
-    pendingMemory = parsed;
+    const parsed = JSON.parse(value) as StoredPending;
+    if (!parsed.state || !parsed.verifier || typeof parsed.expiresAt !== 'number') return null;
     return parsed;
   } catch {
     return null;
   }
+}
+
+export async function savePendingGoogleSignIn(pending: PendingGoogleSignIn): Promise<void> {
+  const expiresAt = pending.expiresAt ?? Date.now() + googlePendingTtlMs;
+  if (expiresAt <= Date.now()) {
+    await clearPendingGoogleSignIn();
+    return;
+  }
+  const stored: StoredPending = { state: pending.state, verifier: pending.verifier, expiresAt };
+  pendingMemory = stored;
+  await SecureStore.setItemAsync(pendingKey, JSON.stringify(stored));
+}
+
+export async function loadPendingGoogleSignIn(): Promise<PendingGoogleSignIn | null> {
+  const stored = pendingMemory?.expiresAt ? pendingMemory as StoredPending : storedPending(await SecureStore.getItemAsync(pendingKey));
+  if (!stored || stored.expiresAt <= Date.now()) {
+    if (stored) await clearPendingGoogleSignIn();
+    return null;
+  }
+  pendingMemory = stored;
+  return stored;
 }
 
 export async function clearPendingGoogleSignIn(): Promise<void> {
@@ -103,10 +121,12 @@ export function openGoogleBrowser(url: string): Promise<string | null> {
       if (settled) return;
       settled = true;
       if (cancelTimer) clearTimeout(cancelTimer);
+      clearTimeout(expiry);
       subscription.remove();
       appState.remove();
       resolve(value);
     };
+    const expiry = setTimeout(() => finish(null), googlePendingTtlMs);
     const subscription = Linking.addEventListener('url', (event) => {
       if (readExactGoogleReturn(event.url)) finish(event.url);
     });

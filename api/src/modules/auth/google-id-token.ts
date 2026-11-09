@@ -1,9 +1,14 @@
 type GoogleJwk = JsonWebKey & { kid?: string };
 
+const jwksCacheMs = 5 * 60 * 1000;
+const unknownKidRefetchIntervalMs = 60 * 1000;
+
 let cachedKeys: { expiresAt: number; keys: GoogleJwk[] } | null = null;
+let lastUnknownKidRefetchAt = 0;
 
 export function clearGoogleJwksCache(): void {
   cachedKeys = null;
+  lastUnknownKidRefetchAt = 0;
 }
 
 function decodeBase64Url(value: string): Uint8Array {
@@ -18,14 +23,23 @@ function decodeJson<T>(value: string): T | null {
   }
 }
 
+async function fetchGoogleKeys(): Promise<GoogleJwk[]> {
+  const response = await fetch('https://www.googleapis.com/oauth2/v3/certs');
+  if (!response.ok) return cachedKeys?.keys ?? [];
+  const body = await response.json() as { keys?: GoogleJwk[] };
+  cachedKeys = { expiresAt: Date.now() + jwksCacheMs, keys: body.keys ?? [] };
+  return cachedKeys.keys;
+}
+
 async function googlePublicKey(kid: string): Promise<GoogleJwk | null> {
-  if (!cachedKeys || cachedKeys.expiresAt <= Date.now()) {
-    const response = await fetch('https://www.googleapis.com/oauth2/v3/certs');
-    if (!response.ok) return null;
-    const body = await response.json() as { keys?: GoogleJwk[] };
-    cachedKeys = { expiresAt: Date.now() + 5 * 60 * 1000, keys: body.keys ?? [] };
-  }
-  return cachedKeys.keys.find((key) => key.kid === kid) ?? null;
+  if (!cachedKeys || cachedKeys.expiresAt <= Date.now()) await fetchGoogleKeys();
+  const cached = cachedKeys?.keys.find((key) => key.kid === kid);
+  if (cached) return cached;
+  const now = Date.now();
+  if (now - lastUnknownKidRefetchAt < unknownKidRefetchIntervalMs) return null;
+  lastUnknownKidRefetchAt = now;
+  const refreshed = await fetchGoogleKeys();
+  return refreshed.find((key) => key.kid === kid) ?? null;
 }
 
 export async function verifyGoogleIdToken(token: string, audience: string): Promise<Record<string, unknown> | null> {

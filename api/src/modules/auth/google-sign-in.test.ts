@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { createApp } from '../../app';
 import { createDb } from '../../db/local';
-import { authAccounts, organisationMemberships, organisations, users } from '../../db/schema/identity';
+import { authAccounts, organisationMemberships, organisations, users, verifications } from '../../db/schema/identity';
 import { getDatabaseUrl, syncGoogleAuthEnv } from '../../env';
 import { assertLocalDatabaseReachable, withTestDb } from '../../test/harness';
 import { createAuth, type AuthEmail } from './auth';
@@ -313,13 +313,28 @@ describe('Google sign-in', () => {
       });
       expect(wrongState.status).toBe(401);
       expect(cookieHeader(wrongState)).not.toContain('session_token');
-      const exchanged = await app.request('/api/auth/google/mobile-session', {
+      const wrongVerifier = await app.request('/api/auth/google/mobile-session', {
         method: 'POST',
         headers: jsonHeaders(),
-        body: JSON.stringify({ code, state: mobileState, verifier }),
+        body: JSON.stringify({ code, state: mobileState, verifier: 'not-the-verifier' }),
       });
+      expect(wrongVerifier.status).toBe(401);
+      expect(cookieHeader(wrongVerifier)).not.toContain('session_token');
+      const previousNodeEnv = process.env.NODE_ENV;
+      process.env.NODE_ENV = 'production';
+      let exchanged: Response;
+      try {
+        exchanged = await app.request('/api/auth/google/mobile-session', {
+          method: 'POST',
+          headers: jsonHeaders(),
+          body: JSON.stringify({ code, state: mobileState, verifier }),
+        });
+      } finally {
+        process.env.NODE_ENV = previousNodeEnv;
+      }
       expect(exchanged.status).toBe(200);
       expect(cookieHeader(exchanged)).toContain('session_token=');
+      expect(exchanged.headers.get('set-cookie') ?? '').toContain('Secure');
       const replay = await app.request('/api/auth/google/mobile-session', {
         method: 'POST',
         headers: jsonHeaders(),
@@ -335,6 +350,70 @@ describe('Google sign-in', () => {
       expect(membership?.role).toBe('owner');
       const me = await app.request('/api/me', { headers: { Cookie: cookieHeader(exchanged), Origin: origin } });
       expect(me.status).toBe(200);
+    });
+  });
+
+  it('keeps access_denied and the mobile state when Google returns an error', async () => {
+    useGoogleCredentials(true);
+    await withAuthApp(async (app) => {
+      const mobileState = 'mobile-state-denied';
+      const start = await app.request('/api/auth/sign-in/social', {
+        method: 'POST',
+        headers: jsonHeaders(),
+        body: JSON.stringify({
+          provider: 'google',
+          callbackURL: `easybizinvoice://auth/google?state=${mobileState}`,
+          errorCallbackURL: `easybizinvoice://auth/google?state=${mobileState}`,
+          disableRedirect: true,
+          additionalData: { verifierHash: await sha256Base64Url('verifier') },
+        }),
+      });
+      const started = await start.json() as { url: string };
+      const oauthState = new URL(started.url).searchParams.get('state');
+      const denied = await app.request(`/api/auth/callback/google?error=access_denied&error_description=The%20user%20denied%20the%20request&state=${oauthState}`, {
+        headers: { Cookie: cookieHeader(start), Origin: origin },
+        redirect: 'manual',
+      });
+      const location = new URL(denied.headers.get('location') ?? '');
+      expect(location.searchParams.get('error')).toBe('access_denied');
+      expect(location.searchParams.get('state')).toBe(mobileState);
+      expect(denied.headers.get('location')).not.toContain('session_token');
+      expect(denied.headers.get('set-cookie') ?? '').not.toContain('session_token');
+    });
+  });
+
+  it('rejects an expired mobile sign-in code', async () => {
+    useGoogleCredentials(true);
+    await withAuthApp(async (app, db) => {
+      const mobileState = 'mobile-state-expired';
+      const verifier = 'mobile-verifier-expired';
+      const start = await app.request('/api/auth/sign-in/social', {
+        method: 'POST',
+        headers: jsonHeaders(),
+        body: JSON.stringify({
+          provider: 'google',
+          callbackURL: `easybizinvoice://auth/google?state=${mobileState}`,
+          errorCallbackURL: `easybizinvoice://auth/google?state=${mobileState}`,
+          disableRedirect: true,
+          additionalData: { verifierHash: await sha256Base64Url(verifier) },
+        }),
+      });
+      const callback = await finishGoogle(app, start, {
+        sub: 'google-subject-expired',
+        email: `expired-${crypto.randomUUID()}@example.com`,
+        email_verified: true,
+        name: 'Expired Code',
+      });
+      const code = new URL(callback.headers.get('location') ?? '').searchParams.get('code');
+      expect(code).toBeTruthy();
+      await db.update(verifications).set({ expiresAt: new Date(0) }).where(eq(verifications.identifier, `google-mobile-code:${code}`));
+      const expired = await app.request('/api/auth/google/mobile-session', {
+        method: 'POST',
+        headers: jsonHeaders(),
+        body: JSON.stringify({ code, state: mobileState, verifier }),
+      });
+      expect(expired.status).toBe(401);
+      expect(cookieHeader(expired)).not.toContain('session_token');
     });
   });
 
