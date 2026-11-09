@@ -43,9 +43,12 @@ const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
 const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
 const { ASSISTANT_EVAL_PROMPTS } = await import('../src/modules/ai/assistant.prompts');
+const { pricedTotals } = await import('../src/modules/ai/assistant.proposal');
+
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
 const monday = new Date('2026-11-09T01:00:00.000Z');
+const dateline = new Date('2026-11-13T11:30:00.000Z');
 
 function percentile(values: number[], p: number): number {
   const sorted = [...values].sort((a, b) => a - b);
@@ -102,20 +105,31 @@ await withTestDb(async () => {
     console.log('| Prompt | Result | Detail | ms |');
     console.log('| --- | --- | --- | --- |');
     for (const item of ASSISTANT_EVAL_PROMPTS) {
+      runtime.now = item.id === 'friday-dateline' ? dateline : monday;
       const started = Date.now();
       const response = await app.request('/api/ai/assistant', { method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ message: item.prompt }) });
       const elapsed = Date.now() - started;
       latencies.push(elapsed);
-      const body = await response.json() as { parts?: Array<{ type: string; text?: string; href?: string }> };
+      const body = await response.json() as { parts?: Array<{ type: string; text?: string; href?: string; proposal?: { taxInclusive?: boolean; taxRate?: string; dueDate?: string | null; date?: string; lines?: Array<{ description: string; quantity: string; rate: string | null }>; totals?: { subtotal: string; taxAmount: string; total: string } | null } }> };
       const parts = body.parts ?? [];
+      const proposal = parts.find((part) => part.type === 'proposal')?.proposal;
+      const priced = proposal?.lines?.every((line) => line.rate) ? pricedTotals({
+        taxInclusive: proposal.taxInclusive ?? true,
+        taxRate: proposal.taxRate ?? '0',
+        lines: (proposal.lines ?? []).flatMap((line) => line.rate ? [{ description: line.description, quantity: line.quantity, rate: line.rate }] : []),
+      }) : null;
       const invoices = await call('/api/invoices', 'GET');
       const invoiceCount = Array.isArray(invoices.invoices) ? invoices.invoices.length : 0;
       let pass = response.status === 200 && invoiceCount === 1 && !JSON.stringify(body).includes('Secret Buyer');
-      const detail = response.status === 200 ? parts.map((part) => part.type).join(', ') : `HTTP ${response.status}`;
+      let detail = response.status === 200 ? parts.map((part) => part.type).join(', ') : `HTTP ${response.status}`;
       if (item.id === 'who-owes') pass = pass && parts.some((part) => part.type === 'text' && part.text?.includes('outstanding'));
       if (item.id === 'unsupported-delete') pass = pass && parts.some((part) => part.href === '/invoices');
       if (item.id === 'expense-deferred') pass = pass && parts.some((part) => part.href === '/expenses' || part.text?.includes('Expenses'));
       if (item.id === 'ambiguous-customer' || item.id === 'ambiguous-item') pass = pass && parts.some((part) => part.type === 'quick_picks');
+      if (item.id.startsWith('gst') || item.id === 'sarah-missing-parts' || item.id === 'friday-dateline') {
+        pass = pass && !!proposal && !!priced && proposal.taxRate === '15' && proposal.totals?.total === priced.total && proposal.totals?.subtotal === priced.subtotal;
+        detail = proposal ? `total ${proposal.totals?.total ?? 'none'} due ${proposal.dueDate ?? 'none'}` : detail;
+      }
       if (!pass) failed += 1;
       console.log(`| ${item.id} | ${pass ? 'pass' : 'fail'} | ${detail.replace(/\|/g, '/')} | ${elapsed} |`);
     }

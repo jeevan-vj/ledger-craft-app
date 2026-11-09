@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import type { AssistantPart } from '@ledgercraft/contracts';
+import type { AssistantPart, AssistantProposal } from '@ledgercraft/contracts';
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { apiError, errorCodeFromCause } from '../../http-error';
@@ -33,7 +33,8 @@ export type LoopResult = {
   toolNames: string[];
   inputTokens: number;
   outputTokens: number;
-  outcome: 'reply' | 'refused';
+  outcome: 'reply' | 'proposal' | 'refused';
+  proposal?: AssistantProposal;
 };
 
 function codeOf(error: unknown): string {
@@ -96,6 +97,7 @@ export async function runAssistantLoop(input: {
   const toolNames: string[] = [];
   let inputTokens = 0;
   let outputTokens = 0;
+  let proposal: AssistantProposal | undefined;
   const started = Date.now();
 
   for (let step = 0; step < input.maxSteps; step += 1) {
@@ -114,8 +116,10 @@ export async function runAssistantLoop(input: {
         tx,
         ctx.organisationId,
         { id: call.id, name: call.name, arguments: argumentsOf(call.arguments) },
+        input.now,
       ));
       parts.push(...result.parts);
+      if (result.proposal) proposal = result.proposal;
       messages.push({ role: 'tool', name: call.name, content: JSON.stringify(result.modelContent).slice(0, 4_000) });
     }
   }
@@ -130,6 +134,7 @@ export async function runAssistantLoop(input: {
     toolNames,
     inputTokens,
     outputTokens,
-    outcome: 'reply',
+    outcome: proposal ? 'proposal' : 'reply',
+    proposal,
   };
 }

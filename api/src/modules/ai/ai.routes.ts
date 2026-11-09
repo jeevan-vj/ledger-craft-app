@@ -1,7 +1,8 @@
-import { assistantTurnRequestSchema, chatCompletionRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
+import { assistantTurnRequestSchema, chatCompletionRequestSchema, saveAssistantDraftRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
+import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
 import { createWorkersAiAssistantModel } from './assistant.workers';
 import * as assistantService from './assistant.service';
 import * as chatService from './chat';
@@ -37,6 +38,15 @@ export function aiRoutes() {
       ));
     });
 
+    routes.post(`${prefix}/ai/assistant/drafts`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const input = saveAssistantDraftRequestSchema.parse(await c.req.json());
+      const key = parseIdempotencyKey(c.req.header('Idempotency-Key'));
+      const idempotency = key ? { key, method: 'POST', path: '/api/ai/assistant/drafts', requestHash: hashIdempotencyPayload(input) } : undefined;
+      return c.json(await assistantService.saveAssistantDraftForUser(
+        db, user.id, input, c.get('capabilities'), idempotency, c.get('requestId'),
+      ), 201);
+    });
   }
 
   return routes;
