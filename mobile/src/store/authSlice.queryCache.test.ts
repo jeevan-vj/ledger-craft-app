@@ -6,7 +6,9 @@ import { businessProfileApi } from '@/features/business-profile/api/businessProf
 jest.mock('@/features/auth/api/authApi', () => ({
   AuthApiError: class AuthApiError extends Error {},
   getMe: jest.fn(),
+  settleGoogleReturn: jest.fn(async () => false),
   signInEmail: jest.fn(),
+  signInWithGoogle: jest.fn(),
   signOutSession: jest.fn().mockResolvedValue(undefined),
   signUpEmail: jest.fn(),
 }));

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import {
+  Alert,
   KeyboardAvoidingView,
   Linking,
   Platform,
@@ -25,6 +26,7 @@ import {
 } from '@/features/onboarding/onboardingModel';
 import { onboardingStorage } from '@/features/onboarding/onboardingStorage';
 import { authErrorMessage } from '@/features/auth/api/authApi';
+import { GoogleContinue } from '@/features/auth/GoogleContinue';
 import type { AuthStackParamList } from '@/navigation/types';
 import { useAuth } from '@/store';
 import { radius, space } from '@/theme/tokens';
@@ -47,11 +49,12 @@ export default function SignupScreen() {
   const theme = useTheme();
   const styles = createStyles(theme);
   const navigation = useNavigation<Navigation>();
-  const { signUp } = useAuth();
+  const { signUp, signInWithGoogle } = useAuth();
   const [step, setStep] = useState(0);
   const [draft, setDraft] = useState<AccountDraft>(emptyDraft);
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(false);
+  const [googleLoading, setGoogleLoading] = useState(false);
   const inputRef = useRef<TextInput>(null);
 
   useEffect(() => {
@@ -75,6 +78,14 @@ export default function SignupScreen() {
       setError(undefined);
       setStep((current) => current - 1);
     } else navigation.goBack();
+  };
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    const result = await signInWithGoogle();
+    setGoogleLoading(false);
+    if (result.cancelled || !result.error) return;
+    Alert.alert('Google sign-in', authErrorMessage(result.error));
   };
 
   const continueFlow = async () => {
@@ -117,6 +128,7 @@ export default function SignupScreen() {
 
         <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled"
           contentInsetAdjustmentBehavior="automatic" showsVerticalScrollIndicator={false}>
+          {step === 0 ? <GoogleContinue loading={googleLoading} onPress={() => void handleGoogle()} /> : null}
           <Animated.View key={step} entering={FadeIn.duration(220).reduceMotion(ReduceMotion.System)}>
             <Text style={styles.title}>{steps[step].title}</Text>
             <Text style={styles.subtitle}>{steps[step].body}</Text>

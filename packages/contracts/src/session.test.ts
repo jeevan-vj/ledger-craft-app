@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { accountSessionListSchema, deleteAccountRequestSchema, deleteAccountResponseSchema, meResponseSchema } from './session';
+import { accountSessionListSchema, authProvidersResponseSchema, deleteAccountRequestSchema, deleteAccountResponseSchema, meResponseSchema } from './session';
 
 describe('meResponseSchema', () => {
   it('requires password re-authentication and the exact typed confirmation', () => {
@@ -61,5 +61,14 @@ describe('meResponseSchema', () => {
     const parsed = accountSessionListSchema.parse([{ token: 'opaque-session-token', createdAt: '2026-11-06T00:00:00.000Z', updatedAt: '2026-11-06T00:00:00.000Z', expiresAt: '2026-11-13T00:00:00.000Z', current: true }]);
     expect(parsed[0]?.current).toBe(true);
     expect(parsed[0]?.createdAt).toBeInstanceOf(Date);
+  });
+});
+
+describe('authProvidersResponseSchema', () => {
+  it('accepts only the Google availability flag', () => {
+    expect(authProvidersResponseSchema.parse({ google: true })).toEqual({ google: true });
+    expect(authProvidersResponseSchema.parse({ google: false })).toEqual({ google: false });
+    expect(authProvidersResponseSchema.safeParse({ google: true, clientId: 'secret' }).success).toBe(false);
+    expect(authProvidersResponseSchema.safeParse({ google: 'yes' }).success).toBe(false);
   });
 });

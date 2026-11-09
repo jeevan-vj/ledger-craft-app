@@ -21,6 +21,7 @@ export async function readApiFailure(response: Response): Promise<ApiFailure> {
     if (typeof body.error?.message === 'string') rawMessage = body.error.message;
     else if (typeof body.message === 'string') rawMessage = body.message;
     if (typeof body.error?.code === 'string') code = body.error.code;
+    else if (typeof (body as { code?: unknown }).code === 'string') code = (body as { code: string }).code;
     if (isRequestId(body.error?.requestId)) requestId = body.error.requestId;
   } catch {
     // Non-JSON error bodies keep the HTTP status text.

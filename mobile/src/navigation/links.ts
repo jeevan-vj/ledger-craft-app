@@ -1,8 +1,29 @@
+import { Linking } from 'react-native';
 import type { LinkingOptions } from '@react-navigation/native';
+import { settleGoogleReturn } from '@/features/auth/api/authApi';
+import { readExactGoogleReturn } from '@/features/auth/googleSignIn';
 import type { CustomerStackParamList, InvoiceStackParamList, MoreStackParamList, RootStackParamList } from './types';
 
 export const mobileLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['https://easybiz.iamjeevan.com', 'easybizinvoice://'],
+  async getInitialURL() {
+    const url = await Linking.getInitialURL();
+    if (url && readExactGoogleReturn(url)) {
+      await settleGoogleReturn(url).catch(() => false);
+      return null;
+    }
+    return url;
+  },
+  subscribe(listener) {
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      if (readExactGoogleReturn(url)) {
+        void settleGoogleReturn(url).catch(() => false);
+        return;
+      }
+      listener(url);
+    });
+    return () => subscription.remove();
+  },
   config: {
     screens: {
       ResetPassword: 'reset-password',

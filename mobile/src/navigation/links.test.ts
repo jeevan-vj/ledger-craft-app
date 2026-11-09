@@ -1,6 +1,18 @@
 import { describe, expect, it } from '@jest/globals';
+import { Linking } from 'react-native';
 import { getStateFromPath } from '@react-navigation/native';
 import { customerTabParams, homeQuickActionLink, invoiceTabParams, mainTabs, mobileLinking, moreMenuSections, moreTabParams, stackAbove } from './links';
+
+const mockSettleGoogleReturn = jest.fn(async (_url: string) => false);
+jest.mock('@/features/auth/api/authApi', () => ({
+  settleGoogleReturn: (url: string) => mockSettleGoogleReturn(url),
+}));
+jest.mock('@/features/auth/googleSignIn', () => ({
+  readExactGoogleReturn: (url: string) => {
+    const path = url.split('?')[0];
+    return path === 'easybizinvoice://auth/google' ? { code: null, state: null, error: null, errorDescription: null } : null;
+  },
+}));
 
 describe('mobile navigation links', () => {
   it('keeps password reset on the always-mounted root stack', () => {
@@ -133,5 +145,26 @@ describe('mobile navigation links', () => {
     expect(JSON.stringify(quote)).toContain('quote-1');
     expect(JSON.stringify(invoice)).toContain('InvoiceDetail');
     expect(JSON.stringify(invoice)).toContain('invoice-1');
+  });
+
+  it('keeps a Google session callback out of navigation', () => {
+    const listener = jest.fn();
+    const handlers: ((event: { url: string }) => void)[] = [];
+    const spy = jest.spyOn(Linking, 'addEventListener').mockImplementation((_type, handler) => {
+      handlers.push(handler);
+      return { remove: jest.fn() } as unknown as ReturnType<typeof Linking.addEventListener>;
+    });
+    const subscribe = mobileLinking.subscribe;
+    if (!subscribe) throw new Error('Google callback subscribe is missing');
+    const unsubscribe = subscribe(listener);
+    handlers[0]?.({ url: 'easybizinvoice://auth/google?cookie=better-auth.session_token%3Dsecret' });
+    handlers[0]?.({ url: 'easybizinvoice://auth/googleish?cookie=better-auth.session_token%3Dsecret' });
+    handlers[0]?.({ url: 'easybizinvoice://invoices/invoice-1' });
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(listener).toHaveBeenCalledWith('easybizinvoice://auth/googleish?cookie=better-auth.session_token%3Dsecret');
+    expect(listener).toHaveBeenCalledWith('easybizinvoice://invoices/invoice-1');
+    expect(mockSettleGoogleReturn).toHaveBeenCalledWith('easybizinvoice://auth/google?cookie=better-auth.session_token%3Dsecret');
+    if (typeof unsubscribe === 'function') unsubscribe();
+    spy.mockRestore();
   });
 });

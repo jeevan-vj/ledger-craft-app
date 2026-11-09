@@ -50,10 +50,11 @@ export async function parseError(response: Response): Promise<{
     const body = (await response.json()) as {
       error?: { message?: string; code?: string; requestId?: string };
       message?: string;
+      code?: string;
       requestId?: string;
     };
     const requestId = body.error?.requestId ?? body.requestId;
-    const code = body.error?.code;
+    const code = body.error?.code ?? body.code;
     return {
       message: body.error?.message ?? body.message ?? friendlyStatus(response.status),
       code: typeof code === 'string' && code.trim() ? code : undefined,

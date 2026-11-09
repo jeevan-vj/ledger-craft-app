@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/context/StableAuthContext';
 import { getMe } from '@/features/auth/api/authApi';
+import { googleCallbackDestination, googleSignInErrorMessage } from '@/features/auth/googleSignIn';
 import { Loader2 } from 'lucide-react';
 
 const AuthCallback = () => {
@@ -13,6 +14,14 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleAuthCallback = async () => {
       try {
+        const params = new URLSearchParams(window.location.search);
+        const googleError = googleSignInErrorMessage(params.get('error'), params.get('error_description'));
+        if (googleError) {
+          toast({ title: 'Google sign-in', description: googleError, variant: 'destructive' });
+          navigate('/login', { replace: true });
+          return;
+        }
+
         await refreshUser();
         const me = await getMe();
 
@@ -26,8 +35,7 @@ const AuthCallback = () => {
           description: 'You have been signed in.',
         });
 
-        const next = new URLSearchParams(window.location.search).get('next') || '/';
-        navigate(next, { replace: true });
+        navigate(googleCallbackDestination(new URLSearchParams(window.location.search).get('next')), { replace: true });
       } catch (error) {
         console.error('Unexpected error during auth callback:', error);
         toast({

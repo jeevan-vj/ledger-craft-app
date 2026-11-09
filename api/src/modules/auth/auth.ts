@@ -3,7 +3,9 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { bearer } from 'better-auth/plugins';
 import type { Database } from '../../db/client';
 import { authAccounts, authRateLimits, sessions, users, verifications } from '../../db/schema/identity';
-import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl } from '../../env';
+import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl, getGoogleOAuthCredentials } from '../../env';
+import { googleAuthPlugins, googleSocialProviders, stripUnverifiedPasswordAccess } from './google';
+import { verifyGoogleIdToken } from './google-id-token';
 import { provisionOrganisationForUser } from './provision';
 import { scrubText } from '../../observability/scrub';
 
@@ -59,7 +61,18 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
       },
     },
     session: { modelName: 'sessions' },
-    account: { modelName: 'auth_accounts' },
+    account: {
+      modelName: 'auth_accounts',
+      accountLinking: {
+        enabled: true,
+        // A verified Google email may link an existing password user. If that
+        // local email was never verified, the credential and its sessions are
+        // removed before the Google session is issued.
+        trustedProviders: ['google'],
+        requireLocalEmailVerified: false,
+      },
+    },
+    socialProviders: googleSocialProviders(),
     verification: { modelName: 'verifications' },
     emailAndPassword: {
       enabled: true,
@@ -88,9 +101,11 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
         '/send-verification-email': { window: 60, max: 3 },
         '/reset-password': { window: 60, max: 5 },
         '/verify-email': { window: 60, max: 5 },
+        '/sign-in/social': { window: 60, max: 10 },
+        '/google/browser': { window: 60, max: 20 },
       },
     },
-    plugins: [bearer()],
+    plugins: [bearer(), ...googleAuthPlugins()],
     advanced: {
       // Better Auth skips this in NODE_ENV=test unless it is explicit. Keep the
       // redirect allow-list under integration test as well as in production.
@@ -111,6 +126,21 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
         create: {
           after: async (user) => {
             await provisionOrganisationForUser(db, user);
+          },
+        },
+      },
+      account: {
+        create: {
+          before: async (account, context) => {
+            if (account.providerId !== 'google') return { data: account };
+            const credentials = getGoogleOAuthCredentials();
+            const claims = credentials && account.idToken
+              ? await verifyGoogleIdToken(account.idToken, credentials.clientId)
+              : null;
+            if (!claims || claims.email_verified !== true) return false;
+            const adapter = (context as { context?: { internalAdapter?: Parameters<typeof stripUnverifiedPasswordAccess>[1] } } | null)?.context?.internalAdapter;
+            await stripUnverifiedPasswordAccess(account, adapter);
+            return { data: account };
           },
         },
       },
