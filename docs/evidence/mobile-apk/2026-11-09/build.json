@@ -1,0 +1,10 @@
+{
+  "sourceCommit": "04059068fafe73d6c88f75bc9e6479cf0cfedd66",
+  "sourceState": "local uncommitted mobile fixes",
+  "apk": "/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/mobile/android/app/build/outputs/apk/release/app-release.apk",
+  "sha256": "18021349af9c476776b50fc6bc4583b89a2aa7130f51513bd499effca66d1187",
+  "api": "http://127.0.0.1:3109",
+  "android": "API 35, x86_64, emulator-5560",
+  "signing": "local debug key, release build",
+  "otaEnabled": false
+}

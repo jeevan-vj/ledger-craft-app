@@ -2,6 +2,17 @@
 
 Agent sessions start at `AGENTS.md` and `docs/agent/CODEMAP.md`. This file remains the architecture and long-form status record. Do not copy its dated narratives into the bootstrap.
 
+**Installed Android acceptance (local, 2026-11-09):** A debug-signed x86_64
+release APK was exercised on Android 15/API 35 against isolated synthetic local
+data. Signup/onboarding, invoice creation and PDF share, partial/full payment,
+offline retry and relaunch have native evidence and persisted read-back. Fixes
+retain failed auth forms, avoid Android double keyboard adjustment in guided
+invoice creation, and use the server business day for Home presets while showing
+the actual range. Mobile 150 suites/684 tests and focused API 65 tests pass;
+Jest retains a teardown warning. This is scoped emulator acceptance, not all
+25 domains, receipt generation, physical/iOS devices, providers or deployment.
+Evidence: `docs/evidence/mobile-apk/2026-11-09/README.md`.
+
 **Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
 
 **Second-month / NZ year-end acceptance (verified locally, 2026-11-08):**

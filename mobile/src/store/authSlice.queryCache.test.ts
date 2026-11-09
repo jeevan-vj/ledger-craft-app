@@ -16,6 +16,24 @@ jest.mock('@/features/business-profile/api/businessProfileApi', () => ({
 }));
 
 describe('auth session cache isolation', () => {
+  it.each(['signIn', 'signUp'] as const)('keeps the mounted auth form during a failed %s attempt', async (method) => {
+    const authApi = jest.requireMock('@/features/auth/api/authApi');
+    authApi[method === 'signIn' ? 'signInEmail' : 'signUpEmail']
+      .mockRejectedValueOnce(new Error('Check your connection and try again.'));
+    const store = createStore<AuthSlice>()(createAuthSlice);
+    store.setState({ loading: false, onboardingChecked: true });
+    const loadingStates: boolean[] = [];
+    const unsubscribe = store.subscribe(state => loadingStates.push(state.loading));
+
+    const result = await store.getState()[method]('owner@example.com', 'password123');
+
+    unsubscribe();
+    expect(result.error?.message).toBe('Check your connection and try again.');
+    // RootNavigator replaces the entire form with its boot screen when this is true.
+    expect(loadingStates).not.toContain(true);
+    expect(store.getState().user).toBeNull();
+  });
+
   afterEach(() => {
     appQueryClient.clear();
   });

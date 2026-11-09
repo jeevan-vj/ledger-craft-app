@@ -9,9 +9,11 @@ import { useStore } from '@/store';
 import { darkPalette } from '@/theme/tokens';
 import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
+import { reportsApi } from '@/features/reports/api/reportsApi';
 import { FIRST_INVOICE_PROMPT_KEY } from '@/features/onboarding/onboardingStorage';
 
 const mockNavigate = jest.fn();
+jest.mock('@/features/reports/api/reportsApi', () => ({ reportsApi: { options: jest.fn() } }));
 
 jest.mock('@react-navigation/native', () => {
   const actual = jest.requireActual('@react-navigation/native');
@@ -75,8 +77,14 @@ function flatStyle(style: unknown): ViewStyle {
   return StyleSheet.flatten(style as ViewStyle) ?? {};
 }
 
+const clients: QueryClient[] = [];
+afterEach(() => {
+  clients.splice(0).forEach(client => client.clear());
+});
+
 function renderHome() {
   const client = new QueryClient({ defaultOptions: { queries: { retry: false } } });
+  clients.push(client);
   return render(
     <QueryClientProvider client={client}>
       <DashboardScreen />
@@ -104,6 +112,27 @@ describe('Home quick actions', () => {
     expect(screen.getByText('Posted ledger')).toBeTruthy();
     expect(screen.getByLabelText('Closing cash $1,234.56')).toBeTruthy();
     expect(screen.getByText('receivables')).toBeTruthy();
+  });
+
+  it('shows the actual saved report window', async () => {
+    const screen = renderHome();
+    expect(await screen.findByText('2026-10-01 – 2026-10-31')).toBeTruthy();
+  });
+
+  it.each([
+    ['30 days', '2025-12-03'], ['90 days', '2025-10-04'], ['Year', '2026-01-01'],
+  ])('uses the business calendar for %s even across UTC New Year', async (label, from) => {
+    jest.useFakeTimers({ now: new Date('2025-12-31T12:30:00Z') });
+    (reportsApi.options as jest.Mock).mockResolvedValue({ today: '2026-01-01' });
+    try {
+      const screen = renderHome();
+      fireEvent.press(await screen.findByRole('button', { name: label }));
+      await waitFor(() => expect(dashboardApi.getDashboard).toHaveBeenCalledWith({
+        from, to: '2026-01-01', comparison: 'previous_period',
+      }));
+    } finally {
+      jest.useRealTimers();
+    }
   });
 
   it('renders home actions that open distinct screens', async () => {

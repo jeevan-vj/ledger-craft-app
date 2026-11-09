@@ -1,0 +1,1566 @@
+
+ RUN  v3.2.4 /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/api
+
+(node:82474) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_4f48df2a-670d-4a16-9191-6c4b1cc0f2c0","route":"/api/auth/*","method":"POST","status":200,"durationMs":642}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_b22d11a6-c71b-4bf4-872f-5bd29c0ede6c","route":"/api/business-profile","method":"PUT","status":200,"durationMs":42}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_59cafa65-59f3-49fe-a2cd-f1c7c74bd9fe","route":"/api/customers","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_0266e688-fa71-4833-b350-63a79ff741e6","route":"/api/invoices","method":"POST","status":201,"durationMs":178}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_05025720-affe-4a1c-8574-f6715725bd5b","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":29}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_8384c627-79d4-41da-aba2-87cc4f1ea84d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":136}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_4cde8ffa-f3f9-4453-ba1a-60d3204764a4","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":74}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_fae08cf4-c87e-47aa-ad9b-46263167a295","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":114}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_65655748-193d-446c-8d93-7951cc449442","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":47}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_7c4a25af-b421-4316-9325-fd702556e462","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":44}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > persists named delivery charges, recalculates percentages and clears charges
+{"msg":"http_request","requestId":"req_a0ce7d33-0811-439d-9dca-042046e14667","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":41}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > unauthenticated GET /api/invoices returns 401
+{"msg":"http_request","requestId":"req_e1c10110-8898-4a2d-bdbc-20dbac4597d8","route":"/api/invoices","method":"GET","status":401,"durationMs":2}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > peeks next invoice number and creates without a pre-seeded business profile
+{"msg":"http_request","requestId":"req_c66cf873-1456-419d-bb60-0ded36ea9fc0","route":"/api/auth/*","method":"POST","status":200,"durationMs":429}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > peeks next invoice number and creates without a pre-seeded business profile
+{"msg":"http_request","requestId":"req_1dea9ffd-d3de-4d82-b91f-a3891c8b7034","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":23}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > peeks next invoice number and creates without a pre-seeded business profile
+{"msg":"http_request","requestId":"req_f273811d-f3f4-4cc2-b719-52fed9dc214a","route":"/api/customers","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > peeks next invoice number and creates without a pre-seeded business profile
+{"msg":"http_request","requestId":"req_12bf95de-1cae-4bc0-8a18-7e8f5038e75d","route":"/api/invoices","method":"POST","status":201,"durationMs":84}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_0216592f-3cb6-4522-96c4-4ca492034760","route":"/api/auth/*","method":"POST","status":200,"durationMs":377}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_c0c97be3-361b-41ea-9710-9bb4374d465f","route":"/api/auth/*","method":"POST","status":200,"durationMs":261}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_2528fa7a-4baf-47ae-b7d3-7dd87de3ba61","route":"/api/business-profile","method":"PUT","status":200,"durationMs":41}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_7c905805-9162-4ff2-bce7-d436d6907082","route":"/api/customers","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_77989b12-b99d-44d7-8106-4674082c3464","route":"/api/invoices","method":"POST","status":201,"durationMs":134}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > creates an invoice with server totals and isolates organisations
+{"msg":"http_request","requestId":"req_825b2a79-f725-4ed9-87d2-384103cd3acd","route":"/api/invoices/:id","method":"GET","status":404,"durationMs":53}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_52a77006-4073-48ad-bd3a-fb2e57950b25","route":"/api/auth/*","method":"POST","status":200,"durationMs":263}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_d011524b-46cc-406f-a122-042b76f7196f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":26}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_fc554cfa-ac3d-4036-b605-be124607da35","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_2f70a9a5-8c23-497c-bfe3-6abe6010ecf4","route":"/api/invoices","method":"POST","status":201,"durationMs":55}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_d712bf41-5a3d-4c07-abcd-0184520f9fb3","route":"/api/invoices","method":"POST","status":201,"durationMs":90}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_06c0d729-1388-4e9d-8543-a9212c410417","route":"/api/invoices","method":"POST","status":201,"durationMs":40}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_e0b73e9c-429f-44ba-ace8-c646df93ff0d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_120643b5-a2df-434c-8e27-55d5258ae93b","route":"/api/invoices","method":"POST","status":201,"durationMs":117}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > copies profile payment terms and keeps an overridden due date
+{"msg":"http_request","requestId":"req_58a48fd9-bd0d-4e8e-92fa-1869f1078cef","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":110}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_217f7ba5-60fd-45c5-81a4-78531dbc4f9f","route":"/api/auth/*","method":"POST","status":200,"durationMs":351}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_218f58c0-469e-4323-bac9-66111b844c97","route":"/api/business-profile","method":"PUT","status":200,"durationMs":26}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_7b69492c-41df-47c9-a769-7d38775aa326","route":"/api/customers","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_82ad3600-d486-4a84-b574-97abf3faa595","route":"/api/invoices","method":"POST","status":201,"durationMs":73}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_4c4406e9-2933-4962-b1bb-0509eaff045d","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":80}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > computes percent and fixed discounts on the server and recalculates on edit
+{"msg":"http_request","requestId":"req_4c4748b4-4506-4908-a761-42caead8a858","route":"/api/invoices","method":"POST","status":400,"durationMs":45}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_04339dcf-f2b2-4c8a-a58d-d7de75f92478","route":"/api/auth/*","method":"POST","status":200,"durationMs":298}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_b602bad9-e3d5-4704-b41b-11e2bd5d8942","route":"/api/business-profile","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_a363edcc-b0cb-4e66-b513-080b713f84f2","route":"/api/customers","method":"POST","status":201,"durationMs":199}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_9918ba72-00b8-41e7-bf18-45fd4ab24b49","route":"/api/invoices","method":"POST","status":201,"durationMs":289}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_e137fbee-893f-41e8-82fb-27dc587e1784","route":"/api/invoices/:id/send","method":"POST","status":200,"durationMs":111}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_9f3ef26c-7cde-43ba-a80f-7819e52e97ba","route":"/api/invoices/:id/send","method":"POST","status":200,"durationMs":192}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_f435602b-81c7-4465-9f21-48122a5b82d5","route":"/api/invoices","method":"POST","status":201,"durationMs":153}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_a8077ded-a3fb-4726-8107-bc31e0b0c308","route":"/api/invoices/:id/send","method":"POST","status":502,"durationMs":49}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_925c826b-cd8b-4d53-90f8-ed7d256bdb17","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":18}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_da346554-8101-4d3f-8c54-a0020645c3f5","route":"/api/customers","method":"POST","status":201,"durationMs":30}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_eed04a85-c0d3-49a7-a18b-c4555e143f86","route":"/api/invoices","method":"POST","status":201,"durationMs":64}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > saves drafts without mail and sends only after the mailer accepts
+{"msg":"http_request","requestId":"req_8fc60517-e47f-418e-ad76-d697ef4394df","route":"/api/invoices/:id/send","method":"POST","status":400,"durationMs":180}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > ignores client-supplied totals on create
+{"msg":"http_request","requestId":"req_dad66620-2956-4ddc-b2b4-55ee76e513d3","route":"/api/auth/*","method":"POST","status":200,"durationMs":294}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > ignores client-supplied totals on create
+{"msg":"http_request","requestId":"req_cb122730-a93f-452b-9351-f670c36b1623","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > ignores client-supplied totals on create
+{"msg":"http_request","requestId":"req_3ccabe20-61a4-4311-868d-d4868e797e10","route":"/api/customers","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > ignores client-supplied totals on create
+{"msg":"http_request","requestId":"req_e45bfe6f-fefe-46a6-aa46-8a49bcf49a46","route":"/api/invoices","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_79b34634-8cdc-483c-8106-c9783fb3eae8","route":"/api/auth/*","method":"POST","status":200,"durationMs":273}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_1dedbc73-12ba-46ef-8da8-db9d33a0479a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_27cb5dda-ba2c-4ff3-bcbd-d9f90b3e485d","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_b40242ff-e18e-4d6f-b986-3c9ae26152ca","route":"/api/invoices","method":"POST","status":201,"durationMs":68}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_f7fe88e0-d7a0-4bc9-ac3f-c013f2924ced","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_5d1d08a1-89b3-499c-b679-83bd6b8ba1a6","route":"/api/invoices","method":"GET","status":200,"durationMs":57}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > retried create with the same Idempotency-Key returns the original invoice
+{"msg":"http_request","requestId":"req_ca1d9472-5329-498b-a8f4-8d8acf13e32c","route":"/api/invoices","method":"POST","status":409,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_875a3a39-78eb-4872-b2d3-a6f15d413dd8","route":"/api/auth/*","method":"POST","status":200,"durationMs":491}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_c35dc475-96b8-4f20-bded-f9b7c325069c","route":"/api/auth/*","method":"POST","status":200,"durationMs":354}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_a0467777-ee8f-4251-9575-c244e02c37e7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_a8b5946a-5680-450e-9d59-2db77e5476cc","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_fe008e4d-2ac0-47d2-90f2-c210b364ec63","route":"/api/invoices","method":"POST","status":201,"durationMs":79}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_c2ade4c6-cee2-43f5-a7bb-833b1246533d","route":"/api/invoices/:id/share","method":"POST","status":401,"durationMs":1}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_af4dc7a5-d832-43b0-ac19-3f98ea0aa735","route":"/api/invoices/:id/share","method":"POST","status":404,"durationMs":41}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_b23dd38e-ca96-45d5-8a26-b6ecbd86053e","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_cef0f2ee-c933-46f3-8c22-9c2167658e29","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_2fa8e2e2-acc9-4dd9-8dcd-8591539d73e8","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":133}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_c76b73dd-44c4-46c3-941e-05954a712aed","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":16}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > share tokens expire and do not leak other organisations
+{"msg":"http_request","requestId":"req_d664112b-3106-41fa-9839-f7207a3b22c7","route":"/api/public/invoices/:token","method":"GET","status":404,"durationMs":9}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_b84bb8f1-46b6-4bf4-a825-2ffc15aba8d0","route":"/api/auth/*","method":"POST","status":200,"durationMs":722}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_6827eec4-380e-4fb8-a317-608f70b22020","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_e5944552-a1b2-4945-b1aa-155a17eaf368","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_f6433a04-38d1-47da-afd4-8b538ff6680d","route":"/api/invoices","method":"POST","status":201,"durationMs":46}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_11c90831-e1c7-46da-b373-29eb2f175157","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":77}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_8d460027-6ba6-4978-b29c-44a23b392f4e","route":"/api/invoices/:id","method":"PATCH","status":409,"durationMs":49}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_02184944-c763-4cd7-b19f-cecb85b1595a","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place
+{"msg":"http_request","requestId":"req_df5771b4-4cec-4875-8108-8c5d51a92d28","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":46}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > keeps an explicit empty tax list exempt when the header rate is set
+{"msg":"http_request","requestId":"req_fe5bad40-3ea5-4914-bc45-c0a1dae3ea66","route":"/api/auth/*","method":"POST","status":200,"durationMs":294}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > keeps an explicit empty tax list exempt when the header rate is set
+{"msg":"http_request","requestId":"req_de396e47-e2f1-4c9b-b258-b866f886a8f7","route":"/api/business-profile","method":"PUT","status":200,"durationMs":34}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > keeps an explicit empty tax list exempt when the header rate is set
+{"msg":"http_request","requestId":"req_ec83ea09-7910-4963-bed3-68fb6434c6b7","route":"/api/customers","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > keeps an explicit empty tax list exempt when the header rate is set
+{"msg":"http_request","requestId":"req_8a6059e7-c211-49e9-9103-63b402ca820a","route":"/api/invoices","method":"POST","status":201,"durationMs":222}
+
+stdout | src/modules/invoices/invoices.test.ts > invoice routes > keeps an explicit empty tax list exempt when the header rate is set
+{"msg":"http_request","requestId":"req_8f772011-2cd6-4193-b740-b6c59b5a8dbe","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":114}
+
+ ✓ src/modules/invoices/invoices.test.ts (12 tests) 49701ms
+   ✓ invoice routes > persists named delivery charges, recalculates percentages and clears charges  3817ms
+   ✓ invoice routes > peeks next invoice number and creates without a pre-seeded business profile  3247ms
+   ✓ invoice routes > creates an invoice with server totals and isolates organisations  4318ms
+   ✓ invoice routes > copies profile payment terms and keeps an overridden due date  5268ms
+   ✓ invoice routes > computes percent and fixed discounts on the server and recalculates on edit  4987ms
+   ✓ invoice routes > saves drafts without mail and sends only after the mailer accepts  6043ms
+   ✓ invoice routes > ignores client-supplied totals on create  4064ms
+   ✓ invoice routes > retried create with the same Idempotency-Key returns the original invoice  3490ms
+   ✓ invoice routes > share tokens expire and do not leak other organisations  4740ms
+   ✓ invoice routes > rejects a stale expectedUpdatedAt and leaves the saved lines in place  5236ms
+   ✓ invoice routes > keeps an explicit empty tax list exempt when the header rate is set  4457ms
+(node:82674) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/payments/payments.test.ts > payment routes > unauthenticated GET /api/payments and /api/accounts return 401
+{"msg":"http_request","requestId":"req_c062c71b-4908-4bfb-ad3e-7453e5306bd8","route":"/api/payments","method":"GET","status":401,"durationMs":19}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > unauthenticated GET /api/payments and /api/accounts return 401
+{"msg":"http_request","requestId":"req_665daa4a-b76e-4dd7-ba18-db15b7e34b44","route":"/api/accounts","method":"GET","status":401,"durationMs":3}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_ef90c165-0c32-4b3f-8c57-794d00383fff","route":"/api/auth/*","method":"POST","status":200,"durationMs":397}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_6b18ffeb-13d9-4cb7-8caa-851487823dc1","route":"/api/auth/*","method":"POST","status":200,"durationMs":193}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_a67a5aa0-2b3b-4136-86ba-51ec3cbf83b3","route":"/api/business-profile","method":"PUT","status":200,"durationMs":28}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_c47591b6-25af-46ee-852d-d7bedaa7e11e","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_29aa04d7-ad09-443c-9e1c-93b15dd2703b","route":"/api/invoices","method":"POST","status":201,"durationMs":84}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_03388e2f-9c73-4796-8de8-a448c2156609","route":"/api/payments","method":"POST","status":400,"durationMs":15}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_350432aa-5ecd-4f5e-81b6-9d4c028dece5","route":"/api/payments","method":"POST","status":400,"durationMs":8}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_a5880c51-a1ae-448d-80dd-37195950b4ad","route":"/api/payments","method":"POST","status":201,"durationMs":58}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_e7c687cc-a40d-4a9d-a7b2-37b21f03bbb4","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_05983b70-280c-4bfa-8986-63b82ceb45f2","route":"/api/payments/:id","method":"GET","status":404,"durationMs":9}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_c8d90553-1b9c-4ac6-85fc-2577e6d21024","route":"/api/payments","method":"POST","status":404,"durationMs":8}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_03a5dd3c-ddb3-412e-91e0-e358af11f0a9","route":"/api/payments","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_81ed7dbd-02de-4f12-ba89-53c509966214","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_ea7e313d-4a38-4158-9898-aaba5036c5ce","route":"/api/accounts","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > records a payment and updates invoice totals in one transaction
+{"msg":"http_request","requestId":"req_ba4bac98-8de0-4a07-9a03-381f873d30b1","route":"/api/accounts","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_403827a1-813c-4eb6-afaf-905dab973a8f","route":"/api/auth/*","method":"POST","status":200,"durationMs":232}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_907abf66-9913-4e7f-8fb3-b7159b8e2457","route":"/api/business-profile","method":"PUT","status":200,"durationMs":14}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_895eb0cd-1dee-438e-9dc6-262c02cbe11e","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_55469c8f-b176-40bf-8b9a-123984408bc0","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_1f3cd76d-fc95-4099-b9d9-727eab1de229","route":"/api/payments","method":"POST","status":400,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_7fe8472b-3b53-4f61-920c-c6adc8405ef4","route":"/api/payments","method":"POST","status":400,"durationMs":9}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_ab498ddf-f0c8-4f38-9f8b-e28a923eb38d","route":"/api/payments","method":"POST","status":201,"durationMs":65}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_50235126-695f-4851-86c4-58a02502aaa6","route":"/api/payments","method":"POST","status":201,"durationMs":39}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_937e27a6-7308-468f-83c5-1c90a792971e","route":"/api/payments","method":"POST","status":201,"durationMs":35}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_65b9bb84-aa92-42d2-8f74-ec821a2849c9","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment
+{"msg":"http_request","requestId":"req_2f3280b0-40da-420f-8067-ae4b5f1c9d2b","route":"/api/payments","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_25b0b52f-0ca1-49df-a540-a66155a53ebb","route":"/api/auth/*","method":"POST","status":200,"durationMs":230}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_407ff3fe-03ab-4577-8839-0d720b4c39a4","route":"/api/auth/*","method":"POST","status":200,"durationMs":206}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_4a636d21-da60-443c-8c16-45acab28d5a9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_ac7063a1-d806-45e3-9d20-116104a7651a","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_c662e3bc-dc65-407a-af3c-54c3ac1dc109","route":"/api/invoices","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_209bac29-c8a0-4169-8104-399b75ddf864","route":"/api/payments","method":"POST","status":201,"durationMs":51}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_3fb9ef59-22ff-4261-aa73-97e5dedc4ea9","route":"/api/payments","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_5876911f-4052-4cf9-9741-c652b4e1d7aa","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_52c80f5f-7769-447b-aa4d-bbd4568c23c8","route":"/api/payments","method":"POST","status":409,"durationMs":27}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_c1677bc6-b961-4744-aa71-1cf120e3ae54","route":"/api/business-profile","method":"PUT","status":200,"durationMs":19}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_7c1e9fb3-237a-4889-a8ce-90d399210f5d","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_409199e1-e313-406a-912b-2a0d6757bb7d","route":"/api/invoices","method":"POST","status":201,"durationMs":109}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_ed1ba366-d1ea-47a2-9f53-cf5fe3530ebe","route":"/api/payments","method":"POST","status":201,"durationMs":76}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_20657bc7-1b93-49e0-9147-c78b2879b51e","route":"/api/payments/:id","method":"GET","status":404,"durationMs":8}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > retried payment with the same Idempotency-Key returns the original payment
+{"msg":"http_request","requestId":"req_2d6f6f01-4d3f-4e6f-8c22-5fcc90c053d8","route":"/api/payments","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_49d237d6-4c6d-4384-b4a6-994f51b031d7","route":"/api/auth/*","method":"POST","status":200,"durationMs":169}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_5713fae6-e27d-420e-b95d-2ac21b15749d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_4df01b92-cf41-4b2b-9971-9c367f71c783","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_1398a5e1-6d1d-4ba3-8381-205d44590182","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_02463e42-4e66-4f1c-b520-f395f2255765","route":"/api/payments","method":"POST","status":201,"durationMs":45}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_953c68c3-4578-4719-88d9-ab3e75ed24c5","route":"/api/payments","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal
+{"msg":"http_request","requestId":"req_059b62a8-8b4b-44bd-a452-763e1a64d572","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_c65f7b37-0d8b-4bb3-b113-82a58871b24f","route":"/api/auth/*","method":"POST","status":200,"durationMs":211}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_0ecc9822-74d4-4aff-a286-93d799eb70c2","route":"/api/auth/*","method":"POST","status":200,"durationMs":167}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_21a27ba2-5e14-4a82-8694-a24a31870552","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_6fc8a99d-7b2a-4b78-b429-1a51ffc5e6d7","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_b64d3fa0-05bb-488a-b0bc-081105dcb306","route":"/api/invoices","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_6d55076f-0ae1-4c7e-945a-c048d0e233d9","route":"/api/payments","method":"POST","status":201,"durationMs":41}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_6d7fea82-3824-49fc-90c1-c1711539955a","route":"/api/payments","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_3a2ff8b1-99cf-4af1-b063-2ff5d27a78a1","route":"/api/payments/:id/reverse","method":"POST","status":404,"durationMs":7}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_df5a065e-96f7-4997-8241-4359a19f4f9e","route":"/api/payments/:id/reverse","method":"POST","status":400,"durationMs":7}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_63976001-ec61-4e8d-ab0e-8522436b1218","route":"/api/payments/:id/reverse","method":"POST","status":200,"durationMs":21}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_aca32b7b-1bc4-4107-b514-4fb7cf992759","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/payments/payments.test.ts > payment routes > reverses a completed instalment without rewriting its audit trail
+{"msg":"http_request","requestId":"req_d9060607-704f-4289-88a4-d2861ed25470","route":"/api/payments/:id/reverse","method":"POST","status":409,"durationMs":6}
+
+ ✓ src/modules/payments/payments.test.ts (6 tests) 11710ms
+   ✓ payment routes > records a payment and updates invoice totals in one transaction  2551ms
+   ✓ payment routes > rejects payment amounts with more than 2 decimal places and still replays an accepted payment  2239ms
+   ✓ payment routes > retried payment with the same Idempotency-Key returns the original payment  2685ms
+   ✓ payment routes > concurrent payments with the same Idempotency-Key create one payment and one journal  1816ms
+   ✓ payment routes > reverses a completed instalment without rewriting its audit trail  2283ms
+(node:82821) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_941562fe-f315-4c24-b122-9784857093e4","route":"/api/auth/*","method":"POST","status":200,"durationMs":668}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_ffc53d66-46b6-4fc5-b7df-cf6c14265967","route":"/api/auth/*","method":"POST","status":200,"durationMs":193}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_e10defe4-1670-4b62-816d-f30668a207d6","route":"/api/business-profile","method":"PUT","status":200,"durationMs":30}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_6e065a91-e272-4c42-af1c-491ca6b5facb","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_10993487-bcc0-4dcc-84d9-9f7c95590e16","route":"/api/invoices","method":"POST","status":201,"durationMs":94}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_b7bfb3b1-cea3-4982-8d88-bcd2e6e6028d","route":"/api/invoices/:id/send","method":"POST","status":200,"durationMs":125}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_f4c1ee2c-4650-4563-a2c1-b152594d126d","route":"/api/invoices/:id/history","method":"GET","status":404,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_0285506b-2df1-43f9-a43e-3d472c948604","route":"/api/invoices/:id/duplicate","method":"POST","status":201,"durationMs":32}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_90d2c197-5d1a-44b2-bbfe-15cd6c5c694d","route":"/api/invoices/:id/duplicate","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_0af41927-5187-4fd2-8452-10242c26c6aa","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":27}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_ee48520b-ca13-4af0-99cf-4bf410058228","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_865dfff2-411c-4df8-9c0b-cf73b0c92474","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":28}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_75e78296-78ab-44b8-83a9-09280f29f1fa","route":"/api/invoices/:id/history","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_ea6b47b8-a4d4-4a78-a76a-9375745916b9","route":"/api/invoices/:id","method":"DELETE","status":200,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_99984a23-1368-4ebb-82a2-034b774bd16f","route":"/api/invoices","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive
+{"msg":"http_request","requestId":"req_ebb3feff-0a93-4e9e-9b3e-f77f147d9533","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_68f3e8d1-2e0c-4655-b15a-de7f3938ba6f","route":"/api/auth/*","method":"POST","status":200,"durationMs":212}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_53871cf0-d9f9-4368-8a45-f06ce00a0e31","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_7338a43e-b4da-417e-b160-eac719bab186","route":"/api/customers","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_9f5ac1ef-7cfd-47de-b9b3-981ab6eba614","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_8cd4f122-6c88-4d63-8786-6f39432da8e3","route":"/api/objects","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_576ef132-2262-4216-b300-3399e4000a95","route":"/api/invoices/:id/attachments","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_9f86fade-ed67-4dce-8c53-0a0727ca494e","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_fda15e12-4db5-48b6-b00b-ec1d867b4029","route":"/api/public/invoices/:token/attachments/:attachmentId","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_1c1aa6fb-998b-4373-bf4d-cfbd10997088","route":"/api/objects","method":"POST","status":201,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_fcac09a9-4395-4634-9339-cac7b5f0e029","route":"/api/invoices/:id/attachments","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_ec00c8b6-b2b3-4209-99dd-5e0c5b7196ab","route":"/api/public/invoices/:token/attachments/:attachmentId","method":"GET","status":404,"durationMs":2}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_97935ebd-b214-4eff-b203-ce8f03bb3d2b","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_e6dc2ea4-2773-40e3-a44b-454cbea39a3a","route":"/api/invoices-import","method":"POST","status":200,"durationMs":26}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_05198c3a-6157-4d1f-8f40-2eec31735aef","route":"/api/invoices-import","method":"POST","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > snapshots attachment access and imports idempotently by external id
+{"msg":"http_request","requestId":"req_baf5387d-b8d6-4951-8de3-8d2a65314f3b","route":"/api/invoices-export.csv","method":"GET","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_f5a00e83-8c0a-4956-bffa-2bff1bebd5d1","route":"/api/auth/*","method":"POST","status":200,"durationMs":357}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_8d326134-2ede-4e69-b424-6f1f5bc895b2","route":"/api/business-profile","method":"PUT","status":200,"durationMs":22}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_4cc644ad-e119-4c27-ad74-3e70685afe65","route":"/api/customers","method":"POST","status":201,"durationMs":55}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_f0d291f9-42ab-4d5f-bd96-8ca0a90dc2c7","route":"/api/invoices-import","method":"POST","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_74efcdac-435b-41d2-abee-85a9ac691972","route":"/api/invoices-import","method":"POST","status":200,"durationMs":337}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_135895b4-7ed9-4018-8cef-aa2c6b3243a7","route":"/api/invoices","method":"GET","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free
+{"msg":"http_request","requestId":"req_13413ab8-9407-4bdf-b52b-67887a273b02","route":"/api/invoices-export.csv","method":"GET","status":200,"durationMs":29}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_09dc2c2a-749c-4971-8cc0-5695ba09d12c","route":"/api/auth/*","method":"POST","status":200,"durationMs":163}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_15299496-75c3-40c2-b48a-c3848b665a3d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_edef99ea-ebfa-4ef1-8eb9-4e945c9112a0","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_bee6e13e-fb29-4917-8260-eec7deb92845","route":"/api/invoices","method":"POST","status":201,"durationMs":26}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_0c9fb4e9-af97-4d3f-a684-940bbb75cff5","route":"/api/objects","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_a9ad3e9c-4616-49e9-b514-187ca08aa700","route":"/api/invoices/:id/attachments/:attachmentId","method":"DELETE","status":409,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_f8b21789-5453-4f91-a836-4b08fef784b0","route":"/api/objects","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_7496dbfe-327c-43b5-b6e5-55c4b1d89b3e","route":"/api/invoices/:id/attachments","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_c0531226-ca36-4de0-b0e9-4f5f18268a2e","route":"/api/invoices/:id/attachments/:attachmentId","method":"DELETE","status":204,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_cae8a753-5d00-4d27-931a-7cd1d50c086c","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_c71685bb-3604-404c-8966-c83deb3484d7","route":"/api/public/invoices/:token/attachments/:attachmentId","method":"GET","status":404,"durationMs":1}
+
+stdout | src/modules/invoices/invoice-lifecycle.test.ts > invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares
+{"msg":"http_request","requestId":"req_3605bf12-3ebf-4ab6-90b7-61152ebfba94","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+ ✓ src/modules/invoices/invoice-lifecycle.test.ts (4 tests) 9698ms
+   ✓ invoice lifecycle > keeps exact mixed tax totals, immutable history, balanced cancellation, restore, duplicate and archive  2943ms
+   ✓ invoice lifecycle > snapshots attachment access and imports idempotently by external id  1986ms
+   ✓ invoice lifecycle > imports paid invoices through a real payment and keeps dry runs side-effect free  2894ms
+   ✓ invoice lifecycle > keeps locked source attachments in the database and object store and out of public shares  1871ms
+(node:82891) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_59a7d26a-175e-4715-8606-7ef183d0d836","route":"/api/auth/*","method":"POST","status":200,"durationMs":273}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_8330a5d5-57ac-4450-9d73-ac3e89cd46e3","route":"/api/auth/*","method":"POST","status":200,"durationMs":149}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_e6658247-5c55-4350-9b31-785adb6cebac","route":"/api/business-profile","method":"PUT","status":200,"durationMs":23}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_0cac78a9-9da6-48ca-8667-6d8486a93949","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_5325fb2b-e71e-469d-ada5-8237aa40d1bb","route":"/api/invoices","method":"POST","status":201,"durationMs":72}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_7befb539-3620-445a-b9a2-b3acb9354b8a","route":"/api/invoices","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_23d3d7df-9614-4c68-93c3-d267c761f283","route":"/api/invoices/:id/shares","method":"GET","status":401,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_7530b360-b9a9-419e-bc61-2aef819954a2","route":"/api/invoices/:id/shares","method":"GET","status":404,"durationMs":11}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_0f669038-81eb-457d-8605-a045c3d8bd53","route":"/api/invoices/:id/shares/revoke","method":"POST","status":404,"durationMs":9}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_17c3f844-62a5-450a-adbb-ee0a4f7353e2","route":"/api/invoices/:id/share","method":"POST","status":404,"durationMs":11}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_c3fc2b2c-d0da-47a9-b90c-c521692a30fb","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_77138c6e-966a-48fe-a38a-0d18fee8d6da","route":"/api/invoices/:id/share","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_89c6f864-f564-48ce-ba02-19f20e1fef59","route":"/api/invoices/:id/share","method":"POST","status":200,"durationMs":14}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_ee6f0d5f-4020-49f3-9336-71d07704d424","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_7fabe447-996d-4cea-a99e-fcc282d131d7","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_d4ac102c-d794-43f7-b728-7883f034aa9a","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_8f50613e-433f-431f-986a-a1178e3ada70","route":"/api/invoices/:id/shares","method":"GET","status":200,"durationMs":27}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_aa624c92-2665-43c2-be18-c4c50303a7e7","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_2f593151-409b-46a9-848d-33120c0551a8","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_30ac553c-2417-40fa-9c94-51a26d0595b0","route":"/api/invoices/:id/shares","method":"GET","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_e3410893-5029-4f95-9401-c43c97742937","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_24f38327-7fa8-4e7a-87cb-ce52b5c80aee","route":"/api/invoices/:id/shares/revoke","method":"POST","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_4425171a-3614-43c7-8f72-174ce2b345f8","route":"/api/invoices/:id/shares","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_60b0c81a-89b7-4d41-a169-400be634600d","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_0456808e-ee44-4340-a763-3f04729a1ff0","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_c243e76a-9185-4e3d-a1d1-ee955aa8f288","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":2}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_9047930b-1f61-472f-b125-2c3ef61e14db","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_1d256369-0010-480d-bc3a-1030ae975cd7","route":"/api/invoices/:id/shares/revoke","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation
+{"msg":"http_request","requestId":"req_ae29d80a-d873-4738-80b4-6c10c2d0b3f2","route":"/api/public/invoices/:token","method":"GET","status":404,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_0fa930e2-a789-4aba-b9c2-ea12c8b971ef","route":"/api/auth/*","method":"POST","status":200,"durationMs":148}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_39462f6b-40fd-4e08-a8b3-3535728703a1","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_f8955557-3f9d-41f3-b7fe-1ce828cbf490","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_ab4fd0d3-0ace-436f-9219-72a9928922ae","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_9ca0762c-7ce8-45e9-a2a8-24a88e5cc66a","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_b1dc710c-d7f5-490a-8ccc-b07da3eb6d6b","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_7383f8ba-f34c-4d1a-a499-cb3b87bf071e","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_ba29d526-3686-4dfc-b85e-7b43c15c4965","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_d0822389-b90c-4377-a129-93c8052f07c5","route":"/api/invoices/:id/share","method":"POST","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_310af6d3-8d79-438f-a379-c3cb7d1329db","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+stderr | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"unhandled_error","source":"hono","requestId":"req_f07cd09d-892f-491b-930c-06ccf70f1815","route":"/api/invoices/:id/share","name":"Error","errorMessage":"Failed query: insert into \"shared_invoices\" (\"id\", \"organisation_id\", \"original_invoice_id\", \"invoice_data\", \"template_data\", \"attachment_ids\", \"share_token\", \"expires_at\", \"access_count\", \"is_active\", \"created_by\", \"created_at\") values (            returning \"id\", \"organisation_id\", \"original_invoice_id\", \"invoice_data\", \"template_data\", \"attachment_ids\", \"share_token\", \"expires_at\", \"access_count\", \"is_active\", \"created_by\", \"created_at\"\nparams: 4d0d6bf2-518e-49a5-8b3e-2cda9b593364,d753d29e-a625-4434-a848-a0852041f4e1,896befed-b847-4e32-b62b-0ca48ea6d863,{\"id\":\"896befed-b847-4e32-b62b-0ca48ea6d863\",\"invoiceNumber\":\"INV-2026-0000\",\"externalNumber\":null,\"externalIssuerName\":null,\"sourceImportDocumentId\":null,\"thirdPartyIssued\":false,\"externalId\":null,\"customerId\":\"9e6dc816-df31-4e53-8d6d-71bb27b55d43\",\"date\":\"2026-10-24\",\"dueDate\":\"2026-11-24\",\"paymentTermDays\":30,\"subtotal\":\"4500.00\",\"taxAmount\":\"675.00\",\"discountType\":\"fixed\",\"discountPercent\":null,\"discount\":null,\"additionalCharges\":null,\"additionalChargesTotal\":\"0.00\",\"total\":\"5175.00\",\"totalPaid\":\"0.00\",\"totalCredited\":\"0.00\",\"taxCredited\":\"0.00\",\"baseCredited\":\"0.00\",\"baseTaxCredited\":\"0.00\",\"balanceDue\":\"5175.00\",\"paymentStatus\":\"unpaid\",\"taxInclusive\":false,\"status\":\"draft\",\"effectiveStatus\":\"draft\",\"notes\":\"Updated details for recipient\",\"terms\":null,\"currency\":\"NZD\",\"exchangeRate\":\"1\",\"exchangeRateId\":null,\"baseCurrency\":\"NZD\",\"baseSubtotal\":\"4500.00\",\"baseTaxAmount\":\"675.00\",\"baseTotal\":\"5175.00\",\"customerName\":\"North Harbour Cafe\",\"customerEmail\":\"[redacted-email]\",\"customerDetails\":{\"name\":\"North Harbour Cafe\",\"email\":\"[redacted-email]\",\"address\":null,\"phone\":null,\"city\":null,\"state\":null,\"zip\":null,\"country\":\"NZ\"},\"items\":[{\"id\":\"48734da0-4dfe-4811-ab93-c94d545947b8\",\"description\":\"Brand identity\",\"quantity\":\"1.00\",\"unit\":\"ea\",\"rate\":\"4500.00\",\"rateUnit\":\"ea\",\"tax\":\"675.00\",\"total\":\"4500.00\",\"discountType\":\"fixed\",\"discountValue\":null,\"discountAmount\":\"0.00\",\"taxes\":[{\"id\":\"default\",\"name\":\"Tax\",\"rate\":\"15.00\"}]}],\"createdAt\":\"2026-11-08T19:50:39.000Z\",\"updatedAt\":\"2026-11-08T19:50:39.496Z\",\"archivedAt\":null},{\"templateName\":\"classic\",\"businessProfile\":{\"id\":\"b4254117-1334-4eca-8140-76e44986e7e8\",\"name\":\"Updated Kauri Studio\",\"email\":\"[redacted-email]\",\"phone\":null,\"address\":null,\"city\":null,\"state\":null,\"zip\":null,\"country\":\"NZ\",\"taxId\":null,\"logoUrl\":null,\"website\":null,\"defaultTaxRate\":\"15\",\"gstRegistrationStatus\":\"unknown\",\"gstRegisteredFrom\":null,\"gstAccountingBasis\":null,\"gstFilingFrequency\":null,\"gstPeriodAnchor\":null,\"defaultTerms\":null,\"paymentTermDays\":30,\"defaultNotes\":null,\"bankInfo\":null,\"bankAccountName\":null,\"bankAccountNumber\":null,\"theme\":null,\"invoiceNumberFormat\":\"INV-{YYYY}-{SEQ}\",\"invoiceNumberSequence\":1,\"quoteNumberFormat\":\"QUO-{YYYY}-{SEQ}\",\"quoteNumberSequence\":1,\"quoteValidityDays\":30,\"defaultQuoteKind\":\"quote\",\"createdAt\":\"2026-11-08T19:50:39.000Z\",\"updatedAt\":\"2026-11-08T19:50:39.509Z\"},\"attachments\":[]},[],d753d29e-a625-4434-a848-a0852041f4e1_[redacted],,0,1,536daa74-c3f4-48f2-9640-beb47f04e9bc,1794167439540","stack":"Error: Failed query: insert into \"shared_invoices\" (\"id\", \"organisation_id\", \"original_invoice_id\", \"invoice_data\", \"template_data\", \"attachment_ids\", \"share_token\", \"expires_at\", \"access_count\", \"is_active\", \"created_by\", \"created_at\") values (            returning \"id\", \"organisation_id\", \"original_invoice_id\", \"invoice_data\", \"template_data\", \"attachment_ids\", \"share_token\", \"expires_at\", \"access_count\", \"is_active\", \"created_by\", \"created_at\"\nparams: 4d0d6bf2-518e-49a5-8b3e-2cda9b593364,d753d29e-a625-4434-a848-a0852041f4e1,896befed-b847-4e32-b62b-0ca48ea6d863,{\"id\":\"896befed-b847-4e32-b62b-0ca48ea6d863\",\"invoiceNumber\":\"INV-2026-0000\",\"externalNumber\":null,\"externalIssuerName\":null,\"sourceImportDocumentId\":null,\"thirdPartyIssued\":false,\"externalId\":null,\"customerId\":\"9e6dc816-df31-4e53-8d6d-71bb27b55d43\",\"date\":\"2026-10-24\",\"dueDate\":\"2026-11-24\",\"paymentTermDays\":30,\"subtotal\":\"4500.00\",\"taxAmount\":\"675.00\",\"discountType\":\"fixed\",\"discountPercent\":null,\"discount\":null,\"additionalCharges\":null,\"additionalChargesTotal\":\"0.00\",\"total\":\"5175.00\",\"totalPaid\":\"0.00\",\"totalCredited\":\"0.00\",\"taxCredited\":\"0.00\",\"baseCredited\":\"0.00\",\"baseTaxCredited\":\"0.00\",\"balanceDue\":\"5175.00\",\"paymentStatus\":\"unpaid\",\"taxInclusive\":false,\"status\":\"draft\",\"effectiveStatus\":\"draft\",\"notes\":\"Updated details for recipient\",\"terms\":null,\"currency\":\"NZD\",\"exchangeRate\":\"1\",\"exchangeRateId\":null,\"baseCurrency\":\"NZD\",\"baseSubtotal\":\"4500.00\",\"baseTaxAmount\":\"675.00\",\"baseTotal\":\"5175.00\",\"customerName\":\"North Harbour Cafe\",\"customerEmail\":\"[redacted-email]\",\"customerDetails\":{\"name\":\"North Harbour Cafe\",\"email\":\"[redacted-email]\",\"address\":null,\"phone\":null,\"city\":null,\"state\":null,\"zip\":null,\"country\":\"NZ\"},\"items\":[{\"id\":\"48734da0-4dfe-4811-ab93-c94d545947b8\",\"description\":\"Brand identity\",\"quantity\":\"1.00\",\"unit\":\"ea\",\"rate\":\"4500.00\",\"rateUnit\":\"ea\",\"tax\":\"675.00\",\"total\":\"4500.00\",\"discountType\":\"fixed\",\"discountValue\":null,\"discountAmount\":\"0.00\",\"taxes\":[{\"id\":\"default\",\"name\":\"Tax\",\"rate\":\"15.00\"}]}],\"createdAt\":\"2026-11-08T19:50:39.000Z\",\"updatedAt\":\"2026-11-08T19:50:39.496Z\",\"archivedAt\":null},{\"templateName\":\"classic\",\"businessProfile\":{\"id\":\"b4254117-1334-4eca-8140-76e44986e7e8\",\"name\":\"Updated Kauri Studio\",\"email\":\"[redacted-email]\",\"phone\":null,\"address\":null,\"city\":null,\"state\":null,\"zip\":null,\"country\":\"NZ\",\"taxId\":null,\"logoUrl\":null,\"website\":null,\"defaultTaxRate\":\"15\",\"gstRegistrationStatus\":\"unknown\",\"gstRegisteredFrom\":null,\"gstAccountingBasis\":null,\"gstFilingFrequency\":null,\"gstPeriodAnchor\":null,\"defaultTerms\":null,\"paymentTermDays\":30,\"defaultNotes\":null,\"bankInfo\":null,\"bankAccountName\":null,\"bankAccountNumber\":null,\"theme\":null,\"invoiceNumberFormat\":\"INV-{YYYY}-{SEQ}\",\"invoiceNumberSequence\":1,\"quoteNumberFormat\":\"QUO-{YYYY}-{SEQ}\",\"quoteNumberSequence\":1,\"quoteValidityDays\":30,\"defaultQuoteKind\":\"quote\",\"createdAt\":\"2026-11-08T19:50:39.000Z\",\"updatedAt\":\"2026-11-08T19:50:39.509Z\"},\"attachments\":[]},[],d753d29e-a625-4434-a848-a0852041f4e1_[redacted],,0,1,536daa74-c3f4-48f2-9640-beb47f04e9bc,1794167439540\n    at RemotePreparedQuery.queryWithCache (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-core/session.ts:80:11)\n    at RemotePreparedQuery.all (file:///Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/node_modules/.pnpm/drizzle-orm@0.44.7_@opentelemetry+api@1.9.1_kysely@0.29.5_postgres@3.4.9/node_modules/src/sqlite-proxy/session.ts:213:20)\n    at createInvoiceShareInTx (/Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/api/src/modules/invoices/share.ts:148:17)\n    at /Users/jeevanwijerathna/.t3/worktrees/ledger-craft-app/t3-cd6ef341/api/src/db/local.ts:79:24"}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_f07cd09d-892f-491b-930c-06ccf70f1815","route":"/api/invoices/:id/share","method":"POST","status":500,"durationMs":29}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_5711767d-c64e-4a5d-8f0b-83328b249fc1","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_648d7306-a6f2-46c3-ae6d-4be3596801fb","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_bb5eca55-ce3d-4c83-af38-97e9dbae4fda","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_0e2d25e6-9bb6-48ee-8389-e11c63906cbd","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":3}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_8df8bbb3-6783-44a0-80af-a67157309e1d","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_b9cd8715-2c99-47f3-a550-dc0ae31a2d5e","route":"/api/public/invoices/:token","method":"GET","status":410,"durationMs":1}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_4f5719e4-fd2b-4257-abf2-37265e4968cd","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > replaces every active link in one transaction and keeps the old link when creation fails
+{"msg":"http_request","requestId":"req_bc17c4c8-90cb-4a75-870f-4a5fb9f5b75f","route":"/api/invoices/:id/shares","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_2b4874ca-d9fe-4529-8163-45f269e2040a","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_b71e3b67-f9dc-453b-8876-6b09af510f52","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_125c4bdf-40bd-48cb-922e-e8754ad8dc4c","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_54c18172-2f31-42da-9a93-9f40f5a961d1","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_88432e98-fb2c-4883-ad5c-7c7201531dbd","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_42a8a4ee-a11a-425c-9079-57d1fb571309","route":"/api/invoices/:id/shares","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_d19c19c1-3568-4e24-b518-8e71c2b70613","route":"/api/invoices/:id/shares/revoke","method":"POST","status":403,"durationMs":3}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_8a19bc29-d711-4d61-a1c2-7b4557fd336b","route":"/api/invoices/:id/share","method":"POST","status":403,"durationMs":12}
+
+stdout | src/modules/invoices/share.test.ts > invoice share links > lets a read-only member list shares but not create, replace, or revoke them
+{"msg":"http_request","requestId":"req_c5afd5ef-a04c-4853-8589-89e34d0acda1","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":2}
+
+ ✓ src/modules/invoices/share.test.ts (3 tests) 5590ms
+   ✓ invoice share links > lists, reuses, and revokes shares inside the organisation and hides them from another organisation  2216ms
+   ✓ invoice share links > replaces every active link in one transaction and keeps the old link when creation fails  1747ms
+   ✓ invoice share links > lets a read-only member list shares but not create, replace, or revoke them  1624ms
+(node:82981) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_4618a701-f8bb-45bc-aed6-dfdfa0f861d5","route":"/api/auth/*","method":"POST","status":200,"durationMs":343}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_2880f303-ac09-46b6-8549-7d5108eb28c5","route":"/api/business-profile","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_643e7566-4d04-43d9-8bea-460c16e64fbb","route":"/api/customers","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_b8e97250-1752-4133-8660-8aa7a162baef","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_c68628d8-b2bb-4947-a288-562db9729bc7","route":"/api/vendors","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_79588273-7538-4b49-ba08-27138d09e3f5","route":"/api/accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_dbb0411d-26d1-4cf2-bf37-8421bd81e6ab","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":36}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_12c6c7d6-a33f-4432-949f-3cd026ecf792","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":49}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_dca808ed-d728-43dd-92df-6ef2c5428c7b","route":"/api/invoices","method":"POST","status":201,"durationMs":85}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_7800e53d-bea1-4eb0-a2fb-bbb6d3ea8522","route":"/api/bills","method":"POST","status":201,"durationMs":28}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_7129cce8-ce96-4644-bbb2-b2d25ce78893","route":"/api/business-profile","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_427cb7cd-8f8d-4755-981f-aa4667014b78","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_e07c2032-2267-4bfd-acda-51be71128574","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_09372a1f-c348-46d8-ae60-a73b9028e583","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_b6a9d84f-5b37-4132-ba37-ec705a8fd8cb","route":"/api/invoices","method":"POST","status":422,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_f2ebfe8b-8ffe-4bd5-90d5-508e5a026d2f","route":"/api/invoices/next-number","method":"GET","status":200,"durationMs":30}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_f6b8c783-f104-4f4e-807b-623ead007478","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence
+{"msg":"http_request","requestId":"req_8ea1ec7e-fcdf-4333-8300-9786c2e81e35","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_2b7ecc70-6de1-4437-a814-31ace2de5ff3","route":"/api/auth/*","method":"POST","status":200,"durationMs":143}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_511c06d7-4cd4-4b13-b40e-083baeec9666","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_84670f58-a065-409b-a81f-6621fbaabf68","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_98a0119f-aab4-4901-a553-700b2c2cc788","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_c5f615e6-be0b-46c4-b02d-3c04e03fe0cb","route":"/api/vendors","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_5c2fe4c2-eb37-49d9-9c2e-2a5e1dd99191","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_69c213b1-549d-4825-adf6-d9174f36fcd8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_2c0c8400-b75e-4ef4-8454-60a795ed5e6c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_2f673de6-95b3-424b-955d-d483a0e89ec5","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_3aaed479-5582-49c7-9c33-a29e8d0fdfc2","route":"/api/bills","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_d875db7d-1302-48dd-a9b3-21393cf1e57d","route":"/api/business-profile","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_880bfc1a-1745-4b4d-987b-e06ba054f1a9","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_56651d3a-02f5-49e4-bf60-0bb022499049","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_f30888d7-62bc-4990-9d25-e109a26d402b","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_087de295-c5d9-4015-8b9a-708ba8f7071a","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_032ae7db-a433-4700-96af-9f11e8ae0eeb","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_fb39b997-e72d-4d02-947f-9139f3afcb9f","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_ceada97f-e086-4aff-bf4a-114382906c4d","route":"/api/invoices/:id/send","method":"POST","status":422,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_c062d8bc-cad0-41a6-b0d4-359dad161d49","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed
+{"msg":"http_request","requestId":"req_8c608f3a-fccb-4ae1-8465-e14deae1f774","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_219c2b59-433b-4a51-8c3f-dc32cc2b2af4","route":"/api/auth/*","method":"POST","status":200,"durationMs":243}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_1453776f-aa99-486b-b473-fde4e00e1136","route":"/api/business-profile","method":"PUT","status":200,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_af2886b1-2269-4dd8-8025-380c3143a5fe","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_2806ae8e-6130-4528-9646-856df0b7ca0d","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_b45acaa3-2033-4401-9f74-be11be95a199","route":"/api/vendors","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_b53ec584-5501-4054-81dc-5aebcbbec35e","route":"/api/accounts","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_0cc2073f-1b7b-4b2a-b6ed-4b81f896c40c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":38}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_ad5949e3-0f6a-4521-b1cb-b5844bdfbf37","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_9731906f-07b8-448e-a4ab-ecb3042aa5b6","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_9db87a2e-fdc4-4aea-b672-71ee3a8134ef","route":"/api/bills","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_43c0f088-05fd-457a-bc2d-616c36ebbb74","route":"/api/business-profile","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_b5dae51b-d8b0-47e9-82d7-55b3a059ccbe","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_97032f41-70ed-4cd7-a455-435fbe510001","route":"/api/business-profile","method":"GET","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller
+{"msg":"http_request","requestId":"req_a4585d9f-faca-46ba-a7b1-92429036ebfa","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_6ad15546-f530-49dd-84ae-0579e8fab58d","route":"/api/auth/*","method":"POST","status":200,"durationMs":165}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_dfc870af-fe71-4a4e-a4d7-4d23be863d5a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_d30d2892-7ce3-42c4-a598-b7e1c75f9c69","route":"/api/customers","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_f7a2d5ae-94cf-46b2-9e7c-faad116831e4","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_deb21858-0b86-4cd3-9b33-0f8035abbb64","route":"/api/vendors","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_7411dbdb-40e4-461b-ad05-6cd62b4e56a4","route":"/api/accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_24cfc777-0d48-4c24-9cb8-e71e4efe5871","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_848f8efb-b3ff-40dd-8452-ba5b5415830c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_bfc56cf3-601f-4400-b5cb-44788b6db952","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_5d2cb46e-3f6e-4f38-86bd-1432b578a08f","route":"/api/bills","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_6e46d987-8a59-45a7-9257-872399f2637b","route":"/api/business-profile","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_930578c9-66f3-4fe7-a712-39cf4360f8b8","route":"/api/customers","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_4765b445-481f-4fd2-8886-9cd243949b62","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_6cd8616f-61f7-46a2-bc92-44df063657bc","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_20468da9-9324-4378-a972-d669dda726d1","route":"/api/invoices/:id/share","method":"POST","status":201,"durationMs":24}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_ec7ff02d-288c-4c76-9066-c8d577b2d5c7","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits
+{"msg":"http_request","requestId":"req_aa31453c-1214-41fd-a39f-5be61ba0181c","route":"/api/public/invoices/:token","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_f77d4a1f-f36a-42ec-a265-f2c5f8f2d631","route":"/api/auth/*","method":"POST","status":200,"durationMs":240}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_f4899f07-957d-409d-8f15-e0cd41c6b7c0","route":"/api/business-profile","method":"PUT","status":200,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_b75df512-9f51-4bd5-8d9c-0317f126e693","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_d829afb5-75db-4707-9471-757f09e73456","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_308739dd-eeaf-429e-be56-bbb146f96876","route":"/api/vendors","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_7292dc58-2145-4840-a424-475884c3dc18","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_53c28d9e-0592-429f-b738-57fbac3ee972","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_3da1d8ae-274b-46ca-b64d-76076fef1520","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_0dea67c6-83cc-4fc0-a0e9-2584fa4aaa1a","route":"/api/invoices","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_134c0cf3-1743-4676-87f1-32541da59a72","route":"/api/bills","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_5c42d024-fba6-47fd-a132-37829c687ed3","route":"/api/business-profile","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_4b8817cb-0831-428b-a8c6-85b3d6ee923d","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_6e2f5da6-918a-46f4-a631-11493178f261","route":"/api/business-profile","method":"GET","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_e0c03728-d3b7-41ae-8303-53ea75726664","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_e66d5fb3-e6ef-4a5a-ad8a-d62ad9d3f1d2","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_f19205c9-e2dd-4663-98d3-9bbc14b5a1cc","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_fbbe5836-83ac-4faf-9eeb-077d59787115","route":"/api/invoices/:id/send","method":"POST","status":422,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_0c6f57fa-8926-49b4-99c9-2575b180fd52","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_b2e29d8f-dea9-44ed-a05f-180dbb27cfcf","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":47}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review
+{"msg":"http_request","requestId":"req_aec31029-eb79-4d58-86b1-3481ae28f607","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":24}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_69cf8512-4c1d-4b03-a486-234b64175794","route":"/api/auth/*","method":"POST","status":200,"durationMs":158}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_08542d26-8fee-4192-b3f5-04f651f32b11","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_b349d095-03f5-4ecf-ba20-417325eb23ea","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_e6ada720-d1f7-4911-96e8-ed4c8518eea7","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_1f3c915b-58ac-4b81-b399-939f38ba8b57","route":"/api/vendors","method":"POST","status":201,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_f1edcf82-74df-4390-849d-7463e7c06f49","route":"/api/accounts","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_ecb44721-713c-4c92-a593-209cf87f4240","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_0f212e12-bb1d-46e8-86d8-f1496b260c10","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_885996bd-75fd-49c5-8147-9b20ede05be4","route":"/api/invoices","method":"POST","status":201,"durationMs":27}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_855ef52f-d624-4f28-818f-0e03c6f1c55f","route":"/api/bills","method":"POST","status":201,"durationMs":17}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_35dc29a0-0c69-4002-8aa7-c252ea2fc9e2","route":"/api/business-profile","method":"GET","status":200,"durationMs":5}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_bfdfa71e-f7f7-43d4-8b18-a198bb937bc1","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_ee663342-1ade-4062-a99e-f7e1b44b9b23","route":"/api/business-profile","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business
+{"msg":"http_request","requestId":"req_998fc7fb-9a4f-45c5-a5b3-b54cb1707747","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_2810d678-bdd1-49f3-ae5e-a2f1fe6dc5d8","route":"/api/auth/*","method":"POST","status":200,"durationMs":153}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_9172e2f1-832c-4514-a1ba-9f9842faf9dd","route":"/api/business-profile","method":"PUT","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_b9636096-8c8c-4b3b-9684-c85e98fe15e1","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_ed5929aa-5f89-47c4-8eea-3a0e57d9e66f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":20}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_895b6c4f-a56e-4539-9305-da4d2519eb3d","route":"/api/vendors","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_bd32f331-3b20-49d6-9a7c-27e2f11ac5e7","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_0e509337-c767-4c5e-9cea-a6701b6e6dd8","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":33}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_debb4552-0b45-435b-a9f2-2024e691568c","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_e86a0f1d-dfb8-4cd1-b47c-ab26398d0b75","route":"/api/invoices","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_05b43a93-13b9-482a-ae28-91f87c0e87f8","route":"/api/bills","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_2eac1f6f-fff0-438c-835a-8372bfa80592","route":"/api/business-profile","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_aa5a6b76-fd66-4314-be62-50ca54ec4abe","route":"/api/customers","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_7b6cb292-2c0e-4c9b-8bd9-7f85d8a65f9c","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_e19cbfe2-02ba-4edf-8f7f-343171d264a9","route":"/api/invoices/:id","method":"PATCH","status":422,"durationMs":14}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_bbfc3128-34cc-4aad-bdcf-e89161835a03","route":"/api/invoices/:id/share","method":"POST","status":422,"durationMs":10}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim
+{"msg":"http_request","requestId":"req_6821fe84-87cc-4e8a-8609-ed633bf1bf70","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_5728bbcf-ab0b-4332-9103-94b45bbdf749","route":"/api/auth/*","method":"POST","status":200,"durationMs":276}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_2f984f8b-5787-4761-9537-e3357ac60a89","route":"/api/business-profile","method":"PUT","status":200,"durationMs":11}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_4c544ce7-f2c5-451c-9ef1-520500868005","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_87e94bbf-c162-466f-8070-4c07a7ba1dea","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":8}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_a0d6166b-eff8-45ef-a929-77d0e9810c24","route":"/api/vendors","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_f99500b2-d43a-4a60-817f-ed79c64d2236","route":"/api/accounts","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_7dddf524-7a1a-41ea-9022-7f8c23f538b4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":82}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_eccb2ed4-c69d-43e5-b284-4412132219b4","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_d474e50d-2a51-40d9-9346-f24cc0d45a98","route":"/api/invoices","method":"POST","status":201,"durationMs":19}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_bcbb65ec-9cd1-4f8a-8529-abcb04aecfc4","route":"/api/bills","method":"POST","status":201,"durationMs":18}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_438a8e3b-3146-40ba-b12b-47be9b6b6196","route":"/api/business-profile","method":"GET","status":200,"durationMs":6}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_e16527e1-cf6d-4e5d-b0e0-a723e3c64bf1","route":"/api/customers","method":"POST","status":201,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_9789dc1c-19e9-4852-8a10-1aef9aa60530","route":"/api/invoices","method":"POST","status":422,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_21d7fe74-42aa-4ef2-9fe7-c3693cf69ff5","route":"/api/customers/:id","method":"PATCH","status":200,"durationMs":7}
+
+stdout | src/modules/invoices/invoice-gst-compliance.test.ts > GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds
+{"msg":"http_request","requestId":"req_5809b764-3dc8-4ce1-a157-848e252fad6a","route":"/api/invoices","method":"POST","status":201,"durationMs":21}
+
+ ✓ src/modules/invoices/invoice-gst-compliance.test.ts (8 tests) 15942ms
+   ✓ GST taxable supply buyer information > allows exactly1000 but rejects1000.01 without a buyer identifier and preserves the sequence  2220ms
+   ✓ GST taxable supply buyer information > blocks a draft edit and sending/sharing after buyer identifiers are removed  1664ms
+   ✓ GST taxable supply buyer information > does not impose the registered-seller rule on an unknown seller  2070ms
+   ✓ GST taxable supply buyer information > retains the buyer identifier in the public invoice snapshot after later customer edits  1902ms
+   ✓ GST taxable supply buyer information > allows legacy draft preparation but blocks issuing when seller registration needs review  2114ms
+   ✓ GST taxable supply buyer information > does not apply NZ GST identity rules to a foreign business  1707ms
+   ✓ GST taxable supply buyer information > retains a pre-registration draft but prevents issuing its stored GST claim  1896ms
+   ✓ GST taxable supply buyer information > uses the reviewed NZD carrying total for foreign-currency buyer thresholds  2365ms
+ ✓ src/modules/invoices/resend.test.ts (12 tests) 63ms
+(node:83241) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_7048d0b4-6f82-49ff-ab39-05ac00aab9a6","route":"/api/auth/*","method":"POST","status":200,"durationMs":355}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_d77c85ef-66dc-48ca-9e86-1367fbf0c2a9","route":"/api/business-profile","method":"PUT","status":200,"durationMs":41}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_4e4ce007-892d-4eaa-814c-b82d9dc5ac6f","route":"/api/customers","method":"POST","status":201,"durationMs":29}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_a9fb2167-72e6-4209-88fd-2053e1fefed1","route":"/api/invoices","method":"POST","status":201,"durationMs":87}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_57f5ee51-3ce3-410b-84c6-e0a04f32cb6f","route":"/api/invoices/:id/send","method":"POST","status":503,"durationMs":20}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > keeps an invoice draft when no email transport was supplied
+{"msg":"http_request","requestId":"req_12a70264-adce-4ad2-a717-4eef53d8e361","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":35}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_ad048443-bd50-49a1-bd71-dbbeb28b8217","route":"/api/auth/*","method":"POST","status":200,"durationMs":157}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_64c3b201-a0a3-40c8-9bdc-1706299a3555","route":"/api/business-profile","method":"PUT","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_2b150a86-07df-4838-a0ca-7bab66c9fc4b","route":"/api/customers","method":"POST","status":201,"durationMs":9}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_d5501e6b-2277-4895-9fe6-7691c7c125be","route":"/api/invoices","method":"POST","status":201,"durationMs":22}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_11b9302a-0eb0-48ad-a94e-3e8617f66be0","route":"/api/invoices/:id/send","method":"POST","status":502,"durationMs":68}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_16179373-4a07-49fc-b74a-ecd93564dd7b","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":12}
+
+stdout | src/modules/invoices/email-delivery.e2e.test.ts > invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance
+{"msg":"http_request","requestId":"req_4dfb4f3d-c7a9-4a0e-ac00-c2cac1468fc1","route":"/api/invoices/:id/send","method":"POST","status":200,"durationMs":101}
+
+ ✓ src/modules/invoices/email-delivery.e2e.test.ts (2 tests) 3914ms
+   ✓ invoice delivery acceptance > keeps an invoice draft when no email transport was supplied  1965ms
+   ✓ invoice delivery acceptance > uses real local HTTP transport and marks sent only after provider acceptance  1947ms
+(node:83320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_6ebb300f-06f2-4aa3-8ec5-59543be39099","route":"/api/auth/*","method":"POST","status":200,"durationMs":359}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_96aec198-a28d-4c6e-ad44-79004c862b3f","route":"/api/business-profile","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_3da6babb-2e75-4aa7-8709-d0321cd7b6ba","route":"/api/customers","method":"POST","status":201,"durationMs":15}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_b19fb284-d27c-49d3-bda5-89605f0490ef","route":"/api/invoices","method":"POST","status":201,"durationMs":132}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_c3036bb9-3d6d-4d58-96cc-0483eb090ede","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":61}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_ce7c8a41-b992-4598-871f-35a91bf3093a","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":59}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_46bafefc-082f-4244-8af7-0dd048f5d705","route":"/api/invoices/:id/restore","method":"POST","status":200,"durationMs":27}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_2647c02d-50ea-4026-96a6-fb17a0da084b","route":"/api/reports/financial","method":"GET","status":200,"durationMs":25}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_235a6375-f00a-4a8d-9491-a6b990516b04","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":25}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_3d0e0dad-927a-4e9b-b153-a4e8f5ff9047","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_22918cd7-3957-4ec3-a42a-97982f73d88e","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_42b2a737-5a88-4337-88e1-42c5225ad735","route":"/api/reports/financial","method":"GET","status":200,"durationMs":17}
+
+stdout | src/modules/invoices/restore-repair.test.ts > invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently
+{"msg":"http_request","requestId":"req_0edbe3ee-66f9-4f2e-aef6-ba259f8f6f78","route":"/api/reports/financial","method":"GET","status":200,"durationMs":14}
+
+ ✓ src/modules/invoices/restore-repair.test.ts (1 test) 2238ms
+   ✓ invoice restore journal repair > finds active invoices with a missing restore journal, dry-runs by default, and repairs idempotently  2235ms
+(node:83328) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_1b9ad991-e087-4176-ada5-a141653b00e0","route":"/api/auth/*","method":"POST","status":200,"durationMs":486}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_92637fb2-a6f9-4d9c-8c72-8c008b5233b8","route":"/api/auth/*","method":"POST","status":200,"durationMs":193}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_215a68b0-e3d0-4ab7-ad9a-2c38f1b8083d","route":"/api/business-profile","method":"PUT","status":200,"durationMs":28}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_5c90bb42-b9ef-4213-b972-cf52b6793560","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_7de2222c-e320-4db2-9b26-9297208ae139","route":"/api/invoices","method":"POST","status":201,"durationMs":79}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_3a433e14-9f27-43a1-88b5-24197fe33a7d","route":"/api/invoices/:id/remind","method":"POST","status":200,"durationMs":31}
+
+stdout | src/modules/invoices/invoices.remind.test.ts > invoice reminder routes > sends a reminder without changing invoice status and isolates organisations
+{"msg":"http_request","requestId":"req_368611e7-611e-49d0-818a-de8c31eaf09d","route":"/api/invoices/:id/remind","method":"POST","status":404,"durationMs":15}
+
+ ✓ src/modules/invoices/invoices.remind.test.ts (1 test) 3367ms
+   ✓ invoice reminder routes > sends a reminder without changing invoice status and isolates organisations  3364ms
+(node:83359) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_ca3937b4-bac9-4d45-9b74-b0dac0a2fee8","route":"/api/auth/*","method":"POST","status":200,"durationMs":1018}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_88e80eec-47dc-41e5-a879-0e618e188e32","route":"/api/business-profile","method":"PUT","status":200,"durationMs":60}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_97f3e00f-dc5b-45c5-9e04-755479985986","route":"/api/customers","method":"POST","status":201,"durationMs":46}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_d9bb0819-4121-4588-859f-b1d760e3e2c6","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":47}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_d337c28f-7231-4b99-993f-6f39f0de1de8","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_1aadfa0c-c0f2-4ada-acac-4e5b5bc71c39","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_44f7c17a-28df-431b-84b9-ab17d23a2a7e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":143}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_a8903408-36a5-4eaa-9051-fe7c7265a09e","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":114}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_1c561d97-3f23-414b-82a1-681a440bc91c","route":"/api/invoices","method":"POST","status":201,"durationMs":360}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_a3cd6325-702e-45c1-afc0-3bd071bdc6e8","route":"/api/bills","method":"POST","status":201,"durationMs":125}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_df57aa05-100d-425b-b225-0fffd7f87c13","route":"/api/payments","method":"POST","status":201,"durationMs":303}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_8c3bf6be-6ccf-43e1-870d-b443c7151945","route":"/api/payments","method":"POST","status":201,"durationMs":101}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_0d079ff9-6759-40b5-a500-b46b4fd87eef","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":16}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20
+{"msg":"http_request","requestId":"req_6bc8394a-5e04-4a76-b3e8-a27c9aa08fed","route":"/api/payments","method":"POST","status":400,"durationMs":16}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_d24b6846-c9ca-47af-ad21-a88f3d82a464","route":"/api/auth/*","method":"POST","status":200,"durationMs":648}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_f4ad25a4-f6fb-46e1-bbbb-198f1c122f9a","route":"/api/business-profile","method":"PUT","status":200,"durationMs":16}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_4aeef2ce-1e1c-4e91-82a7-ff9f9aa0d3c9","route":"/api/customers","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_96ca3600-aeed-4193-a31e-7c28a2c65f78","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_12e593d2-3bdf-4318-a7db-c78bee7c5fc7","route":"/api/vendors","method":"POST","status":201,"durationMs":13}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_12c6ace8-0d73-468e-a55f-29c1430d2095","route":"/api/accounts","method":"POST","status":201,"durationMs":11}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_f6e73b29-0981-417e-9496-332aa5decc40","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":134}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_ee068f0d-7c0d-4a89-a7a4-ea1f53fce629","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":23}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_0b8ad113-cb11-4ad5-b15c-38d8b9af0454","route":"/api/invoices","method":"POST","status":201,"durationMs":164}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_4c5310fb-d170-4aa5-9e1c-f1d87f185fc8","route":"/api/bills","method":"POST","status":201,"durationMs":89}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_b42d7663-5d22-446c-9b8c-aab95de7cba0","route":"/api/payments","method":"POST","status":201,"durationMs":381}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_7656629a-7334-4f19-824c-cfcaef75074d","route":"/api/payments/:id/reverse","method":"POST","status":409,"durationMs":115}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt
+{"msg":"http_request","requestId":"req_414eb024-9b27-43ac-ab47-da69a3d3f152","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":38}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_a34b6c37-34da-431d-b66d-22732e86d559","route":"/api/auth/*","method":"POST","status":200,"durationMs":1012}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_ef8763da-2ca4-4884-a775-fe239179a921","route":"/api/business-profile","method":"PUT","status":200,"durationMs":15}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_a04ee574-60a7-496a-873c-c6a66b1f7c02","route":"/api/customers","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_f7811949-d887-4929-834d-12822ffbba4f","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":14}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_2059148e-e4db-4f4b-8f91-c6889ef9327d","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_2871b56d-ac15-45b7-9269-baa564f80c54","route":"/api/accounts","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_7e87e3fd-bce7-4ffe-8cb6-a2108be10208","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":225}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_d4d53223-4959-4d92-ada6-8fde6bd52f3b","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":42}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_70f2f9e8-7598-45b8-90d4-4e6a850768d6","route":"/api/invoices","method":"POST","status":201,"durationMs":420}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_72e68f0d-4152-49ae-b4ec-b6fe9f8654d0","route":"/api/bills","method":"POST","status":201,"durationMs":354}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_f6fb4154-282a-40fb-ab28-a63178d2e07b","route":"/api/payments","method":"POST","status":201,"durationMs":206}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_1429c51b-c5f7-4e25-b0b8-25262eb17c58","route":"/api/payments","method":"POST","status":409,"durationMs":202}
+
+stdout | src/modules/payments/payment-credit-state.test.ts > invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note
+{"msg":"http_request","requestId":"req_2b0d0fb2-e863-4427-ac70-163c620dfffa","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":25}
+
+ ✓ src/modules/payments/payment-credit-state.test.ts (3 tests) 25705ms
+   ✓ invoice payment state after an issued credit note > collects only the remaining30 after original100, cash50 and credit20  8778ms
+   ✓ invoice payment state after an issued credit note > requires reversing an active credit note before reversing the original receipt  7572ms
+   ✓ invoice payment state after an issued credit note > rejects backdated cash that would change an already allocated credit note  9350ms
+(node:83455) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_26863f34-25de-482d-b109-606295b0d6fc","route":"/api/auth/*","method":"POST","status":200,"durationMs":1141}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_79ed0738-c6ec-416a-a439-308808805857","route":"/api/business-profile","method":"PUT","status":200,"durationMs":169}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_83bd8fd2-6aa0-47db-9867-bdd6f4b09729","route":"/api/customers","method":"POST","status":201,"durationMs":25}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_44d474ab-ebcc-42d6-8e57-63b2130214b0","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":151}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_8c72ee83-c61a-4246-b84b-f66e13d0093e","route":"/api/vendors","method":"POST","status":201,"durationMs":31}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_ef158134-4c1a-4713-b2d6-038537809a1a","route":"/api/accounts","method":"POST","status":201,"durationMs":234}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_f51a9348-df2a-4eb3-ac21-180a890502c0","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":292}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_6c891087-4ee2-486f-a577-30823374ee0d","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":261}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_8a073491-eb32-46bb-a7d8-6b23a4e80222","route":"/api/invoices","method":"POST","status":201,"durationMs":601}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_aab07f7f-a758-4ee6-8486-67e87deec337","route":"/api/bills","method":"POST","status":201,"durationMs":798}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_faa09da0-00cf-455e-81c2-f3920190fd2a","route":"/api/me","method":"GET","status":200,"durationMs":28}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_c8e9087b-c916-4578-b0cd-0fa75158aa96","route":"/api/invoices","method":"POST","status":201,"durationMs":229}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight
+{"msg":"http_request","requestId":"req_86c56f27-d26c-43f2-8547-3136db96a658","route":"/api/invoices/:id/cancel","method":"POST","status":200,"durationMs":177}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_4a8530ec-ff85-4f57-83b4-c3690e9b59bd","route":"/api/auth/*","method":"POST","status":200,"durationMs":1154}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_7da57183-7f51-480e-8c09-4e5920314d01","route":"/api/business-profile","method":"PUT","status":200,"durationMs":31}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_3681c0fc-080d-4c61-a853-a48b137c3542","route":"/api/customers","method":"POST","status":201,"durationMs":66}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_3acb7752-f3ac-417a-b4f3-4badc168caf8","route":"/api/bank-accounts","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_d730b02f-dd7a-438f-b42b-992ff58f988d","route":"/api/vendors","method":"POST","status":201,"durationMs":12}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_064d6eb8-5c4d-439b-ad0f-cea974082b22","route":"/api/accounts","method":"POST","status":201,"durationMs":16}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_feddfc3e-919f-476e-ae8d-f502d3a03607","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":387}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_b5e08e09-4c02-4ed0-8e98-7232498a8172","route":"/api/exchange-rates","method":"POST","status":201,"durationMs":219}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_43a49d88-0ca1-4c3d-bd98-87a5ee68abe6","route":"/api/invoices","method":"POST","status":201,"durationMs":121}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_ef0e7504-3c68-49f2-bcb9-bc07331f3f4f","route":"/api/bills","method":"POST","status":201,"durationMs":115}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_9bbe3e6f-8952-4477-a2d1-81f019137a20","route":"/api/me","method":"GET","status":200,"durationMs":4}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_e32fd5a6-1330-4196-9db3-3a86ccd69b3c","route":"/api/invoices","method":"POST","status":201,"durationMs":123}
+
+stdout | src/modules/invoices/invoice-delivery-current-state.test.ts > accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight
+{"msg":"http_request","requestId":"req_20ea0bbe-d2da-4bc6-a1c5-c7d9393452aa","route":"/api/invoices/:id","method":"PATCH","status":200,"durationMs":233}
+
+ ✓ src/modules/invoices/invoice-delivery-current-state.test.ts (2 tests) 20196ms
+   ✓ accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft cancelled while the email provider is in flight  11111ms
+   ✓ accepted invoice delivery cannot replace a newer financial lifecycle > preserves a draft edited while the email provider is in flight  9079ms
+ ✓ src/modules/invoices/totals.test.ts (5 tests) 152ms
+(node:83651) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | src/modules/invoices/overdue.test.ts > presents overdue from organisation local date without rewriting stored status or balances
+{"msg":"http_request","requestId":"req_9801114c-e172-4351-ae00-7d397776b9b2","route":"/api/auth/*","method":"POST","status":200,"durationMs":0}
+
+stdout | src/modules/invoices/overdue.test.ts > presents overdue from organisation local date without rewriting stored status or balances
+{"msg":"http_request","requestId":"req_7c9b9c5c-a351-4326-b1e2-76a7e1771e4c","route":"/api/customers","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/invoices/overdue.test.ts > presents overdue from organisation local date without rewriting stored status or balances
+{"msg":"http_request","requestId":"req_6a4f7d11-9867-4e05-9fdd-9941a9e12839","route":"/api/invoices","method":"POST","status":201,"durationMs":0}
+
+stdout | src/modules/invoices/overdue.test.ts > presents overdue from organisation local date without rewriting stored status or balances
+{"msg":"http_request","requestId":"req_3b907d39-9e44-47b0-b39c-0d6b7bbe8f42","route":"/api/invoices/:id","method":"GET","status":200,"durationMs":0}
+
+stdout | src/modules/invoices/overdue.test.ts > presents overdue from organisation local date without rewriting stored status or balances
+{"msg":"http_request","requestId":"req_62223edf-6691-4180-8486-18e11e74e6af","route":"/api/invoices","method":"GET","status":200,"durationMs":0}
+
+ ✓ src/modules/invoices/overdue.test.ts (1 test) 3678ms
+   ✓ presents overdue from organisation local date without rewriting stored status or balances  3674ms
+ ✓ src/modules/invoices/money.test.ts (4 tests) 13ms
+ ✓ src/modules/invoices/mailer.test.ts (1 test) 10ms
+
+ Test Files  15 passed (15)
+      Tests  65 passed (65)
+   Start at  08:48:53
+   Duration  256.66s (transform 6.04s, setup 508ms, collect 82.89s, tests 151.98s, environment 164ms, prepare 6.76s)
+
