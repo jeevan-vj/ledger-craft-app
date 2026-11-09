@@ -1,6 +1,6 @@
 import { clearCookies, getCookieHeader } from './cookieJar';
 import { GoogleSignInError, signInWithGoogle } from './authApi';
-import { clearPendingGoogleSignIn } from '../googleSignIn';
+import { clearPendingGoogleSignIn, loadPendingGoogleSignIn } from '../googleSignIn';
 
 function jsonResponse(body: unknown, status = 200, setCookie?: string[]): Response {
   const cookies = setCookie ?? [];
@@ -46,6 +46,7 @@ describe('mobile Google sign-in flow', () => {
       .mockResolvedValueOnce(jsonResponse({ google: true }))
       .mockResolvedValueOnce(jsonResponse({ url: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=abc' }));
     await expect(signInWithGoogle(async () => null)).rejects.toMatchObject({ code: 'cancelled' });
+    expect((await loadPendingGoogleSignIn())?.verifier).toEqual(expect.any(String));
 
     (global.fetch as jest.Mock)
       .mockResolvedValueOnce(jsonResponse({ google: true }))

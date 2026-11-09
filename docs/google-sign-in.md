@@ -39,7 +39,7 @@ A Google-only account can set a password with the normal reset email, then delet
 
 ## Mobile
 
-The app stores a random state and verifier, then opens the system browser on `/api/auth/google/browser`. That proxy accepts only a Google authorize URL whose redirect is this API's Google callback. Google returns to `easybizinvoice://auth/google` with a one-time code and the same state. The app checks the state, then exchanges the code and verifier over HTTPS and stores the session the same way email sign-in does. The return URL does not contain the session cookie. This uses `expo-linking`, which is already in the Expo SDK 54 binary. It does not add `expo-web-browser` or another native module, so a new EAS build is not required for this change.
+The app stores a random state and verifier for two minutes, then opens the system browser on `/api/auth/google/browser`. That proxy accepts only a Google authorize URL whose redirect is this API's Google callback. Google returns to `easybizinvoice://auth/google` with a one-time code and the same state, or with Google's own error (for example `access_denied`) and that state. A closed browser does not delete the pending verifier; a later return can still be exchanged until the two minutes are up. The app checks the state, then exchanges the code and verifier over HTTPS and stores the session the same way email sign-in does. The return URL does not contain the session cookie. In production the exchanged session cookie is `Secure`, the same as the other session cookies. This uses `expo-linking`, which is already in the Expo SDK 54 binary. It does not add `expo-web-browser` or another native module, so a new EAS build is not required for this change.
 
 ## Rotation
 

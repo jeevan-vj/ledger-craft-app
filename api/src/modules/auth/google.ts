@@ -208,7 +208,8 @@ const googleProviderPlugin = () => ({
           code: 'GOOGLE_SIGN_IN_EXPIRED',
         });
       }
-      ctx.setHeader('set-cookie', `${parsed.cookieName}=${parsed.cookieValue}; Path=/; HttpOnly; SameSite=Lax`);
+      const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+      ctx.setHeader('set-cookie', `${parsed.cookieName}=${parsed.cookieValue}; Path=/; HttpOnly; SameSite=Lax${secure}`);
       ctx.setHeader('set-auth-token', parsed.cookieValue);
       return ctx.json({ status: true });
     }),
@@ -266,10 +267,17 @@ const googleProviderPlugin = () => ({
         mobileBinds.delete(oauthState);
         const callback = exactMobileGooglePath(location);
         if (!callback) return;
+        if (callback.searchParams.get('error')) {
+          stripSessionFromRedirect(headers, location);
+          return;
+        }
         const session = sessionCookie(headers);
         const returnedState = callback.searchParams.get('state');
-        if (!bind || !session || returnedState !== bind.mobileState || callback.searchParams.get('error')) {
-          stripSessionFromRedirect(headers, `${mobileGoogleCallback}?error=state_mismatch`);
+        if (!bind || !session || returnedState !== bind.mobileState) {
+          const next = new URL(mobileGoogleCallback);
+          next.searchParams.set('error', 'state_mismatch');
+          if (returnedState) next.searchParams.set('state', returnedState);
+          stripSessionFromRedirect(headers, next.toString());
           return;
         }
         const code = randomToken();

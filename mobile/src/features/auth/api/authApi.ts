@@ -189,7 +189,6 @@ export async function signInWithGoogle(open: (url: string) => Promise<string | n
   const proxy = `${apiBase()}/api/auth/google/browser?authorizationURL=${encodeURIComponent(body.url)}`;
   const returned = await open(proxy);
   if (!returned) {
-    await clearPendingGoogleSignIn();
     throw new GoogleSignInError('Google sign-in was cancelled.', 'cancelled');
   }
   if (!(await settleGoogleReturn(returned))) {
