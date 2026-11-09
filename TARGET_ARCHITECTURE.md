@@ -1,5 +1,7 @@
 # LedgerCraft target architecture
 
+Agent sessions start at `AGENTS.md` and `docs/agent/CODEMAP.md`. This file remains the architecture and long-form status record. Do not copy its dated narratives into the bootstrap.
+
 **Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
 
 **Second-month / NZ year-end acceptance (verified locally, 2026-11-08):**

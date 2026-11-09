@@ -1,0 +1,3 @@
+{"role":"user","text":"review the payment sheet"}
+{"role":"tool","tool_name":"read_file","tool_args":{"target_file":"mobile/src/screens/invoices/InvoiceDetailScreen.tsx","offset":1,"limit":40},"tool_result":"balance due"}
+{"role":"tool","tool_name":"grep","tool_args":{"pattern":"Idempotency-Key"},"tool_result":"one match"}

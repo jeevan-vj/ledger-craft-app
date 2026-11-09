@@ -1,0 +1,62 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://ledgercraft.local/agent/efficiency-summary.schema.json",
+  "title": "LedgerCraft agent efficiency summary",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "runId", "role", "taskType", "outcome", "commitId", "toolCalls", "callsBeforeFirstEdit", "proxies", "usage", "limitations"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "runId": { "type": ["string", "null"] },
+    "role": { "type": ["string", "null"], "enum": ["builder", "reviewer", "unknown", null] },
+    "taskType": { "type": ["string", "null"], "enum": ["bugfix", "ui", "api", "review", "other", null] },
+    "outcome": { "type": ["string", "null"] },
+    "commitId": { "type": ["string", "null"] },
+    "baseCommit": { "type": ["string", "null"] },
+    "messages": { "type": ["integer", "null"] },
+    "toolCalls": { "type": "integer", "minimum": 0 },
+    "readCalls": { "type": "integer", "minimum": 0 },
+    "searchCalls": { "type": "integer", "minimum": 0 },
+    "discoveryCalls": { "type": "integer", "minimum": 0 },
+    "shellCalls": { "type": "integer", "minimum": 0 },
+    "editCalls": { "type": "integer", "minimum": 0 },
+    "otherToolCalls": { "type": "integer", "minimum": 0 },
+    "repeatPathReads": { "type": "integer", "minimum": 0 },
+    "broadTestInvocations": { "type": "integer", "minimum": 0 },
+    "targetedTestInvocations": { "type": "integer", "minimum": 0 },
+    "pollingCommandBlocks": { "type": "integer", "minimum": 0 },
+    "installCommandBlocks": { "type": "integer", "minimum": 0 },
+    "callsBeforeFirstEdit": { "type": ["integer", "null"] },
+    "durationMs": { "type": ["integer", "null"] },
+    "malformedLines": { "type": "integer", "minimum": 0 },
+    "proxies": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["transcriptBytes", "toolResultBytes", "tokenEquivalentEstimate", "note"],
+      "properties": {
+        "transcriptBytes": { "type": ["integer", "null"] },
+        "toolResultBytes": { "type": "integer", "minimum": 0 },
+        "tokenEquivalentEstimate": { "type": "number" },
+        "transcriptTokenEquivalentEstimate": { "type": ["number", "null"] },
+        "note": { "type": "string" }
+      }
+    },
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["inputTokens", "outputTokens", "cachedTokens", "cacheWriteTokens", "reasoningTokens", "cost", "classification"],
+      "properties": {
+        "inputTokens": { "type": ["number", "null"] },
+        "outputTokens": { "type": ["number", "null"] },
+        "cachedTokens": { "type": ["number", "null"] },
+        "cacheWriteTokens": { "type": ["number", "null"] },
+        "reasoningTokens": { "type": ["number", "null"] },
+        "cost": { "type": ["number", "null"] },
+        "currency": { "type": ["string", "null"] },
+        "classification": { "type": "string" },
+        "fieldClassification": { "type": "object" }
+      }
+    },
+    "limitations": { "type": "array", "items": { "type": "string" } }
+  }
+}

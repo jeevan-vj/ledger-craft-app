@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "start": "tsx src/index.ts",
-    "test": "vitest run",
+    "test": "node ../../scripts/targeted-test.mjs --package api",
     "test:watch": "vitest",
     "type-check": "tsc --noEmit",
     "db:migrate": "tsx src/db/migrate.ts",
