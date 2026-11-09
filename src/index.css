@@ -184,6 +184,7 @@
 .invoice-preview-container {
   background-color: white !important;
   color: black !important;
+  color-scheme: light;
 }
 
 /* 2. Only protect UI controls (buttons, inputs) from dark theme */
@@ -195,15 +196,19 @@
   border-color: #e2e8f0 !important;
 }
 
-/* 3. Reset ONLY the problematic dark theme variables inside invoice templates */
-.dark .print-template-wrapper *:not([style*="background"]):not([style*="color"]) {
-  /* Only override CSS variables for elements WITHOUT inline styles */
-  background-color: initial;
-  color: initial;
-}
-
-/* 4. Force light theme CSS variables within template wrapper in dark mode */
+/* 3. The invoice paper stays a light document inside the dark app.
+   Do not set color or background to `initial` on descendants. Under
+   `.dark { color-scheme: dark }` the initial color is a light CanvasText, and
+   a universal selector outranks Tailwind utilities such as `text-gray-800`.
+   Classic is the only template that paints with those utilities instead of
+   inline colours, so its preview, html2canvas PDF, and print showed only the
+   logo and borders. Other templates set inline colours and stayed visible.
+   The wrapper colour also covers the PDF clone, which is moved onto the body
+   and would otherwise inherit the dark theme's light foreground. */
 .dark .print-template-wrapper {
+  color-scheme: light;
+  color: #111827;
+  background-color: #ffffff;
   --background: 0 0% 100%;
   --foreground: 222.2 84% 4.9%;
   --card: 0 0% 100%;
