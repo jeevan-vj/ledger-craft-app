@@ -71,3 +71,7 @@ deploy/*.local.env
 
 # Isolated synthetic verification database, sessions, and raw evidence
 /.tmp/feature-verification/
+
+# Coordinator-supplied agent transcripts. Commit only sanitized summaries.
+docs/agent/transcripts/
+*.transcript.jsonl

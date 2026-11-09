@@ -1,0 +1,3 @@
+{"role":"tool","tool_name":"read_file","tool_args":{"target_file":"docs/PIPELINE.md"},"tool_result":"review loop"}
+{"role":"tool","tool_name":"read_file","tool_args":{"target_file":"docs/PIPELINE.md","offset":50},"tool_result":"delta cap"}
+{"role":"tool","tool_name":"grep","tool_args":{"pattern":"organisation_id"},"tool_result":"hits"}

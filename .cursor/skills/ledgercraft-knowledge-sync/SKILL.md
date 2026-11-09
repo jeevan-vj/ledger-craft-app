@@ -19,8 +19,9 @@ A wave is not done when tests pass if the docs still describe the lost Supabase 
 | Artifact | What to change |
 | --- | --- |
 | `TARGET_ARCHITECTURE.md` | Current reconstruction status: what exists, what is still Lane A, next gate. Do not silently rewrite the end-state spec. |
-| `AGENTS.md` | File map, commands, stack that is actually true, agent roster pointers |
-| `.cursor/skills/ledgercraft-bootstrap/SKILL.md` | Current wave, next command, ports — keep in lockstep with TARGET status |
+| `AGENTS.md` | Short router: stack, safety, commands, and links. Do not paste acceptance diaries back into it |
+| `docs/agent/CODEMAP.md` | Module paths when a domain moves. The path test is `scripts/agent-docs.test.mjs` |
+| `.cursor/skills/ledgercraft-bootstrap/SKILL.md` | Short start procedure and ports. Keep it in lockstep with AGENTS, not with the evidence diaries |
 | `.cursor/skills/*/SKILL.md` | Procedures that drifted; add a skill if the same prompt was pasted twice |
 | `.cursor/rules/*.mdc` | Only durable constraints (keep short) |
 | Reconstruction canvas | Wave todo status if the operating plan changed |

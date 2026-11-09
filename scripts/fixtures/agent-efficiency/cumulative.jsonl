@@ -1,0 +1,6 @@
+{"role":"assistant","usage":{"id":"u1","input_tokens":100,"output_tokens":10,"cached_tokens":4,"reasoning_tokens":3,"cumulative":true,"total_cost_usd":0.01}}
+{"role":"assistant","usage":{"id":"u1","input_tokens":999,"output_tokens":99,"cached_tokens":99,"reasoning_tokens":99,"cumulative":true,"total_cost_usd":9}}
+{"role":"assistant","usage":{"input_tokens":180,"output_tokens":12,"cached_tokens":4,"reasoning_tokens":3,"cumulative":true,"total_cost_usd":0.02},"retry":true}
+{"role":"tool","tool_name":"run_terminal_cmd","tool_args":{"command":"pnpm test:api -- src/modules/sales/sales.test.ts"},"tool_result":"Test Files 26 passed","retry":true,"usage":{"input_tokens":180,"output_tokens":12,"cached_tokens":4,"reasoning_tokens":3,"cumulative":true,"total_cost_usd":0.02}}
+{"role":"tool","tool_name":"run_terminal_cmd","tool_args":{"command":"pnpm exec vitest run src/sale.test.ts"},"tool_result":"Test Files 1 passed"}
+{"role":"tool","tool_name":"search_replace","tool_args":{"file_path":"api/src/modules/sales/sales.test.ts"},"tool_result":"ok"}

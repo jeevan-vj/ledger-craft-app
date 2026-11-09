@@ -1,0 +1,3 @@
+this line is not json and mentions sk_live_SHOULD_NOT_LEAK
+{"role":"tool","tool_name":"read_file","tool_args":{"path":"notes.md"},"tool_result":"payload sk_live_SHOULD_NOT_LEAK reasoning: the user password is hunter2"}
+{"role":"assistant","text":"I think the fix is obvious","reasoning":"hidden chain sk_live_SHOULD_NOT_LEAK"}

@@ -1,524 +1,100 @@
 # AGENTS.md
 
-**Accounting chart calendar cutoff (implemented locally, 2026-11-08):** Selected reporting end dates use local calendar noon for chart anchors, preserving the chosen day in Auckland and UTC. Fresh browser evidence confirms October31 selects May–October monthly charts and October4–31 daily charts. Tests and screenshots are in `docs/evidence/feature-verification/2026-11-08/` (issue #168); no deployment is claimed.
+Operating router for EasyBizInvoice (`ledger-craft-app`). Read this file, then only the task row in [`docs/agent/CODEMAP.md`](docs/agent/CODEMAP.md). Procedures that do not fit a row are linked below. Dated acceptance narratives stay in [`docs/evidence/`](docs/evidence/) and the status section of [`TARGET_ARCHITECTURE.md`](TARGET_ARCHITECTURE.md). The feature catalogue in [`docs/feature-verification.md`](docs/feature-verification.md) is a verification specification, not a blanket pass. Issue #114 stays parked.
 
-**Quote conversion draft integrity (implemented locally, 2026-11-08):** Quote conversion creates an unposted draft through `createInvoiceInTx`; it no longer explicitly posts a journal. Conversion and idempotent replay leave books unchanged. Web conversion refreshes the invoice cache before navigating, including the combined accept-and-convert path (#169). The ordinary invoice issue transition owns the first posting. Historical journals are not rewritten; any previously posted converted drafts require separately reviewed correction. Evidence: `docs/evidence/feature-verification/2026-11-08/`, GitHub #167. Local verification is not deployment.
+## Stack
 
+Pages project `ledger-craft-app` serves the Vite app. The Hono Worker `ledgercraft-api` routes to SQLite Durable Objects: one Identity object and one Ledger object per organisation. Local Node API uses SQLite (`DATABASE_URL`). API **3001**. Vite **8080** proxies `/api`. Web and mobile email login use Better Auth (`/api/auth/*`). Product data uses Hono only. Shared Zod DTOs are `@ledgercraft/contracts`. `mobile/` is Expo SDK 54 and is not in the pnpm workspace.
 
-**Feature verification skills (2026-11-08):** 25 domain acceptance procedures are indexed in `docs/feature-verification.md`, with machine-readable test mapping in `docs/feature-verification.json`. They require fresh UI evidence and persisted read-back, with separate API, web, Expo, device and provider outcomes. The catalogue is a verification specification, not a blanket pass or release claim.
+Request path: Client → Hono → use case → repository → Drizzle → SQLite. DTOs from Zod. Ownership ids come from the session membership, never the body.
 
-**Second-month / NZ year-end acceptance (verified locally, 2026-11-08):**
-Fresh web/Expo companies carry October balances into November, reconcile five
-settlements, retain four nil GST drafts, close March31 and start April without
-recounting prior earnings. November TB14,370/profit400/cash11,955/GST60;
-April TB14,715/profit100/cash12,185/equity12,000. Optional canonical
-`balanceSheet.accumulatedEarnings` now discloses the existing cumulative-income
-component already included in equity; web/mobile/shared PDF/CSV/ZIP show it
-without new client calculations, postings or migrations. Source calculations
-are unchanged. Test-only Date2027-05-01 exercises future cutoffs; production
-future-date guards remain active. Opening September30 history is imported,
-so do not claim a complete pre-October statutory FY cash-flow/bank history.
-Evidence: `docs/evidence/second-month-year-end/README.md`. Installed native QA
-and actual filing remain pending; #114 stays parked.
+## Safety that stays in force
 
-**Self-service close controls (implemented locally, 2026-11-08):** Web and
-Expo provide chart-account creation/classification, bank-ledger linking by bank
-name, reviewed accounting close/reopen with revisioned audit history, and an
-authenticated accountant ZIP. Period locks guard posting and source changes
-company-wide; reopening requires owner/admin and does not remove a completed
-bank statement cutoff. Account creation supports scoped idempotent retries.
-The ZIP reuses canonical financial/GL/GST reports, includes bank and cutoff
-state plus SHA-256 member checksums, and requires reports and banking access.
-Additive SQLite migrations0035/0036 retain audit actor identifiers after user
-deletion. The Worker runner strips Drizzle separator metadata at execution
-time while preserving migration bytes/checksums. Mobile chart setup is now entirely UI-driven, superseding the setup
-exception in the November7 evidence below. Evidence and current verification:
-`docs/evidence/self-service-month-close/README.md`. Installed Android/iOS QA and
-actual IRD filing remain outstanding; #114 remains parked.
+- Persist money as decimal text. Invoice and quote totals use `computeInvoiceTotals`. Rounding uses `roundMoney`. Reports come from posted journals. Details and the calendar-day rules are [`.cursor/skills/ledgercraft-invariants/SKILL.md`](.cursor/skills/ledgercraft-invariants/SKILL.md). Do not reimplement them.
+- Quotes do not post journals. Drafts do not post. Do not authorize product data with both Better Auth and a second session system.
+- Do not add `supabase.from`, the Storage SDK, Edge Functions, or client `VITE_OPENAI_*`. Do not replay `supabase/migrations/` or `migrations/*.sql`.
+- New SQL is an approved, additive file under `api/sqlite-migrations/`. Applied files stay byte-for-byte. The next number is the next prefix in that directory, not a remembered “latest”.
+- Do not mix a UI redesign, TanStack Router, an `apps/` move, and a data cutover.
+- Independent review, the seven CI jobs, and the merge rules in [`docs/PIPELINE.md`](docs/PIPELINE.md) stay as written. Do not skip review, relax a zero-error gate, or start a third delta re-review. The same builder applies review fixes. A delta re-review is capped at two rounds.
+- Do not merge, deploy, or enable auto-merge unless the user asks. `review-passed` and `auto-merge-eligible` are not applied by the author. Maestro flows, EAS, emulator boots, and production tests are on hold; [`docs/agent/ENVIRONMENT.md`](docs/agent/ENVIRONMENT.md) says how a missing runner is reported.
 
-**Full month-close acceptance (verified locally, 2026-11-07):** Independent
-Decimal working papers reconcile an October NZ services case through real web and
-Expo business operations: closing TB13,680 each side, assets12,480 = liabilities980
-+ equity11,500, accrual profit1,500, cash11,380, AR920/AP575, invoice GST225
-(payments180/hybrid300). Five imported bank lines match existing receipts,
-supplier payment, paid expense and customer refund without duplicating income or
-GST. Cash-flow summaries net technical import/match legs; original journals stay
-visible. Trial-balance views/exports distinguish period turnover from closing sides.
-Auckland web receipt dates preserve their selected day. Expo fixes cover custom
-dates, expense tax toggles, refund selection/receipt identity, web task storage,
-statement-import rendering and landscape trial-balance PDFs. Mobile chart-account
-creation still uses an explicit setup-only API step; economic transactions use UI.
-Full screenshots, independent/as-of reconciliation, actual PDF/CSV downloads and
-verification records: `docs/evidence/full-month-close/README.md`. This is local
-acceptance, not installed-device QA, fiscal-period locking or IRD submission.
+## Where to go
 
-**Remaining issue #115 flows (implemented locally, 2026-11-07):** Web and
-Expo provide customer statements, secure retained snapshots, PDF/share delivery,
-automatic reminder settings and opt-outs. Reporting adds server month/quarter
-columns, organisation-calendar presets, CSV/PDF and complete Expo report views.
-Cash P&L recognises the exact GST-exclusive settled source components without
-rewriting journals; derived rows retain their source/settlement identity.
-Receipt capture supports reviewed batch drafts, PDFs, exact scan amounts,
-duplicates and unavailable-provider fallback. Mobile banking supports reviewed
-FX, mapped CSV import, persisted statements and full recurring invoice/bill
-forms. Server jobs stay bound to their owning company and verify current
-Identity permissions; a changed invoice cannot be resurrected after email
-acceptance. Imported bank movements update displayed balances exactly once.
-Migrations0029–0034 are additive. Akahu Personal App is internal and gated;
-Full App OAuth/accreditation remains unimplemented. Stripe adds verified
-settlement/refund operations, beta gates, persistent limits and read-only daily
-verification; payout/dispute/excess-capture accounting remains open. Live
-providers and installed-device acceptance are separate from local verification.
-Issue #114 remains parked by user instruction. Current evidence and outstanding
-work: `docs/evidence/issue-115-remaining/README.md`.
+| Need | Open |
+| --- | --- |
+| Which files to edit | [`docs/agent/CODEMAP.md`](docs/agent/CODEMAP.md) |
+| How to work without flooding context | [`docs/agent/WORKING.md`](docs/agent/WORKING.md) |
+| API, mobile, test, or review shape | [`docs/agent/recipes/`](docs/agent/recipes/) |
+| Exact test command | [`docs/agent/TEST_MATRIX.md`](docs/agent/TEST_MATRIX.md) |
+| Node, install, emulator | [`docs/agent/ENVIRONMENT.md`](docs/agent/ENVIRONMENT.md) |
+| Task or review handoff | [`docs/agent/TASK_PACKET.md`](docs/agent/TASK_PACKET.md), [`docs/agent/REVIEW_PACKET.md`](docs/agent/REVIEW_PACKET.md) |
+| Money, GST, dates, idempotency, migrations | `ledgercraft-invariants` |
+| Before a pull request | `ledgercraft-verify` |
+| UI evidence | `ledgercraft-verify-ui` |
+| Review verdict | `ledgercraft-reviewer` and the Review loop in `docs/PIPELINE.md` |
+| Efficiency measurement | [`docs/agent/EFFICIENCY.md`](docs/agent/EFFICIENCY.md) |
 
-**Issue #115 GST slice (implemented locally, 2026-11-07):** Web and Expo
-persist GST registration date, invoice/payments/hybrid basis, frequency and
-ending-month anchor. Migration `0028_gst-registration-settings.sql` is additive;
-legacy unknown settings require confirmation. Server-generated periods and
-canonical `gst-ledger-v2` snapshots retain exact totals, source identities,
-fingerprints and supported myIR preparation boxes. Draft revisions preserve
-prior snapshots; filed records are immutable, with read-only original-settings
-recalculation. Pre-registration sources and their later reversals remain
-excluded. Unknown sales classification and unsupported purchase mapping block
-filing rather than inventing boxes. NZ invoices apply registration-effective
-seller identity and buyer-information checks against reviewed NZD totals.
-Evidence and remaining epic gaps: `docs/evidence/issue-115/README.md`.
-These are local preparation and external-filing records, not IRD submission or
-installed-device acceptance. The rest of epic #115 remains open.
+Architecture tasks also read `TARGET_ARCHITECTURE.md`. Parity tasks also read `docs/akaunting-parity-gate.md` and `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. A scoped bug, UI, or API task does not start by reading those files end to end.
 
-**Accountant follow-up (implemented locally, 2026-11-06):** Completed bank
-statements protect their cash cutoff and linked bank/chart financial identity.
-Statement declarations affect only the bank side; unposted book corrections
-require real transactions/journals and historical invalid declarations emit
-web/Expo review warnings. Journal DTOs expose all lines and exact totals; web
-journal CSV exports actual spreadsheet-safe rows. This is not a company-wide
-fiscal-period lock. Independent expected/actual results and review are in
-[`docs/evidence/accountant-followup/README.md`](docs/evidence/accountant-followup/README.md).
+## Commands
 
-**Business accounting completion (implemented locally, 2026-11-06):**
-Web and Expo prepare invoice- or payments-basis NZD GST from company-scoped
-posted records. The reference books give GST of NZ$135 on invoice basis and NZ$141 on
-payments basis. Reviewed signed adjustments retain actor, reasons and source
-references; the reference output −15/input +3 adjustment gives GST of NZ$117. Valid
-foreign source snapshots contribute base-currency GST; foreign payments use an
-explicitly reviewed carrying method and surface review warnings rather than
-claiming an unreviewed currency policy.
+Run [`node scripts/agent-preflight.mjs`](scripts/agent-preflight.mjs) before reusing `node_modules`. Install only when it says the tree is absent or stale, on the Node major for that job.
 
-Reviewed opening balances and manual journals post balanced entries once.
-Historical ledger audit proposes evidence-backed additive corrections; ambiguous
-historical receipt tax requires explicit source confirmation, and originals are
-never rewritten. Existing supplier-payment matching preserves the prior
-settlement, supports undo/rematch, and does not duplicate cash or GST. Optional
-idempotency covers manual journals, tax drafts and supplier payments. Migration
-`0026_settlement-snapshots.sql` records reviewed FX settlements and supplier
-payment match identity. Migration `0027_credit-notes.sql` adds real credit notes,
-receivable/customer-credit allocation, refunds and reversals, with live remaining
-payment guards. Reviewed period-end FX revaluation posts an exact journal and a
-next-day reversal. Bank settlement requires a base-currency bank; unsupported
-foreign-currency bank statements fail closed.
+| Job | Node | Full command |
+| --- | --- | --- |
+| Web lint, typecheck, unit, build, release readiness | 22 | `ledgercraft-verify` |
+| API and contracts | 24 | `pnpm test:api && pnpm test:contracts && pnpm type-check:api` |
+| Mobile | 20 | `npm ci` in `mobile/`, then the Mobile job in `ledgercraft-verify` |
 
-A confirmed standard NZ-company worksheet derives taxable income from posted
-profit plus reviewed adjustments/losses/credits. The reference taxable income of NZ$700 at
-a confirmed 28% gives tax of NZ$196 less credits of NZ$50 = NZ$146 payable; it is preparation, not an
-automatic IR4 filing or certification of eligibility. Invoice email status changes
-only after transport acceptance; local HTTP/provider contract checks cover
-unconfigured, rejected and acknowledged sends, but live inbox delivery has no
-configured credentials. Web lint and app/Node project typechecks require zero errors
-in CI/release checks. Current feature evidence and final combined
-check status are in
-[`docs/evidence/accounting-completion/README.md`](docs/evidence/accounting-completion/README.md).
-Historical-as-of reporting and final combined suite totals remain tracked there.
-Expo browser checks and bundle exports do not establish signed iOS/Android QA;
-native devices/emulators are unavailable here. No production corrections, real
-recipient messages, deployment or IRD submission are claimed.
+Those full commands remain required CI. Pass a filename to `pnpm test:api`, `pnpm test:contracts`, `pnpm test:run`, or mobile `npm test`. They call `scripts/targeted-test.mjs`, which removes the extra `--` pnpm inserts and checks the reported file count. A raw `vitest run -- some.test.ts` still runs the whole include set, because that `--` drops the filename. See [`docs/agent/TEST_MATRIX.md`](docs/agent/TEST_MATRIX.md).
 
-**Account recovery and session security (implemented locally, 2026-11-06):**
-Better Auth provides neutral password-reset requests, expiring single-use reset
-and verification tokens, verified email changes, password changes, and explicit
-session inspection/revocation on web and Expo. Migration
-`0024_auth-rate-limits.sql` stores IP-scoped limits for signup, login,
-verification, reset request, and reset submission in the Identity database,
-independent of organisations. Password reset revokes all cookie and bearer
-sessions; password change replaces the current session and revokes the rest.
-Only canonical web and `easybizinvoice://` recovery redirects are trusted.
-Resend secrets stay server-side, and auth request bodies/tokens/cookies/headers
-are scrubbed from Sentry and logs. Production mail, deployed browser, and
-installed-device proof remain pending; see `docs/account-security.md`.
+```bash
+pnpm test:api -- src/modules/sales/sales.test.ts
+pnpm test:contracts -- src/sale.test.ts
+pnpm test:run -- src/pages/Settings.test.tsx
+cd mobile && npm test -- src/screens/sales/SellScreen.test.tsx
+```
 
-**Business settings logo (implemented locally, 2026-11-03):** Expo Business Settings
-reads the picked photo with `expo-image-manipulator` and `expo-file-system`.
-`logo_url` is only a `data:image/png|jpeg|webp;base64` value or an `https://` URL.
-The server rejects every other value, including `http://` and oversized data URLs.
-The profile row is the only copy; the app does not also `POST /api/objects` for
-the same bytes. Invoice HTML and the web email renderer embed only those allowed
-URLs. A failed logo read is shown and the profile is not saved, including during
-onboarding. The Save bar’s bottom padding is the tab-bar clearance (`Math.max`
-of the measured bar and the bottom inset), not the sum of the two.
-
-**Invoice payment integrity (implemented locally, 2026-10-31):** Migration
-`0022_payment-reversals.sql` adds organisation-scoped reversal reason, date,
-timestamp, and actor fields. Web and Expo record exact instalments only up to the
-current invoice balance. Completed payments remain immutable: reversal uses
-`POST /api/payments/:id/reverse`, retains the source payment and receipt, posts
-an equal opposite journal, and recalculates the invoice in the same transaction.
-Tenant isolation, reversal chronology, and duplicate reversal guards are tested.
-Do not model a pre-invoice advance as an invoice overpayment; customer credits
-require a separate liability-ledger workflow.
-
-**Stripe Connect invoice payments (implemented locally, 2026-10-29):** Migration
-`0021_stripe-connect-phase1.sql` adds tenant-scoped connected-account readiness,
-Stripe Checkout payment links, public redirects, and idempotent event claims.
-Owner/admin setup uses Stripe-hosted onboarding. NZD Checkout uses destination
-charges and `application_fee_amount`; the fee is configured by
-`STRIPE_PLATFORM_FEE_BPS` and `STRIPE_PLATFORM_FEE_FIXED_CENTS`. Verified paid
-webhooks create one invoice payment, receipt, and Stripe Clearing posting.
-Settings shows charges/payouts readiness, while invoice detail creates a link
-and QR code with the exact fee. Secrets are server-only. Focused tests and the
-web build pass. Health reports a provider-neutral Stripe capability, and web
-and Expo hide setup/payment-link actions unless that capability is available.
-Expo owners/admins can continue onboarding and eligible NZD invoices can create,
-copy, or share a hosted payment link. Incomplete real-mode configuration fails
-closed without preventing API startup. `STRIPE_MOCK_MODE=true` provides a deterministic local-only
-onboarding and Checkout simulator that exercises the same webhook settlement
-path without Stripe credentials; browser proof covers readiness, the exact fee,
-payment, receipt, and balanced journal. It is rejected in production and for a
-non-local `APP_URL`. Real test-account onboarding/Checkout/webhook screenshots
-and deployment remain pending authenticated Stripe access.
-
-**POS quick sale (implemented locally, 2026-10-27):** `POST /api/sales`
-takes a cart of at most 100 catalog or custom lines, `cash`, `credit_card`, or `bank_transfer`,
-and an optional customer. Quantity and price are positive decimal text with at most 2 decimal places. In one organisation transaction it finds or creates the
-walk-in customer (tag `walk-in`, one per organisation), creates a GST-inclusive
-invoice dated today in the business timezone through `createInvoiceInTx`, records
-a completed payment for the full total through the existing `createPaymentInTx`,
-and creates the receipt. `Idempotency-Key` is required. Empty customer emails are
-stored on receipts as null. No migration. Cash payments still follow the existing bank-account routing.
-
-`GET /api/sales/summary?date=YYYY-MM-DD` is a read-only day summary for the caller's
-organisation. A counted sale is an invoice on that stored calendar date (already the
-business-timezone day) whose customer tags include `walk-in`, or whose id is on a
-`POST /api/sales` idempotency row. Named-customer sales stay included after the tag
-changes. Completed payments must equal the invoice total, so per-method totals add
-up to the gross total. GST is the sum of those invoices' `taxAmount`. Top items are
-grouped by line description because line items do not store an item id. Amounts are
-exact decimal strings. The route requires `invoices.read`. No migration.
-
-**Mobile quick-sale completion (implemented locally, 2026-11-06):** The Expo
-Sell tab is hidden until the device Quick sale switch is enabled; it defaults
-off. Active priced catalogue tiles support device favourites and ordering through
-Arrange tiles. The charged cart total is the once-rounded sum from `roundMoney`;
-line amounts are display-only, and cash change uses the same helper. Charge keeps
-one persisted idempotency key per cart fingerprint until success or 409, and
-Confirm stays locked until the empty cart is saved. Offline charging is refused
-and nothing is queued. A saved sale opens the receipt screen with Show receipt
-QR, native Share receipt, Done, and No receipt. QR or Share lazily creates or
-reuses the invoice share link; receipt-link failure leaves the sale saved.
-`qrcode-generator` is pure JavaScript and adds no native QR module. Public web
-and Expo invoice screens identify a paid snapshot as Paid.
-
-Sell → Day summary defaults to today in the business timezone, accepts a chosen
-calendar date, and shows server count, gross, GST, payment-method totals, both
-item rankings, and sales that open invoice detail. Money stays in server decimal
-strings. Invoice-list Sales / Regular invoices filters use the customer
-`walk-in` tag; a quick sale attached to a named customer remains in the day
-summary but is classified as a regular invoice by that tag-based filter.
-
-Native device preferences, carts, and pending keys use SecureStore; Expo web
-uses localStorage for the switch, cart, pending key, and tile preferences. Expo
-web Babel transforms `import.meta`; NativeWind uses class dark mode and disables
-Tailwind preflight so its button reset does not override React Native Web
-backgrounds. The reproducible local walkthrough is
-[`scripts/quick-sale-mobile-screens.mjs`](scripts/quick-sale-mobile-screens.mjs).
-Local API/contracts/web/mobile suites pass; final browser evidence is recorded
-by that walkthrough. Signed iOS/Android receipt scanning, native sharing, back
-navigation, and offline/background QA remain pending. No deployment or
-publication is recorded by these local changes. Cash ledger routing, email,
-printers, and offline sales remain outside this slice.
-
-**Mobile PDF and camera import hardening (implemented locally, 2026-10-28):**
-Cloudflare Workers AI converts retained PDFs to bounded Markdown with metadata
-disabled, strips `BEGIN_UNTRUSTED_DOCUMENT` / `END_UNTRUSTED_DOCUMENT` marker
-strings (including close variants) from that text, wraps the remainder as one
-untrusted document, and then runs the existing structured extraction. Page dictionaries outside content streams and PDF strings
-are counted, and a counted total over the page cap is rejected before
-`toMarkdown`. A PDF whose page count cannot be read, including a compressed
-object stream, stays on the upload byte cap and the 30,000-character conversion
-cap. Camera captures are taken below full quality and recompressed to
-JPEG on device through `expo-image-manipulator`, retrying progressively smaller
-presets until the file fits; base64 is read only after that size check, and the
-upload stays at most 950,000 bytes. A failed camera prepare clears the previously
-selected file. Chosen files retain the existing private-storage limit: 1 MiB
-without the reviewed `DOCUMENTS` R2 binding. `expo-image-manipulator` changes the
-Expo fingerprint (`runtimeVersion` policy `fingerprint` in `mobile/app.config.js`),
-so binaries built before that native module need a new build. Do not force
-`runtimeVersion`: the import screen and `cameraPhoto` load the module at startup,
-and a forced update crashes the app. `expo-image-manipulator@~14.0.8` matches
-Expo SDK 54. Focused API and mobile tests and strict TypeScript pass; real
-Workers AI, authenticated camera/device QA, and production deployment remain pending.
-
-**Invoice-import Phase 2 extraction and review (implemented locally, 2026-10-26):**
-Migration `0019_invoice-import-phase2.sql` and the Hono invoice-import module add
-OpenAI-first/xAI-then-Workers-AI structured extraction, a deterministic non-production
-mock and Workers-AI demo binding, untrusted-document prompt boundaries, integer-cent total validation,
-duplicate/contact review, and explicit SALES/PURCHASE draft commit. Commits create
-only draft invoices or bills, attach the original as a locked source document,
-and never send, pay, post, or journal. Workers AI caps confidence at 0.6. See
-`docs/invoice-import/phase2.md`.
-
-**Invoice-import Phase 0 hardening (implemented locally, 2026-10-26):**
-Migration `0017_invoice-import-phase0.sql` adds invoice `external_number` and
-locked source-document roles to invoice and bill attachments. Invoice imports
-require `invoices.import` (owner, admin, accountant), paid imports create a real
-payment and balanced payment journal, and exports require their domain write
-permission. AI writes require `ai.use` and use server-only OpenAI credentials first,
-with optional xAI as an alternative. Shared CSV exports neutralise spreadsheet
-formulas. Locked source documents cannot be deleted or exposed through public
-invoice shares.
-
-**Payment idempotency and receipt filters (implemented locally, 2026-10-24):** `POST /api/payments` accepts an optional `Idempotency-Key`. The existing `idempotency_keys` helper in `api/src/modules/invoices/idempotency.ts` scopes that key to the organisation, user, method, and path. The same key and body return the original payment and do not create a second payment or journal entry. A different body returns 409 `IDEMPOTENCY_CONFLICT`. `GET /api/receipts` accepts optional `paymentId` and `invoiceId` filters and stays organisation-scoped. Payment maths, balance recalculation, `PAYMENT_EXCEEDS_BALANCE`, and journal posting are unchanged. No migration was added.
-
-**Payment amount precision (implemented locally, 2026-10-27):** `POST /api/payments` and bill payment amounts, including split allocations, reject decimal text with more than 2 fractional digits. The shared contract check is the quick-sale positive amount (`positiveAmountAtMostTwoDecimals`): 400 `VALIDATION_ERROR` and the message `Amount must have at most 2 decimal places`. `1.00`, `1.5`, and `10` are still accepted and stored through the existing `roundMoney` path. A rejected amount does not claim an `Idempotency-Key`. `1.500` is rejected. Negative or malformed amounts say they must be a positive decimal with at most 2 decimal places. Web Half buttons set the field and the label from `roundMoney` of the exact half and do not exceed the balance. Payment maths, journal posting, and ledger account selection are unchanged. No migration.
-
-**Mobile invoice payments (implemented locally, 2026-10-25):** Expo invoice detail lists payment amount, method, date, and reference as exact decimal strings. Record payment defaults to the server balance due. Amounts with more than 2 decimal places are rejected before an idempotency key is claimed; amounts with at most 2 decimal places are canonicalised with shared `roundMoney`. The sheet sends one `Idempotency-Key` per attempt. The same key is reused for a retry, a double tap, or the same request after the sheet is dismissed or reopened. Opening the sheet or a balance refresh does not clear that key, and reopening restores the pending amount, method, date, reference, and notes. Hiding the sheet while the payment request is still in flight keeps that lock and key until the request settles, and a second submit tells the user a payment is already being recorded. Android back does not dismiss the sheet during that request. A new key is created after the user edits the request, a successful submit, or `409 IDEMPOTENCY_CONFLICT`. `PAYMENT_EXCEEDS_BALANCE` refetches the invoice even when the cached copy is still inside the query stale time, updates the open sheet balance on the list and the detail screen, keeps the entered amount for correction, and then shows the error. Offline payments show an error and are not queued. Paid invoices hide Record payment and Edit. A successful payment invalidates the invoice, payment, and dashboard queries. `mobile/src/services/paymentService.ts` calls the Hono payments API only. Receipt creation and receipt PDFs are not part of this slice, including when `EXPO_PUBLIC_RECEIPTS_API` is set. Server payment maths are unchanged.
-
-Mobile remote-update configuration and rollout evidence: see `mobile/EAS_UPDATE.md`.
-
-**Recurring scheduler (implemented locally, 2026-10-23):** SQLite migration
-`0016_recurring-scheduler.sql` persists tenant-scoped invoice, bill, income,
-and expense templates with daily, weekly, monthly, annual, and custom
-intervals, local time/timezone, end-date and occurrence limits, pause/resume/end
-state, and immutable run history. Ledger Durable Object alarms claim a unique
-occurrence before generating through the existing application services, so
-catch-up, retries, Worker restarts, and concurrent alarms cannot create the
-same period twice. Responsive web and Expo management/status screens are
-included. Invoice delivery is recorded as unavailable when no mail provider is
-configured; no paid scheduler or email provider is required. Deployment and
-authenticated native-device QA remain pending.
-
-**Invoice share links (implemented locally, 2026-10-24):** `GET /api/invoices/:id/shares` lists that invoice's active, non-expired shares, newest first. `POST /api/invoices/:id/shares/revoke` sets `is_active` false on every active share for the invoice, including shares that are already expired. `POST /api/invoices/:id/share` returns the newest active share for the same template (200) instead of creating another link; `{replace:true}` deactivates those active shares and inserts the new snapshot in one transaction (201). A requested `expiresAt` does not bypass reuse. Revoked or expired `GET /api/public/invoices/:token` returns 410 `SHARE_INACTIVE` with the message `This link is no longer active`. An unknown token stays 404 `NOT_FOUND`. A successful public read increments `access_count`. Web `SharedInvoice` and the Expo public invoice screen show that 410 as an inactive link, with no retry and no generic load error. Unknown tokens stay on the not-found state. The web Sentry scrubber redacts `/api/public/invoices/` tokens, matching the API and mobile scrubbers. Routes stay organisation-scoped and use the existing invoice read/write permissions. No migration. The Expo invoice screen lists each active link with its created date and view count. Copy and share reuse the newest active link for the same template. Replace link and Revoke all links each ask for confirmation before calling the server. Members without `invoices.write` see that list and can reuse an existing link; create, replace, revoke, send, and remind stay hidden because those routes return 403. Dismissing the native share sheet is not an error or a toast. Public invoice and quote reads use a token-only fetch that sends no session cookie or auth header and does not store `Set-Cookie`. Shared PDFs are named `Invoice-<number>.pdf`. Send and Remind call the Hono routes and, on 503 `EMAIL_UNAVAILABLE`, show the server message with a Share link instead action. An offline send or remind shows “Check your connection and try again.” and does not claim success. A failed mobile network call uses that connection copy instead of a local API start command. Unknown public tokens stay on a not-found state with no retry. The mobile Sentry scrubber redacts public invoice and quote tokens in request URLs and exception values. Replacement publishes current invoice and profile details with no expiry. Web shows actual server expiry and requires explicit replacement to change an existing link’s expiry. PDF actions remain separate. Authenticated native-device sharing QA and production Android assetlinks remain open. Public invoice reads are not rate limited, and an inactive share's attachment route still returns 404.
-
-**Invoice lifecycle fidelity (implemented locally, 2026-10-23):** Invoice
-cancel/restore/archive and idempotent duplicate workflows now keep an immutable
-history and post balanced cancellation/restoration journals. SQLite migration
-`0012_invoice-lifecycle.sql` and Hono own
-exact line discounts and multiple taxes, private 1 MB PDF/image attachments,
-snapshot-scoped public attachment access, CSV preview/apply/export, and printable
-detail. Responsive web exposes the full lifecycle; Expo exposes lifecycle,
-history, line pricing, and image attachment actions. Existing templates,
-sharing, PDFs, payment terms, charges, bank details, and reminders remain intact.
-Production email remains unavailable.
-All 39 API suites (118 tests), all 19 contract suites (65 tests), all 41 mobile
-Jest suites (185 tests), strict mobile TypeScript, the web production build,
-and iOS/Android production exports pass. Authenticated local Chrome proof passed
-at desktop and mobile web widths; authenticated native-device QA remains pending.
-
-Operating guide for EasyBizInvoice (`ledger-craft-app`). This file replaces `Agents.md`, `CLAUDE.md`, and `GEMINI.md`. There is no `.cursorrules` file.
-
-Spec: `TARGET_ARCHITECTURE.md`. Deployment runbook: `deploy/cloudflare.md`. Session skill: `.cursor/skills/ledgercraft-bootstrap/SKILL.md`.
-
-Currency/localization is implemented locally through migration
-`0015_currency-localization.sql`: organisation-scoped base currency, managed
-precision/symbol catalogue, explicit dated rates, locale/timezone/date/number
-formats, and financial-year start. Used rates are immutable. Invoice, bill,
-expense, and explicit-rate base/foreign transfer records snapshot transaction
-and base values. Financial reports stay NZD-only: foreign-currency documents are
-excluded from GST rather than converted, and realized or unrealized
-exchange-difference journals are not posted.
-
-## Stack that is current
-
-Pages project `ledger-craft-app` serves the Vite app. The Hono Worker `ledgercraft-api` (`deploy/api/worker.ts`, config `deploy/api/wrangler.jsonc`) routes to SQLite Durable Objects: one Identity object for Better Auth users, emails, and sessions, and one Ledger object per organisation. The Pages Function `functions/api/[[path]].ts` proxies `/api/*`.
-
-Local Node API uses SQLite (`api/src/db/local.ts`). Reviewed SQL is `api/sqlite-migrations/*.sql`, checksum-tracked, applied on Durable Object startup inside `storage.transactionSync`. `pnpm db:migrate` writes that SQL to the local file only.
-
-Web and mobile email login and signup use Better Auth (`/api/auth/*`). Product reads and writes go through Hono. `@supabase/supabase-js` is not a workspace or mobile dependency. `src/integrations/supabase/client.ts` is a local stub used by leftover call sites and Vitest.
-
-Shared Zod DTOs live in `packages/contracts`. Web imports them as `@ledgercraft/contracts`.
-
-`mobile/` is Expo SDK 54 and is not in `pnpm-workspace.yaml`. CI installs it with `npm ci` and `mobile/package-lock.json`. Crash reporting uses `@sentry/react-native` `~7.2.0`. See `mobile/SENTRY.md`.
-
-Business Settings → Appearance edits the invoice palette. It offers the six web presets (blue, purple, green, red, pink, slate) and hex fields for primary, secondary, accent, text, light text, background, and surface. The live preview follows the draft. Invalid hex is rejected before save. Save calls `updateBusinessProfile({ theme })` with the contract colours only, so `name` is not sent. Onboarding still starts from the installed professional palette, including `background`. The editor was checked in Chrome through Expo web. See `mobile/src/components/business/ThemeEditor.tsx`.
-
-Banking parity uses migration `0010_banking-parity-completion.sql` for
-tenant-scoped exact-money transaction splits, invoice/bill connections, and
-attachment metadata. Web transaction detail supports allocation, 1 MB SQLite
-attachments, duplicate, print/PDF, and CSV export. Expo supports native CSV
-statement selection, exact-text preview, duplicate skipping, and import. Do not
-claim authenticated native-device QA until it has been run.
-
-Server-authoritative accounting and reporting is implemented locally through
-`api/sqlite-migrations/0013_server-authoritative-reports.sql`. Posted invoices,
-payments, approved expenses, bank transactions, transfers, received bills, bill
-payments, and manual adjustments share exact-decimal journal rules; drafts are
-excluded and posted journals are immutable at both service and SQLite-trigger
-boundaries. Hono exposes financial statements, general ledger, and account
-statements with organisation isolation, date/basis/comparison and relevant
-account/customer/vendor filters. Web provides responsive statements, ledger,
-aging, tax and CSV workflows; Expo provides native period/basis summaries. Report
-`baseCurrency` accepts only NZD. Document exchange rates exist, and reports do
-not convert foreign amounts or post exchange-difference journals. Category
-filtering is accepted by the shared query contract but is not applied, because
-journal lines do not carry category links.
-
-Configurable dashboards and saved reports are implemented locally through
-`api/sqlite-migrations/0014_configurable-dashboards.sql`. Per-user layouts and
-saved filters remain organisation scoped. Summary, receivable, payable, cash,
-and tax widgets map from the AKP-05 server-authoritative report DTO; only the
-recent-activity widget is explicitly operational. Web retains shareable URL
-filters plus CSV/PDF/print, while Expo uses the same DTO and saved layouts.
-Authenticated native-device QA and deployment remain pending.
-
-Invoice preview and PDF HTML use the loaded business profile theme. `resolveInvoiceTheme` in `mobile/src/utils/invoiceTheme.ts` fills missing or invalid colours from the mobile default palette, including background `#F5F6F3`. Classic, modern, minimal, executive, corporate, and modern pro templates paint with those tokens. Text on a brand fill switches to dark ink when white would be unreadable. Money and GST totals stay on the existing calculations.
-
-Quotes and estimates are a Hono slice on their own tables (`api/sqlite-migrations/0007_quotes.sql`). Contracts live in `packages/contracts/src/quote.ts`. Authenticated routes are under `/api/quotes`; public read and respond are `/api/public/quotes/:token` and `/api/public/quotes/:token/respond`. Quote rows do not post journals. The web app lists, creates, edits, shares, revises, duplicates, and converts quotes at `/quotes` and exposes recipient accept/decline at `/shared/quote/:shareToken`. Mobile provides native list, create/edit, detail, share, public recipient response, PDF export, revise, duplicate, and accepted-quote conversion flows through the same Hono API. `POST /api/quotes/:id/send` returns 503 `EMAIL_UNAVAILABLE`; both clients present share-link delivery instead of claiming email delivery. Focused API, web, and mobile quote tests, full API/contracts/mobile suites, web build, and iOS/Android production exports pass; authenticated native-device QA remains pending.
-
-Akaunting core parity is a versioned contract in
-`docs/akaunting-core-capabilities.json`. Report mode runs in normal CI and
-reports open work without hiding it; strict mode remains red until every
-required core row is available. Optional AKX modules are separate and do not
-block the core gate. Baseline review instructions are in
-`docs/akaunting-parity-gate.md`.
-
-Multi-company collaboration is implemented locally through SQLite migration `0011_multi-company-roles.sql`. The Identity Durable Object owns organisations, active-company selection, memberships, and hashed seven-day invitations; product data remains in one Ledger Durable Object per organisation. Fixed roles are owner, admin, accountant, member, and read-only. Hono enforces the shared permission catalogue before protected use cases, while organisation administration has dedicated server guards. Web and Expo provide company create/rename/archive/switch, team role/removal, and honest share-link invitation workflows. Custom roles, email delivery, deployment, and authenticated native-device QA remain pending.
-
-The AKP-01 purchase lifecycle is core-complete locally through
-`api/sqlite-migrations/0009_purchase-lifecycle.sql`. Vendors include contacts,
-active state, defaults, notes, and import identifiers. Bills include
-organisation-scoped attachments and immutable history, validated cancel/restore,
-idempotent creation, and atomic exact-decimal split payments. Web provides the
-full responsive lifecycle plus canonical vendor CSV preview/apply/export and
-bill export. Expo applies active vendor defaults and supports split payments,
-cancel/restore, attachment capture, and history. Contract/API/web/mobile tests,
-the web build, authenticated desktop and 390 px browser QA, and iOS/Android
-production exports pass. Deployment and authenticated native-device QA remain
-pending.
-
-Web UI follows `DESIGN.md` and `.cursor/skills/ledgercraft-web-ui/SKILL.md`. Mobile UI follows `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` (Wise lime/forest, native iOS chrome). `.cursor/rules/project-guide.mdc` still contains older Supabase and Revolut examples; the files named above supersede those examples.
+`pnpm dev:api` is `127.0.0.1:3001`. `pnpm dev` is Vite `:8080`. Package manager is pnpm `11.19.0`. Mobile uses npm and `mobile/package-lock.json`.
 
 ## Layout
 
 ```text
-src/                         Vite web app
-mobile/                      Expo app (npm, own lockfile)
-api/                         Hono API, Drizzle schema, Vitest
-api/sqlite-migrations/       reviewed SQLite migrations
-packages/contracts/          Zod DTOs
-functions/api/[[path]].ts    Pages /api proxy
-deploy/api/wrangler.jsonc    Worker + Durable Objects
-deploy/cloudflare.md         release runbook
-docs/sentry-web.md           web Sentry setup
-docs/PIPELINE.md             label names, risk rules, and the review loop
-mobile/SENTRY.md             Expo crash reporting
-.github/labels.yml           repository labels synced on main
-.github/CODEOWNERS           review owners for migrations, money, auth, workflows, release
+src/                     Vite web app
+mobile/                  Expo app (own lockfile)
+api/                     Hono, Drizzle, Vitest
+api/sqlite-migrations/   reviewed SQLite migrations
+packages/contracts/      Zod DTOs
+functions/api/[[path]].ts
+deploy/api/wrangler.jsonc
+docs/agent/              task router, recipes, measurement
+.cursor/skills/          procedures
 ```
 
-Leave `src/` and `mobile/` where they are until a change is only about moving them. Do not combine a TanStack Router migration, an `apps/` move, a UI redesign, and a data cutover.
-
-## Software factory
-
-`docs/PIPELINE.md` is the label and risk contract, and the only high-risk path list. `docs/FACTORY_LOOP.md` coordinates one-issue-at-a-time Codex Cloud and MacBook work without changing those gates. `.github/labels.yml` lists `type:*`, `area:*`, `priority:p0`–`priority:p3`, `size:*`, `risk:low|medium|high`, the state labels `spec-ready`, `agent:building`, `agent:review`, `review-passed`, `needs-human`, and `auto-merge-eligible`, plus runner/device-evidence handoff labels. `.github/workflows/labels.yml` creates and updates those labels on a push to `main` that changes the label file or the workflow, and on `workflow_dispatch`. The sync does not delete labels that are absent from the file. `.github/CODEOWNERS` requests `@jeevan-vj` on a subset of the high-risk paths. An auto-merge gate is not implemented. `auto-merge-eligible` requires every stage-6 condition in `docs/PIPELINE.md`, not `review-passed` plus `risk:low` alone. The author does not apply `review-passed` or `auto-merge-eligible`.
-
-Before opening a pull request, follow `.cursor/skills/ledgercraft-verify/SKILL.md` and paste the command output. Web lint and both web project typechecks require zero errors; CI and release verification fail directly on a nonzero tool exit. Warnings remain visible, with no rule or warning-policy suppression. The review loop is the Review loop section of `docs/PIPELINE.md`.
-
-## Commands
-
-Package manager for the workspace is pnpm `11.19.0`. Lockfile: `pnpm-lock.yaml`.
-
-```bash
-pnpm install --frozen-lockfile
-DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm db:migrate
-DATABASE_URL=/absolute/path/ledgercraft.sqlite pnpm dev:api   # 127.0.0.1:3001
-pnpm dev                                                      # Vite :8080, proxies /api
-pnpm test:run
-pnpm test:api
-pnpm test:contracts
-pnpm type-check
-pnpm type-check:api
-pnpm lint
-pnpm build
-pnpm verify:w1            # contracts tests, API tests, API + contracts typecheck
-pnpm test:akaunting-core  # capability-manifest validator tests
-pnpm verify:akaunting-core:report # validate/report without failing on open scope
-pnpm verify:akaunting-core # strict; fails while any required core row is open
-pnpm run deploy:check     # Node 24+. Local checks and Wrangler dry run
-pnpm run deploy:cloudflare
-pnpm run deploy:help
-pnpm db:generate --name describe_the_change
-```
-
-`pnpm type-check` runs the two required web project checks. CI names `tsc --noEmit -p tsconfig.app.json --pretty false` and `tsc --noEmit -p tsconfig.node.json --pretty false` explicitly, and both must exit 0. A bare root `tsc --noEmit` checks no files. Exact commands and evidence requirements are in `.cursor/skills/ledgercraft-verify/SKILL.md`.
-
-`pnpm dev:stack` and `pnpm start` run `scripts/dev.sh`, which starts Docker Postgres on port 55432 and then the API and Vite. `.env.example` still documents those Postgres URLs. The Node API opens SQLite.
-
-Mobile, from `mobile/`:
-
-```bash
-npm ci
-npm start
-npm test
-npm run lint
-npm run type-check
-npx expo export --platform ios
-```
-
-`EXPO_PUBLIC_API_URL` defaults to `http://127.0.0.1:3001`.
-
-Worker local dev, from the runbook:
-
-```bash
-pnpm exec wrangler dev --config deploy/api/wrangler.jsonc
-```
-
-## CI
-
-`.github/workflows/ci.yml` runs on pull requests and pushes to `main`. Web jobs use Node 22 and `pnpm install --frozen-lockfile`, then lint, `tsc` for `tsconfig.app.json` and `tsconfig.node.json`, `pnpm test:run`, and `pnpm build`. Web lint and both project typechecks fail directly on errors; the previous count-baseline checks and non-blocking steps are removed. Warnings remain reported and do not fail lint. Mobile uses Node 20 and `npm ci`. `npm run lint`, `npx tsc --noEmit --pretty false`, and `npm test -- --ci --watchAll=false` fail the job directly. The mobile count gate is gone. The iOS export is `npx expo export --platform ios` with `EXPO_NO_TELEMETRY=1` and `SENTRY_DISABLE_AUTO_UPLOAD=true`. The API & contracts job uses Node 24 and runs `pnpm test:api`, `pnpm test:contracts`, and `pnpm type-check:api`. The release-readiness job runs `node --test .github/scripts/verify-api-readiness.test.mjs .github/scripts/verify-web-quality-gates.test.mjs scripts/upload-api-sourcemaps.test.mjs scripts/verify-akaunting-core.test.mjs`, then `node --test scripts/upload-web-sourcemaps.test.mjs`, then `node scripts/verify-akaunting-core.mjs --report` (report mode, exit 0). Local commands to paste are in `.cursor/skills/ledgercraft-verify/SKILL.md`. When `ci.yml` changes, that skill changes in the same pull request.
-
-`.github/workflows/release.yml` deploys to Cloudflare after the `CI` workflow succeeds on a push to `main`. It checks out that run's head SHA, uses Node 24, and preserves the existing Worker `BETTER_AUTH_SECRET`. Manual `workflow_dispatch` from `main` still runs verify before deploy. Both release paths require raw web lint and both app/Node project typechecks to exit 0; no baseline error budget or allowed failure can bypass that preflight. The CI workflow does not receive production secrets. The release-readiness job tests the API/source-map/parity checkers and runs Akaunting parity in report mode; strict parity enforcement remains an explicit release command while the tracked core backlog is open.
-
-## Monitoring
-
-Web: `docs/sentry-web.md`. Browser events require `VITE_SENTRY_DSN` at build time. Source maps upload from the release workflow when `SENTRY_AUTH_TOKEN` is set, then `dist/**/*.map` is deleted before Pages deploy.
-
-API: `deploy/cloudflare.md` section "Error monitoring (Sentry)". `@sentry/cloudflare` sends Worker events only when `SENTRY_ENVIRONMENT` is `production`. The public DSN is the `SENTRY_DSN` var in `deploy/api/wrangler.jsonc`. Project slug `ledgercraft-api`, org `ledgercraft`.
-
-Mobile: `mobile/SENTRY.md`. `@sentry/react-native` reports native crashes and JavaScript errors. Preview and production profiles in `mobile/eas.json` set `EXPO_PUBLIC_SENTRY_DSN` and `SENTRY_ORG=ledgercraft` (project `ledgercraft-mobile`). Development profiles, local Expo, Jest, and CI leave the DSN unset. EAS uploads source maps only when the optional `SENTRY_AUTH_TOKEN` secret is present.
-
-## Data rules
-
-- Client → Hono → use case → repository → Drizzle → SQLite.
-- DTOs come from `packages/contracts`. Clients do not import Drizzle types.
-- `user_id` and `organisation_id` come from the session or membership, not the request body.
-- Money stays exact decimal text. GST, invoice, and quote totals stay on `computeInvoiceTotals`. Rounding stays on `roundMoney`. See `.cursor/skills/ledgercraft-invariants/SKILL.md`.
-- New SQLite SQL is generated, reviewed, and appended under `api/sqlite-migrations/`. Applied files stay byte-for-byte. `pnpm db:generate` then `pnpm deploy:cloudflare` is the production path. There is no D1 migrate step.
-- Reports must derive from posted `journal_entries` and `journal_entry_lines`; do not reintroduce client-calculated production report totals.
-- `supabase/` remains in the tree. `TARGET_ARCHITECTURE.md`, `AI_CONVERSATION_IMPLEMENTATION.md`, and `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` still name `supabase/migrations/`. Those files are historical hints. Do not replay them, and do not replay `migrations/*.sql`, onto the current database.
-- Do not add `supabase.from`, the Storage SDK, Edge Functions, client `VITE_OPENAI_*`, or a second session system beside Better Auth.
-- `api/.data/` is the local object-store default (`OBJECT_STORE_DIR` or `api/.data/objects`). It is gitignored.
+Leave `src/` and `mobile/` where they are until a change is only about moving them.
 
 ## Skills
 
 | Skill | When |
 | --- | --- |
-| `.cursor/skills/ledgercraft-bootstrap/SKILL.md` | Session start |
-| `.cursor/skills/ledgercraft-architecture/SKILL.md` | API, database, auth, storage, email, AI |
-| `.cursor/skills/ledgercraft-tdd/SKILL.md` | Failing test before production code, including bug fixes |
-| `.cursor/skills/ledgercraft-verify/SKILL.md` | Before a pull request: the CI commands, risk label, and evidence |
-| `.cursor/skills/ledgercraft-invariants/SKILL.md` | Money, GST, totals, share tokens, idempotency, migrations |
-| `.cursor/skills/ledgercraft-verify-ui/SKILL.md` | Web browser, invoice PDF, and Expo UI evidence |
-| `.cursor/skills/ledgercraft-reviewer/SKILL.md` | Independent review checklist and verdict. The loop is `docs/PIPELINE.md`. Does not push, approve, or merge |
-| `.cursor/skills/ledgercraft-web-ui/SKILL.md` | Web UI |
-| `.cursor/skills/ledgercraft-mobile-ui/SKILL.md` | Expo UI |
-| `.cursor/skills/ledgercraft-mobile-release/SKILL.md` | EAS, TestFlight, App Store Connect |
-| `.cursor/skills/ledgercraft-eas-update/SKILL.md` | Compatible mobile OTA changes, publishing, device verification, rollback |
-| `.cursor/skills/ledgercraft-mobile-loop/SKILL.md` | Repeated mobile backlog cycle |
-| `.cursor/skills/ledgercraft-factory-loop/SKILL.md` | One issue per fresh Cloud/MacBook session through PR and review |
-| `.cursor/skills/ledgercraft-schema-rebuild/SKILL.md` | Schema reconstruction |
-| `.cursor/skills/ledgercraft-vertical-slice/SKILL.md` | One domain onto Hono |
-| `.cursor/skills/ledgercraft-agent-roster/SKILL.md` | Splitting work across specialist agents |
-| `.cursor/skills/ledgercraft-knowledge-sync/SKILL.md` | After a wave, when docs drift |
+| `ledgercraft-architecture` | API, database, auth, storage, email, AI |
+| `ledgercraft-tdd` | Failing test before production code, including bug fixes |
+| `ledgercraft-verify` | CI-matching commands and the evidence table |
+| `ledgercraft-invariants` | Money, GST, totals, dates, share tokens, idempotency, migrations |
+| `ledgercraft-verify-ui` | Web, PDF, and Expo UI evidence |
+| `ledgercraft-reviewer` | Review checklist. The loop is `docs/PIPELINE.md` |
+| `ledgercraft-web-ui` | Web UI. `DESIGN.md` wins over older examples |
+| `ledgercraft-mobile-ui` | Expo UI. Lime actions use forest text, never white |
+| `ledgercraft-knowledge-sync` | After a wave, when status or commands drift |
+| `ledgercraft-bootstrap` | Short session start. It points here |
 
-Parent chat is the orchestrator. Launch specialists from the roster skill. After a wave, update present-tense facts in `TARGET_ARCHITECTURE.md` and this file.
+Domain acceptance skills are indexed from [`docs/feature-verification.md`](docs/feature-verification.md). Open the one row the task names.
 
-Feature parity that is still open is tracked in `AKAUNTING_FEATURE_PARITY_BACKLOG.md`. Release evidence for the published Cloudflare app is the dated sections of `deploy/cloudflare.md`.
+## Hard no
+
+- Replay historical SQL or edit an applied migration
+- New client Supabase, Edge Function, or `VITE_OPENAI_*` call
+- Mock Drizzle in SQL or transaction tests
+- A second auth session beside Better Auth
+- Weaken a CI gate, skip independent review, or merge to finish a task
+- Commit raw agent transcripts, reasoning, credentials, or customer data
