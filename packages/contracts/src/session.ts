@@ -44,6 +44,10 @@ export const accountSessionSchema = z.object({
 
 export const accountSessionListSchema = z.array(accountSessionSchema);
 
+export const authProvidersResponseSchema = z.object({
+  google: z.boolean(),
+}).strict();
+
 export type SessionUser = z.infer<typeof sessionUserSchema>;
 export type SessionOrganisation = z.infer<typeof sessionOrganisationSchema>;
 export type SessionMembership = z.infer<typeof sessionMembershipSchema>;
@@ -51,3 +55,4 @@ export type MeResponse = z.infer<typeof meResponseSchema>;
 export type DeleteAccountRequest = z.infer<typeof deleteAccountRequestSchema>;
 export type DeleteAccountResponse = z.infer<typeof deleteAccountResponseSchema>;
 export type AccountSession = z.infer<typeof accountSessionSchema>;
+export type AuthProvidersResponse = z.infer<typeof authProvidersResponseSchema>;

@@ -5,7 +5,7 @@
 import React, { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { MeResponse } from '@ledgercraft/contracts';
-import { AuthApiError, getMe, signInEmail, signOutSession, signUpEmail } from '@/features/auth/api/authApi';
+import { AuthApiError, getMe, signInEmail, signOutSession, signUpEmail, startGoogleSignIn } from '@/features/auth/api/authApi';
 import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
 import { setSentryUser } from '@/lib/sentry/init';
 
@@ -126,9 +126,17 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   );
 
   const signInWithGoogle = useCallback(async () => {
-    return {
-      error: { message: 'Google sign-in is not available yet. Use email and password.' },
-    };
+    try {
+      const callbackURL = `${window.location.origin}/auth/callback`;
+      await startGoogleSignIn({
+        callbackURL,
+        newUserCallbackURL: `${callbackURL}?next=/onboarding`,
+        errorCallbackURL: `${window.location.origin}/login`,
+      });
+      return { error: null };
+    } catch (error) {
+      return { error: toAuthError(error) };
+    }
   }, []);
 
   const signOut = useCallback(async () => {

@@ -4,6 +4,7 @@ import { bearer } from 'better-auth/plugins';
 import type { Database } from '../../db/client';
 import { authAccounts, authRateLimits, sessions, users, verifications } from '../../db/schema/identity';
 import { getBetterAuthSecret, getBetterAuthTrustedOrigins, getBetterAuthUrl } from '../../env';
+import { googleAuthPlugins, googleSocialProviders, rejectUnverifiedGoogleAccount } from './google';
 import { provisionOrganisationForUser } from './provision';
 import { scrubText } from '../../observability/scrub';
 
@@ -59,7 +60,19 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
       },
     },
     session: { modelName: 'sessions' },
-    account: { modelName: 'auth_accounts' },
+    account: {
+      modelName: 'auth_accounts',
+      accountLinking: {
+        enabled: true,
+        // Google is trusted only for a verified email claim. Local password
+        // sign-up does not require email verification, so a verified Google
+        // assertion is what links that existing user. Unverified Google
+        // profiles are dropped before this rule can run.
+        trustedProviders: ['google'],
+        requireLocalEmailVerified: false,
+      },
+    },
+    socialProviders: googleSocialProviders(),
     verification: { modelName: 'verifications' },
     emailAndPassword: {
       enabled: true,
@@ -88,9 +101,11 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
         '/send-verification-email': { window: 60, max: 3 },
         '/reset-password': { window: 60, max: 5 },
         '/verify-email': { window: 60, max: 5 },
+        '/sign-in/social': { window: 60, max: 10 },
+        '/expo-authorization-proxy': { window: 60, max: 20 },
       },
     },
-    plugins: [bearer()],
+    plugins: [bearer(), ...googleAuthPlugins()],
     advanced: {
       // Better Auth skips this in NODE_ENV=test unless it is explicit. Keep the
       // redirect allow-list under integration test as well as in production.
@@ -112,6 +127,11 @@ export function createAuth(db: Database, options: CreateAuthOptions = {}) {
           after: async (user) => {
             await provisionOrganisationForUser(db, user);
           },
+        },
+      },
+      account: {
+        create: {
+          before: async (account) => rejectUnverifiedGoogleAccount(account),
         },
       },
     },

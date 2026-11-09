@@ -1,4 +1,4 @@
-import { accountSessionListSchema, deleteAccountResponseSchema, meResponseSchema, type AccountSession, type DeleteAccountRequest, type DeleteAccountResponse, type MeResponse } from '@ledgercraft/contracts';
+import { accountSessionListSchema, authProvidersResponseSchema, deleteAccountResponseSchema, meResponseSchema, type AccountSession, type AuthProvidersResponse, type DeleteAccountRequest, type DeleteAccountResponse, type MeResponse } from '@ledgercraft/contracts';
 import { readApiFailure } from '@/lib/api/readApiError';
 
 export class AuthApiError extends Error {
@@ -59,6 +59,41 @@ export async function signUpEmail(input: {
     method: 'POST',
     body: JSON.stringify(input),
   });
+}
+
+export async function getAuthProviders(): Promise<AuthProvidersResponse> {
+  const response = await fetch('/api/auth/providers', { credentials: 'include' });
+  if (!response.ok) return { google: false };
+  const parsed = authProvidersResponseSchema.safeParse(await response.json());
+  return parsed.success ? parsed.data : { google: false };
+}
+
+export async function startGoogleSignIn(input: {
+  callbackURL: string;
+  errorCallbackURL: string;
+  newUserCallbackURL: string;
+}, navigate: (url: string) => void = (url) => window.location.assign(url)): Promise<void> {
+  const response = await fetch('/api/auth/sign-in/social', {
+    method: 'POST',
+    credentials: 'include',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      provider: 'google',
+      callbackURL: input.callbackURL,
+      errorCallbackURL: input.errorCallbackURL,
+      newUserCallbackURL: input.newUserCallbackURL,
+      disableRedirect: true,
+    }),
+  });
+  if (!response.ok) {
+    const failure = await readApiFailure(response);
+    throw new AuthApiError(failure.message, failure.status, failure.requestId);
+  }
+  const body = await response.json() as { url?: unknown };
+  if (typeof body.url !== 'string' || body.url.length === 0) {
+    throw new AuthApiError('Google sign-in did not return a redirect.', response.status);
+  }
+  navigate(body.url);
 }
 
 export async function signInEmail(input: { email: string; password: string }): Promise<void> {

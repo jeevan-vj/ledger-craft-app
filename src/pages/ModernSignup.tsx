@@ -6,6 +6,7 @@ import * as z from 'zod';
 import { useAuth } from "@/context/StableAuthContext";
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Lock, ArrowRight } from 'lucide-react';
+import { GoogleSignInSection } from '@/features/auth/GoogleSignInSection';
 import ModernAuthLayout from '../components/auth/modern/ModernAuthLayout';
 import { ModernInput } from '../components/auth/modern/ModernInput';
 import { ModernButton } from '../components/auth/modern/ModernButton';
@@ -86,6 +87,7 @@ const ModernSignup = () => {
       subtitle="Join thousands of professionals using EasyBizInvoice"
       showFeatures={true}
     >
+      <GoogleSignInSection errorPath="/signup" />
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Full Name Field */}
         <ModernInput

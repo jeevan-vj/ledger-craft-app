@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/context/StableAuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { User, Mail, Lock } from 'lucide-react';
+import { GoogleSignInSection } from '@/features/auth/GoogleSignInSection';
 
 const signupSchema = z.object({
   fullName: z.string().min(2, 'Full name must be at least 2 characters'),
@@ -56,6 +57,7 @@ const Signup = () => {
           <p className="text-muted-foreground">Create your account</p>
         </div>
         
+        <GoogleSignInSection errorPath="/signup" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

@@ -1,8 +1,30 @@
+import { Linking } from 'react-native';
 import type { LinkingOptions } from '@react-navigation/native';
+import { rememberGoogleCallback } from '@/features/auth/api/authApi';
 import type { CustomerStackParamList, InvoiceStackParamList, MoreStackParamList, RootStackParamList } from './types';
+
+const googleCallbackPrefix = 'easybizinvoice://auth/google';
 
 export const mobileLinking: LinkingOptions<RootStackParamList> = {
   prefixes: ['https://easybiz.iamjeevan.com', 'easybizinvoice://'],
+  async getInitialURL() {
+    const url = await Linking.getInitialURL();
+    if (url?.startsWith(googleCallbackPrefix)) {
+      await rememberGoogleCallback(url);
+      return null;
+    }
+    return url;
+  },
+  subscribe(listener) {
+    const subscription = Linking.addEventListener('url', ({ url }) => {
+      if (url.startsWith(googleCallbackPrefix)) {
+        void rememberGoogleCallback(url);
+        return;
+      }
+      listener(url);
+    });
+    return () => subscription.remove();
+  },
   config: {
     screens: {
       ResetPassword: 'reset-password',

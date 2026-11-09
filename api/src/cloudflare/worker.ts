@@ -41,6 +41,8 @@ export interface Env {
   RESEND_API_KEY?: string;
   RESEND_FROM?: string;
   BETTER_AUTH_URL?: string;
+  GOOGLE_CLIENT_ID?: string;
+  GOOGLE_CLIENT_SECRET?: string;
   NODE_ENV?: string;
   APP_ENV?: string;
   INVOICE_IMPORT_AI_PROVIDER?: string;
@@ -68,6 +70,11 @@ export interface Env {
   /** Optional Phase 1 binding. Wrangler keeps it disabled until the bucket exists. */
   DOCUMENTS?: R2Bucket;
 }
+function publishGoogleAuthEnv(env: Pick<Env, 'GOOGLE_CLIENT_ID' | 'GOOGLE_CLIENT_SECRET'>): void {
+  if (env.GOOGLE_CLIENT_ID) process.env.GOOGLE_CLIENT_ID = env.GOOGLE_CLIENT_ID;
+  if (env.GOOGLE_CLIENT_SECRET) process.env.GOOGLE_CLIENT_SECRET = env.GOOGLE_CLIENT_SECRET;
+}
+
 type IdentityContext = {
   user: { id: string; name: string; email: string; emailVerified: boolean };
   organisation: { id: string; name: string };
@@ -116,6 +123,7 @@ class IdentityBase extends DurableObject<Env> {
     super(ctx, env);
     ctx.blockConcurrencyWhile(async () => migrateStorage(ctx.storage));
     this.db = durableDatabase(ctx.storage);
+    publishGoogleAuthEnv(env);
     this.auth = createAuth(this.db, { sendAuthEmail: createAuthEmailSender(env) });
   }
   async canManageBankFeeds(organisationId: string, userId: string): Promise<boolean> {

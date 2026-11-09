@@ -16,6 +16,7 @@ import { AuthStackParamList } from '@/navigation/types';
 import { ModernInput } from '@/components/ui/ModernInput';
 import { ModernButton } from '@/components/ui/ModernButton';
 import { authErrorMessage } from '@/features/auth/api/authApi';
+import { GoogleContinue } from '@/features/auth/GoogleContinue';
 import { radius, space } from '@/theme/tokens';
 import { useTheme } from '@/theme';
 
@@ -26,12 +27,13 @@ export default function LoginScreen() {
   const { colors: palette, type } = theme;
   const styles = createStyles(theme);
   const navigation = useNavigation<LoginScreenNavigationProp>();
-  const { signIn } = useAuth();
+  const { signIn, signInWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
+  const [googleLoading, setGoogleLoading] = useState(false);
 
   const validateEmail = (text: string) => {
     setEmail(text);
@@ -50,6 +52,18 @@ export default function LoginScreen() {
     } else {
       setPasswordError('');
     }
+  };
+
+  const handleGoogle = async () => {
+    setGoogleLoading(true);
+    const result = await signInWithGoogle();
+    setGoogleLoading(false);
+    if (result.cancelled) return;
+    if (result.error) {
+      Alert.alert('Google sign-in', authErrorMessage(result.error));
+      return;
+    }
+    if (!useStore.getState().hasCompletedOnboarding) navigation.replace('Onboarding');
   };
 
   const handleLogin = async () => {
@@ -113,6 +127,8 @@ export default function LoginScreen() {
           showPasswordToggle
           error={passwordError}
         />
+
+        <GoogleContinue loading={googleLoading} onPress={() => void handleGoogle()} />
 
         <View style={styles.cta}>
           <ModernButton

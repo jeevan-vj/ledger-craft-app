@@ -24,6 +24,8 @@
   },
   "secrets": { "required": ["BETTER_AUTH_SECRET"] },
   // Optional Worker secrets (set with `cd deploy/api && npx wrangler secret put NAME`):
+  // GOOGLE_CLIENT_ID + GOOGLE_CLIENT_SECRET enable Google sign-in. Missing either leaves it disabled.
+  // Setup and rotation: docs/google-sign-in.md. Do not put the secret in vars.
   // RESEND_API_KEY + RESEND_FROM enable invoice/reminder/quote email; without both, clients offer share links.
   // OPENAI_API_KEY enables receipt/import AI; XAI_API_KEY is the fallback when OpenAI is absent.
   // Keep these optional: deployment must remain possible with honest unavailable capabilities.

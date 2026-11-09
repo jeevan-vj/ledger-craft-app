@@ -1,5 +1,7 @@
 import { z } from 'zod';
-import { apiFetch, apiRequest, AuthApiError, clearSessionCookies, rejectFailedResponse } from './http';
+import { googleCallbackKind, googleCallbackUrl, googleSignInErrorMessage, openGoogleBrowser, readGoogleCallback, splitSetCookieHeader } from '../googleSignIn';
+import { rememberSetCookie } from './cookieJar';
+import { apiBase, apiFetch, apiRequest, AuthApiError, clearSessionCookies, parseError, rejectFailedResponse } from './http';
 
 export { AuthApiError };
 
@@ -106,6 +108,70 @@ export async function signUpEmail(input: {
     method: 'POST',
     body: JSON.stringify(input),
   });
+}
+
+export class GoogleSignInError extends Error {
+  constructor(message: string, readonly code: 'cancelled' | 'denied' | 'disabled' | 'failed') {
+    super(message);
+    this.name = 'GoogleSignInError';
+  }
+}
+
+const authProvidersSchema = z.object({ google: z.boolean() }).strict();
+
+export async function getAuthProviders(): Promise<{ google: boolean }> {
+  const response = await apiFetch('/api/auth/providers');
+  if (!response.ok) return { google: false };
+  const parsed = authProvidersSchema.safeParse(await response.json());
+  return parsed.success ? parsed.data : { google: false };
+}
+
+export async function rememberGoogleCallback(url: string | null | undefined): Promise<boolean> {
+  if (!url) return false;
+  const callback = readGoogleCallback(url);
+  const cookie = callback?.cookie;
+  if (!cookie) return false;
+  await rememberSetCookie({ getSetCookie: () => splitSetCookieHeader(cookie) });
+  return true;
+}
+
+export async function applyGoogleCallback(url: string): Promise<void> {
+  const callback = readGoogleCallback(url);
+  if (!callback) throw new GoogleSignInError('Google sign-in did not finish. Try again.', 'failed');
+  const message = googleSignInErrorMessage(callback.error, callback.errorDescription);
+  if (message) {
+    throw new GoogleSignInError(message, googleCallbackKind(callback.error, callback.errorDescription) ?? 'failed');
+  }
+  if (!(await rememberGoogleCallback(url))) {
+    throw new GoogleSignInError('Google sign-in did not finish. Try again.', 'failed');
+  }
+}
+
+export async function signInWithGoogle(open: (url: string) => Promise<string | null> = openGoogleBrowser): Promise<void> {
+  const providers = await getAuthProviders();
+  if (!providers.google) throw new GoogleSignInError('Google sign-in is not available.', 'disabled');
+  const response = await apiFetch('/api/auth/sign-in/social', {
+    method: 'POST',
+    body: JSON.stringify({
+      provider: 'google',
+      callbackURL: googleCallbackUrl,
+      errorCallbackURL: googleCallbackUrl,
+      newUserCallbackURL: googleCallbackUrl,
+      disableRedirect: true,
+    }),
+  });
+  if (!response.ok) {
+    const parsed = await parseError(response);
+    if (parsed.code === 'GOOGLE_SIGN_IN_DISABLED') {
+      throw new GoogleSignInError('Google sign-in is not available.', 'disabled');
+    }
+    throw new AuthApiError(parsed.message, response.status, parsed.code, parsed.requestId);
+  }
+  const body = z.object({ url: z.string().url() }).parse(await response.json());
+  const proxy = `${apiBase()}/api/auth/expo-authorization-proxy?authorizationURL=${encodeURIComponent(body.url)}`;
+  const returned = await open(proxy);
+  if (!returned) throw new GoogleSignInError('Google sign-in was cancelled.', 'cancelled');
+  await applyGoogleCallback(returned);
 }
 
 export async function signInEmail(input: { email: string; password: string }): Promise<void> {

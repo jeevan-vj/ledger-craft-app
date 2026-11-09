@@ -61,6 +61,7 @@ export {
 export {
   accountSessionListSchema,
   accountSessionSchema,
+  authProvidersResponseSchema,
   deleteAccountRequestSchema,
   deleteAccountResponseSchema,
   meResponseSchema,
@@ -70,6 +71,7 @@ export {
   type DeleteAccountRequest,
   type DeleteAccountResponse,
   type AccountSession,
+  type AuthProvidersResponse,
   type MeResponse,
   type SessionMembership,
   type SessionOrganisation,

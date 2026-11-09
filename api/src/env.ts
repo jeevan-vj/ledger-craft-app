@@ -44,6 +44,13 @@ export function getBetterAuthUrl(): string {
   return process.env.BETTER_AUTH_URL ?? 'http://localhost:8080';
 }
 
+export function getGoogleOAuthCredentials(): { clientId: string; clientSecret: string } | null {
+  const clientId = process.env.GOOGLE_CLIENT_ID?.trim();
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET?.trim();
+  if (!clientId || !clientSecret) return null;
+  return { clientId, clientSecret };
+}
+
 export function getBetterAuthTrustedOrigins(): string[] {
   const fromEnv = process.env.BETTER_AUTH_TRUSTED_ORIGINS;
   if (fromEnv) {

@@ -2,11 +2,15 @@
  * Authentication Slice — Better Auth via Hono. Session cookie lives in SecureStore.
  */
 
+import { Linking } from 'react-native';
 import { StateCreator } from 'zustand';
 import {
   AuthApiError,
   getMe,
+  GoogleSignInError,
+  rememberGoogleCallback,
   signInEmail,
+  signInWithGoogle as startGoogleSignIn,
   signOutSession,
   signUpEmail,
   type MeResponse,
@@ -44,7 +48,7 @@ export interface AuthSlice {
     data?: unknown;
     needsEmailConfirmation?: boolean;
   }>;
-  signInWithGoogle: () => Promise<{ error: { message: string } | null }>;
+  signInWithGoogle: () => Promise<{ error: { message: string } | null; cancelled?: boolean }>;
   signOut: () => Promise<void>;
   checkOnboardingStatus: () => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -148,9 +152,29 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   },
 
   signInWithGoogle: async () => {
-    return {
-      error: { message: 'Google sign-in is not available yet. Use email and password.' },
-    };
+    set({ error: null });
+    try {
+      await startGoogleSignIn();
+      const me = await getMe();
+      if (!me) throw new AuthApiError('Signed in, but no session was returned.', 401);
+      const profile = await businessProfileApi.get();
+      set({
+        ...sessionFields(me),
+        hasCompletedOnboarding: Boolean(profile),
+        onboardingChecked: true,
+        loading: false,
+        error: null,
+      });
+      return { error: null };
+    } catch (error) {
+      if (error instanceof GoogleSignInError && error.code === 'cancelled') {
+        set({ loading: false, error: null });
+        return { error: null, cancelled: true };
+      }
+      const authError = toAuthError(error);
+      set({ loading: false, error: authError.message });
+      return { error: authError };
+    }
   },
 
   signOut: async () => {
@@ -216,6 +240,7 @@ export const createAuthSlice: StateCreator<AuthSlice> = (set, get) => ({
   initialize: async () => {
     set({ loading: true, initializationError: false, error: null });
     try {
+      await rememberGoogleCallback(await Linking.getInitialURL());
       const me = await getMe();
       if (me) {
         const profile = await businessProfileApi.get();

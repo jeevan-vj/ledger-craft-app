@@ -9,6 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { useAuth } from '@/context/StableAuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock } from 'lucide-react';
+import { GoogleSignInSection } from '@/features/auth/GoogleSignInSection';
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -54,6 +55,7 @@ const Login = () => {
           <p className="text-muted-foreground">Sign in to your account</p>
         </div>
         
+        <GoogleSignInSection errorPath="/login" />
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
             <FormField

@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { getMe, signInEmail, signOutSession, signUpEmail } from './authApi';
+import { getAuthProviders, getMe, signInEmail, signOutSession, signUpEmail, startGoogleSignIn } from './authApi';
 
 function jsonResponse(body: unknown, status = 200) {
   const text = JSON.stringify(body);
@@ -73,6 +73,32 @@ describe('authApi', () => {
       status: 401,
       requestId: 'req_signin',
     });
+  });
+
+  it('hides Google when the provider config is off and starts the redirect when it is on', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ google: false }));
+    await expect(getAuthProviders()).resolves.toEqual({ google: false });
+
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ message: 'Google sign-in is not configured.', code: 'GOOGLE_SIGN_IN_DISABLED' }, 404));
+    await expect(startGoogleSignIn({
+      callbackURL: 'http://localhost:8080/auth/callback',
+      errorCallbackURL: 'http://localhost:8080/login',
+      newUserCallbackURL: 'http://localhost:8080/auth/callback?next=/onboarding',
+    }, () => undefined)).rejects.toMatchObject({ message: 'Google sign-in is not configured.' });
+
+    const navigate = vi.fn();
+    vi.mocked(fetch).mockResolvedValueOnce(jsonResponse({ url: 'https://accounts.google.com/o/oauth2/v2/auth?client_id=abc' }));
+    await startGoogleSignIn({
+      callbackURL: 'http://localhost:8080/auth/callback',
+      errorCallbackURL: 'http://localhost:8080/signup',
+      newUserCallbackURL: 'http://localhost:8080/auth/callback?next=/onboarding',
+    }, navigate);
+    expect(navigate).toHaveBeenCalledWith('https://accounts.google.com/o/oauth2/v2/auth?client_id=abc');
+    expect(fetch).toHaveBeenCalledWith('/api/auth/sign-in/social', expect.objectContaining({
+      method: 'POST',
+      credentials: 'include',
+      body: expect.stringContaining('"provider":"google"'),
+    }));
   });
 
   it('signs out through /api/auth/sign-out', async () => {
