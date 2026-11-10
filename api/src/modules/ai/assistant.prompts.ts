@@ -2,7 +2,7 @@
 export const ASSISTANT_EVAL_PROMPTS = [
   { id: 'sarah-missing-parts', prompt: 'Invoice Sarah Chen for 3h plumbing plus parts, due Friday', liveTools: ['search_customers', 'prepare_invoice_proposal'] },
   { id: 'ambiguous-customer', prompt: 'Invoice Sarah for 1 hour of plumbing', liveTools: ['search_customers'] },
-  { id: 'ambiguous-item', prompt: 'Invoice Sarah for a filter', liveTools: ['search_catalogue'] },
+  { id: 'ambiguous-item', prompt: 'Invoice Sarah Chen for a filter', liveTools: ['search_catalogue'] },
   { id: 'who-owes', prompt: 'Who owes me money?', liveTools: ['list_outstanding'] },
   { id: 'unsupported-delete', prompt: 'Delete all my invoices', liveTools: [] },
   { id: 'expense-deferred', prompt: 'Add a $45 fuel expense', liveTools: [] },
@@ -28,11 +28,16 @@ export const ASSISTANT_LIVE_CUSTOMER_PICK = {
   totals: { subtotal: '300.00', taxAmount: '45.00', total: '345.00' },
 } as const;
 
-/**
- * Web composer text after a customer quick pick that is not on a proposal.
- * AssistantPage sets this, then the next Ask posts it on the same conversation.
- * Mobile posts `Use ${label}` in that same situation.
- */
+/** Web composer text after a customer quick pick that is not on a proposal. */
 export function assistantCustomerPickMessage(label: string): string {
   return `Use customer ${label}`;
+}
+
+/**
+ * Second turn for the live customer pick. The assistant loop sends only the
+ * current user message, so this repeats the quantity, rate, and plus-GST
+ * treatment. Replaying earlier turns is a separate product fix.
+ */
+export function assistantLivePickFollowUp(label: string): string {
+  return `${assistantCustomerPickMessage(label)}: 3 hours at $100 plus GST`;
 }

@@ -42,7 +42,7 @@ const { createDb } = await import('../src/db/local');
 const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
 const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
-const { ASSISTANT_EVAL_PROMPTS, ASSISTANT_LIVE_CUSTOMER_PICK, assistantCustomerPickMessage } = await import('../src/modules/ai/assistant.prompts');
+const { ASSISTANT_EVAL_PROMPTS, ASSISTANT_LIVE_CUSTOMER_PICK, assistantLivePickFollowUp } = await import('../src/modules/ai/assistant.prompts');
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
 const monday = new Date('2026-11-09T01:00:00.000Z');
@@ -146,7 +146,8 @@ await withTestDb(async () => {
       if (item.id === 'who-owes') pass = pass && parts.some((part) => part.type === 'text' && part.text?.includes('outstanding'));
       if (item.id === 'unsupported-delete') pass = pass && parts.some((part) => part.href === '/invoices');
       if (item.id === 'expense-deferred') pass = pass && parts.some((part) => part.href === '/expenses' || part.text?.includes('Expenses'));
-      if (item.id === 'ambiguous-customer' || item.id === 'ambiguous-item') pass = pass && parts.some((part) => part.type === 'quick_picks');
+      if (item.id === 'ambiguous-customer') pass = pass && parts.some((part) => part.type === 'quick_picks' && part.field === 'customerId');
+      if (item.id === 'ambiguous-item') pass = pass && parts.some((part) => part.type === 'quick_picks' && part.field === 'itemId');
       if (item.id === 'sarah-missing-parts') pass = pass && !!proposal && proposal.totals == null;
       if (item.id === 'friday-dateline') pass = pass && proposal?.date === '2026-11-14' && proposal.dueDate === '2026-11-20';
       if (locked) {
@@ -194,7 +195,8 @@ await withTestDb(async () => {
         headers: { ...headers, Cookie: cookie },
         body: JSON.stringify({
           conversationId: firstBody.conversationId,
-          message: assistantCustomerPickMessage(chosen.label),
+          // History is not replayed. The follow-up has to carry the price itself.
+          message: assistantLivePickFollowUp(chosen.label),
         }),
       });
       elapsed += Date.now() - secondStarted;
