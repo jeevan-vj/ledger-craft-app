@@ -21,7 +21,7 @@ import { getItem } from '../items/items.repository';
 import { getBusinessProfile } from '../business-profile/business-profile.repository';
 import { decimal } from '../invoices/money';
 import { resolveDocumentCurrency } from '../currency/currency.service';
-import { ASSISTANT_DEFAULTS, assistantEnabled, resolveLimits, tokenCostUsd, type AssistantRuntime } from './assistant.config';
+import { ASSISTANT_DEFAULTS, assistantEnabled, resolveAssistantTurnBudget, resolveLimits, tokenCostUsd, type AssistantRuntime } from './assistant.config';
 import { runAssistantLoop } from './assistant.loop';
 import { consumeAssistantPreview } from './assistant.preview-limit';
 import {
@@ -198,14 +198,15 @@ export async function completeAssistantForUser(
   if (gate.missing) throw apiError(404, 'NOT_FOUND', 'Conversation not found');
 
   try {
+    const budget = resolveAssistantTurnBudget(runtime);
     const loop = await runAssistantLoop({
       db,
       userId,
       message: input.message,
       model: runtime.model,
       now,
-      maxSteps: Math.min(runtime.maxSteps ?? ASSISTANT_DEFAULTS.maxSteps, ASSISTANT_DEFAULTS.maxSteps),
-      timeoutMs: Math.min(runtime.timeoutMs ?? ASSISTANT_DEFAULTS.timeoutMs, 15_000),
+      maxSteps: budget.maxSteps,
+      timeoutMs: budget.timeoutMs,
     });
     const costUsd = tokenCostUsd(loop.inputTokens, loop.outputTokens, limits);
     const response = await withOrganisationTx(db, userId, async (tx, ctx) => {

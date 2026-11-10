@@ -72,7 +72,8 @@ await withTestDb(async () => {
         },
       },
       now: monday,
-      timeoutMs: 20_000,
+      // Whole-turn budget. The service applies this value, capped at 30 seconds.
+      timeoutMs: 30_000,
     };
     const app = createApp({
       auth: createAuth(db), db, checkDatabase: async () => true, assistant: runtime,

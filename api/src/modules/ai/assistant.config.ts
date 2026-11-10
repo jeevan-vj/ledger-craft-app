@@ -8,8 +8,8 @@ export const ASSISTANT_DEFAULTS = {
   inputUsdPerMillion: '0.10',
   outputUsdPerMillion: '0.30',
   callReserveUsd: '0.05',
-  maxSteps: 6,
-  timeoutMs: 8_000,
+  maxSteps: 4,
+  timeoutMs: 30_000,
   retentionDays: 90,
 } as const;
 
@@ -60,6 +60,18 @@ export type AssistantRuntime = {
   timeoutMs?: number;
   retentionDays?: number;
 };
+
+export function resolveAssistantTurnBudget(runtime?: Pick<AssistantRuntime, 'maxSteps' | 'timeoutMs'>): { maxSteps: number; timeoutMs: number } {
+  const requestedSteps = runtime?.maxSteps;
+  const requestedTimeout = runtime?.timeoutMs;
+  const maxSteps = typeof requestedSteps === 'number' && Number.isFinite(requestedSteps) && requestedSteps >= 1
+    ? Math.min(Math.floor(requestedSteps), ASSISTANT_DEFAULTS.maxSteps)
+    : ASSISTANT_DEFAULTS.maxSteps;
+  const timeoutMs = typeof requestedTimeout === 'number' && Number.isFinite(requestedTimeout) && requestedTimeout >= 1
+    ? Math.min(Math.floor(requestedTimeout), ASSISTANT_DEFAULTS.timeoutMs)
+    : ASSISTANT_DEFAULTS.timeoutMs;
+  return { maxSteps, timeoutMs };
+}
 
 export function assistantLimitsFromEnv(env: NodeJS.ProcessEnv = process.env): AssistantLimits {
   const daily = Number(env.ASSISTANT_DAILY_MESSAGES ?? ASSISTANT_DEFAULTS.dailyMessages);
