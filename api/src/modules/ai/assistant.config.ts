@@ -3,6 +3,7 @@ import { decimal } from '../invoices/money';
 export const ASSISTANT_DEFAULTS = {
   dailyMessages: 100,
   perMinute: 20,
+  previewPerMinute: 60,
   dailyCostUsd: '2.00',
   inputUsdPerMillion: '0.10',
   outputUsdPerMillion: '0.30',
@@ -15,6 +16,7 @@ export const ASSISTANT_DEFAULTS = {
 export type AssistantLimits = {
   dailyMessages: number;
   perMinute: number;
+  previewPerMinute: number;
   dailyCostUsd: string;
   inputUsdPerMillion: string;
   outputUsdPerMillion: string;
@@ -62,9 +64,11 @@ export type AssistantRuntime = {
 export function assistantLimitsFromEnv(env: NodeJS.ProcessEnv = process.env): AssistantLimits {
   const daily = Number(env.ASSISTANT_DAILY_MESSAGES ?? ASSISTANT_DEFAULTS.dailyMessages);
   const perMinute = Number(env.ASSISTANT_PER_MINUTE ?? ASSISTANT_DEFAULTS.perMinute);
+  const previewPerMinute = Number(env.ASSISTANT_PREVIEW_PER_MINUTE ?? ASSISTANT_DEFAULTS.previewPerMinute);
   return {
     dailyMessages: Number.isFinite(daily) && daily >= 0 ? Math.floor(daily) : ASSISTANT_DEFAULTS.dailyMessages,
     perMinute: Number.isFinite(perMinute) && perMinute >= 0 ? Math.floor(perMinute) : ASSISTANT_DEFAULTS.perMinute,
+    previewPerMinute: Number.isFinite(previewPerMinute) && previewPerMinute >= 0 ? Math.floor(previewPerMinute) : ASSISTANT_DEFAULTS.previewPerMinute,
     dailyCostUsd: env.ASSISTANT_DAILY_COST_USD || ASSISTANT_DEFAULTS.dailyCostUsd,
     inputUsdPerMillion: env.ASSISTANT_INPUT_USD_PER_MILLION || ASSISTANT_DEFAULTS.inputUsdPerMillion,
     outputUsdPerMillion: env.ASSISTANT_OUTPUT_USD_PER_MILLION || ASSISTANT_DEFAULTS.outputUsdPerMillion,

@@ -530,11 +530,15 @@ export {
   assistantTextSchema,
   assistantTurnRequestSchema,
   assistantTurnResponseSchema,
+  previewAssistantProposalRequestSchema,
+  previewAssistantProposalResponseSchema,
   saveAssistantDraftRequestSchema,
   type AssistantPart,
   type AssistantProposal,
   type AssistantTurnRequest,
   type AssistantTurnResponse,
+  type PreviewAssistantProposalRequest,
+  type PreviewAssistantProposalResponse,
   type SaveAssistantDraftRequest,
 } from './assistant';
 

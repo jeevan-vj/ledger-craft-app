@@ -1,8 +1,10 @@
-import { assistantTurnRequestSchema, chatCompletionRequestSchema, saveAssistantDraftRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
+import { assistantTurnRequestSchema, chatCompletionRequestSchema, previewAssistantProposalRequestSchema, saveAssistantDraftRequestSchema, scanReceiptRequestSchema } from '@ledgercraft/contracts';
 import { Hono } from 'hono';
+import { z } from 'zod';
 import type { AppEnv } from '../../types';
 import { requireSession } from '../auth/require-session';
 import { hashIdempotencyPayload, parseIdempotencyKey } from '../invoices/idempotency';
+import { resolveLimits } from './assistant.config';
 import { createWorkersAiAssistantModel } from './assistant.workers';
 import * as assistantService from './assistant.service';
 import * as chatService from './chat';
@@ -46,6 +48,15 @@ export function aiRoutes() {
       return c.json(await assistantService.saveAssistantDraftForUser(
         db, user.id, input, c.get('capabilities'), idempotency, c.get('requestId'),
       ), 201);
+    });
+
+    routes.post(`${prefix}/ai/assistant/proposals/:id/preview`, async (c) => {
+      const { db, user } = await requireSession(c);
+      const proposalId = z.string().uuid().parse(c.req.param('id'));
+      const input = previewAssistantProposalRequestSchema.parse(await c.req.json());
+      return c.json(await assistantService.previewAssistantProposalForUser(
+        db, user.id, proposalId, input, c.get('capabilities'), resolveLimits(c.get('assistant')).previewPerMinute,
+      ));
     });
   }
 

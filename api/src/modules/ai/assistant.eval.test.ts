@@ -1,4 +1,4 @@
-import { errorEnvelopeSchema, invoiceSchema, type AssistantTurnResponse } from '@ledgercraft/contracts';
+import { errorEnvelopeSchema, invoiceSchema, previewAssistantProposalResponseSchema, type AssistantTurnResponse } from '@ledgercraft/contracts';
 import { count, eq } from 'drizzle-orm';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { createApp } from '../../app';
@@ -59,7 +59,7 @@ describe('assistant eval suite', () => {
     steps?: AssistantModelTurn[];
     model?: AssistantModel;
     now?: Date;
-    limits?: { dailyMessages?: number; perMinute?: number; dailyCostUsd?: string; callReserveUsd?: string };
+    limits?: { dailyMessages?: number; perMinute?: number; dailyCostUsd?: string; callReserveUsd?: string; previewPerMinute?: number };
     timeoutMs?: number;
     assistant?: 'available' | 'unavailable';
     scanner?: ReceiptScanner;
@@ -588,5 +588,205 @@ describe('assistant eval suite', () => {
     const response = await createApp().request('/api/ai/assistant', { method: 'POST', headers, body: JSON.stringify({ message: 'Hello' }) });
     expect(response.status).toBe(401);
     expect(errorEnvelopeSchema.parse(await response.json()).error.code).toBe('UNAUTHORIZED');
+    const preview = await createApp().request('/api/ai/assistant/proposals/11111111-1111-4111-8111-111111111111/preview', {
+      method: 'POST', headers, body: JSON.stringify({ conversationId: '22222222-2222-4222-8222-222222222222' }),
+    });
+    expect(preview.status).toBe(401);
+    expect(errorEnvelopeSchema.parse(await preview.json()).error.code).toBe('UNAUTHORIZED');
   });
+
+  it('previews the same totals save will store and writes nothing', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '3', rate: '100.00' }] } }])],
+  }, async ({ call, ask, db, app, cookie }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask(prompt('gst-inclusive'));
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const edits = {
+      issueDate: '2026-11-01',
+      dueDate: '2026-11-20',
+      taxInclusive: false,
+      taxRate: '15',
+      lines: [
+        { description: 'Plumbing', quantity: '1', rate: '100.00', taxRate: '15' },
+        { description: 'Exempt supply', quantity: '1', rate: '40.00', taxRate: '0' },
+      ],
+    };
+    const body = { conversationId: reply.conversationId, proposalId: proposal.proposal.id, edits };
+    const beforeProposals = await db.select().from(assistantProposals);
+    const beforeEvents = await db.select().from(assistantEvents);
+    const before = await tally(db);
+    const previewResponse = await app.request(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ conversationId: reply.conversationId, edits }),
+    });
+    expect(previewResponse.status).toBe(200);
+    const preview = previewAssistantProposalResponseSchema.parse(await previewResponse.json());
+    expect(preview.errors).toEqual([]);
+    expect(preview).toMatchObject({
+      date: '2026-11-01',
+      dueDate: '2026-11-20',
+      taxInclusive: false,
+      taxRate: '15',
+      subtotal: '140.00',
+      taxAmount: '15.00',
+      total: '155.00',
+    });
+    expect(preview.lines.map((line) => ({ description: line.description, tax: line.tax, total: line.total }))).toEqual([
+      { description: 'Plumbing', tax: '15.00', total: '100.00' },
+      { description: 'Exempt supply', tax: '0.00', total: '40.00' },
+    ]);
+    expect(await db.select().from(assistantProposals)).toEqual(beforeProposals);
+    expect(await db.select().from(assistantEvents)).toEqual(beforeEvents);
+    expect(await tally(db)).toEqual(before);
+    const saveDraft = (payload: unknown, key = 'preview-fields-1') => app.request('/api/ai/assistant/drafts', {
+      method: 'POST',
+      headers: { ...headers, Cookie: cookie, 'Idempotency-Key': key },
+      body: JSON.stringify(payload),
+    });
+    const savedResponse = await saveDraft(body);
+    expect(savedResponse.status).toBe(201);
+    const saved = invoiceSchema.parse(await savedResponse.json());
+    expect(saved).toMatchObject({
+      status: 'draft',
+      date: '2026-11-01',
+      dueDate: '2026-11-20',
+      subtotal: preview.subtotal,
+      taxAmount: preview.taxAmount,
+      total: preview.total,
+    });
+    expect(saved.items.map((item) => ({ description: item.description, rate: item.rate, tax: item.tax, total: item.total }))).toEqual(
+      preview.lines.map((line) => ({ description: line.description, rate: line.rate, tax: line.tax, total: line.total })),
+    );
+    const againResponse = await saveDraft(body);
+    expect(againResponse.status).toBe(201);
+    const again = invoiceSchema.parse(await againResponse.json());
+    expect(again.id).toBe(saved.id);
+    expect(again.total).toBe(preview.total);
+    const conflict = await app.request('/api/ai/assistant/drafts', {
+      method: 'POST',
+      headers: { ...headers, Cookie: cookie, 'Idempotency-Key': 'preview-fields-1' },
+      body: JSON.stringify({ ...body, edits: { ...edits, issueDate: '2026-11-02' } }),
+    });
+    expect(conflict.status).toBe(409);
+    expect(errorEnvelopeSchema.parse(await conflict.json()).error.code).toBe('IDEMPOTENCY_CONFLICT');
+    expect((await tally(db)).invoices).toBe(before.invoices + 1);
+  }));
+
+  it('keeps the proposal date and GST rate when the new fields are omitted', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '3', rate: '100.00' }] } }])],
+  }, async ({ call, ask, app, cookie }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask(prompt('gst-inclusive'));
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const edits = { lines: [{ description: 'Plumbing', quantity: '2', rate: '100.00' }] };
+    const previewResponse = await app.request(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ conversationId: reply.conversationId, edits }),
+    });
+    const preview = previewAssistantProposalResponseSchema.parse(await previewResponse.json());
+    expect(preview).toMatchObject({ date: proposal.proposal.date, taxRate: proposal.proposal.taxRate, taxInclusive: true, subtotal: '173.91', taxAmount: '26.09', total: '200.00', errors: [] });
+    const saved = invoiceSchema.parse(await call('/api/ai/assistant/drafts', 'POST', {
+      conversationId: reply.conversationId, proposalId: proposal.proposal.id, edits,
+    }, 201));
+    expect(saved).toMatchObject({ date: proposal.proposal.date, subtotal: preview.subtotal, taxAmount: preview.taxAmount, total: preview.total });
+  }));
+
+  it('rejects an invalid GST rate or date and reports a due date before the issue date', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }])],
+  }, async ({ call, ask, app, cookie, db }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask(prompt('gst-inclusive'));
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const send = (path: string, payload: unknown) => app.request(path, {
+      method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify(payload),
+    });
+    const badRate = await send('/api/ai/assistant/proposals/' + proposal.proposal.id + '/preview', {
+      conversationId: reply.conversationId, edits: { taxRate: '150' },
+    });
+    expect(badRate.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await badRate.json()).error.message).toMatch(/taxRate/);
+    const badDate = await send('/api/ai/assistant/drafts', {
+      conversationId: reply.conversationId, proposalId: proposal.proposal.id, edits: { issueDate: '2026-02-31' },
+    });
+    expect(badDate.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await badDate.json()).error.message).toMatch(/issueDate/);
+    const earlyDue = await send(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      conversationId: reply.conversationId, edits: { issueDate: '2026-11-20' },
+    });
+    expect(earlyDue.status).toBe(200);
+    const earlyBody = previewAssistantProposalResponseSchema.parse(await earlyDue.json());
+    expect(earlyBody.errors).toContainEqual({ field: 'dueDate', message: "Due date can't be before the invoice date" });
+    expect(earlyBody.total).toBe('100.00');
+    const refused = await send('/api/ai/assistant/drafts', {
+      conversationId: reply.conversationId, proposalId: proposal.proposal.id, edits: { issueDate: '2026-11-20' },
+    });
+    expect(refused.status).toBe(400);
+    expect(errorEnvelopeSchema.parse(await refused.json()).error).toMatchObject({
+      code: 'VALIDATION_ERROR',
+      message: "Due date can't be before the invoice date",
+    });
+    expect((await tally(db)).invoices).toBe(0);
+  }));
+
+  it('hides a proposal from another business on preview the same way as save', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }])],
+  }, async ({ call, ask, app, db }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask(prompt('gst-inclusive'));
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const other = await app.request('/api/auth/sign-up/email', { method: 'POST', headers, body: JSON.stringify({ name: 'Other', email: `other-${crypto.randomUUID()}@example.test`, password: 'password123' }) });
+    const otherCookie = cookieOf(other);
+    const preview = await app.request(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: otherCookie }, body: JSON.stringify({ conversationId: reply.conversationId }),
+    });
+    const save = await app.request('/api/ai/assistant/drafts', {
+      method: 'POST', headers: { ...headers, Cookie: otherCookie }, body: JSON.stringify({ conversationId: reply.conversationId, proposalId: proposal.proposal.id }),
+    });
+    const previewError = errorEnvelopeSchema.parse(await preview.json()).error;
+    const saveError = errorEnvelopeSchema.parse(await save.json()).error;
+    expect(preview.status).toBe(save.status);
+    expect(previewError.code).toBe(saveError.code);
+    expect(previewError.message).toBe(saveError.message);
+    expect(previewError.message).toBe('That proposal is not in this business.');
+    expect((await tally(db)).invoices).toBe(0);
+  }));
+
+  it('rate-limits previews without using the daily message quota', () => run({
+    limits: { dailyMessages: 2, previewPerMinute: 1 },
+    steps: [
+      turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }]),
+      turn([{ name: 'list_outstanding', arguments: {} }]),
+    ],
+  }, async ({ call, ask, app, cookie, db }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask(prompt('gst-inclusive'));
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const sendPreview = () => app.request(`/api/ai/assistant/proposals/${proposal.proposal.id}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ conversationId: reply.conversationId }),
+    });
+    expect((await sendPreview()).status).toBe(200);
+    const limited = await sendPreview();
+    expect(limited.status).toBe(429);
+    expect(errorEnvelopeSchema.parse(await limited.json()).error.code).toBe('ASSISTANT_PREVIEW_LIMIT');
+    expect((await db.select().from(assistantEvents)).filter((event) => event.action === 'turn')).toHaveLength(1);
+    const followUp = await ask(prompt('who-owes'));
+    expect(followUp.parts.some((part) => part.type === 'text')).toBe(true);
+    expect((await db.select().from(assistantEvents)).filter((event) => event.action === 'turn')).toHaveLength(2);
+    const blocked = await ask(prompt('who-owes'), 429);
+    expect(blocked.error?.code).toBe('ASSISTANT_LIMIT');
+  }));
+
+  it('refuses a preview when the assistant is off', () => run({
+    assistant: 'unavailable',
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }])],
+  }, async ({ app, cookie }) => {
+    const preview = await app.request(`/api/ai/assistant/proposals/${crypto.randomUUID()}/preview`, {
+      method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ conversationId: crypto.randomUUID() }),
+    });
+    expect(preview.status).toBe(403);
+    expect(errorEnvelopeSchema.parse(await preview.json()).error.code).toBe('ASSISTANT_DISABLED');
+  }));
 });
