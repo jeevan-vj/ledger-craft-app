@@ -1,18 +1,18 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  APP_UPDATE_TOAST_MS,
   CONTROLLER_RELOAD_KEY,
   VERSION_RELOAD_KEY,
   clearControllerReloadIfUpdated,
   clearVersionReloadIfCurrent,
   deferAppReload,
-  isMidFormEdit,
+  isEditorPath,
   markControllerReload,
   markVersionReload,
   planAppUpdate,
   watchAppUpdateSignals,
-  type AppUpdatePlan,
+  type AppUpdateCause,
 } from "@/utils/appUpdate";
+import { documentEditorBlocksReload } from "@/utils/documentEditor";
 import { fetchDeployedVersion, forceRefresh, clearAllCaches, getCurrentVersion } from "@/utils/versionManager";
 
 interface UsePwaUpdatePrompt {
@@ -30,7 +30,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
   const [offlineReady, setOfflineReady] = useState(false);
   const [updating, setUpdating] = useState(false);
   const pendingHash = useRef<string | null>(null);
-  const reloadNow = useRef<(toast: boolean) => void>(() => {});
+  const reloadNow = useRef<() => void>(() => {});
   const dismissUpdate = useRef<() => void>(() => {});
 
   useEffect(() => {
@@ -46,35 +46,40 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
     const hasServiceWorker = "serviceWorker" in navigator;
     let hadController = hasServiceWorker && Boolean(navigator.serviceWorker.controller);
 
-    const commitReload = (plan: Extract<AppUpdatePlan, { action: "reload" | "defer" }>, hash: string | null, toast: boolean) => {
-      if (reloading) return;
+    const editorOpen = () => documentEditorBlocksReload() || isEditorPath(window.location.pathname);
+
+    const commitReload = (mark: AppUpdateCause, hash: string | null) => {
+      if (reloading || editorOpen()) return;
       reloading = true;
       deferredStop?.();
       deferredStop = null;
-      setNeedRefresh(false);
-      if (plan.mark === "version" && hash) markVersionReload(sessionStorage, hash);
-      if (plan.mark === "controller") markControllerReload(sessionStorage, getCurrentVersion().hash);
-      const go = () => window.location.reload();
-      if (toast) {
-        setUpdating(true);
-        window.setTimeout(go, APP_UPDATE_TOAST_MS);
-        return;
-      }
-      go();
+      setUpdating(false);
+      if (mark === "version" && hash) markVersionReload(sessionStorage, hash);
+      if (mark === "controller") markControllerReload(sessionStorage, getCurrentVersion().hash);
+      window.location.reload();
     };
 
-    const apply = (plan: AppUpdatePlan, hash: string | null) => {
+    const armNavigationReload = (mark: AppUpdateCause, hash: string | null) => {
+      if (deferredStop) return;
+      deferredStop = deferAppReload(window, () => {
+        deferredStop = null;
+        commitReload(mark, hash);
+      }, () => {
+        if (!editorOpen()) return false;
+        setUpdating(true);
+        return true;
+      });
+    };
+
+    const apply = (plan: ReturnType<typeof planAppUpdate>, hash: string | null) => {
       if (cancelled || reloading || plan.action === "skip") return;
-      if (plan.action === "defer") {
-        setNeedRefresh(true);
-        if (deferredStop) return;
-        deferredStop = deferAppReload(document, window, () => {
-          deferredStop = null;
-          commitReload(plan, hash, false);
-        }, () => isMidFormEdit(document));
+      if (plan.action === "prompt") {
+        setUpdating(true);
+        armNavigationReload(plan.mark, hash);
         return;
       }
-      commitReload(plan, hash, plan.toast);
+      setUpdating(false);
+      armNavigationReload(plan.mark, hash);
     };
 
     const snapshot = () => {
@@ -83,8 +88,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
         current: getCurrentVersion(),
         versionReloadHash: sessionStorage.getItem(VERSION_RELOAD_KEY),
         controllerReloadHash: sessionStorage.getItem(CONTROLLER_RELOAD_KEY),
-        editing: isMidFormEdit(document),
-        hidden: document.hidden,
+        editor: editorOpen(),
         hadController,
       };
     };
@@ -109,12 +113,19 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
       apply(planAppUpdate({ ...snapshot(), cause: "controller", server: null, hadController: true }), pendingHash.current);
     };
 
-    reloadNow.current = (toast) => {
-      commitReload({ action: "reload", toast, mark: "version" }, pendingHash.current, toast);
+    reloadNow.current = () => {
+      if (reloading) return;
+      reloading = true;
+      deferredStop?.();
+      deferredStop = null;
+      setUpdating(false);
+      if (pendingHash.current) markVersionReload(sessionStorage, pendingHash.current);
+      window.location.reload();
     };
     dismissUpdate.current = () => {
       deferredStop?.();
       deferredStop = null;
+      setUpdating(false);
       setNeedRefresh(false);
     };
 
@@ -145,7 +156,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
   }, []);
 
   const promptUpdate = useCallback(() => {
-    reloadNow.current(false);
+    reloadNow.current();
   }, []);
 
   const forceUpdate = useCallback(async () => {

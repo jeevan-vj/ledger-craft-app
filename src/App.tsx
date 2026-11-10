@@ -15,7 +15,7 @@ function App() {
   return (
     <ThemeProvider defaultTheme="system" storageKey="easybizinvoice-theme">
       <RouterProvider router={router} />
-      <AppUpdateToast open={updating} />
+      <AppUpdateToast open={updating} onReload={promptUpdate} onDismiss={dismissPrompt} />
       <PwaUpdatePrompt 
         open={needRefresh} 
         onUpdate={promptUpdate}

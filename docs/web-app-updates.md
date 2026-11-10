@@ -28,7 +28,7 @@ Loop guards:
 - `ledgercraft:app-update-controller` stores the build hash that already reloaded for a service-worker claim. A later claim can reload after that build has changed.
 - After a reload lands on the target hash, the version flag is cleared. A controller flag from an older build is cleared too.
 
-The reload waits while an invoice or quote form has unsaved changes (`data-unsaved-changes="true"`), or while another form has a focused field or a text, select, checkbox, or radio value that differs from its default. Hiding the tab does not reload. The wait ends on the next in-app navigation once the document is clean. The existing update prompt stays so the person can reload immediately. Otherwise the page shows "Updating to the latest version…" and reloads.
+Hiding the tab never reloads the page. Invoice, quote, and bill editor routes, and any mounted invoice or expense editor, do not reload on their own. Those screens show an update notice with a Reload button. On every other screen the pending update is applied on the next in-app navigation, which loads the new document. A failed `version.json` read does not reload.
 
 ## What the service worker caches
 

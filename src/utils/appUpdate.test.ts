@@ -8,11 +8,12 @@ import {
   clearControllerReloadIfUpdated,
   clearVersionReloadIfCurrent,
   deferAppReload,
-  isMidFormEdit,
+  isEditorPath,
   planAppUpdate,
   watchAppUpdateSignals,
   type BuildIdentity,
 } from './appUpdate';
+import { documentEditorBlocksReload, registerDocumentEditor } from './documentEditor';
 
 const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const current: BuildIdentity = { hash: 'embedded-hash', buildTime: 1000 };
@@ -26,8 +27,7 @@ function plan(overrides: Partial<Parameters<typeof planAppUpdate>[0]> = {}) {
     server: deployed,
     versionReloadHash: null,
     controllerReloadHash: null,
-    editing: false,
-    hidden: false,
+    editor: false,
     hadController: true,
     ...overrides,
   });
@@ -39,12 +39,12 @@ afterEach(() => {
 });
 
 describe('planAppUpdate', () => {
-  it('reloads when the deployed build is newer than the running build', () => {
-    expect(plan()).toEqual({ action: 'reload', toast: true, mark: 'version' });
+  it('waits for the next navigation when a newer build is deployed off an editor', () => {
+    expect(plan()).toEqual({ action: 'defer', mark: 'version' });
   });
 
   it('does not ignore that newer build just because it is the first comparison', () => {
-    expect(plan({ versionReloadHash: null }).action).toBe('reload');
+    expect(plan({ versionReloadHash: null }).action).toBe('defer');
   });
 
   it('does not reload when version.json matches the running build', () => {
@@ -64,12 +64,12 @@ describe('planAppUpdate', () => {
     expect(plan({ versionReloadHash: deployed.hash })).toEqual({ action: 'skip', reason: 'already-reloaded' });
   });
 
-  it('still reloads when a new service worker takes control after a version reload was recorded', () => {
+  it('still waits for navigation when a new service worker takes control off an editor', () => {
     expect(plan({
       cause: 'controller',
       versionReloadHash: deployed.hash,
       server: null,
-    })).toEqual({ action: 'reload', toast: true, mark: 'controller' });
+    })).toEqual({ action: 'defer', mark: 'controller' });
   });
 
   it('does not reload on the first service worker claim', () => {
@@ -92,15 +92,12 @@ describe('planAppUpdate', () => {
       cause: 'controller',
       server: null,
       controllerReloadHash: 'previous-hash',
-    }).action).toBe('reload');
+    }).action).toBe('defer');
   });
 
-  it('waits while a text field is being edited', () => {
-    expect(plan({ editing: true })).toEqual({ action: 'defer', mark: 'version' });
-  });
-
-  it('holds the reload while a form is dirty, including when the tab is hidden', () => {
-    expect(plan({ editing: true, hidden: true })).toEqual({ action: 'defer', mark: 'version' });
+  it('offers Reload instead of reloading while an editor is open, even if the tab is hidden', () => {
+    expect(plan({ editor: true })).toEqual({ action: 'prompt', mark: 'version' });
+    expect(plan({ editor: true })).toEqual({ action: 'prompt', mark: 'version' });
   });
 
   it('skips update checks during development', () => {
@@ -128,95 +125,56 @@ describe('reload flags', () => {
   });
 });
 
-describe('isMidFormEdit', () => {
-  afterEach(() => {
-    document.body.replaceChildren();
+describe('document editors', () => {
+  it('blocks a reload while an editor is mounted, including a clean expense drawer', () => {
+    expect(documentEditorBlocksReload()).toBe(false);
+    const stop = registerDocumentEditor({ dirty: false });
+    expect(documentEditorBlocksReload()).toBe(true);
+    stop();
+    expect(documentEditorBlocksReload()).toBe(false);
   });
+});
 
-  it('is false when nothing is being edited', () => {
-    expect(isMidFormEdit(document)).toBe(false);
-  });
-
-  it('is true while a text field is focused or dirty', () => {
-    const input = document.createElement('input');
-    input.type = 'email';
-    document.body.append(input);
-    input.focus();
-    expect(isMidFormEdit(document)).toBe(true);
-
-    input.blur();
-    input.defaultValue = '';
-    input.value = 'owner@example.com';
-    expect(isMidFormEdit(document)).toBe(true);
-  });
-
-  it('counts a changed checkbox, radio, or select, and ignores disabled fields', () => {
-    const box = document.createElement('input');
-    box.type = 'checkbox';
-    box.checked = true;
-    const radio = document.createElement('input');
-    radio.type = 'radio';
-    radio.checked = true;
-    const select = document.createElement('select');
-    const untouched = document.createElement('option');
-    untouched.value = 'none';
-    const option = document.createElement('option');
-    option.value = 'customer';
-    select.append(untouched, option);
-    option.selected = true;
-    const locked = document.createElement('input');
-    locked.disabled = true;
-    locked.value = 'filled by the page';
-    document.body.append(box, radio, select, locked);
-    expect(isMidFormEdit(document)).toBe(true);
-
-    document.body.replaceChildren(locked);
-    expect(isMidFormEdit(document)).toBe(false);
-  });
-
-  it('uses the invoice form unsaved-changes flag instead of a prefilled field', () => {
-    const form = document.createElement('form');
-    form.dataset.unsavedChanges = 'true';
-    const customer = document.createElement('button');
-    customer.type = 'button';
-    customer.textContent = 'Choose customer';
-    form.append(customer);
-    document.body.append(form);
-    expect(isMidFormEdit(document)).toBe(true);
-
-    form.dataset.unsavedChanges = 'false';
-    const number = document.createElement('input');
-    number.readOnly = true;
-    number.defaultValue = '';
-    number.value = 'Q-100';
-    form.append(number);
-    expect(isMidFormEdit(document)).toBe(false);
+describe('isEditorPath', () => {
+  it('matches invoice, quote, and bill editors and not their list pages', () => {
+    expect(isEditorPath('/invoices/new')).toBe(true);
+    expect(isEditorPath('/invoices/create')).toBe(true);
+    expect(isEditorPath('/invoices/inv-1/edit')).toBe(true);
+    expect(isEditorPath('/quotes/new')).toBe(true);
+    expect(isEditorPath('/quotes/q-1/edit')).toBe(true);
+    expect(isEditorPath('/bills/new')).toBe(true);
+    expect(isEditorPath('/bills/bill-1/edit')).toBe(true);
+    expect(isEditorPath('/invoices')).toBe(false);
+    expect(isEditorPath('/quotes')).toBe(false);
+    expect(isEditorPath('/expenses')).toBe(false);
   });
 });
 
 describe('deferAppReload', () => {
-  it('reloads on the next in-app navigation once the form is clean', () => {
-    const reload = vi.fn();
-    let dirty = true;
-    const stop = deferAppReload(document, window, reload, () => dirty);
-    window.history.pushState({}, '', '/invoices');
-    expect(reload).not.toHaveBeenCalled();
-    dirty = false;
-    window.history.pushState({}, '', '/customers');
-    expect(reload).toHaveBeenCalledOnce();
-    stop();
-  });
-
-  it('does not reload when the tab is hidden', () => {
+  it('reloads on the next in-app navigation and not when the tab is hidden', () => {
     const reload = vi.fn();
     let hidden = false;
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden });
-    const stop = deferAppReload(document, window, reload);
+    const stop = deferAppReload(window, reload);
     hidden = true;
     document.dispatchEvent(new Event('visibilitychange'));
     expect(reload).not.toHaveBeenCalled();
+    window.history.pushState({}, '', '/customers');
+    expect(reload).toHaveBeenCalledOnce();
     stop();
     Reflect.deleteProperty(document, 'hidden');
+  });
+
+  it('does not reload a navigation while an editor is still open', () => {
+    const reload = vi.fn();
+    let open = true;
+    const stop = deferAppReload(window, reload, () => open);
+    window.history.pushState({}, '', '/invoices');
+    expect(reload).not.toHaveBeenCalled();
+    open = false;
+    window.history.pushState({}, '', '/customers');
+    expect(reload).toHaveBeenCalledOnce();
+    stop();
   });
 });
 
