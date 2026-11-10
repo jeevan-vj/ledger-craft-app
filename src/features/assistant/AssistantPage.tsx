@@ -32,6 +32,7 @@ function AssistantParts({
   parts,
   drafts,
   savingId,
+  conversationId,
   onDraft,
   onSave,
   onPick,
@@ -39,6 +40,7 @@ function AssistantParts({
   parts: AssistantPart[];
   drafts: Record<string, ProposalDraft>;
   savingId: string | null;
+  conversationId?: string;
   onDraft: (proposal: AssistantProposal, draft: ProposalDraft) => void;
   onSave: (proposal: AssistantProposal) => void;
   onPick: (field: 'customerId' | 'itemId', option: { id: string; label: string }) => void;
@@ -81,6 +83,7 @@ function AssistantParts({
             key={part.proposal.id}
             proposal={part.proposal}
             draft={draft}
+            conversationId={conversationId}
             saving={savingId === part.proposal.id}
             onChange={(next) => onDraft(part.proposal, next)}
             onSave={() => onSave(part.proposal)}
@@ -232,6 +235,7 @@ export function AssistantPage() {
                 parts={item.parts}
                 drafts={drafts}
                 savingId={savingId}
+                conversationId={conversationId}
                 onDraft={(proposal, draft) => setDrafts((current) => ({ ...current, [proposal.id]: draft }))}
                 onSave={save}
                 onPick={onPick}

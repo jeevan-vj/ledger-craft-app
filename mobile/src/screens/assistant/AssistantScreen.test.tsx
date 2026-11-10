@@ -1,11 +1,11 @@
 import React from 'react';
 import { KeyboardAvoidingView, Platform, StyleSheet } from 'react-native';
-import { fireEvent, render, waitFor } from '@testing-library/react-native';
+import { act, fireEvent, render, waitFor } from '@testing-library/react-native';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import type { AssistantProposal } from '@ledgercraft/contracts';
 import { AuthApiError } from '@/features/auth/api/http';
-import { askAssistant, saveAssistantDraft } from '@/features/assistant/api/assistantApi';
+import { askAssistant, previewAssistantProposal, saveAssistantDraft } from '@/features/assistant/api/assistantApi';
 import { getServerCapabilities } from '@/services/capabilitiesService';
 import { darkPalette } from '@/theme/tokens';
 import AssistantScreen from './AssistantScreen';
@@ -13,6 +13,7 @@ import AssistantScreen from './AssistantScreen';
 jest.mock('@/features/assistant/api/assistantApi', () => ({
   askAssistant: jest.fn(),
   saveAssistantDraft: jest.fn(),
+  previewAssistantProposal: jest.fn(),
 }));
 
 jest.mock('@/services/capabilitiesService', () => ({
@@ -73,11 +74,17 @@ async function ask(message: string) {
 }
 
 describe('assistant chat', () => {
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
   beforeEach(() => {
     mockNavigate.mockClear();
     jest.mocked(getServerCapabilities).mockResolvedValue(available);
     jest.mocked(askAssistant).mockReset();
     jest.mocked(saveAssistantDraft).mockReset();
+    jest.mocked(previewAssistantProposal).mockReset();
+    jest.mocked(previewAssistantProposal).mockImplementation(() => new Promise(() => undefined));
   });
 
   it('shows an incomplete card when parts still have no price', async () => {
@@ -273,4 +280,190 @@ describe('assistant chat', () => {
       Platform.OS = previous;
     }
   });
+
+  it('reprices an edit from the server after a short pause', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    jest.mocked(previewAssistantProposal).mockResolvedValue(pricedPreview());
+    const screen = await ask('Invoice Sarah for plumbing');
+    await screen.findByLabelText('Quantity for Plumbing');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(screen.getByLabelText('Quantity for Plumbing'), '4');
+      expect(previewAssistantProposal).not.toHaveBeenCalled();
+      expect(screen.getByText('Incomplete')).toBeTruthy();
+      await act(async () => { jest.advanceTimersByTime(399); });
+      expect(previewAssistantProposal).not.toHaveBeenCalled();
+      await act(async () => { jest.advanceTimersByTime(1); });
+      expect(previewAssistantProposal).toHaveBeenCalledWith(proposalId, {
+        conversationId,
+        edits: { lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', unit: 'h', itemId: null }] },
+      }, expect.any(AbortSignal));
+      expect(screen.getByText('Subtotal 417.39 NZD')).toBeTruthy();
+      expect(screen.getByText('GST 62.61 NZD')).toBeTruthy();
+      expect(screen.getByText('480.00 NZD')).toBeTruthy();
+      expect(screen.getByText('Line total 480.00 NZD')).toBeTruthy();
+      expect(screen.queryByText('Incomplete')).toBeNull();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('ignores a preview response that belongs to an older edit', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    const first = deferred<ReturnType<typeof pricedPreview>>();
+    const second = deferred<ReturnType<typeof pricedPreview>>();
+    jest.mocked(previewAssistantProposal)
+      .mockImplementationOnce((_id, _body, signal) => {
+        signal?.addEventListener('abort', () => undefined);
+        return first.promise;
+      })
+      .mockImplementationOnce(() => second.promise);
+    const screen = await ask('Invoice Sarah for plumbing');
+    await screen.findByLabelText('Quantity for Plumbing');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(screen.getByLabelText('Quantity for Plumbing'), '4');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      fireEvent.changeText(screen.getByLabelText('Quantity for Plumbing'), '5');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      expect(previewAssistantProposal).toHaveBeenCalledTimes(2);
+      expect(jest.mocked(previewAssistantProposal).mock.calls[0]?.[1]).toEqual({
+        conversationId,
+        edits: { lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', unit: 'h', itemId: null }] },
+      });
+      expect(jest.mocked(previewAssistantProposal).mock.calls[1]?.[1]).toEqual({
+        conversationId,
+        edits: { lines: [{ description: 'Plumbing', quantity: '5', rate: '120.00', unit: 'h', itemId: null }] },
+      });
+      const firstSignal = jest.mocked(previewAssistantProposal).mock.calls[0]?.[2];
+      expect(firstSignal?.aborted).toBe(true);
+      await act(async () => {
+        first.resolve(pricedPreview());
+        await first.promise;
+      });
+      expect(screen.queryByText('480.00 NZD')).toBeNull();
+      expect(screen.getByText('Incomplete')).toBeTruthy();
+      await act(async () => {
+        second.resolve(pricedPreview({
+          lines: [{ description: 'Plumbing', quantity: '5', rate: '120.00', taxRate: '15', tax: '78.26', total: '600.00' }],
+          subtotal: '521.74',
+          taxAmount: '78.26',
+          total: '600.00',
+        }));
+        await second.promise;
+      });
+      expect(screen.getByText('600.00 NZD')).toBeTruthy();
+      expect(screen.getByText('Subtotal 521.74 NZD')).toBeTruthy();
+      expect(screen.getByText('GST 78.26 NZD')).toBeTruthy();
+      expect(screen.getByText('Line total 600.00 NZD')).toBeTruthy();
+      expect(screen.queryByText('480.00 NZD')).toBeNull();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('shows server field errors and keeps totals unconfirmed when preview is refused', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    jest.mocked(previewAssistantProposal).mockResolvedValue(pricedPreview({
+      dueDate: '2026-11-01',
+      errors: [{ field: 'dueDate', message: "Due date can't be before the invoice date" }],
+    }));
+    const screen = await ask('Invoice Sarah for plumbing');
+    await screen.findByLabelText('Due date');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(screen.getByLabelText('Due date'), '2026-11-01');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      expect(screen.getByText("Due date can't be before the invoice date")).toBeTruthy();
+      expect(screen.getByText('480.00 NZD')).toBeTruthy();
+    } finally {
+      jest.useRealTimers();
+    }
+
+    jest.mocked(previewAssistantProposal).mockRejectedValue(new AuthApiError(
+      'Too many invoice previews. Wait a minute and try again.',
+      429,
+      'ASSISTANT_PREVIEW_LIMIT',
+    ));
+    const limited = await ask('Invoice Sarah again');
+    await limited.findByLabelText('Quantity for Plumbing');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(limited.getByLabelText('Quantity for Plumbing'), '4');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      expect(limited.getByText('Too many invoice previews. Wait a minute and try again.')).toBeTruthy();
+      expect(limited.getByText('Incomplete')).toBeTruthy();
+      expect(limited.queryByText('360.00 NZD')).toBeNull();
+      expect(limited.getByLabelText('Quantity for Plumbing').props.value).toBe('4');
+    } finally {
+      jest.useRealTimers();
+    }
+
+    jest.mocked(previewAssistantProposal).mockRejectedValue(new AuthApiError(
+      'That proposal is not in this business.',
+      404,
+      'NOT_FOUND',
+    ));
+    const missing = await ask('Invoice Sarah once more');
+    await missing.findByLabelText('GST rate');
+    jest.useFakeTimers();
+    try {
+      fireEvent.changeText(missing.getByLabelText('GST rate'), '10');
+      await act(async () => { jest.advanceTimersByTime(400); });
+      expect(missing.getByText('That proposal is not in this business.')).toBeTruthy();
+      expect(missing.getByText('Incomplete')).toBeTruthy();
+      expect(missing.getByLabelText('GST rate').props.value).toBe('10');
+      expect(missing.getByRole('button', { name: 'Save draft' })).toBeTruthy();
+    } finally {
+      jest.useRealTimers();
+    }
+  });
+
+  it('sends the edited issue date and GST rate when the draft is saved', async () => {
+    jest.mocked(askAssistant).mockResolvedValue({
+      conversationId,
+      parts: [{ type: 'proposal', proposal: proposal() }],
+    });
+    jest.mocked(saveAssistantDraft).mockResolvedValue({ id: invoiceId, status: 'draft' });
+    const screen = await ask('Invoice Sarah for plumbing');
+    fireEvent.changeText(await screen.findByLabelText('Issue date'), '2026-11-10');
+    fireEvent.changeText(screen.getByLabelText('GST rate'), '10');
+    fireEvent.press(screen.getByRole('button', { name: 'Save draft' }));
+    await waitFor(() => expect(saveAssistantDraft).toHaveBeenCalledWith({
+      conversationId,
+      proposalId,
+      edits: { issueDate: '2026-11-10', taxRate: '10' },
+    }, expect.any(String)));
+  });
 });
+
+function pricedPreview(overrides: Record<string, unknown> = {}) {
+  return {
+    proposalId,
+    date: '2026-11-09',
+    dueDate: '2026-11-13',
+    taxInclusive: true,
+    taxRate: '15',
+    lines: [{ description: 'Plumbing', quantity: '4', rate: '120.00', taxRate: '15', tax: '62.61', total: '480.00' }],
+    subtotal: '417.39',
+    taxAmount: '62.61',
+    total: '480.00',
+    errors: [] as { field: string; message: string }[],
+    ...overrides,
+  };
+}
+
+function deferred<T>() {
+  let resolve: (value: T) => void = () => undefined;
+  const promise = new Promise<T>((next) => { resolve = next; });
+  return { promise, resolve };
+}

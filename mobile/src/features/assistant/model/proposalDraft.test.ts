@@ -42,6 +42,19 @@ describe('proposal drafts', () => {
     });
   });
 
+  it('sends an edited issue date and GST rate on save', () => {
+    const source = proposal();
+    const draft = draftFromProposal(source);
+    draft.dueDate = '2026-11-20';
+    draft.issueDate = '2026-11-10';
+    draft.taxRate = '10';
+    expect(buildSaveBody(conversationId, source, draft)).toEqual({
+      conversationId,
+      proposalId,
+      edits: { issueDate: '2026-11-10', dueDate: '2026-11-20', taxRate: '10' },
+    });
+  });
+
   it('omits edits when the card still matches the server proposal', () => {
     const source = proposal();
     const draft = draftFromProposal(source);

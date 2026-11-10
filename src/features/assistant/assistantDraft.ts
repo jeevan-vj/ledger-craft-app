@@ -11,8 +11,10 @@ export type ProposalLineDraft = {
 export type ProposalDraft = {
   customerId: string | null;
   customerName: string;
+  issueDate: string;
   dueDate: string;
   taxInclusive: boolean | null;
+  taxRate: string;
   notes: string;
   lines: ProposalLineDraft[];
 };
@@ -20,12 +22,26 @@ export type ProposalDraft = {
 const day = /^\d{4}-\d{2}-\d{2}$/;
 const money = /^\d+(\.\d+)?$/;
 
+export function realCalendarDay(value: string): boolean {
+  if (!day.test(value)) return false;
+  const [year, month, dayOfMonth] = value.split('-').map(Number);
+  if (year === undefined || month === undefined || dayOfMonth === undefined) return false;
+  const date = new Date(Date.UTC(year, month - 1, dayOfMonth));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === dayOfMonth;
+}
+
+export function validTaxRate(value: string): boolean {
+  return money.test(value) && Number(value) >= 0 && Number(value) <= 100;
+}
+
 export function draftFromProposal(proposal: AssistantProposal): ProposalDraft {
   return {
     customerId: proposal.customerId,
     customerName: proposal.customerName ?? '',
+    issueDate: proposal.date,
     dueDate: proposal.dueDate ?? '',
     taxInclusive: proposal.taxInclusive,
+    taxRate: proposal.taxRate,
     notes: proposal.notes ?? '',
     lines: proposal.lines.map((line) => ({
       description: line.description,
@@ -59,30 +75,29 @@ export function customerNeedsPick(proposal: AssistantProposal, draft: ProposalDr
 
 export function canSaveDraft(proposal: AssistantProposal, draft: ProposalDraft): boolean {
   if (customerNeedsPick(proposal, draft) || draft.customerId == null) return false;
-  if (!day.test(draft.dueDate) || draft.dueDate < proposal.date) return false;
-  if (draft.taxInclusive == null || draft.notes.length > 1000) return false;
+  if (!realCalendarDay(draft.issueDate) || !realCalendarDay(draft.dueDate) || draft.dueDate < draft.issueDate) return false;
+  if (!validTaxRate(draft.taxRate) || draft.taxInclusive == null || draft.notes.length > 1000) return false;
   return linesReady(draft);
 }
 
 export function proposalIsDirty(proposal: AssistantProposal, draft: ProposalDraft): boolean {
   if (draft.customerId !== proposal.customerId) return true;
   if (draft.customerName !== (proposal.customerName ?? '')) return true;
+  if (draft.issueDate !== proposal.date) return true;
   if (draft.dueDate !== (proposal.dueDate ?? '')) return true;
   if (draft.taxInclusive !== proposal.taxInclusive) return true;
+  if (draft.taxRate !== proposal.taxRate) return true;
   if (draft.notes !== (proposal.notes ?? '')) return true;
   return linesChanged(proposal, draft);
 }
 
-/**
- * POST /api/ai/assistant/drafts is the only merged route that reprices an edit,
- * and it also persists the draft. There is no preview response, so the card
- * cannot refresh server totals until that explicit save.
- */
 export function editsForSave(proposal: AssistantProposal, draft: ProposalDraft): SaveAssistantDraftRequest['edits'] {
   const edits: NonNullable<SaveAssistantDraftRequest['edits']> = {};
   if (draft.customerId && draft.customerId !== proposal.customerId) edits.customerId = draft.customerId;
-  if (day.test(draft.dueDate) && draft.dueDate !== proposal.dueDate) edits.dueDate = draft.dueDate;
+  if (realCalendarDay(draft.issueDate) && draft.issueDate !== proposal.date) edits.issueDate = draft.issueDate;
+  if (realCalendarDay(draft.dueDate) && draft.dueDate !== proposal.dueDate) edits.dueDate = draft.dueDate;
   if (draft.taxInclusive != null && draft.taxInclusive !== proposal.taxInclusive) edits.taxInclusive = draft.taxInclusive;
+  if (validTaxRate(draft.taxRate) && draft.taxRate !== proposal.taxRate) edits.taxRate = draft.taxRate;
   if (draft.notes !== (proposal.notes ?? '')) edits.notes = draft.notes.length > 0 ? draft.notes : null;
   if (linesChanged(proposal, draft) && linesReady(draft)) {
     edits.lines = draft.lines.map((line) => ({

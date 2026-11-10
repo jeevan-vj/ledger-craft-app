@@ -15,18 +15,34 @@ export type DraftLine = {
 export type ProposalDraft = {
   customerId: string | null;
   customerName: string | null;
+  issueDate: string;
   dueDate: string;
   taxInclusive: boolean | null;
+  taxRate: string;
   notes: string;
   lines: DraftLine[];
 };
+
+export function realCalendarDay(value: string): boolean {
+  if (!day.test(value)) return false;
+  const [year, month, dayOfMonth] = value.split('-').map(Number);
+  if (year === undefined || month === undefined || dayOfMonth === undefined) return false;
+  const date = new Date(Date.UTC(year, month - 1, dayOfMonth));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === dayOfMonth;
+}
+
+export function validTaxRate(value: string): boolean {
+  return money.test(value) && Number(value) >= 0 && Number(value) <= 100;
+}
 
 export function draftFromProposal(proposal: AssistantProposal): ProposalDraft {
   return {
     customerId: proposal.customerId,
     customerName: proposal.customerName,
+    issueDate: proposal.date,
     dueDate: proposal.dueDate ?? '',
     taxInclusive: proposal.taxInclusive,
+    taxRate: proposal.taxRate,
     notes: proposal.notes ?? '',
     lines: proposal.lines.map((line) => ({
       description: line.description,
@@ -39,7 +55,9 @@ export function draftFromProposal(proposal: AssistantProposal): ProposalDraft {
 }
 
 export function draftReadyToSave(draft: ProposalDraft): boolean {
-  if (!draft.customerId || !day.test(draft.dueDate) || draft.taxInclusive === null || draft.lines.length < 1) return false;
+  if (!draft.customerId || draft.taxInclusive === null || draft.lines.length < 1) return false;
+  if (!realCalendarDay(draft.issueDate) || !realCalendarDay(draft.dueDate) || draft.dueDate < draft.issueDate) return false;
+  if (!validTaxRate(draft.taxRate)) return false;
   return draft.lines.every((line) => line.description.trim().length > 0 && line.description.trim().length <= 200 && money.test(line.quantity) && money.test(line.rate));
 }
 
@@ -47,11 +65,13 @@ export function applyCustomerPick(draft: ProposalDraft, id: string, label: strin
   return { ...draft, customerId: id, customerName: label };
 }
 
-export function buildSaveBody(conversationId: string, proposal: AssistantProposal, draft: ProposalDraft): SaveAssistantDraftRequest {
+export function saveEdits(proposal: AssistantProposal, draft: ProposalDraft): SaveAssistantDraftRequest['edits'] {
   const edits: NonNullable<SaveAssistantDraftRequest['edits']> = {};
   if (draft.customerId && draft.customerId !== proposal.customerId) edits.customerId = draft.customerId;
-  if (day.test(draft.dueDate) && draft.dueDate !== proposal.dueDate) edits.dueDate = draft.dueDate;
+  if (realCalendarDay(draft.issueDate) && draft.issueDate !== proposal.date) edits.issueDate = draft.issueDate;
+  if (realCalendarDay(draft.dueDate) && draft.dueDate !== proposal.dueDate) edits.dueDate = draft.dueDate;
   if (draft.taxInclusive !== null && draft.taxInclusive !== proposal.taxInclusive) edits.taxInclusive = draft.taxInclusive;
+  if (validTaxRate(draft.taxRate) && draft.taxRate !== proposal.taxRate) edits.taxRate = draft.taxRate;
   const notes = draft.notes.trim();
   if (notes !== (proposal.notes ?? '')) edits.notes = notes.length ? notes : null;
   const linesChanged = draft.lines.length !== proposal.lines.length || draft.lines.some((line, index) => {
@@ -71,11 +91,14 @@ export function buildSaveBody(conversationId: string, proposal: AssistantProposa
       itemId: line.itemId,
     }));
   }
-  return Object.keys(edits).length
-    ? { conversationId, proposalId: proposal.id, edits }
-    : { conversationId, proposalId: proposal.id };
+  return Object.keys(edits).length > 0 ? edits : undefined;
+}
+
+export function buildSaveBody(conversationId: string, proposal: AssistantProposal, draft: ProposalDraft): SaveAssistantDraftRequest {
+  const edits = saveEdits(proposal, draft);
+  return edits ? { conversationId, proposalId: proposal.id, edits } : { conversationId, proposalId: proposal.id };
 }
 
 export function draftHasEdits(proposal: AssistantProposal, draft: ProposalDraft): boolean {
-  return buildSaveBody(proposal.id, proposal, draft).edits !== undefined;
+  return saveEdits(proposal, draft) !== undefined;
 }
