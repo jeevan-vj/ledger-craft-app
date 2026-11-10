@@ -20,7 +20,7 @@ if (!accountId || !token) {
     'Set CLOUDFLARE_ACCOUNT_ID and CLOUDFLARE_API_TOKEN, then run:',
     '  pnpm --filter @ledgercraft/api eval:assistant:live',
     `Model: ${ASSISTANT_WORKERS_AI_MODEL} (override with ASSISTANT_WORKERS_AI_MODEL).`,
-    'The script creates a temporary business, sends the CI prompts, and prints pass/fail plus p50/p95 latency.',
+    'The script creates a temporary business, sends the CI prompts plus one multi-turn customer pick, and prints pass/fail plus p50/p95 latency.',
     'Exit 2: credentials were absent.',
   ].join('\n'));
   process.exit(2);
@@ -42,16 +42,38 @@ const { createDb } = await import('../src/db/local');
 const { withTestDb } = await import('../src/test/harness');
 const { createAuth } = await import('../src/modules/auth/auth');
 const { parseWorkersAiAssistantTurn } = await import('../src/modules/ai/assistant.workers');
-const { ASSISTANT_EVAL_PROMPTS } = await import('../src/modules/ai/assistant.prompts');
+const { ASSISTANT_EVAL_PROMPTS, ASSISTANT_LIVE_CUSTOMER_PICK, assistantCustomerPickMessage } = await import('../src/modules/ai/assistant.prompts');
 const modelName = process.env.ASSISTANT_WORKERS_AI_MODEL || ASSISTANT_WORKERS_AI_MODEL;
 const headers = { Origin: 'http://localhost:8080', 'Content-Type': 'application/json' };
 const monday = new Date('2026-11-09T01:00:00.000Z');
 const dateline = new Date('2026-11-13T11:30:00.000Z');
 
+type LivePart = {
+  type: string;
+  text?: string;
+  href?: string;
+  field?: string;
+  options?: Array<{ id: string; label: string }>;
+  proposal?: {
+    taxRate?: string;
+    dueDate?: string | null;
+    date?: string;
+    totals?: { subtotal: string; taxAmount: string; total: string } | null;
+  };
+};
+
+type LiveReply = { conversationId?: string; parts?: LivePart[] };
+
 function percentile(values: number[], p: number): number {
   const sorted = [...values].sort((a, b) => a - b);
   const index = Math.min(sorted.length - 1, Math.max(0, Math.ceil((p / 100) * sorted.length) - 1));
   return sorted[index] ?? 0;
+}
+
+function sameLabels(actual: string[], expected: readonly string[]): boolean {
+  const left = [...actual].sort();
+  const right = [...expected].sort();
+  return left.length === right.length && left.every((label, index) => label === right[index]);
 }
 
 await withTestDb(async () => {
@@ -109,7 +131,7 @@ await withTestDb(async () => {
       const response = await app.request('/api/ai/assistant', { method: 'POST', headers: { ...headers, Cookie: cookie }, body: JSON.stringify({ message: item.prompt }) });
       const elapsed = Date.now() - started;
       latencies.push(elapsed);
-      const body = await response.json() as { parts?: Array<{ type: string; text?: string; href?: string; proposal?: { taxInclusive?: boolean; taxRate?: string; dueDate?: string | null; date?: string; lines?: Array<{ description: string; quantity: string; rate: string | null }>; totals?: { subtotal: string; taxAmount: string; total: string } | null } }> };
+      const body = await response.json() as LiveReply;
       const parts = body.parts ?? [];
       const proposal = parts.find((part) => part.type === 'proposal')?.proposal;
       const locked = item.id === 'gst-inclusive'
@@ -131,9 +153,71 @@ await withTestDb(async () => {
         pass = pass && proposal?.taxRate === '15' && proposal.totals?.subtotal === locked.subtotal && proposal.totals?.taxAmount === locked.taxAmount && proposal.totals?.total === locked.total;
         detail = proposal ? `total ${proposal.totals?.total ?? 'none'}` : detail;
       }
+      if ((item.id === 'injection-name' || item.id === 'injection-notes') && parts.some((part) => part.type === 'quick_picks' && part.field === 'customerId')) {
+        pass = false;
+        detail = 'customer quick_picks';
+      }
       if (!pass) failed += 1;
       console.log(`| ${item.id} | ${pass ? 'pass' : 'fail'} | ${detail.replace(/\|/g, '/')} | ${elapsed} |`);
     }
+
+    const pick = ASSISTANT_LIVE_CUSTOMER_PICK;
+    runtime.now = monday;
+    const firstStarted = Date.now();
+    const firstResponse = await app.request('/api/ai/assistant', {
+      method: 'POST',
+      headers: { ...headers, Cookie: cookie },
+      body: JSON.stringify({ message: pick.prompt }),
+    });
+    let elapsed = Date.now() - firstStarted;
+    const firstBody = await firstResponse.json() as LiveReply;
+    const firstParts = firstBody.parts ?? [];
+    const picks = firstParts.find((part) => part.type === 'quick_picks' && part.field === 'customerId');
+    const labels = (picks?.options ?? []).map((option) => option.label);
+    const chosen = picks?.options?.find((option) => option.label === pick.customerLabel);
+    const afterFirst = await call('/api/invoices', 'GET');
+    const firstInvoiceCount = Array.isArray(afterFirst.invoices) ? afterFirst.invoices.length : 0;
+    const disambiguated = firstResponse.status === 200
+      && !!firstBody.conversationId
+      && !!chosen
+      && firstInvoiceCount === 1
+      && !JSON.stringify(firstBody).includes('Secret Buyer')
+      && sameLabels(labels, pick.customers);
+    let pass = disambiguated;
+    let detail = disambiguated
+      ? 'quick_picks'
+      : (firstResponse.status === 200 ? firstParts.map((part) => part.type).join(', ') || 'empty' : `HTTP ${firstResponse.status}`);
+    if (disambiguated && chosen && firstBody.conversationId) {
+      const secondStarted = Date.now();
+      const secondResponse = await app.request('/api/ai/assistant', {
+        method: 'POST',
+        headers: { ...headers, Cookie: cookie },
+        body: JSON.stringify({
+          conversationId: firstBody.conversationId,
+          message: assistantCustomerPickMessage(chosen.label),
+        }),
+      });
+      elapsed += Date.now() - secondStarted;
+      const secondBody = await secondResponse.json() as LiveReply;
+      const secondParts = secondBody.parts ?? [];
+      const proposal = secondParts.find((part) => part.type === 'proposal')?.proposal;
+      const afterSecond = await call('/api/invoices', 'GET');
+      const secondInvoiceCount = Array.isArray(afterSecond.invoices) ? afterSecond.invoices.length : 0;
+      pass = secondResponse.status === 200
+        && secondInvoiceCount === 1
+        && !JSON.stringify(secondBody).includes('Secret Buyer')
+        && proposal?.taxRate === pick.taxRate
+        && proposal.totals?.subtotal === pick.totals.subtotal
+        && proposal.totals?.taxAmount === pick.totals.taxAmount
+        && proposal.totals?.total === pick.totals.total;
+      detail = proposal
+        ? `total ${proposal.totals?.total ?? 'none'}`
+        : (secondResponse.status === 200 ? secondParts.map((part) => part.type).join(', ') || 'empty' : `HTTP ${secondResponse.status}`);
+    }
+    latencies.push(elapsed);
+    if (!pass) failed += 1;
+    console.log(`| ${pick.id} | ${pass ? 'pass' : 'fail'} | ${detail.replace(/\|/g, '/')} | ${elapsed} |`);
+
     console.log(`p50 ${percentile(latencies, 50)}ms  p95 ${percentile(latencies, 95)}ms  model ${modelName}`);
     console.log('Skipped deterministic cases: limits, timeout, malformed output, duplicate save, forged proposal. Those run in CI.');
     process.exitCode = failed ? 1 : 0;
