@@ -38,6 +38,8 @@ const InvoiceViewPage = lazy(() => import("@/pages/InvoiceViewPage"));
 // Keep this feature page lazy without increasing the legacy routes-file refresh baseline.
 // eslint-disable-next-line react-refresh/only-export-components
 const InvoiceImportPage = lazy(() => import("@/features/invoice-import/InvoiceImportPage"));
+// eslint-disable-next-line react-refresh/only-export-components
+const AssistantPage = lazy(() => import("@/features/assistant/AssistantPage"));
 const PublicInvoice = lazy(() => import("@/pages/PublicInvoice"));
 const SharedInvoice = lazy(() => import("@/pages/SharedInvoice"));
 const AccountsPage = lazy(() => import("@/pages/Accounts"));
@@ -164,6 +166,7 @@ const appRoutes: RouteObject[] = [
         ),
         children: [
           { index: true, element: <Dashboard /> },
+          { path: "assistant", element: <AssistantPage /> },
           { path: "invoices", element: <Invoices /> },
           { path: "invoices/new", element: <CreateInvoice /> },
           { path: "invoices/create", element: <CreateInvoice /> },
