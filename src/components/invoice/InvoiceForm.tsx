@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Card, CardContent } from "@/components/ui/card";
 import { previewQuoteTotals } from '@/features/quotes/quoteTotals';
+import { useDocumentEditor } from '@/utils/documentEditor';
 import { calculateLineTotal } from '@/utils/invoiceUtils';
 import { getCompatibleUnits } from '@/utils/unitConversion';
 import {
@@ -308,6 +309,9 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const { isDirty } = form.formState;
   const itemsChanged = JSON.stringify(items) !== initialItemsJSON;
   const hasUnsavedChanges = !isSubmitting && (isDirty || itemsChanged);
+  const initialQuoteKindValue = initialQuoteKind ?? businessProfile?.defaultQuoteKind ?? 'quote';
+  const unsavedDocument = hasUnsavedChanges || (isQuote && quoteKind !== initialQuoteKindValue);
+  useDocumentEditor(true, unsavedDocument);
 
   const blocker = useBlocker(hasUnsavedChanges);
 

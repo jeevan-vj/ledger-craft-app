@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDocumentEditor } from '@/utils/documentEditor';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -139,6 +140,7 @@ const ExpenseFormDrawer: React.FC<ExpenseFormDrawerProps> = ({
       notes: ''
     }
   });
+  useDocumentEditor(open, open && form.formState.isDirty);
 
   useEffect(() => {
     if (initialValues) {
