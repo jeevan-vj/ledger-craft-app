@@ -11,6 +11,7 @@ import { dashboardApi } from '@/features/dashboard/api/dashboardApi';
 import { businessProfileApi } from '@/features/business-profile/api/businessProfileApi';
 import { reportsApi } from '@/features/reports/api/reportsApi';
 import { FIRST_INVOICE_PROMPT_KEY } from '@/features/onboarding/onboardingStorage';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 const mockNavigate = jest.fn();
 jest.mock('@/features/reports/api/reportsApi', () => ({ reportsApi: { options: jest.fn() } }));
@@ -52,6 +53,10 @@ jest.mock('@/features/dashboard/api/dashboardApi', () => ({
     getDashboard: jest.fn(),
     listSavedReports: jest.fn(),
   },
+}));
+
+jest.mock('@/services/capabilitiesService', () => ({
+  getServerCapabilities: jest.fn(),
 }));
 
 const reportFilters = { from: '2026-10-01', to: '2026-10-31', comparison: 'previous_period' as const };
@@ -99,6 +104,7 @@ describe('Home quick actions', () => {
     (dashboardApi.getDashboard as jest.Mock).mockResolvedValue(dashboardPayload);
     (dashboardApi.listSavedReports as jest.Mock).mockResolvedValue([]);
     (businessProfileApi.get as jest.Mock).mockResolvedValue({ country: 'NZ', gstRegistrationStatus: 'not_registered' });
+    jest.mocked(getServerCapabilities).mockResolvedValue({ email: 'unavailable', ai: 'unavailable', stripe: 'unavailable', assistant: 'unavailable' });
     (SecureStore.getItemAsync as jest.Mock).mockResolvedValue(null);
     (SecureStore.setItemAsync as jest.Mock).mockResolvedValue(undefined);
     useStore.setState({
@@ -224,6 +230,18 @@ describe('Home quick actions', () => {
     await waitFor(() => {
       expect(second.queryByRole('button', { name: 'Create invoice' })).toBeNull();
     });
+  });
+
+  it('shows Ask the assistant only when the server capability is available', async () => {
+    const hidden = renderHome();
+    await hidden.findByText('Business reports');
+    expect(hidden.queryByRole('button', { name: 'Ask the assistant' })).toBeNull();
+    hidden.unmount();
+
+    jest.mocked(getServerCapabilities).mockResolvedValue({ email: 'unavailable', ai: 'unavailable', stripe: 'unavailable', assistant: 'available' });
+    const shown = renderHome();
+    fireEvent.press(await shown.findByRole('button', { name: 'Ask the assistant' }));
+    expect(mockNavigate).toHaveBeenCalledWith('Assistant');
   });
 
   it('links a registered business without filing settings to GST reports', async () => {

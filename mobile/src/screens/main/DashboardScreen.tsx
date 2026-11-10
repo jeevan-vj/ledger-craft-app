@@ -26,6 +26,7 @@ import { businessProfileApi } from '@/features/business-profile/api/businessProf
 import { GstFilingSettingsBanner } from '@/components/reports/GstFilingSettingsBanner';
 import { needsGstFilingSettings } from '@/features/reports/gstFilingSettings';
 import { reportsApi } from '@/features/reports/api/reportsApi';
+import { getServerCapabilities } from '@/services/capabilitiesService';
 
 type DashboardNavigation = CompositeNavigationProp<NativeStackNavigationProp<HomeStackParamList, 'DashboardHome'>, NativeBottomTabNavigationProp<MainTabParamList>>;
 
@@ -166,6 +167,7 @@ export default function DashboardScreen() {
   const openBusiness = () => navigation.navigate('More', moreTabParams({ name: 'BusinessSettings' }));
   const openGstSettings = () => navigation.navigate('More', moreTabParams({ name: 'Reports' }));
   const profile = useQuery({ queryKey: ['business-profile'], queryFn: () => businessProfileApi.get() });
+  const capabilities = useQuery({ queryKey: ['server-capabilities'], queryFn: getServerCapabilities, staleTime: Infinity });
   const openFirstInvoice = useCallback(() => {
     navigation.navigate('Invoices', invoiceTabParams({ name: 'InvoiceCreate' }));
   }, [navigation]);
@@ -240,7 +242,7 @@ export default function DashboardScreen() {
       <View style={styles.balanceActions}><CircleIconButton icon={balanceVisible ? 'eye-off' : 'eye'} label={balanceVisible ? 'Hide balance' : 'Show balance'} onPress={() => setBalanceVisible((visible) => !visible)} /><CircleIconButton icon="bar-chart-2" label="View invoices" onPress={openInvoices} /></View>
     </View>
 
-    <View style={styles.actions}>
+    <View style={[styles.actions, capabilities.data?.assistant !== 'available' && styles.actionsClosed]}>
       {quickActions.map((action) => (
         <QuickAction
           key={action.id}
@@ -252,6 +254,19 @@ export default function DashboardScreen() {
         />
       ))}
     </View>
+
+    {capabilities.data?.assistant === 'available' ? (
+      <AppPressable
+        onPress={() => navigation.navigate('Assistant')}
+        accessibilityRole="button"
+        accessibilityLabel="Ask the assistant"
+        accessibilityHint="Opens a typed chat. Nothing is saved until you tap Save draft."
+        style={({ pressed }) => [styles.assistantEntry, { backgroundColor: theme.colors.surface, opacity: pressed ? 0.78 : 1 }]}
+      >
+        <Text style={theme.type.callout}>Ask the assistant</Text>
+        <Text style={theme.type.footnote}>Type a request. Invoices stay drafts until you save.</Text>
+      </AppPressable>
+    ) : null}
 
     {error ? (
       <AppPressable onPress={retry} accessibilityRole="button" accessibilityLabel="Retry loading invoices" style={[styles.errorBanner, { backgroundColor: theme.colors.dangerFill }]}>
@@ -343,7 +358,9 @@ const styles = StyleSheet.create({
   avatarText: { fontSize: 19, fontWeight: '900' },
   balanceRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 24 },
   balanceActions: { flexDirection: 'row', gap: 8 }, money: { marginTop: 2, fontVariant: ['tabular-nums'] },
-  actions: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start', marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
+  actions: { flexDirection: 'row', flexWrap: 'nowrap', alignItems: 'flex-start', marginBottom: 16 },
+  actionsClosed: { marginBottom: 34 }, sectionTitle: { marginBottom: 14, marginTop: 4 },
+  assistantEntry: { borderRadius: 20, paddingHorizontal: 16, paddingVertical: 14, marginBottom: 34, gap: 4, minHeight: 48, justifyContent: 'center' },
   summaryFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 26 },
   dots: { flexDirection: 'row', justifyContent: 'center', gap: 6, marginTop: 12, marginBottom: 28 },
   periods: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 12 },

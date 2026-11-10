@@ -23,6 +23,7 @@ export type AuthStackParamList = {
 
 export type HomeStackParamList = {
   DashboardHome: undefined;
+  Assistant: undefined;
 };
 
 export type CustomerStackParamList = {

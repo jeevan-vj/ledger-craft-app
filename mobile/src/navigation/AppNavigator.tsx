@@ -17,6 +17,7 @@ import { useQuickSaleEnabled } from '@/features/sales/quickSalePreference';
 import { createDetailHeaderOptions, createFormHeaderOptions, createListHeaderOptions } from '@/theme/navigation';
 import { useTheme } from '@/theme';
 import DashboardScreen from '@/screens/main/DashboardScreen';
+import AssistantScreen from '@/screens/assistant/AssistantScreen';
 import InvoiceListScreen from '@/screens/invoices/InvoiceListScreen';
 import InvoiceCreateScreen from '@/screens/invoices/InvoiceCreateScreen';
 import InvoiceDetailScreen from '@/screens/invoices/InvoiceDetailScreen';
@@ -65,7 +66,11 @@ function tabIcon(sfSymbol: SFSymbol, androidAsset: ImageSourcePropType) {
 
 function HomeNavigator() {
   const { colors } = useTheme();
-  return <HomeStack.Navigator screenOptions={createListHeaderOptions(colors)}><HomeStack.Screen name="DashboardHome" component={DashboardScreen} options={{ headerShown: false }} /></HomeStack.Navigator>;
+  const form = createFormHeaderOptions(colors);
+  return <HomeStack.Navigator screenOptions={createListHeaderOptions(colors)}>
+    <HomeStack.Screen name="DashboardHome" component={DashboardScreen} options={{ headerShown: false }} />
+    <HomeStack.Screen name="Assistant" component={AssistantScreen} options={{ ...form, title: 'Assistant' }} />
+  </HomeStack.Navigator>;
 }
 function InvoiceNavigator() {
   const { colors } = useTheme(); const list = createListHeaderOptions(colors); const form = createFormHeaderOptions(colors); const detail = createDetailHeaderOptions(colors);
