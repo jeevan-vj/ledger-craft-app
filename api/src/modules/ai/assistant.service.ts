@@ -1,19 +1,29 @@
-import { invoiceSchema, type AssistantTurnRequest, type AssistantTurnResponse, type SaveAssistantDraftRequest } from '@ledgercraft/contracts';
+import {
+  invoiceSchema,
+  previewAssistantProposalResponseSchema,
+  type AssistantTurnRequest,
+  type AssistantTurnResponse,
+  type CreateInvoiceRequest,
+  type PreviewAssistantProposalRequest,
+  type PreviewAssistantProposalResponse,
+  type SaveAssistantDraftRequest,
+} from '@ledgercraft/contracts';
 import type { Database } from '../../db/client';
 import { apiError } from '../../http-error';
 import { withOrganisationTx } from '../auth/bind-organisation';
 import type { AppCapabilities } from '../../types';
 import { getIdempotencyRecord, insertIdempotencyRecord, assertReplayMatches, type IdempotencyScope } from '../invoices/idempotency';
 import { createInvoiceInTx } from '../invoices/invoices.service';
+import { computeInvoiceTotals } from '../invoices/totals';
 import { getInvoice } from '../invoices/invoices.repository';
 import { getCustomer } from '../customers/customers.repository';
 import { getItem } from '../items/items.repository';
-import type { CreateInvoiceRequest } from '@ledgercraft/contracts';
+import { getBusinessProfile } from '../business-profile/business-profile.repository';
 import { decimal } from '../invoices/money';
 import { resolveDocumentCurrency } from '../currency/currency.service';
 import { ASSISTANT_DEFAULTS, assistantEnabled, resolveLimits, tokenCostUsd, type AssistantRuntime } from './assistant.config';
 import { runAssistantLoop } from './assistant.loop';
-import { pricedTotals } from './assistant.proposal';
+import { consumeAssistantPreview } from './assistant.preview-limit';
 import {
   ensureAssistantConversation,
   findProposal,
@@ -32,53 +42,130 @@ const UNAVAILABLE = 'The assistant is not configured.';
 const LIMITED = 'Assistant limit reached for this business. Use Invoices to continue.';
 const INCOMPLETE = 'Add the missing invoice details before saving.';
 const MISSING = 'That proposal is not in this business.';
+const DUE_BEFORE = "Due date can't be before the invoice date";
 
 function assertEnabled(capabilities?: AppCapabilities) {
   if (!assistantEnabled(capabilities?.assistant)) throw apiError(403, 'ASSISTANT_DISABLED', DISABLED);
 }
 
-async function reprice(tx: Database, organisationId: string, proposal: AssistantProposal, edits: SaveAssistantDraftRequest['edits']) {
+type DraftSourceLine = {
+  description: string;
+  quantity: string;
+  rate: string | null;
+  unit?: string | null;
+  itemId?: string | null;
+  taxRate?: string;
+};
+
+type FieldError = { field: string; message: string };
+
+type PricedDraft = {
+  date: string;
+  dueDate: string | null;
+  taxInclusive: boolean | null;
+  taxRate: string;
+  lines: PreviewAssistantProposalResponse['lines'];
+  subtotal: string | null;
+  taxAmount: string | null;
+  total: string | null;
+  errors: FieldError[];
+  request: CreateInvoiceRequest | null;
+};
+
+async function priceAssistantDraft(
+  tx: Database,
+  organisationId: string,
+  proposal: AssistantProposal,
+  edits: SaveAssistantDraftRequest['edits'],
+): Promise<PricedDraft> {
+  const issueDate = edits?.issueDate ?? proposal.date;
+  const dueDate = edits?.dueDate ?? proposal.dueDate;
+  const taxInclusive = edits?.taxInclusive ?? proposal.taxInclusive;
+  const taxRate = edits?.taxRate ?? proposal.taxRate;
+  const errors: FieldError[] = [];
   const customerId = edits?.customerId ?? proposal.customerId;
   const customer = customerId ? await getCustomer(tx, organisationId, customerId) : undefined;
-  const dueDate = edits?.dueDate ?? proposal.dueDate;
-  if (!customer || !dueDate || dueDate < proposal.date) return undefined;
-  const source = edits?.lines ?? proposal.lines.map((line) => ({
-    description: line.description,
-    quantity: line.quantity,
-    rate: line.rate ?? '',
-    unit: line.unit,
-    itemId: line.itemId,
-  }));
-  if (source.some((line) => !line.rate)) return undefined;
-  const lines = [];
-  for (const line of source) {
-    if (line.itemId && !await getItem(tx, organisationId, line.itemId)) return undefined;
-    if (!line.rate) return undefined;
-    lines.push({ description: line.description, quantity: line.quantity, rate: line.rate, unit: line.unit ?? undefined });
-  }
-  const taxInclusive = edits?.taxInclusive ?? proposal.taxInclusive;
-  if (taxInclusive == null) return undefined;
-  const resolved = await resolveDocumentCurrency(tx, organisationId, proposal.currency, proposal.date);
-  const totals = pricedTotals({ taxInclusive, taxRate: proposal.taxRate, precision: resolved.currency.precision, lines });
-  if (!totals) return undefined;
-  const notes = edits && 'notes' in edits ? (edits.notes ?? null) : proposal.notes;
-  const request: CreateInvoiceRequest = {
-    customerId: customer.id,
-    date: proposal.date,
-    dueDate,
-    notes,
-    taxInclusive,
-    taxRate: proposal.taxRate,
-    currency: proposal.currency,
-    status: 'draft',
-    items: lines.map((line) => ({
+  if (!customer) errors.push({ field: 'customerId', message: 'Choose a customer in this business.' });
+  if (!dueDate) errors.push({ field: 'dueDate', message: 'Enter a due date' });
+  else if (dueDate < issueDate) errors.push({ field: 'dueDate', message: DUE_BEFORE });
+  if (taxInclusive == null) errors.push({ field: 'taxInclusive', message: 'Choose whether the price includes GST' });
+
+  const source: DraftSourceLine[] = edits?.lines
+    ? edits.lines.map((line) => ({
       description: line.description,
       quantity: line.quantity,
       rate: line.rate,
-      ...(line.unit ? { unit: line.unit } : {}),
-    })),
-  };
-  return { request, totals };
+      unit: line.unit,
+      itemId: line.itemId,
+      taxRate: line.taxRate,
+    }))
+    : proposal.lines.map((line) => ({
+      description: line.description,
+      quantity: line.quantity,
+      rate: line.rate,
+      unit: line.unit,
+      itemId: line.itemId,
+    }));
+
+  const lines: PricedDraft['lines'] = [];
+  for (const [index, line] of source.entries()) {
+    if (line.itemId && !await getItem(tx, organisationId, line.itemId)) {
+      errors.push({ field: `lines.${index}.itemId`, message: 'That item is not in this business.' });
+    }
+    if (!line.rate) errors.push({ field: `lines.${index}.rate`, message: 'Enter a price' });
+    lines.push({
+      description: line.description,
+      quantity: line.quantity,
+      rate: line.rate,
+      taxRate: line.taxRate ?? taxRate,
+      tax: null,
+      total: null,
+    });
+  }
+
+  const blocking = errors.filter((error) => error.message !== DUE_BEFORE);
+  let request: CreateInvoiceRequest | null = null;
+  let subtotal: string | null = null;
+  let taxAmount: string | null = null;
+  let total: string | null = null;
+  if (blocking.length === 0 && customer && dueDate && taxInclusive != null) {
+    const notes = edits && 'notes' in edits ? (edits.notes ?? null) : proposal.notes;
+    request = {
+      customerId: customer.id,
+      date: issueDate,
+      dueDate,
+      notes,
+      taxInclusive,
+      taxRate,
+      currency: proposal.currency,
+      status: 'draft',
+      items: source.map((line) => ({
+        description: line.description,
+        quantity: line.quantity,
+        rate: line.rate ?? '',
+        ...(line.unit ? { unit: line.unit } : {}),
+        ...(line.taxRate !== undefined ? { taxes: [{ id: 'gst', name: 'GST', rate: line.taxRate }] } : {}),
+      })),
+    };
+    const profile = await getBusinessProfile(tx, organisationId);
+    const resolved = await resolveDocumentCurrency(tx, organisationId, request.currency, request.date);
+    const totals = computeInvoiceTotals(request, profile?.defaultTaxRate ?? '0', resolved.currency.precision);
+    subtotal = totals.subtotal;
+    taxAmount = totals.taxAmount;
+    total = totals.total;
+    totals.lines.forEach((line, index) => {
+      lines[index] = {
+        description: line.description,
+        quantity: line.quantity,
+        rate: line.rate,
+        taxRate: line.taxes[0]?.rate ?? '0',
+        tax: line.tax,
+        total: line.total,
+      };
+    });
+  }
+
+  return { date: issueDate, dueDate, taxInclusive, taxRate, lines, subtotal, taxAmount, total, errors, request };
 }
 
 export async function completeAssistantForUser(
@@ -183,11 +270,12 @@ export async function saveAssistantDraftForUser(
       return { kind: 'invoice' as const, invoice };
     }
     if (!stored.proposal) return { kind: 'missing' as const };
-    const priced = await reprice(tx, ctx.organisationId, stored.proposal, input.edits);
-    if (!priced) {
+    const priced = await priceAssistantDraft(tx, ctx.organisationId, stored.proposal, input.edits);
+    if (!priced.request) {
       await insertAssistantEvent(tx, { organisationId: ctx.organisationId, userId, requestId, action: 'save_draft', outcome: 'incomplete', confirmed: false });
       return { kind: 'incomplete' as const };
     }
+    if (priced.errors.length > 0) return { kind: 'invalid' as const, message: priced.errors[0]?.message ?? DUE_BEFORE };
     const invoice = await createInvoiceInTx(tx, ctx, priced.request);
     await markProposalSaved(tx, ctx.organisationId, stored.proposal.id, invoice.id);
     await insertAssistantEvent(tx, {
@@ -199,5 +287,40 @@ export async function saveAssistantDraftForUser(
   });
   if (outcome.kind === 'missing') throw apiError(404, 'NOT_FOUND', MISSING);
   if (outcome.kind === 'incomplete') throw apiError(422, 'PROPOSAL_INCOMPLETE', INCOMPLETE);
+  if (outcome.kind === 'invalid') throw apiError(400, 'VALIDATION_ERROR', outcome.message);
   return outcome.invoice;
+}
+
+export async function previewAssistantProposalForUser(
+  db: Database,
+  userId: string,
+  proposalId: string,
+  input: PreviewAssistantProposalRequest,
+  capabilities: AppCapabilities | undefined,
+  previewPerMinute: number,
+): Promise<PreviewAssistantProposalResponse> {
+  assertEnabled(capabilities);
+  const outcome = await withOrganisationTx(db, userId, async (tx, ctx) => {
+    consumeAssistantPreview(ctx.organisationId, previewPerMinute);
+    const stored = await findProposal(tx, ctx.organisationId, proposalId, input.conversationId);
+    if (!stored?.proposal) return { kind: 'missing' as const };
+    const priced = await priceAssistantDraft(tx, ctx.organisationId, stored.proposal, input.edits);
+    return {
+      kind: 'preview' as const,
+      body: previewAssistantProposalResponseSchema.parse({
+        proposalId: stored.proposal.id,
+        date: priced.date,
+        dueDate: priced.dueDate,
+        taxInclusive: priced.taxInclusive,
+        taxRate: priced.taxRate,
+        lines: priced.lines,
+        subtotal: priced.subtotal,
+        taxAmount: priced.taxAmount,
+        total: priced.total,
+        errors: priced.errors,
+      }),
+    };
+  });
+  if (outcome.kind === 'missing') throw apiError(404, 'NOT_FOUND', MISSING);
+  return outcome.body;
 }
