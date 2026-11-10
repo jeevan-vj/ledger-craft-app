@@ -127,6 +127,7 @@ describe('Assistant page', () => {
     expect(screen.getByLabelText('Rate for Plumbing')).toHaveValue('120.00');
     expect(screen.queryByText('360.00')).not.toBeInTheDocument();
     expect(screen.queryByRole('button', { name: 'Send' })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Save draft' })).toBeDisabled();
   });
 
   it('shows keyboard-accessible customer picks for an ambiguous Sarah', async () => {
@@ -257,6 +258,38 @@ describe('Assistant page', () => {
     await screen.findByRole('heading', { name: `Saved draft ${INVOICE}` });
     expect(saves()).toHaveLength(1);
     expect((saves()[0][1] as RequestInit).headers).toEqual(expect.objectContaining({ 'Idempotency-Key': expect.any(String) }));
+  });
+
+  it('reuses the idempotency key when the same failed save is tapped again', async () => {
+    fetchMock.mockImplementation((input: RequestInfo) => {
+      const url = String(input);
+      if (url.includes('/api/healthz')) return json(health('available'));
+      if (url.includes('/api/ai/assistant/drafts')) {
+        return errorBody('NOT_FOUND', 'That proposal is not in this business.', 404);
+      }
+      return json({
+        conversationId: CONVO,
+        parts: [{ type: 'proposal', proposal: proposal() }],
+      });
+    });
+    mount();
+    const user = await ask('Invoice Sarah for plumbing');
+    const save = await screen.findByRole('button', { name: 'Save draft' });
+    const saves = () => fetchMock.mock.calls.filter((call) => String(call[0]).includes('/api/ai/assistant/drafts'));
+    const keyOf = (call: unknown[]) => (call[1] as RequestInit).headers as Record<string, string>;
+    await user.click(save);
+    await screen.findByRole('alert');
+    await waitFor(() => expect(saves()).toHaveLength(1));
+    await user.click(save);
+    await waitFor(() => expect(saves()).toHaveLength(2));
+    expect(keyOf(saves()[1])['Idempotency-Key']).toBe(keyOf(saves()[0])['Idempotency-Key']);
+    expect(JSON.parse(String((saves()[1][1] as RequestInit).body))).toEqual(JSON.parse(String((saves()[0][1] as RequestInit).body)));
+    const rate = screen.getByLabelText('Rate for Plumbing');
+    await user.clear(rate);
+    await user.type(rate, '80.00');
+    await user.click(save);
+    await waitFor(() => expect(saves()).toHaveLength(3));
+    expect(keyOf(saves()[2])['Idempotency-Key']).not.toBe(keyOf(saves()[0])['Idempotency-Key']);
   });
 
   it('keeps the typed message when the assistant limit or capability stops the turn', async () => {

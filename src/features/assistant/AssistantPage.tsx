@@ -103,6 +103,7 @@ export function AssistantPage() {
   const [savingId, setSavingId] = useState<string | null>(null);
   const abortRef = useRef<AbortController | null>(null);
   const savingRef = useRef(false);
+  const saveKeys = useRef(new Map<string, string>());
   const errorRef = useRef<HTMLDivElement>(null);
   const replyRef = useRef<HTMLDivElement>(null);
   const replyCount = items.filter((item) => item.role === 'assistant').length;
@@ -156,15 +157,18 @@ export function AssistantPage() {
     if (savingRef.current || !conversationId) return;
     const draft = drafts[proposal.id] ?? draftFromProposal(proposal);
     if (!canSaveDraft(proposal, draft)) return;
-    savingRef.current = true;
-    setSavingId(proposal.id);
-    setError(null);
-    const idempotencyKey = crypto.randomUUID();
-    void saveAssistantDraft({
+    const body = {
       conversationId,
       proposalId: proposal.id,
       edits: editsForSave(proposal, draft),
-    }, idempotencyKey)
+    };
+    const stamp = JSON.stringify(body);
+    const idempotencyKey = saveKeys.current.get(stamp) ?? crypto.randomUUID();
+    saveKeys.current.set(stamp, idempotencyKey);
+    savingRef.current = true;
+    setSavingId(proposal.id);
+    setError(null);
+    void saveAssistantDraft(body, idempotencyKey)
       .then((saved) => navigate(`/invoices/${saved.id}`))
       .catch((caught: unknown) => {
         setError(caught instanceof AssistantApiError ? caught.message : 'The draft was not saved.');

@@ -58,9 +58,10 @@ export function customerNeedsPick(proposal: AssistantProposal, draft: ProposalDr
 }
 
 export function canSaveDraft(proposal: AssistantProposal, draft: ProposalDraft): boolean {
-  if (customerNeedsPick(proposal, draft)) return false;
-  if (linesChanged(proposal, draft) && !linesReady(draft)) return false;
-  return true;
+  if (customerNeedsPick(proposal, draft) || draft.customerId == null) return false;
+  if (!day.test(draft.dueDate) || draft.dueDate < proposal.date) return false;
+  if (draft.taxInclusive == null || draft.notes.length > 1000) return false;
+  return linesReady(draft);
 }
 
 export function proposalIsDirty(proposal: AssistantProposal, draft: ProposalDraft): boolean {
