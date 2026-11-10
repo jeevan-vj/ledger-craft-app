@@ -9,6 +9,7 @@ import {
 import { HTTPException } from 'hono/http-exception';
 import type { Database } from '../../db/client';
 import { withOrganisationTx } from '../auth/bind-organisation';
+import { deleteProposalsForConversation } from '../ai/assistant.store';
 import * as repo from './conversations.repository';
 
 export async function listConversationsForUser(db: Database, userId: string): Promise<ConversationListResponse> {
@@ -64,6 +65,7 @@ export async function updateConversationForUser(
 
 export async function deleteConversationForUser(db: Database, userId: string, id: string): Promise<void> {
   return withOrganisationTx(db, userId, async (tx, ctx) => {
+    await deleteProposalsForConversation(tx, ctx.organisationId, id);
     const deleted = await repo.deleteConversation(tx, ctx.organisationId, id);
     if (!deleted) throw new HTTPException(404, { message: 'Conversation not found' });
   });

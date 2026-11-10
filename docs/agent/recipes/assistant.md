@@ -4,11 +4,11 @@ P1 is the API in `api/src/modules/ai`. Web and mobile chat UI are later phases. 
 
 ## Request path
 
-`POST /api/ai/assistant` is the turn. It requires the session organisation. The body cannot choose an organisation.
+`POST /api/ai/assistant` is the turn. `POST /api/ai/assistant/drafts` is the only save. Both require the session organisation. The body cannot choose an organisation.
 
-The turn is capped at 6 model steps and 8 seconds. Tool arguments are Zod-parsed. Allowed tools are `search_customers`, `search_catalogue`, and `list_outstanding`. Any other tool name is refused and answered with a link to Invoices or Expenses.
+The turn is capped at 6 model steps and 8 seconds. Tool arguments are Zod-parsed. Allowed tools are `search_customers`, `search_catalogue`, `prepare_invoice_proposal`, and `list_outstanding`. Any other tool name is refused and answered with a link to Invoices or Expenses.
 
-Invoice proposals and the save-draft endpoint are the next change. This one does not insert invoices. An unlisted tool, including any expense tool, is refused. Expenses have no non-posting draft: `createExpenseInTx` saves a real expense and posts a journal when the status is approved.
+`prepare_invoice_proposal` returns a proposal and does not insert an invoice. The proposal row is stored in `assistant_proposals` (`0038_assistant-proposals.sql`), which the conversation API cannot write. Saving clears the payload and keeps the id, organisation, saved invoice id, and signature. The 90-day purge and deleting the conversation remove the row. Save of a removed proposal is `404`. Save reads that row, applies edits, and calls `createInvoiceInTx` with `status: 'draft'`. Totals stay null until every line has a rate and GST treatment is set. Totals use `computeInvoiceTotals` at the document currency's precision. An edited rate is kept. A second save of the same proposal returns the original draft. The same `Idempotency-Key` with a different body is `409 IDEMPOTENCY_CONFLICT`.
 
 ## What is sent to Workers AI
 
@@ -28,7 +28,7 @@ Per business, from the environment, defaulting to 100 messages/day, 20/minute, a
 
 ## Expenses
 
-There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. P1 does not call it. A fuel request is refused with a link to Expenses.
+There is no expense draft status. `createExpenseInTx` inserts a real expense and posts a journal when the status is approved. Pending is still a saved expense. The assistant does not call it. A fuel request is refused with a link to Expenses.
 
 ## Evals
 

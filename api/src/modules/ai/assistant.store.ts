@@ -1,10 +1,12 @@
-import type { AssistantPart } from '@ledgercraft/contracts';
+import { assistantProposalSchema, type AssistantPart, type AssistantProposal } from '@ledgercraft/contracts';
 import { and, eq, gte, inArray, lt } from 'drizzle-orm';
 import type { Database } from '../../db/client';
 import { assistantEvents } from '../../db/schema/assistant-events';
+import { assistantProposals } from '../../db/schema/assistant-proposals';
 import { conversationMessages, conversations } from '../../db/schema/conversations';
 import { decimal } from '../invoices/money';
 import { insertConversation, insertMessage } from '../conversations/conversations.repository';
+import { proposalSignatureMatches, signProposal } from './assistant.proposal';
 
 export type AssistantOutcome = 'reply' | 'proposal' | 'refused' | 'limit' | 'timeout' | 'invalid_output' | 'saved' | 'incomplete';
 
@@ -19,6 +21,10 @@ export async function purgeAssistantRetention(tx: Database, organisationId: stri
     eq(assistantEvents.organisationId, organisationId),
     lt(assistantEvents.createdAt, cutoff),
   ));
+  await tx.delete(assistantProposals).where(and(
+    eq(assistantProposals.organisationId, organisationId),
+    lt(assistantProposals.createdAt, cutoff),
+  ));
   const rows = await tx.select({ id: conversations.id, context: conversations.context })
     .from(conversations)
     .where(eq(conversations.organisationId, organisationId));
@@ -30,6 +36,13 @@ export async function purgeAssistantRetention(tx: Database, organisationId: stri
     eq(conversationMessages.organisationId, organisationId),
     inArray(conversationMessages.conversationId, assistantIds),
     lt(conversationMessages.createdAt, cutoff),
+  ));
+}
+
+export async function deleteProposalsForConversation(tx: Database, organisationId: string, conversationId: string) {
+  await tx.delete(assistantProposals).where(and(
+    eq(assistantProposals.organisationId, organisationId),
+    eq(assistantProposals.conversationId, conversationId),
   ));
 }
 
@@ -119,6 +132,7 @@ export async function storeAssistantTurn(tx: Database, ctx: { organisationId: st
   conversationId: string;
   prompt: string;
   parts: AssistantPart[];
+  proposal?: AssistantProposal;
 }) {
   await insertMessage(tx, ctx, input.conversationId, { role: 'user', content: input.prompt });
   const reply = input.parts.filter((part) => part.type === 'text').map((part) => part.text).join(' ').slice(0, 1_000) || 'Assistant reply';
@@ -127,4 +141,35 @@ export async function storeAssistantTurn(tx: Database, ctx: { organisationId: st
     content: reply,
     metadata: { kind: 'assistant_reply', parts: input.parts },
   });
+  if (!input.proposal) return;
+  await tx.insert(assistantProposals).values({
+    id: input.proposal.id,
+    organisationId: ctx.organisationId,
+    conversationId: input.conversationId,
+    payload: JSON.stringify(input.proposal),
+    signature: signProposal(ctx.organisationId, input.proposal),
+  });
+}
+
+export async function findProposal(tx: Database, organisationId: string, proposalId: string, conversationId: string) {
+  const [row] = await tx.select().from(assistantProposals).where(and(
+    eq(assistantProposals.id, proposalId),
+    eq(assistantProposals.organisationId, organisationId),
+    eq(assistantProposals.conversationId, conversationId),
+  ));
+  if (!row) return undefined;
+  if (row.savedInvoiceId) return { proposal: undefined, savedInvoiceId: row.savedInvoiceId };
+  if (!row.payload) return undefined;
+  let body: unknown;
+  try { body = JSON.parse(row.payload); } catch { return undefined; }
+  const parsed = assistantProposalSchema.safeParse(body);
+  if (!parsed.success || !proposalSignatureMatches(organisationId, parsed.data, row.signature)) return undefined;
+  return { proposal: parsed.data, savedInvoiceId: null as string | null };
+}
+
+export async function markProposalSaved(tx: Database, organisationId: string, proposalId: string, invoiceId: string) {
+  await tx.update(assistantProposals).set({ savedInvoiceId: invoiceId, payload: '' }).where(and(
+    eq(assistantProposals.id, proposalId),
+    eq(assistantProposals.organisationId, organisationId),
+  ));
 }
