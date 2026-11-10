@@ -24,9 +24,11 @@ import {
   Landmark,
   Truck,
   CalendarClock,
+  MessageSquare,
   type LucideIcon,
 } from 'lucide-react';
 import AppVersion from '@/components/common/AppVersion';
+import { useAssistantCapability } from '@/features/assistant/useAssistantCapability';
 
 interface NavChild {
   name: string;
@@ -106,9 +108,15 @@ export function Sidebar({ collapsed, isMobile, onCloseMobileMenu }: SidebarProps
   const location = useLocation();
   const navigate = useNavigate();
   const { hasPermission } = usePermissions();
+  const assistantCapability = useAssistantCapability();
+  const assistantState = assistantCapability.isPending
+    ? 'loading'
+    : assistantCapability.data?.assistant === 'available'
+      ? 'available'
+      : 'unavailable';
 
   const navItems = useMemo(() => {
-    return NAV_ITEMS.map((item) => {
+    const visible = NAV_ITEMS.map((item) => {
       if (item.children) {
         const children = item.children.filter(
           (child) => !child.permission || hasPermission(child.permission)
@@ -120,7 +128,10 @@ export function Sidebar({ collapsed, isMobile, onCloseMobileMenu }: SidebarProps
       if (item.children) return item.children.length > 0;
       return !item.permission || hasPermission(item.permission);
     });
-  }, [hasPermission]);
+    if (assistantState !== 'available') return visible;
+    const assistant: NavItem = { name: 'Assistant', path: '/assistant', icon: MessageSquare };
+    return [visible[0], assistant, ...visible.slice(1)].filter((item): item is NavItem => Boolean(item));
+  }, [assistantState, hasPermission]);
 
   const initiallyOpen = useMemo(() => {
     const open = new Set<string>();
@@ -267,7 +278,7 @@ export function Sidebar({ collapsed, isMobile, onCloseMobileMenu }: SidebarProps
           )}
         </div>
 
-        <nav className="flex-1 py-4 px-3">
+        <nav className="flex-1 py-4 px-3" data-assistant={assistantState}>
           <ul className="space-y-1">{navItems.map(renderItem)}</ul>
         </nav>
 
@@ -290,7 +301,7 @@ export function Sidebar({ collapsed, isMobile, onCloseMobileMenu }: SidebarProps
         )}
       </div>
 
-      <nav className={cn('flex-1 overflow-y-auto py-3', collapsed ? 'px-2' : 'px-3')}>
+      <nav className={cn('flex-1 overflow-y-auto py-3', collapsed ? 'px-2' : 'px-3')} data-assistant={assistantState}>
         <ul className="space-y-1">{navItems.map(renderItem)}</ul>
       </nav>
 
