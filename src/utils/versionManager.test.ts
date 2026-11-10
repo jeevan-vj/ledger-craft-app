@@ -1,7 +1,16 @@
 import { afterEach, expect, it, vi } from 'vitest';
-import { forceRefresh } from './versionManager';
+import { fetchDeployedVersion, forceRefresh, isVersionOutdated } from './versionManager';
 
-afterEach(() => { vi.unstubAllGlobals(); localStorage.clear(); sessionStorage.clear(); });
+const env = import.meta.env;
+const previousEnv = { DEV: env.DEV, VITE_BUILD_HASH: env.VITE_BUILD_HASH, VITE_BUILD_TIME: env.VITE_BUILD_TIME };
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+  localStorage.clear();
+  sessionStorage.clear();
+  Object.assign(env, previousEnv);
+  vi.restoreAllMocks();
+});
 
 it('keeps uncertain financial requests when an app update clears ordinary caches', async () => {
   const reload = vi.fn();
@@ -19,4 +28,39 @@ it('keeps uncertain financial requests when an app update clears ordinary caches
   expect(localStorage.getItem('old-ui-cache')).toBeNull();
   expect(sessionStorage.getItem('old-ui-cache')).toBeNull();
   expect(reload).toHaveBeenCalledOnce();
+});
+
+it('notices a newer deploy on the first version.json read', async () => {
+  Object.assign(env, { DEV: false, VITE_BUILD_HASH: 'embedded-hash', VITE_BUILD_TIME: '1000' });
+  const fetchMock = vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => ({ version: '0.0.8', hash: 'deployed-hash', buildTime: 2000 }),
+  });
+  vi.stubGlobal('fetch', fetchMock);
+
+  await expect(isVersionOutdated()).resolves.toBe(true);
+  await expect(isVersionOutdated()).resolves.toBe(true);
+  expect(fetchMock).toHaveBeenCalledWith(
+    expect.stringMatching(/^\/version\.json\?t=\d+$/),
+    expect.objectContaining({ cache: 'no-store' }),
+  );
+  await expect(fetchDeployedVersion()).resolves.toMatchObject({ hash: 'deployed-hash', buildTime: 2000 });
+});
+
+it('does not treat a failed version.json read as a new deploy', async () => {
+  Object.assign(env, { DEV: false, VITE_BUILD_HASH: 'embedded-hash', VITE_BUILD_TIME: '1000' });
+  vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+  await expect(isVersionOutdated()).resolves.toBe(false);
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) }));
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+  await expect(isVersionOutdated()).resolves.toBe(false);
+
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => { throw new Error('invalid json'); },
+  }));
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+  await expect(isVersionOutdated()).resolves.toBe(false);
 });
