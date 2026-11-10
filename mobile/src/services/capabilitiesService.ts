@@ -6,7 +6,7 @@ let cached: Promise<HealthzResponse['capabilities']> | undefined;
 export function getServerCapabilities(): Promise<HealthzResponse['capabilities']> {
   cached ??= apiRequest<HealthzResponse>('/api/healthz')
     .then((result) => result.capabilities)
-    .catch(() => ({ email: 'unavailable' as const, ai: 'unavailable' as const, stripe: 'unavailable' as const }));
+    .catch(() => ({ email: 'unavailable' as const, ai: 'unavailable' as const, stripe: 'unavailable' as const, assistant: 'unavailable' as const }));
   return cached;
 }
 
