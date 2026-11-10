@@ -1,5 +1,6 @@
 import { sql } from 'drizzle-orm';
-import { index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { foreignKey, index, integer, sqliteTable, text, uniqueIndex } from 'drizzle-orm/sqlite-core';
+import { conversations } from './conversations';
 import { organisations } from './identity';
 
 const timestamp = (name: string) => integer(name, { mode: 'timestamp_ms' });
@@ -16,4 +17,6 @@ export const assistantProposals = sqliteTable('assistant_proposals', {
 }, (table) => [
   uniqueIndex('assistant_proposals_org_id_uidx').on(table.organisationId, table.id),
   index('assistant_proposals_org_idx').on(table.organisationId),
+  index('assistant_proposals_org_created_idx').on(table.organisationId, table.createdAt),
+  foreignKey({ columns: [table.organisationId, table.conversationId], foreignColumns: [conversations.organisationId, conversations.id] }).onDelete('cascade'),
 ]);

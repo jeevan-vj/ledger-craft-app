@@ -5,6 +5,7 @@ import { createApp } from '../../app';
 import { createDb } from '../../db/local';
 import { getDatabaseUrl } from '../../env';
 import { assistantEvents } from '../../db/schema/assistant-events';
+import { assistantProposals } from '../../db/schema/assistant-proposals';
 import { conversationMessages } from '../../db/schema/conversations';
 import { expenses } from '../../db/schema/expenses';
 import { invoices } from '../../db/schema/invoices';
@@ -406,6 +407,10 @@ describe('assistant eval suite', () => {
     const first = invoiceSchema.parse(await call('/api/ai/assistant/drafts', 'POST', body, 201));
     const second = invoiceSchema.parse(await call('/api/ai/assistant/drafts', 'POST', body, 201));
     expect(second.id).toBe(first.id);
+    const [kept] = await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposal.proposal.id));
+    expect(kept?.payload).toBe('');
+    expect(kept?.savedInvoiceId).toBe(first.id);
+    expect(kept?.signature.length).toBeGreaterThan(0);
     const conflict = await app.request('/api/ai/assistant/drafts', { method: 'POST', headers: { ...headers, Cookie: cookie, 'Idempotency-Key': 'draft-tap-1' }, body: JSON.stringify(body) });
     expect(conflict.status).toBe(201);
     const changed = await app.request('/api/ai/assistant/drafts', { method: 'POST', headers: { ...headers, Cookie: cookie, 'Idempotency-Key': 'draft-tap-1' }, body: JSON.stringify({ ...body, edits: { notes: 'different' } }) });
@@ -473,6 +478,45 @@ describe('assistant eval suite', () => {
     expect(first.total).toBe('100.00');
     expect(second.id).toBe(first.id);
     expect((await tally(db)).invoices).toBe(1);
+  }));
+
+  it('forgets a proposal after 90 days', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }])],
+  }, async ({ call, ask, app, cookie, db }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask('Invoice Sarah for plumbing');
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const old = new Date(MONDAY.getTime() - 91 * 86_400_000);
+    await db.update(assistantProposals).set({ createdAt: old }).where(eq(assistantProposals.id, proposal.proposal.id));
+    await ask('fresh-marker-prompt');
+    expect(await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposal.proposal.id))).toEqual([]);
+    const expired = await app.request('/api/ai/assistant/drafts', {
+      method: 'POST',
+      headers: { ...headers, Cookie: cookie },
+      body: JSON.stringify({ conversationId: reply.conversationId, proposalId: proposal.proposal.id }),
+    });
+    expect(expired.status).toBe(404);
+    expect(errorEnvelopeSchema.parse(await expired.json()).error.code).toBe('NOT_FOUND');
+  }));
+
+  it('removes the proposal when the conversation is deleted', () => run({
+    steps: [turn([{ name: 'prepare_invoice_proposal', arguments: { customerQuery: 'Sarah', dueDate: '2026-11-13', taxInclusive: true, lines: [{ description: 'Plumbing', quantity: '1', rate: '100.00' }] } }])],
+  }, async ({ call, ask, app, cookie, db }) => {
+    await call('/api/customers', 'POST', { name: 'Sarah Chen', email: 'sarah@example.test' }, 201);
+    const reply = await ask('Invoice Sarah for plumbing');
+    const proposal = reply.parts.find((part) => part.type === 'proposal');
+    if (proposal?.type !== 'proposal') throw new Error('missing proposal');
+    const removed = await app.request(`/api/conversations/${reply.conversationId}`, { method: 'DELETE', headers: { Cookie: cookie } });
+    expect(removed.status).toBeLessThan(400);
+    expect(await db.select().from(assistantProposals).where(eq(assistantProposals.id, proposal.proposal.id))).toEqual([]);
+    const gone = await app.request('/api/ai/assistant/drafts', {
+      method: 'POST',
+      headers: { ...headers, Cookie: cookie },
+      body: JSON.stringify({ conversationId: reply.conversationId, proposalId: proposal.proposal.id }),
+    });
+    expect(gone.status).toBe(404);
+    expect(errorEnvelopeSchema.parse(await gone.json()).error.code).toBe('NOT_FOUND');
   }));
 
   it('keeps receipt scanning available when the assistant flag is off', () => run({

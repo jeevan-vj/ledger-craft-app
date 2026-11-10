@@ -182,6 +182,7 @@ export async function saveAssistantDraftForUser(
       if (idempotency) await insertIdempotencyRecord(tx, ctx, idempotency, { status: 201, body: invoice });
       return { kind: 'invoice' as const, invoice };
     }
+    if (!stored.proposal) return { kind: 'missing' as const };
     const priced = await reprice(tx, ctx.organisationId, stored.proposal, input.edits);
     if (!priced) {
       await insertAssistantEvent(tx, { organisationId: ctx.organisationId, userId, requestId, action: 'save_draft', outcome: 'incomplete', confirmed: false });

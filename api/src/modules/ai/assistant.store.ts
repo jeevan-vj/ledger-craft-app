@@ -21,6 +21,10 @@ export async function purgeAssistantRetention(tx: Database, organisationId: stri
     eq(assistantEvents.organisationId, organisationId),
     lt(assistantEvents.createdAt, cutoff),
   ));
+  await tx.delete(assistantProposals).where(and(
+    eq(assistantProposals.organisationId, organisationId),
+    lt(assistantProposals.createdAt, cutoff),
+  ));
   const rows = await tx.select({ id: conversations.id, context: conversations.context })
     .from(conversations)
     .where(eq(conversations.organisationId, organisationId));
@@ -32,6 +36,13 @@ export async function purgeAssistantRetention(tx: Database, organisationId: stri
     eq(conversationMessages.organisationId, organisationId),
     inArray(conversationMessages.conversationId, assistantIds),
     lt(conversationMessages.createdAt, cutoff),
+  ));
+}
+
+export async function deleteProposalsForConversation(tx: Database, organisationId: string, conversationId: string) {
+  await tx.delete(assistantProposals).where(and(
+    eq(assistantProposals.organisationId, organisationId),
+    eq(assistantProposals.conversationId, conversationId),
   ));
 }
 
@@ -147,13 +158,17 @@ export async function findProposal(tx: Database, organisationId: string, proposa
     eq(assistantProposals.conversationId, conversationId),
   ));
   if (!row) return undefined;
-  const parsed = assistantProposalSchema.safeParse(JSON.parse(row.payload));
+  if (row.savedInvoiceId) return { proposal: undefined, savedInvoiceId: row.savedInvoiceId };
+  if (!row.payload) return undefined;
+  let body: unknown;
+  try { body = JSON.parse(row.payload); } catch { return undefined; }
+  const parsed = assistantProposalSchema.safeParse(body);
   if (!parsed.success || !proposalSignatureMatches(organisationId, parsed.data, row.signature)) return undefined;
-  return { proposal: parsed.data, savedInvoiceId: row.savedInvoiceId };
+  return { proposal: parsed.data, savedInvoiceId: null as string | null };
 }
 
 export async function markProposalSaved(tx: Database, organisationId: string, proposalId: string, invoiceId: string) {
-  await tx.update(assistantProposals).set({ savedInvoiceId: invoiceId }).where(and(
+  await tx.update(assistantProposals).set({ savedInvoiceId: invoiceId, payload: '' }).where(and(
     eq(assistantProposals.id, proposalId),
     eq(assistantProposals.organisationId, organisationId),
   ));

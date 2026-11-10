@@ -6,9 +6,12 @@ CREATE TABLE `assistant_proposals` (
 	`signature` text NOT NULL,
 	`saved_invoice_id` text,
 	`created_at` integer DEFAULT (unixepoch() * 1000) NOT NULL,
-	FOREIGN KEY (`organisation_id`) REFERENCES `organisations`(`id`) ON UPDATE no action ON DELETE no action
+	FOREIGN KEY (`organisation_id`) REFERENCES `organisations`(`id`) ON UPDATE no action ON DELETE no action,
+	FOREIGN KEY (`organisation_id`,`conversation_id`) REFERENCES `conversations`(`organisation_id`,`id`) ON UPDATE no action ON DELETE cascade
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX `assistant_proposals_org_id_uidx` ON `assistant_proposals` (`organisation_id`,`id`);
 --> statement-breakpoint
 CREATE INDEX `assistant_proposals_org_idx` ON `assistant_proposals` (`organisation_id`);
+--> statement-breakpoint
+CREATE INDEX `assistant_proposals_org_created_idx` ON `assistant_proposals` (`organisation_id`,`created_at`);
