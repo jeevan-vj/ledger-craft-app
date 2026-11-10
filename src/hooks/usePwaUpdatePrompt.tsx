@@ -1,16 +1,24 @@
-import { useEffect, useState, useCallback } from "react";
-import { registerSW } from "virtual:pwa-register";
-import { 
-  isVersionOutdated, 
-  forceRefresh, 
-  clearAllCaches, 
-  startVersionPolling,
-  enableFocusUpdateCheck 
-} from "@/utils/versionManager";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  APP_UPDATE_TOAST_MS,
+  CONTROLLER_RELOAD_KEY,
+  VERSION_RELOAD_KEY,
+  clearControllerReloadIfUpdated,
+  clearVersionReloadIfCurrent,
+  deferAppReload,
+  isMidFormEdit,
+  markControllerReload,
+  markVersionReload,
+  planAppUpdate,
+  watchAppUpdateSignals,
+  type AppUpdatePlan,
+} from "@/utils/appUpdate";
+import { fetchDeployedVersion, forceRefresh, clearAllCaches, getCurrentVersion } from "@/utils/versionManager";
 
 interface UsePwaUpdatePrompt {
   needRefresh: boolean;
   offlineReady: boolean;
+  updating: boolean;
   promptUpdate: () => void;
   forceUpdate: () => void;
   dismissPrompt: () => void;
@@ -20,62 +28,125 @@ interface UsePwaUpdatePrompt {
 export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
   const [needRefresh, setNeedRefresh] = useState(false);
   const [offlineReady, setOfflineReady] = useState(false);
-  const [updateServiceWorker, setUpdateServiceWorker] = useState<(() => void) | null>(null);
+  const [updating, setUpdating] = useState(false);
+  const pendingHash = useRef<string | null>(null);
+  const reloadNow = useRef<(toast: boolean) => void>(() => {});
 
   useEffect(() => {
-    // Register service worker
-    const updateSW = registerSW({
-      onNeedRefresh() {
-        console.log('🔄 Service Worker needs refresh');
-        setNeedRefresh(true);
-      },
-      onOfflineReady() {
-        console.log('📱 App ready for offline use');
-        setOfflineReady(true);
-      },
-    });
-    setUpdateServiceWorker(() => updateSW);
+    if (import.meta.env.DEV) return;
 
-    // Start version polling
-    const stopPolling = startVersionPolling(10 * 60 * 1000); // Check every 10 minutes
-    
-    // Enable focus update checks
-    const stopFocusCheck = enableFocusUpdateCheck();
+    const running = getCurrentVersion();
+    clearVersionReloadIfCurrent(sessionStorage, running.hash);
+    clearControllerReloadIfUpdated(sessionStorage, running.hash);
+    let cancelled = false;
+    let reloading = false;
+    let deferredStop: (() => void) | null = null;
+    let registration: ServiceWorkerRegistration | null = null;
+    const hasServiceWorker = "serviceWorker" in navigator;
+    let hadController = hasServiceWorker && Boolean(navigator.serviceWorker.controller);
 
-    // Listen for version update events
-    const handleVersionUpdate = () => {
-      console.log('📱 Version update detected');
-      setNeedRefresh(true);
+    const commitReload = (plan: Extract<AppUpdatePlan, { action: "reload" | "defer" }>, hash: string | null, toast: boolean) => {
+      if (reloading) return;
+      reloading = true;
+      deferredStop?.();
+      deferredStop = null;
+      setNeedRefresh(false);
+      if (plan.mark === "version" && hash) markVersionReload(sessionStorage, hash);
+      if (plan.mark === "controller") markControllerReload(sessionStorage, getCurrentVersion().hash);
+      const go = () => window.location.reload();
+      if (toast) {
+        setUpdating(true);
+        window.setTimeout(go, APP_UPDATE_TOAST_MS);
+        return;
+      }
+      go();
     };
-    
-    window.addEventListener('app-version-outdated', handleVersionUpdate);
 
-    // Cleanup
+    const apply = (plan: AppUpdatePlan, hash: string | null) => {
+      if (cancelled || reloading || plan.action === "skip") return;
+      if (plan.action === "defer") {
+        setNeedRefresh(true);
+        if (deferredStop) return;
+        deferredStop = deferAppReload(document, window, () => {
+          deferredStop = null;
+          commitReload(plan, hash, false);
+        });
+        return;
+      }
+      commitReload(plan, hash, plan.toast);
+    };
+
+    const snapshot = () => {
+      return {
+        dev: false,
+        current: getCurrentVersion(),
+        versionReloadHash: sessionStorage.getItem(VERSION_RELOAD_KEY),
+        controllerReloadHash: sessionStorage.getItem(CONTROLLER_RELOAD_KEY),
+        editing: isMidFormEdit(document),
+        hidden: document.hidden,
+        hadController,
+      };
+    };
+
+    const checkDeployedVersion = async () => {
+      if (cancelled || reloading) return;
+      try {
+        await registration?.update();
+      } catch {
+        // A failed update check still leaves version.json as the deploy signal.
+      }
+      const server = await fetchDeployedVersion();
+      if (cancelled || reloading || !server) return;
+      pendingHash.current = server.hash;
+      apply(planAppUpdate({ ...snapshot(), cause: "version", server }), server.hash);
+    };
+
+    const onControllerChange = () => {
+      const had = hadController;
+      hadController = true;
+      if (!had) return;
+      apply(planAppUpdate({ ...snapshot(), cause: "controller", server: null, hadController: true }), pendingHash.current);
+    };
+
+    reloadNow.current = (toast) => {
+      commitReload({ action: "reload", toast, mark: "version" }, pendingHash.current, toast);
+    };
+
+    if (hasServiceWorker) {
+      navigator.serviceWorker.addEventListener("controllerchange", onControllerChange);
+      navigator.serviceWorker.register("/sw.js", { scope: "/", updateViaCache: "none" })
+        .then((next) => {
+          if (cancelled) return;
+          registration = next;
+          if (next.active) setOfflineReady(true);
+          return checkDeployedVersion();
+        })
+        .catch(() => {
+          // The page can still reload from version.json when registration fails.
+        });
+    }
+
+    const stopWatch = watchAppUpdateSignals(() => {
+      void checkDeployedVersion();
+    });
+
     return () => {
-      stopPolling();
-      stopFocusCheck();
-      window.removeEventListener('app-version-outdated', handleVersionUpdate);
+      cancelled = true;
+      stopWatch();
+      deferredStop?.();
+      if (hasServiceWorker) navigator.serviceWorker.removeEventListener("controllerchange", onControllerChange);
     };
   }, []);
 
-  // Skip immediate version check on mount to prevent false positives
-  // Version polling will handle updates after app has stabilized
-
   const promptUpdate = useCallback(() => {
-    if (updateServiceWorker) {
-      updateServiceWorker();
-    }
-    setNeedRefresh(false);
-    window.location.reload();
-  }, [updateServiceWorker]);
+    reloadNow.current(false);
+  }, []);
 
   const forceUpdate = useCallback(async () => {
-    console.log('💪 Force refreshing app...');
     await forceRefresh();
   }, []);
 
   const clearCaches = useCallback(async () => {
-    console.log('🧹 Clearing all caches...');
     await clearAllCaches();
     setNeedRefresh(false);
   }, []);
@@ -84,12 +155,13 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
     setNeedRefresh(false);
   }, []);
 
-  return { 
-    needRefresh, 
-    offlineReady, 
-    promptUpdate, 
-    forceUpdate, 
-    dismissPrompt, 
-    clearCaches 
+  return {
+    needRefresh,
+    offlineReady,
+    updating,
+    promptUpdate,
+    forceUpdate,
+    dismissPrompt,
+    clearCaches,
   };
-} 
+}

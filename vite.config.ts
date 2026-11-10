@@ -57,20 +57,44 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' &&
     componentTagger(),
     VitePWA({
+      // The page registers /sw.js itself with updateViaCache: 'none'.
+      // autoUpdate still makes the generated worker skip waiting and claim clients.
       registerType: 'autoUpdate',
+      injectRegister: null,
       workbox: {
-        // Aggressive cache busting strategies
-        globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js', '**/*.map'],
+        // Hashed scripts and styles only. index.html must not be precached, or a
+        // controlling worker keeps serving the previous release after deploy.
+        globPatterns: ['**/*.{js,wasm,css}'],
+        globIgnores: ['**/node_modules/**/*', 'sw.js', 'workbox-*.js', '**/*.map', '**/*.html', '**/version.json'],
         skipWaiting: true,
         clientsClaim: true,
+        directoryIndex: null,
+        navigateFallback: null,
+        navigateFallbackDenylist: [/^\/shared\//, /^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
         runtimeCaching: [
           {
-            urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/shared/invoice/'),
+            urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/shared/') || url.pathname === '/version.json',
             handler: 'NetworkOnly',
           },
           {
             urlPattern: /^https:\/\/api\./,
             handler: 'NetworkOnly',
+          },
+          {
+            urlPattern: ({ request, url }) => request.mode === 'navigate'
+              && !url.pathname.startsWith('/api/')
+              && !url.pathname.startsWith('/shared/')
+              && url.pathname !== '/version.json'
+              && !url.pathname.startsWith('/_'),
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'documents',
+              // Bypass the HTTP cache. Node's RequestInit type omits `cache`; the
+              // worker runs fetch in the browser, which accepts `reload`.
+              fetchOptions: { cache: 'reload' } as unknown as RequestInit,
+              cacheableResponse: { statuses: [200] },
+              expiration: { maxEntries: 8, maxAgeSeconds: 24 * 60 * 60 },
+            },
           },
           {
             urlPattern: /\.(?:png|jpg|jpeg|svg|gif|ico)$/,
@@ -84,8 +108,6 @@ export default defineConfig(({ mode }) => ({
             },
           },
         ],
-        // Exclude files that should always be fresh
-        navigateFallbackDenylist: [/^\/shared\/invoice\//, /^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
         cleanupOutdatedCaches: true,
       },
       manifest: {
