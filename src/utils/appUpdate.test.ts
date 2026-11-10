@@ -99,8 +99,8 @@ describe('planAppUpdate', () => {
     expect(plan({ editing: true })).toEqual({ action: 'defer', mark: 'version' });
   });
 
-  it('reloads a hidden tab even if a form is dirty', () => {
-    expect(plan({ editing: true, hidden: true })).toEqual({ action: 'reload', toast: false, mark: 'version' });
+  it('holds the reload while a form is dirty, including when the tab is hidden', () => {
+    expect(plan({ editing: true, hidden: true })).toEqual({ action: 'defer', mark: 'version' });
   });
 
   it('skips update checks during development', () => {
@@ -150,37 +150,71 @@ describe('isMidFormEdit', () => {
     expect(isMidFormEdit(document)).toBe(true);
   });
 
-  it('ignores checkboxes and disabled fields', () => {
+  it('counts a changed checkbox, radio, or select, and ignores disabled fields', () => {
     const box = document.createElement('input');
     box.type = 'checkbox';
     box.checked = true;
+    const radio = document.createElement('input');
+    radio.type = 'radio';
+    radio.checked = true;
+    const select = document.createElement('select');
+    const untouched = document.createElement('option');
+    untouched.value = 'none';
+    const option = document.createElement('option');
+    option.value = 'customer';
+    select.append(untouched, option);
+    option.selected = true;
     const locked = document.createElement('input');
     locked.disabled = true;
     locked.value = 'filled by the page';
-    document.body.append(box, locked);
+    document.body.append(box, radio, select, locked);
+    expect(isMidFormEdit(document)).toBe(true);
+
+    document.body.replaceChildren(locked);
+    expect(isMidFormEdit(document)).toBe(false);
+  });
+
+  it('uses the invoice form unsaved-changes flag instead of a prefilled field', () => {
+    const form = document.createElement('form');
+    form.dataset.unsavedChanges = 'true';
+    const customer = document.createElement('button');
+    customer.type = 'button';
+    customer.textContent = 'Choose customer';
+    form.append(customer);
+    document.body.append(form);
+    expect(isMidFormEdit(document)).toBe(true);
+
+    form.dataset.unsavedChanges = 'false';
+    const number = document.createElement('input');
+    number.readOnly = true;
+    number.defaultValue = '';
+    number.value = 'Q-100';
+    form.append(number);
     expect(isMidFormEdit(document)).toBe(false);
   });
 });
 
 describe('deferAppReload', () => {
-  it('reloads on the next in-app navigation while a form is dirty', () => {
+  it('reloads on the next in-app navigation once the form is clean', () => {
     const reload = vi.fn();
-    const stop = deferAppReload(document, window, reload);
+    let dirty = true;
+    const stop = deferAppReload(document, window, reload, () => dirty);
     window.history.pushState({}, '', '/invoices');
-    expect(reload).toHaveBeenCalledOnce();
+    expect(reload).not.toHaveBeenCalled();
+    dirty = false;
     window.history.pushState({}, '', '/customers');
     expect(reload).toHaveBeenCalledOnce();
     stop();
   });
 
-  it('reloads when the tab is hidden', () => {
+  it('does not reload when the tab is hidden', () => {
     const reload = vi.fn();
     let hidden = false;
     Object.defineProperty(document, 'hidden', { configurable: true, get: () => hidden });
     const stop = deferAppReload(document, window, reload);
     hidden = true;
     document.dispatchEvent(new Event('visibilitychange'));
-    expect(reload).toHaveBeenCalledOnce();
+    expect(reload).not.toHaveBeenCalled();
     stop();
     Reflect.deleteProperty(document, 'hidden');
   });

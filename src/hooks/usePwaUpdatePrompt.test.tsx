@@ -49,3 +49,29 @@ it('checks version.json and asks the service worker to update on load', async ()
   ));
   view.unmount();
 });
+
+it('does not reload when version.json cannot be read', async () => {
+  Object.assign(env, { DEV: false, VITE_BUILD_HASH: 'same-hash', VITE_BUILD_TIME: '1000' });
+  const update = vi.fn().mockResolvedValue(undefined);
+  const register = vi.fn().mockResolvedValue({ update, active: null });
+  Object.defineProperty(navigator, 'serviceWorker', {
+    configurable: true,
+    value: {
+      register,
+      controller: null,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    },
+  });
+  vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+
+  function Status() {
+    const { updating } = usePwaUpdatePrompt();
+    return <p>{updating ? 'updating' : 'idle'}</p>;
+  }
+  const view = render(<Status />);
+  await waitFor(() => expect(register).toHaveBeenCalled());
+  await waitFor(() => expect(fetch).toHaveBeenCalled());
+  expect(view.getByText('idle')).toBeInTheDocument();
+  view.unmount();
+});

@@ -46,3 +46,21 @@ it('notices a newer deploy on the first version.json read', async () => {
   );
   await expect(fetchDeployedVersion()).resolves.toMatchObject({ hash: 'deployed-hash', buildTime: 2000 });
 });
+
+it('does not treat a failed version.json read as a new deploy', async () => {
+  Object.assign(env, { DEV: false, VITE_BUILD_HASH: 'embedded-hash', VITE_BUILD_TIME: '1000' });
+  vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('offline')));
+  await expect(isVersionOutdated()).resolves.toBe(false);
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: false, json: async () => ({}) }));
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+  await expect(isVersionOutdated()).resolves.toBe(false);
+
+  vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    ok: true,
+    json: async () => { throw new Error('invalid json'); },
+  }));
+  await expect(fetchDeployedVersion()).resolves.toBeNull();
+  await expect(isVersionOutdated()).resolves.toBe(false);
+});

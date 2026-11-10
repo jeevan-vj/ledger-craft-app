@@ -70,7 +70,6 @@ export default defineConfig(({ mode }) => ({
         clientsClaim: true,
         directoryIndex: null,
         navigateFallback: null,
-        navigateFallbackDenylist: [/^\/shared\//, /^\/_/, /\/[^/?]+\.[^/]+$/, /^\/api\//],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/api/') || url.pathname.startsWith('/shared/') || url.pathname === '/version.json',

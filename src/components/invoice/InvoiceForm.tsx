@@ -308,6 +308,8 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
   const { isDirty } = form.formState;
   const itemsChanged = JSON.stringify(items) !== initialItemsJSON;
   const hasUnsavedChanges = !isSubmitting && (isDirty || itemsChanged);
+  const initialQuoteKindValue = initialQuoteKind ?? businessProfile?.defaultQuoteKind ?? 'quote';
+  const unsavedDocument = hasUnsavedChanges || (isQuote && quoteKind !== initialQuoteKindValue);
 
   const blocker = useBlocker(hasUnsavedChanges);
 
@@ -1099,7 +1101,12 @@ const InvoiceForm: React.FC<InvoiceFormProps> = ({
             <Card className="border border-border shadow-none">
               <CardContent className="pt-6 pb-4 px-4 sm:p-8 sm:pt-8">
                 <Form {...form}>
-                  <form onSubmit={form.handleSubmit(localOnSubmit)} className="space-y-6" data-invoice-form>
+                  <form
+                    onSubmit={form.handleSubmit(localOnSubmit)}
+                    className="space-y-6"
+                    data-invoice-form
+                    data-unsaved-changes={unsavedDocument ? 'true' : 'false'}
+                  >
                     {buyerInformationIssue ? <div role="alert" className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-amber-950">
                       <p>{buyerInformationIssue}</p>
                       <Button type="button" variant="outline" className="mt-2" onClick={() => navigate('/customers')}>Edit buyer details in Customers</Button>

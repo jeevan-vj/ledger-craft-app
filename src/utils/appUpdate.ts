@@ -83,7 +83,9 @@ export function planAppUpdate(input: AppUpdateInput): AppUpdatePlan {
     }
   }
 
-  if (input.editing && !input.hidden) return { action: 'defer', mark: input.cause };
+  // A hidden tab is not a safe moment to reload. Invoice and quote edits are
+  // not restored after a reload, and location.reload bypasses the form blocker.
+  if (input.editing) return { action: 'defer', mark: input.cause };
   return { action: 'reload', toast: !input.hidden, mark: input.cause };
 }
 
@@ -116,38 +118,75 @@ function isOpenTextField(element: Element): boolean {
   return isTextLikeInput(element);
 }
 
-export function isMidFormEdit(doc: Document): boolean {
-  const active = doc.activeElement;
-  if (active instanceof HTMLElement && active.isContentEditable && active !== doc.body) return true;
-  if (active instanceof HTMLSelectElement && !active.disabled) return true;
-  if (active && isOpenTextField(active)) return true;
+function isChoiceControl(element: Element): boolean {
+  if (element instanceof HTMLSelectElement) return !element.disabled;
+  return element instanceof HTMLInputElement
+    && (element.type === 'checkbox' || element.type === 'radio')
+    && !element.disabled;
+}
 
-  for (const field of doc.querySelectorAll('input, textarea')) {
-    if (field instanceof HTMLTextAreaElement && !field.disabled && !field.readOnly && field.value !== field.defaultValue) {
-      return true;
-    }
-    if (isTextLikeInput(field) && field.value !== field.defaultValue) return true;
+function isDirtyChoice(element: Element): boolean {
+  if (element instanceof HTMLSelectElement && !element.disabled) {
+    return [...element.options].some(option => option.selected !== option.defaultSelected);
+  }
+  if (element instanceof HTMLInputElement && (element.type === 'checkbox' || element.type === 'radio') && !element.disabled) {
+    return element.checked !== element.defaultChecked;
+  }
+  return false;
+}
+
+function isDirtyText(element: Element): boolean {
+  if (element instanceof HTMLTextAreaElement && !element.disabled && !element.readOnly) {
+    return element.value !== element.defaultValue;
+  }
+  return isTextLikeInput(element) && element.value !== element.defaultValue;
+}
+
+/**
+ * A form that publishes `data-unsaved-changes` owns the decision for its fields.
+ * Invoice and quote screens set that from the form's unsaved-changes flag, so a
+ * prefilled controlled input is not treated as an edit.
+ */
+function coveredByUnsavedFlag(element: Element): boolean {
+  return element.closest('[data-unsaved-changes]') != null;
+}
+
+export function isMidFormEdit(doc: Document): boolean {
+  if (doc.querySelector('[data-unsaved-changes="true"]')) return true;
+
+  const active = doc.activeElement;
+  if (active instanceof HTMLElement && active !== doc.body && !coveredByUnsavedFlag(active)) {
+    if (active.isContentEditable) return true;
+    if (isChoiceControl(active) || isOpenTextField(active)) return true;
+  }
+
+  for (const field of doc.querySelectorAll('input, textarea, select')) {
+    if (coveredByUnsavedFlag(field)) continue;
+    if (isDirtyChoice(field) || isDirtyText(field)) return true;
   }
   return false;
 }
 
 /**
- * Hold a reload until the next client-side navigation or until the tab is hidden.
- * History methods are restored once, including when the reload itself runs.
+ * Hold a reload until the next in-app navigation, and only if the document is
+ * no longer being edited. Hiding the tab does not reload.
  */
-export function deferAppReload(doc: Document, win: Window, reload: () => void): () => void {
+export function deferAppReload(
+  doc: Document,
+  win: Window,
+  reload: () => void,
+  stillEditing: () => boolean = () => false,
+): () => void {
   let stopped = false;
   const originalPush = win.history.pushState;
 
-  const onVisibility = () => {
-    if (doc.hidden) finish();
+  const onPop = () => {
+    if (!stillEditing()) finish();
   };
-  const onPop = () => finish();
   const stop = () => {
     if (stopped) return;
     stopped = true;
     win.history.pushState = originalPush;
-    doc.removeEventListener('visibilitychange', onVisibility);
     win.removeEventListener('popstate', onPop);
   };
   const finish = () => {
@@ -158,11 +197,10 @@ export function deferAppReload(doc: Document, win: Window, reload: () => void): 
   const wrap = (original: History['pushState']) =>
     function (this: History, ...args: Parameters<History['pushState']>) {
       original.apply(this, args);
-      finish();
+      if (!stillEditing()) finish();
     };
 
   win.history.pushState = wrap(originalPush);
-  doc.addEventListener('visibilitychange', onVisibility);
   win.addEventListener('popstate', onPop);
   return stop;
 }

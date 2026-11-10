@@ -28,8 +28,8 @@ Loop guards:
 - `ledgercraft:app-update-controller` stores the build hash that already reloaded for a service-worker claim. A later claim can reload after that build has changed.
 - After a reload lands on the target hash, the version flag is cleared. A controller flag from an older build is cleared too.
 
-If a text field is focused, a select is focused, or a text field's value differs from its default, the reload waits for the next in-app navigation (`pushState` or back/forward) or until the tab is hidden. The existing "Update available" prompt stays so the person can reload immediately. Otherwise the page shows "Updating to the latest version…" and reloads.
+The reload waits while an invoice or quote form has unsaved changes (`data-unsaved-changes="true"`), or while another form has a focused field or a text, select, checkbox, or radio value that differs from its default. Hiding the tab does not reload. The wait ends on the next in-app navigation once the document is clean. The existing update prompt stays so the person can reload immediately. Otherwise the page shows "Updating to the latest version…" and reloads.
 
 ## What the service worker caches
 
-Workbox precaches hashed scripts and styles only. It does not precache `index.html`, and `navigateFallback` is off, so a navigation is not answered from the previous app shell. Document navigations use the network (`cache: 'reload'`) and fall back to a short-lived cache only when the network fails. `/api/`, `/shared/`, and `/version.json` are network-only.
+Workbox precaches hashed scripts and styles only. It does not precache `index.html`, and `navigateFallback` is off, so a navigation is not answered from the previous app shell. A client route that has not been cached no longer opens offline. Document navigations use the network (`cache: 'reload'`) and fall back to a short-lived cache only when the network fails. `/api/`, `/shared/`, and `/version.json` are network-only. Shared invoice and quote pages still load while online, and `public/_headers` still sends `no-store` and `Referrer-Policy: no-referrer` for those paths.

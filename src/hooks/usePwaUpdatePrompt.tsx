@@ -31,6 +31,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
   const [updating, setUpdating] = useState(false);
   const pendingHash = useRef<string | null>(null);
   const reloadNow = useRef<(toast: boolean) => void>(() => {});
+  const dismissUpdate = useRef<() => void>(() => {});
 
   useEffect(() => {
     if (import.meta.env.DEV) return;
@@ -70,7 +71,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
         deferredStop = deferAppReload(document, window, () => {
           deferredStop = null;
           commitReload(plan, hash, false);
-        });
+        }, () => isMidFormEdit(document));
         return;
       }
       commitReload(plan, hash, plan.toast);
@@ -110,6 +111,11 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
 
     reloadNow.current = (toast) => {
       commitReload({ action: "reload", toast, mark: "version" }, pendingHash.current, toast);
+    };
+    dismissUpdate.current = () => {
+      deferredStop?.();
+      deferredStop = null;
+      setNeedRefresh(false);
     };
 
     if (hasServiceWorker) {
@@ -152,7 +158,7 @@ export function usePwaUpdatePrompt(): UsePwaUpdatePrompt {
   }, []);
 
   const dismissPrompt = useCallback(() => {
-    setNeedRefresh(false);
+    dismissUpdate.current();
   }, []);
 
   return {
