@@ -33,7 +33,15 @@ export function healthRoutes() {
 
   return routes;
 }
-  const response = (c: { get: (key: 'capabilities') => AppEnv['Variables']['capabilities'] }) => healthzResponseSchema.parse({
-    status: 'ok' as const,
-    capabilities: c.get('capabilities') ?? { email: 'unavailable', ai: 'unavailable', stripe: 'unavailable' },
-  });
+  const response = (c: { get: (key: 'capabilities') => AppEnv['Variables']['capabilities'] }) => {
+    const current = c.get('capabilities') ?? { email: 'unavailable' as const, ai: 'unavailable' as const, stripe: 'unavailable' as const };
+    return healthzResponseSchema.parse({
+      status: 'ok' as const,
+      capabilities: {
+        email: current.email,
+        ai: current.ai,
+        stripe: current.stripe,
+        assistant: current.assistant ?? 'unavailable',
+      },
+    });
+  };

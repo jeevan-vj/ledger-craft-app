@@ -48,6 +48,7 @@ export interface Env {
   APP_ENV?: string;
   INVOICE_IMPORT_AI_PROVIDER?: string;
   WORKERS_AI_MODEL?: string;
+  ASSISTANT_ENABLED?: string;
   AI?: WorkersAiBinding;
   SENTRY_DSN?: string;
   SENTRY_TRACES_SAMPLE_RATE?: string;
@@ -103,6 +104,7 @@ function identityHealthResponse(storage: DurableObjectState['storage'], env: Env
     email: createInvoiceMailerFromEnv(env).availability ?? 'unavailable',
     ai: env.OPENAI_API_KEY?.trim() || env.XAI_API_KEY?.trim() || env.AI ? 'available' : 'unavailable',
     stripe: stripePaymentsCapability(env as unknown as Record<string, string | undefined>),
+    assistant: env.ASSISTANT_ENABLED === '1' && env.AI ? 'available' : 'unavailable',
   };
   const body = path === '/api/healthz' ? { status: 'ok', capabilities } : { status: 'ok' };
   return Response.json(body, { headers: { 'X-Ledgercraft-Migration': applied?.name ?? 'none' } });
@@ -238,6 +240,7 @@ class LedgerBase extends DurableObject<Env> {
           email: invoiceMailer.availability ?? 'unavailable',
           ai: receiptScanner ? 'available' : 'unavailable',
           stripe: stripePaymentsCapability(this.env as unknown as Record<string, string | undefined>),
+          assistant: this.env.ASSISTANT_ENABLED === '1' && this.env.AI ? 'available' : 'unavailable',
         },
         chatCompleter: this.env.OPENAI_API_KEY || this.env.XAI_API_KEY ? createOpenAiChatCompleter({ env: this.env }) : undefined,
         invoiceImportExtractor: {

@@ -52,6 +52,7 @@ function setCoreDependencies(c: Context<AppEnv>, deps: AppDependencies) {
 
 function setExtendedDependencies(c: Context<AppEnv>, deps: AppDependencies) {
   if (deps.chatCompleter) c.set('chatCompleter', deps.chatCompleter);
+  if (deps.assistant) c.set('assistant', deps.assistant);
   if (deps.invoiceImportExtractor) c.set('invoiceImportExtractor', deps.invoiceImportExtractor);
   if (deps.workersAi) c.set('workersAi', deps.workersAi);
   if (deps.stripeGateway) c.set('stripeGateway', deps.stripeGateway);

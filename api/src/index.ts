@@ -41,6 +41,7 @@ function createRuntimeApp() {
       email: invoiceMailer.availability ?? 'unavailable',
       ai: process.env.OPENAI_API_KEY || process.env.XAI_API_KEY ? 'available' : 'unavailable',
       stripe: stripePaymentsCapability(process.env),
+      assistant: process.env.ASSISTANT_ENABLED === '1' ? 'available' : 'unavailable',
     },
     checkDatabase: async () => {
       try {
